@@ -33,26 +33,24 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleTicketCollection extends RuleCommonITILObjectCollection
-{
-   // From RuleCollection
-    public static $rightname    = 'rule_ticket';
-    public $menu_option         = 'ticket';
+namespace tests\units;
 
-    public function getTitle()
+// Force import because of atoum autoloader not working
+require_once 'RuleCommonITILObject.php';
+
+class RuleChange extends RuleCommonITILObject
+{
+    public function testGetCriteria()
     {
-        return __('Business rules for tickets');
+        $rule = $this->getRuleInstance();
+        $criteria = $rule->getCriterias();
+        $this->array($criteria)->size->isGreaterThan(20);
     }
 
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
-    public function prepareInputDataForProcess($input, $params)
+    public function testGetActions()
     {
-        // Pass x-priority header if exists
-        if (isset($input['_head']['x-priority'])) {
-            $input['_x-priority'] = $input['_head']['x-priority'];
-        }
-        return parent::prepareInputDataForProcess($input, $params);
+        $rule = $this->getRuleInstance();
+        $actions  = $rule->getActions();
+        $this->array($actions)->size->isGreaterThan(20);
     }
 }

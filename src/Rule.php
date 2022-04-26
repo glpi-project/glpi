@@ -224,6 +224,7 @@ class Rule extends CommonDBTM
             || Session::haveRight("rule_import", READ)
             || Session::haveRight("rule_location", READ)
             || Session::haveRight("rule_ticket", READ)
+            || Session::haveRight("rule_change", READ)
             || Session::haveRight("rule_softwarecategories", READ)
             || Session::haveRight("rule_mailcollector", READ)
         ) {
@@ -2364,22 +2365,27 @@ class Rule extends CommonDBTM
                         break;
 
                     case "dropdown_status":
-                        return Ticket::getStatus($pattern);
+                        if (is_a(static::class, RuleCommonITILObject::class, true)) {
+                            $itil = static::getItemtype();
+                            return $itil::getStatus($pattern);
+                        } else {
+                            return Ticket::getStatus($pattern);
+                        }
 
                     case "dropdown_priority":
-                        return Ticket::getPriorityName($pattern);
+                        return CommonITILObject::getPriorityName($pattern);
 
                     case "dropdown_urgency":
-                        return Ticket::getUrgencyName($pattern);
+                        return CommonITILObject::getUrgencyName($pattern);
 
                     case "dropdown_impact":
-                        return Ticket::getImpactName($pattern);
+                        return CommonITILObject::getImpactName($pattern);
 
                     case "dropdown_tickettype":
                         return Ticket::getTicketTypeName($pattern);
 
                     case "dropdown_validation_status":
-                        return TicketValidation::getStatus($pattern);
+                        return CommonITILValidation::getStatus($pattern);
                 }
             }
         }
@@ -2479,21 +2485,21 @@ class Rule extends CommonDBTM
                     break;
 
                 case "dropdown_urgency":
-                    Ticket::dropdownUrgency(['name'  => $name,
+                    CommonITILObject::dropdownUrgency(['name'  => $name,
                         'value' => $value
                     ]);
                     $display = true;
                     break;
 
                 case "dropdown_impact":
-                    Ticket::dropdownImpact(['name'  => $name,
+                    CommonITILObject::dropdownImpact(['name'  => $name,
                         'value' => $value
                     ]);
                     $display = true;
                     break;
 
                 case "dropdown_priority":
-                    Ticket::dropdownPriority(['name'  => $name,
+                    CommonITILObject::dropdownPriority(['name'  => $name,
                         'value' => $value,
                         'withmajor' => true
                     ]);
@@ -2501,9 +2507,16 @@ class Rule extends CommonDBTM
                     break;
 
                 case "dropdown_status":
-                    Ticket::dropdownStatus(['name'  => $name,
-                        'value' => $value
-                    ]);
+                    if (is_a(static::class, RuleCommonITILObject::class, true)) {
+                        $itil = static::getItemtype();
+                        $itil::dropdownStatus(['name' => $name,
+                            'value' => $value
+                        ]);
+                    } else {
+                        Ticket::dropdownStatus(['name' => $name,
+                            'value' => $value
+                        ]);
+                    }
                     $display = true;
                     break;
 
@@ -2513,7 +2526,7 @@ class Rule extends CommonDBTM
                     break;
 
                 case "dropdown_validation_status":
-                    TicketValidation::dropdownStatus($name, [
+                    CommonITILValidation::dropdownStatus($name, [
                         'global' => true,
                         'value' => $value,
                     ]);
@@ -2579,7 +2592,12 @@ class Rule extends CommonDBTM
                     return (($name == '&nbsp;') ? NOT_AVAILABLE : $name);
 
                 case "dropdown_status":
-                    return Ticket::getStatus($value);
+                    if (is_a(static::class, RuleCommonITILObject::class, true)) {
+                        $itil = static::getItemtype();
+                        return $itil::getStatus($value);
+                    } else {
+                        return Ticket::getStatus($value);
+                    }
 
                 case "dropdown_assign":
                 case "dropdown_users":
@@ -2598,13 +2616,13 @@ class Rule extends CommonDBTM
                     return Dropdown::getYesNo($value);
 
                 case "dropdown_urgency":
-                    return Ticket::getUrgencyName($value);
+                    return CommonITILObject::getUrgencyName($value);
 
                 case "dropdown_impact":
-                    return Ticket::getImpactName($value);
+                    return CommonITILObject::getImpactName($value);
 
                 case "dropdown_priority":
-                    return Ticket::getPriorityName($value);
+                    return CommonITILObject::getPriorityName($value);
 
                 case "dropdown_tickettype":
                     return Ticket::getTicketTypeName($value);
@@ -2613,7 +2631,7 @@ class Rule extends CommonDBTM
                     return Dropdown::getGlobalSwitch($value);
 
                 case "dropdown_validation_status":
-                    return TicketValidation::getStatus($value);
+                    return CommonITILValidation::getStatus($value);
 
                 default:
                     return $this->displayAdditionRuleActionValue($value);
@@ -2661,16 +2679,16 @@ class Rule extends CommonDBTM
                         return Dropdown::getYesNo($value);
 
                     case "dropdown_impact":
-                        return Ticket::getImpactName($value);
+                        return CommonITILObject::getImpactName($value);
 
                     case "dropdown_urgency":
-                        return Ticket::getUrgencyName($value);
+                        return CommonITILObject::getUrgencyName($value);
 
                     case "dropdown_priority":
-                        return Ticket::getPriorityName($value);
+                        return CommonITILObject::getPriorityName($value);
 
                     case "dropdown_validation_status":
-                        return TicketValidation::getStatus($value);
+                        return CommonITILValidation::getStatus($value);
                 }
             }
         }

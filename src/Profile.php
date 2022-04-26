@@ -1822,6 +1822,11 @@ class Profile extends CommonDBTM
                 'field'     => 'rule_ticket',
                 'row_class' => 'tab_bg_2'
             ],
+            ['itemtype'  => 'RuleChange',
+                'label'     => __('Business rules for changes (entity)'),
+                'field'     => 'rule_change',
+                'row_class' => 'tab_bg_2'
+            ],
             ['itemtype'  => 'RuleAsset',
                 'label'     => __('Business rules for assets'),
                 'field'     => 'rule_asset',

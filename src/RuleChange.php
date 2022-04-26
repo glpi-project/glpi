@@ -33,26 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleTicketCollection extends RuleCommonITILObjectCollection
+class RuleChange extends RuleCommonITILObject
 {
-   // From RuleCollection
-    public static $rightname    = 'rule_ticket';
-    public $menu_option         = 'ticket';
+    // From Rule
+    public static $rightname = 'rule_change';
 
     public function getTitle()
     {
-        return __('Business rules for tickets');
-    }
-
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
-    public function prepareInputDataForProcess($input, $params)
-    {
-        // Pass x-priority header if exists
-        if (isset($input['_head']['x-priority'])) {
-            $input['_x-priority'] = $input['_head']['x-priority'];
-        }
-        return parent::prepareInputDataForProcess($input, $params);
+        return __('Business rules for changes');
     }
 }

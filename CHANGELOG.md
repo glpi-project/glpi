@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [10.1.0] unreleased
 
 ### Added
+- Business Rules for Changes
 - Configurable toast notification location
 - `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
 - Group approval requests (any user from group can approve).
@@ -14,6 +15,9 @@ The present file will list all changes made to the project; according to the
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
 - Logs are now shown using the Search Engine
 - The approval option previously named `Group` is now called `Group user(s)` to better reflect that it shows a list of users from a specific group rather than allow sending an approval for a group.
+- The ticket business rule action `Ticket category from code` was renamed to `ITIL category from code`.
+- The ticket business rule criteria `Code representing the ticket category` was renamed to `Code representing the ITIL category`.
+- The ticket business rule criteria `Ticket location` was renamed to `Location`.
 
 ### Deprecated
 

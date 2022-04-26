@@ -258,7 +258,7 @@ class Rule extends DbTestCase
         $this->integer($rule->maxActionsCount())->isIdenticalTo(1);
 
         $rule = new \RuleTicket();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(34);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(35);
 
         $rule = new \RuleDictionnarySoftware();
         $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
@@ -292,7 +292,7 @@ class Rule extends DbTestCase
     public function testGetCriteriaName()
     {
         $ruleTicket = new \RuleTicket();
-        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Ticket location');
+        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Location');
         $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable'));
     }
 

@@ -1089,11 +1089,6 @@ class Ticket extends CommonITILObject
             $entid = $this->fields['entities_id'];
         }
 
-        $cat_id = $input['itilcategories_id'] ?? 0;
-        if ($cat_id) {
-            $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
-        }
-
        // Set _contract_type for rules
         $input['_contract_types'] = [];
         $contracts_link = Ticket_Contract::getListForItem($this);
@@ -1588,9 +1583,6 @@ class Ticket extends CommonITILObject
     {
         global $CFG_GLPI;
 
-       //for items added from rule
-        $this->handleItemsIdInput();
-
         parent::post_updateItem($history);
 
        // Put same status on duplicated tickets when solving or closing (autoclose on solve)
@@ -1828,11 +1820,6 @@ class Ticket extends CommonITILObject
             }
         }
 
-        $cat_id = $input['itilcategories_id'] ?? 0;
-        if ($cat_id) {
-            $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
-        }
-
        // Set default contract if not specified
         if (
             !isset($input['_contracts_id']) &&
@@ -1851,36 +1838,15 @@ class Ticket extends CommonITILObject
             }
         }
 
+        $initial_requester = isset($input['_users_id_requester']) && !is_array($input['_users_id_requester']) && (int)$input['_users_id_requester'] > 0
+            ? $input['_users_id_requester']
+            : 0;
+
         if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
            // Process Business Rules
             $this->fillInputForBusinessRules($input);
 
             $rules = new RuleTicketCollection($input['entities_id']);
-
-           // Set unset variables with are needed
-            $tmprequester = 0;
-            $user = new User();
-            if (isset($input["_users_id_requester"])) {
-                if (
-                    !is_array($input["_users_id_requester"])
-                    && $user->getFromDB($input["_users_id_requester"])
-                ) {
-                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-                    $input['users_default_groups'] = $user->fields['groups_id'];
-                    $tmprequester = $input["_users_id_requester"];
-                } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
-                    if ($user->getFromDB($user_id)) {
-                        $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-                        $input['users_default_groups'] = $user->fields['groups_id'];
-                    }
-                }
-            }
-
-           // Clean new lines before passing to rules
-            if (isset($input["content"])) {
-                $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-                $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
-            }
 
             $input = $rules->processAllRules(
                 $input,
@@ -1890,18 +1856,19 @@ class Ticket extends CommonITILObject
             );
             $input = Toolbox::stripslashes_deep($input);
 
-           // Recompute default values based on values computed by rules
+            // Recompute default values based on values computed by rules
             $input = $this->computeDefaultValuesForAdd($input);
+
+            if (
+                isset($input['_users_id_requester'])
+                && !is_array($input['_users_id_requester'])
+                && ($input['_users_id_requester'] != $initial_requester)
+            ) {
+               // if requester set by rule, clear address from mailcollector
+                unset($input['_users_id_requester_notif']);
+            }
         }
 
-        if (
-            isset($input['_users_id_requester'])
-            && !is_array($input['_users_id_requester'])
-            && ($input['_users_id_requester'] != $tmprequester)
-        ) {
-           // if requester set by rule, clear address from mailcollector
-            unset($input['_users_id_requester_notif']);
-        }
         if (
             isset($input['_users_id_requester_notif'])
             && isset($input['_users_id_requester_notif']['alternative_email'])
@@ -2121,8 +2088,6 @@ class Ticket extends CommonITILObject
                 'tickets_id'   => $this->getID(),
             ]);
         }
-
-        $this->handleItemsIdInput();
 
         parent::post_addItem();
 
@@ -5770,36 +5735,6 @@ JAVASCRIPT;
 
 
     /**
-     * @param $output
-     **/
-    public static function showPreviewAssignAction($output)
-    {
-
-       //If ticket is assign to an object, display this information first
-        if (
-            isset($output["entities_id"])
-            && isset($output["items_id"])
-            && isset($output["itemtype"])
-        ) {
-            if ($item = getItemForItemtype($output["itemtype"])) {
-                if ($item->getFromDB($output["items_id"])) {
-                    echo "<tr class='tab_bg_2'>";
-                    echo "<td>" . __('Assign equipment') . "</td>";
-
-                    echo "<td>" . $item->getLink(['comments' => true]) . "</td>";
-                    echo "</tr>";
-                }
-            }
-
-            unset($output["items_id"]);
-            unset($output["itemtype"]);
-        }
-        unset($output["entities_id"]);
-        return $output;
-    }
-
-
-    /**
      * Give cron information
      *
      * @param string $name  Task's name
@@ -6398,45 +6333,6 @@ JAVASCRIPT;
             'dates'   => $dates,
             'add_now' => $this->getField('closedate') == ""
         ]);
-    }
-
-    /**
-     * Fill input with values related to business rules.
-     *
-     * @param array $input
-     *
-     * @return void
-     */
-    private function fillInputForBusinessRules(array &$input)
-    {
-        global $DB;
-
-        $entities_id = isset($input['entities_id'])
-         ? $input['entities_id']
-         : $this->fields['entities_id'];
-
-       // If creation date is not set, then we're called during ticket creation
-        $creation_date = !empty($this->fields['date_creation'])
-         ? strtotime($this->fields['date_creation'])
-         : time();
-
-       // add calendars matching date creation (for business rules)
-        $calendars = [];
-        $ite_calendar = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => Calendar::getTable(),
-            'WHERE'  => getEntitiesRestrictCriteria('', '', $entities_id, true)
-        ]);
-        foreach ($ite_calendar as $calendar_data) {
-            $calendar = new Calendar();
-            $calendar->getFromDB($calendar_data['id']);
-            if ($calendar->isAWorkingHour($creation_date)) {
-                $calendars[] = $calendar_data['id'];
-            }
-        }
-        if (count($calendars)) {
-            $input['_date_creation_calendars_id'] = $calendars;
-        }
     }
 
     /**

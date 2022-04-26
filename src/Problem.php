@@ -388,8 +388,6 @@ class Problem extends CommonITILObject
                 '_disablenotif' => true
             ]);
         }
-
-        $this->handleItemsIdInput();
     }
 
     /**
