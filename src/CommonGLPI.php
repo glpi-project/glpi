@@ -685,6 +685,30 @@ JAVASCRIPT;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
+
+                    $sub_items = $sub_item::getItemsAssociatedTo($item->getType(), $item->getId());
+                    foreach ($sub_items as $sitem) {
+                        $lockedfield = new Lockedfield();
+                        if (!$item->isNewItem() && $lockedfield->isHandled($sitem)) {
+                            $locks = $lockedfield->getLocks($sitem->getType(), $sitem->fields['id']);
+                            if (count($locks)) {
+                                $js_expr = '[name=' . implode('], [name=', $locks) . ']';
+                                $lockedtitle = __s('Field will not be updated from inventory');
+
+                                $locked_js = <<<JAVASCRIPT
+                            $(function() {
+                                $("{$js_expr}").closest("div,td").prev()
+                                .append("<i class=\"fas ti-lock\" title=\"{$lockedtitle}\"></i>")
+                                .toggleClass("lockedfield", true)
+                                .removeClass("lockfield") //to drop duplicated fusion icon
+                                ;
+                            });
+    JAVASCRIPT;
+                            }
+                            echo Html::scriptBlock($locked_js);
+                        }
+                    }
+
                     Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                     return $ret;
                 }
