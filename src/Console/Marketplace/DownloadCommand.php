@@ -67,10 +67,9 @@ class DownloadCommand extends AbstractMarketplaceCommand
             if (empty(trim($plugin))) {
                 continue;
             }
-            $controller = new Controller($plugin);
             // If the plugin is already downloaded, refuse to download it again
             if (!$input->getOption('force') && is_dir(GLPI_MARKETPLACE_DIR . '/' . $plugin)) {
-                if ($controller->hasGitDirectory($plugin)) {
+                if (Controller::hasGitDirectory($plugin)) {
                     $error_msg = sprintf("Plugin '%s' as a local .git directory.\n", $plugin);
                     $error_msg .= __s("To avoid overwriting a potential branch under development, downloading is disabled.");
                 } else {
@@ -79,6 +78,7 @@ class DownloadCommand extends AbstractMarketplaceCommand
                 $output->writeln("<error>$error_msg</error>");
                 continue;
             }
+            $controller = new Controller($plugin);
             if ($controller->canBeDownloaded()) {
                 $result = $controller->downloadPlugin(false);
                 $success_msg = sprintf(__("Plugin %s downloaded successfully"), $plugin);
