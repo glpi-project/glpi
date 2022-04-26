@@ -1077,11 +1077,6 @@ class Ticket extends CommonITILObject
             $entid = $this->fields['entities_id'];
         }
 
-        $cat_id = $input['itilcategories_id'] ?? 0;
-        if ($cat_id) {
-            $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
-        }
-
        // Set _contract_type for rules
         $input['_contract_types'] = [];
         $contracts_link = Ticket_Contract::getListForItem($this);
@@ -1576,9 +1571,6 @@ class Ticket extends CommonITILObject
     {
         global $CFG_GLPI;
 
-       //for items added from rule
-        $this->handleItemsIdInput();
-
         parent::post_updateItem($history);
 
        // Put same status on duplicated tickets when solving or closing (autoclose on solve)
@@ -1804,11 +1796,6 @@ class Ticket extends CommonITILObject
             if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
                 $manual_olas_id[$slmType] = $input[$olaField];
             }
-        }
-
-        $cat_id = $input['itilcategories_id'] ?? 0;
-        if ($cat_id) {
-            $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
         }
 
        // Set default contract if not specified
@@ -2099,8 +2086,6 @@ class Ticket extends CommonITILObject
                 'tickets_id'   => $this->getID(),
             ]);
         }
-
-        $this->handleItemsIdInput();
 
         parent::post_addItem();
 
@@ -5724,36 +5709,6 @@ JAVASCRIPT;
 
 
     /**
-     * @param $output
-     **/
-    public static function showPreviewAssignAction($output)
-    {
-
-       //If ticket is assign to an object, display this information first
-        if (
-            isset($output["entities_id"])
-            && isset($output["items_id"])
-            && isset($output["itemtype"])
-        ) {
-            if ($item = getItemForItemtype($output["itemtype"])) {
-                if ($item->getFromDB($output["items_id"])) {
-                    echo "<tr class='tab_bg_2'>";
-                    echo "<td>" . __('Assign equipment') . "</td>";
-
-                    echo "<td>" . $item->getLink(['comments' => true]) . "</td>";
-                    echo "</tr>";
-                }
-            }
-
-            unset($output["items_id"]);
-            unset($output["itemtype"]);
-        }
-        unset($output["entities_id"]);
-        return $output;
-    }
-
-
-    /**
      * Give cron information
      *
      * @param string $name  Task's name
@@ -6352,45 +6307,6 @@ JAVASCRIPT;
             'dates'   => $dates,
             'add_now' => $this->getField('closedate') == ""
         ]);
-    }
-
-    /**
-     * Fill input with values related to business rules.
-     *
-     * @param array $input
-     *
-     * @return void
-     */
-    private function fillInputForBusinessRules(array &$input)
-    {
-        global $DB;
-
-        $entities_id = isset($input['entities_id'])
-         ? $input['entities_id']
-         : $this->fields['entities_id'];
-
-       // If creation date is not set, then we're called during ticket creation
-        $creation_date = !empty($this->fields['date_creation'])
-         ? strtotime($this->fields['date_creation'])
-         : time();
-
-       // add calendars matching date creation (for business rules)
-        $calendars = [];
-        $ite_calendar = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => Calendar::getTable(),
-            'WHERE'  => getEntitiesRestrictCriteria('', '', $entities_id, true)
-        ]);
-        foreach ($ite_calendar as $calendar_data) {
-            $calendar = new Calendar();
-            $calendar->getFromDB($calendar_data['id']);
-            if ($calendar->isAWorkingHour($creation_date)) {
-                $calendars[] = $calendar_data['id'];
-            }
-        }
-        if (count($calendars)) {
-            $input['_date_creation_calendars_id'] = $calendars;
-        }
     }
 
     /**
