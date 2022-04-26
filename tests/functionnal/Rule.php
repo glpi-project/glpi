@@ -292,7 +292,7 @@ class Rule extends DbTestCase
     public function testGetCriteriaName()
     {
         $ruleTicket = new \RuleTicket();
-        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Ticket location');
+        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Location');
         $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable'));
     }
 

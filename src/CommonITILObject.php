@@ -1507,6 +1507,11 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
+        $cat_id = $input['itilcategories_id'] ?? 0;
+        if ($cat_id) {
+            $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
+        }
+
         if (isset($input["document"]) && ($input["document"] > 0)) {
             $doc = new Document();
             if ($doc->getFromDB($input["document"])) {
@@ -1843,6 +1848,8 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
+        $this->handleItemsIdInput();
+
        // Handle "_tasktemplates_id" special input
         $this->handleTaskTemplateInput();
 
@@ -2344,6 +2351,11 @@ abstract class CommonITILObject extends CommonDBTM
             $input["impact"] = 3;
         }
 
+        $cat_id = $input['itilcategories_id'] ?? 0;
+        if ($cat_id) {
+            $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
+        }
+
         $canpriority = true;
         if ($this->getType() == 'Ticket') {
             $canpriority = Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY);
@@ -2619,6 +2631,8 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function post_addItem()
     {
+
+        $this->handleItemsIdInput();
 
        // Handle "_tasktemplates_id" special input
         $this->handleTaskTemplateInput();
@@ -9384,5 +9398,89 @@ abstract class CommonITILObject extends CommonDBTM
             $open_statuses,
             [CommonITILObject_CommonITILObject::SON_OF]
         );
+    }
+
+    /**
+     * @param $output
+     **/
+    public static function showPreviewAssignAction($output)
+    {
+        //If ticket is assign to an object, display this information first
+        if (isset($output["entities_id"], $output["items_id"], $output["itemtype"])) {
+            if ($item = getItemForItemtype($output["itemtype"])) {
+                if ($item->getFromDB($output["items_id"])) {
+                    echo "<tr class='tab_bg_2'>";
+                    echo "<td>" . __('Assign equipment') . "</td>";
+
+                    echo "<td>" . $item->getLink(['comments' => true]) . "</td>";
+                    echo "</tr>";
+                }
+            }
+
+            unset($output["items_id"], $output["itemtype"]);
+        }
+        unset($output["entities_id"]);
+        return $output;
+    }
+
+    /**
+     * Fill input with values related to business rules.
+     *
+     * @param array $input
+     *
+     * @return void
+     */
+    final protected function fillInputForBusinessRules(array &$input)
+    {
+        global $DB;
+
+        $entities_id = isset($input['entities_id'])
+            ? $input['entities_id']
+            : $this->fields['entities_id'];
+
+        // If creation date is not set, then we're called during ticket creation
+        $creation_date = !empty($this->fields['date_creation'])
+            ? strtotime($this->fields['date_creation'])
+            : time();
+
+        // add calendars matching date creation (for business rules)
+        $calendars = [];
+        $ite_calendar = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Calendar::getTable(),
+            'WHERE'  => getEntitiesRestrictCriteria('', '', $entities_id, true)
+        ]);
+        foreach ($ite_calendar as $calendar_data) {
+            $calendar = new Calendar();
+            $calendar->getFromDB($calendar_data['id']);
+            if ($calendar->isAWorkingHour($creation_date)) {
+                $calendars[] = $calendar_data['id'];
+            }
+        }
+        if (count($calendars)) {
+            $input['_date_creation_calendars_id'] = $calendars;
+        }
+
+        $user = new User();
+        if (isset($input["_users_id_requester"])) {
+            if (
+                !is_array($input["_users_id_requester"])
+                && $user->getFromDB($input["_users_id_requester"])
+            ) {
+                $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+                $input['users_default_groups'] = $user->fields['groups_id'];
+            } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
+                if ($user->getFromDB($user_id)) {
+                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+                    $input['users_default_groups'] = $user->fields['groups_id'];
+                }
+            }
+        }
+
+        // Clean new lines before passing to rules
+        if (isset($input["content"])) {
+            $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
+            $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+        }
     }
 }
