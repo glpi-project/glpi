@@ -688,16 +688,17 @@ JAVASCRIPT;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
 
-                    $sub_items = $sub_item::getItemsAssociatedTo($item->getType(), $item->getId());
-                    foreach ($sub_items as $sitem) {
-                        $lockedfield = new Lockedfield();
-                        if (!$item->isNewItem() && $lockedfield->isHandled($sitem)) {
-                            $locks = $lockedfield->getLocks($sitem->getType(), $sitem->fields['id']);
-                            if (count($locks)) {
-                                $js_expr = '[name=' . implode('], [name=', $locks) . ']';
-                                $lockedtitle = __s('Field will not be updated from inventory');
+                    if (method_exists($obj, 'getItemsAssociatedTo')) {
+                        $sub_items = $sub_item::getItemsAssociatedTo($item->getType(), $item->getId());
+                        foreach ($sub_items as $sitem) {
+                            $lockedfield = new Lockedfield();
+                            if (!$item->isNewItem() && $lockedfield->isHandled($sitem)) {
+                                $locks = $lockedfield->getLocks($sitem->getType(), $sitem->fields['id']);
+                                if (count($locks)) {
+                                    $js_expr = '[name=' . implode('], [name=', $locks) . ']';
+                                    $lockedtitle = __s('Field will not be updated from inventory');
 
-                                $locked_js = <<<JAVASCRIPT
+                                    $locked_js = <<<JAVASCRIPT
                                 $(function() {
                                     $("{$js_expr}").closest("div,td").prev()
                                     .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
@@ -706,7 +707,8 @@ JAVASCRIPT;
                                     ;
                                 });
 JAVASCRIPT;
-                                echo Html::scriptBlock($locked_js);
+                                    echo Html::scriptBlock($locked_js);
+                                }
                             }
                         }
                     }
