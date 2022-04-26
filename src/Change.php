@@ -634,8 +634,6 @@ class Change extends CommonITILObject
                 '_disablenotif' => true
             ]);
         }
-
-        $this->handleItemsIdInput();
     }
 
 
