@@ -29,7 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getExtIcon, getSize, isImage, stopEvent, Uint8Array */
+/* global getExtIcon, getSize, isImage, stopEvent */
 
 var insertIntoEditor = []; // contains flags that indicate if uploaded file (image) should be added to editor contents
 

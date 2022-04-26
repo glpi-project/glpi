@@ -15,7 +15,8 @@
     ],
     "env": {
         "browser": true,
-        "jquery": true
+        "jquery": true,
+        "es2021": true
     },
     "extends": "eslint:recommended",
     "globals": {
@@ -27,7 +28,7 @@
         "_nx": true
     },
     "parserOptions": {
-        "ecmaVersion": 6
+        "ecmaVersion": 12
     },
     "rules": {
         "eol-last": [
