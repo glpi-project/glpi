@@ -169,7 +169,6 @@ class Change extends CommonITILObject
             $rules = new RuleChangeCollection($input['entities_id']);
 
             // Set unset variables with are needed
-            $tmprequester = 0;
             $user = new User();
             if (isset($input["_users_id_requester"])) {
                 if (
@@ -178,7 +177,6 @@ class Change extends CommonITILObject
                 ) {
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                     $input['users_default_groups'] = $user->fields['groups_id'];
-                    $tmprequester = $input["_users_id_requester"];
                 } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
                     if ($user->getFromDB($user_id)) {
                         $input['_locations_id_of_requester'] = $user->fields['locations_id'];
