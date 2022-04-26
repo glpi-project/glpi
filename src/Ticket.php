@@ -1769,31 +1769,6 @@ class Ticket extends CommonITILObject
 
             $rules = new RuleTicketCollection($input['entities_id']);
 
-           // Set unset variables with are needed
-            $tmprequester = 0;
-            $user = new User();
-            if (isset($input["_users_id_requester"])) {
-                if (
-                    !is_array($input["_users_id_requester"])
-                    && $user->getFromDB($input["_users_id_requester"])
-                ) {
-                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-                    $input['users_default_groups'] = $user->fields['groups_id'];
-                    $tmprequester = $input["_users_id_requester"];
-                } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
-                    if ($user->getFromDB($user_id)) {
-                        $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-                        $input['users_default_groups'] = $user->fields['groups_id'];
-                    }
-                }
-            }
-
-           // Clean new lines before passing to rules
-            if (isset($input["content"])) {
-                $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-                $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
-            }
-
             $input = $rules->processAllRules(
                 $input,
                 $input,
@@ -1809,7 +1784,7 @@ class Ticket extends CommonITILObject
         if (
             isset($input['_users_id_requester'])
             && !is_array($input['_users_id_requester'])
-            && ($input['_users_id_requester'] != $tmprequester)
+            && ($input['_users_id_requester'] != ($input['__users_id_requester'] ?? 0))
         ) {
            // if requester set by rule, clear address from mailcollector
             unset($input['_users_id_requester_notif']);

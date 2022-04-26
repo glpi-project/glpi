@@ -9418,6 +9418,29 @@ abstract class CommonITILObject extends CommonDBTM
         if (count($calendars)) {
             $input['_date_creation_calendars_id'] = $calendars;
         }
+
+        $user = new User();
+        if (isset($input["_users_id_requester"])) {
+            if (
+                !is_array($input["_users_id_requester"])
+                && $user->getFromDB($input["_users_id_requester"])
+            ) {
+                $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+                $input['users_default_groups'] = $user->fields['groups_id'];
+                $input['__users_id_requester'] = $input["_users_id_requester"];
+            } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
+                if ($user->getFromDB($user_id)) {
+                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+                    $input['users_default_groups'] = $user->fields['groups_id'];
+                }
+            }
+        }
+
+        // Clean new lines before passing to rules
+        if (isset($input["content"])) {
+            $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
+            $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+        }
     }
 
     public static function cronInfo($name)

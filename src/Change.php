@@ -233,14 +233,10 @@ class Change extends CommonITILObject
             // Process Business Rules
             $this->fillInputForBusinessRules($input);
 
-            if (isset($input['entities_id'])) {
-                $entid = $input['entities_id'];
-            } else {
-                $entid = $this->fields['entities_id'];
-            }
+            $entid = $input['entities_id'] ?? $this->fields['entities_id'];
 
             // Add actors on standard input
-            $rules = new RuleChangeCollection($entid);
+            $rules = new RuleChangeCollection($input['entities_id'] ?? $this->fields['entities_id']);
             $rule = $rules->getRuleClass();
             $changes = [];
             $post_added = [];
