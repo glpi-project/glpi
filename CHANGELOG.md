@@ -32,8 +32,6 @@ The present file will list all changes made to the project; according to the
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
-- `RuleCollection::getRuleClass()` and `RuleCollection::getRuleClassName()` methods were made static.
-- `Ticket::fillInputForBusinessRules()` method was moved to parent `CommonITILObject` class and made protected instead of private.
 
 #### Deprecated
 - Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.

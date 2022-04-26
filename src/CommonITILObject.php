@@ -9353,7 +9353,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @return void
      */
-    protected function fillInputForBusinessRules(array &$input)
+    final protected function fillInputForBusinessRules(array &$input)
     {
         global $DB;
 

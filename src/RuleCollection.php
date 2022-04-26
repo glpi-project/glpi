@@ -303,24 +303,24 @@ class RuleCollection extends CommonDBTM
     }
 
 
-    public static function getRuleClassName()
+    public function getRuleClassName()
     {
 
-        if (preg_match('/(.*)Collection/', static::class, $rule_class)) {
+        if (preg_match('/(.*)Collection/', get_class($this), $rule_class)) {
             return $rule_class[1];
         }
-        return '';
+        return "";
     }
 
 
     /**
      * Get a instance of the class to manipulate rule of this collection
      **/
-    public static function getRuleClass()
+    public function getRuleClass()
     {
 
-        $name = static::getRuleClassName();
-        if ($name !==  '') {
+        $name = $this->getRuleClassName();
+        if ($name !=  '') {
             return new $name();
         }
         return null;

@@ -243,7 +243,7 @@ class Change extends CommonITILObject
 
             // Add actors on standard input
             $rules = new RuleChangeCollection($entid);
-            $rule = $rules::getRuleClass();
+            $rule = $rules->getRuleClass();
             $changes = [];
             $post_added = [];
             $tocleanafterrules = [];
