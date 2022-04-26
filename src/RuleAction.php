@@ -605,7 +605,12 @@ class RuleAction extends CommonDBChild
 
                         case "dropdown_status":
                             $param['name']  = 'value';
-                            Ticket::dropdownStatus($param);
+                            if (is_a($_POST['sub_type'], RuleCommonITILObject::class, true)) {
+                                $itil = $_POST['sub_type']::getItemtype();
+                                return $itil::dropdownStatus($param);
+                            } else {
+                                return Ticket::dropdownStatus($param);
+                            }
                             $display = true;
                             break;
 

@@ -33,26 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleTicketCollection extends RuleCommonITILObjectCollection
-{
-   // From RuleCollection
-    public static $rightname    = 'rule_ticket';
-    public $menu_option         = 'ticket';
+include('../inc/includes.php');
 
-    public function getTitle()
-    {
-        return __('Business rules for tickets');
-    }
+$rulecollection = new RuleChangeCollection($_SESSION['glpiactive_entity']);
 
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
-    public function prepareInputDataForProcess($input, $params)
-    {
-        // Pass x-priority header if exists
-        if (isset($input['_head']['x-priority'])) {
-            $input['_x-priority'] = $input['_head']['x-priority'];
-        }
-        return parent::prepareInputDataForProcess($input, $params);
-    }
-}
+include(GLPI_ROOT . "/front/rule.common.php");

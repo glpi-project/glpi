@@ -164,6 +164,24 @@ class Change extends CommonITILObject
             return false;
         }
 
+        if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
+            // Process Business Rules
+            $this->fillInputForBusinessRules($input);
+
+            $rules = new RuleChangeCollection($input['entities_id']);
+
+            $input = $rules->processAllRules(
+                $input,
+                $input,
+                ['recursive' => true],
+                ['condition' => RuleCommonITILObject::ONADD]
+            );
+            $input = Toolbox::stripslashes_deep($input);
+
+            // Recompute default values based on values computed by rules
+            $input = $this->computeDefaultValuesForAdd($input);
+        }
+
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
            // Manage auto assign
             $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
@@ -186,6 +204,171 @@ class Change extends CommonITILObject
         return $input;
     }
 
+    public function prepareInputForUpdate($input)
+    {
+        global $DB;
+
+        if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
+            // Process Business Rules
+            $this->fillInputForBusinessRules($input);
+
+            $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+
+            // Add actors on standard input
+            $rules = new RuleChangeCollection($entid);
+            $rule = $rules->getRuleClass();
+            $changes = [];
+            $post_added = [];
+            $tocleanafterrules = [];
+            $usertypes = [
+                CommonITILActor::ASSIGN => 'assign',
+                CommonITILActor::REQUESTER => 'requester',
+                CommonITILActor::OBSERVER => 'observer'
+            ];
+            foreach ($usertypes as $k => $t) {
+                //handle new input
+                if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
+                    $field = $input['_itil_' . $t]['_type'] . 's_id';
+                    if (
+                        isset($input['_itil_' . $t][$field])
+                        && !isset($input[$field . '_' . $t])
+                    ) {
+                        $input['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
+                        $tocleanafterrules['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
+                    }
+                }
+
+                //handle existing actors: load all existing actors from change
+                //to make sure business rules will receive all information, and not just
+                //what have been entered in the html form.
+                //
+                //ref also this actor into $post_added to avoid the filling of $changes
+                //and triggering businness rules when not needed
+                $users = $this->getUsers($k);
+                if (count($users)) {
+                    $field = 'users_id';
+                    foreach ($users as $user) {
+                        if (!isset($input['_' . $field . '_' . $t]) || !in_array($user[$field], $input['_' . $field . '_' . $t])) {
+                            if (!isset($input['_' . $field . '_' . $t])) {
+                                $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
+                            }
+                            $input['_' . $field . '_' . $t][] = $user[$field];
+                            $tocleanafterrules['_' . $field . '_' . $t][] = $user[$field];
+                        }
+                    }
+                }
+
+                $groups = $this->getGroups($k);
+                if (count($groups)) {
+                    $field = 'groups_id';
+                    foreach ($groups as $group) {
+                        if (!isset($input['_' . $field . '_' . $t]) || !in_array($group[$field], $input['_' . $field . '_' . $t])) {
+                            if (!isset($input['_' . $field . '_' . $t])) {
+                                $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
+                            }
+                            $input['_' . $field . '_' . $t][] = $group[$field];
+                            $tocleanafterrules['_' . $field . '_' . $t][] = $group[$field];
+                        }
+                    }
+                }
+
+                $suppliers = $this->getSuppliers($k);
+                if (count($suppliers)) {
+                    $field = 'suppliers_id';
+                    foreach ($suppliers as $supplier) {
+                        if (!isset($input['_' . $field . '_' . $t]) || !in_array($supplier[$field], $input['_' . $field . '_' . $t])) {
+                            if (!isset($input['_' . $field . '_' . $t])) {
+                                $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
+                            }
+                            $input['_' . $field . '_' . $t][] = $supplier[$field];
+                            $tocleanafterrules['_' . $field . '_' . $t][] = $supplier[$field];
+                        }
+                    }
+                }
+            }
+
+            foreach ($rule->getCriterias() as $key => $val) {
+                if (
+                    array_key_exists($key, $input)
+                    && !array_key_exists($key, $post_added)
+                ) {
+                    if (
+                        !isset($this->fields[$key])
+                        || ($DB->escape($this->fields[$key]) != $input[$key])
+                    ) {
+                        $changes[] = $key;
+                    }
+                }
+            }
+
+            // Only process rules on changes
+            if (count($changes)) {
+                $user = new User();
+                $user_id = null;
+                //try to find user from changes if exist (defined as _itil_requester)
+                if (isset($input["_itil_requester"]["users_id"])) {
+                    $user_id = $input["_itil_requester"]["users_id"];
+                } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
+                    $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
+                }
+
+                if ($user_id !== null && $user->getFromDB($user_id)) {
+                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+                    $input['users_default_groups'] = $user->fields['groups_id'];
+                    $changes[] = '_locations_id_of_requester';
+                    $changes[] = '_groups_id_of_requester';
+                }
+
+                // Special case to make sure rule depending on category completename are also executed
+                if (in_array('itilcategories_id', $changes)) {
+                    $changes[] = 'itilcategories_id_cn';
+                }
+
+                $input = $rules->processAllRules(
+                    $input,
+                    $input,
+                    ['recursive' => true,
+                        'entities_id' => $entid
+                    ],
+                    ['condition' => RuleCommonITILObject::ONUPDATE,
+                        'only_criteria' => $changes
+                    ]
+                );
+                $input = Toolbox::stripslashes_deep($input);
+            }
+
+            // Clean actors fields added for rules
+            foreach ($tocleanafterrules as $key => $val) {
+                if ($input[$key] == $val) {
+                    unset($input[$key]);
+                }
+            }
+
+            // Manage fields from auto update or rules : map rule actions to standard additional ones
+            $usertypes = ['assign', 'requester', 'observer'];
+            $actortypes = ['user', 'group', 'supplier'];
+            foreach ($usertypes as $t) {
+                foreach ($actortypes as $a) {
+                    if (isset($input['_' . $a . 's_id_' . $t])) {
+                        switch ($a) {
+                            case 'user':
+                                $additionalfield = '_additional_' . $t . 's';
+                                $input[$additionalfield][] = ['users_id' => $input['_' . $a . 's_id_' . $t]];
+                                break;
+
+                            default:
+                                $additionalfield = '_additional_' . $a . 's_' . $t . 's';
+                                $input[$additionalfield][] = $input['_' . $a . 's_id_' . $t];
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        $input = parent::prepareInputForUpdate($input);
+        return $input;
+    }
 
     public function pre_deleteItem()
     {
@@ -426,8 +609,6 @@ class Change extends CommonITILObject
                 '_disablenotif' => true
             ]);
         }
-
-        $this->handleItemsIdInput();
     }
 
 
