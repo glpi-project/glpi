@@ -642,7 +642,7 @@ class CommonGLPI implements CommonGLPIInterface
             default:
                 $data     = explode('$', $tab);
                 $itemtype = $data[0];
-               // Default set
+                // Default set
                 $tabnum   = 1;
                 if (isset($data[1])) {
                     $tabnum = $data[1];
@@ -658,12 +658,12 @@ class CommonGLPI implements CommonGLPIInterface
                     if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
                         $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
                         if (count($locks)) {
-                             $js_expr = '[name=' . implode('], [name=', $locks) . ']';
-                             $lockedtitle = __s('Field will not be updated from inventory');
+                            $js_expr = '[name=' . implode('], [name=', $locks) . ']';
+                            $lockedtitle = __s('Field will not be updated from inventory');
 
-                             $locked_js = <<<JAVASCRIPT
+                            $locked_js = <<<JAVASCRIPT
                         $(function() {
-                            $("{$js_expr}").closest("div").prev()
+                            $("{$js_expr}").closest("div,td").prev()
                             .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
                             .toggleClass("lockedfield", true)
                             .removeClass("lockfield") //to drop duplicated fusion icon
@@ -673,6 +673,7 @@ JAVASCRIPT;
                              echo Html::scriptBlock($locked_js);
                         }
                     }
+
                     Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                     return $ret;
                 }
@@ -683,6 +684,7 @@ JAVASCRIPT;
                 ) {
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
+                    $sub_item = new $itemtype();
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
 
@@ -696,16 +698,16 @@ JAVASCRIPT;
                                 $lockedtitle = __s('Field will not be updated from inventory');
 
                                 $locked_js = <<<JAVASCRIPT
-                            $(function() {
-                                $("{$js_expr}").closest("div,td").prev()
-                                .append("<i class=\"fas ti-lock\" title=\"{$lockedtitle}\"></i>")
-                                .toggleClass("lockedfield", true)
-                                .removeClass("lockfield") //to drop duplicated fusion icon
-                                ;
-                            });
-    JAVASCRIPT;
+                                $(function() {
+                                    $("{$js_expr}").closest("div,td").prev()
+                                    .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
+                                    .toggleClass("lockedfield", true)
+                                    .removeClass("lockfield") //to drop duplicated fusion icon
+                                    ;
+                                });
+JAVASCRIPT;
+                                echo Html::scriptBlock($locked_js);
                             }
-                            echo Html::scriptBlock($locked_js);
                         }
                     }
 
@@ -892,12 +894,12 @@ JAVASCRIPT;
             if ($this instanceof CommonITILObject && $this->isNewItem()) {
                 $this->input = $cleaned_options;
                 $this->saveInput();
-               // $extraparamhtml can be tool long in case of ticket with content
+               // $extraparamhtml can be too long in case of ticket with content
                // (passed in GET in ajax request)
                 unset($cleaned_options['content']);
             }
 
-           // prevent double sanitize, because the includes.php sanitize all data
+            // prevent double sanitize, because the includes.php sanitize all data
             $cleaned_options = Sanitizer::unsanitize($cleaned_options);
 
             $extraparamhtml = "&amp;" . Toolbox::append_params($cleaned_options, '&amp;');
@@ -922,7 +924,7 @@ JAVASCRIPT;
                 ];
             }
 
-           // Not all tab for templates and if only 1 tab
+            // Not all tab for templates and if only 1 tab
             if (
                 $display_all
                 && empty($withtemplate)
