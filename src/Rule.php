@@ -2364,7 +2364,7 @@ class Rule extends CommonDBTM
                             $itil = static::getItemtype();
                             return $itil::getStatus($pattern);
                         } else {
-                            return CommonITILObject::getStatus($pattern);
+                            return Ticket::getStatus($pattern);
                         }
 
                     case "dropdown_priority":
