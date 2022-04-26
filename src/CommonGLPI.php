@@ -684,12 +684,11 @@ JAVASCRIPT;
                 ) {
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
-                    $sub_item = new $itemtype();
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
 
                     if (method_exists($obj, 'getItemsAssociatedTo')) {
-                        $sub_items = $sub_item::getItemsAssociatedTo($item->getType(), $item->getId());
+                        $sub_items = $obj::getItemsAssociatedTo($item->getType(), $item->getId());
                         foreach ($sub_items as $sitem) {
                             $lockedfield = new Lockedfield();
                             if (!$item->isNewItem() && $lockedfield->isHandled($sitem)) {
