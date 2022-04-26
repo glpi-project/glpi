@@ -270,7 +270,9 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
     'Computer', 'Monitor', "Glpi\\Socket",
     'NetworkEquipment', 'Peripheral', 'Phone',
     'Printer', 'Software', 'SoftwareLicense',
-    'Ticket', 'User', 'Certificate', 'Item_DeviceSimcard'
+    'Ticket', 'User', 'Certificate', 'Item_DeviceSimcard',
+    'Line', 'Appliance', 'PassiveDCEquipment', 'DataCenter',
+    'DCRoom', 'Rack', 'Enclosure', 'PDU'
 ];
 
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',

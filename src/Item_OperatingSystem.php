@@ -302,7 +302,7 @@ class Item_OperatingSystem extends CommonDBRelation
         echo "<div class='center'>";
 
         $this->initForm($ID, $this->fields);
-        $this->showFormHeader(['formtitle' => false]);
+        $this->showFormHeader(['no_header' => true]);
 
         $rand = mt_rand();
 

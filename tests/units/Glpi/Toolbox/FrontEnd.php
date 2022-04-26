@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
  * Copyright (C) 2015-2022 Teclib' and contributors.
@@ -29,40 +31,18 @@
  * ---------------------------------------------------------------------
  */
 
-body.mce-content-body {
-    margin: 15px 10px;
+namespace tests\units\Glpi\Toolbox;
 
-    @if not $is-dark {
-        background: transparent;
+/**
+ * Test class for src/Glpi/Toolbox/dataexport.class.php
+ */
+class FrontEnd extends \GLPITestCase
+{
+    public function testGetVersionCacheKey()
+    {
+        $instance = $this->newTestedInstance();
+
+        $this->string($instance->getVersionCacheKey(GLPI_VERSION))->isNotEqualTo(GLPI_VERSION);
+        $this->string($instance->getVersionCacheKey(GLPI_VERSION))->isNotEqualTo(sha1(GLPI_VERSION)); // too predicatable
     }
-
-    [data-user-mention="true"] {
-        cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
-    }
-}
-
-#page .tox .tox-statusbar {
-    border-top: transparent;
-}
-
-.rich_text_container {
-    thead,
-    tbody,
-    tfoot,
-    tr,
-    td,
-    th {
-        border-width: inherit; // Prevent removal of borders from reboot CSS
-    }
-
-    img {
-        max-width: 100%;
-    }
-}
-
-.user-mention,
-[data-user-mention="true"] {
-    background: rgba(0, 0, 0, 20%);
-    border-radius: 3px;
-    padding: 5px;
 }

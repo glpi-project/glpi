@@ -56,7 +56,12 @@ class Config extends CommonDBTM
 
     public static $rightname              = 'config';
 
-    public static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd', 'glpinetwork_registration_key'];
+    public static $undisclosedFields      = [
+        'proxy_passwd',
+        'smtp_passwd',
+        'glpinetwork_registration_key',
+        'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
+    ];
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     public static function getTypeName($nb = 0)
@@ -2349,6 +2354,10 @@ HTML;
             [ 'name'    => 'html2text/html2text',
                 'check'   => 'Html2Text\\Html2Text'
             ],
+            [
+                'name'    => 'symfony/css-selector',
+                'check'   => 'Symfony\\Component\\CssSelector\\CssSelectorConverter'
+            ],
             [ 'name'    => 'symfony/dom-crawler',
                 'check'   => 'Symfony\\Component\\DomCrawler\\Crawler'
             ],
@@ -3770,6 +3779,11 @@ HTML;
         if ($safer) {
             $excludedKeys = array_flip(self::$saferUndisclosedFields);
             $safe_config = array_diff_key($safe_config, $excludedKeys);
+        }
+
+        // override with session values
+        foreach ($safe_config as $key => &$value) {
+            $value = $_SESSION['glpi' . $key] ?? $value;
         }
 
         return $safe_config;

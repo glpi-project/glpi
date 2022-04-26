@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
  * Copyright (C) 2015-2022 Teclib' and contributors.
@@ -29,40 +31,21 @@
  * ---------------------------------------------------------------------
  */
 
-body.mce-content-body {
-    margin: 15px 10px;
+namespace Glpi\Toolbox;
 
-    @if not $is-dark {
-        background: transparent;
+class FrontEnd
+{
+    /**
+     * Provide a cache key that can be use in URLs for given version, without actually exposing
+     * the version to everyone.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public static function getVersionCacheKey(string $version): string
+    {
+        // using both gethostname() and GLPI_ROOT will provide a hardly predictable but stable token
+        return sha1($version . gethostname() . GLPI_ROOT);
     }
-
-    [data-user-mention="true"] {
-        cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
-    }
-}
-
-#page .tox .tox-statusbar {
-    border-top: transparent;
-}
-
-.rich_text_container {
-    thead,
-    tbody,
-    tfoot,
-    tr,
-    td,
-    th {
-        border-width: inherit; // Prevent removal of borders from reboot CSS
-    }
-
-    img {
-        max-width: 100%;
-    }
-}
-
-.user-mention,
-[data-user-mention="true"] {
-    background: rgba(0, 0, 0, 20%);
-    border-radius: 3px;
-    padding: 5px;
 }

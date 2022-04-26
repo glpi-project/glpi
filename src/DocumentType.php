@@ -172,17 +172,20 @@ class DocumentType extends CommonDropdown
     {
         global $CFG_GLPI;
 
-        $p['display'] = true;
+        $p = [
+            'display' => true,
+            'rand'    => mt_rand(),
+        ];
 
        //merge default options with options parameter
         $p = array_merge($p, $options);
 
         $display = "&nbsp;";
-        $display .= "<a href='#' data-bs-toggle='modal' data-bs-target='#documenttypelist' class='fa fa-info pointer' title='" . __s('Help') . "' >";
+        $display .= "<a href='#' data-bs-toggle='modal' data-bs-target='#documenttypelist_{$p['rand']}' class='fa fa-info pointer' title='" . __s('Help') . "' >";
         $display .= "<span class='sr-only'>" . __s('Help') . "></span>";
         $display .= "</a>";
         $display .= Ajax::createIframeModalWindow(
-            'documenttypelist',
+            "documenttypelist_{$p['rand']}",
             $CFG_GLPI["root_doc"] . "/front/documenttype.list.php",
             ['title'   => static::getTypeName(Session::getPluralNumber()),
                 'display' => false

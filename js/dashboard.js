@@ -209,7 +209,11 @@ var Dashboard = {
             var active = $(this).hasClass('active');
 
             if (active) {
-                const seconds = parseInt(CFG_GLPI.refresh_views || 30) * 60;
+                var minutes = parseInt(CFG_GLPI.refresh_views);
+                if (minutes == 0 || Number.isNaN(minutes)) {
+                    minutes = 30;
+                }
+                var seconds = minutes * 60;
                 Dashboard.interval = setInterval(function() {
                     Dashboard.refreshDashboard();
                 }, seconds * 1000);
@@ -800,10 +804,11 @@ var Dashboard = {
             .find('.multiple-numbers, .summary-numbers, .big-number')
             .find('.formatted-number')
             .each(function () {
-                var count     = $(this);
-                var precision = count.data('precision');
-                var number    = count.children('.number');
-                var suffix    = count.children('.suffix').text();
+                var count        = $(this);
+                var precision    = count.data('precision');
+                var number       = count.children('.number');
+                var suffix       = count.children('.suffix').text();
+                var targetNumber = number.text();
 
                 // Some custom formats may contain text in the number field, no animation in this case
                 if (isNaN(number.text())) {
@@ -815,6 +820,9 @@ var Dashboard = {
                     easing: 'swing',
                     step: function () {
                         number.text(this.Counter.toFixed(precision))+suffix;
+                    },
+                    complete: function () {
+                        number.text(targetNumber)+suffix;
                     }
                 });
             });

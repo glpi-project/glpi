@@ -42,7 +42,7 @@ if (!$CFG_GLPI['allow_search_global']) {
 if (isset($_GET["globalsearch"])) {
     $searchtext = trim($_GET["globalsearch"]);
 
-    echo "<div class='search_page flex-row flex-wrap'>";
+    echo "<div class='search_page search_page_global flex-row flex-wrap'>";
     foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
         if (
             ($item = getItemForItemtype($itemtype))
@@ -59,7 +59,7 @@ if (isset($_GET["globalsearch"])) {
             $params["criteria"][$count]["searchtype"]  = 'contains';
             $params["criteria"][$count]["value"]       = $searchtext;
 
-            echo "<div class='my-4 search-container w-100 disable-overflow-y'>";
+            echo "<div class='search-container w-100 disable-overflow-y'>";
             Search::showList($itemtype, $params);
             echo "</div>";
         }

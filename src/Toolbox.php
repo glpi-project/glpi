@@ -312,7 +312,7 @@ class Toolbox
     public static function getHtmLawedSafeConfig(): array
     {
         $config = [
-            'elements'         => '* -applet -canvas -embed -form -object -script',
+            'elements'         => '* -applet -canvas -embed -form -object -script -link',
             'deny_attribute'   => 'on*, srcdoc',
             'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
             'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)

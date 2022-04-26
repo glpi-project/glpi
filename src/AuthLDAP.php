@@ -4300,6 +4300,9 @@ class AuthLDAP extends CommonDBTM
      */
     public function isSyncFieldUsed()
     {
+        if ($this->getID() <= 0) {
+            return false;
+        }
         $count = countElementsInTable(
             'glpi_users',
             [

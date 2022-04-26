@@ -658,6 +658,7 @@ class Planning extends CommonGLPI
                 'license_key'  => $scheduler_key,
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
+                'can_create'   => PlanningExternalEvent::canCreate(),
             ];
         } else {
            // short view (on Central page)

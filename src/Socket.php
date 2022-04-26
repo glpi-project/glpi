@@ -698,8 +698,9 @@ class Socket extends CommonDBChild
         ]);
         $numrows = count($iterator);
 
+        $massive_action_form_id = 'mass' . str_replace('\\', '', static::class) . $rand;
         if ($canedit) {
-            Html::openMassiveActionsForm('mass' . get_called_class() . $rand);
+            Html::openMassiveActionsForm($massive_action_form_id);
             $massiveactionparams
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $numrows),
@@ -720,8 +721,8 @@ class Socket extends CommonDBChild
 
         if ($canedit) {
             $header_begin  .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox('mass' . get_called_class() . $rand);
-            $header_bottom .= Html::getCheckAllAsCheckbox('mass' . get_called_class() . $rand);
+            $header_top    .= Html::getCheckAllAsCheckbox($massive_action_form_id);
+            $header_bottom .= Html::getCheckAllAsCheckbox($massive_action_form_id);
             $header_end    .= "</th>";
         }
         $header_end .= "<th>" . __('Name') . "</th>";
@@ -910,14 +911,15 @@ class Socket extends CommonDBChild
                 $number
             );
 
+            $rand = mt_rand();
+            $massive_action_form_id = 'mass' . str_replace('\\', '', __CLASS__) . $rand;
             if ($canedit) {
-                $rand = mt_rand();
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                Html::openMassiveActionsForm($massive_action_form_id);
                 $massiveactionparams
                 = ['num_displayed'
                            => min($_SESSION['glpilist_limit'], $number),
                     'container'
-                           => 'mass' . __CLASS__ . $rand,
+                           => $massive_action_form_id,
                     'specific_actions'
                            => ['purge' => _x('button', 'Delete permanently')]
                 ];
@@ -928,7 +930,7 @@ class Socket extends CommonDBChild
 
             if ($canedit) {
                 echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                echo Html::getCheckAllAsCheckbox($massive_action_form_id);
                 echo "</th>";
             }
 

@@ -114,17 +114,8 @@ abstract class LevelAgreement extends CommonDBChild
     public function setTicketCalendar($calendars_id)
     {
 
-        if ($this->fields['calendars_id'] == -1) {
+        if ($this->fields['use_ticket_calendar']) {
             $this->fields['calendars_id'] = $calendars_id;
-        }
-    }
-
-    public function post_getFromDB()
-    {
-       // get calendar from slm
-        $slm = new SLM();
-        if ($slm->getFromDB($this->fields['slms_id'])) {
-            $this->fields['calendars_id'] = $slm->fields['calendars_id'];
         }
     }
 
@@ -438,10 +429,10 @@ abstract class LevelAgreement extends CommonDBChild
                     ]
                 );
                 echo "</td>";
-                if (!$slm->fields['calendars_id']) {
-                     $link =  __('24/7');
-                } else if ($slm->fields['calendars_id'] == -1) {
+                if ($slm->fields['use_ticket_calendar']) {
                     $link = __('Calendar of the ticket');
+                } else if (!$slm->fields['calendars_id']) {
+                     $link =  __('24/7');
                 } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
                     $link = $calendar->getLink();
                 }
@@ -964,6 +955,14 @@ abstract class LevelAgreement extends CommonDBChild
         ) {
             $input['end_of_working_day'] = 0;
         }
+
+        // Copy calendar settings from SLM
+        $slm = new SLM();
+        if (array_key_exists('slms_id', $input) && $slm->getFromDB($input['slms_id'])) {
+            $input['use_ticket_calendar'] = $slm->fields['use_ticket_calendar'];
+            $input['calendars_id'] = $slm->fields['calendars_id'];
+        }
+
         return $input;
     }
 
@@ -977,6 +976,18 @@ abstract class LevelAgreement extends CommonDBChild
         ) {
             $input['end_of_working_day'] = 0;
         }
+
+        // Copy calendar settings from SLM
+        $slm = new SLM();
+        if (
+            array_key_exists('slms_id', $input)
+            && $input['slms_id'] != $this->fields['slms_id']
+            && $slm->getFromDB($input['slms_id'])
+        ) {
+            $input['use_ticket_calendar'] = $slm->fields['use_ticket_calendar'];
+            $input['calendars_id'] = $slm->fields['calendars_id'];
+        }
+
         return $input;
     }
 

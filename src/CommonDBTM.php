@@ -2685,6 +2685,7 @@ class CommonDBTM extends CommonGLPI
             'formoptions'    => '',
             'canedit'        => true,
             'formtitle'      => null,
+            'no_header'      => false,
             'noid'           => false,
             'header_toolbar' => [],
         ];
@@ -2710,6 +2711,7 @@ class CommonDBTM extends CommonGLPI
         TemplateRenderer::getInstance()->display('components/form/header.html.twig', [
             'item'           => $this,
             'params'         => $params,
+            'no_header'      => $params['no_header'],
             'header_toolbar' => $header_toolbar,
         ]);
 
@@ -6368,5 +6370,27 @@ class CommonDBTM extends CommonGLPI
             $menus[2] ?? '',
             false
         );
+    }
+
+    /**
+     * Delete alerts of given types related to current item.
+     *
+     * @param array $types
+     *
+     * @return void
+     *
+     * @since 10.0.0
+     */
+    final public function cleanAlerts(array $types): void
+    {
+        if (in_array('date_expiration', $this->updates)) {
+            $input = [
+                'type'     => $types,
+                'itemtype' => $this->getType(),
+                'items_id' => $this->fields['id'],
+            ];
+            $alert = new Alert();
+            $alert->deleteByCriteria($input, 1);
+        }
     }
 }

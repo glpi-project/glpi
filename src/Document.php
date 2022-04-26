@@ -1267,6 +1267,7 @@ class Document extends CommonDBTM
         $new_path = self::getUploadFileValidLocationName($dir, $sha1sum);
 
         if (!$sha1sum || !$dir || !$new_path) {
+            @unlink($fullpath);
             return false;
         }
 
@@ -1319,6 +1320,7 @@ class Document extends CommonDBTM
                 Session::addMessageAfterRedirect(__('Document copy succeeded.'));
             } else {
                 Session::addMessageAfterRedirect(__('File move failed'), false, ERROR);
+                @unlink($fullpath);
                 return false;
             }
         }

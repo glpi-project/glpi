@@ -64,6 +64,13 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
      */
     const ERROR_MISSING_SECURITY_KEY_FILE = 2;
 
+    /**
+     * Error code returned when database is not a valid GLPI database.
+     *
+     * @var integer
+     */
+    const ERROR_INVALID_DATABASE = 3;
+
     protected $requires_db_up_to_date = false;
 
     protected function configure()
@@ -122,6 +129,15 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         $currents            = $update->getCurrents();
         $current_version     = $currents['version'];
         $current_db_version  = $currents['dbversion'];
+
+        if ($current_version === null) {
+            $msg = sprintf(
+                __('Current GLPI version not found for database named "%s". Update cannot be done.'),
+                $this->db->dbdefault
+            );
+            $output->writeln('<error>' . $msg . '</error>');
+            return self::ERROR_INVALID_DATABASE;
+        }
 
         global $migration; // Migration scripts are using global migrations
         $migration = new Migration(GLPI_VERSION);

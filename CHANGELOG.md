@@ -24,7 +24,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
-## [10.0.0] unreleased
+## [10.0.0] 2022-04-20
 
 ### Added
 - Added UUID to all other itemtypes that are related to Operating Systems (Phones, Printers, etc)
@@ -98,6 +98,7 @@ The present file will list all changes made to the project; according to the
 - `MailCollector::listEncodings()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
+- `SLM::setTicketCalendar()`
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::endsWith()`
 - `Toolbox::filesizeDirectory()`

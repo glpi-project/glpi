@@ -35,13 +35,11 @@ namespace Glpi\Console\Marketplace;
 
 use GLPINetwork;
 use Glpi\Console\AbstractCommand;
-use Glpi\Marketplace\Api\Plugins;
 use Glpi\Marketplace\Controller;
 use Glpi\RichText\RichText;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SearchCommand extends AbstractCommand

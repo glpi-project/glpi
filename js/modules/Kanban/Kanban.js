@@ -226,14 +226,14 @@ class GLPIKanbanRights {
         /**
        * Name of the DB field used to specify columns and any extra fields needed to create the column (Ex: color).
        * For example, Projects organize items by the state of the sub-Projects and sub-Tasks.
-       * Therefore, the column_field id is 'projectstates_id' with any additional fields needed being specified in extra_fields..
+       * Therefore, the column_field id is 'projectstates_id' with any additional fields needed being specified in extra_fields.
        * @since 9.5.0
        * @type {{id: string, extra_fields: Object}}
        */
         this.column_field = {id: '', extra_fields: {}};
 
         /**
-       * Specifies if the Kanban's toolbar (switcher, filters, etc) should be shown.
+       * Specifies if the Kanban's toolbar (switcher, filters, etc.) should be shown.
        * This is true by default, but may be set to false if used on a fullscreen display for example.
        * @since 9.5.0
        * @type {boolean}
@@ -309,18 +309,18 @@ class GLPIKanbanRights {
 
         /**
        * The user's state object.
-       * This contains an up to date list of columns that should be shown, the order they are in, and if they are folded.
+       * This contains an up-to-date list of columns that should be shown, the order they are in, and if they are folded.
        * @since 9.5.0
        * @type {{
-       *    is_dirty: {boolean},
-       *    state: {(order_index:{column: {number}, folded:{boolean}, cards:{array}}
+       *    is_dirty: boolean,
+       *    state: {}|{order_index: {column: number, folded: boolean, cards: {Array}}}
        * }}
-       * The is_dirty flag indicates if the state was changed and needs saved.
+       * The is_dirty flag indicates if the state was changed and needs to be saved.
        */
         this.user_state = {is_dirty: false, state: {}};
 
         /**
-       * The last time the Kanban was refreshed. This is used by the server to determine if the state needs sent to the client again.
+       * The last time the Kanban was refreshed. This is used by the server to determine if the state needs to be sent to the client again.
        * The state will only be sent if there was a change since this time.
        * @type {?string}
        */
@@ -1409,7 +1409,7 @@ class GLPIKanbanRights {
 
         /**
        * Attempt to get and cache user badges in a single AJAX request to reduce time wasted when using multiple requests.
-       * Most time spent on the request is latency so it takes about the same amount of time for 1 or 50 users.
+       * Most time spent on the request is latency, so it takes about the same amount of time for 1 or 50 users.
        * If no image is returned from the server, a badge is generated based on the user's initials.
        * @since 9.5.0
        * @param {Object} options Object of options for this function. Supports:
@@ -2271,7 +2271,7 @@ class GLPIKanbanRights {
        * Toggle the collapsed state of the specified column.
        * After toggling the collapse state, the server is notified of the change.
        * @since 9.5.0
-       * @param {string|Element|JQuery} column_el The column element or object.
+       * @param {string|Element|jQuery} column_el The column element or object.
        */
         this.toggleCollapseColumn = function(column_el) {
             if (!(column_el instanceof jQuery)) {
@@ -2380,7 +2380,7 @@ class GLPIKanbanRights {
 
         /**
        * Update the user state object, but do not send it to the server.
-       * This should only be done if there is no state stored on the server, so one needs built.
+       * This should only be done if there is no state stored on the server, so one needs to be built.
        * Do NOT use this for changes to the state such as moving cards/columns!
        * @since 9.5.0
        */
@@ -2605,7 +2605,7 @@ class GLPIKanbanRights {
         /**
        * Saves the current state of the Kanban to the DB for the user.
        * This saves the visible columns and their collapsed state.
-       * This should only be done if there is no state stored on the server, so one needs built.
+       * This should only be done if there is no state stored on the server, so one needs to be built.
        * Do NOT use this for changes to the state such as moving cards/columns!
        * @since 9.5.0
        * @param {boolean} rebuild_state If true, the column state is recalculated before saving.

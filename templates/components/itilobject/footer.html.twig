@@ -147,7 +147,7 @@
    </div>
 </div>
 
-{% set openfollowup = (_get['_openfollowup'] ?? false) and item.isSolved(true) %}
+{% set openfollowup = (_get['_openfollowup'] ?? false) %}
 {% set timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
 <script type="text/javascript">

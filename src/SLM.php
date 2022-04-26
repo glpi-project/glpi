@@ -63,8 +63,9 @@ class SLM extends CommonDBTM
      **/
     public function setTicketCalendar($calendars_id)
     {
+        Toolbox::deprecated();
 
-        if ($this->fields['calendars_id'] == -1) {
+        if ($this->fields['use_ticket_calendar']) {
             $this->fields['calendars_id'] = $calendars_id;
         }
     }
@@ -80,6 +81,76 @@ class SLM extends CommonDBTM
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
+    }
+
+
+    public function prepareInputForAdd($input)
+    {
+        $input = $this->handleCalendarStrategy($input);
+
+        return parent::prepareInputForAdd($input);
+    }
+
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->handleCalendarStrategy($input);
+
+        return parent::prepareInputForAdd($input);
+    }
+
+    /**
+     * Handle negative input in `calendars_id`.
+     * This method is usefull to be able to propose a `-1` special value in Calendar dropdown.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    private function handleCalendarStrategy(array $input): array
+    {
+        if (array_key_exists('calendars_id', $input)) {
+            if ($input['calendars_id'] == -1) {
+                $input['calendars_id'] = 0;
+                $input['use_ticket_calendar'] = 1;
+            } else {
+                $input['use_ticket_calendar'] = 0;
+            }
+        }
+
+        return $input;
+    }
+
+    public function post_updateItem($history = 1)
+    {
+        global $DB;
+
+        if (in_array('use_ticket_calendar', $this->updates) || in_array('calendars_id', $this->updates)) {
+            // Propagate calendar settings to children
+            foreach ([OLA::class, SLA::class] as $child_class) {
+                $child_iterator = $DB->request(
+                    [
+                        'SELECT' => 'id',
+                        'FROM'   => $child_class::getTable(),
+                        'WHERE'  => [
+                            $this->getForeignKeyField() => $this->getID()
+                        ]
+                    ]
+                );
+                foreach ($child_iterator as $child_data) {
+                    $child = new $child_class();
+                    $child->update(
+                        [
+                            'id'                  => $child_data['id'],
+                            'use_ticket_calendar' => $this->fields['use_ticket_calendar'],
+                            'calendars_id'        => $this->fields['calendars_id'],
+                        ]
+                    );
+                }
+            }
+        }
+
+        parent::post_updateItem($history);
     }
 
     public function cleanDBonPurge()
@@ -122,7 +193,8 @@ class SLM extends CommonDBTM
         echo "<tr class='tab_bg_1'><td>" . _n('Calendar', 'Calendars', 1) . "</td>";
         echo "<td>";
 
-        Calendar::dropdown(['value'      => $this->fields["calendars_id"],
+        Calendar::dropdown([
+            'value'      => $this->fields['use_ticket_calendar'] ? -1 : $this->fields['calendars_id'],
             'emptylabel' => __('24/7'),
             'toadd'      => ['-1' => __('Calendar of the ticket')]
         ]);

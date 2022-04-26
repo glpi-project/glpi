@@ -394,4 +394,71 @@ class KnowbaseItem extends DbTestCase
         $this->string($answer)->contains('<h1 id="title-1c">');
         $this->string($answer)->contains('<a href="#title-1c">');
     }
+
+    public function testCreateWithCategories()
+    {
+        global $DB;
+
+        // Create 2 new KB categories
+        $kb_category = new \KnowbaseItemCategory();
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $kb_cat_id1 = $kb_category->add([
+            'name' => __FUNCTION__ . '_1',
+            'comment' => __FUNCTION__ . '_1',
+            'entities_id' => $root_entity,
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+        $this->integer($kb_cat_id1)->isGreaterThan(0);
+
+        $kb_cat_id2 = $kb_category->add([
+            'name' => __FUNCTION__ . '_2',
+            'comment' => __FUNCTION__ . '_2',
+            'entities_id' => $root_entity,
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+        $this->integer($kb_cat_id2)->isGreaterThan(0);
+
+        $kbitem = new \KnowbaseItem();
+        // Create a new KB item with the first category
+        $kbitems_id1 = $kbitem->add([
+            'name' => __FUNCTION__ . '_1',
+            'answer' => __FUNCTION__ . '_1',
+            'knowbaseitemcategories_id' => $kb_cat_id1,
+        ]);
+        $this->integer($kbitems_id1)->isGreaterThan(0);
+
+        // Expect the KB item to have the first category
+        $iterator = $DB->request([
+            'FROM' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+            'WHERE' => [
+                'knowbaseitems_id' => $kbitems_id1,
+            ],
+        ]);
+        $this->integer($iterator->count())->isEqualTo(1);
+        $this->integer($iterator->current()['knowbaseitemcategories_id'])->isEqualTo($kb_cat_id1);
+
+        // Create a new KB item with both categories
+        $kbitems_id2 = $kbitem->add([
+            'name' => __FUNCTION__ . '_2',
+            'answer' => __FUNCTION__ . '_2',
+            'knowbaseitemcategories_id' => [$kb_cat_id1, $kb_cat_id2],
+        ]);
+        $this->integer($kbitems_id2)->isGreaterThan(0);
+
+        // Expect the KB item to have both categories
+        $iterator = $DB->request([
+            'FROM' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+            'WHERE' => [
+                'knowbaseitems_id' => $kbitems_id2,
+            ],
+        ]);
+        $this->integer($iterator->count())->isEqualTo(2);
+        $category_ids = [];
+        foreach ($iterator as $row) {
+            $category_ids[] = $row['knowbaseitemcategories_id'];
+        }
+        $this->array($category_ids)->containsValues([$kb_cat_id1, $kb_cat_id2]);
+    }
 }

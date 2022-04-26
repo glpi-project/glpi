@@ -35,6 +35,7 @@ namespace tests\units;
 
 use org\bovigo\vfs\vfsStream;
 use Psr\Log\LogLevel;
+use Glpi\Toolbox\FrontEnd;
 
 /* Test for inc/html.class.php */
 
@@ -387,8 +388,9 @@ class Html extends \GLPITestCase
             'other-min.css'
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
+        $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<link rel="stylesheet" type="text/css" href="' .
-         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . GLPI_VERSION . '" %attrs>';
+         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '" %attrs>';
         $base_attrs = 'media="all"';
 
        //create test files
@@ -465,8 +467,8 @@ class Html extends \GLPITestCase
        //expect minified file and specific version
         $fake_version = '0.0.1';
         $expected = str_replace(
-            ['%url', '%attrs', GLPI_VERSION],
-            ['file.min.css', $base_attrs, $fake_version],
+            ['%url', '%attrs', $version_key],
+            ['file.min.css', $base_attrs, FrontEnd::getVersionCacheKey($fake_version)],
             $base_expected
         );
         $this->string(\Html::css($dir . '/file.css', ['version' => $fake_version]))->isIdenticalTo($expected);
@@ -497,8 +499,9 @@ class Html extends \GLPITestCase
             'other-min.js'
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
+        $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<script type="text/javascript" src="' .
-         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . GLPI_VERSION . '"></script>';
+         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
 
        //create test files
         foreach ($fake_files as $fake_file) {
@@ -558,8 +561,8 @@ class Html extends \GLPITestCase
        //expect minified file and specific version
         $fake_version = '0.0.1';
         $expected = str_replace(
-            ['%url', GLPI_VERSION],
-            ['file.min.js', $fake_version],
+            ['%url', $version_key],
+            ['file.min.js', FrontEnd::getVersionCacheKey($fake_version)],
             $base_expected
         );
         $this->string(\Html::script($dir . '/file.js', ['version' => $fake_version]))->isIdenticalTo($expected);
