@@ -723,7 +723,6 @@ HTML;
                 $warning = "";
 
                 if (!$mk_controller->hasGitDirectory($plugin_key)) {
-
                     if ($has_web_update) {
                         $warning = __s("The plugin has an available update but its directory is not writable.") . "<br>";
                     }
