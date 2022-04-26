@@ -37,12 +37,12 @@
 {# TODO userentity_oncreate form submit #}
 
 {% set required = false %}
-{% if itiltemplate.isMandatoryField('TODO') %}
+{% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) or itiltemplate.isMandatoryField('_groups_id_' ~ actortype) or (actortype == 'assign' and itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
    {% set required = true %}
 {% endif %}
 
 {% set is_actor_hidden = false %}
-{% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) and itiltemplate.isMandatoryField('_groups_id_' ~ actortype) and (actortype != 'assign' or itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
+{% if itiltemplate.isHiddenField('_users_id_' ~ actortype) and itiltemplate.isHiddenField('_groups_id_' ~ actortype) and (actortype != 'assign' or itiltemplate.isHiddenField('_suppliers_id_' ~ actortype)) %}
    {% set is_actor_hidden = true %}
 {% endif %}
 
@@ -52,14 +52,14 @@
 {% endif %}
 
 {% if not is_actor_hidden %}
-   <select class="form-select" multiple="true" id="actor_{{ rand }}">
+   <select class="form-select" multiple="true" id="actor_{{ rand }}"
+        {{ required ? 'required' : '' }}>
    {% for actor in actors %}
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
             data-alternative-email="{{ actor['alternative_email'] }}"
-            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}"
-            {{ required ? 'required' : '' }}>
+            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}">
          {{ actor['title']|verbatim_value }}
       </option>
    {% endfor %}
