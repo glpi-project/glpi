@@ -745,6 +745,7 @@
       'add_field_class': '',
       'add_field_attribs': {},
       'center': false,
+      'locked': false,
    }|merge(options) %}
 
    {% if options.full_width %}
@@ -783,6 +784,9 @@
       {{ _self.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
       {% if options.center %}
          {% set flex_class = "d-flex align-items-center" %}
+      {% endif %}
+      {% if locked %}
+         <i class="ti ti-lock" title="{{ __('Field will not be updated from inventory') }}"></i>
       {% endif %}
       <div class="{{ options.input_class }} {{ flex_class }} field-container">
          {{ field|raw }}

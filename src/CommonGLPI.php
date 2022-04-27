@@ -651,6 +651,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $options['withtemplate'] = $withtemplate;
 
                 if ($tabnum == 'main') {
+                    $options['locked'] = true;
                     Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                     $ret = $item->showForm($item->getID(), $options);
 
@@ -663,7 +664,7 @@ class CommonGLPI implements CommonGLPIInterface
 
                             $locked_js = <<<JAVASCRIPT
                         $(function() {
-                            $("{$js_expr}").closest("div.form-field > div,td").prev()
+                            $("{$js_expr}").closest("td").prev()
                             .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
                             .toggleClass("lockedfield", true)
                             .removeClass("lockfield") //to drop duplicated fusion icon
@@ -699,7 +700,7 @@ JAVASCRIPT;
 
                                     $locked_js = <<<JAVASCRIPT
                                 $(function() {
-                                    $("{$js_expr}").closest("div.form-field > div,td").prev()
+                                    $("{$js_expr}").closest("td").prev()
                                     .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
                                     .toggleClass("lockedfield", true)
                                     .removeClass("lockfield") //to drop duplicated fusion icon
