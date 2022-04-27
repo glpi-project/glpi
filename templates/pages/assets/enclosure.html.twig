@@ -34,9 +34,14 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-   {{ fields.numberField('power_supplies', max(item.fields['power_supplies'], 1), 'DevicePowerSupply'|itemtype_name(get_plural_number()), {
-      'min': 1,
-      'max': 6,
-      'step': 1
-   }) }}
+	{{ fields.numberField(
+        'power_supplies',
+        max(item.fields['power_supplies'], 1),
+        'DevicePowerSupply'|itemtype_name(get_plural_number()),
+        field_options|merge({
+            'min': 1,
+            'max': 6,
+            'step': 1
+        })
+   ) }}
 {% endblock %}

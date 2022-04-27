@@ -39,22 +39,24 @@
       'cablestrands_id',
       item.fields['cablestrands_id'],
       'CableStrand'|itemtype_name,
+      field_options
    ) }}
 
    {{ fields.colorField(
       'color',
       item.fields['color'],
-      __('Color')
+      __('Color'),
+      field_options
    ) }}
 
    <div class="mx-n3 d-flex">
       {% for side in ['a', 'b'] %}
          {% set rand_side = random() %}
-         {% set side_options = {
+         {% set side_options = field_options|merge({
             'full_width': true,
             'full_width_adapt_column': false,
             'rand': rand_side,
-         } %}
+         }) %}
          {% set html_side %}
             <div class="card mx-n2 border-0 shadow-none">
 

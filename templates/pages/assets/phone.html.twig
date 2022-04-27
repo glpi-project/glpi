@@ -34,29 +34,31 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-   {{ fields.numberField(
-      'number_line',
-      item.fields['number_line'],
-      _x('quantity', 'Number of lines'),
-   ) }}
+	{{ fields.numberField(
+        'number_line',
+        item.fields['number_line'],
+        _x('quantity', 'Number of lines'),
+        field_options
+    ) }}
 
-   {{ fields.dropdownField(
-      'PhonePowerSupply',
-      'phonepowersupplies_id',
-      item.fields['phonepowersupplies_id'],
-      'PhonePowerSupply'|itemtype_name,
-   ) }}
+	{{ fields.dropdownField(
+        'PhonePowerSupply',
+        'phonepowersupplies_id',
+        item.fields['phonepowersupplies_id'],
+        'PhonePowerSupply'|itemtype_name,
+        field_options
+    ) }}
 
-   {% set flags_html %}
-      {{ include('components/form/flags.html.twig') }}
-   {% endset %}
+	{% set flags_html %}
+	{{ include('components/form/flags.html.twig') }}
+	{% endset %}
 
-   {% if (flags_html|trim)|length %}
-      {% set flags_html = '<div class="d-flex flex-wrap">' ~ flags_html ~ '</div>' %}
-      {{ fields.htmlField(
-         '',
-         flags_html,
-         _n('Port', 'Ports', get_plural_number()),
-      ) }}
-   {% endif %}
+	{% if (flags_html|trim)|length %}
+		{% set flags_html = '<div class="d-flex flex-wrap">' ~ flags_html ~ '</div>' %}
+		{{ fields.htmlField(
+            '',
+            flags_html,
+            _n('Port', 'Ports', get_plural_number()),
+        ) }}
+	{% endif %}
 {% endblock %}
