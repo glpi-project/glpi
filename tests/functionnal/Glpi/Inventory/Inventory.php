@@ -4305,7 +4305,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         UnifiedArchive::archiveFiles($json_paths, self::INVENTORY_ARCHIVE_PATH);
 
         $files = [
-            'importfile' => [
+            'inventory_file' => [
                 'name' => 'to_inventory.zip',
                 'type' => 'application/zip',
                 'tmp_name' => self::INVENTORY_ARCHIVE_PATH,
