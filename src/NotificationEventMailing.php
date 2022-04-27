@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use PHPMailer\PHPMailer\PHPMailer;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
 class NotificationEventMailing extends NotificationEventAbstract implements NotificationEventInterface
 {
@@ -128,7 +129,6 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
         }
     }
 
-
     public static function send(array $data)
     {
         global $CFG_GLPI, $DB;
@@ -136,20 +136,22 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
         $processed = [];
 
         foreach ($data as $row) {
-           //make sure mailer is reset on each mail
+            //make sure mailer is reset on each mail
             $mmail = new GLPIMailer();
+            $mail = $mmail->getEmail();
             $current = new QueuedNotification();
             $current->getFromResultSet($row);
 
             $headers = importArrayFromDB($current->fields['headers']);
             if (is_array($headers) && count($headers)) {
                 foreach ($headers as $key => $val) {
-                    $mmail->AddCustomHeader("$key: $val");
+                    $mail->getHeaders()->addTextHeader($key, $val);
                 }
             }
 
-           // Add custom header for mail grouping in reader
-            $mmail->AddCustomHeader(
+            // Add custom header for mail grouping in reader
+            $mail->getHeaders()->addTextHeader(
+                'In-Reply-To',
                 str_replace(
                     [
                         '%uuid',
@@ -161,16 +163,16 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                         $current->fields['itemtype'],
                         $current->fields['items_id']
                     ],
-                    "In-Reply-To: <GLPI-%uuid-%itemtype-%items_id>"
+                    "<GLPI-%uuid-%itemtype-%items_id>"
                 )
             );
 
-            $mmail->SetFrom($current->fields['sender'], $current->fields['sendername']);
+            $mail->from(new Address($current->fields['sender'], $current->fields['sendername']));
 
             if ($current->fields['replyto']) {
-                 $mmail->AddReplyTo($current->fields['replyto'], $current->fields['replytoname']);
+                $mail->replyTo(new Address($current->fields['replyto'], $current->fields['replytoname']));
             }
-            $mmail->Subject  = $current->fields['name'];
+            $mail->subject($current->fields['name']);
 
             $is_html = !empty($current->fields['body_html']);
 
@@ -216,17 +218,15 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                 }
             }
 
-            $mmail->isHTML($is_html);
             if (!$is_html) {
-                $mmail->Body = GLPIMailer::normalizeBreaks($current->fields['body_text']);
+                $mail->text(GLPIMailer::handleLineBreaks($current->fields['body_text']));
                 $documents_to_attach = $documents_ids; // Attach all documents
             } else {
-                $mmail->Body = '';
                 $inline_docs = [];
                 $doc = new Document();
                 foreach ($documents_ids as $document_id) {
                     $doc->getFromDB($document_id);
-                   // Add embeded image if tag present in ticket content
+                    // Add embedded image if tag present in ticket content
                     if (
                         preg_match_all(
                             '/' . preg_quote($doc->fields['tag']) . '/',
@@ -239,24 +239,15 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                             GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
                             'mail'
                         );
-                        if (
-                            $mmail->AddEmbeddedImage(
-                                $image_path,
-                                $doc->fields['tag'],
-                                $doc->fields['filename'],
-                                'base64',
-                                $doc->fields['mime']
-                            )
-                        ) {
-                            $inline_docs[$document_id] = $doc->fields['tag'];
-                        }
+                        $mail->embedFromPath($image_path, $doc->fields['filename']);
+                        $inline_docs[$document_id] = $doc->fields['tag'];
                     } else {
-                       // Attach only documents that are not inlined images
+                        // Attach only documents that are not inlined images
                         $documents_to_attach[] = $document_id;
                     }
                 }
 
-               // manage inline images (and not added as documents in object)
+                // manage inline images (and not added as documents in object)
                 $matches = [];
                 if (
                     preg_match_all(
@@ -286,24 +277,15 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                                     $width,
                                     $height
                                 );
-                                if (
-                                    $mmail->AddEmbeddedImage(
-                                        $image_path,
-                                        $doc->fields['tag'],
-                                        $doc->fields['filename'],
-                                        'base64',
-                                        $doc->fields['mime']
-                                    )
-                                ) {
-                                    $inline_docs[$docID] = $doc->fields['tag'];
-                                }
+                                $mail->embedFromPath($image_path, $doc->fields['filename']);
+                                $inline_docs[$docID] = $doc->fields['tag'];
                             }
                         }
                     }
                 }
 
-               // replace img[src] by cid:tag in html content
-               // replace a[href] by absolute URL
+                // replace img[src] by cid:tag in html content
+                // replace a[href] by absolute URL
                 foreach ($inline_docs as $docID => $tag) {
                     $current->fields['body_html'] = preg_replace(
                         [
@@ -318,32 +300,38 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                     );
                 }
 
-                $mmail->Body    = GLPIMailer::normalizeBreaks($current->fields['body_html']);
-                $mmail->AltBody = GLPIMailer::normalizeBreaks($current->fields['body_text']);
+                $mail->text(GLPIMailer::handleLineBreaks($current->fields['body_text']));
+                if ($is_html) {
+                    $mail->html(GLPIMailer::handleLineBreaks($current->fields['body_html']));
+                }
             }
 
-            self::attachDocuments($mmail, $documents_to_attach);
+            self::attachDocuments($mail, $documents_to_attach);
 
             $recipient = $current->getField('recipient');
             if (defined('GLPI_FORCE_MAIL')) {
-               //force recipient to configured email address
+                //force recipient to configured email address
                 $recipient = GLPI_FORCE_MAIL;
-               //add original email addess to message body
+                //add original email address to message body
                 $text = sprintf(__('Original email address was %1$s'), $current->getField('recipient'));
-                $mmail->Body      .= "<br/>$text";
-                $mmail->AltBody   .= $text;
+                $mail->text($mail->getHtmlBody() . "\n$text");
+                if ($is_html) {
+                    $mail->html($mail->getHtmlBody() . "<br/>$text");
+                }
             }
 
-            $mmail->AddAddress($recipient, $current->fields['recipientname']);
+            $mail->to(new Address($recipient, $current->fields['recipientname']));
 
             if (!empty($current->fields['messageid'])) {
-                $mmail->MessageID = "<" . $current->fields['messageid'] . ">";
+                //FIXME: howto with Swift? -- not sure about that addIdHeader
+                $mail->getHeaders()->addIdHeader('messageid', $current->fields['messageid']);
+                //$mmail->MessageID = "<" . $current->fields['messageid'] . ">";
             }
 
             $messageerror = __('Error in sending the email');
 
-            if (!$mmail->Send()) {
-                Session::addMessageAfterRedirect($messageerror . "<br/>" . $mmail->ErrorInfo, true, ERROR);
+            if (!$mmail->send($mail)) {
+                Session::addMessageAfterRedirect($messageerror . "<br/>" . implode("<br/>", $mmail->getErrors()), true, ERROR);
 
                 $retries = $CFG_GLPI['smtp_max_retries'] - $current->fields['sent_try'];
                 Toolbox::logInFile(
@@ -356,7 +344,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                             $retries
                         ),
                         $current->fields['name'],
-                        $mmail->ErrorInfo . "\n"
+                        implode("\n", $mmail->getErrors()) . "\n"
                     )
                 );
 
@@ -375,7 +363,6 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                      $current->delete(['id' => $current->fields['id']]);
                 }
 
-                $mmail->ClearAddresses();
                 $input = [
                     'id'        => $current->fields['id'],
                     'sent_try'  => $current->fields['sent_try'] + 1
@@ -386,7 +373,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                 }
                 $current->update($input);
             } else {
-               //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+                //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
                 Toolbox::logInFile(
                     "mail",
                     sprintf(
@@ -398,7 +385,6 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                         $current->fields['name'] . "\n"
                     )
                 );
-                $mmail->ClearAddresses();
                 $processed[] = $current->getID();
                 $current->update(['id'        => $current->fields['id'],
                     'sent_time' => $_SESSION['glpi_currenttime']
@@ -414,12 +400,12 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
      * Attach documents to message.
      * Documents will not be attached if configuration says they should not be.
      *
-     * @param GLPIMailer $mmail
-     * @param array      $documents_ids
+     * @param Email $mail
+     * @param array $documents_ids
      *
      * @return void
      */
-    private static function attachDocuments(GLPIMailer $mmail, array $documents_ids)
+    private static function attachDocuments(Email $mail, array $documents_ids)
     {
         global $CFG_GLPI;
 
@@ -438,19 +424,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                 );
             }
 
-            $encoding = PHPMailer::ENCODING_BASE64;
-            $mime = mime_content_type($path);
-            if ($mime == "message/rfc822") {
-               // messages/rfc822 can't be encoded in base64 according to RFC2046
-               // https://datatracker.ietf.org/doc/html/rfc2046
-                $encoding = PHPMailer::ENCODING_8BIT;
-            }
-
-            $mmail->addAttachment(
-                $path,
-                $document->fields['filename'],
-                $encoding
-            );
+            $mail->attachFromPath($path, $document->fields['filename']);
         }
     }
 

@@ -33,15 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\MessageIDValidation;
+use Egulias\EmailValidator\Validation\RFCValidation;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
 
-/** GLPIPhpMailer class
+/** GLPI Mailer class
  *
  * @since 0.85
  **/
-class GLPIMailer extends PHPMailer
+class GLPIMailer
 {
+    protected Transport\TransportInterface $transport;
+    protected Mailer $mailer;
+    protected Email $email;
+    private array $errors;
+
     /**
      * Constructor
      *
@@ -50,53 +60,43 @@ class GLPIMailer extends PHPMailer
     {
         global $CFG_GLPI;
 
-        $this->WordWrap           = 80;
+        $this->transport = Transport::fromDsn($this->buildDsn());
 
-        $this->CharSet            = "utf-8";
+        if (method_exists($this->transport, 'getStream')) {
+            $stream = $this->transport->getStream();
+            $stream->setTimeout(10);
+        }
+        $this->mailer = new Mailer($this->transport);
 
-       // Comes from config
-        $this->SetLanguage("en", Config::getLibraryDir("PHPMailer") . "/language/");
+        $this->email = (new Email())
+            ->from($CFG_GLPI['smtp_sender'] ?? 'glpi@localhost');
+    }
+
+    public function buildDsn(): string
+    {
+        global $CFG_GLPI;
+
+        $dsn = 'native://default';
 
         if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
-            $this->Mailer = "smtp";
-            $this->Host   = $CFG_GLPI['smtp_host'] . ':' . $CFG_GLPI['smtp_port'];
-
-            if ($CFG_GLPI['smtp_username'] != '') {
-                $this->SMTPAuth = true;
-                $this->Username = $CFG_GLPI['smtp_username'];
-                $this->Password = (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']);
-            }
-
-            if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
-                $this->SMTPSecure = "ssl";
-            } else if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
-                $this->SMTPSecure = "tls";
-            } else {
-               // Don't automatically enable encryption if the GLPI config doesn't specify it
-                $this->SMTPAutoTLS = false;
-            }
+            $dsn = sprintf(
+                '%s://%s%s:%s',
+                ($CFG_GLPI['smtp_mode'] == MAIL_SMTPS ? 'smtps' : 'smtp'),
+                ($CFG_GLPI['smtp_username'] != '' ? sprintf(
+                    '%s:%s@',
+                    $CFG_GLPI['smtp_username'],
+                    (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd'])
+                ) : ''),
+                $CFG_GLPI['smtp_host'],
+                $CFG_GLPI['smtp_port']
+            );
 
             if (!$CFG_GLPI['smtp_check_certificate']) {
-                $this->SMTPOptions = ['ssl' => ['verify_peer'       => false,
-                    'verify_peer_name'  => false,
-                    'allow_self_signed' => true
-                ]
-                ];
-            }
-            if ($CFG_GLPI['smtp_sender'] != '') {
-                $this->Sender = $CFG_GLPI['smtp_sender'];
+                $dsn .= '?verify_peer=0';
             }
         }
 
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            $this->SMTPDebug = SMTP::DEBUG_CONNECTION;
-            $this->Debugoutput = function ($message, $level) {
-                Toolbox::logInFile(
-                    'mail-debug',
-                    "$level - $message"
-                );
-            };
-        }
+        return $dsn;
     }
 
     public static function validateAddress($address, $patternselect = "pcre8")
@@ -104,22 +104,52 @@ class GLPIMailer extends PHPMailer
         if (empty($address)) {
             return false;
         }
-        $isValid = parent::validateAddress($address, $patternselect);
-        if (!$isValid && str_ends_with($address, '@localhost')) {
-           //since phpmailer6, @localhost address are no longer valid...
-            $isValid = parent::ValidateAddress($address . '.me');
-        }
-        return $isValid;
+
+        $validator = new EmailValidator();
+        return $validator->isValid(
+            $address,
+            class_exists(MessageIDValidation::class) ? new MessageIDValidation() : new RFCValidation()
+        );
     }
 
-    public function setLanguage($langcode = 'en', $lang_path = '')
+    public function getEmail(): Email
     {
-        if ($lang_path == '') {
-            $local_path = dirname(Config::getLibraryDir('PHPMailer\PHPMailer\PHPMailer'))  . '/language/';
-            if (is_dir($local_path)) {
-                $lang_path = $local_path;
-            }
+        return $this->email;
+    }
+
+    public function send(Email $email = null): bool
+    {
+        if ($email !== null) {
+            $this->email = $email;
         }
-        parent::setLanguage($langcode, $lang_path);
+
+        try {
+            $this->email->ensureValidity();
+            $this->mailer->send($this->email);
+            return true;
+        } catch (LogicException $e) {
+            $this->errors[] = $e->getMessage();
+        } catch (TransportExceptionInterface $e) {
+            $this->errors[] = $e->getMessage();
+        }
+
+        if (count($this->errors)) {
+            Toolbox::logInFile(
+                'mail-errors',
+                implode("\  n", $this->errors)
+            );
+        }
+
+        return false;
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    public static function handleLineBreaks($text): string
+    {
+        return preg_replace('/\r\n|\r/m', "\n", $text);
     }
 }

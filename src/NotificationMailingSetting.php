@@ -163,9 +163,8 @@ class NotificationMailingSetting extends NotificationSetting
             $methodrand = mt_rand();
             $out .= "<td><label for='dropdown_smtp_mode$methodrand'>" . __('Way of sending emails') . "<label></td><td>";
             $mail_methods = [MAIL_MAIL    => __('PHP'),
-                MAIL_SMTP    => __('SMTP'),
-                MAIL_SMTPSSL => __('SMTP+SSL'),
-                MAIL_SMTPTLS => __('SMTP+TLS')
+                MAIL_SMTP => __('SMTP'),
+                MAIL_SMTPS => __('SMTPS'),
             ];
 
             if (!function_exists('mail')) {
