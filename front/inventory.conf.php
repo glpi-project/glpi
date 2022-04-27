@@ -41,7 +41,7 @@ Html::header(__('Inventory'), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inv
 
 $conf = new Conf();
 
-if (isset($_FILES['importfile']) && $_FILES['importfile']['tmp_name'] != '') {
+if (isset($_FILES['inventory_file']) && $_FILES['inventory_file']['tmp_name'] != '') {
     $conf->importFile($_FILES);
     Html::back();
 }
