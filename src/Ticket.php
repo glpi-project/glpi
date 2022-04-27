@@ -1130,167 +1130,8 @@ class Ticket extends CommonITILObject
 
             $input['_contract_types'][$contract_type_id] = $contract_type_id;
         }
-       // Process Business Rules
-        $this->fillInputForBusinessRules($input);
 
-       // Add actors on standard input
-        $rules               = new RuleTicketCollection($entid);
-        $rule                = $rules->getRuleClass();
-        $changes             = [];
-        $unchanged           = [];
-        $post_added          = [];
-        $tocleanafterrules   = [];
-        $usertypes           = [
-            CommonITILActor::ASSIGN    => 'assign',
-            CommonITILActor::REQUESTER => 'requester',
-            CommonITILActor::OBSERVER  => 'observer'
-        ];
-        foreach ($usertypes as $k => $t) {
-           //handle new input
-            if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
-                // FIXME Deprecate these keys in GLPI 10.1.
-                $field = $input['_itil_' . $t]['_type'] . 's_id';
-                if (
-                    isset($input['_itil_' . $t][$field])
-                    && !isset($input[$field . '_' . $t])
-                ) {
-                    $input['_' . $field . '_' . $t][]             = $input['_itil_' . $t][$field];
-                    $tocleanafterrules['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
-                }
-            }
-
-            //handle existing actors: load all existing actors from ticket
-            //to make sure business rules will receive all information, and not just
-            //what have been entered in the html form.
-            //
-            //ref also this actor into $post_added to avoid the filling of $changes
-            //and triggering businness rules when not needed
-            $existing_actors = [
-                User::class     => $this->getUsers($k),
-                Group::class    => $this->getGroups($k),
-                Supplier::class => $this->getSuppliers($k),
-            ];
-            foreach ($existing_actors as $actor_itemtype => $actors) {
-                $field = getForeignKeyFieldForItemType($actor_itemtype);
-                $input_key = '_' . $field . '_' . $t;
-                $deleted_key = $input_key . '_deleted';
-                $deleted_actors = array_key_exists($deleted_key, $input) && is_array($input[$deleted_key]) ? array_column($input[$deleted_key], 'items_id') : [];
-                $tmp_input = $input[$input_key] ?? [];
-                if (!is_array($tmp_input)) {
-                    $tmp_input = [$tmp_input];
-                }
-                $added_actors = array_diff($tmp_input, array_column($actors, $field));
-                if (empty($added_actors) && empty($deleted_actors)) {
-                    $unchanged[] = $input_key;
-                }
-                foreach ($actors as $actor) {
-                    if (
-                        !isset($input[$input_key])
-                        || (is_array($input[$input_key]) && !in_array($actor[$field], $input[$input_key]))
-                        || (is_numeric($input[$input_key]) && $actor[$field] !== $input[$input_key])
-                    ) {
-                        if (
-                            !array_key_exists($input_key, $input)
-                            || (!is_array($input[$input_key]) && !is_numeric($input[$input_key]) && empty($input[$input_key]))
-                        ) {
-                            $input[$input_key] = [];
-                        } elseif (!is_array($input[$input_key])) {
-                            $input[$input_key] = [$input[$input_key]];
-                        }
-                        if (!in_array($actor[$field], $deleted_actors)) {
-                            $input[$input_key][]             = $actor[$field];
-                            $tocleanafterrules[$input_key][] = $actor[$field];
-                        }
-                    }
-                }
-            }
-        }
-
-        foreach ($rule->getCriterias() as $key => $val) {
-            if (
-                array_key_exists($key, $input)
-                && !array_key_exists($key, $post_added)
-            ) {
-                if (
-                    (!isset($this->fields[$key]) || ($this->fields[$key] != $input[$key]))
-                    && !in_array($key, $unchanged)
-                ) {
-                    $changes[] = $key;
-                }
-            }
-        }
-
-       // Business Rules do not override manual SLA and OLA
-        $manual_slas_id = [];
-        $manual_olas_id = [];
-        foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-            list($dateField, $slaField) = SLA::getFieldNames($slmType);
-            if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
-                $manual_slas_id[$slmType] = $input[$slaField];
-            }
-
-            list($dateField, $olaField) = OLA::getFieldNames($slmType);
-            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
-                $manual_olas_id[$slmType] = $input[$olaField];
-            }
-        }
-
-       // Only process rules on changes
-        if (count($changes)) {
-            $user = new User();
-            $user_id = null;
-           //try to find user from changes if exist (defined as _itil_requester)
-            if (isset($input["_itil_requester"]["users_id"])) {
-                $user_id = $input["_itil_requester"]["users_id"];
-            } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
-                $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
-            }
-
-            if ($user_id !== null && $user->getFromDB($user_id)) {
-                $input['_locations_id_of_requester']   = $user->fields['locations_id'];
-                $input['users_default_groups']         = $user->fields['groups_id'];
-                $changes[]                             = '_locations_id_of_requester';
-                $changes[]                             = '_groups_id_of_requester';
-            }
-
-            $input = $rules->processAllRules(
-                $input,
-                $input,
-                ['recursive'   => true,
-                    'entities_id' => $entid
-                ],
-                ['condition'     => RuleTicket::ONUPDATE,
-                    'only_criteria' => $changes
-                ]
-            );
-        }
-
-       // Clean actors fields added for rules
-        foreach ($tocleanafterrules as $key => $values_to_drop) {
-            if (!array_key_exists($key, $input) || !is_array($input[$key])) {
-                // Assign rules may remove input key or replace array by a single value.
-                // In such case, as values were completely redefined by rules, there is no need to filter them.
-                continue;
-            }
-
-            $input[$key] = array_filter(
-                $input[$key],
-                function ($value) use ($values_to_drop) {
-                    return !in_array($value, $values_to_drop);
-                }
-            );
-            if (in_array($key, $post_added) && empty($input[$key])) {
-                unset($input[$key]);
-            }
-        }
-
-       // SLA / OLA affect by rules : reset time_to_resolve / internal_time_to_resolve
-       // Manual SLA / OLA defined : reset time_to_resolve / internal_time_to_resolve
-       // No manual SLA / OLA and due date defined : reset auto SLA / OLA
-        foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-            $this->slaAffect($slmType, $input, $manual_slas_id);
-            $this->olaAffect($slmType, $input, $manual_olas_id);
-        }
+        $this->processRules(RuleTicket::ONUPDATE, $input, $entid);
 
         if (isset($input['content'])) {
             if (isset($input['_filename']) || isset($input['_content'])) {
@@ -1814,20 +1655,6 @@ class Ticket extends CommonITILObject
             }
         }
 
-       // Business Rules do not override manual SLA and OLA
-        $manual_slas_id = [];
-        $manual_olas_id = [];
-        foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-            list($dateField, $slaField) = SLA::getFieldNames($slmType);
-            if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
-                $manual_slas_id[$slmType] = $input[$slaField];
-            }
-            list($dateField, $olaField) = OLA::getFieldNames($slmType);
-            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
-                $manual_olas_id[$slmType] = $input[$olaField];
-            }
-        }
-
         // Set default contract if not specified
         if (
             (!isset($input['_contracts_id']) || (int)$input['_contracts_id'] == 0)
@@ -1846,36 +1673,7 @@ class Ticket extends CommonITILObject
             }
         }
 
-        $initial_requester = isset($input['_users_id_requester']) && !is_array($input['_users_id_requester']) && (int)$input['_users_id_requester'] > 0
-            ? $input['_users_id_requester']
-            : 0;
-
-        if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
-           // Process Business Rules
-            $this->fillInputForBusinessRules($input);
-
-            $rules = new RuleTicketCollection($input['entities_id']);
-
-
-            $input = $rules->processAllRules(
-                $input,
-                $input,
-                ['recursive' => true],
-                ['condition' => RuleTicket::ONADD]
-            );
-
-            // Recompute default values based on values computed by rules
-            $input = $this->computeDefaultValuesForAdd($input);
-
-            if (
-                isset($input['_users_id_requester'])
-                && !is_array($input['_users_id_requester'])
-                && ($input['_users_id_requester'] != $initial_requester)
-            ) {
-               // if requester set by rule, clear address from mailcollector
-                unset($input['_users_id_requester_notif']);
-            }
-        }
+        $this->processRules(RuleTicket::ONADD, $input);
 
         if (
             isset($input['_users_id_requester_notif'])
@@ -1915,16 +1713,6 @@ class Ticket extends CommonITILObject
                    // Auto assign tech/group from hardware
                     $input = $this->setTechAndGroupFromHardware($input, $item);
                     break;
-            }
-        }
-
-        if (!isset($input['_skip_sla_assign']) || $input['_skip_sla_assign'] === false) {
-           // Manage SLA / OLA asignment
-           // Manual SLA / OLA defined : reset due date
-           // No manual SLA / OLA and due date defined : reset auto SLA / OLA
-            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-                $this->slaAffect($slmType, $input, $manual_slas_id);
-                $this->olaAffect($slmType, $input, $manual_olas_id);
             }
         }
 
@@ -6590,5 +6378,53 @@ JAVASCRIPT;
     public static function getContentTemplatesParametersClass(): string
     {
         return TicketParameters::class;
+    }
+
+    public function processRules(int $condition, array &$input, int $entid = -1): void
+    {
+        if (isset($input['_skip_rules']) && $input['_skip_rules'] !== false) {
+            return;
+        }
+
+        $initial_requester = isset($input['_users_id_requester']) && !is_array($input['_users_id_requester']) && (int)$input['_users_id_requester'] > 0
+            ? $input['_users_id_requester']
+            : 0;
+
+        // Business Rules do not override manual SLA and OLA
+        $manual_slas_id = [];
+        $manual_olas_id = [];
+        foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+            [$dateField, $slaField] = SLA::getFieldNames($slmType);
+            if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
+                $manual_slas_id[$slmType] = $input[$slaField];
+            }
+
+            [$dateField, $olaField] = OLA::getFieldNames($slmType);
+            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
+                $manual_olas_id[$slmType] = $input[$olaField];
+            }
+        }
+
+        parent::processRules($condition, $input, $entid);
+
+        if ($condition === RuleCommonITILObject::ONADD) {
+            if (
+                isset($input['_users_id_requester'])
+                && !is_array($input['_users_id_requester'])
+                && ($input['_users_id_requester'] != $initial_requester)
+            ) {
+                // if requester set by rule, clear address from mailcollector
+                unset($input['_users_id_requester_notif']);
+            }
+        }
+        if (!isset($input['_skip_sla_assign']) || $input['_skip_sla_assign'] === false) {
+            // Manage SLA / OLA asignment
+            // Manual SLA / OLA defined : reset due date
+            // No manual SLA / OLA and due date defined : reset auto SLA / OLA
+            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                $this->slaAffect($slmType, $input, $manual_slas_id);
+                $this->olaAffect($slmType, $input, $manual_olas_id);
+            }
+        }
     }
 }

@@ -1482,6 +1482,13 @@ abstract class RuleCommonITILObject extends DbTestCase
 
     public function testValidationCriteria()
     {
+        $itil_class = $this->getItilObjectClass();
+        $validation_class = $itil_class . 'Validation';
+        if (!class_exists($validation_class)) {
+            // Useless assertion to prevent atoum from marking this as a failure
+            $this->boolean(true)->isTrue();
+            return;
+        }
         $this->login();
 
         // Create rule
@@ -1560,6 +1567,13 @@ abstract class RuleCommonITILObject extends DbTestCase
 
     public function testValidationAction()
     {
+        $itil_class = $this->getItilObjectClass();
+        $validation_class = $itil_class . 'Validation';
+        if (!class_exists($validation_class)) {
+            // Useless assertion to prevent atoum from marking this as a failure
+            $this->boolean(true)->isTrue();
+            return;
+        }
         $this->login();
 
         // Create rule

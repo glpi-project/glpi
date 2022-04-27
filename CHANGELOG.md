@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 - Business Rules for Changes
+- Business Rules for Problems
 - Configurable toast notification location
 - `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
 - Group approval requests (any user from group can approve).

@@ -164,22 +164,7 @@ class Change extends CommonITILObject
             return false;
         }
 
-        if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
-            // Process Business Rules
-            $this->fillInputForBusinessRules($input);
-
-            $rules = new RuleChangeCollection($input['entities_id']);
-
-            $input = $rules->processAllRules(
-                $input,
-                $input,
-                ['recursive' => true],
-                ['condition' => RuleCommonITILObject::ONADD]
-            );
-
-            // Recompute default values based on values computed by rules
-            $input = $this->computeDefaultValuesForAdd($input);
-        }
+        $this->processRules(RuleCommonITILObject::ONADD, $input);
 
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
            // Manage auto assign
@@ -203,139 +188,10 @@ class Change extends CommonITILObject
 
     public function prepareInputForUpdate($input)
     {
-        global $DB;
-
         $input = $this->transformActorsInput($input);
 
-        if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
-            // Process Business Rules
-            $this->fillInputForBusinessRules($input);
-
-            $entid = $input['entities_id'] ?? $this->fields['entities_id'];
-
-            // Add actors on standard input
-            $rules = new RuleChangeCollection($entid);
-            $rule = $rules->getRuleClass();
-            $changes = [];
-            $post_added = [];
-            $tocleanafterrules = [];
-            $usertypes = [
-                CommonITILActor::ASSIGN => 'assign',
-                CommonITILActor::REQUESTER => 'requester',
-                CommonITILActor::OBSERVER => 'observer'
-            ];
-            foreach ($usertypes as $k => $t) {
-                //handle new input
-                if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
-                    // FIXME Deprecate these keys in GLPI 10.1.
-                    $field = $input['_itil_' . $t]['_type'] . 's_id';
-                    if (
-                        isset($input['_itil_' . $t][$field])
-                        && !isset($input[$field . '_' . $t])
-                    ) {
-                        $input['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
-                    }
-                }
-
-                //handle existing actors: load all existing actors from ticket
-                //to make sure business rules will receive all information, and not just
-                //what have been entered in the html form.
-                //
-                //ref also this actor into $post_added to avoid the filling of $changes
-                //and triggering businness rules when not needed
-                $existing_actors = [
-                    User::class     => $this->getUsers($k),
-                    Group::class    => $this->getGroups($k),
-                    Supplier::class => $this->getSuppliers($k),
-                ];
-                foreach ($existing_actors as $actor_itemtype => $actors) {
-                    $field = getForeignKeyFieldForItemType($actor_itemtype);
-                    $input_key = '_' . $field . '_' . $t;
-                    foreach ($actors as $actor) {
-                        if (
-                            !isset($input[$input_key])
-                            || (is_array($input[$input_key]) && !in_array($actor[$field], $input[$input_key]))
-                            || (is_numeric($input[$input_key]) && $actor[$field] !== $input[$input_key])
-                        ) {
-                            if (
-                                !array_key_exists($input_key, $input)
-                                || (!is_array($input[$input_key]) && !is_numeric($input[$input_key]) && empty($input[$input_key]))
-                            ) {
-                                $input[$input_key] = [];
-                            } elseif (!is_array($input[$input_key])) {
-                                $input[$input_key] = [$input[$input_key]];
-                            }
-                            $input[$input_key][]             = $actor[$field];
-                            $tocleanafterrules[$input_key][] = $actor[$field];
-                        }
-                    }
-                }
-            }
-
-            foreach ($rule->getCriterias() as $key => $val) {
-                if (
-                    array_key_exists($key, $input)
-                    && !array_key_exists($key, $post_added)
-                ) {
-                    if (
-                        !isset($this->fields[$key])
-                        || ($this->fields[$key] != $input[$key])
-                    ) {
-                        $changes[] = $key;
-                    }
-                }
-            }
-
-            // Only process rules on changes
-            if (count($changes)) {
-                $user = new User();
-                $user_id = null;
-                //try to find user from changes if exist (defined as _itil_requester)
-                if (isset($input["_itil_requester"]["users_id"])) {
-                    $user_id = $input["_itil_requester"]["users_id"];
-                } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
-                    $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
-                }
-
-                if ($user_id !== null && $user->getFromDB($user_id)) {
-                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-                    $input['users_default_groups'] = $user->fields['groups_id'];
-                    $changes[] = '_locations_id_of_requester';
-                    $changes[] = '_groups_id_of_requester';
-                }
-
-                $input = $rules->processAllRules(
-                    $input,
-                    $input,
-                    ['recursive' => true,
-                        'entities_id' => $entid
-                    ],
-                    ['condition' => RuleCommonITILObject::ONUPDATE,
-                        'only_criteria' => $changes
-                    ]
-                );
-            }
-
-            // Clean actors fields added for rules
-            foreach ($tocleanafterrules as $key => $values_to_drop) {
-                if (!array_key_exists($key, $input) || !is_array($input[$key])) {
-                    // Assign rules may remove input key or replace array by a single value.
-                    // In such case, as values were completely redefined by rules, there is no need to filter them.
-                    continue;
-                }
-
-                $input[$key] = array_filter(
-                    $input[$key],
-                    function ($value) use ($values_to_drop) {
-                        return !in_array($value, $values_to_drop);
-                    }
-                );
-                if (in_array($key, $post_added) && empty($input[$key])) {
-                    unset($input[$key]);
-                }
-            }
-        }
+        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+        $this->processRules(RuleCommonITILObject::ONUPDATE, $input, $entid);
 
         $input = parent::prepareInputForUpdate($input);
         return $input;

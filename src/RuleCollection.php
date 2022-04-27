@@ -1574,14 +1574,14 @@ JAVASCRIPT;
     /**
      * Process all the rules collection
      *
-     * @param input            array the input data used to check criterias (need to be clean slashes)
-     * @param output           array the initial ouput array used to be manipulate by actions (need to be clean slashes)
-     * @param params           array parameters for all internal functions (need to be clean slashes)
-     * @param options          array options :
+     * @param array $input    The input data used to check criterias (need to be clean slashes)
+     * @param array $output   The initial ouput array used to be manipulate by actions (need to be clean slashes)
+     * @param array $params   Parameters for all internal functions (need to be clean slashes)
+     * @param array $options  Options :
      *                            - condition : specific condition to limit rule list
      *                            - only_criteria : only react on specific criteria
      *
-     * @return the output array updated by actions
+     * @return array The output array updated by actions
      **/
     public function processAllRules($input = [], $output = [], $params = [], $options = [])
     {
@@ -1748,12 +1748,12 @@ JAVASCRIPT;
 
 
     /**
-     * Prepare input datas for the rules collection
+     * Prepare input data for the rules collection
      *
-     * @param $input  the input data used to check criterias
-     * @param $params parameters
+     * @param array $input  The input data used to check criteria
+     * @param array $params Parameters
      *
-     * @return the updated input datas
+     * @return array The updated input data
      **/
     public function prepareInputDataForProcess($input, $params)
     {
@@ -1762,14 +1762,14 @@ JAVASCRIPT;
 
 
     /**
-     * Prepare input datas for the rules collection, also using plugins values
+     * Prepare input data for the rules collection, also using plugins values
      *
      * @since 0.84
      *
-     * @param $input  the input data used to check criterias
-     * @param $params parameters
+     * @param array $input  the input data used to check criteria
+     * @param array $params parameters
      *
-     * @return the updated input datas
+     * @return array The updated input data
      **/
     public function prepareInputDataForProcessWithPlugins($input, $params)
     {
