@@ -46,6 +46,7 @@ use DevicePowerSupply;
 use DeviceProcessor;
 use DeviceSimcard;
 use DeviceSoundCard;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use NetworkPortType;
@@ -96,34 +97,9 @@ class Conf extends CommonGLPI
      */
     public function showUploadForm()
     {
-        echo "<form action='' method='post' enctype='multipart/form-data'>";
-        echo "<table class='tab_cadre'>";
-        echo "<tr>";
-        echo "<th>";
-        echo __('Import inventory file');
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo sprintf(
-            __("You can use this menu to upload any inventory file. The file must have a known extension (%1\$s).\n"),
-            implode(', ', $this->knownInventoryExtensions())
-        );
-        echo '<br/>' . __('It is also possible to upload a compressed archive directly with a collection of inventory files.');
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td align='center'>";
-        echo "<input class='btn' type='file' name='importfile' value=''/>";
-        echo "&nbsp;<input type='submit' value='" . __('Import') . "' class='btn btn-primary'/>";
-        echo "</td>";
-        echo "</tr>";
-
-        echo "</table>";
-
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_form.html.twig', [
+            'inventory_extensions' => $this->knownInventoryExtensions()
+        ]);
     }
 
     /**
@@ -149,8 +125,8 @@ class Conf extends CommonGLPI
      */
     public function importFile($files): Request
     {
-        $path = $files['importfile']['tmp_name'];
-        $name = $files['importfile']['name'];
+        $path = $files['inventory_file']['tmp_name'];
+        $name = $files['inventory_file']['name'];
 
         $inventory_request = new Request();
 

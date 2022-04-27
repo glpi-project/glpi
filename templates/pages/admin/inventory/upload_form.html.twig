@@ -1,0 +1,60 @@
+{#
+ # ---------------------------------------------------------------------
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ # Copyright (C) 2015-2022 Teclib' and contributors.
+ #
+ # http://glpi-project.org
+ #
+ # based on GLPI - Gestionnaire Libre de Parc Informatique
+ # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # GLPI is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+ # (at your option) any later version.
+ #
+ # GLPI is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<form action='' method='POSTY' enctype='multipart/form-data'>
+    <h2>
+        {{ __("Import inventory file") }}
+    </h2>
+    <div class="alert alert-info" role="alert">
+        <p>
+            {{ __("You can use this menu to upload any inventory file. The file must have a known extension (%1\$s).\n")|format(inventory_extensions|join(', ')) }}<br>
+            {{ __('It is also possible to upload a compressed archive directly with a collection of inventory files.') }}
+        </p>
+    </div>
+    {{ fields.fileField(
+        'inventory_file',
+        '',
+        '',
+        {
+            'is_horizontal': true,
+        }
+    ) }}
+
+    <button class="btn btn-primary me-2" type="submit"
+            name="upload_inventory" value="1">
+        <i class="ti ti-upload"></i>
+        <span>{{ _x('button', 'Upload') }}</span>
+    </button>
+
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+</form>
