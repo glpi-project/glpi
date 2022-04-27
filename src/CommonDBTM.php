@@ -494,10 +494,14 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array
      */
-    public function getLockedFields() {
+    public function getLockedFields()
+    {
         $locks = [];
         $lockedfield = new Lockedfield();
-        if (!$this->isNewItem() && $lockedfield->isHandled($this)) {
+        if (
+            !$this->isNewItem()
+            && $lockedfield->isHandled($this)
+        ) {
             $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);;
         }
 
