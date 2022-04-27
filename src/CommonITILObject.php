@@ -9427,7 +9427,6 @@ abstract class CommonITILObject extends CommonDBTM
             ) {
                 $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                 $input['users_default_groups'] = $user->fields['groups_id'];
-                $input['__users_id_requester'] = $input["_users_id_requester"];
             } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
                 if ($user->getFromDB($user_id)) {
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];

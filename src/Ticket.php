@@ -1763,6 +1763,10 @@ class Ticket extends CommonITILObject
             }
         }
 
+        $initial_requester = isset($input['_users_id_requester']) && !is_array($input['_users_id_requester']) && (int)$input['_users_id_requester'] > 0
+            ? $input['_users_id_requester']
+            : 0;
+
         if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
            // Process Business Rules
             $this->fillInputForBusinessRules($input);
@@ -1777,18 +1781,19 @@ class Ticket extends CommonITILObject
             );
             $input = Toolbox::stripslashes_deep($input);
 
-           // Recompute default values based on values computed by rules
+            // Recompute default values based on values computed by rules
             $input = $this->computeDefaultValuesForAdd($input);
+
+            if (
+                isset($input['_users_id_requester'])
+                && !is_array($input['_users_id_requester'])
+                && ($input['_users_id_requester'] != $initial_requester)
+            ) {
+               // if requester set by rule, clear address from mailcollector
+                unset($input['_users_id_requester_notif']);
+            }
         }
 
-        if (
-            isset($input['_users_id_requester'])
-            && !is_array($input['_users_id_requester'])
-            && ($input['_users_id_requester'] != ($input['__users_id_requester'] ?? 0))
-        ) {
-           // if requester set by rule, clear address from mailcollector
-            unset($input['_users_id_requester_notif']);
-        }
         if (
             isset($input['_users_id_requester_notif'])
             && isset($input['_users_id_requester_notif']['alternative_email'])
