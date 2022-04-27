@@ -502,7 +502,7 @@ class CommonDBTM extends CommonGLPI
             !$this->isNewItem()
             && $lockedfield->isHandled($this)
         ) {
-            $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);;
+            $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);
         }
 
         return $locks;
