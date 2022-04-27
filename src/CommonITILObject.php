@@ -4473,6 +4473,17 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
+        $tab[] = [
+            'id'                 => '401',
+            'table'              => $this->getTemplateClass()::getTable(),
+            'field'              => 'name',
+            'name'               => __('Template'),
+            'massiveaction'      => false,
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'dropdown',
+            'linkfield'          => $this->getTemplateClass()::getForeignKeyField(),
+        ];
+
         return $tab;
     }
 
