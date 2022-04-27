@@ -168,29 +168,6 @@ class Change extends CommonITILObject
 
             $rules = new RuleChangeCollection($input['entities_id']);
 
-            // Set unset variables with are needed
-            $user = new User();
-            if (isset($input["_users_id_requester"])) {
-                if (
-                    !is_array($input["_users_id_requester"])
-                    && $user->getFromDB($input["_users_id_requester"])
-                ) {
-                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-                    $input['users_default_groups'] = $user->fields['groups_id'];
-                } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
-                    if ($user->getFromDB($user_id)) {
-                        $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-                        $input['users_default_groups'] = $user->fields['groups_id'];
-                    }
-                }
-            }
-
-            // Clean new lines before passing to rules
-            if (isset($input["content"])) {
-                $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-                $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
-            }
-
             $input = $rules->processAllRules(
                 $input,
                 $input,
@@ -236,7 +213,7 @@ class Change extends CommonITILObject
             $entid = $input['entities_id'] ?? $this->fields['entities_id'];
 
             // Add actors on standard input
-            $rules = new RuleChangeCollection($input['entities_id'] ?? $this->fields['entities_id']);
+            $rules = new RuleChangeCollection($entid);
             $rule = $rules->getRuleClass();
             $changes = [];
             $post_added = [];
