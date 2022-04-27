@@ -4261,7 +4261,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $json_path = self::INV_FIXTURES . 'computer_1.json';
         $files = [
-            'importfile' => [
+            'inventory_file' => [
                 'name' => 'computer_1.json',
                 'type' => 'application/json',
                 'tmp_name' => $json_path,
