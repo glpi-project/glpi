@@ -651,29 +651,8 @@ class CommonGLPI implements CommonGLPIInterface
                 $options['withtemplate'] = $withtemplate;
 
                 if ($tabnum == 'main') {
-                    $options['locked'] = true;
                     Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                     $ret = $item->showForm($item->getID(), $options);
-
-                    $lockedfield = new Lockedfield();
-                    if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
-                        $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
-                        if (count($locks)) {
-                            $js_expr = '[name=' . implode('], [name=', $locks) . ']';
-                            $lockedtitle = __s('Field will not be updated from inventory');
-
-                            $locked_js = <<<JAVASCRIPT
-                        $(function() {
-                            $("{$js_expr}").closest("td").prev()
-                            .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
-                            .toggleClass("lockedfield", true)
-                            .removeClass("lockfield") //to drop duplicated fusion icon
-                            ;
-                        });
-JAVASCRIPT;
-                             echo Html::scriptBlock($locked_js);
-                        }
-                    }
 
                     Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                     return $ret;

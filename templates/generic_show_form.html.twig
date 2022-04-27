@@ -46,7 +46,7 @@
    {% set item_type = item.getType() %}
    {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
    {% set field_options = {
-       'locked_fields': ['serial'] // TODO: remove this line and set all locked field
+       'locked_fields': item.getLockedFields(),
    } %}
 
    <div class="card-body d-flex flex-wrap">

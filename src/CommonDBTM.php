@@ -490,6 +490,22 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
+     * Retrieve locked field for the current item
+     *
+     * @return array
+     */
+    public function getLockedFields() {
+        $locks = [];
+        $lockedfield = new Lockedfield();
+        if (!$this->isNewItem() && $lockedfield->isHandled($this)) {
+            $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);;
+        }
+
+        return $locks;
+    }
+
+
+    /**
      * Actions done to not show some fields when getting a single item from API calls
      *
      * @param array $fields Fields to unset undiscloseds
