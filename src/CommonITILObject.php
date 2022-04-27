@@ -2803,7 +2803,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param $input
      *
-     * @return string
+     * @return array
      **/
     public function computeDefaultValuesForAdd($input)
     {
@@ -10313,5 +10313,182 @@ abstract class CommonITILObject extends CommonDBTM
     {
         // All actions should be attached to thread instanciated by `new` event
         return 'new';
+    }
+
+    /**
+     * @return class-string<RuleCommonITILObject>|null
+     */
+    public static function getRuleCollectionClass(): ?string
+    {
+        $expected = 'Rule' . static::getType() . 'Collection';
+        if (class_exists($expected)) {
+            return $expected;
+        }
+        return null;
+    }
+
+    private function loadActorsForRules(array &$input, array &$unchanged, array &$toclean_postrules): void
+    {
+        $usertypes           = [
+            CommonITILActor::ASSIGN    => 'assign',
+            CommonITILActor::REQUESTER => 'requester',
+            CommonITILActor::OBSERVER  => 'observer'
+        ];
+        foreach ($usertypes as $k => $t) {
+            //handle new input
+            if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
+                // FIXME Deprecate these keys in GLPI 10.1.
+                $field = $input['_itil_' . $t]['_type'] . 's_id';
+                if (
+                    isset($input['_itil_' . $t][$field])
+                    && !isset($input[$field . '_' . $t])
+                ) {
+                    $input['_' . $field . '_' . $t][]             = $input['_itil_' . $t][$field];
+                    $toclean_postrules['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
+                }
+            }
+
+            //handle existing actors: load all existing actors from ticket
+            //to make sure business rules will receive all information, and not just
+            //what have been entered in the html form.
+            $existing_actors = [
+                User::class     => $this->getUsers($k),
+                Group::class    => $this->getGroups($k),
+                Supplier::class => $this->getSuppliers($k),
+            ];
+            foreach ($existing_actors as $actor_itemtype => $actors) {
+                $field = getForeignKeyFieldForItemType($actor_itemtype);
+                $input_key = '_' . $field . '_' . $t;
+                $deleted_key = $input_key . '_deleted';
+                $deleted_actors = array_key_exists($deleted_key, $input) && is_array($input[$deleted_key]) ? array_column($input[$deleted_key], 'items_id') : [];
+                $tmp_input = $input[$input_key] ?? [];
+                if (!is_array($tmp_input)) {
+                    $tmp_input = [$tmp_input];
+                }
+                $added_actors = array_diff($tmp_input, array_column($actors, $field));
+                if (empty($added_actors) && empty($deleted_actors)) {
+                    $unchanged[] = $input_key;
+                }
+                foreach ($actors as $actor) {
+                    if (
+                        !isset($input[$input_key])
+                        || (is_array($input[$input_key]) && !in_array($actor[$field], $input[$input_key]))
+                        || (is_numeric($input[$input_key]) && $actor[$field] !== $input[$input_key])
+                    ) {
+                        if (
+                            !array_key_exists($input_key, $input)
+                            || (!is_array($input[$input_key]) && !is_numeric($input[$input_key]) && empty($input[$input_key]))
+                        ) {
+                            $input[$input_key] = [];
+                        } elseif (!is_array($input[$input_key])) {
+                            $input[$input_key] = [$input[$input_key]];
+                        }
+                        if (!in_array($actor[$field], $deleted_actors)) {
+                            $input[$input_key][]             = $actor[$field];
+                            $toclean_postrules[$input_key][] = $actor[$field];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param int $condition
+     * @phpstan-param RuleCommonITILObject::ON* $condition
+     * @param array $input
+     * @param int $entid
+     * @return void
+     */
+    protected function processRules(int $condition, array &$input, int $entid = -1): void
+    {
+        if (isset($input['_skip_rules']) && $input['_skip_rules'] !== false) {
+            return;
+        }
+
+        if ($entid < 0) {
+            $entid = $input['entities_id'];
+        }
+
+        $this->fillInputForBusinessRules($input);
+
+        $collection_class = static::getRuleCollectionClass();
+        /** @var RuleCommonITILObjectCollection $rules */
+        $rules = new $collection_class($entid);
+        $rule = $rules->getRuleClass();
+
+        $unchanged = [];
+        $tocleanafterrules   = [];
+        if ($condition === RuleCommonITILObject::ONUPDATE) {
+            $this->loadActorsForRules($input, $unchanged, $tocleanafterrules);
+        }
+
+        $rules_params = ['recursive' => true];
+        $rules_options = ['condition' => $condition];
+
+        if ($condition === RuleCommonITILObject::ONUPDATE) {
+            $rules_params['entities_id'] = $entid;
+            $changes = [];
+            foreach ($rule->getCriterias() as $key => $val) {
+                if (array_key_exists($key, $input)) {
+                    if (
+                        (!isset($this->fields[$key]) || ($this->fields[$key] != $input[$key]))
+                        && !in_array($key, $unchanged)
+                    ) {
+                        $changes[] = $key;
+                    }
+                }
+            }
+            if (count($changes)) {
+                $rules_options['only_criteria'] = $changes;
+            }
+        }
+
+        if ($condition === RuleCommonITILObject::ONADD || isset($rules_options['only_criteria'])) {
+            if ($condition === RuleCommonITILObject::ONUPDATE) {
+                $user = new User();
+                $user_id = null;
+                //try to find user from changes if exist (defined as _itil_requester)
+                if (isset($input["_itil_requester"]["users_id"])) {
+                    $user_id = $input["_itil_requester"]["users_id"];
+                } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
+                    $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
+                }
+
+                if ($user_id !== null && $user->getFromDB($user_id)) {
+                    $input['_locations_id_of_requester']   = $user->fields['locations_id'];
+                    $input['users_default_groups']         = $user->fields['groups_id'];
+                    $rules_options['only_criteria'][] = '_locations_id_of_requester';
+                    $rules_options['only_criteria'][] = '_groups_id_of_requester';
+                }
+            }
+            $input = $rules->processAllRules(
+                $input,
+                $input,
+                $rules_params,
+                $rules_options
+            );
+        }
+
+        // Clean actors fields added for rules
+        foreach ($tocleanafterrules as $key => $values_to_drop) {
+            if (!array_key_exists($key, $input) || !is_array($input[$key])) {
+                // Assign rules may remove input key or replace array by a single value.
+                // In such case, as values were completely redefined by rules, there is no need to filter them.
+                continue;
+            }
+
+            $input[$key] = array_filter($input[$key], static function ($value) use ($values_to_drop) {
+                return !in_array($value, $values_to_drop);
+            });
+            if (empty($input[$key])) {
+                unset($input[$key]);
+            }
+        }
+
+        if ($condition === RuleCommonITILObject::ONADD) {
+            // Recompute default values based on values computed by rules
+            $input = $this->computeDefaultValuesForAdd($input);
+        }
     }
 }

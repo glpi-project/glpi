@@ -1043,6 +1043,9 @@ class Profile extends CommonDBTM
                             $fn_get_rights(RuleChange::class, 'central', [
                                 'label'     => __('Business rules for changes (entity)'),
                             ]),
+                            $fn_get_rights(RuleProblem::class, 'central', [
+                                'label'     => __('Business rules for problems (entity)'),
+                            ]),
                             $fn_get_rights(RuleAsset::class, 'central', [
                                 'label'     => __('Business rules for assets'),
                             ]),
@@ -2892,6 +2895,21 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'rule_change']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '175',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => __('Business rules for problems'),
+            'datatype'           => 'right',
+            'rightclass'         => 'RuleProblem',
+            'rightname'          => 'rule_problem',
+            'nowrite'            => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => 'rule_problem']
             ]
         ];
 

@@ -688,8 +688,12 @@ abstract class RuleCommonITILObject extends Rule
         $criterias['_contract_types']['name']                 = ContractType::getTypeName(1);
         $criterias['_contract_types']['type']                 = 'dropdown';
 
-        $criterias['global_validation']['name']               = _n('Validation', 'Validations', 1);
-        $criterias['global_validation']['type']               = 'dropdown_validation_status';
+        $validation_class = $itemtype . 'Validation';
+
+        if (class_exists($validation_class)) {
+            $criterias['global_validation']['name'] = _n('Validation', 'Validations', 1);
+            $criterias['global_validation']['type'] = 'dropdown_validation_status';
+        }
 
         $criterias['_date_creation_calendars_id'] = [
             'name'            => __("Creation date is a working hour in calendar"),
@@ -828,55 +832,60 @@ abstract class RuleCommonITILObject extends Rule
         $actions['assign_appliance']['force_actions']               = ['assign','regex_result', 'append'];
         $actions['assign_appliance']['appendto']                    = 'items_id';
 
-        $actions['users_id_validate']['name']                       = sprintf(
-            __('%1$s - %2$s'),
-            __('Send an approval request'),
-            User::getTypeName(1)
-        );
-        $actions['users_id_validate']['type']                       = 'dropdown_users_validate';
-        $actions['users_id_validate']['force_actions']              = ['add_validation'];
+        $itemtype = static::getItemtype();
+        $validation_class = $itemtype . 'Validation';
 
-        $actions['responsible_id_validate']['name']                 = sprintf(
-            __('%1$s - %2$s'),
-            __('Send an approval request'),
-            __('Supervisor of the requester')
-        );
-        $actions['responsible_id_validate']['type']                 = 'yesno';
-        $actions['responsible_id_validate']['force_actions']        = ['add_validation'];
+        if (class_exists($validation_class)) {
+            $actions['users_id_validate']['name'] = sprintf(
+                __('%1$s - %2$s'),
+                __('Send an approval request'),
+                User::getTypeName(1)
+            );
+            $actions['users_id_validate']['type'] = 'dropdown_users_validate';
+            $actions['users_id_validate']['force_actions'] = ['add_validation'];
 
-        // Send approval to all valid users in a group where each user has their own approval
-        $actions['groups_id_validate']['name']                      = sprintf(
-            __('%1$s - %2$s'),
-            __('Send an approval request'),
-            __('Group users')
-        );
-        $actions['groups_id_validate']['type']                      = 'dropdown_groups_validate';
-        $actions['groups_id_validate']['force_actions']             = ['add_validation'];
+            $actions['responsible_id_validate']['name'] = sprintf(
+                __('%1$s - %2$s'),
+                __('Send an approval request'),
+                __('Supervisor of the requester')
+            );
+            $actions['responsible_id_validate']['type'] = 'yesno';
+            $actions['responsible_id_validate']['force_actions'] = ['add_validation'];
 
-        // Send approval to a group itself where any member can answer
-        $actions['groups_id_validate_any']['name']                      = sprintf(
-            __('%1$s - %2$s'),
-            __('Send an approval request'),
-            Group::getTypeName(1)
-        );
-        $actions['groups_id_validate_any']['type']                      = 'dropdown_groups_validate';
-        $actions['groups_id_validate_any']['force_actions']             = ['add_validation'];
-        $actions['groups_id_validate_any']['permitseveral']             = ['add_validation'];
+            // Send approval to all valid users in a group where each user has their own approval
+            $actions['groups_id_validate']['name']                      = sprintf(
+                __('%1$s - %2$s'),
+                __('Send an approval request'),
+                __('Group users')
+            );
+            $actions['groups_id_validate']['type']                      = 'dropdown_groups_validate';
+            $actions['groups_id_validate']['force_actions']             = ['add_validation'];
 
-        $actions['validation_percent']['name']                      = sprintf(
-            __('%1$s - %2$s'),
-            __('Send an approval request'),
-            __('Minimum validation required')
-        );
-        $actions['validation_percent']['type']                      = 'dropdown_validation_percent';
+            // Send approval to a group itself where any member can answer
+            $actions['groups_id_validate_any']['name']                      = sprintf(
+                __('%1$s - %2$s'),
+                __('Send an approval request'),
+                Group::getTypeName(1)
+            );
+            $actions['groups_id_validate_any']['type']                      = 'dropdown_groups_validate';
+            $actions['groups_id_validate_any']['force_actions']             = ['add_validation'];
+            $actions['groups_id_validate_any']['permitseveral']             = ['add_validation'];
 
-        $actions['users_id_validate_requester_supervisor']['name']  = __('Approval request to requester group manager');
-        $actions['users_id_validate_requester_supervisor']['type']  = 'yesno';
-        $actions['users_id_validate_requester_supervisor']['force_actions'] = ['add_validation'];
+            $actions['validation_percent']['name']                      = sprintf(
+                __('%1$s - %2$s'),
+                __('Send an approval request'),
+                __('Minimum validation required')
+            );
+            $actions['validation_percent']['type']                      = 'dropdown_validation_percent';
 
-        $actions['users_id_validate_assign_supervisor']['name']     = __('Approval request to technician group manager');
-        $actions['users_id_validate_assign_supervisor']['type']     = 'yesno';
-        $actions['users_id_validate_assign_supervisor']['force_actions'] = ['add_validation'];
+            $actions['users_id_validate_requester_supervisor']['name']  = __('Approval request to requester group manager');
+            $actions['users_id_validate_requester_supervisor']['type']  = 'yesno';
+            $actions['users_id_validate_requester_supervisor']['force_actions'] = ['add_validation'];
+
+            $actions['users_id_validate_assign_supervisor']['name']     = __('Approval request to technician group manager');
+            $actions['users_id_validate_assign_supervisor']['type']     = 'yesno';
+            $actions['users_id_validate_assign_supervisor']['force_actions'] = ['add_validation'];
+        }
 
         $actions['requesttypes_id']['name']                         = RequestType::getTypeName(1);
         $actions['requesttypes_id']['type']                         = 'dropdown';
@@ -916,7 +925,7 @@ abstract class RuleCommonITILObject extends Rule
 
         $values = parent::getRights();
         $values[self::PARENT] = ['short' => __('Parent business'),
-            'long'  => sprintf(__('%s (entity parent)'), $this->getTitle())
+            'long'  => __('Business rules (entity parent)')
         ];
 
         return $values;

@@ -296,6 +296,8 @@ class Problem extends CommonITILObject
             return false;
         }
 
+        $this->processRules(RuleCommonITILObject::ONADD, $input);
+
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
            // Manage auto assign
             $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
@@ -316,13 +318,14 @@ class Problem extends CommonITILObject
         return $input;
     }
 
-
     public function prepareInputForUpdate($input)
     {
         $input = $this->transformActorsInput($input);
 
-        $input = parent::prepareInputForUpdate($input);
+        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+        $this->processRules(RuleCommonITILObject::ONUPDATE, $input, $entid);
 
+        $input = parent::prepareInputForUpdate($input);
         return $input;
     }
 
