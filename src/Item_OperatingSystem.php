@@ -299,7 +299,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
     public function showForm($ID, array $options = [])
     {
-        $this->initForm($ID, $options);
+        $this->initForm($ID, $this->fields);
         TemplateRenderer::getInstance()->display('pages/assets/operatingsystem.html.twig', [
             'item'   => $this,
             'params' => $options,
