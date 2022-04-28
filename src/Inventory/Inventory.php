@@ -852,9 +852,7 @@ class Inventory
 
         //first, cleanup temporary files
         $temp_files = new \RegexIterator(
-            new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator(GLPI_INVENTORY_DIR)
-            ),
+            new \DirectoryIterator(GLPI_INVENTORY_DIR),
             "/\\.(" . implode('|', $conf->knownInventoryExtensions()) . ")\$/i"
         );
 
