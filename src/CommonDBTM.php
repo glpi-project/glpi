@@ -472,7 +472,7 @@ class CommonDBTM extends CommonGLPI
      * Use a twig template to detect automatically fields and display them in a two column layout
      *
      * @param int   $ID        ID of the item
-     * @param array $options   possible optionnal options:
+     * @param array $options   possible optional options:
      *     - target for the Form
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
@@ -490,7 +490,27 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Actions done to not show some fields when geting a single item from API calls
+     * Retrieve locked field for the current item
+     *
+     * @return array
+     */
+    public function getLockedFields()
+    {
+        $locks = [];
+        $lockedfield = new Lockedfield();
+        if (
+            !$this->isNewItem()
+            && $lockedfield->isHandled($this)
+        ) {
+            $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);
+        }
+
+        return $locks;
+    }
+
+
+    /**
+     * Actions done to not show some fields when getting a single item from API calls
      *
      * @param array $fields Fields to unset undiscloseds
      *

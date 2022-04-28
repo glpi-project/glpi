@@ -672,7 +672,13 @@
       'is_horizontal': true,
       'include_field': true,
       'add_field_html': '',
+      'locked': false,
+      'locked_fields': [],
    }|merge(options) %}
+
+   {% if name in options.locked_fields %}
+      {% set options = options|merge({'locked': true}) %}
+   {% endif %}
 
    {% if not options.include_field %}
       {{ field }}
@@ -824,6 +830,10 @@
 
 
 {% macro label(label, id, options = {}, class = 'form-label') %}
+    {% set options = {
+        locked: false
+    }|merge(options) %}
+
    {% set required_mark = '' %}
    {% if options.fields_template.isMandatoryField(options.name) or options.required %}
       {% set required_mark = '<span class="required">*</span>' %}
@@ -839,8 +849,18 @@
       {% endset %}
    {% endif %}
 
+   {% set locked_mark = '' %}
+   {% if options.locked %}
+      {% set locked_mark %}
+        <i class="ti ti-lock"
+           title="{{ __('Field will not be updated from inventory') }}"
+           data-bs-toggle="tooltip"></i>
+      {% endset %}
+   {% endif %}
+
    <label class="{{ class }}" for="{{ id }}">
       {{ label|raw }}
+      {{ locked_mark|raw }}
       {{ required_mark|raw }}
       {{ helper|raw }}
    </label>

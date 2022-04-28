@@ -34,9 +34,25 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-   {{ fields.autoNameField('ip', item, __('IP'), withtemplate) }}
+	{{ fields.autoNameField(
+        'ip',
+        item,
+        __('IP'),
+        withtemplate,
+        field_options
+    ) }}
 
-   {{ fields.dropdownYesNo('accepted', item.fields['accepted'], __('Approved device')) }}
+	{{ fields.dropdownYesNo(
+        'accepted',
+        item.fields['accepted'],
+        __('Approved device'),
+        field_options
+    ) }}
 
-   {{ fields.dropdownYesNo('hub', item.fields['hub'], __('Network hub')) }}
+	{{ fields.dropdownYesNo(
+        'hub',
+        item.fields['hub'],
+        __('Network hub'),
+        field_options
+    ) }}
 {% endblock %}

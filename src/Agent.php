@@ -32,6 +32,7 @@
  */
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
@@ -179,157 +180,17 @@ class Agent extends CommonDBTM
             $this->getEmpty();
         }
         $this->initForm($id, $options);
-        $this->showFormHeader($options);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='name'>" . __('Name') . "</label></td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
-        echo "</td>";
-        echo "<td>" . __('Locked') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('locked', $this->fields["locked"]);
-        echo "</td>";
-        echo "</tr>";
+        // avoid generic form to display generic version field as we have an exploded view
+        $versions = $this->fields['version'] ?? '';
+        unset($this->fields['version']);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='deviceid'>" . __('Device id') . "</label></td>";
-        echo "<td>";
-        echo Html::input('deviceid', ['value' => $this->fields['deviceid'], 'size' => 40, 'required' => 'required']);
-        echo "</td>";
-        echo "<td>" . _n('Port', 'Ports', 1) . "</td>";
-        echo "<td>";
-        echo Html::input('port', ['value' => $this->fields['port'], 'type' => 'number']);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='agenttypes_id'>" . AgentType::getTypeName(1) . "</label></td>";
-        echo "<td>";
-
-        $value = $this->isNewItem() ? 1 : $this->fields['agenttypes_id'];
-        AgentType::dropdown(['value' => $value]);
-
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Item type') . "</td>";
-        echo "<td>";
-        $itemtype = $this->fields['itemtype'];
-        Dropdown::showFromArray('itemtype', array_combine($CFG_GLPI['inventory_types'], $CFG_GLPI['inventory_types']), ['value' => $itemtype]);
-        echo "</td>";
-        echo "<td>" . __('Item link') . "</td>";
-        echo "<td>";
-        if (!empty($this->fields["items_id"]) && $itemtype) {
-            $asset = new $this->fields['itemtype']();
-            $asset->getFromDB($this->fields['items_id']);
-            echo $asset->getLink(1);
-            echo Html::hidden(
-                'items_id',
-                [
-                    'value' => $this->fields["items_id"]
-                ]
-            );
-        }
-        echo "</td>";
-        echo "</tr>";
-
-        if (!$this->isNewItem()) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . _n('Version', 'Versions', 1) . "</td>";
-            echo "<td>";
-            $versions = importArrayFromDB($this->fields["version"]);
-            foreach ($versions as $module => $version) {
-                echo "<strong>" . $module . "</strong>: " . $version . "<br/>";
-            }
-            echo "</td>";
-            echo "<td>" . __('Tag') . "</td>";
-            echo "<td>";
-            echo $this->fields["tag"];
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Useragent') . "</td>";
-            echo "<td>";
-            echo $this->fields["useragent"];
-            echo "</td>";
-            echo "<td>" . __('Last contact') . "</td>";
-            echo "<td>";
-            echo Html::convDateTime($this->fields["last_contact"]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Network discovery threads') . "</td>";
-            echo "<td>";
-            $general = __('General setup');
-            if (isset($CFG_GLPI['threads_networkdiscovery'])) {
-                $general = sprintf('%1$s (%2$s)', $general, $CFG_GLPI['threads_networkdiscovery']);
-            }
-            Dropdown::showNumber(
-                'threads_networkdiscovery',
-                [
-                    'value' => $this->fields['threads_networkdiscovery'],
-                    'toadd' => [0 => $general],
-                    'min' => 1
-                ]
-            );
-            echo "</td>";
-            echo "<td>" . __('Network discovery timeout') . "</td>";
-            echo "<td>";
-            $general = __('General setup');
-            if (isset($CFG_GLPI['timeout_networkdiscovery'])) {
-                $general = sprintf('%1$s (%2$s)', $general, $CFG_GLPI['timeout_networkdiscovery']);
-            }
-            Dropdown::showNumber(
-                'timeout_networkdiscovery',
-                [
-                    'value' => $this->fields['timeout_networkdiscovery'],
-                    'toadd' => [0 => $general],
-                    'min' => 1
-                ]
-            );
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Network inventory threads') . "</td>";
-            echo "<td>";
-            $general = __('General setup');
-            if (isset($CFG_GLPI['threads_networkinventory'])) {
-                $general = sprintf('%1$s (%2$s)', $general, $CFG_GLPI['threads_networkinventory']);
-            }
-            Dropdown::showNumber(
-                'threads_networkinventory',
-                [
-                    'value' => $this->fields['threads_networkinventory'],
-                    'toadd' => [0 => $general],
-                    'min' => 1
-                ]
-            );
-            echo "</td>";
-            echo "<td>" . __('Network inventory timeout') . "</td>";
-            echo "<td>";
-            $general = __('General setup');
-            if (isset($CFG_GLPI['timeout_networkinventory'])) {
-                $general = sprintf('%1$s (%2$s)', $general, $CFG_GLPI['timeout_networkinventory']);
-            }
-            Dropdown::showNumber(
-                'timeout_networkinventory',
-                [
-                    'value' => $this->fields['timeout_networkinventory'],
-                    'toadd' => [0 => $general],
-                    'min' => 1
-                ]
-            );
-            echo "</td>";
-            echo "</tr>";
-        }
-
-        $this->showFormButtons($options);
-
+        TemplateRenderer::getInstance()->display('pages/admin/inventory/agent.html.twig', [
+            'item'           => $this,
+            'params'         => $options,
+            'itemtypes'      => array_combine($CFG_GLPI['inventory_types'], $CFG_GLPI['inventory_types']),
+            'versions_field' => $versions,
+        ]);
         return true;
     }
 
