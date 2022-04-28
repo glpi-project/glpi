@@ -34,7 +34,7 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-	{{ fields.numberField(
+    {{ fields.numberField(
         'power_supplies',
         max(item.fields['power_supplies'], 1),
         'DevicePowerSupply'|itemtype_name(get_plural_number()),

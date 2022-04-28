@@ -34,14 +34,14 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-	{% set dd_software %}
-	{{ 'Software'|itemtype_dropdown({
+    {% set dd_software %}
+    {{ 'Software'|itemtype_dropdown({
         'value': item.fields['softwares_id'],
         'rand': rand,
     }) }}
-	{% endset %}
+    {% endset %}
 
-	{{ fields.checkboxField(
+    {{ fields.checkboxField(
         'is_update',
         item.fields['is_update'],
         __('Upgrade'),
@@ -50,7 +50,7 @@
         })
     ) }}
 
-	{{ fields.dropdownField(
+    {{ fields.dropdownField(
         'SoftwareCategory',
         'softwarecategories_id',
         item.fields['softwarecategories_id'],

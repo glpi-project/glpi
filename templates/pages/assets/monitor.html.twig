@@ -34,16 +34,16 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-	{% set flags_html %}
-	{{ include('components/form/flags.html.twig') }}
-	{% endset %}
+    {% set flags_html %}
+    {{ include('components/form/flags.html.twig') }}
+    {% endset %}
 
-	{% if (flags_html|trim)|length %}
-		{% set flags_html = '<div class="d-flex flex-wrap">' ~ flags_html ~ '</div>' %}
-		{{ fields.htmlField(
+    {% if (flags_html|trim)|length %}
+        {% set flags_html = '<div class="d-flex flex-wrap">' ~ flags_html ~ '</div>' %}
+        {{ fields.htmlField(
             '',
             flags_html,
             _n('Port', 'Ports', get_plural_number()),
         ) }}
-	{% endif %}
+    {% endif %}
 {% endblock %}
