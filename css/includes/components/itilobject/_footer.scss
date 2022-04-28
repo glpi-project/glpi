@@ -33,6 +33,13 @@
     position: sticky;
     bottom: 0;
 
+    @include media-breakpoint-down(sm) {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 8px;
+    }
+
     .action-task {
         background-color: $timeline-task-bg;
         color: $timeline-task-fg;

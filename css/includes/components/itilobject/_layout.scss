@@ -34,6 +34,10 @@
         display: none;
     }
 
+    @include media-breakpoint-down(sm) {
+        margin-bottom: 55px; // .itil-footer height
+    }
+
     @include media-breakpoint-up(sm) {
         height: calc(100vh - 187px);
 

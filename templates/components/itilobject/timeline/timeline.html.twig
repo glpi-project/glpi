@@ -107,7 +107,7 @@
                {% endif %}
             </div>
 
-            <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
+            <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : 'order-first' }}">
                {% set avatar_rand = random() %}
                {# log entries have no users_id #}
                {% set entry_user = users_id is defined and users_id is not null ? get_item('User', users_id) : null %}
