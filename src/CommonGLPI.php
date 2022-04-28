@@ -654,26 +654,6 @@ class CommonGLPI implements CommonGLPIInterface
                     Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                     $ret = $item->showForm($item->getID(), $options);
 
-                    $lockedfield = new Lockedfield();
-                    if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
-                        $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
-                        if (count($locks)) {
-                            $js_expr = '[name=' . implode('], [name=', $locks) . ']';
-                            $lockedtitle = __s('Field will not be updated from inventory');
-
-                            $locked_js = <<<JAVASCRIPT
-                        $(function() {
-                            $("{$js_expr}").closest("div,td").prev()
-                            .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
-                            .toggleClass("lockedfield", true)
-                            .removeClass("lockfield") //to drop duplicated fusion icon
-                            ;
-                        });
-JAVASCRIPT;
-                             echo Html::scriptBlock($locked_js);
-                        }
-                    }
-
                     Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                     return $ret;
                 }
@@ -686,31 +666,6 @@ JAVASCRIPT;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
-
-                    if (method_exists($obj, 'getItemsAssociatedTo')) {
-                        $sub_items = $obj::getItemsAssociatedTo($item->getType(), $item->getId());
-                        foreach ($sub_items as $sitem) {
-                            $lockedfield = new Lockedfield();
-                            if (!$item->isNewItem() && $lockedfield->isHandled($sitem)) {
-                                $locks = $lockedfield->getLocks($sitem->getType(), $sitem->fields['id']);
-                                if (count($locks)) {
-                                    $js_expr = '[name=' . implode('], [name=', $locks) . ']';
-                                    $lockedtitle = __s('Field will not be updated from inventory');
-
-                                    $locked_js = <<<JAVASCRIPT
-                                $(function() {
-                                    $("{$js_expr}").closest("div,td").prev()
-                                    .append("<i class=\"ti ti-lock\" title=\"{$lockedtitle}\"></i>")
-                                    .toggleClass("lockedfield", true)
-                                    .removeClass("lockfield") //to drop duplicated fusion icon
-                                    ;
-                                });
-JAVASCRIPT;
-                                    echo Html::scriptBlock($locked_js);
-                                }
-                            }
-                        }
-                    }
 
                     Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                     return $ret;

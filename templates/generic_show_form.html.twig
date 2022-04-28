@@ -45,6 +45,9 @@
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
    {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
+   {% set field_options = {
+       'locked_fields': item.getLockedFields(),
+   } %}
 
    <div class="card-body d-flex flex-wrap">
       <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
@@ -57,7 +60,8 @@
                            'name',
                            item,
                            (item_type == 'Contact' ? __('Surname') : __('Name')),
-                        withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -66,7 +70,8 @@
                            'firstname',
                            item,
                            __('First name'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -86,10 +91,10 @@
                            'states_id',
                            item.fields['states_id'],
                            __('Status'),
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'condition': condition
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -100,9 +105,9 @@
                            fk,
                            item.fields[fk],
                            __('As child of'),
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -112,6 +117,7 @@
                            'is_helpdesk_visible',
                            item.fields['is_helpdesk_visible'],
                            __('Associable to a ticket'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -140,16 +146,22 @@
                            'locations_id',
                            item.fields['locations_id'],
                            'Location'|itemtype_name,
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
-                           }
+                           })
                         ) }}
                      {% endif %}
 
                      {% if item_type == 'Unmanaged' and item.isField('item_type') %}
-                        {{ fields.dropdownArrayField('item_type', item.fields['itemtype'], _n('Type', 'Types', 1), [
-                           'Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone'
-                        ]) }}
+                        {{ fields.dropdownArrayField(
+                            'item_type',
+                            item.fields['itemtype'],
+                            _n('Type', 'Types', 1),
+                            [
+                                'Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone'
+                            ],
+                            field_options
+                        ) }}
                      {% endif %}
 
                      {% if item.isField('date_domaincreation') %}
@@ -164,6 +176,7 @@
                            type_fk,
                            item.fields[type_fk],
                            _n('Type', 'Types', 1),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -173,9 +186,9 @@
                            'usertitles_id',
                            item.fields['usertitles_id'],
                            'UserTitle'|itemtype_name,
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -184,7 +197,8 @@
                            'registration_number',
                            item,
                            __('Administrative number'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -193,7 +207,8 @@
                            'phone',
                            item,
                            'Phone'|itemtype_name,
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -202,7 +217,8 @@
                            'phone2',
                            item,
                            __('Phone 2'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -211,7 +227,8 @@
                            'phonenumber',
                            item,
                            'Phone'|itemtype_name,
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -220,7 +237,8 @@
                            'mobile',
                            item,
                            __('Mobile phone'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -229,7 +247,8 @@
                            'fax',
                            item,
                            __('Fax'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -238,7 +257,8 @@
                            'website',
                            item,
                            __('Website'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -247,7 +267,8 @@
                            'email',
                            item,
                            _n('Email', 'Emails', 1),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -260,7 +281,8 @@
                            'postalcode',
                            item,
                            __('Postal code'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -269,7 +291,8 @@
                            'town',
                            item,
                            __('City'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -279,7 +302,8 @@
                            'postcode',
                            item,
                            __('Postal code'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -288,7 +312,8 @@
                            'state',
                            item,
                            _x('location', 'State'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -297,7 +322,8 @@
                            'country',
                            item,
                            __('Country'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -320,6 +346,7 @@
                            'ref',
                            item.fields['ref'],
                            __('Reference'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -329,10 +356,10 @@
                            'users_id_tech',
                            item.fields['users_id_tech'],
                            __('Technician in charge of the hardware'),
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'right': 'own_ticket',
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -341,7 +368,8 @@
                            'Manufacturer',
                            'manufacturers_id',
                            item.fields['manufacturers_id'],
-                           (item_type starts with 'Software' ? __('Publisher') : 'Manufacturer'|itemtype_name)
+                           (item_type starts with 'Software' ? __('Publisher') : 'Manufacturer'|itemtype_name),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -351,10 +379,10 @@
                            'groups_id_tech',
                            item.fields['groups_id_tech'],
                            __('Group in charge of the hardware'),
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'condition': {'is_assign': 1},
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -366,6 +394,7 @@
                            model_fk,
                            item.fields[model_fk],
                            _n('Model', 'Models', 1),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -375,6 +404,7 @@
                            'contact_num',
                            item.fields['contact_num'],
                            __('Alternate username number'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -383,6 +413,7 @@
                            'serial',
                            item.fields['serial'],
                            __('Serial number'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -392,6 +423,7 @@
                            'contact',
                            item.fields['contact'],
                            __('Alternate username'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -400,7 +432,8 @@
                            'otherserial',
                            item,
                            __('Inventory number'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -414,10 +447,10 @@
                            'users_id',
                            item.fields['users_id'],
                            'User'|itemtype_name,
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'right': 'all',
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -455,10 +488,10 @@
                            'size',
                            item.fields['size'],
                            __('Size'),
-                           {
+                           field_options|merge({
                               'min': 0,
                               'step': 0.01
-                           },
+                           }),
                         ) }}
                      {% endif %}
 
@@ -467,7 +500,8 @@
                            'Network',
                            'networks_id',
                            item.fields['networks_id'],
-                           _n('Network', 'Networks', 1)
+                           _n('Network', 'Networks', 1),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -477,10 +511,10 @@
                            'groups_id',
                            item.fields['groups_id'],
                            'Group'|itemtype_name,
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'condition': {'is_itemgroup': 1},
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -489,6 +523,7 @@
                            'uuid',
                            item.fields['uuid'],
                            __('UUID'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -497,7 +532,8 @@
                            'version',
                            item,
                            _n('Version', 'Versions', 1),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -506,6 +542,7 @@
                            'comment',
                            item.fields['comment'],
                            _n('Comment', 'Comments', get_plural_number()),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -514,6 +551,7 @@
                            'ram',
                            item.fields['ram'],
                            __('%1$s (%2$s)')|format(_n('Memory', 'Memories', 1), __('Mio')),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -538,7 +576,9 @@
                            'alarm_threshold',
                            dd_alarm_treshold,
                            __('Alert threshold'),
-                           {add_field_html: last_alert_html}
+                           field_options|merge({
+                               add_field_html: last_alert_html
+                            })
                         ) }}
                      {% endif %}
 
@@ -547,11 +587,17 @@
                            'brand',
                            item.fields['brand'],
                            __('Brand'),
+                           field_options
                         ) }}
                      {% endif %}
 
                      {% if item.isField('begin_date') %}
-                        {{ fields.dateField('begin_date', item.fields['begin_date'], __('Start date')) }}
+                        {{ fields.dateField(
+                            'begin_date',
+                            item.fields['begin_date'],
+                            __('Start date'),
+                            field_options
+                        ) }}
                      {% endif %}
 
                      {% if item.isField('autoupdatesystems_id') %}
@@ -560,6 +606,7 @@
                            'autoupdatesystems_id',
                            item.fields['autoupdatesystems_id'],
                            'AutoUpdateSystem'|itemtype_name,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -571,7 +618,12 @@
                      {% endif %}
 
                      {% if item.isField('is_active') %}
-                        {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+                        {{ fields.dropdownYesNo(
+                            'is_active',
+                            item.fields['is_active'],
+                            __('Active'),
+                            field_options
+                        ) }}
                      {% endif %}
 
                      {% block more_fields %}
@@ -594,7 +646,9 @@
       {{ include('components/form/support_hours.html.twig') }}
    {% endif %}
    {{ include('components/form/buttons.html.twig') }}
-   {{ include('components/form/inventory_info.html.twig') }}
+   {% if no_inventory_footer is not defined or no_inventory_footer == false %}
+      {{ include('components/form/inventory_info.html.twig') }}
+   {% endif %}
 
    {% if params['formfooter'] is null or params['formfooter'] == true %}
       <div class="card-footer mx-n2 mb-n2 mt-4">

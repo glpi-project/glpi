@@ -93,53 +93,93 @@
          (constant('Rack::ROOM_O_WEST')): __('West'),
       },
       __('Door orientation in room'),
-      {
+      field_options|merge({
          'rand': rand
-      }
+      })
    ) }}
 
-   {{ fields.numberField('number_units', item.fields['number_units'], __('Number of units'), {
-      'rand': rand,
-      'min': 1,
-      'max': 100,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'number_units',
+       item.fields['number_units'],
+       __('Number of units'),
+       field_options|merge({
+          'rand': rand,
+          'min': 1,
+          'max': 100,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('width', item.fields['width'], __('Width'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'width',
+       item.fields['width'],
+       __('Width'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('height', item.fields['height'], __('Height'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'height',
+       item.fields['height'],
+       __('Height'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('depth', item.fields['depth'], __('Depth'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'depth',
+       item.fields['depth'],
+       __('Depth'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('max_power', item.fields['max_power'], __('Max. power (in watts)'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'max_power',
+       item.fields['max_power'],
+       __('Max. power (in watts)'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('mesured_power', item.fields['mesured_power'], __('Measured power (in watts)'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'mesured_power',
+       item.fields['mesured_power'],
+       __('Measured power (in watts)'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('max_weight', item.fields['max_weight'], __('Max. weight'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'max_weight',
+       item.fields['max_weight'],
+       __('Max. weight'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.colorField('bgcolor', item.fields['bgcolor'], __('Background color')) }}
+   {{ fields.colorField(
+       'bgcolor',
+       item.fields['bgcolor'],
+       __('Background color'),
+       field_options
+    ) }}
 {% endblock %}
