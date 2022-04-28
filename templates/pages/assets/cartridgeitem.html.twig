@@ -34,8 +34,8 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-	{% if item.isField('stock_target') %}
-		{{ fields.numberField(
+    {% if item.isField('stock_target') %}
+        {{ fields.numberField(
             'stock_target',
             item.fields['stock_target'],
             _x('quantity', 'Stock target'),
