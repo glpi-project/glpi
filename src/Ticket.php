@@ -6280,12 +6280,12 @@ JAVASCRIPT;
         if ($date_takeintoaccount == $date_creation) {
             $date_takeintoaccount  = 0;
         }
-        $internal_time_to_own     = strtotime($this->fields['internal_time_to_own']);
-        $time_to_own              = strtotime($this->fields['time_to_own']);
-        $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve']);
-        $time_to_resolve          = strtotime($this->fields['time_to_resolve']);
-        $solvedate                = strtotime($this->fields['solvedate']);
-        $closedate                = strtotime($this->fields['closedate']);
+        $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? "");
+        $time_to_own              = strtotime($this->fields['time_to_own'] ?? "");
+        $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? "");
+        $time_to_resolve          = strtotime($this->fields['time_to_resolve'] ?? "");
+        $solvedate                = strtotime($this->fields['solvedate'] ?? "");
+        $closedate                = strtotime($this->fields['closedate'] ?? "");
         $goal_takeintoaccount     = ($date_takeintoaccount > 0 ? $date_takeintoaccount : $now);
         $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);
 
