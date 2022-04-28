@@ -990,9 +990,7 @@ class MailCollector extends CommonDBTM
         $tkt['_uid']         = $uid;
         $tkt['_head']        = $headers;
 
-        $mailcollector = new MailCollector();
-        $mailcollector->getFromDB($options['mailgates_id']);
-        $createuserfromemail = $mailcollector->fields['create_user_from_email'];
+        $createuserfromemail = $this->fields['create_user_from_email'];
 
        // Use mail date if it's defined
         if ($this->fields['use_mail_date'] && isset($headers['date'])) {

@@ -2298,7 +2298,7 @@ class User extends CommonDBTM
             return false;
         }
 
-        $in_modal = $options['_in_modal'] ?? false;
+        $simplified_form = $options['_in_modal'] ?? false;
 
         $config = Config::getConfigurationValues('core');
         if ($this->getID() > 0 && $config['system_user'] == $this->getID()) {
@@ -2383,7 +2383,7 @@ JAVASCRIPT;
             echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
         }
 
-        if (!$in_modal && !empty($this->fields["name"])) {
+        if (!$simplified_form && !empty($this->fields["name"])) {
             echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
             echo "<td rowspan='7'>";
             echo self::getPictureForUser($ID);
@@ -2504,7 +2504,7 @@ JAVASCRIPT;
             echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
         }
 
-        if ((!$in_modal) && ($DB->use_timezones || Session::haveRight("config", READ))) {
+        if ((!$simplified_form) && ($DB->use_timezones || Session::haveRight("config", READ))) {
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
             if ($DB->use_timezones) {
@@ -2543,7 +2543,7 @@ JAVASCRIPT;
         echo "</td>";
         echo "</tr>";
 
-        if ((!$in_modal) && (!GLPI_DEMO_MODE)) {
+        if ((!$simplified_form) && (!GLPI_DEMO_MODE)) {
             $sincerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='showdate$sincerand'>" . __('Valid since') . "</label></td><td>";
@@ -2616,14 +2616,14 @@ JAVASCRIPT;
         );
         echo "</td>";
         echo "<td>";
-        if (!$in_modal) {
+        if (!$simplified_form) {
             $catrand = mt_rand();
             echo "<label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
             UserCategory::dropdown(['value' => $this->fields["usercategories_id"], 'rand' => $catrand]);
         }
         echo "</td></tr>";
 
-        if (!$in_modal) {
+        if (!$simplified_form) {
             $phone2rand = mt_rand();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
@@ -5042,7 +5042,7 @@ JAVASCRIPT;
             }
             if ($createuserfromemail) {
                 $res = self::createUserFromMail($email);
-                if (isset($res->fields['id'])) {
+                if ($res !== false) {
                     return $res->fields['id'];
                 }
             }
@@ -6589,7 +6589,7 @@ JAVASCRIPT;
      *
      * @param email The email address of the user.
      *
-     * @return The user object.
+     * @return User|false Created user, false on failure.
      */
     public static function createUserFromMail($email)
     {
@@ -6608,11 +6608,14 @@ JAVASCRIPT;
         }
 
         $user = new self();
-        $user->add([
+        $added = $user->add([
             'name'           => $email,
             'realname'       => $email,
             '_init_password' => true
         ]);
+        if (!$added) {
+            return false;
+        }
 
         $user->input['_useremails'] = [
             '-1' => $email
