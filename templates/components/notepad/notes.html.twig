@@ -38,28 +38,11 @@
     {% set id = "note#{ note['id'] }#{ rand }" %}
     <div class='boxnote' id='view{{ id }}'>
         <div class='boxnoteleft'>
-            {% set thumbnail_url = user.getThumbnailURLForPicture(note['picture']) %}
-            {% set user = get_item('User', note['users_id_lastupdater']) %}
-            {% if thumbnail_url is not empty %}
-                {% set style = "background-image: url(\"#{ thumbnail_url }\")" %}
-            {% else %}
-                {% set style = "background-color: #{ user.getUserInitialsBgColor() }" %}
-            {% endif %}
-            <a href="{{ user.getLinkURL() }}">
-                {% set user_name %}
-                    {% do call('User::formatUserName', [
-                        user.fields['id'],
-                        user.fields['name'],
-                        user.fields['realname'],
-                        user.fields['firstname']
-                    ]) %}
-                {% endset %}
-                <span class="avatar avatar-sm rounded" style="{{ style }}" title="{{ user_name }}">
-                    {% if thumbnail_url is empty %}
-                        {{ user.getUserInitials() }}
-                    {% endif %}
-                </span>
-            </a>
+            {{ include('components/user/picture.html.twig', {
+                'users_id': note['users_id_lastupdater'],
+                'with_link': false,
+                'avatar_size': '',
+            }, with_context = false) }}
         </div>
         <div class='boxnotecontent'>
             <div class='boxnotetext'>
