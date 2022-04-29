@@ -1443,7 +1443,10 @@ abstract class CommonITILObject extends CommonDBTM
                 ];
             }
 
-            if (!isset($link['itemtype_1'], $link['items_id_1'], $link['itemtype_2'], $link['items_id_2'], $link['link'])) {
+            if (
+                !isset($link['itemtype_1'], $link['items_id_1'], $link['itemtype_2'], $link['items_id_2'], $link['link'])
+                || (int) $link['items_id_1'] === 0 || (int) $link['items_id_2'] === 0
+            ) {
                 // Not enough data, ignore link silently
                 return;
             }
