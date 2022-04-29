@@ -8445,7 +8445,14 @@ abstract class CommonITILObject extends CommonDBTM
                                     ];
                                 }
                             }
-                        } else {
+                        } else if ($key === 'group_any') {
+                            foreach ($value as $groups_id) {
+                                $validations_to_send[] = [
+                                    'itemtype_target' => Group::class,
+                                    'items_id_target' => $groups_id,
+                                ];
+                            }
+                        } else if ((int) $value > 0) {
                             $validations_to_send[] = [
                                 'itemtype_target' => User::class,
                                 'items_id_target' => $value,
