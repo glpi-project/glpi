@@ -9672,7 +9672,7 @@ abstract class CommonITILObject extends CommonDBTM
         $satisfaction = new $satisfaction_class();
         if (
             in_array($item->fields['status'], static::getClosedStatusArray())
-            && $satisfaction->getFromDB($item->getId)
+            && $satisfaction->getFromDB($item->getID())
         ) {
             // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
             $config_suffix = static::getType() === 'Ticket' ? '' : ('_' . strtolower(static::getType()));
