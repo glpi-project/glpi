@@ -173,6 +173,10 @@ abstract class RuleCommonITILObject extends Rule
                                 $output['_add_validation']['group'][] = $action->fields["value"];
                                 break;
 
+                            case 'groups_id_validate_any':
+                                $output['_add_validation']['group_any'][] = $action->fields["value"];
+                                break;
+
                             case 'users_id_validate':
                                 $output['_add_validation'][] = $action->fields["value"];
                                 break;
@@ -711,6 +715,7 @@ abstract class RuleCommonITILObject extends Rule
         $actions['responsible_id_validate']['type']                 = 'yesno';
         $actions['responsible_id_validate']['force_actions']        = ['add_validation'];
 
+        // Send approval to all valid users in a group where each user has their own approval
         $actions['groups_id_validate']['name']                      = sprintf(
             __('%1$s - %2$s'),
             __('Send an approval request'),
@@ -718,6 +723,16 @@ abstract class RuleCommonITILObject extends Rule
         );
         $actions['groups_id_validate']['type']                      = 'dropdown_groups_validate';
         $actions['groups_id_validate']['force_actions']             = ['add_validation'];
+
+        // Send approval to a group itself where any member can answer
+        $actions['groups_id_validate_any']['name']                      = sprintf(
+            __('%1$s - %2$s'),
+            __('Send an approval request'),
+            __('Group')
+        );
+        $actions['groups_id_validate_any']['type']                      = 'dropdown_groups_validate';
+        $actions['groups_id_validate_any']['force_actions']             = ['add_validation'];
+        $actions['groups_id_validate_any']['permitseveral']             = ['add_validation'];
 
         $actions['validation_percent']['name']                      = sprintf(
             __('%1$s - %2$s'),
