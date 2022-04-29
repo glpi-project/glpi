@@ -273,7 +273,6 @@
    </div>
 
    {% set notes_show = headers_states['notes'] is not defined or headers_states['notes'] == "true" ? true : false %}
-   {% set entity = get_item('Entity', item.fields['entities_id']) %}
    <div class="accordion-item">
       <h2 class="accordion-header" id="notes-heading" title="{{ __('Notes') }}" data-bs-toggle="tooltip">
          <button class="accordion-button {{ notes_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#notes" aria-expanded="true" aria-controls="notes">
@@ -286,7 +285,7 @@
       </h2>
       <div id="notes" class="accordion-collapse collapse {{ notes_show ? "show" : "" }}" aria-labelledby="notes-heading">
          <div class="accordion-body accordion-notes row m-0 mt-n2">
-            {{ notepad.showNotes(entity) }}
+            {{ include('components/notepad/notes.html.twig') }}
          </div>
       </div>
    </div>
