@@ -198,9 +198,7 @@
             {
                itemtype: "{{ actor['itemtype'] }}",
                items_id: "{{ actor['items_id'] }}",
-               {% if actor['use_notification'] is defined %}
-                  use_notification: "{{ actor['use_notification'] }}",
-               {% endif %}
+               use_notification: {{ actor['use_notification'] ? "1" : "0" }},
                {% if actor['alternative_email'] is defined %}
                   alternative_email: "{{ actor['alternative_email'] }}",
                {% endif %}
