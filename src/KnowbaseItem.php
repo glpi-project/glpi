@@ -1458,17 +1458,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 if (strlen($params["contains"]) > 0) {
                     $search  = Sanitizer::unsanitize($params["contains"]);
 
-                   // Replace all non word characters with spaces (see: https://stackoverflow.com/a/26537463)
-                    $search_wilcard = preg_replace('/[^\p{L}\p{N}_]+/u', ' ', $search);
-
-                   // Remove last space to avoid illegal syntax with " *"
-                    $search_wilcard = trim($search_wilcard);
-
-                   // Merge spaces since we are using them to split the string later
-                    $search_wilcard = preg_replace('!\s+!', ' ', $search_wilcard);
-
-                    $search_wilcard = explode(' ', $search_wilcard);
-                    $search_wilcard = implode('* ', $search_wilcard) . '*';
+				   // Replace all non word/operator characters with spaces (see: https://stackoverflow.com/a/26537463), ignore those inside quotes
+				    $search_wilcard = preg_replace('/[^\p{L}\p{N}_)(~+\<>*\\\\"-]+(?=([^"]*"[^"]*")*[^"]*$)/u', ' ', $search);
+				   // Remove escape character from quotes
+				    $search_wilcard = preg_replace('![\\\\]["]!u', '"', $search_wilcard);
+				   // Remove all isolated groups of operators, ignore those inside quotes
+				   // i.e. those operators which are neither a prefix nor a suffix for a word, group or phrase
+				    $search_wilcard = preg_replace('!(?<=\s)[~\<>*+-]+(?=\s)(?=([^"]*"[^"]*")*[^"]*$)!u', '', $search_wilcard);
+				   // Remove all * operators immediately following parentheses or quoted terms, ignore those inside quotes
+				    $search_wilcard = preg_replace('!(?<=[)("])[*](?=([^"]*"[^"]*")*[^"]*$)!u', '', $search_wilcard);
+				   // Insert space between closing parentheses and immediately following operator, ignore those inside quotes
+				    $search_wilcard = preg_replace('!(?<=[)])([~\<>+-])(?=([^"]*"[^"]*")*[^"]*$)!u', ' \1', $search_wilcard);
+				   // Replace any * operators immediately following a space, ignore those inside quotes
+				    $search_wilcard = preg_replace('!(?<=\s)[*](?=([^"]*"[^"]*")*[^"]*$)!u', ' ', $search_wilcard);
+				   // Replace groups of ~, >, <, + or - operators with rightmost operator, ignore those inside quotes
+					$search_wilcard = preg_replace('![~\<>+-]+(?=[~\<>+-])(?=([^"]*"[^"]*")*[^"]*$)!u', '', $search_wilcard);
+				   // Merge spaces, ignore those inside quotes
+				    $search_wilcard = preg_replace('!\s+(?=([^"]*"[^"]*")*[^"]*$)!u', ' ', $search_wilcard);
 
                     $addscore = [];
                     if (
@@ -1615,7 +1621,33 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $criteria;
     }
 
-
+    /**
+     * Check Boolean Full-Text Search Syntax
+     *
+     * @param $searchterm       raw text version of search term e.g. "+word -search"
+     * @param $pos				return the position of first syntax issue, default 0
+     **/
+    public static function checkBoolFtSyntax($searchterm, &$pos = 0)
+    {
+		 $matches = null;
+		 $returnValue = preg_match_all('/\s*([~+-]?\(\s*((?>(\s*[><~+-]?([A-Za-z_]+|"[^\\"]*(\\"[^\\"]*)*")[*]?(\s|$|(?=[)])))+)\s*|\s*(?R)\s*)*\s*\)|(?>(\s*[><~+-]?([A-Za-z_]+|"[^\\"]*(\\"[^\\"]*)*")[*]?(\s|$))+))\s*/', $searchterm, $matches);
+		 foreach ($matches as $key => $value)
+		 {
+			if (is_array($value)) {
+				foreach ($value as $ikey => $ivalue) {
+					$searchterm=str_replace($ivalue,str_repeat(" ",strlen($ivalue)),$searchterm);
+				}
+			} else {
+				$searchterm=str_replace($value,str_repeat(" ",strlen($value)),$searchterm);
+			}			 
+		 } 
+	     if (preg_match('/\S/',$searchterm,$matches)) {
+	         $pos=strpos($searchterm,ltrim($searchterm));
+			 return true;
+		 } else {
+			return false;
+		 }
+	}
     /**
      * Print out list kb item
      *
@@ -1707,7 +1739,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
            // Pager
             $parameters = "start=" . $params["start"] . "&amp;knowbaseitemcategories_id=" .
                         $params['knowbaseitemcategories_id'] . "&amp;contains=" .
-                        $params["contains"] . "&amp;is_faq=" . $params['faq'];
+                        rawurlencode($params["contains"]) . "&amp;is_faq=" . $params['faq'];
+			if (self::checkBoolFtSyntax(Sanitizer::unsanitize($params["contains"]), $errorpos)) {
+				$errorchar=substr($params["contains"],$errorpos,10);
+				echo '<div style="color:red;" class="d-flex justify-content-center">'.__('Search syntax error at ').$errorpos.", '".$errorchar."...'</div><br/><br/>";
+				return false;
+			}
 
             if (
                 isset($options['item_itemtype'])
