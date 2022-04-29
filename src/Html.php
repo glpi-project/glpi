@@ -3816,10 +3816,8 @@ JS;
             'fullscreen',
             'link',
             'lists',
-            'paste',
             'quickbars',
             'searchreplace',
-            'tabfocus',
             'table',
         ];
         if ($enable_images) {
@@ -3867,20 +3865,19 @@ JS;
                // inline toolbar configuration
                menubar: false,
                toolbar: richtext_layout == 'classic'
-                  ? 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
+                  ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
                   : false,
                quickbars_insert_toolbar: richtext_layout == 'inline'
                   ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
                   : false,
                quickbars_selection_toolbar: richtext_layout == 'inline'
-                  ? 'bold italic | styleselect | forecolor backcolor '
+                  ? 'bold italic | styles | forecolor backcolor '
                   : false,
                contextmenu: 'emoticons table image link | undo redo | code fullscreen',
 
                // Content settings
                entity_encoding: 'raw',
                invalid_elements: '{$invalid_elements}',
-               paste_data_images: true,
                readonly: {$readonlyjs},
                relative_urls: false,
                remove_script_host: false,
