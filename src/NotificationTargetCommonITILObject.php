@@ -1711,17 +1711,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             $data['timelineitems'] = [];
 
-            $options = [
-                'with_documents'    => false,
-                'with_logs'         => false,
-                'with_validations'  => false,
-                'expose_private'    => $show_private,
-                'bypass_rights'     => true,
-                'sort_by_date_desc' => true,
-                'is_self_service'   => $is_self_service,
-            ];
-
-            $timeline = $item->getTimelineItems($options);
+            $timeline = $item->getTimelineItems(
+                [
+                    'with_documents'    => false,
+                    'with_logs'         => false,
+                    'with_validations'  => false,
+                    'expose_private'    => $show_private,
+                    'bypass_rights'     => true,
+                    'sort_by_date_desc' => true,
+                    'is_self_service'   => $is_self_service,
+                ]
+            );
 
             foreach ($timeline as $timeline_data) {
                 $tmptimelineitem = [];
