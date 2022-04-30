@@ -29,6 +29,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set anonymous = session('glpiactiveprofile') is null %}
+
 {% set is_vertical = user_pref('page_layout') == 'vertical' %}
 
 <body class="{{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }}">
@@ -49,27 +51,34 @@
                <span class="glpi-logo"></span>
             </a>
 
-            <span class="d-none d-lg-inline-block">
-                {{ include('layout/parts/goto_button.html.twig') }}
-            </span>
+            {% if not anonymous %}
+               <span class="d-none d-lg-inline-block">
+                   {{ include('layout/parts/goto_button.html.twig') }}
+               </span>
+            {% endif %}
 
-            <div class="d-lg-none">
-               {{ include('layout/parts/user_header.html.twig') }}
-            </div>
+            {% if user is not null %}
+               {# There may still be a user logged in without a profile or entity. This is seen when they need to reset their password. #}
+               <div class="d-lg-none">
+                  {{ include('layout/parts/user_header.html.twig') }}
+               </div>
+            {% endif %}
 
-            <div class="collapse navbar-collapse" id="navbar-menu">
-                <span class="d-inline-block d-lg-none ms-2">
-                    {{ include('layout/parts/goto_button.html.twig') }}
-                </span>
-                {{ include('layout/parts/menu.html.twig') }}
+            {% if not anonymous %}
+               <div class="collapse navbar-collapse" id="navbar-menu">
+                   <span class="d-inline-block d-lg-none ms-2">
+                       {{ include('layout/parts/goto_button.html.twig') }}
+                   </span>
+                   {{ include('layout/parts/menu.html.twig') }}
 
 
-               <p class="text-start">
-                  <button class="btn btn-sm btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
-                     <span class="menu-label">{{ __('Collapse menu') }}</span>
-                  </button>
-               </p>
-            </div>
+                  <p class="text-start">
+                     <button class="btn btn-sm btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
+                        <span class="menu-label">{{ __('Collapse menu') }}</span>
+                     </button>
+                  </p>
+               </div>
+            {% endif %}
          </div>
       </aside>
       {% endif %}

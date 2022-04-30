@@ -45,35 +45,39 @@
          <div class="nav-item dropdown">
             <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle {% if is_debug_active %}bg-red-lt{% endif %}"
                data-bs-toggle="dropdown" data-bs-auto-close="outside">
-               <div class="pe-2 d-none d-xl-block">
-                  <div>{{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value|u.truncate(35, '...') }}</div>
-                  {% set entity_completename = session('glpiactive_entity_name')|verbatim_value %}
-                  <div class="mt-1 small text-muted" title="{{ entity_completename }}"
-                       data-bs-toggle="tooltip" data-bs-placement="bottom">
-                    {{ entity_completename|truncate_left }}
+               {% if not anonymous %}
+                  <div class="pe-2 d-none d-xl-block">
+                     <div>{{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value|u.truncate(35, '...') }}</div>
+                     {% set entity_completename = session('glpiactive_entity_name')|verbatim_value %}
+                     <div class="mt-1 small text-muted" title="{{ entity_completename }}"
+                          data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        {{ entity_completename|truncate_left }}
+                     </div>
                   </div>
-               </div>
 
-                {{ include('components/user/picture.html.twig', {
-                    'users_id': user.fields['id'],
-                    'with_link': false,
-                    'avatar_size': '',
-                }) }}
+                  {{ include('components/user/picture.html.twig', {
+                     'users_id': user.fields['id'],
+                     'with_link': false,
+                     'avatar_size': '',
+                  }) }}
+               {% endif %}
             </a>
             <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
                <h6 class="dropdown-header">{{ get_item_name(user) }}</h6>
 
-               {{ include('layout/parts/profile_selector.html.twig') }}
+               {% if not anonymous %}
+                  {{ include('layout/parts/profile_selector.html.twig') }}
 
-               <div class="dropdown-divider"></div>
+                  <div class="dropdown-divider"></div>
 
-               {% if has_itemtype_right('Config', constant('UPDATE')) %}
-                  <a href="{{ path('/ajax/switchdebug.php') }}"
-                     class="dropdown-item {% if is_debug_active %}bg-red-lt{% endif %}"
-                     title="{{ __('Change mode') }}">
-                     <i class="ti fa-fw ti-bug debug"></i>
-                     {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
-                  </a>
+                  {% if has_itemtype_right('Config', constant('UPDATE')) %}
+                     <a href="{{ path('/ajax/switchdebug.php') }}"
+                        class="dropdown-item {% if is_debug_active %}bg-red-lt{% endif %}"
+                        title="{{ __('Change mode') }}">
+                        <i class="ti fa-fw ti-bug debug"></i>
+                        {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
+                     </a>
+                  {% endif %}
                {% endif %}
 
                {# @TODO Saved searches panel #}
