@@ -335,7 +335,13 @@ const glpi_toast = (title, message, css_class, options = {}) => {
     }, options);
 
     const animation_classes = options.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
-    const html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
+    let location = CFG_GLPI.toast_location || 'bottom-right';
+    const valid_locations = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+    // If location is not valid, change it to bottom-right
+    if (!valid_locations.includes(location)) {
+        location = 'bottom-right';
+    }
+    const html = `<div class='toast-container ${location} p-3 messages_after_redirect'>
       <div id='toast_js_${toast_id}' class='toast ${css_class} ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
          <div class='toast-header'>
             <strong class='me-auto'>${title}</strong>

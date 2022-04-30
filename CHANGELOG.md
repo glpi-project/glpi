@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [10.1.0] unreleased
 
 ### Added
+- Configurable toast notification location
 
 ### Changed
 - Logs are now shown using the Search Engine

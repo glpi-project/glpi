@@ -1603,6 +1603,18 @@ class Config extends CommonDBTM
             echo "</td></tr>";
         }
 
+        echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . __('Notification popups') . "</th></tr>";
+
+        echo "<tr class='tab_bg_2'>";
+        echo "<td>" . __('Notification location') . "</td><td>";
+        Dropdown::showFromArray('toast_location', [
+            'top-left'      => __('Top left'),
+            'top-right'     => __('Top right'),
+            'bottom-left'   => __('Bottom left'),
+            'bottom-right'  => __('Bottom right'),
+        ], ['value' => $data['toast_location'] ?? 'bottom-right']);
+        echo "</td></tr>";
+
         if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='4' class='center'>";

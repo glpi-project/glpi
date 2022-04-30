@@ -34,10 +34,13 @@
  */
 
 /**
+ * @var DB $DB
  * @var Migration $migration
  */
 
 $migration->displayMessage('Add new configurations / user preferences');
 $migration->addConfig([
     'password_init_token_delay' => '86400',
+    'toast_location'    => 'bottom-right'
 ]);
+$migration->addField('glpi_users', 'toast_location', 'string');

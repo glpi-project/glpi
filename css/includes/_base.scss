@@ -214,6 +214,22 @@ body.iframed {
 .toast-container {
     z-index: 999999;
     position: fixed;
+
+    &.top-left {
+        inset: 0 auto auto 0;
+    }
+
+    &.top-right {
+        inset: 0 0 auto auto;
+    }
+
+    &.bottom-left {
+        inset: auto auto 0 0;
+    }
+
+    &.bottom-right {
+        inset: auto 0 0 auto;
+    }
 }
 
 .img-overlay-wrapper {
