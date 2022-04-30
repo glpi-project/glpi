@@ -64,7 +64,11 @@
 {% endset %}
 
 {% if display_container %}
-    <div class="toast-container bottom-0 end-0 p-3 messages_after_redirect" id="messages_after_redirect">
+    {% set toast_location = user_pref('toast_location') %}
+    {% if toast_location not in ['top-left', 'top-right', 'bottom-left', 'bottom-right'] %}
+        {% set toast_location = 'bottom-right' %}
+    {% endif %}
+    <div class="toast-container {{ toast_location }} p-3 messages_after_redirect" id="messages_after_redirect">
         {{ toasts_html }}
 
         <script type="text/javascript">
