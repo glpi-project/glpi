@@ -408,21 +408,48 @@
                   itemtype: '{{ item.getType() }}'
                }
             }).done(function (data) {
-               var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
-                  ? 0
-                  : parseInt(data.requesttypes_id);
+                if (data.content !== undefined) {
+                    // set textarea content
+                    if (tasktinymce = tinymce.get("content_{{ rand }}")) {
+                        tasktinymce.setContent(data.content);
+                    }
+                }
 
-               // set textarea content
-               if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                  tasktinymce.setContent(data.content);
+                if (data.taskcategories_id !== undefined) {
+                    // set category
+                    const taskcategories_id = isNaN(parseInt(data.taskcategories_id))
+                        ? 0
+                        : parseInt(data.taskcategories_id);
+                    $("#dropdown_taskcategories_id{{ rand }}").trigger("setValue", taskcategories_id);
+                }
+
+                if (data.is_private !== undefined) {
+                    // set is_private
+                    $("#is_private_{{ rand }}")
+                        .prop("checked", data.is_private == "0"
+                            ? false
+                            : true);
+                }
+
+                if (data.state !== undefined) {
+                    // Set state
+                    $("#dropdown_state{{ rand }}").trigger('setValue', data.state);
+                }
+
+                if (data.actiontime !== undefined) {
+                    // Set duration
+                    $("#dropdown_actiontime{{ rand }}").trigger('setValue', data.actiontime);
+                }
+
+                if (data.users_id_tech !== undefined) {
+                    // Set user
+                    $("#dropdown_users_id_tech{{ rand }}").trigger('setValue', data.users_id_tech);
+                }
+
+               if (data.groups_id_tech !== undefined) {
+                   // Set group
+                   $("#dropdown_groups_id_tech{{ rand }}").trigger('setValue', data.groups_id_tech);
                }
-               // set category
-               $("#dropdown_requesttypes_id{{ rand }}").trigger("setValue", requesttypes_id);
-               // set is_private
-               $("#is_private_{{ rand }}")
-                  .prop("checked", data.is_private == "0"
-                     ? false
-                     : true);
             });
          }
       </script>
