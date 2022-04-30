@@ -168,8 +168,8 @@ if (isset($_POST["add"])) {
     if (!isset($options)) {
         $options = [];
     }
-    $dropdown::displayFullPageForItem($_GET['id'], null, [
-        'formoptions' => ($options['formoptions'] ?? '') . ' data-track-changes=true',
-        'id'          => $_GET["id"],
-    ]);
+    $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
+    $options['id'] = $_GET['id'];
+
+    $dropdown::displayFullPageForItem($_GET['id'], null, $options);
 }
