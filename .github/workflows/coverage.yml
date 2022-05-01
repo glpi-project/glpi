@@ -11,6 +11,9 @@ on:
   # Enable manual run
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   coverage:
     # Do not run scheduled coverage on tier repositories

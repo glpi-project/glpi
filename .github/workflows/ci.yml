@@ -20,6 +20,9 @@ on:
   # Enable manual run
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     # Do not run scheduled lint on tier repositories

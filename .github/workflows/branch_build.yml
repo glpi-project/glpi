@@ -8,6 +8,9 @@ on:
         required: true
         default: "7.4"
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: "Build GLPI"
