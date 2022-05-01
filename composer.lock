@@ -3268,16 +3268,16 @@
         },
         {
             "name": "simplepie/simplepie",
-            "version": "1.5.8",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/simplepie/simplepie.git",
-                "reference": "d1d80f37264c9f1ed7fa3434eca14d179cb689b1"
+                "reference": "2bdbc51ed1010941c9c5f2cddca433e79665bfe1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/d1d80f37264c9f1ed7fa3434eca14d179cb689b1",
-                "reference": "d1d80f37264c9f1ed7fa3434eca14d179cb689b1",
+                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/2bdbc51ed1010941c9c5f2cddca433e79665bfe1",
+                "reference": "2bdbc51ed1010941c9c5f2cddca433e79665bfe1",
                 "shasum": ""
             },
             "require": {
@@ -3300,6 +3300,9 @@
             "autoload": {
                 "psr-0": {
                     "SimplePie": "library"
+                },
+                "psr-4": {
+                    "SimplePie\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3333,9 +3336,9 @@
             ],
             "support": {
                 "issues": "https://github.com/simplepie/simplepie/issues",
-                "source": "https://github.com/simplepie/simplepie/tree/1.5.8"
+                "source": "https://github.com/simplepie/simplepie/tree/1.6.0"
             },
-            "time": "2021-12-24T02:53:50+00:00"
+            "time": "2022-04-21T11:05:19+00:00"
         },
         {
             "name": "swaggest/json-diff",
@@ -5691,5 +5694,5 @@
     "platform-overrides": {
         "php": "7.4.0"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
