@@ -3433,16 +3433,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v5.4.7",
+            "version": "v5.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "ba06841ed293fcaf79a592f59fdaba471f7c756c"
+                "reference": "4c6747cf7e56c6b8e3094dd24852bd3e364375b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/ba06841ed293fcaf79a592f59fdaba471f7c756c",
-                "reference": "ba06841ed293fcaf79a592f59fdaba471f7c756c",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/4c6747cf7e56c6b8e3094dd24852bd3e364375b1",
+                "reference": "4c6747cf7e56c6b8e3094dd24852bd3e364375b1",
                 "shasum": ""
             },
             "require": {
@@ -3510,7 +3510,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v5.4.7"
+                "source": "https://github.com/symfony/cache/tree/v5.4.8"
             },
             "funding": [
                 {
@@ -3526,7 +3526,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-22T15:31:03+00:00"
+            "time": "2022-04-26T13:19:20+00:00"
         },
         {
             "name": "symfony/cache-contracts",
@@ -4573,16 +4573,16 @@
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v5.4.7",
+            "version": "v5.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "7eacaa588c9b27f2738575adb4a8457a80d9c807"
+                "reference": "7e132a3fcd4b57add721b4207236877b6017ec93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/7eacaa588c9b27f2738575adb4a8457a80d9c807",
-                "reference": "7eacaa588c9b27f2738575adb4a8457a80d9c807",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/7e132a3fcd4b57add721b4207236877b6017ec93",
+                "reference": "7e132a3fcd4b57add721b4207236877b6017ec93",
                 "shasum": ""
             },
             "require": {
@@ -4626,7 +4626,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v5.4.7"
+                "source": "https://github.com/symfony/var-exporter/tree/v5.4.8"
             },
             "funding": [
                 {
@@ -4642,7 +4642,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-31T17:09:19+00:00"
+            "time": "2022-04-26T13:19:20+00:00"
         },
         {
             "name": "true/punycode",
@@ -5691,5 +5691,5 @@
     "platform-overrides": {
         "php": "7.4.0"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
