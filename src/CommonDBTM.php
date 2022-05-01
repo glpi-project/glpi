@@ -5973,7 +5973,7 @@ class CommonDBTM extends CommonGLPI
         foreach ($urls as $url) {
             if (!empty($url)) {
                 $resolved_url = \Toolbox::getPictureUrl($url);
-                $src_file = GLPI_DOC_DIR . '/_pictures/' . '/' . $url;
+                $src_file = GLPI_PICTURE_DIR . '/' . $url;
                 if (file_exists($src_file)) {
                     $size = getimagesize($src_file);
                     $pictures[] = [
