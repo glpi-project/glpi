@@ -2057,17 +2057,26 @@ HTML;
         $user = Session::getLoginUserID() !== false ? User::getById(Session::getLoginUserID()) : null;
 
         $platform = "";
+        $shortcut = "<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>E</kbd>";
         if (!defined('TU_USER')) {
             $parser = new UserAgentParser();
             $ua = $parser->parse();
             $platform = $ua->platform();
+            if ($platform === Platforms::MACINTOSH) {
+                $shortcut = "<kbd>⌥ (option)</kbd> + <kbd>⌘ (command)</kbd> + <kbd>E</kbd>";
+            }
         }
+        $entity_shortcut        = sprintf(
+            __("Tip: You can call this modal with %s keys combination"),
+            "<kbd>$shortcut</kbd>"
+        );
 
         return [
             'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
             'is_impersonate_active' => Session::isImpersonateActive(),
             'founded_new_version'   => $founded_new_version,
             'user'                  => $user instanceof User ? $user : null,
+            'entity_shortcut'       => $entity_shortcut,
             'platform'              => $platform,
         ];
     }

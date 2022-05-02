@@ -50,6 +50,16 @@ $(function() {
         trigger_fuzzy();
     });
 
+    // when the shortcut for fuzzy is called
+    hotkeys('ctrl+alt+e, option+command+e', function() {
+        open_entity_selection();
+    });
+
+    var open_entity_selection = function() {
+        $('.avatar').trigger("click");
+        $('.dropdown-list-entity').dropdown('toggle');
+    };
+
     // when the button is clicked
     $(document).on('click', '.trigger-fuzzy', function() {
         trigger_fuzzy();
