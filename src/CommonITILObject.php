@@ -1848,6 +1848,15 @@ abstract class CommonITILObject extends CommonDBTM
             PendingReason_Item::deleteForItem($this);
         }
 
+        // Re-compute template
+        $template = $this->getITILTemplateToUse(
+            0,
+            $this::getType(),
+            ($input['itilcategories_id'] ?? $this->fields['itilcategories_id']),
+            ($input['entities_id'] ?? $this->fields['entities_id'])
+        );
+        $input[$template::getForeignKeyField()] = $template->getID();
+
         return $input;
     }
 
@@ -2628,6 +2637,16 @@ abstract class CommonITILObject extends CommonDBTM
        // Set begin waiting time if status is waiting
         if (isset($input["status"]) && ($input["status"] == self::WAITING)) {
             $input['begin_waiting_date'] = $input['date'];
+        }
+
+        if (isset($input['itilcategories_id'], $input['entities_id'])) {
+            $template = $this->getITILTemplateToUse(
+                0,
+                $this->getType(),
+                $input['itilcategories_id'],
+                $input['entities_id']
+            );
+            $input[$template::getForeignKeyField()] = $template->getID();
         }
 
         return $input;
