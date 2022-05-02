@@ -1,7 +1,7 @@
 {
     "name": "glpi/glpi",
     "description": "GLPI dependencies",
-    "license": "GPL-2.0-or-later",
+    "license": "GPL-3.0-or-later",
     "type": "project",
     "homepage": "http://www.glpi-project.org/",
     "support": {
