@@ -355,7 +355,7 @@
 
 {% macro colorField(name, value, label = '', options = {}) %}
    {% set field %}
-      <input data-jscolor="" id="%id%"
+      <input id="%id%"
              class="form-control"
              name="{{ name }}" value="{{ value|verbatim_value }}"
          {{ options.readonly ? 'readonly' : '' }}
@@ -363,7 +363,11 @@
          {{ options.required ? 'required' : '' }} />
       <script>
       $(function() {
-         jscolor.install();
+        $("#%id%").spectrum({
+            showInput: true,
+            preferredFormat: "hex",
+            type: "text",
+        });
       });
       </script>
    {% endset %}
