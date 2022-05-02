@@ -64,7 +64,7 @@
         "rrule": "^2.6.3",
         "select2": "^4.0.13",
         "spin.js": "^4.1.0",
-        "tinymce": "^5.7.0",
+        "tinymce": "^6.0.2",
         "tinymce-i18n": "^22.2.11"
     },
     "scripts": {
