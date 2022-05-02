@@ -31,7 +31,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<form action='' method='POSTY' enctype='multipart/form-data'>
+<form method='POST' enctype='multipart/form-data'>
     <h2>
         {{ __("Import inventory file") }}
     </h2>
@@ -47,6 +47,8 @@
         '',
         {
             'is_horizontal': true,
+            'simple': true,
+            'no_label': true,
         }
     ) }}
 
