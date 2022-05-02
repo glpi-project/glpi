@@ -10,6 +10,8 @@
  * based on GLPI - Gestionnaire Libre de Parc Informatique
  * Copyright (C) 2003-2014 by the INDEPNET Development Team.
  *
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ *
  * ---------------------------------------------------------------------
  *
  * LICENSE
