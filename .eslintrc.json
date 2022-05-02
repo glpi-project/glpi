@@ -87,10 +87,10 @@
             "env": {
                 "node": true,
                 "jest": true,
-                "es6": true
+                "es2021": true
             },
             "parserOptions": {
-                "ecmaVersion": 7,
+                "ecmaVersion": 12,
                 "sourceType": "module"
             }
         }
