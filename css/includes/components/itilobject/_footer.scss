@@ -38,6 +38,7 @@
         left: 0;
         right: 0;
         bottom: 8px;
+        z-index: $zindex-fixed;
     }
 
     .action-task {
