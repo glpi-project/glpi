@@ -603,10 +603,12 @@ abstract class CommonDropdown extends CommonDBTM
                     value=\"" . _sx('button', 'Cancel') . "\">";
             echo "</td></tr></table>\n";
             Html::closeForm();
+            echo "<p>" . __('You can also replace all uses of this dropdown by another.') . "</p>";
+        } else {
+            echo "<p>" . __('You must replace all uses of this dropdown by another.') . "</p>";
         }
 
        // Replace form (set to new value)
-        echo "<p>" . __('You can also replace all uses of this dropdown by another.') . "</p>";
         echo "<form action='$target' method='post'>";
         echo "<table class='tab_cadre'><tr><td>";
 
