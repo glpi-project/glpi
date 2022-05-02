@@ -897,6 +897,6 @@ abstract class ITILTemplate extends CommonDropdown
      */
     public static function getITILObjectClass(): string
     {
-        return str_replace('Template', '', static::getType());
+        return preg_replace("/Template$/i", "", static::getType());
     }
 }
