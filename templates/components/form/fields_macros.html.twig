@@ -396,9 +396,20 @@
    {% set options = {
       'rand': random(),
       'name': name,
+      'simple': false,
    }|merge(options) %}
    {% set field %}
-      {% do call('Html::file', [options]) %}
+      {% if options.simple %}
+        <input type="file" id="%id%"
+               class="form-control"
+               name="{{ name }}"
+               {{ options.mulitple ? 'multiple' : '' }}
+               {{ options.readonly ? 'readonly' : '' }}
+               {{ options.disabled ? 'disabled' : '' }}
+               {{ options.required ? 'required' : '' }} />
+      {% else %}
+        {% do call('Html::file', [options]) %}
+      {% endif %}
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
