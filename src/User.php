@@ -4992,10 +4992,11 @@ JAVASCRIPT;
      * Get user by email, importing it from LDAP if not existing.
      *
      * @param string $email
+     * @param bool $createuserfromemail
      *
      * @return integer ID of user, 0 if not found nor imported
      */
-    public static function getOrImportByEmail($email = '', $createuserfromemail = false)
+    public static function getOrImportByEmail($email = '', bool $createuserfromemail = false)
     {
         global $DB, $CFG_GLPI;
 
@@ -5043,9 +5044,9 @@ JAVASCRIPT;
                 }
             }
             if ($createuserfromemail) {
-                $res = self::createUserFromMail($email);
-                if ($res !== false) {
-                    return $res->fields['id'];
+                $user = self::createUserFromMail($email);
+                if ($user !== null) {
+                    return $user->fields['id'];
                 }
             }
         }
@@ -5331,11 +5332,13 @@ JAVASCRIPT;
     /**
      * Show new password form of password initialization process.
      *
-     * @param $token
+     * @param string $token
      *
      * @return void
+     *
+     * @since 10.1.0
      */
-    public static function showPasswordInitChangeForm($token)
+    public static function showPasswordInitChangeForm(string $token): void
     {
         TemplateRenderer::getInstance()->display('password_form.html.twig', [
             'title'    => __('Password Initialization'),
@@ -5349,8 +5352,10 @@ JAVASCRIPT;
      * Show request form of password recovery process.
      *
      * @return void
+     *
+     * @since 10.1.0
      */
-    public static function showPasswordForgetRequestForm()
+    public static function showPasswordForgetRequestForm(): void
     {
         TemplateRenderer::getInstance()->display('password_form.html.twig', [
             'title' => __('Forgotten password?'),
@@ -5499,7 +5504,7 @@ JAVASCRIPT;
      *
      * @return void
      */
-    public function showInitPassword($email)
+    public function showInitPassword(string $email): void
     {
         try {
             $this->forgetPassword($email, true);
@@ -5519,6 +5524,7 @@ JAVASCRIPT;
      * Send password recovery email for a user.
      *
      * @param string $email
+     * @param bool $firstpassword
      *
      * @throws ForgetPasswordException If the process failed and the user should
      *                                 be aware of it (e.g. incorrect email)
@@ -5528,7 +5534,7 @@ JAVASCRIPT;
      *              of it to avoid exposing whether or not the given email exist
      *              in our database.
      */
-    public function forgetPassword(string $email, $firstpassword = false): bool
+    public function forgetPassword(string $email, bool $firstpassword = false): bool
     {
         global $CFG_GLPI;
         if ($firstpassword) {
@@ -6589,11 +6595,11 @@ JAVASCRIPT;
     /**
      * Create a new user from an email address
      *
-     * @param email The email address of the user.
+     * @param string $email The email address of the user.
      *
-     * @return User|false Created user, false on failure.
+     * @return User|null Created user, null on failure.
      */
-    public static function createUserFromMail($email)
+    public static function createUserFromMail(string $email): ?User
     {
         global $DB;
 
@@ -6606,7 +6612,7 @@ JAVASCRIPT;
         ]);
 
         if (count($iterator) > 0) {
-            return false;
+            return null;
         }
 
         $user = new self();
@@ -6619,7 +6625,7 @@ JAVASCRIPT;
             '_init_password' => true
         ]);
         if (!$added) {
-            return false;
+            return null;
         }
 
         return $user;
