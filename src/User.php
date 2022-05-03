@@ -2298,7 +2298,7 @@ class User extends CommonDBTM
             return false;
         }
 
-        $simplified_form = $options['_in_modal'] ?? false;
+        $simplified_form = $options['simplified_form'] ?? false;
 
         $config = Config::getConfigurationValues('core');
         if ($this->getID() > 0 && $config['system_user'] == $this->getID()) {

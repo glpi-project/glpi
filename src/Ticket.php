@@ -4387,7 +4387,8 @@ JAVASCRIPT;
             echo Ajax::createIframeModalWindow('add_' . $ID, User::getFormURL(), [
                 'display' => false,
                 'extradata' => [
-                    'entities_id' => $this->fields['entities_id']
+                    'entities_id' => $this->fields['entities_id'],
+                    'simplified_form' => 1,
                 ]
             ]);
         }
