@@ -2857,7 +2857,7 @@ $empty_data_builder = new class
                 'itemtype' => 'User',
                 'event' => 'passwordinit',
                 'is_recursive' => 1,
-                'is_active' => 0,
+                'is_active' => 1,
             ],
         ];
 
