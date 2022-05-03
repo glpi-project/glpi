@@ -6613,17 +6613,14 @@ JAVASCRIPT;
         $added = $user->add([
             'name'           => $email,
             'realname'       => $email,
+            '_useremails'    => [
+                '-1' => $email
+            ],
             '_init_password' => true
         ]);
         if (!$added) {
             return false;
         }
-
-        $user->input['_useremails'] = [
-            '-1' => $email
-        ];
-
-        $user->updateUserEmails();
 
         return $user;
     }
