@@ -387,10 +387,14 @@ abstract class CommonITILObject extends CommonDBTM
             $options['noid'] = true;
         }
 
+        $type = null;
+        if (is_a($this, Ticket::class)) {
+            $type = ($ID ? $this->fields['type'] : $options['type']);
+        }
         // Load template if available
         $tt = $this->getITILTemplateToUse(
             $options['template_preview'] ?? 0,
-            $this->getType(),
+            $type,
             ($ID ? $this->fields['itilcategories_id'] : $options['itilcategories_id']),
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
         );
