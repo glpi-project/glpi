@@ -5020,24 +5020,26 @@ JAVASCRIPT;
         if (count($iterator)) {
             $result = $iterator->current();
             return $result['id'];
-        } elseif ($CFG_GLPI["is_users_auto_add"]) {
-            //Get all ldap servers with email field configured
-            $ldaps = AuthLDAP::getServersWithImportByEmailActive();
-            //Try to find the user by his email on each ldap server
+        } else {
+            if ($CFG_GLPI["is_users_auto_add"]) {
+                //Get all ldap servers with email field configured
+                $ldaps = AuthLDAP::getServersWithImportByEmailActive();
+                //Try to find the user by his email on each ldap server
 
-            foreach ($ldaps as $ldap) {
-                $params = [
-                    'method' => AuthLDAP::IDENTIFIER_EMAIL,
-                    'value'  => $email,
-                ];
-                $res = AuthLDAP::ldapImportUserByServerId(
-                    $params,
-                    AuthLDAP::ACTION_IMPORT,
-                    $ldap
-                );
+                foreach ($ldaps as $ldap) {
+                    $params = [
+                        'method' => AuthLDAP::IDENTIFIER_EMAIL,
+                        'value'  => $email,
+                    ];
+                    $res = AuthLDAP::ldapImportUserByServerId(
+                        $params,
+                        AuthLDAP::ACTION_IMPORT,
+                        $ldap
+                    );
 
-                if (isset($res['id'])) {
-                    return $res['id'];
+                    if (isset($res['id'])) {
+                        return $res['id'];
+                    }
                 }
             }
             if ($createuserfromemail) {

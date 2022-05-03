@@ -317,6 +317,21 @@ class MailCollector extends CommonDBTM
         echo "<tr class='tab_bg_1'><td>" . __('Automatically create user from email') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("create_user_from_email", $this->fields["create_user_from_email"]);
+        if (!$CFG_GLPI["is_users_auto_add"]) {
+            Html::showToolTip(
+                sprintf(
+                    __('If you use this option, and this collector is likely to receive requests from users authenticating via LDAP, we advise you to activate the general configuration option "%s", in order to avoid the generation of duplicate users.'),
+                    sprintf(
+                        '<a href="%s">%s</a>',
+                        $CFG_GLPI['root_doc'] . '/front/auth.settings.php',
+                        __('Automatically add users from an external authentication source')
+                    )
+                ),
+                [
+                    'link' => $CFG_GLPI['root_doc'] . '/front/auth.settings.php',
+                ]
+            );
+        }
         echo "</td></tr>\n";
 
         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
