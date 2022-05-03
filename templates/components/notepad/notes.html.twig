@@ -31,8 +31,7 @@
 
 {% set rand = random() %}
 {% set entity = get_item('Entity', item.fields['entities_id']) %}
-
-{% set notes = notepad.getAllForItem(entity) %}
+{% set notes = call('Notepad::getAllForItem', [entity]) %}
 
 {% for note in notes %}
     {% set id = "note#{ note['id'] }#{ rand }" %}
