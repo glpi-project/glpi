@@ -4586,4 +4586,78 @@ HTML
         $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
         $this->boolean((bool)$ticket->needReopen())->isFalse();
     }
+
+    public function testCalculateTemplateOnAdd()
+    {
+        $template = new \TicketTemplate();
+        $templates_id = $template->add([
+            'name'          => __FUNCTION__,
+            'content'       => __FUNCTION__,
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+
+        $category = new \ITILCategory();
+        $category_id = $category->add([
+            'name'                          => __FUNCTION__,
+            'entities_id'                   => getItemByTypeName('Entity', '_test_root_entity', true),
+            'tickettemplates_id_incident'   => $templates_id,
+            'tickettemplates_id_demand'     => $templates_id,
+        ]);
+        $this->integer($category_id)->isGreaterThan(0);
+
+        $ticket = new \Ticket();
+        $result = $ticket->prepareInputForAdd([
+            'name'                  => __FUNCTION__,
+            'content'               => __FUNCTION__,
+            'tickettemplates_id'    => 1,
+            'itilcategories_id'     => $category_id,
+            'type'                  => \Ticket::INCIDENT_TYPE,
+            '_skip_rules'           => true,
+        ]);
+
+        $this->integer((int) $result['tickettemplates_id'])->isEqualTo($templates_id);
+    }
+
+    public function testCalculateTemplateOnUpdate()
+    {
+        $template = new \TicketTemplate();
+        $templates_id = $template->add([
+            'name'          => __FUNCTION__,
+            'content'       => __FUNCTION__,
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+
+        $category = new \ITILCategory();
+        $category_id = $category->add([
+            'name'                          => __FUNCTION__,
+            'entities_id'                   => getItemByTypeName('Entity', '_test_root_entity', true),
+            'tickettemplates_id_incident'   => $templates_id,
+            'tickettemplates_id_demand'     => $templates_id,
+        ]);
+        $this->integer($category_id)->isGreaterThan(0);
+
+        $existing_fields = [
+            'id'                    => 1,
+            'name'                  => __FUNCTION__,
+            'content'               => __FUNCTION__,
+            'tickettemplates_id'    => 1,
+            'entities_id'           => getItemByTypeName('Entity', '_test_root_entity', true),
+            'status'                => \CommonITILObject::INCOMING,
+            'users_id_recipient'    => getItemByTypeName('User', TU_USER, true),
+            'type'                  => \Ticket::INCIDENT_TYPE,
+        ];
+        $update_input = [
+            'id'                    => 1,
+            'itilcategories_id'     => $category_id,
+        ];
+        $ticket = new \Ticket();
+        $ticket->fields = $existing_fields;
+        $ticket->input = $update_input;
+        $this->login();
+        $result = $ticket->prepareInputForUpdate($update_input);
+
+        $this->integer((int) $result['tickettemplates_id'])->isEqualTo($templates_id);
+    }
 }

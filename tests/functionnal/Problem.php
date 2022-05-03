@@ -194,4 +194,73 @@ class Problem extends DbTestCase
             $this->string(\Problem::getTeamRoleName($role))->isNotEmpty();
         }
     }
+
+    public function testCalculateTemplateOnAdd()
+    {
+        $template = new \ProblemTemplate();
+        $templates_id = $template->add([
+            'name'          => __FUNCTION__,
+            'content'       => __FUNCTION__,
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+
+        $category = new \ITILCategory();
+        $category_id = $category->add([
+            'name'                  => __FUNCTION__,
+            'entities_id'           => getItemByTypeName('Entity', '_test_root_entity', true),
+            'problemtemplates_id'   => $templates_id,
+        ]);
+        $this->integer($category_id)->isGreaterThan(0);
+
+        $problem = new \Problem();
+        $result = $problem->prepareInputForAdd([
+            'name'                  => __FUNCTION__,
+            'content'               => __FUNCTION__,
+            'problemtemplates_id'   => 1,
+            'itilcategories_id'     => $category_id,
+        ]);
+
+        $this->integer((int) $result['problemtemplates_id'])->isEqualTo($templates_id);
+    }
+
+    public function testCalculateTemplateOnUpdate()
+    {
+        $template = new \ProblemTemplate();
+        $templates_id = $template->add([
+            'name'          => __FUNCTION__,
+            'content'       => __FUNCTION__,
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+
+        $category = new \ITILCategory();
+        $category_id = $category->add([
+            'name'                  => __FUNCTION__,
+            'entities_id'           => getItemByTypeName('Entity', '_test_root_entity', true),
+            'problemtemplates_id'   => $templates_id,
+        ]);
+        $this->integer($category_id)->isGreaterThan(0);
+
+        $existing_fields = [
+            'id'                    => 1,
+            'name'                  => __FUNCTION__,
+            'content'               => __FUNCTION__,
+            'problemtemplates_id'   => 1,
+            'entities_id'           => getItemByTypeName('Entity', '_test_root_entity', true),
+            'status'                => \CommonITILObject::INCOMING,
+            'users_id_recipient'    => getItemByTypeName('User', TU_USER, true),
+        ];
+        $update_input = [
+            'id'                    => 1,
+            'itilcategories_id'     => $category_id,
+        ];
+        $problem = new \Problem();
+        $problem->fields = $existing_fields;
+        $problem->input = $update_input;
+        $this->login();
+        $result = $problem->prepareInputForUpdate($update_input);
+
+        $this->integer((int) $result['problemtemplates_id'])->isEqualTo($templates_id);
+    }
 }

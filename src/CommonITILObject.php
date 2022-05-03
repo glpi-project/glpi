@@ -1848,10 +1848,14 @@ abstract class CommonITILObject extends CommonDBTM
             PendingReason_Item::deleteForItem($this);
         }
 
+        $type = null;
+        if (is_a($this, Ticket::class)) {
+            $type = $input['type'] ?? $this->fields['type'];
+        }
         // Re-compute template
         $template = $this->getITILTemplateToUse(
             0,
-            $this::getType(),
+            $type,
             ($input['itilcategories_id'] ?? $this->fields['itilcategories_id']),
             ($input['entities_id'] ?? $this->fields['entities_id'])
         );
@@ -2639,12 +2643,16 @@ abstract class CommonITILObject extends CommonDBTM
             $input['begin_waiting_date'] = $input['date'];
         }
 
-        if (isset($input['itilcategories_id'], $input['entities_id'])) {
+        if (isset($input['itilcategories_id']) || isset($input['entities_id'])) {
+            $type = null;
+            if (is_a($this, Ticket::class)) {
+                $type = $input['type'] ?? Ticket::INCIDENT_TYPE;
+            }
             $template = $this->getITILTemplateToUse(
                 0,
-                $this->getType(),
-                $input['itilcategories_id'],
-                $input['entities_id']
+                $type,
+                $input['itilcategories_id'] ?? 0,
+                $input['entities_id'] ?? -1
             );
             $input[$template::getForeignKeyField()] = $template->getID();
         }
