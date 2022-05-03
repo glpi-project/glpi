@@ -1542,7 +1542,7 @@ final class DbUtils
         if ($realname !== null && strlen($realname) > 0) {
             $formatted = $realname;
 
-            if (strlen($firstname) > 0) {
+            if ($firstname !== null && strlen($firstname) > 0) {
                 if ($order == User::FIRSTNAME_BEFORE) {
                     $formatted = $firstname . " " . $formatted;
                 } else {
