@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7c51dbdfc7b303af8ef383e625f65254",
+    "content-hash": "c38fb3fe4247e0d4d58bb1e17c992214",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -1327,12 +1327,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "League\\Csv\\": "src"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "League\\Csv\\": "src"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2525,12 +2525,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Ramsey\\Uuid\\": "src/"
-                },
                 "files": [
                     "src/functions.php"
-                ]
+                ],
+                "psr-4": {
+                    "Ramsey\\Uuid\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2660,8 +2660,8 @@
             "autoload": {
                 "psr-4": {
                     "Sabre\\DAV\\": "lib/DAV/",
-                    "Sabre\\DAVACL\\": "lib/DAVACL/",
                     "Sabre\\CalDAV\\": "lib/CalDAV/",
+                    "Sabre\\DAVACL\\": "lib/DAVACL/",
                     "Sabre\\CardDAV\\": "lib/CardDAV/"
                 }
             },
@@ -2717,14 +2717,14 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Sabre\\Event\\": "lib/"
-                },
                 "files": [
                     "lib/coroutine.php",
                     "lib/Loop/functions.php",
                     "lib/Promise/functions.php"
-                ]
+                ],
+                "psr-4": {
+                    "Sabre\\Event\\": "lib/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -3012,13 +3012,13 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Sabre\\Xml\\": "lib/"
-                },
                 "files": [
                     "lib/Deserializer/functions.php",
                     "lib/Serializer/functions.php"
-                ]
+                ],
+                "psr-4": {
+                    "Sabre\\Xml\\": "lib/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -4337,12 +4337,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php81\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php81\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -5202,16 +5202,16 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.4.5",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "55ffa6566813d3c40d621892713ef63614820c79"
+                "reference": "547739edc4d7992ad1061d26937b9a626631e6b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/55ffa6566813d3c40d621892713ef63614820c79",
-                "reference": "55ffa6566813d3c40d621892713ef63614820c79",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/547739edc4d7992ad1061d26937b9a626631e6b7",
+                "reference": "547739edc4d7992ad1061d26937b9a626631e6b7",
                 "shasum": ""
             },
             "require": {
@@ -5221,7 +5221,6 @@
             "bin": [
                 "bin/extract-locales",
                 "bin/licence-headers-check",
-                "tools/extract_template.sh",
                 "tools/plugin-release"
             ],
             "type": "library",
@@ -5251,7 +5250,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2022-04-20T06:57:59+00:00"
+            "time": "2022-05-03T09:56:09+00:00"
         },
         {
             "name": "maglnet/composer-require-checker",
