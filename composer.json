@@ -1,7 +1,7 @@
 {
     "name": "glpi/glpi",
     "description": "GLPI dependencies",
-    "license": "GPL-2.0-or-later",
+    "license": "GPL-3.0-or-later",
     "type": "project",
     "homepage": "http://www.glpi-project.org/",
     "support": {
@@ -73,7 +73,7 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.0",
         "friendsoftwig/twigcs": "^5.1",
-        "glpi-project/tools": "^0.4",
+        "glpi-project/tools": "^0.5",
         "maglnet/composer-require-checker": "^3.5",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.3",
