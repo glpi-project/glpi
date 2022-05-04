@@ -123,7 +123,16 @@ class DCBreadcrumb extends \DbTestCase
         $DCBreadcrumb = \Computer::getDcBreadcrumbSpecificValueToDisplay($computer1->getID(), false, false);
         $this->string($DCBreadcrumb)->isIdenticalTo(
             sprintf(
-                "<i class='ti ti-building-warehouse'></i> %s &gt; <i class='ti ti-building'></i> %s &gt; <i class='ti ti-server'></i> %s&nbsp;(U%d)",
+                "
+                <i class='ti ti-building-warehouse'></i> %s
+                   
+                      >
+                   <i class='ti ti-building'></i> %s
+                   
+                      >
+                   <i class='ti ti-server'></i> %s
+                   &nbsp;(U%d)
+                ",
                 $datacenter_name,
                 $DCroom_name,
                 $rack_name,
