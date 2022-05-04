@@ -30,24 +30,27 @@
  #
  # ---------------------------------------------------------------------
  #}
-   <div class="row">
-{% for breadcrumb_item in breadcrumbs %}
+<div class="row">
+   {% for breadcrumb_item in breadcrumbs %}
 
-   <div class="col-auto p-1">
-   {{ breadcrumb_item['link']|raw }}
-
-   {% if breadcrumb_item['location'] is defined %}
-      <br>
-      <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' style='max-width: 100px;'>
-         {{ breadcrumb_item['location']|raw }}
-      </span>
-   {% endif %}
-   </div>
-   {{ breadcrumb_item['position']|raw }}
-   {% if loop.last == false %}
       <div class="col-auto p-1">
-         >
+         {{ breadcrumb_item['link']|raw }}
+
+         {% if breadcrumb_item['location'] is defined %}
+            <br>
+            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' style='max-width: 100px;'>
+               {{ breadcrumb_item['location']|raw }}
+            </span>
+         {% endif %}
       </div>
-   {% endif %}
-{% endfor %}
- </div>
+      {% if loop.last == false %}
+         <div class="col-auto p-1">
+            >
+         </div>
+      {% else %}
+         <div class="col-auto pt-1 p-0">
+            {{ breadcrumb_item['position']|raw }}
+         </div>
+      {% endif %}
+   {% endfor %}
+</div>

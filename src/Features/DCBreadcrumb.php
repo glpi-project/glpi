@@ -211,7 +211,7 @@ trait DCBreadcrumb
             $position = $ien->getField('position');
         }
 
-        $position = "&nbsp;" . sprintf(__('(U%1$u)'), $position);
+        $position = sprintf(__('(U%1$u)'), $position);
         return $position;
     }
 
@@ -258,7 +258,7 @@ trait DCBreadcrumb
             $position = $ira->getField('position');
         }
 
-        $position = "&nbsp;" . sprintf(__('(U%1$u)'), $position);
+        $position = sprintf(__('(U%1$u)'), $position);
         return $position;
     }
 
