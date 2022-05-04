@@ -8306,19 +8306,14 @@ HTML;
 
                 $pdf = new GLPIPDF(
                     [
-                        'default_font_size'  => $fontsize,
-                        'default_font'       => $font,
+                        'font_size'  => $fontsize,
+                        'font'       => $font,
                         'orientation'        => $type == self::PDF_OUTPUT_LANDSCAPE ? 'L' : 'P',
-                    ]
+                    ],
+                    $count,
+                    $title,
                 );
-                if ($count !== null) {
-                     $pdf->setTotalCount($count);
-                }
-                $pdf->SetTitle($title);
 
-                $pdf->SetFont($font, '', $fontsize);
-
-                $pdf->AddPage();
                 $PDF_TABLE .= '</table>';
                 $pdf->writeHTML($PDF_TABLE);
                 $pdf->Output('glpi.pdf', 'I');
