@@ -2360,7 +2360,7 @@ class Rule extends CommonDBTM
                         break;
 
                     case "dropdown_status":
-                        if (is_a(static::class, RuleCommonITILObject::class)) {
+                        if (is_a(static::class, RuleCommonITILObject::class, true)) {
                             $itil = static::getItemtype();
                             return $itil::getStatus($pattern);
                         } else {
@@ -2502,7 +2502,7 @@ class Rule extends CommonDBTM
                     break;
 
                 case "dropdown_status":
-                    if (is_a(static::class, RuleCommonITILObject::class)) {
+                    if (is_a(static::class, RuleCommonITILObject::class, true)) {
                         $itil = static::getItemtype();
                         $itil::dropdownStatus(['name' => $name,
                             'value' => $value
@@ -2587,7 +2587,7 @@ class Rule extends CommonDBTM
                     return (($name == '&nbsp;') ? NOT_AVAILABLE : $name);
 
                 case "dropdown_status":
-                    if (is_a(static::class, RuleCommonITILObject::class)) {
+                    if (is_a(static::class, RuleCommonITILObject::class, true)) {
                         $itil = static::getItemtype();
                         return $itil::getStatus($value);
                     } else {
