@@ -165,7 +165,8 @@ trait DCBreadcrumb
         return $breadcrumb;
     }
 
-    public function cleanLocationInforamtions(&$breadcrumb){
+    public function cleanLocationInforamtions(&$breadcrumb)
+    {
         $rack_location = isset($breadcrumb[Rack::getType()]) ? $breadcrumb[Rack::getType()]['location']['item'] : null;
         $enclosure_location = isset($breadcrumb[Enclosure::getType()]) ? $breadcrumb[Enclosure::getType()]['location']['item'] : null;
         $dcroom_location = isset($breadcrumb[DCRoom::getType()]) ? $breadcrumb[DCRoom::getType()]['location']['item'] : null;
