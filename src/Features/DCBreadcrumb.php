@@ -232,7 +232,7 @@ trait DCBreadcrumb
             $locations_id = $obj->fields['locations_id'];
         }
 
-        $location = "<i class='" . Location::getIcon() ."'></i>". Dropdown::getDropdownName(getTableForItemType(Location::getType()), $locations_id);
+        $location = "<i class='" . Location::getIcon() . "'></i>" . Dropdown::getDropdownName(getTableForItemType(Location::getType()), $locations_id);
         return $location;
     }
 
@@ -306,17 +306,15 @@ trait DCBreadcrumb
         if ($item->getFromDB($items_id)) {
             $breadcrumb = $item->getDcBreadcrumb($with_location);
             if (count($breadcrumb) > 0) {
-
                 $options = [
                     'breadcrumbs'   => array_reverse($breadcrumb)
                 ];
 
-                if ($display){
+                if ($display) {
                     return TemplateRenderer::getInstance()->display('layout/parts/dcbreadcrumbs.html.twig', $options);
                 } else {
                     return TemplateRenderer::getInstance()->render('layout/parts/dcbreadcrumbs.html.twig', $options);
                 }
-
             }
         }
         return false;
