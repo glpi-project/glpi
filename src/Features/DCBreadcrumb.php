@@ -161,29 +161,28 @@ trait DCBreadcrumb
         if ($with_location) {
             $breadcrumb = $this->cleanLocationInforamtions($breadcrumb);
         }
-        
 
         return $breadcrumb;
     }
 
     public function cleanLocationInforamtions(&$breadcrumb){
-        $rack_location = isset($breadcrumb[Rack::getType()]) ? $breadcrumb[Rack::getType()]['location']['item']: null;
+        $rack_location = isset($breadcrumb[Rack::getType()]) ? $breadcrumb[Rack::getType()]['location']['item'] : null;
         $enclosure_location = isset($breadcrumb[Enclosure::getType()]) ? $breadcrumb[Enclosure::getType()]['location']['item'] : null;
-        $dcroom_location = isset($breadcrumb[DCRoom::getType()]) ? $breadcrumb[DCRoom::getType()]['location']['item']: null;
-        $datacenter_location = isset($breadcrumb[Datacenter::getType()]) ? $breadcrumb[Datacenter::getType()]['location']['item']: null;
+        $dcroom_location = isset($breadcrumb[DCRoom::getType()]) ? $breadcrumb[DCRoom::getType()]['location']['item'] : null;
+        $datacenter_location = isset($breadcrumb[Datacenter::getType()]) ? $breadcrumb[Datacenter::getType()]['location']['item'] : null;
 
         if ($rack_location != null) {
-            if($rack_location->fields['id'] ==  $dcroom_location->fields['id']){
+            if ($rack_location->fields['id'] ==  $dcroom_location->fields['id']) {
                 unset($breadcrumb[Rack::getType()]['location']);
             } else if ($rack_location->fields['locations_id'] == $dcroom_location->fields['id']) {
                 $breadcrumb[Rack::getType()]['location']['name'] = $rack_location->fields['name'];
-            } else{
+            } else {
                 $breadcrumb[Rack::getType()]['location']['name'] = $rack_location->fields['completename'];
             }
         }
 
         if ($enclosure_location != null) {
-            if($enclosure_location->fields['id'] ==  $dcroom_location->fields['id']){
+            if ($enclosure_location->fields['id'] ==  $dcroom_location->fields['id']) {
                 unset($breadcrumb[Enclosure::getType()]['location']);
             } else if ($enclosure_location->fields['locations_id'] == $dcroom_location->fields['id']) {
                 $breadcrumb[Enclosure::getType()]['location']['name'] = "$enclosure_location->fields['name']";
@@ -193,11 +192,11 @@ trait DCBreadcrumb
         }
 
         if ($dcroom_location != null) {
-            if($dcroom_location->fields['id'] == $datacenter_location->fields['id']){
+            if ($dcroom_location->fields['id'] == $datacenter_location->fields['id']) {
                 unset($breadcrumb[DCRoom::getType()]['location']);
             } else if ($dcroom_location->fields['locations_id'] == $datacenter_location->fields['id']) {
                 $breadcrumb[DCRoom::getType()]['location']['name'] = $dcroom_location->fields['name'];
-            } else{
+            } else {
                 $breadcrumb[DCRoom::getType()]['location']['name'] = $dcroom_location->fields['completename'];
             }
         }
