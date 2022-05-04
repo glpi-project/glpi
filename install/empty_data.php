@@ -764,7 +764,7 @@ $empty_data_builder = new class
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
-                'id' => 42,
+                'id' => 43,
                 'itemtype' => 'Change',
                 'name' => 'createinquest',
                 'frequency' => 86400,
