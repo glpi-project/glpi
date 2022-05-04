@@ -126,11 +126,7 @@ if (isset($_POST["add"])) {
     $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
     Html::popFooter();
 } else {
-    if (isset($_GET['showglobalgantt']) && $_GET['showglobalgantt']) {
-        Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
-        $project->showGantt(-1);
-        Html::footer();
-    } else if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
+    if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
         Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
         $project->showKanban(0);
         Html::footer();
