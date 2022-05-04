@@ -35,11 +35,11 @@
    {{ breadcrumb_item['link']|raw }}
    {% if breadcrumb_item['location'] is defined %}
       <span class='badge bg-blue-lt'>
-         {{ breadcrumb_item['location']|raw}}
+         {{ breadcrumb_item['location']|raw }}
       </span>
    {% endif %}
    {{ breadcrumb_item['position']|raw }}
    {% if loop.last == false %}
-      > 
+      >
    {% endif %}
 {% endfor %}
