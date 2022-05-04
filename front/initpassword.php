@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include('../inc/includes.php');
 
 if (
@@ -44,10 +46,14 @@ if (
 ) {
     Session::addMessageAfterRedirect(
         __('Sending password initialization notification is not enabled.'),
-        false,
+        true,
         ERROR
     );
-    Html::back();
+    TemplateRenderer::getInstance()->display('password_form.html.twig', [
+        'title'         => __('Forgotten initialization'),
+        'messages_only' => true,
+    ]);
+    exit();
 }
 
 $user = new User();

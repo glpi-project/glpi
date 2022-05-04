@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 include('../inc/includes.php');
 
 if (
@@ -42,6 +44,15 @@ if (
         ['itemtype' => 'User', 'event' => 'passwordforget', 'is_active' => 1]
     )
 ) {
+    Session::addMessageAfterRedirect(
+        __('Sending password forget notification is not enabled.'),
+        true,
+        ERROR
+    );
+    TemplateRenderer::getInstance()->display('password_form.html.twig', [
+        'title'         => __('Forgotten password?'),
+        'messages_only' => true,
+    ]);
     exit();
 }
 
