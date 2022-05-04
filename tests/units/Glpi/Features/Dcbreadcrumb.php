@@ -120,7 +120,7 @@ class DCBreadcrumb extends \DbTestCase
         ]);
         $this->checkInput($Itemrack, $Itemrack_id, $Itemrack_input);
 
-        $DCBreadcrumb = \Computer::getDcBreadcrumbSpecificValueToDisplay($computer1->getID(), false, true);
+        $DCBreadcrumb = \Computer::getDcBreadcrumbSpecificValueToDisplay($computer1->getID(), false, false);
         $this->string($DCBreadcrumb)->isIdenticalTo(
             sprintf(
                 "<i class='ti ti-building-warehouse'></i> %s &gt; <i class='ti ti-building'></i> %s &gt; <i class='ti ti-server'></i> %s&nbsp;(U%d)",
