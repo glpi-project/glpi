@@ -163,7 +163,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         );
                     }
                     $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-                    $ong[2] = __('GANTT');
                     $ong[3] = __('Kanban');
                     return $ong;
             }
@@ -181,10 +180,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 switch ($tabnum) {
                     case 1:
                         $item->showChildren();
-                        break;
-
-                    case 2:
-                        $item->showGantt($item->getID());
                         break;
 
                     case 3:
@@ -271,7 +266,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
             $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
-            $links['summary_gantt'] = Project::getFormURL(false) . '?showglobalgantt=1';
             $links['summary_kanban'] = Project::getFormURL(false) . '?showglobalkanban=1';
         }
         if (count($links)) {
@@ -626,13 +620,16 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'step'               => 5
         ];
 
-        $tab[] = [
-            'id'                 => '6',
-            'table'              => $this->getTable(),
-            'field'              => 'show_on_global_gantt',
-            'name'               => __('Show on global GANTT'),
-            'datatype'           => 'bool'
-        ];
+        $plugin = new Plugin();
+        if ($plugin->isActivated('gantt')) {
+            $tab[] = [
+                'id'                 => '6',
+                'table'              => $this->getTable(),
+                'field'              => 'show_on_global_gantt',
+                'name'               => __('Show on global Gantt'),
+                'datatype'           => 'bool'
+            ];
+        }
 
         $tab[] = [
             'id'                 => '24',
@@ -1627,10 +1624,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo "<td>";
         ProjectType::dropdown(['value' => $this->fields["projecttypes_id"]]);
         echo "</td>";
-        echo "<td>" . __('Show on global GANTT') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("show_on_global_gantt", $this->fields["show_on_global_gantt"]);
-        echo "</td>";
+        $plugin = new Plugin();
+        if ($plugin->isActivated('gantt')) {
+            echo "<td>" . __('Show on global gantt') . "</td>";
+            echo "<td>";
+            Dropdown::showYesNo("show_on_global_gantt", $this->fields["show_on_global_gantt"]);
+            echo "</td>";
+        }
         echo "</tr>";
 
         echo "<tr><td colspan='4' class='subheader'>" . _n('Manager', 'Managers', 1) . "</td></tr>";
@@ -1859,128 +1859,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
        // Add items
 
         return true;
-    }
-
-
-    /** Get data to display on GANTT
-     *
-     * @param $ID        integer   ID of the project
-     * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
-     */
-    public static function getDataToDisplayOnGantt($ID, $showall = true)
-    {
-        global $DB;
-
-        $todisplay = [];
-        $project   = new self();
-        if ($project->getFromDB($ID)) {
-            $projects = [];
-            foreach ($DB->request('glpi_projects', ['projects_id' => $ID]) as $data) {
-                $projects += static::getDataToDisplayOnGantt($data['id']);
-            }
-            ksort($projects);
-           // Get all tasks
-            $tasks      = ProjectTask::getAllForProject($ID);
-
-            $real_begin = null;
-            $real_end   = null;
-           // Use real if set
-            if (is_null($project->fields['real_start_date'])) {
-                $real_begin = $project->fields['real_start_date'];
-            }
-
-           // Determine begin / end date of current project if not set (min/max sub projects / tasks)
-            if (is_null($real_begin)) {
-                if (!is_null($project->fields['plan_start_date'])) {
-                    $real_begin = $project->fields['plan_start_date'];
-                } else {
-                    foreach ($tasks as $task) {
-                        if (
-                            is_null($real_begin)
-                            || (!is_null($task['plan_start_date'])
-                            && ($real_begin > $task['plan_start_date']))
-                        ) {
-                            $real_begin = $task['plan_start_date'];
-                        }
-                    }
-                    foreach ($projects as $p) {
-                        if (
-                            is_null($real_begin)
-                            || (($p['type'] == 'project')
-                            && !is_null($p['from'])
-                            && ($real_begin > $p['from']))
-                        ) {
-                            $real_begin = $p['from'];
-                        }
-                    }
-                }
-            }
-
-           // Use real if set
-            if (!is_null($project->fields['real_end_date'])) {
-                $real_end = $project->fields['real_end_date'];
-            }
-            if (is_null($real_end)) {
-                if (!is_null($project->fields['plan_end_date'])) {
-                    $real_end = $project->fields['plan_end_date'];
-                } else {
-                    foreach ($tasks as $task) {
-                        if (
-                            is_null($real_end)
-                            || (!is_null($task['plan_end_date'])
-                            && ($real_end < $task['plan_end_date']))
-                        ) {
-                            $real_end = $task['plan_end_date'];
-                        }
-                    }
-                    foreach ($projects as $p) {
-                        if (
-                            is_null($real_end)
-                            || (($p['type'] == 'project')
-                            && !is_null($p['to'])
-                            && ($real_end < $p['to']))
-                        ) {
-                            $real_end = $p['to'];
-                        }
-                    }
-                }
-            }
-
-           // Add current project
-            $todisplay[$real_begin . '#' . $real_end . '#project' . $project->getID()]
-                      = ['id'       => $project->getID(),
-                          'name'     => $project->fields['name'],
-                          'link'     => $project->getLink(),
-                          'desc'     => $project->fields['content'],
-                          'percent'  => isset($project->fields['percent_done']) ? $project->fields['percent_done'] : 0,
-                          'type'     => 'project',
-                          'from'     => $real_begin,
-                          'to'       => $real_end
-                      ];
-
-            if ($showall) {
-               // Add current tasks
-                $todisplay += ProjectTask::getDataToDisplayOnGanttForProject($ID);
-
-               // Add ordered subprojects
-                foreach ($projects as $key => $val) {
-                    $todisplay[$key] = $val;
-                }
-            }
-        }
-
-        return $todisplay;
-    }
-
-    /**
-     * Show GANTT diagram for a project
-     * @param $ID ID of the project
-     */
-    public static function showGantt($ID)
-    {
-        TemplateRenderer::getInstance()->display('pages/tools/project/gantt.html.twig', [
-            'id' => $ID,
-        ]);
     }
 
     public static function getAllForKanban($active = true, $current_id = -1)

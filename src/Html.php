@@ -1249,11 +1249,6 @@ HTML;
                 Html::requireJs('reservations');
             }
 
-            if (in_array('gantt', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/dhtmlx-gantt.css'];
-                Html::requireJs('gantt');
-            }
-
             if (in_array('kanban', $jslibs)) {
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Kanban/Kanban.js'];
                 Html::requireJs('kanban');
@@ -6239,10 +6234,6 @@ HTML;
                     }
                 }
                 break;
-            case 'gantt':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/dhtmlx-gantt.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-helper.js';
-                break;
             case 'kanban':
                 break;
             case 'rateit':
@@ -6452,7 +6443,6 @@ HTML;
             $debug = (isset($_SESSION['glpi_use_mode'])
                    && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
             $cfg_glpi = "var CFG_GLPI  = " . json_encode(Config::getSafeConfig(true), $debug ? JSON_PRETTY_PRINT : 0) . ";";
-            $cfg_glpi .= "CFG_GLPI['gantt_date_format'] = " . json_encode(Toolbox::getDateFormat('gantt')) . ";";
         }
 
         $plugins_path = [];
