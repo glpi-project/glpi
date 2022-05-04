@@ -81,9 +81,9 @@ trait DCBreadcrumb
                 ];
 
                 if ($with_location) {
-                    $breadcrumb_item['location'] = $this->getItemLocation($enclosure->getType(), $enclosure->getID());
+                    $breadcrumb_item['location']['item'] = $this->getItemLocation($enclosure->getType(), $enclosure->getID());
                 }
-                $breadcrumb[] = $breadcrumb_item;
+                $breadcrumb[Enclosure::getType()] = $breadcrumb_item;
                 $item = $enclosure;
             }
         }
@@ -103,10 +103,10 @@ trait DCBreadcrumb
                 ];
 
                 if ($with_location) {
-                    $breadcrumb_item['location'] = $this->getItemLocation($rack->getType(), $rack->getID());
+                    $breadcrumb_item['location']['item'] = $this->getItemLocation($rack->getType(), $rack->getID());
                 }
 
-                $breadcrumb[] = $breadcrumb_item;
+                $breadcrumb[Rack::getType()] = $breadcrumb_item;
                 $item = $rack;
             }
         }
@@ -125,10 +125,10 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location'] = $this->getItemLocation($dcroom->getType(), $dcroom->getID());
+                        $breadcrumb_item['location']['item'] = $this->getItemLocation($dcroom->getType(), $dcroom->getID());
                     }
 
-                    $breadcrumb[] = $breadcrumb_item;
+                    $breadcrumb[DCRoom::getType()] = $breadcrumb_item;
                     $item = $dcroom;
                 }
             }
@@ -148,12 +148,63 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location'] = $this->getItemLocation($datacenter->getType(), $datacenter->getID());
+                        $breadcrumb_item['location']['item'] = $this->getItemLocation($datacenter->getType(), $datacenter->getID());
                     }
 
-                    $breadcrumb[] = $breadcrumb_item;
+                    $breadcrumb[Datacenter::getType()] = $breadcrumb_item;
                 }
             }
+        }
+
+        $breadcrumb = array_reverse($breadcrumb);
+
+        if ($with_location) {
+            $breadcrumb = $this->cleanLocationInforamtions($breadcrumb);
+        }
+        
+
+        return $breadcrumb;
+    }
+
+    public function cleanLocationInforamtions(&$breadcrumb){
+        $rack_location = isset($breadcrumb[Rack::getType()]) ? $breadcrumb[Rack::getType()]['location']['item']: null;
+        $enclosure_location = isset($breadcrumb[Enclosure::getType()]) ? $breadcrumb[Enclosure::getType()]['location']['item'] : null;
+        $dcroom_location = isset($breadcrumb[DCRoom::getType()]) ? $breadcrumb[DCRoom::getType()]['location']['item']: null;
+        $datacenter_location = isset($breadcrumb[Datacenter::getType()]) ? $breadcrumb[Datacenter::getType()]['location']['item']: null;
+
+        if ($rack_location != null) {
+            if($rack_location->fields['id'] ==  $dcroom_location->fields['id']){
+                unset($breadcrumb[Rack::getType()]['location']);
+            } else if ($rack_location->fields['locations_id'] == $dcroom_location->fields['id']) {
+                $breadcrumb[Rack::getType()]['location']['name'] = $rack_location->fields['name'];
+            } else{
+                $breadcrumb[Rack::getType()]['location']['name'] = $rack_location->fields['completename'];
+            }
+        }
+
+        if ($enclosure_location != null) {
+            if($enclosure_location->fields['id'] ==  $dcroom_location->fields['id']){
+                unset($breadcrumb[Enclosure::getType()]['location']);
+            } else if ($enclosure_location->fields['locations_id'] == $dcroom_location->fields['id']) {
+                $breadcrumb[Enclosure::getType()]['location']['name'] = "$enclosure_location->fields['name']";
+            } else {
+                $breadcrumb[Enclosure::getType()]['location']['name'] = $enclosure_location->fields['completename'];
+            }
+        }
+
+        if ($dcroom_location != null) {
+            if($dcroom_location->fields['id'] == $datacenter_location->fields['id']){
+                unset($breadcrumb[DCRoom::getType()]['location']);
+            } else if ($dcroom_location->fields['locations_id'] == $datacenter_location->fields['id']) {
+                $breadcrumb[DCRoom::getType()]['location']['name'] = $dcroom_location->fields['name'];
+            } else{
+                $breadcrumb[DCRoom::getType()]['location']['name'] = $dcroom_location->fields['completename'];
+            }
+        }
+
+        //keep datacenter location completename name (start of breadcrumb)
+        if ($datacenter_location != null) {
+            $breadcrumb[Datacenter::getType()]['location']['name'] = $datacenter_location->fields['completename'];
         }
 
         return $breadcrumb;
@@ -225,15 +276,16 @@ trait DCBreadcrumb
      */
     private function getItemLocation($itemtype, $items_id)
     {
-        $locations_id = 0;
         $obj = new $itemtype();
-
+        $loc = null;
         if ($obj->getFromDB($items_id)) {
-            $locations_id = $obj->fields['locations_id'];
+            if ($obj->fields['locations_id']) {
+                $loc = new Location();
+                $loc->getFromDB($obj->fields['locations_id']);
+            }
         }
 
-        $location = '<i class="' . Location::getIcon() . '"></i>' . Dropdown::getDropdownName(getTableForItemType(Location::getType()), $locations_id);
-        return $location;
+        return $loc;
     }
 
     /**
@@ -307,7 +359,7 @@ trait DCBreadcrumb
             $breadcrumb = $item->getDcBreadcrumb($with_location);
             if (count($breadcrumb) > 0) {
                 $options = [
-                    'breadcrumbs'   => array_reverse($breadcrumb)
+                    'breadcrumbs'   => $breadcrumb
                 ];
 
                 if ($display) {
