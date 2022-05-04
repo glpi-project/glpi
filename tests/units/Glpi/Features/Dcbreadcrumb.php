@@ -121,8 +121,7 @@ class DCBreadcrumb extends \DbTestCase
         $this->checkInput($Itemrack, $Itemrack_id, $Itemrack_input);
 
         $DCBreadcrumb = \Computer::getDcBreadcrumbSpecificValueToDisplay($computer1->getID(), false, false);
-        $this->string($DCBreadcrumb)->isIdenticalTo(
-            sprintf("
+        $this->string($DCBreadcrumb)->isIdenticalTo(sprintf("
    <i class='ti ti-building-warehouse'></i> %s
       
          >
@@ -143,6 +142,7 @@ class DCBreadcrumb extends \DbTestCase
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
 
         $DCBreadcrumb = \Computer::getDcBreadcrumbSpecificValueToDisplay($computer2->getID());
-        $this->string($DCBreadcrumb)->isIdenticalTo('&nbsp;');
+
+        $this->boolean($DCBreadcrumb)->isFalse();
     }
 }
