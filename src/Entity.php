@@ -116,7 +116,8 @@ class Entity extends CommonTreeDropdown
             'use_reservations_alert', 'use_infocoms_alert',
             'send_infocoms_alert_before_delay',
             'notification_subject_tag', 'use_domains_alert',
-            'send_domains_alert_close_expiries_delay', 'send_domains_alert_expired_delay'
+            'send_domains_alert_close_expiries_delay', 'send_domains_alert_expired_delay',
+            'approval_reminder_repeat_interval'
         ],
       // Helpdesk
         'entity_helpdesk' => [
@@ -2373,6 +2374,24 @@ class Entity extends CommonTreeDropdown
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
+        echo "<th colspan='2' rowspan='1'>";
+        echo _n('Ticket', 'Tickets', Session::getPluralNumber());
+        echo " / ";
+        echo _n('Change', 'Changes', Session::getPluralNumber());
+        echo "</th>";
+        echo "<td>" . __('Approval reminder frequency') . "</td><td>";
+        $default_value = $entity->fields['approval_reminder_repeat_interval'];
+        Alert::dropdown(['name'           => 'approval_reminder_repeat_interval',
+            'value'          => $default_value,
+            'inherit_parent' => (($ID > 0) ? 1 : 0)
+        ]);
+        if ($entity->fields['approval_reminder_repeat_interval'] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig('approval_reminder_repeat_interval', $entity->getField('entities_id'));
+            self::inheritedValue(self::getSpecificValueToDisplay('approval_reminder_repeat_interval', $tid), true);
+        }
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'>";
         echo "<th colspan='2' rowspan='3'>";
         echo Domain::getTypeName(Session::getPluralNumber());
         echo "</th>";
@@ -3565,6 +3584,7 @@ class Entity extends CommonTreeDropdown
 
             case 'cartridges_alert_repeat':
             case 'consumables_alert_repeat':
+            case 'approval_reminder_repeat_interval':
                 switch ($values[$field]) {
                     case self::CONFIG_PARENT:
                         return __('Inheritance of the parent entity');
@@ -3710,6 +3730,7 @@ class Entity extends CommonTreeDropdown
 
             case 'cartridges_alert_repeat':
             case 'consumables_alert_repeat':
+            case 'approval_reminder_repeat_interval':
                 $options['name']  = $name;
                 $options['value'] = $values[$field];
                 return Alert::dropdown($options);
