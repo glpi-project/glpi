@@ -37,9 +37,12 @@ namespace Glpi\Features;
 
 use Datacenter;
 use DCRoom;
+use Dropdown;
 use Enclosure;
+use Glpi\Application\View\TemplateRenderer;
 use Item_Enclosure;
 use Item_Rack;
+use Location;
 use Rack;
 
 /**
@@ -52,7 +55,7 @@ trait DCBreadcrumb
      *
      * @return array
      */
-    public function getDcBreadcrumb()
+    public function getDcBreadcrumb($with_location = false)
     {
         global $CFG_GLPI;
 
@@ -70,8 +73,17 @@ trait DCBreadcrumb
                     'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
                     'icon'       => true
                 ];
+
                 $position = $this->getItemEnclosurePosition($item->getType(), $item->getID());
-                $breadcrumb[] = $enclosure->getLink($options) . $position;
+                $breadcrumb_item = [
+                    'link' => $enclosure->getLink($options),
+                    'position' => $position
+                ];
+
+                if ($with_location) {
+                    $breadcrumb_item['location'] = $this->getItemLocation($enclosure->getType(), $enclosure->getID());
+                }
+                $breadcrumb[] = $breadcrumb_item;
                 $item = $enclosure;
             }
         }
@@ -83,8 +95,18 @@ trait DCBreadcrumb
                     'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
                     'icon'       => true
                 ];
+
                 $position = $this->getItemRackPosition($item->getType(), $item->getID());
-                $breadcrumb[] = $rack->getLink($options) . $position;
+                $breadcrumb_item = [
+                    'link' => $rack->getLink($options),
+                    'position' => $position
+                ];
+
+                if ($with_location) {
+                    $breadcrumb_item['location'] = $this->getItemLocation($rack->getType(), $rack->getID());
+                }
+
+                $breadcrumb[] = $breadcrumb_item;
                 $item = $rack;
             }
         }
@@ -97,7 +119,16 @@ trait DCBreadcrumb
                         'linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : '',
                         'icon'       => true
                     ];
-                    $breadcrumb[] = $dcroom->getLink($options);
+
+                    $breadcrumb_item = [
+                        'link' => $dcroom->getLink($options),
+                    ];
+
+                    if ($with_location) {
+                        $breadcrumb_item['location'] = $this->getItemLocation($item->getType(), $item->getID());
+                    }
+
+                    $breadcrumb[] = $breadcrumb_item;
                     $item = $dcroom;
                 }
             }
@@ -111,7 +142,16 @@ trait DCBreadcrumb
                         'linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : '',
                         'icon'       => true
                     ];
-                    $breadcrumb[] = $datacenter->getLink($options);
+
+                    $breadcrumb_item = [
+                        'link' => $datacenter->getLink($options),
+                    ];
+
+                    if ($with_location) {
+                        $breadcrumb_item['location'] = $this->getItemLocation($item->getType(), $item->getID());
+                    }
+
+                    $breadcrumb[] = $breadcrumb_item;
                 }
             }
         }
@@ -176,6 +216,27 @@ trait DCBreadcrumb
     }
 
     /**
+     * get item location from Enclosure
+     *
+     * @param string  $itemtype Item type
+     * @param integer $items_id Item ID
+     *
+     * @return string
+     */
+    private function getItemLocation($itemtype, $items_id)
+    {
+        $locations_id = 0;
+        $obj = new $itemtype();
+
+        if ($obj->getFromDB($items_id)) {
+            $locations_id = $obj->fields['locations_id'];
+        }
+
+        $location = "<i class='" . Location::getIcon() ."'></i>". Dropdown::getDropdownName(getTableForItemType(Location::getType()), $locations_id);
+        return $location;
+    }
+
+    /**
      * get item position from Rack
      *
      * @param string  $itemtype Item type
@@ -233,20 +294,31 @@ trait DCBreadcrumb
     /**
      * Specific value for "Data center position".
      *
+     * @param integer $items_id   Item ID
+     * @param boolean $with_location   display location name if needed
+     * @param boolean $display   display or return HTML
+     *
      * @return array
      */
-    public static function getDcBreadcrumbSpecificValueToDisplay($items_id)
+    public static function getDcBreadcrumbSpecificValueToDisplay($items_id, $with_location = false, $display = true)
     {
-
         $item = new static();
-
         if ($item->getFromDB($items_id)) {
-            $breadcrumb = $item->getDcBreadcrumb();
+            $breadcrumb = $item->getDcBreadcrumb($with_location);
             if (count($breadcrumb) > 0) {
-                return implode(' &gt; ', array_reverse($item->getDcBreadcrumb()));
+
+                $options = [
+                    'breadcrumbs'   => array_reverse($breadcrumb)
+                ];
+
+                if ($display){
+                    return TemplateRenderer::getInstance()->display('layout/parts/dcbreadcrumbs.html.twig', $options);
+                } else {
+                    return TemplateRenderer::getInstance()->render('layout/parts/dcbreadcrumbs.html.twig', $options);
+                }
+
             }
         }
-
-        return '&nbsp;';
+        return false;
     }
 }
