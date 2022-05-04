@@ -232,7 +232,7 @@ trait DCBreadcrumb
             $locations_id = $obj->fields['locations_id'];
         }
 
-        $location = "<i class='" . Location::getIcon() . "'></i>" . Dropdown::getDropdownName(getTableForItemType(Location::getType()), $locations_id);
+        $location = '<i class="' . Location::getIcon() . '"></i>' . Dropdown::getDropdownName(getTableForItemType(Location::getType()), $locations_id);
         return $location;
     }
 
