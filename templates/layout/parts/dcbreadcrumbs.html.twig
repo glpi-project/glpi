@@ -34,7 +34,7 @@
 {% for breadcrumb_item in breadcrumbs %}
    {{ breadcrumb_item['link']|raw }}
    {% if breadcrumb_item['location'] is defined %}
-      <span class='badge bg-blue-lt'>
+      <span class='badge bg-blue-lt d-inline-block text-truncate' style='max-width: 150px;'>
          {{ breadcrumb_item['location']|raw }}
       </span>
    {% endif %}
