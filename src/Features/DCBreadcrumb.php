@@ -125,7 +125,7 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location'] = $this->getItemLocation($item->getType(), $item->getID());
+                        $breadcrumb_item['location'] = $this->getItemLocation($dcroom->getType(), $dcroom->getID());
                     }
 
                     $breadcrumb[] = $breadcrumb_item;
@@ -148,7 +148,7 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location'] = $this->getItemLocation($item->getType(), $item->getID());
+                        $breadcrumb_item['location'] = $this->getItemLocation($datacenter->getType(), $datacenter->getID());
                     }
 
                     $breadcrumb[] = $breadcrumb_item;
