@@ -131,12 +131,11 @@ class DCBreadcrumb extends \DbTestCase
       <i class='ti ti-server'></i> %s
       &nbsp;(U%d)
    ",
-                $datacenter_name,
-                $DCroom_name,
-                $rack_name,
-                $rack_position
-            )
-        );
+                    $datacenter_name,
+                    $DCroom_name,
+                    $rack_name,
+                    $rack_position
+                    ));
 
        //load computer without Rack link
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
