@@ -6599,7 +6599,7 @@ JAVASCRIPT;
      *
      * @return User|null Created user, null on failure.
      */
-    public static function createUserFromMail(string $email): ?User
+    private static function createUserFromMail(string $email): ?User
     {
         global $DB;
 
