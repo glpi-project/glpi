@@ -124,6 +124,10 @@ body.horizontal-layout {
     .secondary-bar {
         top: $topbar-height;
         z-index: 1010;
+
+        @include media-breakpoint-down(md) {
+            top: 0;
+        }
     }
 }
 
