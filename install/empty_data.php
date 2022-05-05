@@ -734,16 +734,6 @@ $empty_data_builder = new class
                 'lastrun' => null,
                 'logs_lifetime' => 30,
             ], [
-                'id' => 42,
-                'itemtype' => PendingReasonCron::getType(),
-                'name' => PendingReasonCron::TASK_NAME,
-                'frequency' => 30 * MINUTE_TIMESTAMP,
-                'param' => null,
-                'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_EXTERNAL,
-                'lastrun' => null,
-                'logs_lifetime' => 60,
-            ], [
                 'id' => 40,
                 'itemtype' => 'Glpi\Inventory\Inventory',
                 'name' => 'cleantemp',
@@ -763,6 +753,16 @@ $empty_data_builder = new class
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+            ], [
+                'id' => 42,
+                'itemtype' => PendingReasonCron::getType(),
+                'name' => PendingReasonCron::TASK_NAME,
+                'frequency' => 30 * MINUTE_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 60,
             ], [
                 'id' => 43,
                 'itemtype' => 'Change',
