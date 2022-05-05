@@ -357,16 +357,18 @@ JAVASCRIPT;
 
         if ($is_ajax && $is_rrule) {
             $options['candel'] = false;
-            $options['addbuttons'] = [
-                'purge'          => [
-                    'text' => __("Delete serie"),
-                    'icon' => 'fas fa-trash-alt',
-                ],
-                'purge_instance' => [
-                    'text' => __("Delete instance"),
-                    'icon' => 'far fa-trash-alt',
-                ],
-            ];
+            if ($this->can($ID, PURGE)) {
+                $options['addbuttons'] = [
+                    'purge'          => [
+                        'text' => __("Delete serie"),
+                        'icon' => 'fas fa-trash-alt',
+                    ],
+                    'purge_instance' => [
+                        'text' => __("Delete instance"),
+                        'icon' => 'far fa-trash-alt',
+                    ],
+                ];
+            }
         }
 
         $this->showFormButtons($options);
