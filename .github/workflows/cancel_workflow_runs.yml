@@ -10,6 +10,8 @@ on:
 
 jobs:
   cancel:
+    permissions:
+      actions: write  # for styfle/cancel-workflow-action to cancel/stop running workflows
     runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
     steps:
       - name: "Cancel outdated workflow runs"
