@@ -8153,7 +8153,7 @@ HTML;
             case self::PDF_OUTPUT_PORTRAIT:
                 global $PDF_TABLE;
                 $value = DataExport::normalizeValueForTextExport($value ?? '');
-                $value = htmlspecialchars($value);
+                $value = htmlspecialchars($value, ENT_QUOTES, null, false);
                 $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                 $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                 $PDF_TABLE .= "<td $extraparam valign='top'>";
