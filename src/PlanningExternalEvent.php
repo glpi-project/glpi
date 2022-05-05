@@ -361,7 +361,7 @@ JAVASCRIPT;
             if ($canedit) {
                 $options['addbuttons']['save_instance'] = [
                     'text'  => __("Detach instance"),
-                    'icon'  => 'fas fa-link-slash',
+                    'icon'  => 'ti ti-unlink',
                     'title' => __("Detach this instance from the series to create an independent event"),
                 ];
             }
