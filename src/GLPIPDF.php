@@ -64,7 +64,7 @@ class GLPIPDF extends TCPDF
     {
         $config += self::$default_config;
         $this->config = $config;
-        parent::construct(
+        parent::__construct(
             $config['orientation'],
             $config['unit'],
             $config['format'],
