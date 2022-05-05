@@ -288,7 +288,8 @@
                         'min': 0,
                         'max': 8 * constant('HOUR_TIMESTAMP'),
                         'addfirstminutes': true,
-                        'inhours': true
+                        'inhours': true,
+                        'toadd': range(9, 100)|map(i => i * constant('HOUR_TIMESTAMP')),
                      }) }}
 
                      {# User #}
