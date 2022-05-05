@@ -55,6 +55,8 @@
 
    {{ include('components/itilobject/mainform_open.html.twig') }}
 
+   {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+
    <div class="card">
         <div class="card-header">
             <h3 class="card-title">
@@ -248,6 +250,8 @@
             </button>
         </div>
     </div>
+
+   {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 
    {{ include('components/itilobject/mainform_close.html.twig') }}
 </div>
