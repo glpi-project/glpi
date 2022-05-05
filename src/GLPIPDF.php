@@ -78,9 +78,23 @@ class GLPIPDF extends TCPDF
 
         if ($title !== null) {
             $this->SetTitle($title);
+            $this->SetHeaderData('', '', $title, '');
         }
 
+        $this->SetCreator('GLPI');
+        $this->SetAuthor('GLPI');
+
         $this->SetFont($config['font'], '', $config['font_size']);
+        $this->setHeaderFont([$config['font'], 'B', $config['font_size']]);
+        $this->setFooterFont([$config['font'], 'B', $config['font_size']]);
+
+        //set margins
+        $this->SetMargins($config['margin_left'], $config['margin_top'], $config['margin_right']);
+        $this->SetHeaderMargin($config['margin_header']);
+        $this->SetFooterMargin($config['margin_footer']);
+
+        //set auto page breaks
+        $this->SetAutoPageBreak(true, $config['margin_bottom']);
         $this->AddPage();
     }
 

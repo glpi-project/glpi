@@ -8315,7 +8315,7 @@ HTML;
                 );
 
                 $PDF_TABLE .= '</table>';
-                $pdf->writeHTML($PDF_TABLE);
+                $pdf->writeHTML($PDF_TABLE, true, false, true);
                 $pdf->Output('glpi.pdf', 'I');
                 break;
 
@@ -8517,7 +8517,7 @@ HTML;
                 if ($odd) {
                     $style = " style=\"background-color:#DDDDDD;\" ";
                 }
-                $PDF_TABLE .= "<tr $style>";
+                $PDF_TABLE .= "<tr $style nobr=\"true\">";
                 break;
 
             case self::SYLK_OUTPUT: //sylk
