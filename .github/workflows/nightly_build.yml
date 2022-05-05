@@ -7,9 +7,6 @@ on:
   # Enable manual run
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   build:
     permissions:
