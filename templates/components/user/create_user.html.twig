@@ -31,13 +31,17 @@
  # ---------------------------------------------------------------------
  #}
 
-<button type="button"
-        form="addme_as_{{ actortype }}_{{ main_rand }}"
-        name="id"
-        value="{{ item.fields['id'] }}"
-        class="btn btn-icon btn-sm btn-ghost-secondary float-end mt-1 ms-1"
-        title="{{ __('Add') }}"
-        data-bs-toggle="modal" data-bs-target="#add_{{ item.fields['id'] }}"
-        data-bs-placement="top">
-   <i class="fas fa-add"></i>
-</button>
+<div class="btn btn-icon btn-sm btn-ghost-secondary mt-1 ms-1"
+     data-bs-toggle="modal" data-bs-target="#add_{{ item.fields['id'] }}"
+     id="create_user_{{ item.fields['id'] }}"
+     data-bs-placement="top"
+     title="{{ __('Create user') }}">
+   <i class="ti ti-user-plus"></i>
+</div>
+<script type="text/javascript">
+   $(function() {
+      $("#create_user_{{ item.fields['id'] }}").on('mousedown', function(e) {
+         e.stopPropagation();
+      });
+   });
+</script>

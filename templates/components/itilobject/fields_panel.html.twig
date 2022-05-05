@@ -260,6 +260,9 @@
             <span class="badge bg-secondary ms-2">
                {{ item.countActors() }}
             </span>
+            {% if not params['template_preview'] and cancreateuser and canupdate %}
+               {{ include('components/user/create_user.html.twig') }}
+            {% endif %}
          </button>
       </h2>
       <div id="actors" class="accordion-collapse collapse {{ actors_show ? "show" : "" }}" aria-labelledby="heading-actor">

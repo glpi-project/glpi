@@ -70,9 +70,6 @@
    {% if not item.isNewItem() and not params['template_preview'] and not disable_assign_to_me and canupdate %}
       {{ include('components/itilobject/actors/assign_to_me.html.twig') }}
    {% endif %}
-   {% if not params['template_preview'] and cancreateuser and canupdate %}
-      {{ include('components/user/create_user.html.twig') }}
-   {% endif %}
 
    <script type="text/javascript">
    $(function() {
@@ -170,7 +167,7 @@
          return option_element;
       };
 
-      var select2_width = "calc(100% - {{ not disable_assign_to_me ? 31 : 0 }}px - {{ cancreateuser ? 31 : 0 }}px)";
+      var select2_width = "{{ not disable_assign_to_me ? 'calc(100% - 30px)' : '100%' }}";
 
       $("#actor_{{ rand }}").select2({
          tags: true,
