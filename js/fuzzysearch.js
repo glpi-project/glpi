@@ -50,21 +50,17 @@ $(function() {
         trigger_fuzzy();
     });
 
-    // when the shortcut for fuzzy is called
+    // when the shortcut for entity form is called
     hotkeys('ctrl+alt+e, option+command+e', function() {
         open_entity_selection();
     });
 
-    $(".dropdown-list-entity").on('shown.bs.dropdown', function(){
-        setTimeout(function(){
-            $(this).parent().find("input").trigger("focus");
-        }, 0);
-
-    });
-
     var open_entity_selection = function() {
+        stopPropagation();
+        preventDefault();
         $('.avatar').trigger("click");
         $('.dropdown-list-entity').dropdown('toggle');
+        $('input[name=entsearchtext').focus();
     };
 
     // when the button is clicked
