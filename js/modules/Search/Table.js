@@ -136,6 +136,11 @@ window.GLPI.Search.Table = class Table extends GenericView {
         const ajax_container = el.closest('.ajax-container');
         let search_data = {};
 
+        const handle_search_failure = () => {
+            // Fallback to a page reload
+            window.location.reload();
+        };
+
         try {
             const sort_state = this.getSortState();
             const limit = $(form_el).find('select.search-limit-dropdown').first().val();
@@ -169,15 +174,25 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 search_data = Object.assign(search_data, search_criteria, search_overrides);
             }
 
-            $(ajax_container).load(CFG_GLPI.root_doc + '/ajax/search.php', search_data, () => {
-                // Push history state with new query params
-                history.pushState('', '', '?' + $.param(Object.assign(search_criteria, sort_state, search_overrides)));
+            history.pushState('', '', '?' + $.param(Object.assign(search_criteria, sort_state, search_overrides)));
+            $.ajax({
+                url: CFG_GLPI.root_doc + '/ajax/search.php',
+                method: 'GET',
+                data: search_data,
+            }).then((content) => {
+                if (!(typeof content === "string" && content.includes('search-card'))) {
+                    handle_search_failure();
+                    return;
+                }
+                ajax_container.html(content);
                 this.getElement().trigger('search_refresh', [this.getElement()]);
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
+            }, () => {
+                handle_search_failure();
             });
         } catch (error) {
-            this.hideLoadingSpinner();
+            handle_search_failure();
         }
     }
 
