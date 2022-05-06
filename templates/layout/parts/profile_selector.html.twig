@@ -83,7 +83,7 @@
                {% set recursive_icon %}
                   <i class="fas fa-angle-double-down" title="{{ __('+ sub-entities') }}"></i>
                {% endset %}
-               {{ __('Click on the %s icon to see the entity and its sub-entities')|format(recursive_icon)|raw }}
+               {{ __('Click on the %s icon to load the entity and its sub-entities')|format(recursive_icon)|raw }}
             </span>
          </div>
 
@@ -193,7 +193,14 @@
                total: tree.visibleNodeList.length,
                visible: tree.viewport.count,
             }, true);  // do not trigger `onSet`
+
+            initTooltips();
          },
+
+        // update toolips on node expand
+        expand: function(event, data) {
+            initTooltips();
+        },
       });
 
       var searchTree = function() {
