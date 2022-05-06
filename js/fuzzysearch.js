@@ -55,7 +55,7 @@ $(function() {
         open_entity_selection();
     });
 
-    /*$(".dropdown-list-entity").on('shown.bs.dropdown', function(e){
+    /*$(".dropdown-list-entity").on('shown.bs.dropdown', function(){
         console.log($(this).parent().find("input"));
         //$(this).parent().find("input").trigger("focus")
 
@@ -66,11 +66,11 @@ $(function() {
 
     });*/
 
-    $('body').on('shown.bs.dropdown', ".dropdown-list-entity", function (e) {
+    $('body').on('shown.bs.dropdown', ".dropdown-list-entity", function () {
         console.log($(this).parent().find("input"));
         setTimeout(function(){
             console.log("set focus");
-            $('input:visible:enabled:first', this).trigger("focus");
+            $(this).parent().find("input").trigger("focus");
         }, 1000);
 
     })
