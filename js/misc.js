@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_alert */
+/* global glpi_alert, initMessagesAfterRedirectToasts */
 
 /*
  * Redefine 'window.alert' javascript function by a prettier dialog.
@@ -51,13 +51,20 @@ window.alert = function(message, caption) {
 };
 
 window.displayAjaxMessageAfterRedirect = function() {
-    // attach MESSAGE_AFTER_REDIRECT to body
-    $('.message_after_redirect').remove();
-    $('[id^="message_after_redirect_"]').remove();
+    var display_container = ($('#messages_after_redirect').length  == 0);
+
     $.ajax({
         url: CFG_GLPI.root_doc+ '/ajax/displayMessageAfterRedirect.php',
+        data: {
+            'display_container': display_container
+        },
         success: function(html) {
-            $('body').append(html);
+            if (display_container) {
+                $('body').append(html);
+            } else {
+                $('#messages_after_redirect').append(html);
+                initMessagesAfterRedirectToasts();
+            }
         }
     });
 };

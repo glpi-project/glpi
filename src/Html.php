@@ -618,26 +618,20 @@ class Html
     /**
      * Display a div containing messages set in session in the previous page
      **/
-    public static function displayMessageAfterRedirect()
+    public static function displayMessageAfterRedirect(bool $display_container = true)
     {
-        TemplateRenderer::getInstance()->display('components/messages_after_redirect_toasts.html.twig');
+        TemplateRenderer::getInstance()->display('components/messages_after_redirect_toasts.html.twig', [
+            'display_container' => $display_container
+        ]);
     }
 
 
+    /**
+     * @deprecated since version 10.0.1
+     */
     public static function displayAjaxMessageAfterRedirect()
     {
-        global $CFG_GLPI;
-
-        echo Html::scriptBlock("
-      displayAjaxMessageAfterRedirect = function() {
-         $('.messages_after_redirect').remove();
-         $.ajax({
-            url:  '" . $CFG_GLPI['root_doc'] . "/ajax/displayMessageAfterRedirect.php',
-            success: function(html) {
-               $('body').append(html);
-            }
-         });
-      }");
+        Toolbox::deprecated("The js function is already provided by js/misc.js");
     }
 
 
@@ -6362,9 +6356,6 @@ HTML;
          });";
             echo Html::scriptBlock($js);
         }
-
-       // add Ajax display message after redirect
-        Html::displayAjaxMessageAfterRedirect();
 
        // Add specific javascript for plugins
         if (isset($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]) && count($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT])) {
