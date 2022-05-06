@@ -3,6 +3,27 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [10.0.1] unreleased
+
+### Added
+
+### Changed
+- PDF export library has been changed back from `mPDF` to `TCPDF`.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
 ## [10.0.0] 2022-04-20
 
 ### Added
