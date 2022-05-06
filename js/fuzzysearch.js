@@ -62,7 +62,6 @@ $(function() {
 
     });
 
-
     var open_entity_selection = function() {
         $('.avatar').trigger("click");
         $('.dropdown-list-entity').dropdown('toggle');
