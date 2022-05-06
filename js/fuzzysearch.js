@@ -51,11 +51,13 @@ $(function() {
     });
 
     // when the shortcut for entity form is called
-    hotkeys('ctrl+alt+e, option+command+e', function() {
-        open_entity_selection();
+    hotkeys('ctrl+alt+e, option+command+e', function(e) {
+        open_entity_selection(e);
     });
 
-    var open_entity_selection = async function() {
+    var open_entity_selection = async function(e) {
+        e.stopPropagation();
+        e.preventDefault();
         $('.avatar').trigger("click");
         await new Promise(r => setTimeout(r, 100));
         $('.dropdown-list-entity').dropdown('toggle');
