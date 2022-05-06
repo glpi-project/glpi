@@ -92,7 +92,6 @@
         .search-card {
             @include media-breakpoint-up(sm) {
                 min-width: 100%;
-                width: min-content;
 
                 .search-header {
                     border-bottom: 0;
