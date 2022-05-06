@@ -61,7 +61,7 @@ $(function() {
         $('.avatar').trigger("click");
         await new Promise(r => setTimeout(r, 100));
         $('.dropdown-list-entity').dropdown('toggle');
-        $('input[name=entsearchtext]').trigger('focus');
+        $('input[name=entsearchtext]').filter(":visible")[0].focus();
     };
 
     // when the button is clicked
