@@ -83,12 +83,12 @@ GLPI.RichText.ContentTemplatesParameters = class {
     *
     * @param {string} pattern
     *
-    * @returns {tinymce.util.Promise}
+    * @returns {Promise}
     */
     fetchItems(pattern) {
         const that = this;
 
-        return new tinymce.util.Promise(
+        return new Promise(
             function (resolve) {
                 const items = that.values.filter(
                     function(item) {
