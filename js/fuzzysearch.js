@@ -55,10 +55,11 @@ $(function() {
         open_entity_selection();
     });
 
-    var open_entity_selection = function() {
+    var open_entity_selection = async function() {
         stopPropagation();
         preventDefault();
         $('.avatar').trigger("click");
+        await new PromiseRejectionEvent(r => setTimeout(r, 100));
         $('.dropdown-list-entity').dropdown('toggle');
         $('input[name=entsearchtext').focus();
     };
