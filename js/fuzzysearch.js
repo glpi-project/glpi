@@ -55,6 +55,17 @@ $(function() {
         open_entity_selection();
     });
 
+    $(".dropdown-list-entity").on('shown.bs.dropdown', function(e){
+        console.log($(this).parent().find("input"));
+        //$(this).parent().find("input").trigger("focus")
+
+        setTimeout(function(){
+            console.log("set focus");
+            $(this).parent().find("input").trigger("focus");
+        }, 1000);
+
+    });
+
     var open_entity_selection = function() {
         $('.avatar').trigger("click");
         $('.dropdown-list-entity').dropdown('toggle');
