@@ -7060,7 +7060,7 @@ JAVASCRIPT;
                             $count_display++;
 
 
-                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, true);
+                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, self::$output_type == self::HTML_OUTPUT);
 
                             if (self::$output_type == self::HTML_OUTPUT && (Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                                 $rand = mt_rand();
@@ -7318,7 +7318,10 @@ HTML;
                         if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
                             $out .= $data[$ID][$k]['trans'];
                         } else {
-                            $out .= $data[$ID][$k]['name'];
+                            $value = $data[$ID][$k]['name'];
+                            $out .= $value !== null && $so['field'] === 'completename'
+                                ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
+                                : $value;
                         }
                     }
                 }
