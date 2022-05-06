@@ -92,12 +92,36 @@ class Inventory
     {
         $this->mode = $mode;
         $this->conf = new Conf();
-        $this->inventory_id = Toolbox::getRandomString(30);
 
         if (null !== $data) {
             $this->setData($data, $format);
             $this->doInventory();
         }
+    }
+
+    /**
+     * Destructor of the object
+     * Remove temporary inventory if it exists
+     **/
+    public function __destruct() {
+        if (isset($this->inventory_id)) {
+            $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
+            $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
+            if (file_exists($tmpfile)) {
+                unlink($tmpfile);
+            }
+        }
+    }
+
+    private function tempInventoryFilename()
+    {
+        $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
+        // even if tmpfile shouldn't exist, it's safer to check it really doesn't
+        while (!isset($this->inventory_id) || file_exists($tmpfile)) {
+            $this->inventory_id = Toolbox::getRandomString(30);
+            $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
+        }
+        return $tmpfile;
     }
 
     public function setMode($mode = self::FULL_MODE): Inventory
@@ -117,10 +141,9 @@ class Inventory
     public function setData($data, $format = Request::JSON_MODE): bool
     {
 
-        // Write inventory file
-        $dir = GLPI_INVENTORY_DIR . '/';
-        if (!is_dir($dir)) {
-            mkdir($dir);
+        // Be sure the folder where to write inventory file exists
+        if (!is_dir(GLPI_INVENTORY_DIR)) {
+            mkdir(GLPI_INVENTORY_DIR);
         }
 
         $converter = new Converter();
@@ -134,11 +157,11 @@ class Inventory
 
         if (Request::XML_MODE === $format) {
             $this->inventory_format = Request::XML_MODE;
-            file_put_contents($dir . '/' . $this->inventory_id . '.xml', $data->asXML());
+            file_put_contents($this->tempInventoryFilename(), $data->asXML());
             //convert legacy format
             $data = json_decode($converter->convert($data->asXML()));
         } else {
-            file_put_contents($dir . '/' . $this->inventory_id . '.json', json_encode($data));
+            file_put_contents($this->tempInventoryFilename(), json_encode($data));
         }
 
         try {
@@ -388,10 +411,9 @@ class Inventory
      */
     private function handleInventoryFile()
     {
-        $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
-        $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
-
         if (isset($this->mainasset)) {
+            $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
+            $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
             $items = $this->getItems();
 
             foreach ($items as $item) {
@@ -408,10 +430,6 @@ class Inventory
                 }
                 copy($tmpfile, $filename);
             }
-        }
-
-        if (file_exists($tmpfile)) {
-            unlink($tmpfile);
         }
     }
 
