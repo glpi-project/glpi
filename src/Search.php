@@ -1832,9 +1832,7 @@ class Search
             );
         }
        // End Line for column headers
-        if (!empty($headers_line)) {
-            $headers_line .= self::showEndLine($data['display_type']);
-        }
+        $headers_line .= self::showEndLine($data['display_type'], true);
 
         $headers_line_top    .= $headers_line;
         $headers_line_top    .= self::showEndHeader($data['display_type']);
@@ -8096,7 +8094,7 @@ HTML;
                 global $PDF_TABLE;
                 $PDF_TABLE .= "<th $options>";
                 $PDF_TABLE .= htmlspecialchars($value);
-                $PDF_TABLE .= "</th>\n";
+                $PDF_TABLE .= "</th>";
                 break;
 
             case self::SYLK_OUTPUT: //sylk
@@ -8158,7 +8156,7 @@ HTML;
                 $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                 $PDF_TABLE .= "<td $extraparam valign='top'>";
                 $PDF_TABLE .= $value;
-                $PDF_TABLE .= "</td>\n";
+                $PDF_TABLE .= "</td>";
 
                 break;
 
@@ -8306,21 +8304,16 @@ HTML;
 
                 $pdf = new GLPIPDF(
                     [
-                        'default_font_size'  => $fontsize,
-                        'default_font'       => $font,
+                        'font_size'  => $fontsize,
+                        'font'       => $font,
                         'orientation'        => $type == self::PDF_OUTPUT_LANDSCAPE ? 'L' : 'P',
-                    ]
+                    ],
+                    $count,
+                    $title,
                 );
-                if ($count !== null) {
-                     $pdf->setTotalCount($count);
-                }
-                $pdf->SetTitle($title);
 
-                $pdf->SetFont($font, '', $fontsize);
-
-                $pdf->AddPage();
                 $PDF_TABLE .= '</table>';
-                $pdf->writeHTML($PDF_TABLE);
+                $pdf->writeHTML($PDF_TABLE, true, false, true);
                 $pdf->Output('glpi.pdf', 'I');
                 break;
 
@@ -8522,7 +8515,7 @@ HTML;
                 if ($odd) {
                     $style = " style=\"background-color:#DDDDDD;\" ";
                 }
-                $PDF_TABLE .= "<tr $style>";
+                $PDF_TABLE .= "<tr $style nobr=\"true\">";
                 break;
 
             case self::SYLK_OUTPUT: //sylk
@@ -8548,7 +8541,7 @@ HTML;
      *
      * @return string HTML to display
      **/
-    public static function showEndLine($type)
+    public static function showEndLine($type, bool $is_header_line = false)
     {
 
         $out = "";
@@ -8564,7 +8557,11 @@ HTML;
 
             case self::CSV_OUTPUT: //csv
             case self::NAMES_OUTPUT:
-                $out = "\n";
+                // NAMES_OUTPUT has no output on header lines
+                $newline = $type != self::NAMES_OUTPUT || !$is_header_line;
+                if ($newline) {
+                    $out = "\n";
+                }
                 break;
 
             default:

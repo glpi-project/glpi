@@ -38,31 +38,18 @@
  * @var Migration $migration
  */
 $fonts_mapping = [
-   // Arabic fonts => xbriyaz
-    'xbriyaz'      => [
-        'aealarabiya',
-        'aefurat',
-    ],
-   // CJK fonts => sun-exta
-    'sun-exta'     => [
-        'cid0cs',
-        'cid0ct',
-        'cid0jp',
-        'cid0kr',
-        'hysmyeongjostdmedium',
-        'kozgopromedium',
-        'kozminproregular',
-        'msungstdlight',
-        'stsongstdlight',
-    ],
-   // Adobe embedded fonts => corresponding TTF font
-    'courier'      => ['pdfacourier'],
-    'helvetica'    => ['pdfahelvetica'],
-    'symbol'       => ['pdfasymbol'],
-    'times'        => ['pdfatimes'],
-    'zapfdingbats' => ['pdfazapfdingbats'],
-   // Other unsupported fonts
-    'dejavusans'   => ['dejavusansextralight'],
+    // xbriyaz => Arabic fonts
+    'aealarabiya' => ['xbriyaz'],
+    // sun-exta => CJK fonts
+    'cid0cs' => ['sun-exta'],
+    // TTF font => corresponding Adobe embedded fonts
+    'pdfacourier' => ['courier'],
+    'pdfahelvetica' => ['helvetica'],
+    'pdfasymbol' => ['symbol'],
+    'pdfatimes' => ['times'],
+    'pdfazapfdingbats' => ['zapfdingbats'],
+    // Other unsupported fonts
+    'dejavusansextralight' => ['dejavusans'],
 ];
 
 foreach ($fonts_mapping as $new_value => $old_values) {
