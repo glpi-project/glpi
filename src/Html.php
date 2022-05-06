@@ -3875,7 +3875,7 @@ JS;
                quickbars_selection_toolbar: richtext_layout == 'inline'
                   ? 'bold italic | styles | forecolor backcolor '
                   : false,
-               contextmenu: 'emoticons table image link | undo redo | code fullscreen',
+               contextmenu: 'copy paste | emoticons table image link | undo redo | code fullscreen',
 
                // Content settings
                entity_encoding: 'raw',
