@@ -132,7 +132,7 @@ class GLPIPDF extends TCPDF
     /**
      * Get the list of available fonts.
      *
-     * @return Array of "filaneme" => "font name"
+     * @return array Array of "filename" => "font name"
      **/
     public static function getFontList()
     {
