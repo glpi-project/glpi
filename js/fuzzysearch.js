@@ -55,7 +55,7 @@ $(function() {
         open_entity_selection(e);
     });
 
-    var open_entity_selection = async function(e) {
+    async function open_entity_selection(e) {
         e.stopPropagation();
         e.preventDefault();
         $('.avatar').trigger("click");
