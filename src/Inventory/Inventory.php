@@ -103,7 +103,8 @@ class Inventory
      * Destructor of the object
      * Remove temporary inventory if it exists
      **/
-    public function __destruct() {
+    public function __destruct()
+    {
         if (isset($this->inventory_id)) {
             $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
             $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
