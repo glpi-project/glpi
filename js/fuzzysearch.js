@@ -55,25 +55,13 @@ $(function() {
         open_entity_selection();
     });
 
-    /*$(".dropdown-list-entity").on('shown.bs.dropdown', function(){
-        console.log($(this).parent().find("input"));
-        //$(this).parent().find("input").trigger("focus")
-
+    $(".dropdown-list-entity").on('shown.bs.dropdown', function(){
         setTimeout(function(){
-            console.log("set focus");
             $(this).parent().find("input").trigger("focus");
-        }, 1000);
+        }, 0);
 
-    });*/
+    });
 
-    $('body').on('shown.bs.dropdown', ".dropdown-list-entity", function () {
-        console.log($(this).parent().find("input"));
-        setTimeout(function(){
-            console.log("set focus");
-            $(this).parent().find("input").trigger("focus");
-        }, 1000);
-
-    })
 
     var open_entity_selection = function() {
         $('.avatar').trigger("click");
