@@ -114,7 +114,7 @@ class Inventory
         }
     }
 
-    private function tempInventoryFilename()
+    private function tempInventoryFilename(): string
     {
         $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
         // even if tmpfile shouldn't exist, it's safer to check it really doesn't
