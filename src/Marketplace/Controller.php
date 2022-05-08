@@ -509,9 +509,20 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public static function hasGitDirectory(string $plugin_key = ""): bool
+    public static function hasVcsDirectory(string $plugin_key): bool
     {
-        return is_dir(GLPI_MARKETPLACE_DIR . "/" . $plugin_key . "/.git");
+        $vcs_dirs = [
+            '.git',
+            '.hg', // Mercurial
+            '.svn',
+        ];
+        foreach ($vcs_dirs as $vcs_dir) {
+            if (is_dir(GLPI_MARKETPLACE_DIR . '/' . $plugin_key . '/' . $vcs_dir)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
