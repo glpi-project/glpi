@@ -742,7 +742,7 @@ HTML;
                             <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
                         </a>";
                 } else {
-                    $warning = __s("The plugin has an available update but its local directory contains a .git") . "<br>";
+                    $warning = __s("The plugin has an available update but its local directory contains VCS files") . "<br>";
                     $warning .= __s("To avoid overwriting a potential branch under development, downloading is disabled.");
 
                     $buttons .= "<button title='$warning' class='add_tooltip download_manually'>
