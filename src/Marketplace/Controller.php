@@ -244,11 +244,11 @@ class Controller extends CommonGLPI
             } else if ($found_in_marketplace_dir) {
                 // Plugin has been found on marketplace and marketplace priority is higher than other location
                 // -> allow plugin update from marketplace as it is already loaded from there.
-                return is_writable(GLPI_MARKETPLACE_DIR . '/' . $this->plugin_key) && !self::hasGitDirectory($this->plugin_key);
+                return is_writable(GLPI_MARKETPLACE_DIR . '/' . $this->plugin_key) && !self::hasVcsDirectory($this->plugin_key);
             } else {
                 // Plugin has been found outside marketplace and does not exist in marketplace
                 // -> allow plugin update unless GLPI_MARKETPLACE_ALLOW_OVERRIDE is false.
-                return GLPI_MARKETPLACE_ALLOW_OVERRIDE && self::hasWriteAccess() && !self::hasGitDirectory($this->plugin_key);
+                return GLPI_MARKETPLACE_ALLOW_OVERRIDE && self::hasWriteAccess() && !self::hasVcsDirectory($this->plugin_key);
             }
         }
 
@@ -503,7 +503,7 @@ class Controller extends CommonGLPI
     }
 
     /**
-     * Check if a directory ".git" is present in plugins source code.
+     * Check if a directory ".git|.hg|.svn" is present in plugins source code.
      *
      * @param string $plugin_key
      *
