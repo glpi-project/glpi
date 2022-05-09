@@ -92,6 +92,7 @@
         .search-card {
             @include media-breakpoint-up(sm) {
                 min-width: 100%;
+                width: fit-content;
 
                 .search-header {
                     border-bottom: 0;
@@ -103,6 +104,8 @@
             }
 
             .table-responsive-md {
+                width: fit-content;
+
                 @include media-breakpoint-down(md) {
                     max-width: calc(100vw - 2rem);
                 }
@@ -122,6 +125,8 @@
                             border-left: 0;
                             border-right: 0;
                             background-color: $table_header_bg;
+                            min-width: max-content;
+                            vertical-align: top;
                         }
                     }
                 }
