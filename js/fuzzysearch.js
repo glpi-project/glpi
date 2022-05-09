@@ -50,20 +50,6 @@ $(function() {
         trigger_fuzzy();
     });
 
-    // when the shortcut for entity form is called
-    hotkeys('ctrl+alt+e, option+command+e', function(e) {
-        open_entity_selection(e);
-    });
-
-    async function open_entity_selection(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        $('.avatar').trigger("click");
-        await new Promise(r => setTimeout(r, 100));
-        $('.dropdown-list-entity').dropdown('toggle');
-        $('input[name=entsearchtext]').filter(":visible")[0].focus();
-    }
-
     // when the button is clicked
     $(document).on('click', '.trigger-fuzzy', function() {
         trigger_fuzzy();

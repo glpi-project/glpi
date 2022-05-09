@@ -67,7 +67,7 @@
    </span>
 {% else %}
    <div class="dropdown dropstart">
-      <a href="#" class="dropdown-item dropdown-toggle dropdown-list-entity" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
+      <a href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
          <i class="fa-fw ti ti-stack"></i>
          {{ current_entity_short|u.truncate(35, '...') }}
       </a>
@@ -231,6 +231,16 @@
       $('#entsearchtext{{ rand }}_clear').click(function () {
          $('#entsearchtext{{ rand }}').val('');
          searchTree();
+      });
+
+      // when the shortcut for entity form is called
+      hotkeys('ctrl+alt+e, option+command+e', async function(e) {
+         e.stopPropagation();
+         e.preventDefault();
+         $('.user-menu-dropdown-toggle').dropdown('show');
+         await new Promise(r => setTimeout(r, 100));
+         $('.entity-dropdown-toggle').dropdown('show');
+         $('input[name=entsearchtext]').filter(":visible")[0].focus();
       });
    });
    </script>
