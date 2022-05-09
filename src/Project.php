@@ -1990,7 +1990,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $items = [
             -1 => __('Global')
         ];
-        $criteria = [];
+        $criteria = [
+            'is_template' => 0,
+        ];
         $joins = [];
         if ($active) {
             $criteria += [
@@ -2080,6 +2082,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $project = new Project();
         $project_visibility = self::getVisibilityCriteria();
         $project_visibility['WHERE'] += getEntitiesRestrictCriteria(self::getTable(), '', '', 'auto');
+
         $request = [
             'SELECT' => [
                 'glpi_projects.*',
@@ -2094,7 +2097,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     ]
                 ]
             ] + $project_visibility['LEFT JOIN'],
-            'WHERE'     => $project_visibility['WHERE'],
+            'WHERE'     => $project_visibility['WHERE'] + [
+                    'is_template' => 0
+            ],
         ];
         if ($ID > 0) {
             $request['WHERE']['glpi_projects.projects_id'] = $ID;
@@ -2117,14 +2122,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
        // Get sub-tasks
         $projecttask = new ProjectTask();
         $projecttaskteam = new ProjectTaskTeam();
-        $project_ids_criteria = [];
-        if ($ID <= 0 && count($project_ids)) {
-           // Global view
-            $project_ids_criteria = ['projects_id' => $project_ids];
-        } else {
-            $project_ids_criteria = ['projects_id' => $ID];
-        }
-        $projecttasks = $projecttask->find($project_ids_criteria + $criteria);
+        $project_task_criteria = [
+            'is_template' => 0,
+            'projects_id' => ($ID <= 0 && count($project_ids)) ? $project_ids : $ID,
+        ];
+        $projecttasks = $projecttask->find($project_task_criteria + $criteria);
         $projecttask_ids = array_map(function ($e) {
             return $e['id'];
         }, $projecttasks);
