@@ -316,16 +316,16 @@ class NotificationTarget extends CommonDBChild
     {
 
         $itemtype = $item->getType();
-        if ($plug = isPluginItemType($itemtype)) {
-           // plugins case
-            $name = 'Plugin' . $plug['plugin'] . 'NotificationTarget' . $plug['class'];
-        } else if (strpos($itemtype, "\\") != false) {
-           // namespace case
+        if (strpos($itemtype, "\\") != false) {
+            // namespace case
             $ns_parts = explode("\\", $itemtype);
             $classname = array_pop($ns_parts);
             $name = implode("\\", $ns_parts) . "\\NotificationTarget$classname";
+        } elseif ($plug = isPluginItemType($itemtype)) {
+            // plugins case
+            $name = 'Plugin' . $plug['plugin'] . 'NotificationTarget' . $plug['class'];
         } else {
-           // simple class (without namespace)
+            // simple class (without namespace)
             $name = "NotificationTarget$itemtype";
         }
 
