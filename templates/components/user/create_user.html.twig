@@ -31,17 +31,37 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="btn btn-icon btn-sm btn-ghost-secondary mt-1 ms-1"
+<div class="btn btn-icon btn-sm btn-ghost-secondary ms-1"
      data-bs-toggle="modal" data-bs-target="#add_{{ item.fields['id'] }}"
      id="create_user_{{ item.fields['id'] }}"
      data-bs-placement="top"
      title="{{ __('Create user') }}">
-   <i class="ti ti-user-plus"></i>
+    <i class="ti ti-user-plus"></i>
 </div>
 <script type="text/javascript">
-   $(function() {
-      $("#create_user_{{ item.fields['id'] }}").on('mousedown', function(e) {
-         e.stopPropagation();
-      });
-   });
+    $(function() {
+        var selector = '#create_user_{{ item.fields['id'] }}';
+        var toggle_to_restore = null;
+
+        $(selector).on('mousedown', function(e) {
+            // Remove toggle marker from parent button, to prevent accordion expand/collapse.
+            // It is not possible to use `e.stopPropagation()` on a `click` event,
+            // as current handler is executed after bootstrap handlers.
+            var button = $(selector).closest('.accordion-button');
+            toggle_to_restore = button.attr('data-bs-toggle');
+            $(selector).closest('.accordion-button').removeAttr('data-bs-toggle');
+        });
+
+        $(document).on('click', function(e) {
+            if (toggle_to_restore !== null) {
+                // Restore toggle marker on parent button.
+                $(selector).closest('.accordion-button').attr('data-bs-toggle', toggle_to_restore);
+                toggle_to_restore = null;
+            }
+            if ($(selector).find(e.target).length > 0) {
+                // Prevent event propagation only if click is on "Create user" button or its children.
+                e.stopPropagation();
+            }
+        });
+    });
 </script>
