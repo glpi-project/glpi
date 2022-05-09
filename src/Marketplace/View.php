@@ -723,24 +723,34 @@ HTML;
             $plugin_data = $mk_controller->getAPI()->getPlugin($plugin_key);
             if (array_key_exists('installation_url', $plugin_data) && $can_be_downloaded) {
                 $warning = "";
-                if ($has_web_update) {
-                    $warning = __s("The plugin has an available update but its directory is not writable.") . "<br>";
+
+                if (!Controller::hasVcsDirectory($plugin_key)) {
+                    if ($has_web_update) {
+                        $warning = __s("The plugin has an available update but its directory is not writable.") . "<br>";
+                    }
+
+                    $warning .= sprintf(
+                        __s("Download archive manually, you must uncompress it in plugins directory (%s)"),
+                        GLPI_ROOT . '/plugins'
+                    );
+
+                    // Use "marketplace.download.php" proxy if archive is downloadable from GLPI marketplace plugins API
+                    // as this API will refuse to serve the archive if registration key is not set in headers.
+                    $download_url = str_starts_with($plugin_data['installation_url'], GLPI_MARKETPLACE_PLUGINS_API_URI)
+                        ? $CFG_GLPI['root_doc'] . '/front/marketplace.download.php?key=' . $plugin_key
+                        : $plugin_data['installation_url'];
+
+                    $buttons .= "<a href='{$download_url}' target='_blank'>
+                            <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
+                        </a>";
+                } else {
+                    $warning = __s("The plugin has an available update but its local directory contains source versioning.") . "<br>";
+                    $warning .= __s("To avoid overwriting a potential branch under development, downloading is disabled.");
+
+                    $buttons .= "<button title='$warning' class='add_tooltip download_manually'>
+                        <i class='fas fa-ban'></i>
+                    </button>";
                 }
-
-                $warning .= sprintf(
-                    __s("Download archive manually, you must uncompress it in plugins directory (%s)"),
-                    GLPI_ROOT . '/plugins'
-                );
-
-                // Use "marketplace.download.php" proxy if archive is downloadable from GLPI marketplace plugins API
-                // as this API will refuse to serve the archive if registration key is not set in headers.
-                $download_url = str_starts_with($plugin_data['installation_url'], GLPI_MARKETPLACE_PLUGINS_API_URI)
-                    ? $CFG_GLPI['root_doc'] . '/front/marketplace.download.php?key=' . $plugin_key
-                    : $plugin_data['installation_url'];
-
-                $buttons .= "<a href='{$download_url}' target='_blank'>
-                        <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
-                    </a>";
             }
         } else if ($can_be_downloaded) {
             if (!$exists) {
