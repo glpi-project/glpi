@@ -28,7 +28,7 @@
         "_nx": true
     },
     "parserOptions": {
-        "ecmaVersion": 6
+        "ecmaVersion": 8
     },
     "rules": {
         "eol-last": [
