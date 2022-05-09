@@ -791,7 +791,7 @@ var Dashboard = {
 
         parent_item
             .find('.big-number')
-            .find('.label').fitText(text_offset - 0.2);
+            .find('.label').fitText(text_offset - 0.2, { minFontSize: '12px'});
 
         // Remove temporary width
         this.resetComputedWidth(parent_item.find('.big-number').find('.formatted-number'));
