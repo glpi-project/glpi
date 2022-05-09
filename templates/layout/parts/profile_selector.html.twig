@@ -75,7 +75,11 @@
          <h3>{{ __('Select the desired entity') }}</h3>
 
          <div class="alert alert-info" role="alert">
-            {{ entity_shortcut|raw }}
+            {% set shortcut = __('Ctrl + Alt + E') %}
+            {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
+                {% set shortcut = __('⌥ (option) + ⌘ (command) + E') %}
+            {% endif %}
+            {{ __("Tip: You can call this modal with %s keys combination")|format('<kbd>' ~ shortcut ~ '</kbd>')|raw }}
          </div>
          <div class="alert alert-info" role="alert">
             <i class="fas fa-info-circle"></i>
