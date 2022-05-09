@@ -306,3 +306,7 @@ table {
     background-color: $color-contrast-light;
     color: $dark;
 }
+
+kbd {
+    white-space: nowrap;
+}
