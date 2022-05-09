@@ -482,7 +482,8 @@ $break_tablet: 1400px;
                     }
 
                     &::after {
-                        font: 14px var(--fa-font-solid);
+                        font: var(--fa-font-solid);
+                        font-size: 14px;
                         color: #74838f;
                         opacity: 0.7;
                         pointer-events: none;
