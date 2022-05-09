@@ -134,10 +134,11 @@
                         display: none;
                     }
 
-                    .accordion-button{
+                    .accordion-button {
                         &::after {
                             display: none;
                         }
+
                         .btn {
                             display: none;
                         }
