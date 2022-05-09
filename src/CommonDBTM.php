@@ -501,7 +501,8 @@ class CommonDBTM extends CommonGLPI
         $locks = [];
         $lockedfield = new Lockedfield();
         if (
-            !$this->isNewItem()
+            !$this instanceof Lockedfield
+            && !$this->isNewItem()
             && $lockedfield->isHandled($this)
         ) {
             $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);
