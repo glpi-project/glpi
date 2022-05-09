@@ -31,12 +31,15 @@
  # ---------------------------------------------------------------------
  #}
 
-<span class="btn btn-icon btn-sm btn-ghost-secondary ms-2"
-     id="create_user_{{ item.fields['id'] }}"
-     data-bs-toggle="tooltip"
-     data-bs-placement="right"
-     title="{{ __('Create user') }}">
-    <i class="ti ti-user-plus"></i>
+<span data-bs-toggle="tooltip"
+      data-bs-placement="right"
+      title="{{ __('Create user') }}">
+    <span class="btn btn-icon btn-sm btn-ghost-secondary ms-2"
+          id="create_user_{{ item.fields['id'] }}"
+          data-bs-toggle="modal"
+          data-bs-target="#add_{{ item.fields['id'] }}">
+        <i class="ti ti-user-plus"></i>
+    </span>
 </span>
 <script type="text/javascript">
     $(function() {
@@ -59,13 +62,6 @@
                 e.preventDefault();
                 prevent_toggle = false;
             }
-        });
-
-        // Open modal on click.
-        button.on('click', function(e) {
-            const modal_element = document.getElementById('add_{{ item.fields['id'] }}');
-            const modal = new bootstrap.Modal(modal_element);
-            modal.show();
         });
     });
 </script>
