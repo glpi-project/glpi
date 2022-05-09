@@ -41,16 +41,16 @@ if (
     !$CFG_GLPI['notifications_mailing']
     || !countElementsInTable(
         'glpi_notifications',
-        ['itemtype' => 'User', 'event' => 'passwordforget', 'is_active' => 1]
+        ['itemtype' => 'User', 'event' => 'passwordinit', 'is_active' => 1]
     )
 ) {
     Session::addMessageAfterRedirect(
-        __('Sending password forget notification is not enabled.'),
+        __('Sending password initialization notification is not enabled.'),
         true,
         ERROR
     );
     TemplateRenderer::getInstance()->display('password_form.html.twig', [
-        'title'         => __('Forgotten password?'),
+        'title'         => __('Forgotten initialization'),
         'messages_only' => true,
     ]);
     exit();
@@ -58,19 +58,19 @@ if (
 
 $user = new User();
 
-// Manage lost password
+// Manage password initialization
 // REQUEST needed : GET on first access / POST on submit form
 if (isset($_REQUEST['password_forget_token'])) {
     if (isset($_POST['password'])) {
         $user->showUpdateForgottenPassword($_REQUEST);
     } else {
-        User::showPasswordForgetChangeForm($_REQUEST['password_forget_token']);
+        User::showPasswordInitChangeForm($_REQUEST['password_forget_token']);
     }
 } else {
     if (isset($_POST['email'])) {
-        $user->showForgetPassword($_POST['email']);
+        $user->showInitPassword($_POST['email']);
     } else {
-        User::showPasswordForgetRequestForm();
+        User::showPasswordInitRequestForm();
     }
 }
 

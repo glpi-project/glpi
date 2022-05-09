@@ -714,6 +714,8 @@ class User extends CommonDBTM
                     return false;
                 }
             }
+        } elseif (isset($this->input['_init_password']) && $this->input['_init_password']) {
+            $input['password'] = Toolbox::getRandomString(16);
         }
 
         if (isset($input["_extauth"])) {
@@ -804,6 +806,15 @@ class User extends CommonDBTM
                 $affectation["users_id"]     = $this->fields["id"];
                 $right                       = new Profile_User();
                 $right->add($affectation);
+            }
+        }
+
+        if (isset($this->input['_init_password']) && $this->input['_init_password']) {
+            $email = $this->getDefaultEmail();
+            try {
+                $this->forgetPassword($email, true);
+            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+                Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
             }
         }
     }
@@ -897,8 +908,7 @@ class User extends CommonDBTM
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
                         || (($input['password_forget_token'] == $this->fields['password_forget_token'])
-                           && (abs(strtotime($_SESSION["glpi_currenttime"])
-                               - strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)))
+                           && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))))
                     ) {
                         $input["password"]
                         = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
@@ -1044,7 +1054,14 @@ class User extends CommonDBTM
         $this->applyGroupsRules();
         $this->applyRightRules();
 
-        if (in_array('password', $this->updates)) {
+        if (isset($this->input['_init_password']) && $this->input['_init_password']) {
+            $email = $this->getDefaultEmail();
+            try {
+                $this->forgetPassword($email, false);
+            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+                Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+            }
+        } elseif (in_array('password', $this->updates)) {
             $alert = new Alert();
             $alert->deleteByCriteria(
                 [
@@ -2282,6 +2299,8 @@ class User extends CommonDBTM
             return false;
         }
 
+        $simplified_form = $options['simplified_form'] ?? false;
+
         $config = Config::getConfigurationValues('core');
         if ($this->getID() > 0 && $config['system_user'] == $this->getID()) {
             return $this->showSystemUserForm($ID, $options);
@@ -2365,7 +2384,7 @@ JAVASCRIPT;
             echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
         }
 
-        if (!empty($this->fields["name"])) {
+        if (!$simplified_form && !empty($this->fields["name"])) {
             echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
             echo "<td rowspan='7'>";
             echo self::getPictureForUser($ID);
@@ -2432,6 +2451,29 @@ JAVASCRIPT;
         );
         echo "</td></tr>";
 
+        if (
+            self::canUpdate()
+            && (!$extauth || empty($ID))
+        ) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td></td><td>";
+            $init_password_js = <<<JAVASCRIPT
+                var showPwdFields = function () {
+                    if ($('input[name="_init_password"]').is(':checked')) {
+                        $('.password_field').css("display", "none");
+                        $('input[name="_useremails[-1]"]').prop("required", true);
+                    } else {
+                        $('.password_field').css("display", "");
+                        $('input[name="_useremails[-1]"]').prop("required", false);
+                    }
+                };
+                $('input[name="_init_password"]').on('change', showPwdFields);
+JAVASCRIPT;
+            echo Html::scriptBlock($init_password_js);
+            Html::showCheckbox(['name'  => '_init_password']);
+            echo "&nbsp;&nbsp;" . __('Send an email to the user to set their own new password.');
+            echo "</td></tr>";
+        }
        //do some rights verification
         if (
             self::canUpdate()
@@ -2439,13 +2481,13 @@ JAVASCRIPT;
             && $caneditpassword
         ) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='password'>" . __('Password') . "</label></td>";
-            echo "<td><input id='password' type='password' name='password' value='' size='20'
+            echo "<td class='password_field'><label for='password'>" . __('Password') . "</label></td>";
+            echo "<td class='password_field'><input id='password' type='password' name='password' value='' size='20'
                     autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'></td>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-            echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password' class='form-control'>";
+            echo "<td class='password_field'><label for='password2'>" . __('Password confirmation') . "</label></td>";
+            echo "<td class='password_field'><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password' class='form-control'>";
             echo "</td></tr>";
 
             if ($CFG_GLPI["use_password_security"]) {
@@ -2463,7 +2505,7 @@ JAVASCRIPT;
             echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
         }
 
-        if ($DB->use_timezones || Session::haveRight("config", READ)) {
+        if ((!$simplified_form) && ($DB->use_timezones || Session::haveRight("config", READ))) {
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
             if ($DB->use_timezones) {
@@ -2502,7 +2544,7 @@ JAVASCRIPT;
         echo "</td>";
         echo "</tr>";
 
-        if (!GLPI_DEMO_MODE) {
+        if ((!$simplified_form) && (!GLPI_DEMO_MODE)) {
             $sincerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='showdate$sincerand'>" . __('Valid since') . "</label></td><td>";
@@ -2574,42 +2616,47 @@ JAVASCRIPT;
             ]
         );
         echo "</td>";
-        $catrand = mt_rand();
-        echo "<td><label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
-        UserCategory::dropdown(['value' => $this->fields["usercategories_id"], 'rand' => $catrand]);
+        echo "<td>";
+        if (!$simplified_form) {
+            $catrand = mt_rand();
+            echo "<label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
+            UserCategory::dropdown(['value' => $this->fields["usercategories_id"], 'rand' => $catrand]);
+        }
         echo "</td></tr>";
 
-        $phone2rand = mt_rand();
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
-        echo Html::input(
-            'phone2',
-            [
-                'value' => $this->fields['phone2'],
-                'id'    => "textfield_phone2$phone2rand",
-            ]
-        );
-        echo "</td>";
-        echo "<td rowspan='4' class='middle'><label for='comment'>" . __('Comments') . "</label></td>";
-        echo "<td class='center middle' rowspan='4'>";
-        echo "<textarea class='form-control' id='comment' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
+        if (!$simplified_form) {
+            $phone2rand = mt_rand();
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
+            echo Html::input(
+                'phone2',
+                [
+                    'value' => $this->fields['phone2'],
+                    'id'    => "textfield_phone2$phone2rand",
+                ]
+            );
+            echo "</td>";
+            echo "<td rowspan='4' class='middle'><label for='comment'>" . __('Comments') . "</label></td>";
+            echo "<td class='center middle' rowspan='4'>";
+            echo "<textarea class='form-control' id='comment' name='comment' >" . $this->fields["comment"] . "</textarea>";
+            echo "</td></tr>";
 
-        $admnumrand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . __('Administrative number') . "</label></td><td>";
-        echo Html::input(
-            'registration_number',
-            [
-                'value' => $this->fields['registration_number'],
-                'id'    => "textfield_registration_number$admnumrand",
-            ]
-        );
-        echo "</td></tr>";
+            $admnumrand = mt_rand();
+            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . __('Administrative number') . "</label></td><td>";
+            echo Html::input(
+                'registration_number',
+                [
+                    'value' => $this->fields['registration_number'],
+                    'id'    => "textfield_registration_number$admnumrand",
+                ]
+            );
+            echo "</td></tr>";
 
-        $titlerand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='dropdown_usertitles_id$titlerand'>" . _x('person', 'Title') . "</label></td><td>";
-        UserTitle::dropdown(['value' => $this->fields["usertitles_id"], 'rand' => $titlerand]);
-        echo "</td></tr>";
+            $titlerand = mt_rand();
+            echo "<tr class='tab_bg_1'><td><label for='dropdown_usertitles_id$titlerand'>" . _x('person', 'Title') . "</label></td><td>";
+            UserTitle::dropdown(['value' => $this->fields["usertitles_id"], 'rand' => $titlerand]);
+            echo "</td></tr>";
+        }
 
         echo "<tr class='tab_bg_1'>";
         if (!empty($ID)) {
@@ -2647,7 +2694,8 @@ JAVASCRIPT;
             Entity::dropdown(['name'                => '_entities_id',
                 'display_emptychoice' => false,
                 'rand'                => $entrand,
-                'entity'              => $_SESSION['glpiactiveentities']
+                'entity'              => $_SESSION['glpiactiveentities'],
+                'value'               => $options['entities_id'] ?? $_SESSION['glpiactive_entity']
             ]);
             echo "</td></tr>";
         } else {
@@ -4945,10 +4993,11 @@ JAVASCRIPT;
      * Get user by email, importing it from LDAP if not existing.
      *
      * @param string $email
+     * @param bool $createuserfromemail
      *
      * @return integer ID of user, 0 if not found nor imported
      */
-    public static function getOrImportByEmail($email = '')
+    public static function getOrImportByEmail($email = '', bool $createuserfromemail = false)
     {
         global $DB, $CFG_GLPI;
 
@@ -4975,9 +5024,9 @@ JAVASCRIPT;
             return $result['id'];
         } else {
             if ($CFG_GLPI["is_users_auto_add"]) {
-               //Get all ldap servers with email field configured
+                //Get all ldap servers with email field configured
                 $ldaps = AuthLDAP::getServersWithImportByEmailActive();
-               //Try to find the user by his email on each ldap server
+                //Try to find the user by his email on each ldap server
 
                 foreach ($ldaps as $ldap) {
                     $params = [
@@ -4993,6 +5042,12 @@ JAVASCRIPT;
                     if (isset($res['id'])) {
                         return $res['id'];
                     }
+                }
+            }
+            if ($createuserfromemail) {
+                $user = self::createUserFromMail($email);
+                if ($user !== null) {
+                    return $user->fields['id'];
                 }
             }
         }
@@ -5275,16 +5330,48 @@ JAVASCRIPT;
         ]);
     }
 
+    /**
+     * Show new password form of password initialization process.
+     *
+     * @param string $token
+     *
+     * @return void
+     *
+     * @since 10.1.0
+     */
+    public static function showPasswordInitChangeForm(string $token): void
+    {
+        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+            'title'    => __('Password Initialization'),
+            'token'    => $token,
+            'token_ok' => User::getUserByForgottenPasswordToken($token) !== null,
+        ]);
+    }
+
 
     /**
      * Show request form of password recovery process.
      *
      * @return void
+     *
+     * @since 10.1.0
      */
-    public static function showPasswordForgetRequestForm()
+    public static function showPasswordForgetRequestForm(): void
     {
         TemplateRenderer::getInstance()->display('password_form.html.twig', [
             'title' => __('Forgotten password?'),
+        ]);
+    }
+
+    /**
+     * Show request form of password initialization process.
+     *
+     * @return void
+     */
+    public static function showPasswordInitRequestForm()
+    {
+        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+            'title' => __('Password initialization'),
         ]);
     }
 
@@ -5412,9 +5499,33 @@ JAVASCRIPT;
     }
 
     /**
+     * Send password recovery for a user and display result message.
+     *
+     * @param string $email email of the user
+     *
+     * @return void
+     */
+    public function showInitPassword(string $email): void
+    {
+        try {
+            $this->forgetPassword($email, true);
+        } catch (\Glpi\Exception\ForgetPasswordException $e) {
+            Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+            return;
+        }
+        Session::addMessageAfterRedirect(__('The given email address will receive the informations required to define password.'));
+
+        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+            'title'         => __('Password initialization'),
+            'messages_only' => true,
+        ]);
+    }
+
+    /**
      * Send password recovery email for a user.
      *
      * @param string $email
+     * @param bool $firstpassword
      *
      * @throws ForgetPasswordException If the process failed and the user should
      *                                 be aware of it (e.g. incorrect email)
@@ -5424,8 +5535,16 @@ JAVASCRIPT;
      *              of it to avoid exposing whether or not the given email exist
      *              in our database.
      */
-    public function forgetPassword(string $email): bool
+    public function forgetPassword(string $email, bool $firstpassword = false): bool
     {
+        global $CFG_GLPI;
+        if ($firstpassword) {
+            $event = 'passwordinit';
+            $token_date = strtotime($_SESSION["glpi_currenttime"]) + $CFG_GLPI['password_init_token_delay'];
+        } else {
+            $event = 'passwordforget';
+            $token_date = strtotime($_SESSION["glpi_currenttime"]) + DAY_TIMESTAMP;
+        }
         $condition = [
             'glpi_users.is_active'  => 1,
             'glpi_users.is_deleted' => 0, [
@@ -5470,13 +5589,13 @@ JAVASCRIPT;
         // Store password reset token and date
         $input = [
             'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
-            'password_forget_token_date' => $_SESSION["glpi_currenttime"],
+            'password_forget_token_date' => date("Y-m-d H:i:s", $token_date),
             'id'                         => $this->fields['id'],
         ];
         $this->update($input);
 
         // Notication on root entity (glpi_users.entities_id is only a pref)
-        NotificationEvent::raiseEvent('passwordforget', $this, ['entities_id' => 0]);
+        NotificationEvent::raiseEvent($event, $this, ['entities_id' => 0]);
         QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
 
         return true;
@@ -6442,7 +6561,7 @@ JAVASCRIPT;
      */
     public static function getUserByForgottenPasswordToken(string $token): ?User
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         if (empty($token)) {
             return null;
@@ -6455,7 +6574,7 @@ JAVASCRIPT;
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'password_forget_token'       => $token,
-                new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)')
+                new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', ' . $CFG_GLPI['password_init_token_delay'] . ')')
             ]
         ]);
 
@@ -6471,6 +6590,45 @@ JAVASCRIPT;
         // Try to load the user
         $user = new self();
         if (!$user->getFromDB($data['id'])) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
+     * Create a new user from an email address
+     *
+     * @param string $email The email address of the user.
+     *
+     * @return User|null Created user, null on failure.
+     */
+    private static function createUserFromMail(string $email): ?User
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => UserEmail::getTable(),
+            'WHERE'  => [
+                'email' => $email
+            ]
+        ]);
+
+        if (count($iterator) > 0) {
+            return null;
+        }
+
+        $user = new self();
+        $added = $user->add([
+            'name'           => $email,
+            'realname'       => $email,
+            '_useremails'    => [
+                '-1' => $email
+            ],
+            '_init_password' => true
+        ]);
+        if (!$added) {
             return null;
         }
 

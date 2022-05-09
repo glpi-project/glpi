@@ -260,6 +260,9 @@
             <span class="badge bg-secondary ms-2">
                {{ item.countActors() }}
             </span>
+            {% if not params['template_preview'] and cancreateuser and canupdate %}
+               {{ include('components/user/create_user.html.twig') }}
+            {% endif %}
          </button>
       </h2>
       <div id="actors" class="accordion-collapse collapse {{ actors_show ? "show" : "" }}" aria-labelledby="heading-actor">
@@ -447,6 +450,15 @@ $(function() {
          $(this).removeClass('show');
       })
    }
+});
+
+$(function() {
+    // Prevent display of accordion header tooltips when right panel is expanded
+    $('#itil-data .accordion-header').on('show.bs.tooltip', function(e) {
+        if (!$('#itil-object-container').hasClass('right-collapsed') && $(e.target).hasClass('accordion-header')) {
+            e.preventDefault();
+        }
+    });
 });
 
 var reloadCategory = function() {

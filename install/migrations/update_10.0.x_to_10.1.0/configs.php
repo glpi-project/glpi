@@ -33,45 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+/**
+ * @var Migration $migration
+ */
 
-include('../inc/includes.php');
-
-if (
-    !$CFG_GLPI['notifications_mailing']
-    || !countElementsInTable(
-        'glpi_notifications',
-        ['itemtype' => 'User', 'event' => 'passwordforget', 'is_active' => 1]
-    )
-) {
-    Session::addMessageAfterRedirect(
-        __('Sending password forget notification is not enabled.'),
-        true,
-        ERROR
-    );
-    TemplateRenderer::getInstance()->display('password_form.html.twig', [
-        'title'         => __('Forgotten password?'),
-        'messages_only' => true,
-    ]);
-    exit();
-}
-
-$user = new User();
-
-// Manage lost password
-// REQUEST needed : GET on first access / POST on submit form
-if (isset($_REQUEST['password_forget_token'])) {
-    if (isset($_POST['password'])) {
-        $user->showUpdateForgottenPassword($_REQUEST);
-    } else {
-        User::showPasswordForgetChangeForm($_REQUEST['password_forget_token']);
-    }
-} else {
-    if (isset($_POST['email'])) {
-        $user->showForgetPassword($_POST['email']);
-    } else {
-        User::showPasswordForgetRequestForm();
-    }
-}
-
-exit();
+$migration->displayMessage('Add new configurations / user preferences');
+$migration->addConfig([
+    'password_init_token_delay' => '86400',
+]);

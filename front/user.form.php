@@ -236,9 +236,9 @@ if (isset($_GET['getvcard'])) {
 
          Html::back();
     } else {
+        $options = $_GET;
+        $options['formoptions'] = "data-track-changes=true";
         $menus = ["admin", "user"];
-        User::displayFullPageForItem($_GET["id"], $menus, [
-            'formoptions'  => "data-track-changes=true"
-        ]);
+        User::displayFullPageForItem($_GET["id"], $menus, $options);
     }
 }
