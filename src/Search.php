@@ -8146,6 +8146,11 @@ HTML;
     {
 
         $out = "";
+        // Handle null values
+        if ($value === null) {
+            $value = '';
+        }
+
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
