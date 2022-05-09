@@ -314,20 +314,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public static function getInstance($item, $event = '', $options = [])
     {
-
-        $itemtype = $item->getType();
-        if (strpos($itemtype, "\\") != false) {
-            // namespace case
-            $ns_parts = explode("\\", $itemtype);
-            $classname = array_pop($ns_parts);
-            $name = implode("\\", $ns_parts) . "\\NotificationTarget$classname";
-        } elseif ($plug = isPluginItemType($itemtype)) {
-            // plugins case
-            $name = 'Plugin' . $plug['plugin'] . 'NotificationTarget' . $plug['class'];
-        } else {
-            // simple class (without namespace)
-            $name = "NotificationTarget$itemtype";
-        }
+        $name = self::getInstanceClass($item->getType());
 
         $entity = 0;
         if (class_exists($name)) {
@@ -344,6 +331,30 @@ class NotificationTarget extends CommonDBChild
         return false;
     }
 
+    /**
+     * Get the expected notification target class name for a given itemtype
+     *
+     * @param string $itemtype
+     *
+     * @return string
+     */
+    public static function getInstanceClass(string $itemtype): string
+    {
+        if (strpos($itemtype, "\\") != false) {
+            // namespace case
+            $ns_parts = explode("\\", $itemtype);
+            $classname = array_pop($ns_parts);
+            $name = implode("\\", $ns_parts) . "\\NotificationTarget$classname";
+        } elseif ($plug = isPluginItemType($itemtype)) {
+            // plugins case
+            $name = 'Plugin' . $plug['plugin'] . 'NotificationTarget' . $plug['class'];
+        } else {
+            // simple class (without namespace)
+            $name = "NotificationTarget$itemtype";
+        }
+
+        return $name;
+    }
 
     /**
      * Get a notificationtarget class by giving an itemtype

@@ -328,4 +328,33 @@ class NotificationTarget extends DbTestCase
                 ->exists();
         }
     }
+
+    protected function testGetInstanceClassProvider(): Generator
+    {
+        yield [
+            'itemtype' => 'Test',
+            'class'    => 'NotificationTargetTest',
+        ];
+
+        yield [
+            'itemtype' => 'PluginPluginameTest',
+            'class'    => 'PluginPluginameNotificationTargetTest',
+        ];
+
+        yield [
+            'itemtype' => 'GlpiPlugin\Namespace\Test',
+            'class'    => 'GlpiPlugin\Namespace\NotificationTargetTest',
+        ];
+    }
+
+    /**
+     * Tests for NotificationTarget::getInstanceClass
+     *
+     * @dataProvider testGetInstanceClassProvider
+     */
+    public function testGetInstanceClass(string $itemtype, string $class): void
+    {
+        $output = \NotificationTarget::getInstanceClass($itemtype);
+        $this->string($output)->isEqualTo($class);
+    }
 }
