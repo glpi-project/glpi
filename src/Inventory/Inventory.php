@@ -493,7 +493,9 @@ class Inventory
                 'icon'  => Lockedfield::getIcon(),
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
-                'links' => $links
+                'links' => [
+                    "<i class=\"ti ti-plus\" title=\"" . __('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __('Add global lock') . "</span>" => Lockedfield::getFormURL(false)
+                ] + $links
             ];
         }
 
