@@ -732,6 +732,7 @@ abstract class RuleCommonITILObject extends Rule
         );
         $actions['groups_id_validate_any']['type']                      = 'dropdown_groups_validate';
         $actions['groups_id_validate_any']['force_actions']             = ['add_validation'];
+        $actions['groups_id_validate_any']['permitseveral']             = ['add_validation'];
 
         $actions['validation_percent']['name']                      = sprintf(
             __('%1$s - %2$s'),
