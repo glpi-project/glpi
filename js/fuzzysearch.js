@@ -62,7 +62,7 @@ $(function() {
         await new Promise(r => setTimeout(r, 100));
         $('.dropdown-list-entity').dropdown('toggle');
         $('input[name=entsearchtext]').filter(":visible")[0].focus();
-    };
+    }
 
     // when the button is clicked
     $(document).on('click', '.trigger-fuzzy', function() {
