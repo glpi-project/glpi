@@ -134,8 +134,13 @@
                         display: none;
                     }
 
-                    .accordion-button::after {
-                        display: none;
+                    .accordion-button{
+                        &::after {
+                            display: none;
+                        }
+                        > .btn {
+                            display: none;
+                        }
                     }
                 }
 

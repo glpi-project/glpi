@@ -452,6 +452,15 @@ $(function() {
    }
 });
 
+$(function() {
+    // Prevent display of accordion header tooltips when right panel is expanded
+    $('#itil-data .accordion-header').on('show.bs.tooltip', function(e) {
+        if (!$('#itil-object-container').hasClass('right-collapsed') && $(e.target).hasClass('accordion-header')) {
+            e.preventDefault();
+        }
+    });
+});
+
 var reloadCategory = function() {
     var type = $('[name=type]').val();
 
