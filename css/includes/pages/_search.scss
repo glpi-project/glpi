@@ -100,6 +100,11 @@
                     top: -1px;
                     background-color: inherit;
                     z-index: #{$zindex-sticky + 1};
+
+                    .search-controls {
+                        position: sticky;
+                        left: 22px;
+                    }
                 }
             }
 
@@ -120,7 +125,7 @@
                         th {
                             z-index: $zindex-sticky;
                             position: sticky;
-                            top: 49px;
+                            top: 59px;
                             border: 1px solid $card-border-color;
                             border-left: 0;
                             border-right: 0;
@@ -150,14 +155,20 @@
 
                 @include media-breakpoint-up(sm) {
                     .search-pager {
+                        .search-limit {
+                            position: sticky;
+                            left: 22px;
+                        }
+
                         .page-infos {
                             position: sticky;
-                            left: 10px;
+                            left: 250px;
+                            right: 250px;
                         }
 
                         .pagination {
                             position: sticky;
-                            right: 10px;
+                            right: 22px;
                         }
                     }
                 }
