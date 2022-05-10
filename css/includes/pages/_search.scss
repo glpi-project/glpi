@@ -227,7 +227,11 @@ td.priority_block {
 }
 
 table.search-results {
-    thead th[data-searchopt-id]:not([data-searchopt-id=""]) {
+    thead th[data-searchopt-id][data-nosort] {
+        vertical-align: bottom !important;// Fix alignment for when no sorting indicator element is present
+    }
+
+    thead th[data-searchopt-id]:not([data-searchopt-id=""]):not([data-nosort]) {
         cursor: pointer;
 
         .sort-indicator {
