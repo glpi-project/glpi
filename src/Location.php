@@ -399,6 +399,19 @@ class Location extends CommonTreeDropdown
         return true;
     }
 
+    /**
+     * get item location
+     *
+     * @param CommonDBTM  $item
+     *
+     * @return CommonDBTM
+     **/
+    public static function getItemLocation(CommonDBTM $item)
+    {
+        $loc = new self();
+        $loc->getFromDB($item->fields['locations_id']);
+        return $loc;
+    }
 
     /**
      * Print the HTML array of items for a location
