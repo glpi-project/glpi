@@ -648,6 +648,8 @@ class Printer extends CommonDBTM
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
 
+        $tab = array_merge($tab, Printer_CartridgeInfo::rawSearchOptionsToAdd());
+
         return $tab;
     }
 

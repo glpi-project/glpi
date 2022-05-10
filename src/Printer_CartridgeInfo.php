@@ -115,4 +115,197 @@ class Printer_CartridgeInfo extends CommonDBChild
         }
         echo "</table>";
     }
+
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id' => strtolower(self::getType()),
+            'name' => self::getTypeName(1)
+        ];
+
+        $tab[] = [
+            'id'                 => '1400',
+            'table'              => self::getTable(),
+            'field'              => '_virtual_toner_black_percent',
+            'name'               => sprintf(__('%s toner percentage'), __('Black')),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'additionalfields'   => ['property', 'value'],
+            'forcegroupby'       => true,
+            'aggregate'          => true
+        ];
+
+        $tab[] = [
+            'id'                 => '1401',
+            'table'              => self::getTable(),
+            'field'              => '_virtual_toner_cyan_percent',
+            'name'               => sprintf(__('%s toner percentage'), __('Cyan')),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'additionalfields'   => ['property', 'value'],
+            'forcegroupby'       => true,
+            'aggregate'          => true
+        ];
+
+        $tab[] = [
+            'id'                 => '1402',
+            'table'              => self::getTable(),
+            'field'              => '_virtual_toner_cyanlight_percent',
+            'name'               => sprintf(__('%s toner percentage'), __('Light cyan')),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'additionalfields'   => ['property', 'value'],
+            'forcegroupby'       => true,
+            'aggregate'          => true
+        ];
+
+        $tab[] = [
+            'id'                 => '1403',
+            'table'              => self::getTable(),
+            'field'              => '_virtual_toner_magenta_percent',
+            'name'               => sprintf(__('%s toner percentage'), __('Magenta')),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'additionalfields'   => ['property', 'value'],
+            'forcegroupby'       => true,
+            'aggregate'          => true
+        ];
+
+        $tab[] = [
+            'id'                 => '1404',
+            'table'              => self::getTable(),
+            'field'              => '_virtual_toner_magentalight_percent',
+            'name'               => sprintf(__('%s toner percentage'), __('Light magenta')),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'additionalfields'   => ['property', 'value'],
+            'forcegroupby'       => true,
+            'aggregate'          => true
+        ];
+
+        $tab[] = [
+            'id'                 => '1405',
+            'table'              => self::getTable(),
+            'field'              => '_virtual_toner_yellow_percent',
+            'name'               => sprintf(__('%s toner percentage'), __('Yellow')),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'additionalfields'   => ['property', 'value'],
+            'forcegroupby'       => true,
+            'aggregate'          => true
+        ];
+
+        $tab[] = [
+            'id'                 => '1406',
+            'table'              => self::getTable(),
+            'field'              => '_virtual_toner_grey_percent',
+            'name'               => sprintf(__('%s toner percentage'), __('Grey')),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'additionalfields'   => ['property', 'value'],
+            'forcegroupby'       => true,
+            'aggregate'          => true
+        ];
+
+        $tab[] = [
+            'id'                 => '1407',
+            'table'              => self::getTable(),
+            'field'              => '_virtual_toner_darkgrey_percent',
+            'name'               => sprintf(__('%s toner percentage'), __('Dark grey')),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'additionalfields'   => ['property', 'value'],
+            'forcegroupby'       => true,
+            'aggregate'          => true
+        ];
+
+        return $tab;
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        $printer = new Printer();
+        if (strpos($field, '_virtual_toner') === 0) {
+            $color = preg_match('/_virtual_toner_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+            $max_field = "toner{$color}max";
+            $used_field = "toner{$color}used";
+            $remaining_field = "toner{$color}remaining";
+            $search_option_id = $printer->getSearchOptionIDByField('field', $field);
+
+            $raw_search_opt_values = $options['raw_data']['Printer_'.$search_option_id];
+            if ($raw_search_opt_values !== null) {
+                unset($raw_search_opt_values['count']);
+                // Get the max and used values (stored in property key and value key of elements)
+                $max_value = null;
+                $used_value = null;
+                $remaining_value = null;
+                foreach ($raw_search_opt_values as $raw_search_opt_value) {
+                    if ($raw_search_opt_value['property'] === $max_field) {
+                        $max_value = $raw_search_opt_value['value'];
+                    } elseif ($raw_search_opt_value['property'] === $used_field) {
+                        $used_value = $raw_search_opt_value['value'];
+                    } elseif ($raw_search_opt_value['property'] === $remaining_field) {
+                        $remaining_value = $raw_search_opt_value['value'];
+                    }
+                }
+                // If max is not set or 0, we cannot display anything
+                if ($max_value !== null && (int)$max_value > 0) {
+                    // If remaining is not set, we can calculate it from used
+                    if ($remaining_value === null && $used_value !== null) {
+                        $remaining_value = $max_value - $used_value;
+                    }
+                    $percent_remaining = round(($remaining_value / $max_value) * 100);
+
+                    return Html::progressBar('pb'.mt_rand(), [
+                        'percent' => $percent_remaining,
+                        'message' => $percent_remaining.'%',
+                        'display' => false,
+                        'create' => true
+                    ]);
+                }
+            }
+            // Need to return some non-empty value otherwise Search engine will throw errors.
+            return NOT_AVAILABLE;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 }

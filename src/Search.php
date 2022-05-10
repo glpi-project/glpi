@@ -7281,20 +7281,54 @@ HTML;
         if (isset($so['splititems']) && $so['splititems']) {
             $separate = self::LBHR;
         }
-        for ($k = 0; $k < $data[$ID]['count']; $k++) {
-            if ($count_display) {
-                $out .= $separate;
-            }
-            $count_display++;
-           // Get specific display if available
-            if (isset($table)) {
-                $itemtype = getItemTypeForTable($table);
-                if ($item = getItemForItemtype($itemtype)) {
-                    $tmpdata  = $data[$ID][$k];
-                   // Copy name to real field
-                    $tmpdata[$field] = $data[$ID][$k]['name'] ?? '';
 
-                    $specific = $item->getSpecificValueToDisplay(
+        $aggregate = (isset($so['aggregate']) && $so['aggregate']);
+
+        $append_specific = function($specific, $field_data, &$out) {
+            if (!empty($specific)) {
+                $out .= $specific;
+            } else if (isset($field_data['values'])) {
+                // Aggregate values; No special handling
+                $out .= '';
+            } else {
+                if (
+                    isset($so['toadd'])
+                    && isset($so['toadd'][$field_data['name']])
+                ) {
+                    $out .= $so['toadd'][$field_data['name']];
+                } else {
+                    // Empty is 0 or empty
+                    if (empty($split[0]) && isset($so['emptylabel'])) {
+                        $out .= $so['emptylabel'];
+                    } else {
+                        // Trans field exists
+                        if (isset($field_data['trans']) && !empty($field_data['trans'])) {
+                            $out .= $field_data['trans'];
+                        } else {
+                            $value = $field_data['name'];
+                            $out .= $value !== null && $so['field'] === 'completename'
+                                ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
+                                : $value;
+                        }
+                    }
+                }
+            }
+        };
+        if (isset($table)) {
+            $itemtype = getItemTypeForTable($table);
+            if ($item = getItemForItemtype($itemtype)) {
+                if ($aggregate) {
+                    $tmpdata = [
+                        'values'     => [],
+                    ];
+                    foreach ($data[$ID] as $k => $v) {
+                        if (is_int($k)) {
+                            $tmpdata['values'][$k] = $v;
+                        } else {
+                            $tmpdata[$k] = $v;
+                        }
+                    }
+                    $specific = $item::getSpecificValueToDisplay(
                         $field,
                         $tmpdata,
                         [
@@ -7303,34 +7337,35 @@ HTML;
                             'raw_data'  => $data
                         ]
                     );
-                }
-            }
-            if (!empty($specific)) {
-                $out .= $specific;
-            } else {
-                if (
-                    isset($so['toadd'])
-                    && isset($so['toadd'][$data[$ID][$k]['name']])
-                ) {
-                    $out .= $so['toadd'][$data[$ID][$k]['name']];
+
+                    $append_specific($specific, $tmpdata, $out);
                 } else {
-                   // Empty is 0 or empty
-                    if (empty($split[0]) && isset($so['emptylabel'])) {
-                        $out .= $so['emptylabel'];
-                    } else {
-                       // Trans field exists
-                        if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
-                            $out .= $data[$ID][$k]['trans'];
-                        } else {
-                            $value = $data[$ID][$k]['name'];
-                            $out .= $value !== null && $so['field'] === 'completename'
-                                ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
-                                : $value;
+                    $count_display = 0;
+                    for ($k = 0; $k < $data[$ID]['count']; $k++) {
+                        if ($count_display) {
+                            $out .= $separate;
                         }
+                        $count_display++;
+                        $tmpdata = $data[$ID][$k];
+                        // Copy name to real field
+                        $tmpdata[$field] = $data[$ID][$k]['name'] ?? '';
+
+                        $specific = $item::getSpecificValueToDisplay(
+                            $field,
+                            $tmpdata,
+                            [
+                                'html' => true,
+                                'searchopt' => $so,
+                                'raw_data' => $data
+                            ]
+                        );
+
+                        $append_specific($specific, $tmpdata, $out);
                     }
                 }
             }
         }
+
         return $out;
     }
 
