@@ -3516,6 +3516,9 @@ JAVASCRIPT;
 
         foreach ($sort_fields as $sort_field) {
             $ID = $sort_field['searchopt_id'];
+            if (isset($searchopt[$ID]['nosort']) && $searchopt[$ID]['nosort']) {
+                continue;
+            }
             $order = $sort_field['order'] ?? 'ASC';
            // Order security check
             if ($order != 'ASC') {
@@ -3651,6 +3654,9 @@ JAVASCRIPT;
             $orderby_criteria[] = $criterion ?? "`ITEM_{$itemtype}_{$ID}` $order";
         }
 
+        if (count($orderby_criteria) === 0) {
+            return;
+        }
         return ' ORDER BY ' . implode(', ', $orderby_criteria) . ' ';
     }
 
