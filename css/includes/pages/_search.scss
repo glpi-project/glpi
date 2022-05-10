@@ -42,13 +42,13 @@
 }
 
 .search_page {
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(lg) {
         display: flex;
         align-items: stretch;
     }
 
     .search-container {
-        @include media-breakpoint-up(sm) {
+        @include media-breakpoint-up(lg) {
             overflow: auto;
             height: calc(100vh - #{$contextbar-height} - #{$content-margin});
             padding: 0;
@@ -56,7 +56,7 @@
             width: 100%;
 
             .dashboard-card {
-                @include media-breakpoint-up(sm) {
+                @include media-breakpoint-up(lg) {
                     position: sticky;
                     left: 0;
                 }
@@ -68,7 +68,7 @@
         }
 
         .search-form-container {
-            @include media-breakpoint-up(sm) {
+            @include media-breakpoint-up(lg) {
                 position: sticky;
                 left: 0;
             }
@@ -90,7 +90,7 @@
         }
 
         .search-card {
-            @include media-breakpoint-up(sm) {
+            @include media-breakpoint-up(lg) {
                 min-width: 100%;
                 width: fit-content;
 
@@ -108,10 +108,8 @@
                 }
             }
 
-            .table-responsive-md {
-                width: fit-content;
-
-                @include media-breakpoint-down(md) {
+            .table-responsive-lg {
+                @include media-breakpoint-down(lg) {
                     max-width: calc(100vw - 2rem);
                 }
             }
@@ -120,7 +118,7 @@
                 border-collapse: separate;
                 border-spacing: 0;
 
-                @include media-breakpoint-up(sm) {
+                @include media-breakpoint-up(lg) {
                     thead:first-child {
                         th {
                             z-index: $zindex-sticky;
@@ -153,7 +151,7 @@
                 position: sticky;
                 bottom: 0;
 
-                @include media-breakpoint-up(sm) {
+                @include media-breakpoint-up(lg) {
                     .search-pager {
                         .search-limit {
                             position: sticky;
@@ -199,14 +197,14 @@
 body.horizontal-layout {
     .search_page:not(.search_page_global) {
         .search-container {
-            @include media-breakpoint-up(sm) {
+            @include media-breakpoint-up(lg) {
                 height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
             }
         }
     }
 
     .search_page_global {
-        @include media-breakpoint-up(sm) {
+        @include media-breakpoint-up(lg) {
             height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
         }
     }
