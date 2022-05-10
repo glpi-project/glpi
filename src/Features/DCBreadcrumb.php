@@ -81,7 +81,7 @@ trait DCBreadcrumb
                 ];
 
                 if ($with_location) {
-                    $breadcrumb_item['location']['item'] = $this->getItemLocation($enclosure->getType(), $enclosure->getID());
+                    $breadcrumb_item['location']['item'] = Location::getItemLocation($enclosure);
                 }
                 $breadcrumb[Enclosure::getType()] = $breadcrumb_item;
                 $item = $enclosure;
@@ -103,7 +103,7 @@ trait DCBreadcrumb
                 ];
 
                 if ($with_location) {
-                    $breadcrumb_item['location']['item'] = $this->getItemLocation($rack->getType(), $rack->getID());
+                    $breadcrumb_item['location']['item'] = Location::getItemLocation($enclosure);
                 }
 
                 $breadcrumb[Rack::getType()] = $breadcrumb_item;
@@ -125,7 +125,7 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location']['item'] = $this->getItemLocation($dcroom->getType(), $dcroom->getID());
+                        $breadcrumb_item['location']['item'] = Location::getItemLocation($enclosure);
                     }
 
                     $breadcrumb[DCRoom::getType()] = $breadcrumb_item;
@@ -148,7 +148,7 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location']['item'] = $this->getItemLocation($datacenter->getType(), $datacenter->getID());
+                        $breadcrumb_item['location']['item'] = Location::getItemLocation($enclosure);
                     }
 
                     $breadcrumb[Datacenter::getType()] = $breadcrumb_item;
@@ -159,13 +159,23 @@ trait DCBreadcrumb
         $breadcrumb = array_reverse($breadcrumb);
 
         if ($with_location) {
-            $breadcrumb = $this->cleanLocationInforamtions($breadcrumb);
+            $breadcrumb = $this->cleanLocationInformations($breadcrumb);
         }
 
         return $breadcrumb;
     }
 
-    public function cleanLocationInforamtions(&$breadcrumb)
+    /**
+     * Clean Location information foreach item breadcrumb
+     * If Current item Location = Parent item Location              -> do not display Location
+     * If Current item Location is child of Parent item Location    -> display only Location name instead of completename
+     * Else Current item Location != Parent item Location           -> display Location completename
+     *
+     * @param array $breadcrumb
+     *
+     * @return array cleanded $breadcrumb
+     */
+    public function cleanLocationInformations(&$breadcrumb)
     {
         $rack_location = isset($breadcrumb[Rack::getType()]) ? $breadcrumb[Rack::getType()]['location']['item'] : null;
         $enclosure_location = isset($breadcrumb[Enclosure::getType()]) ? $breadcrumb[Enclosure::getType()]['location']['item'] : null;
@@ -264,28 +274,6 @@ trait DCBreadcrumb
 
         $position = sprintf(__('(U%1$u)'), $position);
         return $position;
-    }
-
-    /**
-     * get item location from Enclosure
-     *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
-     *
-     * @return string
-     */
-    private function getItemLocation($itemtype, $items_id)
-    {
-        $obj = new $itemtype();
-        $loc = null;
-        if ($obj->getFromDB($items_id)) {
-            if ($obj->fields['locations_id']) {
-                $loc = new Location();
-                $loc->getFromDB($obj->fields['locations_id']);
-            }
-        }
-
-        return $loc;
     }
 
     /**
