@@ -36,8 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use SodiumException;
-use Psr\Log\InvalidArgumentException;
 
 /* Test for inc/ruleimportlocation.class.php */
 
