@@ -232,9 +232,10 @@ class RuleImportEntity extends DbTestCase
     }
 
     /**
-     * We want to test optional actions provided by ruleentit, like:
+     * We want to test optional actions provided by ruleentity, like:
      * - location
-     * - location
+     * - groups_id_tech
+     * - users_id_tech
      */
     public function testAdditionalActions()
     {
