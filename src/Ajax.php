@@ -365,7 +365,19 @@ JAVASCRIPT;
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
             var index = tablink.closest('.nav-item').index();
+
+            const updateCurrentTab = () => {
+                $.get(
+                  '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
+                  {
+                     itemtype: '" . addslashes($type) . "',
+                     id: '$ID',
+                     tab: index,
+                  }
+               );
+            }
             if ($(target).html() && !force_reload) {
+                updateCurrentTab();
                 return;
             }
             $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50\"></i>');
@@ -375,14 +387,7 @@ JAVASCRIPT;
 
                $(target).closest('main').trigger('glpi.tab.loaded');
 
-               $.get(
-                  '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
-                  {
-                     itemtype: '" . addslashes($type) . "',
-                     id: '$ID',
-                     tab: index,
-                  }
-               );
+               updateCurrentTab();
             });
          };
 

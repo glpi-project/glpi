@@ -366,13 +366,15 @@ JAVASCRIPT;
                 ];
             }
             if ($this->can($ID, PURGE)) {
-                $options['addbuttons']['purge'] = [
-                    'text' => __("Delete serie"),
-                    'icon' => 'fas fa-trash-alt',
-                ];
-                $options['addbuttons']['purge_instance'] = [
-                    'text' => __("Delete instance"),
-                    'icon' => 'far fa-trash-alt',
+                $options['addbuttons'] = [
+                    'purge'          => [
+                        'text' => __("Delete serie"),
+                        'icon' => 'fas fa-trash-alt',
+                    ],
+                    'purge_instance' => [
+                        'text' => __("Delete instance"),
+                        'icon' => 'far fa-trash-alt',
+                    ],
                 ];
             }
         }

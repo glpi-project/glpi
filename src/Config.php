@@ -2257,8 +2257,9 @@ HTML;
                 'version' => SIMPLEPIE_VERSION,
                 'check'   => $sp
             ],
-            [ 'name'    => 'mpdf/mpdf',
-                'check'   => 'Mpdf\\Mpdf'
+            [ 'name'      => 'tecnickcom/tcpdf',
+                'version' => TCPDF_STATIC::getTCPDFVersion(),
+                'check'   => 'TCPDF'
             ],
             [ 'name'    => 'michelf/php-markdown',
                 'check'   => 'Michelf\\Markdown'

@@ -92,7 +92,7 @@
         .search-card {
             @include media-breakpoint-up(sm) {
                 min-width: 100%;
-                width: min-content;
+                width: fit-content;
 
                 .search-header {
                     border-bottom: 0;
@@ -100,10 +100,17 @@
                     top: -1px;
                     background-color: inherit;
                     z-index: #{$zindex-sticky + 1};
+
+                    .search-controls {
+                        position: sticky;
+                        left: 22px;
+                    }
                 }
             }
 
             .table-responsive-md {
+                width: fit-content;
+
                 @include media-breakpoint-down(md) {
                     max-width: calc(100vw - 2rem);
                 }
@@ -118,11 +125,13 @@
                         th {
                             z-index: $zindex-sticky;
                             position: sticky;
-                            top: 49px;
+                            top: 59px;
                             border: 1px solid $card-border-color;
                             border-left: 0;
                             border-right: 0;
                             background-color: $table_header_bg;
+                            min-width: max-content;
+                            vertical-align: top;
                         }
                     }
                 }
@@ -146,14 +155,20 @@
 
                 @include media-breakpoint-up(sm) {
                     .search-pager {
+                        .search-limit {
+                            position: sticky;
+                            left: 22px;
+                        }
+
                         .page-infos {
                             position: sticky;
-                            left: 10px;
+                            left: 250px;
+                            right: 270px;
                         }
 
                         .pagination {
                             position: sticky;
-                            right: 10px;
+                            right: 22px;
                         }
                     }
                 }

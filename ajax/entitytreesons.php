@@ -82,7 +82,7 @@ foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
                 $entity['folder'] = true;
 
                 $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
-               <i class='fas fa-angle-double-down ms-1' title='" . __('+ sub-entities') . "'></i>
+               <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __('+ sub-entities') . "'></i>
             </a>";
 
                 $children = $adapt_tree($entity['tree']);

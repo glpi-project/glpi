@@ -34,21 +34,28 @@
 {% set rand = random() %}
 
 <span id="user_{{ rand }}">
-   <i class="ti ti-user ms-1"></i>
-   {{ get_item_link('User', users_id, {
-      'enable_anonymization': enable_anonymization
-   })|raw }}
+    <i class="ti ti-user ms-1"></i>
+    {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization}) }}
 </span>
 
 {% if not enable_anonymization %}
-   {% set user = get_item('User', users_id) %}
-   {% set user_fields = user.fields %}
-   {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
-   {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
-   {% do call('Html::showToolTip', [
-      include('components/user/info_card.html.twig', {
-         'user': (user_fields ?? []),
-      }, with_context = false), {
-         'applyto': "user_" ~ rand
-      }]) %}
+    {% set user = get_item('User', users_id) %}
+    {% if user is not null %}
+        {% set user_fields = user.fields %}
+        {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
+        {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
+        {% do call(
+            'Html::showToolTip',
+            [
+                include(
+                    'components/user/info_card.html.twig',
+                    {'user': user_fields},
+                    with_context = false
+                ),
+                {
+                    'applyto': "user_" ~ rand
+                }
+            ]
+        ) %}
+    {% endif %}
 {% endif %}

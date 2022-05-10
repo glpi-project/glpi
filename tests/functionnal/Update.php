@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -124,6 +125,7 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.5_to_9.5.6.php'   => 'update955to956',
                     $path . '/update_9.5.6_to_9.5.7.php'   => 'update956to957',
                     $path . '/update_9.5.x_to_10.0.0.php'  => 'update95xto1000',
+                    $path . '/update_10.0.0_to_10.0.1.php' => 'update1000to1001',
                     $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
@@ -145,6 +147,7 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.5_to_9.5.6.php'   => 'update955to956',
                     $path . '/update_9.5.6_to_9.5.7.php'   => 'update956to957',
                     $path . '/update_9.5.x_to_10.0.0.php'  => 'update95xto1000',
+                    $path . '/update_10.0.0_to_10.0.1.php' => 'update1000to1001',
                     $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
@@ -173,6 +176,7 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.5_to_9.5.6.php'   => 'update955to956',
                     $path . '/update_9.5.6_to_9.5.7.php'   => 'update956to957',
                     $path . '/update_9.5.x_to_10.0.0.php'  => 'update95xto1000',
+                    $path . '/update_10.0.0_to_10.0.1.php' => 'update1000to1001',
                     $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],

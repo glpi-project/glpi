@@ -67,7 +67,7 @@
    </span>
 {% else %}
    <div class="dropdown dropstart">
-      <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
+      <a href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
          <i class="fa-fw ti ti-stack"></i>
          {{ current_entity_short|u.truncate(35, '...') }}
       </a>
@@ -75,12 +75,19 @@
          <h3>{{ __('Select the desired entity') }}</h3>
 
          <div class="alert alert-info" role="alert">
+            {% set shortcut = __('Ctrl + Alt + E') %}
+            {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
+                {% set shortcut = __('⌥ (option) + ⌘ (command) + E') %}
+            {% endif %}
+            {{ __("Tip: You can call this modal with %s keys combination")|format('<kbd>' ~ shortcut ~ '</kbd>')|raw }}
+         </div>
+         <div class="alert alert-info" role="alert">
             <i class="fas fa-info-circle"></i>
             <span class="ms-2">
                {% set recursive_icon %}
                   <i class="fas fa-angle-double-down" title="{{ __('+ sub-entities') }}"></i>
                {% endset %}
-               {{ __('Click on the %s icon to see the entity and its sub-entities')|format(recursive_icon)|raw }}
+               {{ __('Click on the %s icon to load the elements of the selected entity, as well as its sub-entities.')|format(recursive_icon)|raw }}
             </span>
          </div>
 
@@ -190,7 +197,14 @@
                total: tree.visibleNodeList.length,
                visible: tree.viewport.count,
             }, true);  // do not trigger `onSet`
+
+            initTooltips();
          },
+
+        // update toolips on node expand
+        expand: function(event, data) {
+            initTooltips();
+        },
       });
 
       var searchTree = function() {
@@ -217,6 +231,16 @@
       $('#entsearchtext{{ rand }}_clear').click(function () {
          $('#entsearchtext{{ rand }}').val('');
          searchTree();
+      });
+
+      // when the shortcut for entity form is called
+      hotkeys('ctrl+alt+e, option+command+e', async function(e) {
+         e.stopPropagation();
+         e.preventDefault();
+         $('.user-menu-dropdown-toggle').dropdown('show');
+         await new Promise(r => setTimeout(r, 100));
+         $('.entity-dropdown-toggle').dropdown('show');
+         $('input[name=entsearchtext]').filter(":visible")[0].focus();
       });
    });
    </script>

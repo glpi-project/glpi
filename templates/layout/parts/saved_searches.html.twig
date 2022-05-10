@@ -33,10 +33,10 @@
 
 {% set global_pinned = user_pref('savedsearches_pinned', true) %}
 {% set pinned = (global_pinned[itemtype] ?? '0') == '1' %}
-{% set itemtype_cls = itemtype|lower %}
+{% set clean_itemtype = itemtype|lower|u.replace('\\', '_') %}
 {% set rand = random() %}
 
-<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? 'pinned' : 'd-none' }} saved-searches-panel {{ itemtype_cls }}"
+<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? 'pinned' : 'd-none' }} saved-searches-panel {{ clean_itemtype }}"
      id="saved-searches-panel-{{ rand }}">
    <div class="card-header d-flex flex-nowrap pe-0 align-items-center text-muted">
       <i class="ti ti-star"></i>&nbsp;
@@ -124,8 +124,8 @@ $(function() {
 
    // toggle panel
    $(document).on('click', '.show-saved-searches', function() {
-      itemtype = $(this).data('itemtype');
-      $(".saved-searches-panel."+itemtype)
+      var clean_itemtype = $(this).data('itemtype').toLowerCase().replace('\\', '_');
+      $(".saved-searches-panel." + clean_itemtype)
          .toggleClass('d-none')
          .toggleClass('responsive-toggle');
    });

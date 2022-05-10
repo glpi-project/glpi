@@ -85,11 +85,11 @@ GLPI.RichText.UserMention = class {
     *
     * @param {string} pattern
     *
-    * @returns {tinymce.util.Promise}
+    * @returns {Promise}
     */
     fetchItems(pattern) {
         const that = this;
-        return new tinymce.util.Promise(
+        return new Promise(
             function (resolve) {
                 $.post(
                     CFG_GLPI.root_doc + '/ajax/getDropdownUsers.php',

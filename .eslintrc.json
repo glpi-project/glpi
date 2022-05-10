@@ -27,9 +27,6 @@
         "_x": true,
         "_nx": true
     },
-    "parserOptions": {
-        "ecmaVersion": 12
-    },
     "rules": {
         "eol-last": [
             "error",
@@ -87,9 +84,11 @@
             "files": ["tests/js/**"],
             "env": {
                 "node": true,
-                "jest": true
+                "jest": true,
+                "es2021": true
             },
             "parserOptions": {
+                "ecmaVersion": 12,
                 "sourceType": "module"
             }
         }

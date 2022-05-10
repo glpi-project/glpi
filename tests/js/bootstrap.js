@@ -61,4 +61,98 @@ window._nx = function (msgctxt, msgid, msgid_plural, n = 1, domain /* , extra */
     return n === 1 ? msgid : msgid_plural;
 };
 
+window.AjaxMockResponse = class {
+
+    constructor(url, method = 'GET', data = {}, response, is_persistent = false) {
+        /**
+         * The URL
+         * @type string
+         */
+        this.url = url;
+        this.method = method;
+        this.data = data;
+        this.response = response;
+        this.is_persistent = is_persistent;
+    }
+
+    isMatch(url, method = 'GET', data = {}) {
+        if (this.url !== url || this.method !== method) {
+            return false;
+        }
+        let data_match = true;
+        $.each(data, (k, v) => {
+            // We specifically allow type coercion in the comparison
+            if (this.data[k] !== undefined && this.data[k] != v) {
+                data_match = false;
+                return false;
+            }
+        });
+        return data_match;
+    }
+
+    call(data) {
+        return this.response(data);
+    }
+};
+
+class AjaxMock {
+
+    constructor() {
+        /**
+         * @type {AjaxMockResponse[]}
+         */
+        this.response_stack = [];
+        $._ajax = $.ajax;
+    }
+
+    start() {
+        this.response_stack = [];
+        $.ajax = this.ajax;
+    }
+
+    end() {
+        this.response_stack = [];
+        $.ajax = $._ajax;
+    }
+
+    addMockResponse(response) {
+        this.response_stack.push(response);
+    }
+
+    isResponseStackEmpty() {
+        return this.response_stack.length === 0;
+    }
+
+    ajax() {
+        let url, settings;
+
+        if (arguments.length === 2) {
+            [url, settings] = arguments;
+        } else {
+            settings = arguments[0];
+            url = settings.url;
+        }
+
+        if (window.AjaxMock.isResponseStackEmpty()) {
+            throw new Error('No mock responses in stack');
+        }
+        let result = undefined;
+        for (let i = 0; i < window.AjaxMock.response_stack.length; i++) {
+            const response = window.AjaxMock.response_stack[i];
+            if (response.isMatch(url, settings.method, settings.data)) {
+                result = response.call(settings.data);
+                if (!response.is_persistent) {
+                    window.AjaxMock.response_stack.splice(i, 1);
+                }
+            }
+        }
+        if (result !== undefined) {
+            return Promise.resolve(result);
+        } else {
+            throw "No mock response found for " + url;
+        }
+    }
+}
+window.AjaxMock = new AjaxMock();
+
 require('../../js/common.js');
