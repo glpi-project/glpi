@@ -520,7 +520,9 @@ abstract class CommonITILObject extends CommonDBTM
                         ) {
                             $options[$predeffield]           = $predefvalue;
                             $predefined_fields[$predeffield] = $predefvalue;
-                            $this->fields[$predeffield]      = $predefvalue;
+                            if (!array_key_exists($predeffield, $this->fields) || empty($this->fields[$predeffield])) {
+                                $this->fields[$predeffield] = $predefvalue;
+                            }
                         }
                     } else { // Not defined options set as hidden field
                         $options['_hidden_fields'][$predeffield] = $predefvalue;
