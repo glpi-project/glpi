@@ -608,6 +608,7 @@ abstract class MainAsset extends InventoryAsset
         $entities_id = $this->entities_id;
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
+        $val->states_id = $this->states_id_default ?? 0;;
 
         // append data from RuleImportEntity
         foreach ($this->ruleentity_data as $attribute => $value) {
