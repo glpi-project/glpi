@@ -250,6 +250,7 @@ class RuleImportEntity extends DbTestCase
         $group_id = $group->add([
             'name' => 'Group tech 1'
         ]);
+        $this->integer($group_id)->isGreaterThan(0);
 
         $user = new \User();
         $user_id = $user->add([
@@ -299,7 +300,6 @@ class RuleImportEntity extends DbTestCase
             'value'       => $user_id
         ];
         $this->integer($ruleaction->add($input))->isGreaterThan(0);
-
 
         $ruleEntity = new \RuleImportEntityCollection();
         $ruleEntity->getCollectionPart();
