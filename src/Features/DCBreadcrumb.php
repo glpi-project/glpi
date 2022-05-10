@@ -182,7 +182,7 @@ trait DCBreadcrumb
         $dcroom_location = isset($breadcrumb[DCRoom::getType()]) ? $breadcrumb[DCRoom::getType()]['location']['item'] : null;
         $datacenter_location = isset($breadcrumb[Datacenter::getType()]) ? $breadcrumb[Datacenter::getType()]['location']['item'] : null;
 
-        if ($rack_location != null) {
+        if ($rack_location) {
             if ($rack_location->fields['id'] ==  $dcroom_location->fields['id']) {
                 unset($breadcrumb[Rack::getType()]['location']);
             } else if ($rack_location->fields['locations_id'] == $dcroom_location->fields['id']) {
@@ -192,7 +192,7 @@ trait DCBreadcrumb
             }
         }
 
-        if ($enclosure_location != null) {
+        if ($enclosure_location) {
             if ($enclosure_location->fields['id'] ==  $dcroom_location->fields['id']) {
                 unset($breadcrumb[Enclosure::getType()]['location']);
             } else if ($enclosure_location->fields['locations_id'] == $dcroom_location->fields['id']) {
@@ -202,7 +202,7 @@ trait DCBreadcrumb
             }
         }
 
-        if ($dcroom_location != null) {
+        if ($dcroom_location) {
             if ($dcroom_location->fields['id'] == $datacenter_location->fields['id']) {
                 unset($breadcrumb[DCRoom::getType()]['location']);
             } else if ($dcroom_location->fields['locations_id'] == $datacenter_location->fields['id']) {
@@ -213,7 +213,7 @@ trait DCBreadcrumb
         }
 
         //keep datacenter location completename name (start of breadcrumb)
-        if ($datacenter_location != null) {
+        if ($datacenter_location) {
             $breadcrumb[Datacenter::getType()]['location']['name'] = $datacenter_location->fields['completename'];
         }
 
