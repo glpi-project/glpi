@@ -3655,7 +3655,7 @@ JAVASCRIPT;
         }
 
         if (count($orderby_criteria) === 0) {
-            return;
+            return '';
         }
         return ' ORDER BY ' . implode(', ', $orderby_criteria) . ' ';
     }
