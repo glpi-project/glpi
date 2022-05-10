@@ -72,7 +72,7 @@ class Inventory
     protected $conf;
     /** @var array */
     private $benchs = [];
-    /** @var string:false */
+    /** @var string|false */
     private $inventory_tmpfile = false;
     /** @var string */
     private $inventory_content;
