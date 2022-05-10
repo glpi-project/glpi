@@ -109,7 +109,7 @@
             }
 
             .table-responsive-md {
-                width: fit-content;
+                min-width: fit-content;
 
                 @include media-breakpoint-down(md) {
                     max-width: calc(100vw - 2rem);
