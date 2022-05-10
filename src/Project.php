@@ -2098,7 +2098,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ]
             ] + $project_visibility['LEFT JOIN'],
             'WHERE'     => $project_visibility['WHERE'] + [
-                    'is_template' => 0
+                'is_template' => 0
             ],
         ];
         if ($ID > 0) {
