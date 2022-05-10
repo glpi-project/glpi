@@ -126,30 +126,30 @@ class DCBreadcrumb extends \DbTestCase
         $expected = sprintf(
             "<div class=\"row\">
    
-      <div class=\"col-auto p-1\">
-         <i class='ti ti-building-warehouse'></i> %s
-
+            <div class=\"col-auto p-1\">
+               <i class='ti ti-building-warehouse'></i> %s
+      
+                     </div>
+                     <div class=\"col-auto p-1\">
+                  >
                </div>
-               <div class=\"col-auto p-1\">
-            >
-         </div>
-         
-      <div class=\"col-auto p-1\">
-         <i class='ti ti-building'></i> %s
-
+               
+            <div class=\"col-auto p-1\">
+               <i class='ti ti-building'></i> %s
+      
+                     </div>
+                     <div class=\"col-auto p-1\">
+                  >
                </div>
-               <div class=\"col-auto p-1\">
-            >
-         </div>
-         
-      <div class=\"col-auto p-1\">
-         <i class='ti ti-server'></i> %s
-
+               
+            <div class=\"col-auto p-1\">
+               <i class='ti ti-server'></i> %s
+      
+                     </div>
+                     <div class=\"col-auto pt-1 p-0\">
+                  (U%d)
                </div>
-               <div class=\"col-auto pt-1 p-0\">
-            (U%d)
-         </div>
-         </div>",
+               </div>",
             $datacenter_name,
             $DCroom_name,
             $rack_name,
