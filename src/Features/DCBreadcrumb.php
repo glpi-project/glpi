@@ -81,7 +81,7 @@ trait DCBreadcrumb
                 ];
 
                 if ($with_location) {
-                    $breadcrumb_item['location']['item'] = Location::getItemLocation($enclosure);
+                    $breadcrumb_item['location']['item'] = Location::getFromItem($enclosure);
                 }
                 $breadcrumb[Enclosure::getType()] = $breadcrumb_item;
                 $item = $enclosure;
@@ -103,7 +103,7 @@ trait DCBreadcrumb
                 ];
 
                 if ($with_location) {
-                    $breadcrumb_item['location']['item'] = Location::getItemLocation($enclosure);
+                    $breadcrumb_item['location']['item'] = Location::getFromItem($enclosure);
                 }
 
                 $breadcrumb[Rack::getType()] = $breadcrumb_item;
@@ -125,7 +125,7 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location']['item'] = Location::getItemLocation($enclosure);
+                        $breadcrumb_item['location']['item'] = Location::getFromItem($enclosure);
                     }
 
                     $breadcrumb[DCRoom::getType()] = $breadcrumb_item;
@@ -148,7 +148,7 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location']['item'] = Location::getItemLocation($enclosure);
+                        $breadcrumb_item['location']['item'] = Location::getFromItem($enclosure);
                     }
 
                     $breadcrumb[Datacenter::getType()] = $breadcrumb_item;

@@ -404,13 +404,17 @@ class Location extends CommonTreeDropdown
      *
      * @param CommonDBTM  $item
      *
-     * @return CommonDBTM
+     * @return Location if succeed else false
      **/
-    public static function getItemLocation(CommonDBTM $item)
+    public static function getFromItem(CommonDBTM $item)
     {
-        $loc = new self();
-        $loc->getFromDB($item->fields['locations_id']);
-        return $loc;
+        if ($item->maybeLocated()) {
+            $loc = new self();
+            if ($loc->getFromDB($item->fields['locations_id'])) {
+                return $loc;
+            }
+        }
+        return false;
     }
 
     /**
