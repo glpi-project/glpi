@@ -632,6 +632,19 @@ class Html
     public static function displayAjaxMessageAfterRedirect()
     {
         Toolbox::deprecated("The js function is already provided by js/misc.js");
+
+        global $CFG_GLPI;
+
+        echo Html::scriptBlock("
+      displayAjaxMessageAfterRedirect = function() {
+         $('.messages_after_redirect').remove();
+         $.ajax({
+            url:  '" . $CFG_GLPI['root_doc'] . "/ajax/displayMessageAfterRedirect.php',
+            success: function(html) {
+               $('body').append(html);
+            }
+         });
+      }");
     }
 
 
