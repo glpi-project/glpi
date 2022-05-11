@@ -173,7 +173,7 @@ class DCRoom extends CommonDBTM
             ]
         );
         echo "</td>";
-        echo "<td><label for='dropdown_vis_cell_height$rand'>" . __('cell height') . "</label></td><td>";
+        echo "<td><label for='dropdown_vis_cell_height$rand'>" . __('Cell height') . "</label></td><td>";
         Dropdown::showNumber(
             "vis_cell_height",
             [
