@@ -32,6 +32,7 @@
  #}
 
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -88,5 +89,63 @@
             </div>
          </div>
       </div>
+    {% else %}
+        <div class="document_item">
+            <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
+                action="{{ "Document"|itemtype_form_path() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
+                <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}" />
+                <input type="hidden" name="is_recursive" value="{{ item.isRecursive() }}" />
+                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+                <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+
+                {{ fields.dropdownField(
+                    'DocumentCategory',
+                    'documentcategories_id',
+                    null,
+                    __("Heading"),
+                    {
+                        'label_class': 'col-xxl-3',
+                        'field_class': 'col-xxl-11',
+                        'full_width': true,
+                        'is_horizontal': false
+                    }
+                ) }}
+
+                {% set max_size %}
+                    <div class="alert alert-info">
+                        {{ call("Document::getMaxUploadSize") }}
+                    </div>
+                {% endset %}
+
+                {{ fields.fileField(
+                    'filename',
+                    null,
+                    __("File"),
+                    {
+                        'multiple': true,
+                        'label_class': 'col-xxl-3',
+                        'field_class': 'col-xxl-11',
+                        'full_width': true,
+                        'is_horizontal': false,
+                        'add_field_html': max_size,
+                    }
+                ) }}
+
+                {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+
+                <div class="d-flex card-footer mx-n3 mb-n3">
+                    {% if subitem.fields['id'] <= 0 %}
+                        <div class="input-group">
+                            <button class="btn btn-primary" type="submit" name="add">
+                                <i class="ti ti-file-plus"></i>
+                                <span>{{ _x('button', 'Add a new file') }}</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
    {% endif %}
 {% endblock %}
