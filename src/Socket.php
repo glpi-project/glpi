@@ -105,7 +105,7 @@ class Socket extends CommonDBChild
 
         global $CFG_GLPI;
 
-       //if form is called from an item, retrive itemtype and items
+        //if form is called from an item, retrieve itemtype and items
         if (isset($options['_add_fromitem'])) {
             $itemtype = $options['_add_fromitem']["_from_itemtype"];
             $items_id = $options['_add_fromitem']["_from_items_id"];
@@ -149,7 +149,8 @@ class Socket extends CommonDBChild
             'display_emptychoice' => true,
             'condition'           => ['items_id' => $items_id,
                 'itemtype' => $itemtype
-            ]
+            ],
+            'comments' => false
         ]);
         echo "</span>";
 
