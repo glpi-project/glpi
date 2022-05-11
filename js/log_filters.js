@@ -49,6 +49,8 @@ $(function() {
         }
     };
 
+    var delay_timer = null;
+
     var bindFilterChange = function () {
         // Workaround to prevent opening of dropdown when removing item using the "x" button.
         // Without this workaround, orphan dropdowns remains in page when reloading tab.
@@ -58,7 +60,6 @@ $(function() {
             }
         });
 
-        var delay_timer = null;
         $('.log_history_filter_row [name^="filters\\["]').on('input', function() {
             clearTimeout(delay_timer);
             delay_timer = setTimeout(function() {
@@ -77,6 +78,9 @@ $(function() {
     };
 
     var handleFilterChange = function () {
+        if (delay_timer !== null) {
+            clearTimeout(delay_timer);
+        }
         // Prevent dropdown to remain in page after tab has been reload.
         $('.log_history_filter_row .select2-hidden-accessible').select2('close');
 
