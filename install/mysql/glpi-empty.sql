@@ -8011,7 +8011,7 @@ CREATE TABLE `glpi_dcrooms` (
   `vis_cols` int DEFAULT NULL,
   `vis_rows` int DEFAULT NULL,
   `vis_cell_width` int DEFAULT 40,
-  `vis_cell_height` int DEFAULT 49,
+  `vis_cell_height` int DEFAULT 40,
   `blueprint` text,
   `datacenters_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
