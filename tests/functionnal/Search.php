@@ -1615,7 +1615,13 @@ class Search extends DbTestCase
             ['rtim this   $', '%rtim this'],
             ['  extra spaces ', '%extra spaces%'],
             ['^ exactval $', 'exactval'],
-            ['quot\\\'ed', '%quot\\\'ed%']
+            ['snake_case', '%snake\\_case%'], // _ is a wildcard that must be escaped
+            ['quot\'ed', '%quot\\\'ed%'],
+            ['quot\\\'ed', '%quot\\\'ed%'], // already escaped value should not produce double escaping
+            ['^&#60;PROD-15&#62;', '<PROD-15>%'],
+            ['<PROD-15>$', '%<PROD-15>'],
+            ['A&#38;B', '%A&B%'],
+            ['A&B', '%A&B%'],
         ];
     }
 

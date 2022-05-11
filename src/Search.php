@@ -8715,8 +8715,10 @@ HTML;
      **/
     public static function makeTextSearchValue($val)
     {
-       // Unclean to permit < and > search
-        $val = Sanitizer::decodeHtmlSpecialChars($val);
+        // `$val` will mostly comes from sanitized input, but may also be raw value.
+        // 1. Unsanitize value to be sure to use raw value.
+        // 2. Escape raw value to protect SQL special chars.
+        $val = Sanitizer::dbEscape(Sanitizer::unsanitize($val));
 
        // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\\_', $val);
