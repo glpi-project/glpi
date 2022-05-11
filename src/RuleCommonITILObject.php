@@ -48,13 +48,34 @@ abstract class RuleCommonITILObject extends Rule
 
     /**
      * Get the ITIL Object itemtype that this rule is for
-     * @return string "Ticket", "Change" or "Problem"
+     * @return string
      */
     public static function getItemtype(): string
     {
-        $matches = [];
-        preg_match('/^Rule(.*)$/', static::class, $matches);
-        return $matches[1];
+        $itemtype = null;
+        switch (true) {
+            case is_a(static::class, RuleChange::class, true):
+                $itemtype = Change::class;
+                break;
+            case is_a(static::class, RuleTicket::class, true):
+                $itemtype = Ticket::class;
+                break;
+            default:
+                $matches = [];
+                if (
+                    preg_match('/^Rule(.+)$/', static::class, $matches) === 1
+                    && is_subclass_of($matches[1], CommonITILObject::class, true)
+                ) {
+                    $itemtype = $matches[1];
+                }
+                break;
+        }
+
+        if ($itemtype === null) {
+            throw new \RuntimeException(sprintf('Unable to compute related itemtype for class "%s".', static::class));
+        }
+
+        return $itemtype;
     }
 
     public function maybeRecursive()
