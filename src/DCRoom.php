@@ -165,8 +165,8 @@ class DCRoom extends CommonDBTM
         Dropdown::showNumber(
             "vis_cell_width",
             [
-                'value'  => $this->fields["vis_cell_width"],
-                'min'    => 1,
+                'value'  => $this->fields["vis_cell_width"] ?: 40,
+                'min'    => 10,
                 'max'    => 200,
                 'step'   => 1,
                 'rand'   => $rand
@@ -177,8 +177,8 @@ class DCRoom extends CommonDBTM
         Dropdown::showNumber(
             "vis_cell_height",
             [
-                'value'  => $this->fields["vis_cell_height"],
-                'min'    => 1,
+                'value'  => $this->fields["vis_cell_height"] ?: 40,
+                'min'    => 10,
                 'max'    => 200,
                 'step'   => 1,
                 'rand'   => $rand

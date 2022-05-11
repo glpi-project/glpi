@@ -58,7 +58,7 @@ if (!$DB->fieldExists("glpi_dcrooms", "vis_cell_height")) {
         "int",
         [
             'after'   => "vis_cell_width",
-            'default' => 39,
+            'default' => 40,
         ]
     );
 }
