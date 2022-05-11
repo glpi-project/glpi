@@ -1615,6 +1615,7 @@ class Search extends DbTestCase
             ['rtim this   $', '%rtim this'],
             ['  extra spaces ', '%extra spaces%'],
             ['^ exactval $', 'exactval'],
+            ['quot\\\'ed', '%quot\\\'ed%']
         ];
     }
 
