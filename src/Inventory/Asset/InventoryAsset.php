@@ -60,6 +60,8 @@ abstract class InventoryAsset
     protected $agent;
     /** @var integer */
     protected $entities_id = 0;
+    /** @var array */
+    protected $ruleentity_data = [];
     /** @var boolean */
     protected $links_handled = false;
     /** @var boolean */

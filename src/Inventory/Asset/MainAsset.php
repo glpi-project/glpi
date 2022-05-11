@@ -43,6 +43,7 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use RefusedEquipment;
 use RuleImportAssetCollection;
+use RuleImportEntity;
 use RuleImportEntityCollection;
 use RuleMatchedLog;
 use Toolbox;
@@ -513,6 +514,19 @@ abstract class MainAsset extends InventoryAsset
                     $input['entities_id'] = $dataEntity['entities_id'];
                 }
                 $this->entities_id = $input['entities_id'];
+
+                // get data from rules (like locations_id, states_id, groups_id_tech, etc)
+                // we don't want virtual action (prefixed by _)
+                $ruleentity_actions = $ruleEntity->getRuleClass()->getAllActions();
+                foreach ($ruleentity_actions as $action_key => $action_data) {
+                    if (
+                        $action_key[0] !== '_'
+                        && $action_key !== "entities_id"
+                        && isset($dataEntity[$action_key])
+                    ) {
+                        $this->ruleentity_data[$action_key] = $dataEntity[$action_key];
+                    }
+                }
             }
 
             //call rules on current collected data to find item
@@ -594,9 +608,12 @@ abstract class MainAsset extends InventoryAsset
         $entities_id = $this->entities_id;
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
+        $val->states_id = $this->states_id_default ?? 0;
 
-        $val->states_id = $this->states_id_default ?? $this->item->fields['states_id'] ?? 0;
-        $val->locations_id = $this->locations_id ?? $val->locations_id ?? $this->item->fields['locations_id'] ?? 0;
+        // append data from RuleImportEntity
+        foreach ($this->ruleentity_data as $attribute => $value) {
+            $val->{$attribute} = $value;
+        }
 
         $orig_glpiactive_entity = $_SESSION['glpiactive_entity'] ?? null;
         $orig_glpiactiveentities = $_SESSION['glpiactiveentities'] ?? null;

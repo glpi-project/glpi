@@ -34,6 +34,7 @@ The present file will list all changes made to the project; according to the
 ### Deprecated
 
 ### Removed
+- Gantt feature has been moved into the `gantt` plugin.
 
 ### API changes
 
@@ -44,6 +45,12 @@ The present file will list all changes made to the project; according to the
 #### Deprecated
 
 #### Removed
+- `GlpiGantt` javascript helper and `dhtmlx-gantt` library.
+- `Glpi\Gantt` namespace and all corresponding classes.
+- `Project::getDataToDisplayOnGantt()`
+- `Project::showGantt()`
+- `ProjectTask::getDataToDisplayOnGantt()`
+- `ProjectTask::getDataToDisplayOnGanttForProject()`
 
 ## [10.0.0] 2022-04-20
 

@@ -142,6 +142,15 @@ class Agent extends CommonDBTM
                 'field'         => 'port',
                 'name'          => _n('Port', 'Ports', 1),
                 'datatype'      => 'integer',
+            ], [
+                'id'            => '15',
+                'table'         => $this->getTable(),
+                'field'         => 'name',
+                'datatype'      => 'itemlink',
+                'name'          => _n('Item', 'Items', 1),
+                'joinparams'    => [
+                    'jointype' => 'itemtype_item'
+                ]
             ]
         ];
 

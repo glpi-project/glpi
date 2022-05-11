@@ -491,8 +491,7 @@ abstract class CommonITILObject extends CommonDBTM
         $predefined_fields = [];
         $tpl_key = static::getTemplateFormFieldName();
 
-        // Change and Problem can have predefined fields only on creation
-        if ($this->getType() == "Ticket" || $this->isNewItem()) {
+        if ($this->isNewItem()) {
             if (isset($tt->predefined) && count($tt->predefined)) {
                 foreach ($tt->predefined as $predeffield => $predefvalue) {
                     if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {

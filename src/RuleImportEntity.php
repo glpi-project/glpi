@@ -57,7 +57,7 @@ class RuleImportEntity extends Rule
     public function maxActionsCount()
     {
        // Unlimited
-        return 4;
+        return 5;
     }
 
     public function executeActions($output, $params, array $input = [])
