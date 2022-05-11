@@ -49,7 +49,6 @@ if (!$DB->fieldExists("glpi_dcrooms", "vis_cell_width")) {
         "int",
         [
             'after'  => "vis_rows",
-            'update' => 40,
             'value'  => 40,
         ]
     );
@@ -61,7 +60,7 @@ if (!$DB->fieldExists("glpi_dcrooms", "vis_cell_height")) {
         "int",
         [
             'after'  => "vis_cell_width",
-            'update' => 40,
+            'update' => 39,
             'value'  => 40,
         ]
     );
