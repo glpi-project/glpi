@@ -158,7 +158,7 @@ class DCBreadcrumb extends \DbTestCase
          <i class='ti ti-building-warehouse'></i> %s
 
                      <br>
-            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' data-bs-toggle='tooltip' title='Saint-Petersbourg' style='max-width: 100px;'>
+            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' data-bs-toggle='tooltip' title='%s' style='max-width: 100px;'>
                <i class=\"ti ti-map-pin\"></i>%s
             </span>
                </div>
@@ -170,7 +170,7 @@ class DCBreadcrumb extends \DbTestCase
          <i class='ti ti-building'></i> %s
 
                      <br>
-            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' data-bs-toggle='tooltip' title='room1' style='max-width: 100px;'>
+            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' data-bs-toggle='tooltip' title='%s' style='max-width: 100px;'>
                <i class=\"ti ti-map-pin\"></i>%s
             </span>
                </div>
@@ -182,7 +182,7 @@ class DCBreadcrumb extends \DbTestCase
          <i class='ti ti-server'></i> %s
 
                      <br>
-            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' data-bs-toggle='tooltip' title='rack01' style='max-width: 100px;'>
+            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' data-bs-toggle='tooltip' title='%s' style='max-width: 100px;'>
                <i class=\"ti ti-map-pin\"></i>%s
             </span>
                </div>
@@ -193,9 +193,12 @@ class DCBreadcrumb extends \DbTestCase
 ",
             $datacenter_name,
             $location_datacenter_name,
+            $location_datacenter_name,
             $DCroom_name,
             $location_dcroom_name,
+            $location_dcroom_name,
             $rack_name,
+            $location_rack_name,
             $location_rack_name,
             $rack_position
         );
