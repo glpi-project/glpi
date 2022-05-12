@@ -124,7 +124,7 @@
                      {% endif %}
 
                      {% set dc_breadcrumbs = item is usingtrait('Glpi\\Features\\DCBreadcrumb') ? call(item.getType() ~ '::getDcBreadcrumbSpecificValueToDisplay', [
-                              item.fields['id'], false, false
+                              item.fields['id'], true, false
                         ]) : false %}
                      {% if dc_breadcrumbs != false %}
                         {{ fields.htmlField(

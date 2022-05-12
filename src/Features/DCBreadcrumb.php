@@ -37,7 +37,6 @@ namespace Glpi\Features;
 
 use Datacenter;
 use DCRoom;
-use Dropdown;
 use Enclosure;
 use Glpi\Application\View\TemplateRenderer;
 use Item_Enclosure;
@@ -55,7 +54,7 @@ trait DCBreadcrumb
      *
      * @return array
      */
-    public function getDcBreadcrumb($with_location = false)
+    public function getDcBreadcrumb($with_location = true)
     {
         global $CFG_GLPI;
 
@@ -103,7 +102,7 @@ trait DCBreadcrumb
                 ];
 
                 if ($with_location) {
-                    $breadcrumb_item['location']['item'] = Location::getFromItem($enclosure);
+                    $breadcrumb_item['location']['item'] = Location::getFromItem($rack);
                 }
 
                 $breadcrumb[Rack::getType()] = $breadcrumb_item;
@@ -125,7 +124,7 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location']['item'] = Location::getFromItem($enclosure);
+                        $breadcrumb_item['location']['item'] = Location::getFromItem($dcroom);
                     }
 
                     $breadcrumb[DCRoom::getType()] = $breadcrumb_item;
@@ -148,7 +147,7 @@ trait DCBreadcrumb
                     ];
 
                     if ($with_location) {
-                        $breadcrumb_item['location']['item'] = Location::getFromItem($enclosure);
+                        $breadcrumb_item['location']['item'] = Location::getFromItem($datacenter);
                     }
 
                     $breadcrumb[Datacenter::getType()] = $breadcrumb_item;
@@ -340,7 +339,7 @@ trait DCBreadcrumb
      *
      * @return array
      */
-    public static function getDcBreadcrumbSpecificValueToDisplay($items_id, $with_location = false, $display = true)
+    public static function getDcBreadcrumbSpecificValueToDisplay($items_id, $with_location = true, $display = true)
     {
         $item = new static();
         if ($item->getFromDB($items_id)) {
