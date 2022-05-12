@@ -72,8 +72,10 @@ class Inventory
     protected $conf;
     /** @var array */
     private $benchs = [];
+    /** @var string|false */
+    private $inventory_tmpfile = false;
     /** @var string */
-    private $inventory_id;
+    private $inventory_content;
     /** @var integer */
     private $inventory_format;
     /** @var InventoryAsset */
@@ -92,7 +94,6 @@ class Inventory
     {
         $this->mode = $mode;
         $this->conf = new Conf();
-        $this->inventory_id = Toolbox::getRandomString(30);
 
         if (null !== $data) {
             $this->setData($data, $format);
@@ -118,9 +119,8 @@ class Inventory
     {
 
         // Write inventory file
-        $dir = GLPI_INVENTORY_DIR . '/';
-        if (!is_dir($dir)) {
-            mkdir($dir);
+        if (!is_dir(GLPI_INVENTORY_DIR)) {
+            mkdir(GLPI_INVENTORY_DIR);
         }
 
         $converter = new Converter();
@@ -134,11 +134,13 @@ class Inventory
 
         if (Request::XML_MODE === $format) {
             $this->inventory_format = Request::XML_MODE;
-            file_put_contents($dir . '/' . $this->inventory_id . '.xml', $data->asXML());
+            $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, 'xml_');
+            $contentdata = $data->asXML();
             //convert legacy format
-            $data = json_decode($converter->convert($data->asXML()));
+            $data = json_decode($converter->convert($contentdata));
         } else {
-            file_put_contents($dir . '/' . $this->inventory_id . '.json', json_encode($data));
+            $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, 'json_');
+            $contentdata = json_encode($data);
         }
 
         try {
@@ -149,9 +151,19 @@ class Inventory
                 '$ref[inventory.schema.json]',
                 $e->getMessage()
             );
+            if ($this->inventory_tmpfile !== false && file_exists($this->inventory_tmpfile)) {
+                unlink($this->inventory_tmpfile);
+            }
             return false;
         } finally {
             $this->raw_data = $data;
+        }
+
+        if ($this->inventory_tmpfile !== false) {
+            file_put_contents($this->inventory_tmpfile, $contentdata);
+        } else {
+            //fallback to in-memory storage if tempnam() call returned false
+            $this->inventory_content = $contentdata;
         }
 
         $this->extractMetadata();
@@ -388,10 +400,8 @@ class Inventory
      */
     private function handleInventoryFile()
     {
-        $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
-        $tmpfile = sprintf('%s/%s.%s', GLPI_INVENTORY_DIR, $this->inventory_id, $ext);
-
         if (isset($this->mainasset)) {
+            $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
             $items = $this->getItems();
 
             foreach ($items as $item) {
@@ -406,12 +416,16 @@ class Inventory
                 if (!is_dir($subdir)) {
                     mkdir($subdir, 0755, true);
                 }
-                copy($tmpfile, $filename);
+                if ($this->inventory_tmpfile !== false) {
+                    copy($this->inventory_tmpfile, $filename);
+                } elseif (isset($this->inventory_content)) {
+                    file_put_contents($filename, $this->inventory_content);
+                }
             }
         }
 
-        if (file_exists($tmpfile)) {
-            unlink($tmpfile);
+        if ($this->inventory_tmpfile !== false && file_exists($this->inventory_tmpfile)) {
+            unlink($this->inventory_tmpfile);
         }
     }
 
@@ -479,7 +493,9 @@ class Inventory
                 'icon'  => Lockedfield::getIcon(),
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
-                'links' => $links
+                'links' => [
+                    "<i class=\"ti ti-plus\" title=\"" . __('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __('Add global lock') . "</span>" => Lockedfield::getFormURL(false)
+                ] + $links
             ];
         }
 

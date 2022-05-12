@@ -248,7 +248,7 @@ class Unmanaged extends CommonDBTM
             case 'convert':
                 $unmanaged = new self();
                 foreach ($ids as $id) {
-                    $itemtype = $CFG_GLPI['inventory_types'][$_POST['itemtype']];
+                    $itemtype = $_POST['itemtype'];
                     $unmanaged->convert($id, $itemtype);
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }

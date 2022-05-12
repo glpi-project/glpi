@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  *  Locked fields for inventory
  **/
@@ -53,8 +55,6 @@ class Lockedfield extends CommonDBTM
 
     public function rawSearchOptions()
     {
-        $tab = [];
-
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
@@ -85,9 +85,17 @@ class Lockedfield extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'value',
             'name'               => __('Last inventoried value'),
-         //'datatype'           => '',
             'nosort'             => true,
             'nosearch'           => true,
+        ];
+
+        $tab[] = [
+            'id' => '7',
+            'table' => $this->getTable(),
+            'field' => 'is_global',
+            'name' => __('Global'),
+            'datatype' => 'bool',
+            'massiveaction' => false
         ];
 
         $tab[] = [
@@ -146,7 +154,12 @@ class Lockedfield extends CommonDBTM
             'FROM'   => $this->getTable(),
             'WHERE'  => [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                [
+                    'OR' => [
+                        'items_id'  => $items_id,
+                        'is_global' => 1
+                    ]
+                ]
             ]
         ]);
 
@@ -203,6 +216,9 @@ class Lockedfield extends CommonDBTM
         }
         switch ($field) {
             case 'items_id':
+                if (isset($values['items_id']) && !$values['items_id']) {
+                    return '-';
+                }
                 if (isset($values['itemtype'])) {
                     $itemtype = $values['itemtype'];
                     $item = new $itemtype();
@@ -221,6 +237,102 @@ class Lockedfield extends CommonDBTM
 
     public static function canPurge()
     {
+        return Session::haveRight(static::$rightname, UPDATE);
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    protected function prepareInput($input)
+    {
+        if (isset($input['item'])) {
+            list($itemtype, $field) = explode(' - ', $input['item']);
+            $input['itemtype'] = $itemtype;
+            $input['items_id'] = 0;
+            $input['field'] = $field;
+            $input['is_global'] = 1;
+        }
+
+        return $input;
+    }
+
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        unset($this->fields['is_global']);
+        TemplateRenderer::getInstance()->display('pages/admin/inventory/lockedfield.html.twig', [
+            'item'   => $this,
+            'params' => $options,
+        ]);
         return true;
+    }
+
+    public static function canCreate()
+    {
+        if (static::$rightname) {
+            return Session::haveRight(static::$rightname, UPDATE);
+        }
+        return false;
+    }
+
+    /**
+     * List of itemtypes/fields that can be locked globally
+     *
+     * @return array
+     */
+    public function getFieldsToLock(): array
+    {
+        global $CFG_GLPI, $DB;
+
+        $lockable = [];
+        $std_fields = [
+            'name',
+            'serial',
+            'otherserial',
+            'contact',
+            'contactnum',
+            'users_id_tech',
+            'groups_id_tech',
+            'users_id',
+            'groups_id',
+            'states_id',
+            'locations_id',
+            'networks_id',
+            'manufacturers_id',
+            'uuid'
+        ];
+        $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
+
+        foreach ($itemtypes as $itemtype) {
+            $fields = $std_fields;
+            $fields[] = strtolower($itemtype) . 'models_id'; //model relation field
+            $fields[] = strtolower($itemtype) . 'types_id'; //type relation field
+
+            foreach ($fields as $field) {
+                if ($DB->fieldExists($itemtype::getTable(), $field)) {
+                    $name = sprintf(
+                        '%1$s - %2$s',
+                        $itemtype,
+                        $field
+                    );
+                    $dname = sprintf(
+                        '%1$s - %2$s',
+                        $itemtype::getTypeName(1),
+                        $field
+                    );
+
+                    $lockable[$name] = $dname;
+                }
+            }
+        }
+
+        return $lockable;
     }
 }

@@ -42,4 +42,4 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-Html::displayMessageAfterRedirect();
+Html::displayMessageAfterRedirect(filter_var(($_GET['display_container'] ?? true), FILTER_VALIDATE_BOOLEAN));

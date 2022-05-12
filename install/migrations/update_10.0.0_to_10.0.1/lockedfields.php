@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -31,40 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_alert, initMessagesAfterRedirectToasts */
-
-/*
- * Redefine 'window.alert' javascript function by a prettier dialog.
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ * @var array $ADDTODISPLAYPREF
  */
-window.old_alert = window.alert;
-window.alert = function(message, caption) {
-    // Don't apply methods on undefined objects... ;-) #3866
-    if(typeof message == 'string') {
-        message = message.replace("\n", '<br>');
-    }
-    caption = caption || _n('Information', 'Information', 1);
 
-    glpi_alert({
-        title: caption,
-        message: message,
-    });
-};
+if (!$DB->fieldExists("glpi_lockedfields", "is_global", false)) {
+    $migration->addField('glpi_lockedfields', 'is_global', "tinyint NOT NULL DEFAULT '0'", ['after' => 'date_creation' ]);
+    $migration->addKey('glpi_lockedfields', 'is_global');
+}
 
-window.displayAjaxMessageAfterRedirect = function() {
-    var display_container = ($('#messages_after_redirect').length  == 0);
-
-    $.ajax({
-        url: CFG_GLPI.root_doc+ '/ajax/displayMessageAfterRedirect.php',
-        data: {
-            'display_container': display_container
-        },
-        success: function(html) {
-            if (display_container) {
-                $('body').append(html);
-            } else {
-                $('#messages_after_redirect').append(html);
-                initMessagesAfterRedirectToasts();
-            }
-        }
-    });
-};
+$ADDTODISPLAYPREF['Lockedfield'] = [7];
