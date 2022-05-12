@@ -200,8 +200,8 @@ ul.indexes {
             float: left;
 
             &::after {
-                left: 15px;
-                top: 10px;
+                left: calc(50% - 4px);
+                top: calc(50% - 0.5em - 4px);
             }
         }
     }
