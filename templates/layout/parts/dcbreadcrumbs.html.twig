@@ -38,7 +38,7 @@
 
          {% if breadcrumb_item['location']['name'] is defined %}
             <br>
-            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' style='max-width: 100px;'>
+            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' data-toggle='tooltip' title='{{ breadcrumb_item['location']['name'] }}' style='max-width: 100px;'>
                <i class="{{ call('Location::getIcon') }}"></i>{{ breadcrumb_item['location']['name'] }}
             </span>
          {% endif %}
