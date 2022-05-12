@@ -101,6 +101,7 @@ class Printer extends CommonDBTM
         $this->addStandardTab('Cartridge', $ong, $options);
         $this->addStandardTab('PrinterLog', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
         $this->addStandardTab('Computer_Item', $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);

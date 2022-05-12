@@ -812,6 +812,8 @@ class APIRest extends APIBaseClass
                 'response' => [
                     ["key" => "MassiveAction:update",            "label" => "Update"],
                     ["key" => "MassiveAction:clone",             "label" => "Clone"],
+                    ["key" => "Item_Line:add",                   "label" => "Add a line"],
+                    ["key" => "Item_Line:remove",                "label" => "Remove a line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
@@ -847,6 +849,8 @@ class APIRest extends APIBaseClass
                 'response' => [
                     ["key" => "MassiveAction:update",            "label" => "Update"],
                     ["key" => "MassiveAction:clone",             "label" => "Clone"],
+                    ["key" => "Item_Line:add",                   "label" => "Add a line"],
+                    ["key" => "Item_Line:remove",                "label" => "Remove a line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],

@@ -710,6 +710,7 @@ $RELATION = [
 
     'glpi_lines' => [
         'glpi_items_devicesimcards' => 'lines_id',
+        '_glpi_items_lines' => 'lines_id',
     ],
 
     'glpi_linetypes' => [
