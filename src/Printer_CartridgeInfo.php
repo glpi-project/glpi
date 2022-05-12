@@ -338,7 +338,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                 }
             }
             // Need to return some non-empty value otherwise Search engine will throw errors.
-            return NOT_AVAILABLE;
+            return null;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
