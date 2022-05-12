@@ -170,7 +170,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *     *
      * @return bool
      **/
-
     public static function validateObjectType($obj)
     {
         if (get_class($obj) != static::$itemtype_1) {
