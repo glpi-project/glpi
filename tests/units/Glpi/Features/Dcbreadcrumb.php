@@ -151,7 +151,8 @@ class DCBreadcrumb extends \DbTestCase
 
         $DCBreadcrumb = \Computer::getDcBreadcrumbSpecificValueToDisplay($computer1->getID(), true, false);
 
-        $expected = sprintf("<div class=\"row\">
+        $expected = sprintf(
+            "<div class=\"row\">
    
       <div class=\"col-auto p-1\">
          <i class='ti ti-building-warehouse'></i> %s
