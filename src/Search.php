@@ -7244,10 +7244,18 @@ JAVASCRIPT;
                     return $out;
 
                 case "itemtypename":
-                    if ($obj = getItemForItemtype($data[$ID][0]['name'])) {
-                        return $obj->getTypeName();
+                    $out           = "";
+                    $count_display = 0;
+                    for ($k = 0; $k < $data[$ID]['count']; $k++) {
+                        if ($obj = getItemForItemtype($data[$ID][$k]['name'])) {
+                            if ($count_display) {
+                                $out .= self::LBBR;
+                            }
+                            $count_display++;
+                            $out .= $obj->getTypeName();
+                        }
                     }
-                    return "";
+                    return $out;
 
                 case "language":
                     if (isset($CFG_GLPI['languages'][$data[$ID][0]['name']])) {
