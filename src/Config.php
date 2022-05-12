@@ -284,6 +284,11 @@ class Config extends CommonDBTM
             );
         }
 
+        // Automatically trim whitespaces around registration key.
+        if (array_key_exists('glpinetwork_registration_key', $input) && !empty($input['glpinetwork_registration_key'])) {
+            $input['glpinetwork_registration_key'] = trim($input['glpinetwork_registration_key']);
+        }
+
         $this->setConfigurationValues('core', $input);
 
         return false;
