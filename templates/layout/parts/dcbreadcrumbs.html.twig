@@ -30,27 +30,31 @@
  #
  # ---------------------------------------------------------------------
  #}
-<div class="row">
-   {% for breadcrumb_item in breadcrumbs %}
+{% if breadcrumbs|length > 0 %}
+    <div class="row">
+        {% for breadcrumb_item in breadcrumbs %}
+            <div class="col-auto p-1">
+                {{ breadcrumb_item['link']|raw }}
 
-      <div class="col-auto p-1">
-         {{ breadcrumb_item['link']|raw }}
-
-         {% if breadcrumb_item['location']['name'] is defined %}
-            <br>
-            <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate' data-bs-toggle='tooltip' title='{{ breadcrumb_item['location']['completename'] }}' style='max-width: 100px;'>
-               <i class="{{ call('Location::getIcon') }}"></i>{{ breadcrumb_item['location']['name'] }}
-            </span>
-         {% endif %}
-      </div>
-      {% if loop.last == false %}
-         <div class="col-auto p-1">
-            >
-         </div>
-      {% else %}
-         <div class="col-auto pt-1 p-0">
-            {{ breadcrumb_item['position']|raw }}
-         </div>
-      {% endif %}
-   {% endfor %}
-</div>
+                {% if breadcrumb_item['location']['name'] is defined %}
+                    <br>
+                    <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate'
+                        data-bs-toggle='tooltip'
+                        title='{{ breadcrumb_item['location']['completename']|verbatim_value }}'
+                        style='max-width: 100px;'>
+                        <i class="{{ call('Location::getIcon') }}"></i>{{ breadcrumb_item['location']['name']|verbatim_value }}
+                    </span>
+                {% endif %}
+            </div>
+            {% if loop.last == false %}
+                <div class="col-auto p-1">
+                    &gt;
+                </div>
+            {% else %}
+                <div class="col-auto pt-1 p-0">
+                    {{ breadcrumb_item['position']|raw }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}

@@ -337,29 +337,23 @@ trait DCBreadcrumb
     /**
      * Specific value for "Data center position".
      *
-     * @param integer $items_id   Item ID
-     * @param boolean $with_location   display location name if needed
-     * @param boolean $display   display or return HTML
+     * @param integer $items_id
      *
-     * @return array
+     * @return string
      */
-    public static function getDcBreadcrumbSpecificValueToDisplay($items_id, $with_location = true, $display = true)
+    public static function getDcBreadcrumbSpecificValueToDisplay($items_id)
     {
+        $breadcrumb = [];
+
         $item = new static();
         if ($item->getFromDB($items_id)) {
-            $breadcrumb = $item->getDcBreadcrumb($with_location);
-            if (count($breadcrumb) > 0) {
-                $options = [
-                    'breadcrumbs'   => $breadcrumb
-                ];
-
-                if ($display) {
-                    return TemplateRenderer::getInstance()->display('layout/parts/dcbreadcrumbs.html.twig', $options);
-                } else {
-                    return TemplateRenderer::getInstance()->render('layout/parts/dcbreadcrumbs.html.twig', $options);
-                }
-            }
+            $breadcrumb = $item->getDcBreadcrumb(true);
         }
-        return false;
+        return TemplateRenderer::getInstance()->render(
+            'layout/parts/dcbreadcrumbs.html.twig',
+            [
+                'breadcrumbs'   => $breadcrumb
+            ]
+        );
     }
 }
