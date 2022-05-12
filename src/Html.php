@@ -626,13 +626,8 @@ class Html
     }
 
 
-    /**
-     * @deprecated since version 10.0.1
-     */
     public static function displayAjaxMessageAfterRedirect()
     {
-        Toolbox::deprecated("The js function is already provided by js/misc.js");
-
         global $CFG_GLPI;
 
         echo Html::scriptBlock("
