@@ -7284,12 +7284,12 @@ HTML;
 
         $aggregate = (isset($so['aggregate']) && $so['aggregate']);
 
-        $append_specific = function($specific, $field_data, &$out) {
+        $append_specific = static function($specific, $field_data, &$out) use ($so) {
             if (!empty($specific)) {
                 $out .= $specific;
             } else if (isset($field_data['values'])) {
                 // Aggregate values; No special handling
-                $out .= '';
+                return;
             } else {
                 if (
                     isset($so['toadd'])
