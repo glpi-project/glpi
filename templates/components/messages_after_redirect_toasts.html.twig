@@ -32,47 +32,62 @@
  #}
 
 {% set messages = pull_messages() %}
-{% if messages|length %}
-<div class="toast-container bottom-0 end-0 p-3 messages_after_redirect">
 
-   {% for type, message in messages %}
-      {% set message = message|join('<br />') %}
-      {% set class = '' %}
-      {% set title = '' %}
-      {% if type == constant('ERROR') %}
-         {% set class = 'bg-danger text-white' %}
-         {% set title = __('Error') %}
-      {% elseif type == constant('WARNING') %}
-         {% set class = 'bg-warning text-white' %}
-         {% set title = __('Warning') %}
-      {% else %}
-         {% set class = 'bg-info text-white' %}
-         {% set title = _n('Information', 'Informations', 1) %}
-      {% endif %}
+{% set toasts_html %}
+    {% if messages|length %}
+        {% for type, message in messages %}
+            {% set message = message|join('<br />') %}
+            {% set class = '' %}
+            {% set title = '' %}
+            {% if type == constant('ERROR') %}
+                {% set class = 'bg-danger text-white' %}
+                {% set title = __('Error') %}
+            {% elseif type == constant('WARNING') %}
+                {% set class = 'bg-warning text-white' %}
+                {% set title = __('Warning') %}
+            {% else %}
+                {% set class = 'bg-info text-white' %}
+                {% set title = _n('Information', 'Informations', 1) %}
+            {% endif %}
 
-      <div class="toast animate__animated animate__tada animate__delay-2s animate__slow" role="alert" aria-live="assertive" aria-atomic="true">
-         <div class="toast-header {{ class }} ">
-            <strong class="me-auto">{{ title }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-         </div>
-         <div class="toast-body">
-            {{ message|raw }}
-         </div>
-      </div>
-   {% endfor %}
+            <div class="toast animate__animated animate__tada animate__delay-2s animate__slow" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header {{ class }} ">
+                    <strong class="me-auto">{{ title }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ message|raw }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endset %}
 
-</div>
+{% if display_container %}
+    <div class="toast-container bottom-0 end-0 p-3 messages_after_redirect" id="messages_after_redirect">
+        {{ toasts_html }}
 
-<script type="text/javascript">
-$(function() {
-   var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-   var toastList = toastElList.map(function (toastEl) {
-      var toast = new bootstrap.Toast(toastEl, {
-         delay: 10000,
-      })
-      toast.show()
-      return toast;
-   });
-});
-</script>
+        <script type="text/javascript">
+        var initMessagesAfterRedirectToasts = function() {
+            var toastElList = [].slice.call(document.querySelectorAll('#messages_after_redirect .toast:not(.show)'));
+            var toastList = toastElList.map(function (toastEl) {
+                var toast = new bootstrap.Toast(toastEl, {
+                    delay: 10000,
+                })
+                toast.show()
+
+                $(toastEl).on('hidden.bs.toast', function () {
+                    $(toastEl).remove();
+                });
+
+                return toast;
+            });
+        }
+        $(function() {
+            initMessagesAfterRedirectToasts();
+        });
+        </script>
+    </div>
+{% else %}
+    {{ toasts_html }}
 {% endif %}
