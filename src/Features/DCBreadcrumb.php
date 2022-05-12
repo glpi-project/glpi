@@ -189,6 +189,7 @@ trait DCBreadcrumb
             } else {
                 $breadcrumb[Rack::getType()]['location']['name'] = $rack_location->fields['completename'];
             }
+            $breadcrumb[Rack::getType()]['location']['completename'] = $rack_location->fields['completename'];
         }
 
         if ($enclosure_location) {
@@ -199,6 +200,7 @@ trait DCBreadcrumb
             } else {
                 $breadcrumb[Enclosure::getType()]['location']['name'] = $enclosure_location->fields['completename'];
             }
+            $breadcrumb[Enclosure::getType()]['location']['completename'] = $enclosure_location->fields['completename'];
         }
 
         if ($dcroom_location) {
@@ -209,11 +211,13 @@ trait DCBreadcrumb
             } else {
                 $breadcrumb[DCRoom::getType()]['location']['name'] = $dcroom_location->fields['completename'];
             }
+            $breadcrumb[DCRoom::getType()]['location']['completename'] = $dcroom_location->fields['completename'];
         }
 
         //keep datacenter location completename name (start of breadcrumb)
         if ($datacenter_location) {
             $breadcrumb[Datacenter::getType()]['location']['name'] = $datacenter_location->fields['completename'];
+            $breadcrumb[Datacenter::getType()]['location']['completename'] = $datacenter_location->fields['completename'];
         }
 
         return $breadcrumb;

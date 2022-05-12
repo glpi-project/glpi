@@ -94,13 +94,15 @@ class DCBreadcrumb extends \DbTestCase
         ]);
         $this->checkInput($datacenter, $datacenter_id, $datacenter_input);
 
-        //create Location for DCRoom
+        //create Location for DCRoom (child of location_datacenter)
         $location_dcroom = new \Location();
         $location_dcroom_name = 'room1';
         $location_dcroom_id = $location_dcroom->add($location_dcroom_input = [
             'name'         => $location_dcroom_name,
+            'locations_id' => $location_datacenter_id,
         ]);
         $this->checkInput($location_dcroom, $location_dcroom_id, $location_dcroom_input);
+        $location_dcroom_completename = $location_dcroom->fields['completename'];
 
         //create DCRoom
         $DCroom = new \DCRoom();
@@ -195,8 +197,8 @@ class DCBreadcrumb extends \DbTestCase
             $location_datacenter_name,
             $location_datacenter_name,
             $DCroom_name,
-            $location_dcroom_name,
-            $location_dcroom_name,
+            htmlentities($location_dcroom_completename),
+            htmlentities('> ') . $location_dcroom_name, // > is added (DCbreadcrumb cleanLocationInformations()) because is a child location of datecenter location
             $rack_name,
             $location_rack_name,
             $location_rack_name,
