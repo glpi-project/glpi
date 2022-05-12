@@ -261,6 +261,39 @@ class Printer_CartridgeInfo extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
+    private static function getProgressColorsForColor($color)
+    {
+        $fg_transparency_hex = '80';
+        switch ($color) {
+            case 'cyan':
+            case 'light_cyan':
+                return [
+                    'fg' => '#00ffff'.$fg_transparency_hex,
+                    'text' => 'var(--tblr-body-color)'
+                ];
+            case 'magenta':
+            case 'light_magenta':
+                return [
+                    'fg' => '#ff00ff'.$fg_transparency_hex,
+                    'text' => 'var(--tblr-body-color)'
+                ];
+            case 'yellow':
+                return [
+                    'fg' => '#ffff00'.$fg_transparency_hex,
+                    'text' => 'var(--tblr-body-color)'
+                ];
+            case 'black':
+            case 'grey':
+            case 'darkgrey':
+                return [
+                    'fg' => '#303030'.$fg_transparency_hex,
+                    'text' => 'var(--tblr-body-color)'
+                ];
+        }
+
+        return null;
+    }
+
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         $printer = new Printer();
@@ -299,7 +332,8 @@ class Printer_CartridgeInfo extends CommonDBChild
                         'percent' => $percent_remaining,
                         'message' => $percent_remaining.'%',
                         'display' => false,
-                        'create' => true
+                        'create' => true,
+                        'colors' => self::getProgressColorsForColor($color)
                     ]);
                 }
             }
