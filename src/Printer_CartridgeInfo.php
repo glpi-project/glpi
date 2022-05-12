@@ -269,25 +269,25 @@ class Printer_CartridgeInfo extends CommonDBChild
             case 'light_cyan':
                 return [
                     'fg' => '#00ffff'.$fg_transparency_hex,
-                    'text' => 'var(--tblr-body-color)'
+                    'text' => 'inherit'
                 ];
             case 'magenta':
             case 'light_magenta':
                 return [
                     'fg' => '#ff00ff'.$fg_transparency_hex,
-                    'text' => 'var(--tblr-body-color)'
+                    'text' => 'inherit'
                 ];
             case 'yellow':
                 return [
                     'fg' => '#ffff00'.$fg_transparency_hex,
-                    'text' => 'var(--tblr-body-color)'
+                    'text' => 'inherit'
                 ];
             case 'black':
             case 'grey':
             case 'darkgrey':
                 return [
                     'fg' => '#303030'.$fg_transparency_hex,
-                    'text' => 'var(--tblr-body-color)'
+                    'text' => 'inherit'
                 ];
         }
 
