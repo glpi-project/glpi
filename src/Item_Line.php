@@ -236,8 +236,9 @@ class Item_Line extends CommonDBRelation
             }
 
             Dropdown::showSelectItemFromItemtypes([
-                'itemtypes' => $CFG_GLPI['line_types'],
-                'used'      => $used,
+                'itemtypes'       => $CFG_GLPI['line_types'],
+                'used'            => $used,
+                'entity_restrict' => $line->isRecursive() ? getSonsOf('glpi_entities', $line->getEntityID()) : $line->getEntityID()
             ]);
             echo '</td>';
             echo '<td class="center">';
@@ -402,8 +403,9 @@ class Item_Line extends CommonDBRelation
             }
 
             Line::dropdown([
-                'rand' => $rand,
-                'used' => $used,
+                'rand'   => $rand,
+                'used'   => $used,
+                'entity' => $item->isRecursive() ? getSonsOf('glpi_entities', $item->getEntityID()) : $item->getEntityID(),
             ]);
             echo '</td>';
             echo '<td class="center">';
