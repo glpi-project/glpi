@@ -21,7 +21,8 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
-- `Glpi\Event::showList()`                                     
+- `Glpi\Event::showList()`
+- `Html::displayAjaxMessageAfterRedirect()`
 - `Toolbox::seems_utf8()`
 
 #### Removed
