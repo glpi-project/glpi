@@ -156,10 +156,11 @@ class Migration
      * Additional message in global message
      *
      * @param string $msg text  to display
+     * @param string $style
      *
      * @return void
      **/
-    public function displayMessage($msg)
+    public function displayMessage($msg, ?string $style = null)
     {
 
         $this->flushLogDisplayMessage();
@@ -167,7 +168,7 @@ class Migration
         $now = time();
         $tps = Html::timestampToString($now - $this->deb);
 
-        $this->outputMessage("{$msg} ({$tps})", null, $this->current_message_area_id);
+        $this->outputMessage("{$msg} ({$tps})", $style, $this->current_message_area_id);
 
         $this->lastMessage = ['time' => time(),
             'msg'  => $msg

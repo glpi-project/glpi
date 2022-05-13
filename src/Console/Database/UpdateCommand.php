@@ -97,6 +97,20 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             __('Force execution of update from v-1 version of GLPI even if schema did not changed')
         );
 
+        $this->addOption(
+            'verify-before-update',
+            null,
+            InputOption::VALUE_NONE,
+            __('Check database schema integrity before update')
+        );
+
+        $this->addOption(
+            'verify-after-update',
+            null,
+            InputOption::VALUE_NONE,
+            __('Check database schema integrity after update')
+        );
+
         $this->registerTelemetryActivationOptions($this->getDefinition());
     }
 
@@ -188,7 +202,14 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
         $this->askForConfirmation();
 
-        $update->doUpdates($current_version, $force);
+        $verify_level = $update::VERIFY_NONE;
+        if ($this->input->getOption('verify-before-update')) {
+            $verify_level |= $update::VERIFY_PRE_UPDATE;
+        }
+        if ($this->input->getOption('verify-after-update')) {
+            $verify_level |= $update::VERIFY_POST_UPDATE;
+        }
+        $update->doUpdates($current_version, $force, $verify_level);
         $output->writeln('<info>' . __('Migration done.') . '</info>');
 
         (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data

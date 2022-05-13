@@ -42,10 +42,18 @@ class Update
 {
     private $args = [];
     private $DB;
+    /**
+     * @var Migration
+     */
     private $migration;
     private $version;
     private $dbversion;
     private $language;
+
+    public const VERIFY_NONE        = 0;
+    public const VERIFY_PRE_UPDATE  = 1;
+    public const VERIFY_POST_UPDATE = 2;
+    public const VERIFY_ALL         = 3;
 
     /**
      * Constructor
@@ -154,16 +162,45 @@ class Update
         return $currents;
     }
 
+    /**
+     * Verify the database schema integrity by running the related CLI command
+     * @return bool True if the schema was validated and OK, false otherwise
+     */
+    private function checkSchemaIntegrity(): bool
+    {
+        // Initialize console application
+        $console = new \Glpi\Console\Application();
+        $output = new Symfony\Component\Console\Output\BufferedOutput();
+        $input = new \Symfony\Component\Console\Input\ArrayInput([
+            '--check-all-migrations' => true
+        ]);
+        try {
+            $this->migration->displayMessage(__('Checking database schema integrity...'), 'strong');
+            $result = $console->find('glpi:database:check_schema_integrity')->run($input, $output);
+            if ($result !== 0) {
+                $this->migration->displayError(__('The database schema is not consistent with the current GLPI version.'));
+                $this->migration->displayMessage($output->fetch(), 'strong');
+            }
+        } catch (\Exception $e) {
+            $this->migration->displayError(__('Unable to check database schema integrity.'));
+            $this->migration->displayError($e->getMessage());
+            return false;
+        }
+
+        return $result === 0;
+    }
 
     /**
      * Run updates
      *
      * @param string $current_version  Current version
      * @param bool   $force_latest     Force replay of latest migration
+     * @param int    $verification     Verification mode for checking database schema integrity.
+     * Can be {@link self::VERIFY_NONE}, {@link self::VERIFY_PRE_UPDATE}, {@link self::VERIFY_POST_UPDATE} or {@link self::VERIFY_ALL}.
      *
      * @return void
      */
-    public function doUpdates($current_version = null, bool $force_latest = false)
+    public function doUpdates($current_version = null, bool $force_latest = false, int $verification = self::VERIFY_NONE)
     {
         if ($current_version === null) {
             if ($this->version === null) {
@@ -212,6 +249,10 @@ class Update
        // Update process desactivate all plugins
         $plugin = new Plugin();
         $plugin->unactivateAll();
+
+        if ((($verification & self::VERIFY_PRE_UPDATE) === self::VERIFY_PRE_UPDATE) && !$this->checkSchemaIntegrity()) {
+            die(1);
+        }
 
         if (version_compare($current_version, '0.80', '<') || version_compare($current_version, GLPI_VERSION, '>')) {
             $message = sprintf(
@@ -305,6 +346,14 @@ class Update
         $glpikey = new GLPIKey();
         if (!$glpikey->keyExists() && !$glpikey->generate()) {
             $this->migration->displayWarning(__('Unable to create security key file! You have to run "php bin/console glpi:security:change_key" command to manually create this file.'), true);
+        }
+
+        if ((($verification & self::VERIFY_POST_UPDATE) === self::VERIFY_POST_UPDATE) && !$this->checkSchemaIntegrity()) {
+            die(1);
+        }
+
+        if ($verification === self::VERIFY_NONE) {
+            $this->migration->displayMessage(__('It is highly recommended to run the "php bin/console glpi:database:check_schema_integrity" command to verify the database schema integrity.'), 'strong');
         }
     }
 
