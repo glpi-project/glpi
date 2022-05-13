@@ -44,7 +44,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CheckSchemaIntegrityCommand extends AbstractCommand
 {
     /**
-     * Error code returned when failed to read empty SQL file.
+     * Error code returned when failed to check empty SQL file.
      *
      * @var integer
      */
@@ -123,7 +123,6 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $checker = new DatabaseSchemaIntegrityChecker(
             $this->db,
             $input->getOption('strict'),
@@ -134,47 +133,37 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             !$input->getOption('check-all-migrations') && !$input->getOption('check-unsigned-keys-migration')
         );
 
-        if (
-            false === ($empty_file = realpath(GLPI_ROOT . '/install/mysql/glpi-empty.sql'))
-            || false === ($empty_sql = file_get_contents($empty_file))
-        ) {
-            $message = sprintf(__('Unable to read installation file "%s".'), $empty_file);
+        try {
+            $differences = $checker->checkCompleteSchema(GLPI_ROOT . '/install/mysql/glpi-empty.sql', true);
+        } catch (\Throwable $e) {
             $output->writeln(
-                '<error>' . $message . '</error>',
+                '<error>' . $e->getMessage() . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
             return self::ERROR_UNABLE_TO_READ_EMPTYSQL;
         }
 
-        $matches = [];
-        preg_match_all('/CREATE TABLE[^`]*`(.+)`[^;]+/', $empty_sql, $matches);
-        $empty_tables_names   = $matches[1];
-        $empty_tables_schemas = $matches[0];
-
-        $has_differences = false;
-
-        foreach ($empty_tables_schemas as $index => $table_schema) {
-            $table_name = $empty_tables_names[$index];
-
-            $output->writeln(
-                sprintf(__('Processing table "%s"...'), $table_name),
-                OutputInterface::VERBOSITY_VERY_VERBOSE
-            );
-
-            if ($checker->hasDifferences($table_name, $table_schema)) {
-                $diff = $checker->getDiff($table_name, $table_schema);
-
-                $has_differences = true;
-                $message = sprintf(__('Table schema differs for table "%s".'), $table_name);
-                $output->writeln(
-                    '<info>' . $message . '</info>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-                 $output->write($diff);
+        foreach ($differences as $table_name => $difference) {
+            $message = null;
+            switch ($difference['type']) {
+                case DatabaseSchemaIntegrityChecker::RESULT_TYPE_ALTERED_TABLE:
+                    $message = sprintf(__('Table schema differs for table "%s".'), $table_name);
+                    break;
+                case DatabaseSchemaIntegrityChecker::RESULT_TYPE_MISSING_TABLE:
+                    $message = sprintf(__('Table "%s" is missing.'), $table_name);
+                    break;
+                case DatabaseSchemaIntegrityChecker::RESULT_TYPE_UNKNOWN_TABLE:
+                    $message = sprintf(__('Unknown table "%s" has been found in database.'), $table_name);
+                    break;
             }
+            $output->writeln(
+                '<info>' . $message . '</info>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            $output->write($difference['diff']);
         }
 
-        if ($has_differences) {
+        if (count($differences) > 0) {
             return self::ERROR_FOUND_DIFFERENCES;
         }
 

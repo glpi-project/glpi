@@ -35,42 +35,488 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
+use org\bovigo\vfs\vfsStream;
+
 class DatabaseSchemaIntegrityChecker extends \GLPITestCase
 {
-    protected function sqlProvider()
+    protected function schemaProvider(): iterable
     {
-        return [
-         // AUTO_INCREMENT, integer display width, and comments should not be included in differences.
+        $mysql_5_7_version_string = '5.7.50-log';
+
+        $table_increment = 0;
+
+        $convert_to_provider_entry = static function (array $tables, string $version_string, array $args) {
+            return [
+                'schema'               => implode(
+                    "\n",
+                    array_map(
+                        function ($sql) {
+                            return $sql . ';';
+                        },
+                        array_column($tables, 'raw_sql')
+                    )
+                ),
+                'raw_tables'           => array_combine(array_column($tables, 'name'), array_column($tables, 'raw_sql')),
+                'normalized_tables'    => array_combine(array_column($tables, 'name'), array_column($tables, 'normalized_sql')),
+                'effective_tables'     => array_combine(array_column($tables, 'name'), array_column($tables, 'effective_sql')),
+                'expected_differences' => array_filter(array_combine(array_column($tables, 'name'), array_column($tables, 'differences'))),
+                'version_string'       => $version_string,
+                'args'                 => $args,
+            ];
+        };
+
+        // Checks using strict mode and including tokens related to migrations.
+
+        $tables = [
+            // AUTO_INCREMENT, integer display width, and comments should be removed
+            // and should not be included in diff.
             [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `is_valid` tinyint(4) NOT NULL COMMENT 'is object valid ?',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='some comment with an escaped \' backquote' AUTO_INCREMENT=15
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `is_valid` tinyint NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='some comment with an escaped \' backquote'
-SQL
-            ,
+) ENGINE=InnoDB
+SQL,
                 'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+CREATE TABLE `table_{$table_increment}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT 'name of the object',
   `is_valid` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15
-SQL
-            ,
-                'version_string' => '5.7.50-log',
-                'args'           => [
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
+SQL,
+                'differences'    => null,
             ],
 
-         // Check should detect missing keys and columns.
+            // Strict mode do not reorder columns/indexes and do not remove ROW_FORMAT=DYNAMIC.
+            // Order differences should be included in diff.
             [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `is_valid` tinyint NOT NULL,
+  KEY `is_valid` (`is_valid`),
+  UNIQUE KEY `name` (`name`),
+  PRIMARY KEY (`id`),
+  FULLTEXT KEY `description` (`description`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `is_valid` tinyint NOT NULL,
+  KEY `is_valid` (`is_valid`),
+  UNIQUE KEY `name` (`name`),
+  PRIMARY KEY (`id`),
+  FULLTEXT KEY `description` (`description`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `is_valid` tinyint NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `is_valid` (`is_valid`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table_{$table_increment}` (
+   `id` int NOT NULL AUTO_INCREMENT,
++  `is_valid` tinyint NOT NULL,
+   `name` varchar(255) NOT NULL,
+-  `description` text,
+-  `is_valid` tinyint NOT NULL,
++  PRIMARY KEY (`id`),
+   KEY `is_valid` (`is_valid`),
+-  UNIQUE KEY `name` (`name`),
+-  PRIMARY KEY (`id`),
+-  FULLTEXT KEY `description` (`description`)
++  UNIQUE KEY `name` (`name`)
+ ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+
+DIFF,
+                ]
+            ],
+
+            // utf8mb3 should be normalized to utf8.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+SQL,
+                'differences'    => null,
+            ],
+
+            // utf8mb4 related tokens:
+            // - on fields: only non utf8mb4 collate are preserved,
+            // - on table: collate and charset are preserved, even if utf8mb4.
+            // Following differences should be ignored:
+            // - missing default charset/collate on columns if matching utf8mb4;
+            // - 'mediumtext' instead of 'text'.
+            // - 'longtext' instead of 'mediumtext'.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `content` text,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `bis` varchar(100) CHARSET latin1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `content` text,
+  `description` text,
+  `bis` varchar(100) CHARSET latin1,
+  PRIMARY KEY (`id`)
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `bis` varchar(100),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table_{$table_increment}` (
+   `id` int NOT NULL AUTO_INCREMENT,
+-  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
++  `name` varchar(255) NOT NULL,
+   `content` text,
+   `description` text,
+-  `bis` varchar(100) CHARSET latin1,
++  `bis` varchar(100),
+   PRIMARY KEY (`id`)
+ ) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
+
+DIFF,
+                ]
+            ],
+
+            // Charset/collation should NOT be removed/ignored if related to utf8mb4 migration
+            // when NOT using ignore_utf8mb4_migration flag.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `description` text CHARSET latin1 COLLATE latin1_general_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `description` text CHARSET latin1 COLLATE latin1_general_ci,
+  PRIMARY KEY (`id`)
+) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `description` text CHARSET latin1 COLLATE latin1_general_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table_{$table_increment}` (
+   `id` int NOT NULL AUTO_INCREMENT,
+-  `name` varchar(255) NOT NULL,
+-  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
++  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
++  `content` text,
+   `description` text CHARSET latin1 COLLATE latin1_general_ci,
+   PRIMARY KEY (`id`)
+-) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
++) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
+
+DIFF,
+                ]
+            ],
+
+            // timestamp should NOT be replaced by datetime/ignored when NOT using ignore_timestamps_migration flag.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table_{$table_increment}` (
+   `id` int NOT NULL AUTO_INCREMENT,
+-  `created_at` timestamp NOT NULL,
+-  `updated_at` timestamp NULL,
++  `created_at` datetime NOT NULL,
++  `updated_at` datetime,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB
+
+DIFF,
+                ]
+            ],
+
+            // ROW_FORMAT should NOT be removed/ignored when NOT using ignore_dynamic_row_format_migration flag.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB ROW_FORMAT=COMPACT
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
+   `id` int NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+   PRIMARY KEY (`id`)
+-) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
++) ENGINE=InnoDB ROW_FORMAT=COMPACT
+
+DIFF,
+                ]
+            ],
+
+            // ENGINE should NOT be removed/ignored when NOT using ignore_innodb_migration flag.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
+   `id` int NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+   PRIMARY KEY (`id`)
+-) ENGINE=InnoDB
++) ENGINE=MyISAM
+
+DIFF,
+                ]
+            ],
+
+            // signed/unsigned on primary/foreign keys should NOT be removed/ignored when NOT using ignore_unsigned_keys_migration flag.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int unsigned NOT NULL,
+  `users_id_tech` int DEFAULT NULL,
+  `groups_id` int NOT NULL,
+  `groups_id_tech` int unsigned DEFAULT NULL,
+  `uid` int unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int unsigned NOT NULL,
+  `users_id_tech` int DEFAULT NULL,
+  `groups_id` int NOT NULL,
+  `groups_id_tech` int unsigned DEFAULT NULL,
+  `uid` int unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `users_id` int NOT NULL,
+  `users_id_tech` int unsigned DEFAULT NULL,
+  `groups_id` int unsigned NOT NULL,
+  `groups_id_tech` int DEFAULT NULL,
+  `uid` int unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `table_{$table_increment}` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) NOT NULL,
+-  `users_id` int unsigned NOT NULL,
+-  `users_id_tech` int DEFAULT NULL,
+-  `groups_id` int NOT NULL,
+-  `groups_id_tech` int unsigned DEFAULT NULL,
++  `users_id` int NOT NULL,
++  `users_id_tech` int unsigned DEFAULT NULL,
++  `groups_id` int unsigned NOT NULL,
++  `groups_id_tech` int DEFAULT NULL,
+   `uid` int unsigned NOT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB
+
+DIFF,
+                ]
+            ],
+        ];
+
+        yield $convert_to_provider_entry(
+            $tables,
+            $mysql_5_7_version_string,
+            [
+                'strict' => true,
+                'use_utf8mb4' => true,
+                'ignore_innodb_migration' => false,
+                'ignore_timestamps_migration' => false,
+                'ignore_utf8mb4_migration' => false,
+                'ignore_dynamic_row_format_migration' => false,
+                'ignore_unsigned_keys_migration' => false
+            ]
+        );
+
+        // Checks using non-strict mode and ignoring tokens related to migrations.
+
+        $tables = [
+            // Check should detect missing keys and columns.
+            // Fields and indexes are reordered in non strict mode.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `content` text,
@@ -84,872 +530,476 @@ CREATE TABLE `table` (
   FULLTEXT KEY `field` (`field`),
   KEY `computers_id` (`computers_id`),
   KEY `is_valid` (`is_valid`)
-) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `computers_id` tinyint NOT NULL,
   `content` text,
+  `field` text,
   `is_valid` tinyint NOT NULL,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `unicity` (`computers_id`,`is_valid`),
   FULLTEXT KEY `content` (`content`),
+  FULLTEXT KEY `field` (`field`),
+  KEY `computers_id` (`computers_id`),
+  KEY `is_valid` (`is_valid`)
+)
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `content` text,
+  `name` varchar(255) NOT NULL,
+  `is_valid` tinyint NOT NULL,
+  PRIMARY KEY (`id`),
   KEY `is_valid` (`is_valid`),
+  UNIQUE KEY `name` (`name`),
+  FULLTEXT KEY `content` (`content`),
 ) ENGINE=InnoDB
-SQL
-            ,
-                'version_string' => '5.7.34-standard',
-                'args'           => [
-                    'strict' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
 --- Original
 +++ New
 @@ @@
- CREATE TABLE `table` (
+ CREATE TABLE `table_{$table_increment}` (
+   `id` int NOT NULL AUTO_INCREMENT,
 -  `computers_id` tinyint NOT NULL,
    `content` text,
 -  `field` text,
-   `id` int NOT NULL AUTO_INCREMENT,
    `is_valid` tinyint NOT NULL,
    `name` varchar(255) NOT NULL,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `name` (`name`),
+-  UNIQUE KEY `unicity` (`computers_id`,`is_valid`),
    FULLTEXT KEY `content` (`content`),
 -  FULLTEXT KEY `field` (`field`),
 -  KEY `computers_id` (`computers_id`),
-   KEY `is_valid` (`is_valid`),
-   PRIMARY KEY (`id`),
--  UNIQUE KEY `name` (`name`),
--  UNIQUE KEY `unicity` (`computers_id`,`is_valid`)
-+  UNIQUE KEY `name` (`name`)
- ) ENGINE=InnoDB
+   KEY `is_valid` (`is_valid`)
+ )
 
-DIFF
-            ,
+DIFF,
+                ]
             ],
 
-         // Non strict check does not take care of columns/indexes order and ROW_FORMAT.
+            // Charset/collation should be removed/ignored if related to utf8mb4 migration
+            // when using ignore_utf8mb4_migration flag.
             [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `is_valid` tinyint NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  KEY `is_valid` (`is_valid`)
-) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `is_valid` tinyint NOT NULL,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `is_valid` (`is_valid`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'version_string' => '5.7.34-standard',
-                'args'           => [
-                    'strict' => false,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
-            ],
-
-         // Strict check takes care of columns/indexes order and ROW_FORMAT.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `is_valid` tinyint NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  KEY `is_valid` (`is_valid`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `is_valid` tinyint NOT NULL,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `is_valid` (`is_valid`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
-SQL
-            ,
-                'version_string' => '5.7.34-standard',
-                'args'           => [
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
- CREATE TABLE `table` (
-   `id` int NOT NULL AUTO_INCREMENT,
-+  `is_valid` tinyint NOT NULL,
-   `name` varchar(255) NOT NULL,
--  `is_valid` tinyint NOT NULL,
-   PRIMARY KEY (`id`),
--  UNIQUE KEY `name` (`name`),
--  KEY `is_valid` (`is_valid`)
--) ENGINE=InnoDB
-+  KEY `is_valid` (`is_valid`),
-+  UNIQUE KEY `name` (`name`)
-+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
-
-DIFF
-            ,
-            ],
-
-         // utf8mb3 should be normalized to utf8.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
   `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `description` text CHARSET latin1,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
-SQL
-            ,
-                'version_string' => '8.0.24-standard',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
-            ],
-
-         // DB using utf8mb4:
-         // - should accept missing default charset/collate on columns if matching utf8mb4;
-         // - should not accept non utf8mb4 charset;
-         // - should accept 'mediumtext' instead of 'text'.
-         // - should accept 'longtext' instead of 'mediumtext'.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
   `content` text,
-  `description` mediumtext,
-  `bis` varchar(100),
+  `description` text CHARSET latin1,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `description` text CHARSET latin1,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-SQL
-            ,
+SQL,
+                'differences'    => null,
+            ],
+
+            // timestamp should be replaced by datetime/ignored when using ignore_timestamps_migration flag.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime,
+  PRIMARY KEY (`id`)
+)
+SQL,
                 'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'differences'    => null,
+            ],
+
+            // ROW_FORMAT should be removed/ignored when using ignore_dynamic_row_format_migration flag.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB ROW_FORMAT=COMPACT
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB ROW_FORMAT=COMPACT
+SQL,
+                'differences'    => null,
+            ],
+
+            // ENGINE should be removed/ignored when using ignore_innodb_migration flag.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM
+SQL,
+                'differences'    => null,
+            ],
+
+            // signed/unsigned on primary/foreign keys should be removed/ignored when using ignore_unsigned_keys_migration flag
+            // unless it is on something else than primary/foreign keys
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `groups_id_tech` int unsigned DEFAULT NULL,
+  `groups_id` int NOT NULL,
+  `uid` int unsigned NOT NULL,
+  `users_id_tech` int DEFAULT NULL,
+  `users_id` int unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `groups_id_tech` int DEFAULT NULL,
+  `groups_id` int NOT NULL,
+  `uid` int unsigned NOT NULL,
+  `users_id_tech` int DEFAULT NULL,
+  `users_id` int NOT NULL,
+  PRIMARY KEY (`id`)
+)
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `groups_id_tech` int DEFAULT NULL,
+  `groups_id` int unsigned NOT NULL,
+  `uid` int unsigned NOT NULL,
+  `users_id_tech` int unsigned DEFAULT NULL,
+  `users_id` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'differences'    => null,
+            ],
+        ];
+
+        yield $convert_to_provider_entry(
+            $tables,
+            $mysql_5_7_version_string,
+            [
+                'strict' => false,
+                'use_utf8mb4' => true,
+                'ignore_innodb_migration' => true,
+                'ignore_timestamps_migration' => true,
+                'ignore_utf8mb4_migration' => true,
+                'ignore_dynamic_row_format_migration' => true,
+                'ignore_unsigned_keys_migration' => true
+            ]
+        );
+
+        // Checks related to utf8mb4 migration on a utf8mb3 table, including migration tokens.
+
+        $tables = [
+            // DB NOT using utf8mb4:
+            // - on fields: only non utf8 collate are preserved,
+            // - on table: collate and charset are preserved, evenf if utf8.
+            // Following differences should NOT be ignored:
+            // - missing default charset/collate on columns if matching utf8mb4;
+            // - 'mediumtext' instead of 'text'.
+            // - 'longtext' instead of 'mediumtext'.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `content` text,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `bis` varchar(100) CHARSET latin1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-SQL
-            ,
-                'version_string' => '5.7.34-standard',
-                'args'           => [
-                    'use_utf8mb4' => true,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
- CREATE TABLE `table` (
-   `id` int NOT NULL AUTO_INCREMENT,
--  `name` varchar(255) NOT NULL,
-+  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-   `content` text,
-   `description` text,
--  `bis` varchar(100),
-+  `bis` varchar(100) CHARSET latin1,
-   PRIMARY KEY (`id`)
- ) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
-
-DIFF
-            ,
-            ],
-
-         // DB using utf8:
-         // - should accept missing default charset/collate on columns if matching utf8;
-         // - should not accept non utf8 charset;
-         // - should not accept 'mediumtext' instead of 'text'.
-         // - should not accept 'longtext' instead of 'mediumtext'.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `content` text,
-  `description` mediumtext,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `bis` varchar(100) CHARSET latin1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
-SQL
-            ,
+) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
+SQL,
                 'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `content` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `description` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `content` mediumtext,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `bis` varchar(100),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
-SQL
-            ,
-                'version_string' => '5.7.34-standard',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
 --- Original
 +++ New
 @@ @@
- CREATE TABLE `table` (
+ CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
 -  `name` varchar(255) NOT NULL,
 -  `content` text,
--  `description` mediumtext,
+-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+-  `bis` varchar(100) CHARSET latin1,
 +  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
 +  `content` mediumtext,
-+  `description` longtext,
++  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
++  `bis` varchar(100),
    PRIMARY KEY (`id`)
  ) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
 
-DIFF
-            ,
+DIFF,
+                ]
             ],
+        ];
 
-         // DB using utf8mb3:
-         // - should accept missing default charset/collate on columns if matching utf8/utf8mb3;
-         // - should not accept non utf8/utf8mb3 charset;
-         // - should not accept 'mediumtext' instead of 'text'.
+        yield $convert_to_provider_entry(
+            $tables,
+            $mysql_5_7_version_string,
             [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `content` mediumtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
-SQL
-            ,
-                'version_string' => '8.0.24-standard',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
- CREATE TABLE `table` (
-   `id` int NOT NULL AUTO_INCREMENT,
--  `name` varchar(255) NOT NULL,
--  `content` text,
-+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-+  `content` mediumtext,
-   PRIMARY KEY (`id`)
- ) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
+                'strict' => true,
+                'use_utf8mb4' => false,
+                'ignore_innodb_migration' => false,
+                'ignore_timestamps_migration' => false,
+                'ignore_utf8mb4_migration' => false,
+                'ignore_dynamic_row_format_migration' => false,
+                'ignore_unsigned_keys_migration' => false
+            ]
+        );
 
-DIFF
-            ,
-            ],
+        // Checks related to utf8mb4 migration on a utf8mb3 table, including migration tokens.
 
-         // Charset/collation difference should be ignored if related to utf8mb4 migration
-         // when using ignore_utf8mb4_migration flag.
+        $tables = [
+            // Charset/collation should NOT be removed/ignored if related to utf8mb4 migration
+            // when NOT using ignore_utf8mb4_migration flag.
             [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `description` text CHARSET latin1 COLLATE latin1_general_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                    'ignore_utf8mb4_migration' => true,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
-            ],
-
-         // Charset/collation difference should be ignored if related to utf8mb4 migration
-         // when using ignore_utf8mb4_migration flag.
-         // utf8mb3 case
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
-SQL
-            ,
-                'version_string' => '8.0.24-standard',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                    'ignore_utf8mb4_migration' => true,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
-            ],
-
-         // Charset/collation difference should NOT be ignored if related to utf8mb4 migration
-         // when NOT using ignore_utf8mb4_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                    'ignore_utf8mb4_migration' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
- CREATE TABLE `table` (
-   `id` int NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) NOT NULL,
--  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-+  `content` text,
-   PRIMARY KEY (`id`)
--) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
-+) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
-
-DIFF
-            ,
-            ],
-
-         // Charset/collation difference should NOT be ignored if related to utf8mb4 migration
-         // when NOT using ignore_utf8mb4_migration flag.
-         // utf8mb3 case
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
-SQL
-            ,
-                'version_string' => '8.0.24-standard',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                    'ignore_utf8mb4_migration' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
- CREATE TABLE `table` (
-   `id` int NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) NOT NULL,
--  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-+  `content` text,
-   PRIMARY KEY (`id`)
--) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
-+) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
-
-DIFF
-            ,
-            ],
-
-         // Charset/collation difference should NOT be ignored if not related to utf8mb4 migration
-         // when using ignore_utf8mb4_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
   `content` text,
+  `description` text CHARSET latin1 COLLATE latin1_general_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-SQL
-            ,
+) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
+SQL,
                 'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `content` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `description` text CHARSET latin1 COLLATE latin1_general_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                    'ignore_utf8mb4_migration' => true,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
 --- Original
 +++ New
 @@ @@
- CREATE TABLE `table` (
+ CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) NOT NULL,
+-  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
 -  `content` text,
-+  `content` text CHARACTER SET latin1 COLLATE latin1_general_ci,
++  `name` varchar(255) NOT NULL,
++  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+   `description` text CHARSET latin1 COLLATE latin1_general_ci,
    PRIMARY KEY (`id`)
- ) ENGINE=InnoDB
+-) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
++) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
 
-DIFF
-            ,
+DIFF,
+                ]
             ],
+        ];
 
-         // Charset/collation difference should NOT be ignored if not related to utf8mb4 migration
-         // when using ignore_utf8mb4_migration flag.
-         // utf8mb3 case
+        yield $convert_to_provider_entry(
+            $tables,
+            $mysql_5_7_version_string,
             [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
+                'strict' => true,
+                'use_utf8mb4' => false,
+                'ignore_innodb_migration' => false,
+                'ignore_timestamps_migration' => false,
+                'ignore_utf8mb4_migration' => false,
+                'ignore_dynamic_row_format_migration' => false,
+                'ignore_unsigned_keys_migration' => false
+            ]
+        );
+
+        // Checks related to utf8mb3/mb4 on a utf8mb3 database, ignoring migration tokens.
+
+        $tables = [
+            // DB NOT using utf8mb4:
+            // - on fields: only non utf8 collate are preserved,
+            // - on table: collate and charset are preserved, evenf if utf8.
+            // Following differences should NOT be ignored:
+            // - missing default charset/collate on columns if matching utf8mb4;
+            // - 'mediumtext' instead of 'text'.
+            // - 'longtext' instead of 'mediumtext'.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `content` text,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `bis` varchar(100) CHARSET latin1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `content` text,
+  `description` text,
+  `bis` varchar(100) CHARSET latin1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-SQL
-            ,
+)
+SQL,
                 'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `content` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+  `name` varchar(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `content` mediumtext,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `bis` varchar(100),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci
-SQL
-            ,
-                'version_string' => '8.0.24-standard',
-                'args'           => [
-                    'use_utf8mb4' => false,
-                    'ignore_utf8mb4_migration' => true,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
 --- Original
 +++ New
 @@ @@
- CREATE TABLE `table` (
+ CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
    `name` varchar(255) NOT NULL,
 -  `content` text,
-+  `content` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+-  `description` text,
+-  `bis` varchar(100) CHARSET latin1,
++  `content` mediumtext,
++  `description` longtext,
++  `bis` varchar(100),
    PRIMARY KEY (`id`)
- ) ENGINE=InnoDB
-
-DIFF
-            ,
-            ],
-
-         // datetime/timestamp difference should be ignored when using ignore_timestamps_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_timestamps_migration' => true,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
-            ],
-
-         // datetime/timestamp difference should NOT be ignored when NOT using ignore_timestamps_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_timestamps_migration' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
- CREATE TABLE `table` (
-   `id` int NOT NULL AUTO_INCREMENT,
--  `created_at` timestamp NOT NULL,
--  `updated_at` timestamp NULL,
-+  `created_at` datetime NOT NULL,
-+  `updated_at` datetime,
-   PRIMARY KEY (`id`)
- ) ENGINE=InnoDB
-
-DIFF
-            ,
-            ],
-
-         // ROW_FORMAT difference should be ignored when using ignore_dynamic_row_format_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB ROW_FORMAT=COMPACT
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_dynamic_row_format_migration' => true,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
-            ],
-
-         // ROW_FORMAT difference should NOT be ignored when NOT using ignore_dynamic_row_format_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB ROW_FORMAT=COMPACT
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_dynamic_row_format_migration' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
-   `id` int NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) NOT NULL,
-   PRIMARY KEY (`id`)
--) ENGINE=InnoDB
-+) ENGINE=InnoDB ROW_FORMAT=COMPACT
-
-DIFF
-            ],
-
-         // ENGINE difference should be ignored when using ignore_innodb_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_innodb_migration' => true,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
-            ],
-
-         // ENGINE difference should NOT be ignored when NOT using ignore_innodb_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_innodb_migration' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
-   `id` int NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) NOT NULL,
-   PRIMARY KEY (`id`)
--) ENGINE=InnoDB
-+) ENGINE=MyISAM
-
-DIFF
-            ],
-
-         // signed/unsigned on primary/foreign keys should be ignored when using ignore_unsigned_keys_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `users_id` int unsigned NOT NULL,
-  `groups_id_tech` int unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `users_id` int NOT NULL,
-  `groups_id_tech` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_unsigned_keys_migration' => true,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
-            ],
-         // signed/unsigned on primary/foreign keys should NOT be ignored when NOT using ignore_unsigned_keys_migration flag.
-            [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `users_id` int unsigned NOT NULL,
-  `groups_id_tech` int unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `users_id` int NOT NULL,
-  `groups_id_tech` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_unsigned_keys_migration' => false,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
- CREATE TABLE `table` (
--  `id` int NOT NULL AUTO_INCREMENT,
-+  `id` int unsigned NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) NOT NULL,
--  `users_id` int unsigned NOT NULL,
--  `groups_id_tech` int unsigned DEFAULT NULL,
-+  `users_id` int NOT NULL,
-+  `groups_id_tech` int DEFAULT NULL,
-   PRIMARY KEY (`id`)
- ) ENGINE=InnoDB
+ )
 
 DIFF,
+                ]
             ],
+        ];
 
-         // signed/unsigned on something else than primary/foreign keys should NEVER be ignored.
+        yield $convert_to_provider_entry(
+            $tables,
+            $mysql_5_7_version_string,
             [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `uid` int unsigned NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `uid` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_unsigned_keys_migration' => true,
-                ],
-                'expected_has'   => true,
-                'expected_diff'  => <<<DIFF
---- Original
-+++ New
-@@ @@
- CREATE TABLE `table` (
-   `id` int NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) NOT NULL,
--  `uid` int unsigned NOT NULL,
-+  `uid` int NOT NULL,
-   PRIMARY KEY (`id`)
- ) ENGINE=InnoDB
+                'strict' => true,
+                'use_utf8mb4' => false,
+                'ignore_innodb_migration' => true,
+                'ignore_timestamps_migration' => true,
+                'ignore_utf8mb4_migration' => true,
+                'ignore_dynamic_row_format_migration' => true,
+                'ignore_unsigned_keys_migration' => true
+            ]
+        );
 
-DIFF,
-            ],
+        // Checks related to normalization of tokens returned by MariaDB.
 
-         // DB on MariaDB 10.2+ resuls should be normalized by:
-         // - surrounding default numeric values by quotes;
-         // - replacing current_timestamp() by CURRENT_TIMESTAMP;
-         // - removing DEFAULT NULL on text fields.
+        $tables = [
+            // DB on MariaDB 10.2+ resuls should be normalized by:
+            // - surrounding default numeric values by quotes;
+            // - replacing current_timestamp() by CURRENT_TIMESTAMP;
+            // - removing DEFAULT NULL on text fields.
             [
-                'proper_sql'     => <<<SQL
-CREATE TABLE `table` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `description` text NULL,
-  `value` int NOT NULL DEFAULT '0',
-  `steps` float NOT NULL DEFAULT '-0.7',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB
-SQL
-            ,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table` (
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `description` text NULL DEFAULT NULL,
@@ -958,52 +1008,339 @@ CREATE TABLE `table` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM
-SQL
-            ,
-                'version_string' => '10.2.36-MariaDB',
-                'args'           => [
-                    'ignore_innodb_migration' => true,
-                ],
-                'expected_has'   => false,
-                'expected_diff'  => '',
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text NULL,
+  `value` int NOT NULL DEFAULT '0',
+  `steps` float NOT NULL DEFAULT '-0.7',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text NULL,
+  `value` int NOT NULL DEFAULT '0',
+  `steps` float NOT NULL DEFAULT '-0.7',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM
+SQL,
+                'differences'    => null,
             ],
         ];
+
+        yield $convert_to_provider_entry(
+            $tables,
+            '10.2.36-MariaDB',
+            [
+                'strict' => true,
+                'use_utf8mb4' => true,
+                'ignore_innodb_migration' => false,
+                'ignore_timestamps_migration' => false,
+                'ignore_utf8mb4_migration' => false,
+                'ignore_dynamic_row_format_migration' => false,
+                'ignore_unsigned_keys_migration' => false
+            ]
+        );
     }
 
     /**
-     * @dataProvider sqlProvider
+     * @dataProvider schemaProvider
      */
-    public function testDifferences(
-        string $proper_sql,
-        string $effective_sql,
+    public function testGetNomalizedSql(
+        string $schema, // ignored
+        array $raw_tables,
+        array $normalized_tables,
+        array $effective_tables, // ignored
+        array $expected_differences, // ignored
         string $version_string,
-        array $args,
-        bool $expected_has,
-        string $expected_diff
+        array $args
     ) {
-
         $this->mockGenerator->orphanize('__construct');
 
         $db = new \mock\DBmysql();
-        $db->use_utf8mb4 = $args['use_utf8mb4'] ?? true;
+        $db->use_utf8mb4 = $args['use_utf8mb4'];
         $this->calling($db)->getVersion = $version_string;
-
-        $this->mockGenerator->orphanize('__construct');
-        $query_result = new \mock\mysqli_result();
-        $this->calling($query_result)->fetch_assoc = ['Create Table' => $effective_sql];
-        $this->calling($db)->query = $query_result;
 
         $this->newTestedInstance(
             $db,
-            $args['strict'] ?? true,
-            $args['ignore_innodb_migration'] ?? false,
-            $args['ignore_timestamps_migration'] ?? false,
-            $args['ignore_utf8mb4_migration'] ?? false,
-            $args['ignore_dynamic_row_format_migration'] ?? false,
-            $args['ignore_unsigned_keys_migration'] ?? false
+            $args['strict'],
+            $args['ignore_innodb_migration'],
+            $args['ignore_timestamps_migration'],
+            $args['ignore_utf8mb4_migration'],
+            $args['ignore_dynamic_row_format_migration'],
+            $args['ignore_unsigned_keys_migration']
         );
 
-        $this->boolean($this->testedInstance->hasDifferences('table', $proper_sql))->isEqualTo($expected_has);
-        $this->string($this->testedInstance->getDiff('table', $proper_sql))->isEqualTo($expected_diff);
+        $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
+        $getNomalizedSql->setAccessible(true);
+
+        foreach ($raw_tables as $table_name => $raw_sql) {
+            $this->string($getNomalizedSql->invoke($this->testedInstance, $raw_sql))->isEqualTo($normalized_tables[$table_name]);
+        }
+    }
+
+    /**
+     * @dataProvider schemaProvider
+     */
+    public function testTableDifferences(
+        string $schema, // ignored
+        array $raw_tables,
+        array $normalized_tables, // ignored
+        array $effective_tables,
+        array $expected_differences,
+        string $version_string,
+        array $args
+    ) {
+        $this->mockGenerator->orphanize('__construct');
+
+        $db = new \mock\DBmysql();
+        $db->use_utf8mb4 = $args['use_utf8mb4'];
+        $this->calling($db)->getVersion = $version_string;
+
+        $this->newTestedInstance(
+            $db,
+            $args['strict'],
+            $args['ignore_innodb_migration'],
+            $args['ignore_timestamps_migration'],
+            $args['ignore_utf8mb4_migration'],
+            $args['ignore_dynamic_row_format_migration'],
+            $args['ignore_unsigned_keys_migration']
+        );
+
+        foreach ($raw_tables as $table_name => $raw_sql) {
+            $effective_sql = $effective_tables[$table_name];
+            $expected_diff = $expected_differences[$table_name]['diff'] ?? '';
+
+            $this->mockGenerator->orphanize('__construct');
+            $query_result = new \mock\mysqli_result();
+            $this->calling($query_result)->fetch_assoc = ['Create Table' => $effective_sql];
+            $this->calling($db)->query = $query_result;
+
+            $this->boolean($this->testedInstance->hasDifferences($table_name, $raw_sql))->isEqualTo(!empty($expected_diff));
+            $this->string($this->testedInstance->getDiff($table_name, $raw_sql))->isEqualTo($expected_diff);
+        }
+    }
+
+    /**
+     * @dataProvider schemaProvider
+     */
+    public function testExtractSchemaFromFile(
+        string $schema,
+        array $raw_tables,
+        array $normalized_tables, // ignored
+        array $effective_tables, // ignored
+        array $expected_differences, // ignored
+        string $version_string, // ignored
+        array $args // ignored
+    ) {
+        vfsStream::setup(
+            'glpi',
+            null,
+            [
+                'install' => [
+                    'schema.sql' => $schema,
+                ],
+            ]
+        );
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+
+        $this->newTestedInstance($db);
+        $this->array($this->testedInstance->extractSchemaFromFile(vfsStream::url('glpi/install/schema.sql')))
+            ->isEqualTo($raw_tables);
+    }
+
+    /**
+     * @dataProvider schemaProvider
+     */
+    public function testCheckCompleteSchema(
+        string $schema,
+        array $raw_tables, // ignored
+        array $normalized_tables, // ignored
+        array $effective_tables,
+        array $expected_differences,
+        string $version_string,
+        array $args
+    ) {
+        vfsStream::setup(
+            'glpi',
+            null,
+            [
+                'install' => [
+                    'schema.sql' => $schema,
+                ],
+            ]
+        );
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+        $db->use_utf8mb4 = $args['use_utf8mb4'];
+        $this->calling($db)->getVersion = $version_string;
+        $this->calling($db)->tableExists = true;
+        $that = $this;
+        $this->calling($db)->query = function ($query) use ($effective_tables, $that) {
+            $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
+            if (array_key_exists($table_name, $effective_tables)) {
+                $that->mockGenerator->orphanize('__construct');
+                $res = new \mock\mysqli_result();
+                $that->calling($res)->fetch_assoc = ['Create Table' => $effective_tables[$table_name]];
+                return $res;
+            }
+            return false;
+        };
+
+        $this->newTestedInstance(
+            $db,
+            $args['strict'],
+            $args['ignore_innodb_migration'],
+            $args['ignore_timestamps_migration'],
+            $args['ignore_utf8mb4_migration'],
+            $args['ignore_dynamic_row_format_migration'],
+            $args['ignore_unsigned_keys_migration']
+        );
+
+        $expected_differences = array_filter($expected_differences); // Do not keep entries from data provider having "null" differences
+
+        $this->array($this->testedInstance->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql')))
+            ->isEqualTo($expected_differences);
+    }
+
+    public function testCheckCompleteSchemaWithUnknownAndMissingTables()
+    {
+        $contexts = [
+            'core'       => '',
+            'plugin:foo' => 'plugin_foo_',
+        ];
+
+        foreach ($contexts as $context => $table_prefix) {
+            $existingtable_sql = <<<SQL
+CREATE TABLE `glpi_{$table_prefix}existingtable` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) NOT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `type` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`type`),
+  KEY `type` (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL;
+            $missingtable_sql = <<<SQL
+CREATE TABLE `glpi_{$table_prefix}missingtable` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL;
+            $unknowntable_sql = <<<SQL
+CREATE TABLE `glpi_{$table_prefix}unknowntable` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL;
+
+            vfsStream::setup(
+                'glpi',
+                null,
+                [
+                    'install' => [
+                        'schema.sql' => <<<SQL
+--
+-- Presence of multiline comments
+-- should not be an issue.
+--
+
+DROP TABLE IF EXISTS `glpi_somethings`;
+
+{$existingtable_sql}
+
+{$missingtable_sql}
+SQL,
+                    ],
+                ]
+            );
+
+            $this->mockGenerator->orphanize('__construct');
+            $db = new \mock\DBmysql();
+            $db->use_utf8mb4 = true;
+            $this->calling($db)->getVersion = '5.7.50-log';
+            $this->calling($db)->tableExists = function ($table_name) use ($table_prefix) {
+                return $table_name !== "glpi_{$table_prefix}missingtable";
+            };
+            $that = $this;
+            $this->calling($db)->listTables = [['TABLE_NAME' => "glpi_{$table_prefix}unknowntable"]]; // $DB->listTables() is used to list unknown tables
+            $this->calling($db)->query = function ($query) use ($that, $table_prefix, $existingtable_sql, $unknowntable_sql) {
+                $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
+                $result = null;
+                switch ($table_name) {
+                    case "glpi_{$table_prefix}existingtable":
+                        $result = ['Create Table' => $existingtable_sql];
+                        break;
+                    case "glpi_{$table_prefix}unknowntable":
+                        $result = ['Create Table' => $unknowntable_sql];
+                        break;
+                }
+                if ($result !== null) {
+                    $that->mockGenerator->orphanize('__construct');
+                    $res = new \mock\mysqli_result();
+                    $that->calling($res)->fetch_assoc = $result;
+                    return $res;
+                }
+                return false;
+            };
+
+            $this->newTestedInstance($db);
+
+            $expected = [
+                "glpi_{$table_prefix}missingtable" => [
+                    'type' => 'missing_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
+-CREATE TABLE `glpi_{$table_prefix}missingtable` (
+-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+-  `name` varchar(255) NOT NULL,
+-  `description` text,
+-  PRIMARY KEY (`id`)
+-) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+
+DIFF,
+                ],
+                "glpi_{$table_prefix}unknowntable" => [
+                    'type' => 'unknown_table',
+                    'diff' => <<<DIFF
+--- Original
++++ New
+@@ @@
++CREATE TABLE `glpi_{$table_prefix}unknowntable` (
++  `id` int unsigned NOT NULL AUTO_INCREMENT,
++  `name` varchar(255) NOT NULL,
++  `description` text,
++  PRIMARY KEY (`id`)
++) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+
+DIFF,
+                ],
+            ];
+
+            $this->array($this->testedInstance->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql'), true, $context))
+                ->isEqualTo($expected);
+
+            // Check without unknown tables detection
+            unset($expected["glpi_{$table_prefix}unknowntable"]);
+            $this->array($this->testedInstance->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql'), false))
+                ->isEqualTo($expected);
+        }
     }
 }
