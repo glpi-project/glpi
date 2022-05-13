@@ -1622,13 +1622,16 @@ HTML;
                 'content' => [
                     'ticket' => [
                         'links' => [
-                            'add'       => '/front/helpdesk.public.php?create_ticket=1',
                             'search'    => Ticket::getSearchURL(),
                             'lists'     => '',
                         ]
                     ]
                 ]
             ];
+
+            if (Session::haveRight("ticket", CREATE)) {
+                $menu['tickets']['content']['ticket']['links']['add'] = '/front/helpdesk.public.php?create_ticket=1';
+            }
         }
 
         if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
