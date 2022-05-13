@@ -48,6 +48,10 @@
 {% if item.isNewItem() %}
    {% set can_admin = true %}
 {% endif %}
+
+{# entities_id would be set for new tickets in selfservice but not for new tickets in standard interface #}
+{% set entities_id = entities_id|default(item.fields['entities_id']) %}
+
 {# TODO can_admin is usefull for "assign to me" shortcut #}
 
 {# TODO check allow_email params #}
@@ -58,7 +62,7 @@
          'item': item,
          'actortypeint': constant('CommonITILActor::REQUESTER'),
          'actortype': 'requester',
-         'entities_id': item.fields['entities_id'],
+         'entities_id': entities_id,
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
@@ -86,7 +90,7 @@
          'item': item,
          'actortypeint': constant('CommonITILActor::OBSERVER'),
          'actortype': 'observer',
-         'entities_id': item.fields['entities_id'],
+         'entities_id': entities_id,
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
@@ -115,7 +119,7 @@
          'actortypeint': constant('CommonITILActor::ASSIGN'),
          'actortype': 'assign',
          'users_right': 'own_ticket',
-         'entities_id': item.fields['entities_id'],
+         'entities_id': entities_id,
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': (canupdate or canassign),
