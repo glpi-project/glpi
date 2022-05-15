@@ -65,7 +65,7 @@ Session::checkRight("config", UPDATE);
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 
-if (isset($_POST['key']) && isset($_POST["action"])) {
+if (isset($_POST['key'], $_POST["action"])) {
     $marketplace_ctrl = new MarketplaceController($_POST['key']);
     if (
         $_POST["action"] == "download_plugin"
@@ -96,7 +96,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     switch ($_GET['tab']) {
         default:
         case 'discover':
-            echo MarketplaceView::discover(
+            MarketplaceView::discover(
                 $_GET['force'] ?? false,
                 true,
                 $_GET['tag'] ?? "",
@@ -106,7 +106,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
             );
             break;
         case 'installed':
-            echo MarketplaceView::installed(true, true, $_GET['filter'] ?? "");
+            MarketplaceView::installed(true, true, $_GET['filter'] ?? "");
             break;
     }
 } else if (($_GET["action"] ?? null) == "getPagination") {

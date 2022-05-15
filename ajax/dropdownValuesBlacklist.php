@@ -41,8 +41,7 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownValuesBlacklist.php")) {
 
 Session::checkRight("config", UPDATE);
 if (
-    isset($_POST['itemtype'])
-    && isset($_POST['id_field'])
+    isset($_POST['itemtype'], $_POST['id_field'])
 ) {
     $blacklist = new Fieldblacklist();
     if (isset($_POST['id']) && ($_POST['id'] > 0)) {

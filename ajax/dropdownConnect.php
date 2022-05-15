@@ -47,10 +47,7 @@ if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromt
 
 $fromitem->checkGlobal(UPDATE);
 
-$used = [];
-if (isset($_POST["used"])) {
-    $used = $_POST["used"];
-}
+$used = $_POST["used"] ?? [];
 Computer_Item::dropdownConnect(
     $_POST["itemtype"],
     $_POST['fromtype'],

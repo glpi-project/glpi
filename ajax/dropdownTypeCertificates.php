@@ -46,6 +46,8 @@ Session::checkCentralAccess();
 // Make a select box
 $used = [];
 
+/** @global DBmysql $DB */
+
 // Clean used array
 if (
     isset($_POST['used'])

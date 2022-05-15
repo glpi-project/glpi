@@ -44,8 +44,7 @@ if (strpos($_SERVER['PHP_SELF'], "subvisibility.php")) {
 Session::checkLoginUser();
 
 if (
-    isset($_POST['type']) && !empty($_POST['type'])
-    && isset($_POST['items_id']) && ($_POST['items_id'] > 0)
+    isset($_POST['type'], $_POST['items_id']) && !empty($_POST['type']) && ($_POST['items_id'] > 0)
 ) {
     $prefix = '';
     $suffix = '';

@@ -36,6 +36,8 @@
 include('../inc/includes.php');
 Html::header_nocache();
 
+/** @global array $CFG_GLPI */
+
 if (
     !$CFG_GLPI["use_public_faq"]
     && !Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])

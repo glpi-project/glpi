@@ -40,7 +40,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 $result = [];
-if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
+if (!isset($_POST['itemtype'], $_POST['params'])) {
     http_response_code(500);
     $result = [
         'success'   => false,

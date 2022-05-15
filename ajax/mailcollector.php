@@ -42,6 +42,8 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+/** @global array $_UREQUEST */
+
 $mailcollector = new MailCollector();
 
 if (isset($_REQUEST['action'])) {
@@ -78,7 +80,7 @@ if (isset($_REQUEST['action'])) {
             }
 
             $mailcollector->fields = array_merge($mailcollector->fields, $input);
-            echo $mailcollector->displayFoldersList($_REQUEST['input_id']);
+            $mailcollector->displayFoldersList($_REQUEST['input_id']);
             break;
     }
 }

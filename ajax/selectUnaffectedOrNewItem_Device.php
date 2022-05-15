@@ -44,6 +44,8 @@ Html::header_nocache();
 
 Session::checkCentralAccess();
 
+/** @global DBmysql $DB */
+
 // Make a select box
 if (
     $_POST['items_id']
@@ -54,7 +56,7 @@ if (
 
     if (count($linktype::getSpecificities())) {
         $keys = array_keys($linktype::getSpecificities());
-        array_walk($keys, function (&$val) use ($DB) {
+        array_walk($keys, static function (&$val) use ($DB) {
             return $DB->quoteName($val);
         });
         $name_field = new QueryExpression(
@@ -74,7 +76,7 @@ if (
             ]
         ]
     );
-    echo "<table width='100%'><tr><td>" . __('Choose an existing device') . "</td><td rowspan='2'>" .
+    echo "<table class='w-100'><tr><td>" . __('Choose an existing device') . "</td><td rowspan='2'>" .
         __('and/or') . "</td><td>" . __('Add new devices') . '</td></tr>';
     echo "<tr><td>";
     if ($result->count() == 0) {

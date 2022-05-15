@@ -42,6 +42,8 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownRubDocument.php")) {
 
 Session::checkCentralAccess();
 
+/** @global DBmysql $DB */
+
 // Make a select box
 if (isset($_POST["rubdoc"])) {
     $used = [];

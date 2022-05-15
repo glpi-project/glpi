@@ -42,7 +42,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
 
-$action = (!isset($_POST['action'])) ? $_GET["action"] : $_POST['action'];
+$action = $_POST['action'] ?? $_GET["action"];
 
 switch ($action) {
     case 'get_items_from_itemtype':
@@ -58,8 +58,7 @@ switch ($action) {
 
     case 'get_socket_dropdown':
         if (
-            (isset($_GET['itemtype']) && class_exists($_GET['itemtype']))
-            && isset($_GET['items_id'])
+            isset($_GET['itemtype'], $_GET['items_id']) && class_exists($_GET['itemtype'])
         ) {
             Socket::dropdown(['name'         =>  $_GET['dom_name'],
                 'condition'    => ['socketmodels_id'   => $_GET['socketmodels_id'] ?? 0,
@@ -83,8 +82,7 @@ switch ($action) {
 
     case 'get_item_breadcrum':
         if (
-            (isset($_GET['itemtype']) && class_exists($_GET['itemtype']))
-            && isset($_GET['items_id']) && $_GET['items_id'] > 0
+            isset($_GET['itemtype'], $_GET['items_id']) && class_exists($_GET['itemtype']) && $_GET['items_id'] > 0
         ) {
             if (method_exists($_GET['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
                 echo $_GET['itemtype']::getDcBreadcrumbSpecificValueToDisplay($_GET['items_id']);

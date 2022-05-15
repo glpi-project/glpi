@@ -61,8 +61,7 @@ if (isset($_POST['submitname']) && $_POST['submitname']) {
 
 
 if (
-    isset($_POST["itemtype"])
-    && isset($_POST["id_field"]) && $_POST["id_field"]
+    isset($_POST["itemtype"], $_POST["id_field"]) && $_POST["id_field"]
 ) {
     $search = Search::getOptions($_POST["itemtype"]);
     if (!isset($search[$_POST["id_field"]])) {
@@ -71,7 +70,7 @@ if (
 
     $search            = $search[$_POST["id_field"]];
 
-    echo "<table class='tab_glpi' width='100%'><tr><td>";
+    echo "<table class='tab_glpi w-100'><tr><td>";
 
     $plugdisplay = false;
    // Specific plugin Type case

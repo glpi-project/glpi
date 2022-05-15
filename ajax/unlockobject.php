@@ -49,7 +49,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 $ret = 0;
-if (isset($_POST['unlock']) && isset($_POST["id"])) {
+if (isset($_POST['unlock'], $_POST["id"])) {
    // then we may have something to unlock
     $ol = new ObjectLock();
     if (
@@ -68,8 +68,7 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
         $ret = 1;
     }
 } else if (
-    isset($_POST['requestunlock'])
-           && isset($_POST["id"])
+    isset($_POST['requestunlock'], $_POST["id"])
 ) {
    // the we must ask for unlock
     $ol = new ObjectLock();
@@ -78,8 +77,7 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
         $ret = 1;
     }
 } else if (
-    isset($_GET['lockstatus'])
-           && isset($_GET["id"])
+    isset($_GET['lockstatus'], $_GET["id"])
 ) {
     $ol = new ObjectLock();
     if ($ol->getFromDB($_GET["id"])) {

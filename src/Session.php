@@ -1570,15 +1570,12 @@ class Session
      *
      * @since  9.2.2
      *
-     * @return false or [helpdesk|central]
+     * @return string|false Returns "helpdesk" or "central" if there is a session and the interface property is set.
+     *                      Returns false if there is no session or the interface property is not set.
      */
     public static function getCurrentInterface()
     {
-        if (isset($_SESSION['glpiactiveprofile']['interface'])) {
-            return $_SESSION['glpiactiveprofile']['interface'];
-        }
-
-        return false;
+        return $_SESSION['glpiactiveprofile']['interface'] ?? false;
     }
 
     /**
