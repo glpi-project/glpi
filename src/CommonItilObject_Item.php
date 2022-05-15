@@ -170,7 +170,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *     *
      * @return bool
      **/
-
     public static function validateObjectType($obj)
     {
         if (get_class($obj) != static::$itemtype_1) {
@@ -1618,7 +1617,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         return $rand;
     }
 
-    /** add items_2 on item_1 (fonction may already exist elswhere but I couldn't find it )
+    /**
+     * add items_2 on item_1 (fonction may already exist elswhere but I couldn't find it )
      * @param $items_id_1 int CommonITILObject on which  items_ids_2 must be added
      * @param $items_ids_2  array of elements (itemtype => array(id1, id2, id3, ...))
      * @return bool if all are successful
