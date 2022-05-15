@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -1588,6 +1590,7 @@ class Session
      */
     public static function canImpersonate($user_id)
     {
+        global $DB;
 
         if (
             $user_id <= 0 || self::getLoginUserID() == $user_id
@@ -1596,10 +1599,32 @@ class Session
             return false; // Cannot impersonate invalid user, self, or already impersonated user
         }
 
-       // For now we do not check more than config update right, but we may
-       // implement more fine checks in the future.
+        if (self::haveRight(Config::$rightname, UPDATE)) {
+            return true; // User can impersonate anyone
+        }
 
-        return self::haveRight(Config::$rightname, UPDATE);
+        // Check if user can impersonate lower-privileged users (or same level)
+        $can_impersonate = self::haveRight('user', User::IMPERSONATE);
+        if ($can_impersonate) {
+            $other_user_profiles = array_keys(Profile_User::getUserProfiles($user_id));
+            // Get all less-privileged (or equivalent) profiles than current one
+            $criteria = Profile::getUnderActiveProfileRestrictCriteria();
+            $iterator = $DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => Profile::getTable(),
+                'WHERE'  => $criteria
+            ]);
+            $profiles = [];
+            foreach ($iterator as $data) {
+                $profiles[] = $data['id'];
+            }
+            // Check if all profiles of the user are less-privileged than current one
+            if (count($other_user_profiles) === count(array_intersect($profiles, $other_user_profiles))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

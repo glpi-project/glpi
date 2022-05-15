@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,20 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 class Item_OperatingSystem extends CommonDBRelation
 {
@@ -297,88 +301,11 @@ class Item_OperatingSystem extends CommonDBRelation
 
     public function showForm($ID, array $options = [])
     {
-        $colspan = 4;
-
-        echo "<div class='center'>";
-
         $this->initForm($ID, $this->fields);
-        $this->showFormHeader(['formtitle' => false]);
-
-        $rand = mt_rand();
-
-        echo "<tr class='headerRow'><th colspan='" . $colspan . "'>";
-        echo OperatingSystem::getTypeName(1);
-        echo Html::hidden('itemtype', ['value' => $this->fields['itemtype']]);
-        echo Html::hidden('items_id', ['value' => $this->fields['items_id']]);
-        echo "</th></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_operatingsystems_id$rand'>" . __('Name') . "</label></td>";
-        echo "<td>";
-        OperatingSystem::dropdown(['value' => $this->fields["operatingsystems_id"], 'rand' => $rand]);
-        echo "</td>";
-        echo "<td><label for='dropdown_operatingsystemversions_id$rand'>" . _n('Version', 'Versions', 1) . "</label></td>";
-        echo "<td >";
-        OperatingSystemVersion::dropdown(['value' => $this->fields["operatingsystemversions_id"], 'rand' => $rand]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_operatingsystemarchitectures_id$rand'>" . _n('Architecture', 'Architectures', 1) . "</label></td>";
-        echo "<td >";
-        OperatingSystemArchitecture::dropdown(['value'
-                                                 => $this->fields["operatingsystemarchitectures_id"], 'rand' => $rand
+        TemplateRenderer::getInstance()->display('pages/assets/operatingsystem.html.twig', [
+            'item'   => $this,
+            'params' => $options,
         ]);
-        echo "</td>";
-        echo "<td><label for='dropdown_operatingsystemservicepacks_id$rand'>" . OperatingSystemServicePack::getTypeName(1) . "</label></td>";
-        echo "<td >";
-        OperatingSystemServicePack::dropdown(['value'
-                                                 => $this->fields["operatingsystemservicepacks_id"], 'rand' => $rand
-        ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_operatingsystemkernelversions_id$rand'>" . _n('Kernel', 'Kernels', 1) . "</label></td>";
-        echo "<td >";
-        OperatingSystemKernelVersion::dropdown([
-            'value'  => $this->fields['operatingsystemkernelversions_id'],
-            'rand'   => $rand,
-            'displaywith'  => ['operatingsystemkernels_id']
-        ]);
-        echo "</td>";
-
-        echo "<td><label for='dropdown_operatingsystemeditions_id$rand'>" . _n('Edition', 'Editions', 1) . "</label></td>";
-        echo "<td >";
-        OperatingSystemEdition::dropdown([
-            'value'  => $this->fields['operatingsystemeditions_id'],
-            'rand'   => $rand
-        ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='textfield_licenseid$rand'>" . __('Product ID') . "</label></td>";
-        echo "<td >";
-        echo Html::input(
-            'licenseid',
-            [
-                'value' => $this->fields['licenseid'],
-                'id'    => "textfield_licenseid$rand",
-            ]
-        );
-        echo "</td>";
-
-        echo "<td><label for='textfield_license_number$rand'>" . __('Serial number') . "</label></td>";
-        echo "<td >";
-        echo Html::input(
-            'license_number',
-            [
-                'value' => $this->fields['license_number'],
-                'id'    => "textfield_license_number$rand",
-            ]
-        );
-        echo "</td></tr>";
-        $options['formfooter'] = false;
-        $this->showFormButtons($options);
 
         return true;
     }

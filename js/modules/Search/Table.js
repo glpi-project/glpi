@@ -1,12 +1,13 @@
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -134,6 +136,11 @@ window.GLPI.Search.Table = class Table extends GenericView {
         const ajax_container = el.closest('.ajax-container');
         let search_data = {};
 
+        const handle_search_failure = () => {
+            // Fallback to a page reload
+            window.location.reload();
+        };
+
         try {
             const sort_state = this.getSortState();
             const limit = $(form_el).find('select.search-limit-dropdown').first().val();
@@ -167,15 +174,25 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 search_data = Object.assign(search_data, search_criteria, search_overrides);
             }
 
-            $(ajax_container).load(CFG_GLPI.root_doc + '/ajax/search.php', search_data, () => {
-                // Push history state with new query params
-                history.pushState('', '', '?' + $.param(Object.assign(search_criteria, sort_state, search_overrides)));
+            history.pushState('', '', '?' + $.param(Object.assign(search_criteria, sort_state, search_overrides)));
+            $.ajax({
+                url: CFG_GLPI.root_doc + '/ajax/search.php',
+                method: 'GET',
+                data: search_data,
+            }).then((content) => {
+                if (!(typeof content === "string" && content.includes('search-card'))) {
+                    handle_search_failure();
+                    return;
+                }
+                ajax_container.html(content);
                 this.getElement().trigger('search_refresh', [this.getElement()]);
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
+            }, () => {
+                handle_search_failure();
             });
         } catch (error) {
-            this.hideLoadingSpinner();
+            handle_search_failure();
         }
     }
 
@@ -192,6 +209,10 @@ window.GLPI.Search.Table = class Table extends GenericView {
         $(ajax_container).on('click', 'table.search-results th[data-searchopt-id]', (e) => {
             e.stopPropagation();
             const target = $(e.target).closest('th').get(0);
+
+            if ($(target).data('nosort')) {
+                return;
+            }
             if (e.ctrlKey || e.metaKey) {
             // Multisort mode
                 this.onColumnSortClick(target, true);

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -270,7 +272,9 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
     'Computer', 'Monitor', "Glpi\\Socket",
     'NetworkEquipment', 'Peripheral', 'Phone',
     'Printer', 'Software', 'SoftwareLicense',
-    'Ticket', 'User', 'Certificate', 'Item_DeviceSimcard'
+    'Ticket', 'User', 'Certificate', 'Item_DeviceSimcard',
+    'Line', 'Appliance', 'PassiveDCEquipment', 'DataCenter',
+    'DCRoom', 'Rack', 'Enclosure', 'PDU'
 ];
 
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
@@ -461,7 +465,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
     'highcontrast_css', 'default_dashboard_central', 'default_dashboard_assets',
     'default_dashboard_helpdesk', 'default_dashboard_mini_ticket', 'default_central_tab',
     'fold_menu', 'fold_search', 'savedsearches_pinned', 'richtext_layout', 'timeline_order',
-    'itil_layout'
+    'itil_layout', 'toast_location'
 ];
 
 $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract', 'Document',
@@ -527,6 +531,8 @@ $CFG_GLPI['databaseinstance_types'] = ['Computer'];
 
 $CFG_GLPI['agent_types'] = ['Computer', 'Phone'];
 
+$CFG_GLPI['line_types'] = $CFG_GLPI['itemdevicesimcard_types'];
+
 $dashboard_libs = [
     'dashboard', 'gridstack',
     'charts', 'clipboard', 'sortable'
@@ -559,7 +565,7 @@ $CFG_GLPI['javascript'] = [
         'stat'      => ['charts']
     ],
     'tools'     => [
-        'project'                 => ['gantt', 'kanban', 'tinymce', 'sortable'],
+        'project'                 => ['kanban', 'tinymce', 'sortable'],
         'knowbaseitem'            => ['tinymce'],
         'knowbaseitemtranslation' => ['tinymce'],
         'reminder'                => ['tinymce'],

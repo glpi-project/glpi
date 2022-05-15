@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -50,6 +52,8 @@ class View extends CommonGLPI
 
 
     public const COL_PAGE = 12;
+
+    protected static bool $offline_mode = false;
 
     /**
      * singleton return the current api instance
@@ -133,10 +137,14 @@ class View extends CommonGLPI
     /**
      * Check current registration status and display warning messages
      *
+     * @param bool $force Force re-check the registration status even if it was already checked
      * @return bool
      */
-    public static function checkRegistrationStatus()
+    public static function checkRegistrationStatus(bool $force = false)
     {
+        if (!$force && static::$offline_mode) {
+            return false;
+        }
         global $CFG_GLPI;
 
         $messages   = [];
@@ -187,6 +195,7 @@ class View extends CommonGLPI
             echo "</div>";
         }
 
+        static::$offline_mode = !$valid;
         return $valid;
     }
 
@@ -289,6 +298,10 @@ class View extends CommonGLPI
             $nb_plugins = $api->getNbPlugins($tag_filter);
         }
 
+        // Clear all output buffers
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
         header("X-GLPI-Marketplace-Total: $nb_plugins");
         self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort, $api->isListTruncated());
     }
@@ -340,9 +353,12 @@ class View extends CommonGLPI
 
         $messages = '';
         if ($is_list_truncated) {
-            $msg = count($plugins) === 0
-                ? sprintf(__('Unable to fetch plugin list due to %s services website unavailability. Please try again later.'), 'GLPI Network')
-                : sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
+            if (count($plugins) === 0) {
+                $msg = sprintf(__('Unable to fetch plugin list due to %s services website unavailability. Please try again later.'), 'GLPI Network');
+            } else {
+                // Not completely offline. Do not treat as fully offline.
+                $msg = sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
+            }
             $messages = '<li class="warning"><i class="fa fa-exclamation-triangle fa-3x"></i>' . $msg . '</li>';
         }
 
@@ -366,6 +382,24 @@ class View extends CommonGLPI
                       . "</div>";
             }
 
+            if (static::$offline_mode && $tab !== 'installed') {
+                $marketplace  = <<<HTML
+                <div class='marketplace $tab' data-tab='{$tab}'>
+                    <div class='left-panel'></div>
+                    <div class='right-panel'>
+                        <div class='top-panel'>
+                            <div class='controls'></div>
+                        </div>
+                        <ul class='plugins'>
+                            {$messages}
+                            {$plugins_li}
+                        </ul>
+                    </div>
+                </div>
+HTML;
+                echo $marketplace;
+                return;
+            }
             $tags_list    = $tab != "installed"
                 ? "<div class='left-panel'>" . self::getTagsHtml() . "</div>"
                 : "";
@@ -536,7 +570,7 @@ JS;
                </a>"
              : "";
         $icon    = self::getPluginIcon($plugin);
-        $network = self::getNetworkInformations($plugin);
+        $network = !static::$offline_mode ? self::getNetworkInformations($plugin) : '';
 
         if ($tab === "discover") {
             $card = <<<HTML
@@ -645,14 +679,17 @@ HTML;
         $exists             = $plugin_inst->getFromDBbyDir($plugin_key);
         $is_installed       = $plugin_inst->isInstalled($plugin_key);
         $is_actived         = $plugin_inst->isActivated($plugin_key);
-        $mk_controller      = new Controller($plugin_key);
-        $web_update_version = $mk_controller->checkUpdate($plugin_inst);
-        $has_web_update     = $web_update_version !== false;
-        $is_available       = $mk_controller->isAvailable();
-        $can_be_overwritten = $mk_controller->canBeOverwritten();
-        $can_be_downloaded  = $mk_controller->canBeDownloaded();
-        $required_offers    = $mk_controller->getRequiredOffers();
-        $can_be_updated     = $has_web_update && $can_be_overwritten;
+
+        // The following block of buttons require the marketplace to be online
+        $mk_controller = !static::$offline_mode ? new Controller($plugin_key) : null;
+        $web_update_version = $mk_controller ? $mk_controller->checkUpdate($plugin_inst) : false;
+        $has_web_update = $web_update_version !== false;
+        $is_available = $mk_controller && $mk_controller->isAvailable();
+        $can_be_overwritten = $mk_controller && $mk_controller->canBeOverwritten();
+        $can_be_downloaded = $mk_controller && $mk_controller->canBeDownloaded();
+        $required_offers = $mk_controller ? $mk_controller->getRequiredOffers() : false;
+        $can_be_updated = $has_web_update && $can_be_overwritten;
+
         $config_page        = $PLUGIN_HOOKS['config_page'][$plugin_key] ?? "";
         $must_be_cleaned   = $exists && !$plugin_inst->isLoadable($plugin_key);
         $has_local_install = $exists && !$must_be_cleaned && !$is_installed;
@@ -721,24 +758,34 @@ HTML;
             $plugin_data = $mk_controller->getAPI()->getPlugin($plugin_key);
             if (array_key_exists('installation_url', $plugin_data) && $can_be_downloaded) {
                 $warning = "";
-                if ($has_web_update) {
-                    $warning = __s("The plugin has an available update but its directory is not writable.") . "<br>";
+
+                if (!Controller::hasVcsDirectory($plugin_key)) {
+                    if ($has_web_update) {
+                        $warning = __s("The plugin has an available update but its directory is not writable.") . "<br>";
+                    }
+
+                    $warning .= sprintf(
+                        __s("Download archive manually, you must uncompress it in plugins directory (%s)"),
+                        GLPI_ROOT . '/plugins'
+                    );
+
+                    // Use "marketplace.download.php" proxy if archive is downloadable from GLPI marketplace plugins API
+                    // as this API will refuse to serve the archive if registration key is not set in headers.
+                    $download_url = str_starts_with($plugin_data['installation_url'], GLPI_MARKETPLACE_PLUGINS_API_URI)
+                        ? $CFG_GLPI['root_doc'] . '/front/marketplace.download.php?key=' . $plugin_key
+                        : $plugin_data['installation_url'];
+
+                    $buttons .= "<a href='{$download_url}' target='_blank'>
+                            <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
+                        </a>";
+                } else {
+                    $warning = __s("The plugin has an available update but its local directory contains source versioning.") . "<br>";
+                    $warning .= __s("To avoid overwriting a potential branch under development, downloading is disabled.");
+
+                    $buttons .= "<button title='$warning' class='add_tooltip download_manually'>
+                        <i class='fas fa-ban'></i>
+                    </button>";
                 }
-
-                $warning .= sprintf(
-                    __s("Download archive manually, you must uncompress it in plugins directory (%s)"),
-                    GLPI_ROOT . '/plugins'
-                );
-
-                // Use "marketplace.download.php" proxy if archive is downloadable from GLPI marketplace plugins API
-                // as this API will refuse to serve the archive if registration key is not set in headers.
-                $download_url = str_starts_with($plugin_data['installation_url'], GLPI_MARKETPLACE_PLUGINS_API_URI)
-                    ? $CFG_GLPI['root_doc'] . '/front/marketplace.download.php?key=' . $plugin_key
-                    : $plugin_data['installation_url'];
-
-                $buttons .= "<a href='{$download_url}' target='_blank'>
-                        <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
-                    </a>";
             }
         } else if ($can_be_downloaded) {
             if (!$exists) {
@@ -760,7 +807,7 @@ HTML;
             }
         }
 
-        if ($mk_controller->requiresHigherOffer()) {
+        if (!static::$offline_mode && $mk_controller->requiresHigherOffer()) {
             $warning = sprintf(
                 __s("You need a superior GLPI-Network offer to access to this plugin (%s)"),
                 implode(', ', $required_offers)

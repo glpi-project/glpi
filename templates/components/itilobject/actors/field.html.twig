@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,18 +15,19 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
@@ -37,12 +39,12 @@
 {# TODO userentity_oncreate form submit #}
 
 {% set required = false %}
-{% if itiltemplate.isMandatoryField('TODO') %}
+{% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) or itiltemplate.isMandatoryField('_groups_id_' ~ actortype) or (actortype == 'assign' and itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
    {% set required = true %}
 {% endif %}
 
 {% set is_actor_hidden = false %}
-{% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) and itiltemplate.isMandatoryField('_groups_id_' ~ actortype) and (actortype != 'assign' or itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
+{% if itiltemplate.isHiddenField('_users_id_' ~ actortype) and itiltemplate.isHiddenField('_groups_id_' ~ actortype) and (actortype != 'assign' or itiltemplate.isHiddenField('_suppliers_id_' ~ actortype)) %}
    {% set is_actor_hidden = true %}
 {% endif %}
 
@@ -52,20 +54,20 @@
 {% endif %}
 
 {% if not is_actor_hidden %}
-   <select class="form-select" multiple="true" id="actor_{{ rand }}">
+   <select class="form-select" multiple="true" id="actor_{{ rand }}"
+        {{ required ? 'required' : '' }}>
    {% for actor in actors %}
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
             data-alternative-email="{{ actor['alternative_email'] }}"
-            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}"
-            {{ required ? 'required' : '' }}>
+            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}">
          {{ actor['title']|verbatim_value }}
       </option>
    {% endfor %}
    </select>
 
-   {% if not params['template_preview'] and not disable_assign_to_me and canupdate %}
+   {% if not item.isNewItem() and not params['template_preview'] and not disable_assign_to_me and canupdate %}
       {{ include('components/itilobject/actors/assign_to_me.html.twig') }}
    {% endif %}
 

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -56,7 +58,12 @@ class Config extends CommonDBTM
 
     public static $rightname              = 'config';
 
-    public static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd', 'glpinetwork_registration_key'];
+    public static $undisclosedFields      = [
+        'proxy_passwd',
+        'smtp_passwd',
+        'glpinetwork_registration_key',
+        'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
+    ];
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     public static function getTypeName($nb = 0)
@@ -1596,6 +1603,18 @@ class Config extends CommonDBTM
             echo "</td></tr>";
         }
 
+        echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . __('Notification popups') . "</th></tr>";
+
+        echo "<tr class='tab_bg_2'>";
+        echo "<td>" . __('Notification location') . "</td><td>";
+        Dropdown::showFromArray('toast_location', [
+            'top-left'      => __('Top left'),
+            'top-right'     => __('Top right'),
+            'bottom-left'   => __('Bottom left'),
+            'bottom-right'  => __('Bottom right'),
+        ], ['value' => $data['toast_location'] ?? 'bottom-right']);
+        echo "</td></tr>";
+
         if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='4' class='center'>";
@@ -2250,8 +2269,9 @@ HTML;
                 'version' => SIMPLEPIE_VERSION,
                 'check'   => $sp
             ],
-            [ 'name'    => 'mpdf/mpdf',
-                'check'   => 'Mpdf\\Mpdf'
+            [ 'name'      => 'tecnickcom/tcpdf',
+                'version' => TCPDF_STATIC::getTCPDFVersion(),
+                'check'   => 'TCPDF'
             ],
             [ 'name'    => 'michelf/php-markdown',
                 'check'   => 'Michelf\\Markdown'
@@ -2348,6 +2368,10 @@ HTML;
             ],
             [ 'name'    => 'html2text/html2text',
                 'check'   => 'Html2Text\\Html2Text'
+            ],
+            [
+                'name'    => 'symfony/css-selector',
+                'check'   => 'Symfony\\Component\\CssSelector\\CssSelectorConverter'
             ],
             [ 'name'    => 'symfony/dom-crawler',
                 'check'   => 'Symfony\\Component\\DomCrawler\\Crawler'
@@ -3587,7 +3611,19 @@ HTML;
             ]
         );
         echo '</td>';
-        echo '<td colspan="2"></td>';
+        echo '<td>';
+        echo '<label for="password_init_token_delay' . $rand . '">';
+        echo __('Validity period of the password initialization token');
+        echo '</label>';
+        echo '</td>';
+        echo '<td>';
+        Dropdown::showTimeStamp('password_init_token_delay', ['value' => $CFG_GLPI["password_init_token_delay"],
+            'min'   => DAY_TIMESTAMP,
+            'max'   => MONTH_TIMESTAMP,
+            'step'  => DAY_TIMESTAMP,
+            'rand'  => $rand
+        ]);
+        echo '</td>';
         echo '</tr>';
 
         echo '<tr class="tab_bg_2">';
@@ -3770,6 +3806,11 @@ HTML;
         if ($safer) {
             $excludedKeys = array_flip(self::$saferUndisclosedFields);
             $safe_config = array_diff_key($safe_config, $excludedKeys);
+        }
+
+        // override with session values
+        foreach ($safe_config as $key => &$value) {
+            $value = $_SESSION['glpi' . $key] ?? $value;
         }
 
         return $safe_config;

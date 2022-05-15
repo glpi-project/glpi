@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -166,6 +168,10 @@ class Ajax
             }
         }
         $url .= (strstr($url, '?') ? '&' :  '?') . '_in_modal=1';
+
+        if (isset($options['extradata'])) {
+            $url .= (strstr($url, '?') ? '&' :  '?') . Toolbox::append_params($options['extradata'], '&');
+        }
 
         $rand = mt_rand();
 
@@ -359,17 +365,9 @@ JAVASCRIPT;
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
             var index = tablink.closest('.nav-item').index();
-            if ($(target).html() && !force_reload) {
-                return;
-            }
-            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute top-50 start-50\"></i>');
 
-            $.get(url, function(data) {
-               $(target).html(data);
-
-               $(target).closest('main').trigger('glpi.tab.loaded');
-
-               $.get(
+            const updateCurrentTab = () => {
+                $.get(
                   '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
                   {
                      itemtype: '" . addslashes($type) . "',
@@ -377,6 +375,19 @@ JAVASCRIPT;
                      tab: index,
                   }
                );
+            }
+            if ($(target).html() && !force_reload) {
+                updateCurrentTab();
+                return;
+            }
+            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50\"></i>');
+
+            $.get(url, function(data) {
+               $(target).html(data);
+
+               $(target).closest('main').trigger('glpi.tab.loaded');
+
+               updateCurrentTab();
             });
          };
 

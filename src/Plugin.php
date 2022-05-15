@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -727,7 +729,7 @@ class Plugin extends CommonDBTM
                 'state'   => self::NOTINSTALLED,
             ]);
             $this->unload($this->fields['directory']);
-            self::doHook('post_plugin_uninstall', $this->fields['directory']);
+            self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
 
             $type = INFO;
             $message = sprintf(__('Plugin %1$s has been uninstalled!'), $this->fields['name']);
@@ -797,7 +799,7 @@ class Plugin extends CommonDBTM
                         ]);
                         $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
                     }
-                    self::doHook('post_plugin_install', $this->fields['directory']);
+                    self::doHook(Hooks::POST_PLUGIN_UNINSTALL, $this->fields['directory']);
                 }
             } else {
                 $type = WARNING;
@@ -890,7 +892,7 @@ class Plugin extends CommonDBTM
                 if (isset($_SESSION['glpimenu'])) {
                     unset($_SESSION['glpimenu']);
                 }
-                self::doHook('post_plugin_enable', $this->fields['directory']);
+                self::doHook(Hooks::POST_PLUGIN_ENABLE, $this->fields['directory']);
 
                 Session::addMessageAfterRedirect(
                     sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']),
@@ -936,7 +938,7 @@ class Plugin extends CommonDBTM
                 'state' => self::NOTACTIVATED
             ]);
             $this->unload($this->fields['directory']);
-            self::doHook('post_plugin_disable', $this->fields['directory']);
+            self::doHook(Hooks::POST_PLUGIN_DISABLE, $this->fields['directory']);
 
            // reset menu
             if (isset($_SESSION['glpimenu'])) {
@@ -982,7 +984,7 @@ class Plugin extends CommonDBTM
 
         $dirs = array_keys(self::$activated_plugins);
         foreach ($dirs as $dir) {
-            self::doHook('post_plugin_disable', $dir);
+            self::doHook(Hooks::POST_PLUGIN_DISABLE, $dir);
         }
 
         self::$activated_plugins = [];
@@ -1008,7 +1010,7 @@ class Plugin extends CommonDBTM
             CronTask::Unregister($this->fields['directory']);
 
             $this->unload($this->fields['directory']);
-            self::doHook('post_plugin_clean', $this->fields['directory']);
+            self::doHook(Hooks::POST_PLUGIN_CLEAN, $this->fields['directory']);
             $this->delete(['id' => $ID]);
         }
     }

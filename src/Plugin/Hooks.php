@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -52,8 +54,12 @@ class Hooks
     const POST_INIT                   = 'post_init';
 
    // Specific function hooks with parameters
-    const RULE_MATCHED        = 'rule_matched';
-    const VCARD_DATA          = 'vcard_data';
+    const RULE_MATCHED          = 'rule_matched';
+    const VCARD_DATA            = 'vcard_data';
+    const POST_PLUGIN_DISABLE   = 'post_plugin_disable';
+    const POST_PLUGIN_CLEAN     = 'post_plugin_clean';
+    const POST_PLUGIN_UNINSTALL = 'post_plugin_uninstall';
+    const POST_PLUGIN_ENABLE    = 'post_plugin_enable' ;
 
    // Function hooks with parameters and output
     const DISPLAY_LOCKED_FIELDS         = 'display_locked_fields';

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -103,7 +105,7 @@ class Socket extends CommonDBChild
 
         global $CFG_GLPI;
 
-       //if form is called from an item, retrive itemtype and items
+        //if form is called from an item, retrieve itemtype and items
         if (isset($options['_add_fromitem'])) {
             $itemtype = $options['_add_fromitem']["_from_itemtype"];
             $items_id = $options['_add_fromitem']["_from_items_id"];
@@ -147,7 +149,8 @@ class Socket extends CommonDBChild
             'display_emptychoice' => true,
             'condition'           => ['items_id' => $items_id,
                 'itemtype' => $itemtype
-            ]
+            ],
+            'comments' => false
         ]);
         echo "</span>";
 
@@ -698,8 +701,9 @@ class Socket extends CommonDBChild
         ]);
         $numrows = count($iterator);
 
+        $massive_action_form_id = 'mass' . str_replace('\\', '', static::class) . $rand;
         if ($canedit) {
-            Html::openMassiveActionsForm('mass' . get_called_class() . $rand);
+            Html::openMassiveActionsForm($massive_action_form_id);
             $massiveactionparams
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $numrows),
@@ -720,8 +724,8 @@ class Socket extends CommonDBChild
 
         if ($canedit) {
             $header_begin  .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox('mass' . get_called_class() . $rand);
-            $header_bottom .= Html::getCheckAllAsCheckbox('mass' . get_called_class() . $rand);
+            $header_top    .= Html::getCheckAllAsCheckbox($massive_action_form_id);
+            $header_bottom .= Html::getCheckAllAsCheckbox($massive_action_form_id);
             $header_end    .= "</th>";
         }
         $header_end .= "<th>" . __('Name') . "</th>";
@@ -910,14 +914,15 @@ class Socket extends CommonDBChild
                 $number
             );
 
+            $rand = mt_rand();
+            $massive_action_form_id = 'mass' . str_replace('\\', '', __CLASS__) . $rand;
             if ($canedit) {
-                $rand = mt_rand();
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                Html::openMassiveActionsForm($massive_action_form_id);
                 $massiveactionparams
                 = ['num_displayed'
                            => min($_SESSION['glpilist_limit'], $number),
                     'container'
-                           => 'mass' . __CLASS__ . $rand,
+                           => $massive_action_form_id,
                     'specific_actions'
                            => ['purge' => _x('button', 'Delete permanently')]
                 ];
@@ -928,7 +933,7 @@ class Socket extends CommonDBChild
 
             if ($canedit) {
                 echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                echo Html::getCheckAllAsCheckbox($massive_action_form_id);
                 echo "</th>";
             }
 

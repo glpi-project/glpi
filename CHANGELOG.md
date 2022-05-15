@@ -6,8 +6,10 @@ The present file will list all changes made to the project; according to the
 ## [10.1.0] unreleased
 
 ### Added
+- Configurable toast notification location
 
 ### Changed
+- Logs are now shown using the Search Engine
 
 ### Deprecated
 
@@ -20,10 +22,41 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `Glpi\Event::showList()`
+- `Html::displayAjaxMessageAfterRedirect()`
+- `Toolbox::seems_utf8()`
 
 #### Removed
 
-## [10.0.0] unreleased
+## [10.0.1] unreleased
+
+### Added
+
+### Changed
+- PDF export library has been changed back from `mPDF` to `TCPDF`.
+
+### Deprecated
+
+### Removed
+- Gantt feature has been moved into the `gantt` plugin.
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+- `GlpiGantt` javascript helper and `dhtmlx-gantt` library.
+- `Glpi\Gantt` namespace and all corresponding classes.
+- `Project::getDataToDisplayOnGantt()`
+- `Project::showGantt()`
+- `ProjectTask::getDataToDisplayOnGantt()`
+- `ProjectTask::getDataToDisplayOnGanttForProject()`
+
+## [10.0.0] 2022-04-20
 
 ### Added
 - Added UUID to all other itemtypes that are related to Operating Systems (Phones, Printers, etc)
@@ -97,6 +130,7 @@ The present file will list all changes made to the project; according to the
 - `MailCollector::listEncodings()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
+- `SLM::setTicketCalendar()`
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::endsWith()`
 - `Toolbox::filesizeDirectory()`

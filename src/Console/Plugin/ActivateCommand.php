@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -39,6 +41,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ActivateCommand extends AbstractPluginCommand
 {
+    /**
+     * Error code returned when a plugin activation failed.
+     *
+     * @var integer
+     */
+    const ERROR_PLUGIN_ACTIVATION_FAILED = 1;
+
     protected function configure()
     {
         parent::configure();
@@ -55,6 +64,8 @@ class ActivateCommand extends AbstractPluginCommand
 
         $directories   = $input->getArgument('directory');
 
+        $failed = false;
+
         foreach ($directories as $directory) {
             $output->writeln(
                 '<info>' . sprintf(__('Processing plugin "%s"...'), $directory) . '</info>',
@@ -65,7 +76,8 @@ class ActivateCommand extends AbstractPluginCommand
             $plugin->checkPluginState($directory); // Be sure that plugin information are up to date in DB
 
             if (!$this->canRunActivateMethod($directory)) {
-                 continue;
+                $failed = true;
+                continue;
             }
 
             if (!$plugin->getFromDBByCrit(['directory' => $directory])) {
@@ -73,6 +85,7 @@ class ActivateCommand extends AbstractPluginCommand
                     '<error>' . sprintf(__('Unable to load plugin "%s" information.'), $directory) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
+                $failed = true;
                 continue;
             }
 
@@ -82,6 +95,7 @@ class ActivateCommand extends AbstractPluginCommand
                     OutputInterface::VERBOSITY_QUIET
                 );
                 $this->outputSessionBufferedMessages([WARNING, ERROR]);
+                $failed = true;
                 continue;
             }
 
@@ -89,6 +103,10 @@ class ActivateCommand extends AbstractPluginCommand
                 '<info>' . sprintf(__('Plugin "%1$s" has been activated.'), $directory) . '</info>',
                 OutputInterface::VERBOSITY_NORMAL
             );
+        }
+
+        if ($failed) {
+            return self::ERROR_PLUGIN_ACTIVATION_FAILED;
         }
 
         return 0; // Success

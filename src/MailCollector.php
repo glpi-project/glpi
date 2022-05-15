@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -310,6 +312,26 @@ class MailCollector extends CommonDBTM
         echo "<tr class='tab_bg_1'><td>" . __('Collect only unread mail') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("collect_only_unread", $this->fields["collect_only_unread"]);
+        echo "</td></tr>\n";
+
+        echo "<tr class='tab_bg_1'><td>" . __('Automatically create user from email') . "</td>";
+        echo "<td>";
+        Dropdown::showYesNo("create_user_from_email", $this->fields["create_user_from_email"]);
+        if (!$CFG_GLPI["is_users_auto_add"]) {
+            Html::showToolTip(
+                sprintf(
+                    __('If you use this option, and this collector is likely to receive requests from users authenticating via LDAP, we advise you to activate the general configuration option "%s", in order to avoid the generation of duplicate users.'),
+                    sprintf(
+                        '<a href="%s">%s</a>',
+                        $CFG_GLPI['root_doc'] . '/front/auth.settings.php',
+                        __('Automatically add users from an external authentication source')
+                    )
+                ),
+                [
+                    'link' => $CFG_GLPI['root_doc'] . '/front/auth.settings.php',
+                ]
+            );
+        }
         echo "</td></tr>\n";
 
         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
@@ -983,6 +1005,8 @@ class MailCollector extends CommonDBTM
         $tkt['_uid']         = $uid;
         $tkt['_head']        = $headers;
 
+        $createuserfromemail = $this->fields['create_user_from_email'];
+
        // Use mail date if it's defined
         if ($this->fields['use_mail_date'] && isset($headers['date'])) {
             $tkt['date'] = $headers['date'];
@@ -1023,7 +1047,7 @@ class MailCollector extends CommonDBTM
        //  Who is the user ?
         $requester = $this->getRequesterEmail($message);
 
-        $tkt['_users_id_requester']                              = User::getOrImportByEmail($requester);
+        $tkt['_users_id_requester']                              = User::getOrImportByEmail($requester, $createuserfromemail);
         $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
        // Set alternative email if user not found / used if anonymous mail creation is enable
         if (!$tkt['_users_id_requester']) {
@@ -1089,17 +1113,10 @@ class MailCollector extends CommonDBTM
             $subject = '';
         }
         $tkt['name'] = $this->cleanSubject($subject);
-        if (!Toolbox::seems_utf8($tkt['name'])) {
-            $tkt['name'] = Toolbox::encodeInUtf8($tkt['name']);
-        }
 
         $tkt['_message']  = $message;
 
-        if (!Toolbox::seems_utf8($body)) {
-            $tkt['content'] = Toolbox::encodeInUtf8($body);
-        } else {
-            $tkt['content'] = $body;
-        }
+        $tkt['content'] = $body;
 
        // Search for referenced item in headers
         $found_item = $this->getItemFromHeaders($message);

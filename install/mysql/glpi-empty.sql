@@ -1,12 +1,13 @@
 --
 -- ---------------------------------------------------------------------
+--
 -- GLPI - Gestionnaire Libre de Parc Informatique
--- Copyright (C) 2015-2022 Teclib' and contributors.
 --
 -- http://glpi-project.org
 --
--- based on GLPI - Gestionnaire Libre de Parc Informatique
--- Copyright (C) 2003-2014 by the INDEPNET Development Team.
+-- @copyright 2015-2022 Teclib' and contributors.
+-- @copyright 2003-2014 by the INDEPNET Development Team.
+-- @licence   https://www.gnu.org/licenses/gpl-3.0.html
 --
 -- ---------------------------------------------------------------------
 --
@@ -14,18 +15,19 @@
 --
 -- This file is part of GLPI.
 --
--- GLPI is free software; you can redistribute it and/or modify
+-- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
--- the Free Software Foundation; either version 2 of the License, or
+-- the Free Software Foundation, either version 3 of the License, or
 -- (at your option) any later version.
 --
--- GLPI is distributed in the hope that it will be useful,
+-- This program is distributed in the hope that it will be useful,
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+-- along with this program.  If not, see <https://www.gnu.org/licenses/>.
+--
 -- ---------------------------------------------------------------------
 --
 
@@ -4146,6 +4148,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `requester_field` int NOT NULL DEFAULT '0',
   `add_cc_to_observer` tinyint NOT NULL DEFAULT '0',
   `collect_only_unread` tinyint NOT NULL DEFAULT '0',
+  `create_user_from_email` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
@@ -4316,6 +4319,8 @@ CREATE TABLE `glpi_cables` (
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `is_template` tinyint NOT NULL DEFAULT '0',
+  `template_name` varchar(255) DEFAULT NULL,
   `itemtype_endpoint_a` varchar(255) DEFAULT NULL,
   `itemtype_endpoint_b` varchar(255) DEFAULT NULL,
   `items_id_endpoint_a` int unsigned NOT NULL DEFAULT '0',
@@ -4347,6 +4352,7 @@ CREATE TABLE `glpi_cables` (
   KEY `states_id` (`states_id`),
   KEY `complete` (`entities_id`,`name`),
   KEY `is_recursive` (`is_recursive`),
+  KEY `is_template` (`is_template`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `cabletypes_id` (`cabletypes_id`),
   KEY `date_mod` (`date_mod`),
@@ -6464,6 +6470,7 @@ CREATE TABLE `glpi_slms` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
+  `use_ticket_calendar` tinyint NOT NULL DEFAULT '0',
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
@@ -6487,6 +6494,7 @@ CREATE TABLE `glpi_slas` (
   `type` int NOT NULL DEFAULT '0',
   `comment` text,
   `number_time` int NOT NULL,
+  `use_ticket_calendar` tinyint NOT NULL DEFAULT '0',
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `definition_time` varchar(255) DEFAULT NULL,
@@ -6514,6 +6522,7 @@ CREATE TABLE `glpi_olas` (
   `type` int NOT NULL DEFAULT '0',
   `comment` text,
   `number_time` int NOT NULL,
+  `use_ticket_calendar` tinyint NOT NULL DEFAULT '0',
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `definition_time` varchar(255) DEFAULT NULL,
@@ -7615,6 +7624,7 @@ CREATE TABLE `glpi_users` (
   `default_dashboard_mini_ticket` varchar(100) DEFAULT NULL,
   `default_central_tab` tinyint DEFAULT '0',
   `nickname` varchar(255) DEFAULT NULL,
+  `toast_location` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),
@@ -8783,10 +8793,12 @@ CREATE TABLE `glpi_lockedfields` (
   `value` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `is_global` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`field`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `is_global` (`is_global`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_unmanageds`;
@@ -9205,6 +9217,17 @@ CREATE TABLE `glpi_items_ticketrecurrents` (
    UNIQUE KEY `unicity` (`itemtype`,`items_id`,`ticketrecurrents_id`),
    KEY `items_id` (`items_id`),
    KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_items_lines`;
+CREATE TABLE `glpi_items_lines` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+   `lines_id` int unsigned NOT NULL DEFAULT '0',
+   `itemtype` varchar(100) DEFAULT NULL,
+   `items_id` int unsigned NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`lines_id`,`itemtype`,`items_id`),
+   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

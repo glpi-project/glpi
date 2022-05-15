@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -37,6 +39,7 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\Sanitizer;
 use ScssPhp\ScssPhp\Compiler;
 
@@ -615,14 +618,21 @@ class Html
     /**
      * Display a div containing messages set in session in the previous page
      **/
-    public static function displayMessageAfterRedirect()
+    public static function displayMessageAfterRedirect(bool $display_container = true)
     {
-        TemplateRenderer::getInstance()->display('components/messages_after_redirect_toasts.html.twig');
+        TemplateRenderer::getInstance()->display('components/messages_after_redirect_toasts.html.twig', [
+            'display_container' => $display_container
+        ]);
     }
 
 
+    /**
+     * @deprecated since version 10.1.0
+     */
     public static function displayAjaxMessageAfterRedirect()
     {
+        Toolbox::deprecated("The js function is already provided by js/misc.js");
+
         global $CFG_GLPI;
 
         echo Html::scriptBlock("
@@ -1246,11 +1256,6 @@ HTML;
                 Html::requireJs('reservations');
             }
 
-            if (in_array('gantt', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/dhtmlx-gantt.css'];
-                Html::requireJs('gantt');
-            }
-
             if (in_array('kanban', $jslibs)) {
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Kanban/Kanban.js'];
                 Html::requireJs('kanban');
@@ -1665,6 +1670,17 @@ HTML;
                     $link = "";
                     if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
                         $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+
+                        // Ensure menu entries have all a starting `/`
+                        if (!str_starts_with($link, '/')) {
+                            $link = '/' . $link;
+                        }
+
+                        // Prefix with plugin path if plugin path is missing
+                        $plugin_dir = Plugin::getWebDir($plugin, false);
+                        if (!str_starts_with($link, '/' . $plugin_dir)) {
+                            $link = '/' . $plugin_dir . $link;
+                        }
                     }
                     $infos['page'] = $link;
                     $infos['title'] = $infos['name'];
@@ -3786,7 +3802,7 @@ JS;
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror'))
          . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css'));
 
-        $cache_suffix = '?v=' . GLPI_VERSION;
+        $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
 
         $invalid_elements = 'applet,canvas,embed,form,object';
@@ -3804,10 +3820,8 @@ JS;
             'fullscreen',
             'link',
             'lists',
-            'paste',
             'quickbars',
             'searchreplace',
-            'tabfocus',
             'table',
         ];
         if ($enable_images) {
@@ -3855,20 +3869,19 @@ JS;
                // inline toolbar configuration
                menubar: false,
                toolbar: richtext_layout == 'classic'
-                  ? 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
+                  ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
                   : false,
                quickbars_insert_toolbar: richtext_layout == 'inline'
                   ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
                   : false,
                quickbars_selection_toolbar: richtext_layout == 'inline'
-                  ? 'bold italic | styleselect | forecolor backcolor '
+                  ? 'bold italic | styles | forecolor backcolor '
                   : false,
-               contextmenu: 'emoticons table image link | undo redo | code fullscreen',
+               contextmenu: 'copy paste | emoticons table image link | undo redo | code fullscreen',
 
                // Content settings
                entity_encoding: 'raw',
                invalid_elements: '{$invalid_elements}',
-               paste_data_images: true,
                readonly: {$readonlyjs},
                relative_urls: false,
                remove_script_host: false,
@@ -5355,7 +5368,7 @@ HTML;
         $url = self::getPrefixedUrl($url);
 
         if ($version) {
-            $url .= '?v=' . $version;
+            $url .= '?v=' . FrontEnd::getVersionCacheKey($version);
         }
 
         return sprintf('<script type="%s" src="%s"></script>', $type, $url);
@@ -5438,7 +5451,7 @@ HTML;
             unset($options['version']);
         }
 
-        $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . $version;
+        $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
 
         return sprintf(
             '<link rel="stylesheet" type="text/css" href="%s" %s>',
@@ -5512,7 +5525,10 @@ HTML;
             if ($p['showtitle']) {
                 $display .= "<b>";
                 $display .= sprintf(__('%1$s (%2$s)'), __('File(s)'), Document::getMaxUploadSize());
-                $display .= DocumentType::showAvailableTypesLink(['display' => false]);
+                $display .= DocumentType::showAvailableTypesLink([
+                    'display' => false,
+                    'rand'    => $p['rand']
+                ]);
                 if ($p['required']) {
                     $display .= '<span class="required">*</span>';
                 }
@@ -6225,10 +6241,6 @@ HTML;
                     }
                 }
                 break;
-            case 'gantt':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/dhtmlx-gantt.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/gantt-helper.js';
-                break;
             case 'kanban':
                 break;
             case 'rateit':
@@ -6358,9 +6370,6 @@ HTML;
             echo Html::scriptBlock($js);
         }
 
-       // add Ajax display message after redirect
-        Html::displayAjaxMessageAfterRedirect();
-
        // Add specific javascript for plugins
         if (isset($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]) && count($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT])) {
             foreach ($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT] as $plugin => $files) {
@@ -6438,7 +6447,6 @@ HTML;
             $debug = (isset($_SESSION['glpi_use_mode'])
                    && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
             $cfg_glpi = "var CFG_GLPI  = " . json_encode(Config::getSafeConfig(true), $debug ? JSON_PRETTY_PRINT : 0) . ";";
-            $cfg_glpi .= "CFG_GLPI['gantt_date_format'] = " . json_encode(Toolbox::getDateFormat('gantt')) . ";";
         }
 
         $plugins_path = [];

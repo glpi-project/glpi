@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,18 +15,19 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
@@ -93,53 +95,93 @@
          (constant('Rack::ROOM_O_WEST')): __('West'),
       },
       __('Door orientation in room'),
-      {
+      field_options|merge({
          'rand': rand
-      }
+      })
    ) }}
 
-   {{ fields.numberField('number_units', item.fields['number_units'], __('Number of units'), {
-      'rand': rand,
-      'min': 1,
-      'max': 100,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'number_units',
+       item.fields['number_units'],
+       __('Number of units'),
+       field_options|merge({
+          'rand': rand,
+          'min': 1,
+          'max': 100,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('width', item.fields['width'], __('Width'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'width',
+       item.fields['width'],
+       __('Width'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('height', item.fields['height'], __('Height'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'height',
+       item.fields['height'],
+       __('Height'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('depth', item.fields['depth'], __('Depth'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'depth',
+       item.fields['depth'],
+       __('Depth'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('max_power', item.fields['max_power'], __('Max. power (in watts)'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'max_power',
+       item.fields['max_power'],
+       __('Max. power (in watts)'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('mesured_power', item.fields['mesured_power'], __('Measured power (in watts)'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'mesured_power',
+       item.fields['mesured_power'],
+       __('Measured power (in watts)'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.numberField('max_weight', item.fields['max_weight'], __('Max. weight'), {
-      'rand': rand,
-      'min': 0,
-      'step': 1,
-   }) }}
+   {{ fields.numberField(
+       'max_weight',
+       item.fields['max_weight'],
+       __('Max. weight'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
 
-   {{ fields.colorField('bgcolor', item.fields['bgcolor'], __('Background color')) }}
+   {{ fields.colorField(
+       'bgcolor',
+       item.fields['bgcolor'],
+       __('Background color'),
+       field_options
+    ) }}
 {% endblock %}

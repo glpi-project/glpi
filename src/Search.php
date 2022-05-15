@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -1830,9 +1832,7 @@ class Search
             );
         }
        // End Line for column headers
-        if (!empty($headers_line)) {
-            $headers_line .= self::showEndLine($data['display_type']);
-        }
+        $headers_line .= self::showEndLine($data['display_type'], true);
 
         $headers_line_top    .= $headers_line;
         $headers_line_top    .= self::showEndHeader($data['display_type']);
@@ -3516,6 +3516,9 @@ JAVASCRIPT;
 
         foreach ($sort_fields as $sort_field) {
             $ID = $sort_field['searchopt_id'];
+            if (isset($searchopt[$ID]['nosort']) && $searchopt[$ID]['nosort']) {
+                continue;
+            }
             $order = $sort_field['order'] ?? 'ASC';
            // Order security check
             if ($order != 'ASC') {
@@ -3651,6 +3654,9 @@ JAVASCRIPT;
             $orderby_criteria[] = $criterion ?? "`ITEM_{$itemtype}_{$ID}` $order";
         }
 
+        if (count($orderby_criteria) === 0) {
+            return '';
+        }
         return ' ORDER BY ' . implode(', ', $orderby_criteria) . ' ';
     }
 
@@ -6313,12 +6319,16 @@ JAVASCRIPT;
                         return sprintf(__('%1$s %2$s'), $usernameformat, $toadd);
                     }
 
-                    return TemplateRenderer::getInstance()->render('components/user/picture.html.twig', [
-                        'users_id'      => $data['id'],
-                        'display_login' => true,
-                        'force_login'   => true,
-                        'avatar_size'   => "avatar-sm",
-                    ]);
+                    $current_users_id = $data[$ID][0]['id'] ?? 0;
+                    if ($current_users_id > 0) {
+                        return TemplateRenderer::getInstance()->render('components/user/picture.html.twig', [
+                            'users_id'      => $current_users_id,
+                            'display_login' => true,
+                            'force_login'   => true,
+                            'avatar_size'   => "avatar-sm",
+                        ]);
+                    }
+                    break;
 
                 case "glpi_profiles.name":
                     if (
@@ -7054,7 +7064,7 @@ JAVASCRIPT;
                             $count_display++;
 
 
-                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, true);
+                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, self::$output_type == self::HTML_OUTPUT);
 
                             if (self::$output_type == self::HTML_OUTPUT && (Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                                 $rand = mt_rand();
@@ -7312,7 +7322,10 @@ HTML;
                         if (isset($data[$ID][$k]['trans']) && !empty($data[$ID][$k]['trans'])) {
                             $out .= $data[$ID][$k]['trans'];
                         } else {
-                            $out .= $data[$ID][$k]['name'];
+                            $value = $data[$ID][$k]['name'];
+                            $out .= $value !== null && $so['field'] === 'completename'
+                                ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
+                                : $value;
                         }
                     }
                 }
@@ -8090,7 +8103,7 @@ HTML;
                 global $PDF_TABLE;
                 $PDF_TABLE .= "<th $options>";
                 $PDF_TABLE .= htmlspecialchars($value);
-                $PDF_TABLE .= "</th>\n";
+                $PDF_TABLE .= "</th>";
                 break;
 
             case self::SYLK_OUTPUT: //sylk
@@ -8142,6 +8155,11 @@ HTML;
     {
 
         $out = "";
+        // Handle null values
+        if ($value === null) {
+            $value = '';
+        }
+
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
@@ -8152,7 +8170,7 @@ HTML;
                 $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                 $PDF_TABLE .= "<td $extraparam valign='top'>";
                 $PDF_TABLE .= $value;
-                $PDF_TABLE .= "</td>\n";
+                $PDF_TABLE .= "</td>";
 
                 break;
 
@@ -8300,21 +8318,16 @@ HTML;
 
                 $pdf = new GLPIPDF(
                     [
-                        'default_font_size'  => $fontsize,
-                        'default_font'       => $font,
+                        'font_size'  => $fontsize,
+                        'font'       => $font,
                         'orientation'        => $type == self::PDF_OUTPUT_LANDSCAPE ? 'L' : 'P',
-                    ]
+                    ],
+                    $count,
+                    $title,
                 );
-                if ($count !== null) {
-                     $pdf->setTotalCount($count);
-                }
-                $pdf->SetTitle($title);
 
-                $pdf->SetFont($font, '', $fontsize);
-
-                $pdf->AddPage();
                 $PDF_TABLE .= '</table>';
-                $pdf->writeHTML($PDF_TABLE);
+                $pdf->writeHTML($PDF_TABLE, true, false, true);
                 $pdf->Output('glpi.pdf', 'I');
                 break;
 
@@ -8516,7 +8529,7 @@ HTML;
                 if ($odd) {
                     $style = " style=\"background-color:#DDDDDD;\" ";
                 }
-                $PDF_TABLE .= "<tr $style>";
+                $PDF_TABLE .= "<tr $style nobr=\"true\">";
                 break;
 
             case self::SYLK_OUTPUT: //sylk
@@ -8542,7 +8555,7 @@ HTML;
      *
      * @return string HTML to display
      **/
-    public static function showEndLine($type)
+    public static function showEndLine($type, bool $is_header_line = false)
     {
 
         $out = "";
@@ -8558,7 +8571,11 @@ HTML;
 
             case self::CSV_OUTPUT: //csv
             case self::NAMES_OUTPUT:
-                $out = "\n";
+                // NAMES_OUTPUT has no output on header lines
+                $newline = $type != self::NAMES_OUTPUT || !$is_header_line;
+                if ($newline) {
+                    $out = "\n";
+                }
                 break;
 
             default:
@@ -8698,8 +8715,10 @@ HTML;
      **/
     public static function makeTextSearchValue($val)
     {
-       // Unclean to permit < and > search
-        $val = Sanitizer::unsanitize($val);
+        // `$val` will mostly comes from sanitized input, but may also be raw value.
+        // 1. Unsanitize value to be sure to use raw value.
+        // 2. Escape raw value to protect SQL special chars.
+        $val = Sanitizer::dbEscape(Sanitizer::unsanitize($val));
 
        // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\\_', $val);

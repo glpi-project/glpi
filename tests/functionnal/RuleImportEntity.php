@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -136,6 +138,13 @@ class RuleImportEntity extends DbTestCase
             'value'       => '#1'
         ];
         $this->integer($ruleaction->add($input))->isGreaterThan(0);
+        $input = [
+            'rules_id'    => $rule2_id,
+            'action_type' => 'assign',
+            'field'       => 'is_recursive',
+            'value'       => 1
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
 
         $input = [
             'name' => 'computer01 - entC'
@@ -146,8 +155,9 @@ class RuleImportEntity extends DbTestCase
         $ent = $ruleEntity->processAllRules($input, []);
 
         $expected = [
-            'entities_id' => $entities_id_c,
-            '_ruleid'     => $rule2_id
+            'entities_id'  => $entities_id_c,
+            'is_recursive' => 1,
+            '_ruleid'      => $rule2_id
         ];
         $this->array($ent)->isEqualTo($expected);
 
@@ -215,6 +225,92 @@ class RuleImportEntity extends DbTestCase
         $expected = [
             '_ignore_import' => 1,
             '_ruleid'     => $rules_id
+        ];
+        $this->array($ent)->isEqualTo($expected);
+    }
+
+    /**
+     * We want to test optional actions provided by ruleentity, like:
+     * - location
+     * - groups_id_tech
+     * - users_id_tech
+     */
+    public function testAdditionalActions()
+    {
+        $this->login();
+
+        $location = new \Location();
+        $location_id = $location->add([
+            'name' => 'Location 1'
+        ]);
+        $this->integer($location_id)->isGreaterThan(0);
+
+        $group = new \Group();
+        $group_id = $group->add([
+            'name' => 'Group tech 1'
+        ]);
+        $this->integer($group_id)->isGreaterThan(0);
+
+        $user = new \User();
+        $user_id = $user->add([
+            'name' => 'User tech 1'
+        ]);
+        $this->integer($user_id)->isGreaterThan(0);
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'entity rule additional actions',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportEntity',
+            'ranking'   => 1
+        ];
+        $rule_id = $rule->add($input);
+        $this->integer($rule_id)->isGreaterThan(0);
+
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rule_id,
+            'criteria'  => "name",
+            'pattern'   => "/(.*)/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->integer($rulecriteria->add($input))->isGreaterThan(0);
+
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rule_id,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => $location_id
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+        $input = [
+            'rules_id'    => $rule_id,
+            'action_type' => 'assign',
+            'field'       => 'groups_id_tech',
+            'value'       => $group_id
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+        $input = [
+            'rules_id'    => $rule_id,
+            'action_type' => 'assign',
+            'field'       => 'users_id_tech',
+            'value'       => $user_id
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+
+        $ruleEntity = new \RuleImportEntityCollection();
+        $ruleEntity->getCollectionPart();
+        $ent = $ruleEntity->processAllRules([
+            'name' => 'computer01'
+        ], []);
+
+        $expected = [
+            'locations_id'   => $location_id,
+            'groups_id_tech' => $group_id,
+            'users_id_tech'  => $user_id,
+            '_ruleid'        => $rule_id,
         ];
         $this->array($ent)->isEqualTo($expected);
     }

@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,20 +15,23 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
+
+{% set anonymous = session('glpiactiveprofile') is null %}
 
 {% set is_vertical = user_pref('page_layout') == 'vertical' %}
 
@@ -49,27 +53,34 @@
                <span class="glpi-logo"></span>
             </a>
 
-            <span class="d-none d-lg-inline-block">
-                {{ include('layout/parts/goto_button.html.twig') }}
-            </span>
+            {% if not anonymous %}
+               <span class="d-none d-lg-inline-block">
+                   {{ include('layout/parts/goto_button.html.twig') }}
+               </span>
+            {% endif %}
 
-            <div class="d-lg-none">
-               {{ include('layout/parts/user_header.html.twig') }}
-            </div>
+            {% if user is not null %}
+               {# There may still be a user logged in without a profile or entity. This is seen when they need to reset their password. #}
+               <div class="d-lg-none">
+                  {{ include('layout/parts/user_header.html.twig') }}
+               </div>
+            {% endif %}
 
-            <div class="collapse navbar-collapse" id="navbar-menu">
-                <span class="d-inline-block d-lg-none ms-2">
-                    {{ include('layout/parts/goto_button.html.twig') }}
-                </span>
-                {{ include('layout/parts/menu.html.twig') }}
+            {% if not anonymous %}
+               <div class="collapse navbar-collapse" id="navbar-menu">
+                   <span class="d-inline-block d-lg-none ms-2">
+                       {{ include('layout/parts/goto_button.html.twig') }}
+                   </span>
+                   {{ include('layout/parts/menu.html.twig') }}
 
 
-               <p class="text-start">
-                  <button class="btn btn-sm btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
-                     <span class="menu-label">{{ __('Collapse menu') }}</span>
-                  </button>
-               </p>
-            </div>
+                  <p class="text-start">
+                     <button class="btn btn-sm btn-ghost-secondary mb-2 reduce-menu d-none d-md-block">
+                        <span class="menu-label">{{ __('Collapse menu') }}</span>
+                     </button>
+                  </p>
+               </div>
+            {% endif %}
          </div>
       </aside>
       {% endif %}

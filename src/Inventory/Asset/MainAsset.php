@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -40,6 +43,7 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use RefusedEquipment;
 use RuleImportAssetCollection;
+use RuleImportEntity;
 use RuleImportEntityCollection;
 use RuleMatchedLog;
 use Toolbox;
@@ -510,6 +514,19 @@ abstract class MainAsset extends InventoryAsset
                     $input['entities_id'] = $dataEntity['entities_id'];
                 }
                 $this->entities_id = $input['entities_id'];
+
+                // get data from rules (like locations_id, states_id, groups_id_tech, etc)
+                // we don't want virtual action (prefixed by _)
+                $ruleentity_actions = $ruleEntity->getRuleClass()->getAllActions();
+                foreach ($ruleentity_actions as $action_key => $action_data) {
+                    if (
+                        $action_key[0] !== '_'
+                        && $action_key !== "entities_id"
+                        && isset($dataEntity[$action_key])
+                    ) {
+                        $this->ruleentity_data[$action_key] = $dataEntity[$action_key];
+                    }
+                }
             }
 
             //call rules on current collected data to find item
@@ -591,9 +608,12 @@ abstract class MainAsset extends InventoryAsset
         $entities_id = $this->entities_id;
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
+        $val->states_id = $this->states_id_default ?? 0;
 
-        $val->states_id = $this->states_id_default ?? $this->item->fields['states_id'] ?? 0;
-        $val->locations_id = $this->locations_id ?? $val->locations_id ?? $this->item->fields['locations_id'] ?? 0;
+        // append data from RuleImportEntity
+        foreach ($this->ruleentity_data as $attribute => $value) {
+            $val->{$attribute} = $value;
+        }
 
         $orig_glpiactive_entity = $_SESSION['glpiactive_entity'] ?? null;
         $orig_glpiactiveentities = $_SESSION['glpiactiveentities'] ?? null;

@@ -1,12 +1,13 @@
 /*!
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -40,13 +42,13 @@
 }
 
 .search_page {
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(lg) {
         display: flex;
         align-items: stretch;
     }
 
     .search-container {
-        @include media-breakpoint-up(sm) {
+        @include media-breakpoint-up(lg) {
             overflow: auto;
             height: calc(100vh - #{$contextbar-height} - #{$content-margin});
             padding: 0;
@@ -54,7 +56,7 @@
             width: 100%;
 
             .dashboard-card {
-                @include media-breakpoint-up(sm) {
+                @include media-breakpoint-up(lg) {
                     position: sticky;
                     left: 0;
                 }
@@ -66,7 +68,7 @@
         }
 
         .search-form-container {
-            @include media-breakpoint-up(sm) {
+            @include media-breakpoint-up(lg) {
                 position: sticky;
                 left: 0;
             }
@@ -88,9 +90,9 @@
         }
 
         .search-card {
-            @include media-breakpoint-up(sm) {
+            @include media-breakpoint-up(lg) {
                 min-width: 100%;
-                width: min-content;
+                width: fit-content;
 
                 .search-header {
                     border-bottom: 0;
@@ -98,11 +100,16 @@
                     top: -1px;
                     background-color: inherit;
                     z-index: #{$zindex-sticky + 1};
+
+                    .search-controls {
+                        position: sticky;
+                        left: 22px;
+                    }
                 }
             }
 
-            .table-responsive-md {
-                @include media-breakpoint-down(md) {
+            .table-responsive-lg {
+                @include media-breakpoint-down(lg) {
                     max-width: calc(100vw - 2rem);
                 }
             }
@@ -111,16 +118,18 @@
                 border-collapse: separate;
                 border-spacing: 0;
 
-                @include media-breakpoint-up(sm) {
+                @include media-breakpoint-up(lg) {
                     thead:first-child {
                         th {
                             z-index: $zindex-sticky;
                             position: sticky;
-                            top: 49px;
+                            top: 59px;
                             border: 1px solid $card-border-color;
                             border-left: 0;
                             border-right: 0;
                             background-color: $table_header_bg;
+                            min-width: max-content;
+                            vertical-align: top;
                         }
                     }
                 }
@@ -142,16 +151,22 @@
                 position: sticky;
                 bottom: 0;
 
-                @include media-breakpoint-up(sm) {
+                @include media-breakpoint-up(lg) {
                     .search-pager {
+                        .search-limit {
+                            position: sticky;
+                            left: 22px;
+                        }
+
                         .page-infos {
                             position: sticky;
-                            left: 10px;
+                            left: 250px;
+                            right: 270px;
                         }
 
                         .pagination {
                             position: sticky;
-                            right: 10px;
+                            right: 22px;
                         }
                     }
                 }
@@ -180,11 +195,17 @@
 }
 
 body.horizontal-layout {
-    .search_page {
+    .search_page:not(.search_page_global) {
         .search-container {
-            @include media-breakpoint-up(sm) {
+            @include media-breakpoint-up(lg) {
                 height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
             }
+        }
+    }
+
+    .search_page_global {
+        @include media-breakpoint-up(lg) {
+            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
         }
     }
 }
@@ -206,7 +227,11 @@ td.priority_block {
 }
 
 table.search-results {
-    thead th[data-searchopt-id]:not([data-searchopt-id=""]) {
+    thead th[data-searchopt-id][data-nosort] {
+        vertical-align: bottom !important;// Fix alignment for when no sorting indicator element is present
+    }
+
+    thead th[data-searchopt-id]:not([data-searchopt-id=""]):not([data-nosort]) {
         cursor: pointer;
 
         .sort-indicator {

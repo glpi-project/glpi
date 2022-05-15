@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -778,59 +780,59 @@ class Ticket extends DbTestCase
 
         $backtrace = debug_backtrace(0, 1);
         $caller = "File: {$backtrace[0]['file']} Function: {$backtrace[0]['function']}:{$backtrace[0]['line']}";
-       // Opening date, editable
+        // Opening date, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=date]:not([disabled])"));
         $this->array($matches)->hasSize(($openDate === true ? 1 : 0), "RW Opening date $caller");
 
-       // Time to own, editable
+        // Time to own, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
         $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Time to own editable $caller");
 
-       // Internal time to own, editable
+        // Internal time to own, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
         $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Internal time to own editable $caller");
 
-       // Time to resolve, editable
+        // Time to resolve, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
         $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Time to resolve $caller");
 
        // Internal time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
+         $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
         $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Internal time to resolve $caller");
 
-       //Type
+        //Type
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
         $this->array($matches)->hasSize(($type === true ? 1 : 0), "Type $caller");
 
-       //Status
+        //Status
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=status]:not([disabled])"));
         $this->array($matches)->hasSize(($status === true ? 1 : 0), "Status $caller");
 
-       //Urgency
+        //Urgency
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=urgency]:not([disabled])"));
         $this->array($matches)->hasSize(($urgency === true ? 1 : 0), "Urgency $caller");
 
-       //Impact
+        //Impact
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=impact]:not([disabled])"));
         $this->array($matches)->hasSize(($impact === true ? 1 : 0), "Impact $caller");
 
-       //Category
+        //Category
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=itilcategories_id]:not([disabled])"));
         $this->array($matches)->hasSize(($category === true ? 1 : 0), "Category $caller");
 
-       //Request source file_put_contents('/tmp/out.html', $output)
+        //Request source file_put_contents('/tmp/out.html', $output)
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=requesttypes_id]:not([disabled])"));
         $this->array($matches)->hasSize($requestSource === true ? 1 : 0, "Request source $caller");
 
-       //Location
+        //Location
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=locations_id]:not([disabled])"));
         $this->array($matches)->hasSize(($location === true ? 1 : 0), "Location $caller");
 
-       //Priority, editable
+        //Priority, editable
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=priority]:not([disabled])"));
         $this->array($matches)->hasSize(($priority === true ? 1 : 0), "RW priority $caller");
 
-       //Save button
+        //Save button
         $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
         $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present') . ' ' . $caller);
 
@@ -933,7 +935,7 @@ class Ticket extends DbTestCase
         $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
 
        //check output with default ACLs
-        $this->changeTechRight();
+        $this->changeTechRights(['ticket' => null]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -952,8 +954,8 @@ class Ticket extends DbTestCase
             $location = true
         );
 
-       //drop UPDATE ticket right from tech profile (still with OWN)
-        $this->changeTechRight(168965);
+//       //drop UPDATE ticket right from tech profile (still with OWN)
+        $this->changeTechRights(['ticket' => 168965]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -973,7 +975,7 @@ class Ticket extends DbTestCase
         );
 
        //drop UPDATE ticket right from tech profile (without OWN)
-        $this->changeTechRight(136197);
+        $this->changeTechRights(['ticket' => 136197]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -993,7 +995,7 @@ class Ticket extends DbTestCase
         );
 
        // only assign and priority right for tech (without UPDATE and OWN rights)
-        $this->changeTechRight(94209);
+        $this->changeTechRights(['ticket' => 94209]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1012,8 +1014,52 @@ class Ticket extends DbTestCase
             $location = false
         );
 
-       // no update rights, only display for tech
-        $this->changeTechRight(3077);
+        $this->changeTechRights([
+            'ticket'    => 168967,
+            'slm'       => 256,
+        ]);
+        $this->checkFormOutput(
+            $ticket,
+            $name = true,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+
+        $this->changeTechRights([
+            'ticket'    => 168967,
+            'slm'       => 255,
+        ]);
+        $this->checkFormOutput(
+            $ticket,
+            $name = true,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = true,
+            $timeOwnResolve = false,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+
+        // no update rights, only display for tech
+        $this->changeTechRights(['ticket' => 3077]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1064,35 +1110,64 @@ class Ticket extends DbTestCase
         );
     }
 
-    public function changeTechRight($rights = 168967)
+    public function changeTechRights(array $rights)
     {
         global $DB;
 
-       // set new rights
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => $rights],
-            [
-                'profiles_id'  => 6,
-                'name'         => 'ticket'
-            ]
-        );
+        $default_rights = [
+            'ticket'    => 168967,
+            'slm'       => 255,
+        ];
 
-       //ACLs have changed: login again.
-        $auth = new \Auth();
-        $this->boolean((bool) $auth->Login('tech', 'tech', true))->isTrue();
+        foreach ($rights as $name => $value) {
+            if (is_array($value) && isset($value['default'])) {
+                $default_rights[$name] = $value;
+            }
+            $default_value = $default_rights[$name] ?? null;
+            if ($default_value === null) {
+                throw new \Exception("Unknown right $name with no default value specified");
+            }
+            if ($value === null) {
+                $value = $default_value;
+            }
+            $this->dump("changeTechRight $name: $value");
 
-        if ($rights != 168967) {
-           //reset rights. Done here so ACLs are reset even if tests fails.
+            // set new rights
             $DB->update(
                 'glpi_profilerights',
-                ['rights' => 168967],
+                ['rights' => $value],
                 [
                     'profiles_id'  => 6,
-                    'name'         => 'ticket'
+                    'name'         => $name
                 ]
             );
+
+            //ACLs have changed: login again.
+            $auth = new \Auth();
+            $this->boolean((bool) $auth->Login('tech', 'tech', true))->isTrue();
+
+            if ($rights != $default_value) {
+                //reset rights. Done here so ACLs are reset even if tests fails.
+                $DB->update(
+                    'glpi_profilerights',
+                    ['rights' => $default_value],
+                    [
+                        'profiles_id'  => 6,
+                        'name'         => $name
+                    ]
+                );
+            }
         }
+    }
+
+    /**
+     * @param $rights
+     * @return void
+     * @deprecated 10.1.0 - Use changeTechRights() instead
+     */
+    public function changeTechRight($rights = 168967)
+    {
+        $this->changeTechRights(['ticket' => $rights]);
     }
 
     public function testPriorityAcl()
@@ -1195,6 +1270,7 @@ class Ticket extends DbTestCase
 
         $this->boolean((bool)$ticket->canAssign())->isFalse();
         $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->changeTechRights(['ticket' => 168967]);
        //check output with default ACLs
         $this->checkFormOutput(
             $ticket,
@@ -4455,5 +4531,56 @@ HTML
         $this->array($assignees)
             ->integer[1]
             ->string['text']->isEqualTo("_test_group_1");
+    }
+
+
+    public function testNeedReopen()
+    {
+        $this->login();
+
+        $tech_id     = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'                => 'testNeedReopen',
+            'content'             => 'testNeedReopen',
+            '_users_id_requester' => $postonly_id,
+            '_users_id_assign'    => $tech_id,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+        $ticket->update([
+            'id' => $tickets_id,
+            'status' => \Ticket::WAITING,
+        ]);
+
+        // tech user cant reopen
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::WAITING);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+        // requester can reopen
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::WAITING);
+        $this->boolean((bool)$ticket->needReopen())->isTrue();
+
+        // force a reopen
+        $followup = new \ITILFollowup();
+        $followup->add([
+            'itemtype'   => 'Ticket',
+            'items_id'   => $tickets_id,
+            'content'    => 'testNeedReopen',
+            'add_reopen' => 1,
+        ]);
+
+        // requester cant reopen anymore (ticket is already in an open state)
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
     }
 }

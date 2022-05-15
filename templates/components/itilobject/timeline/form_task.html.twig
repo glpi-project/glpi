@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,18 +15,19 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
@@ -286,7 +288,8 @@
                         'min': 0,
                         'max': 8 * constant('HOUR_TIMESTAMP'),
                         'addfirstminutes': true,
-                        'inhours': true
+                        'inhours': true,
+                        'toadd': range(9, 100)|map(i => i * constant('HOUR_TIMESTAMP')),
                      }) }}
 
                      {# User #}
@@ -408,21 +411,48 @@
                   itemtype: '{{ item.getType() }}'
                }
             }).done(function (data) {
-               var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
-                  ? 0
-                  : parseInt(data.requesttypes_id);
+                if (data.content !== undefined) {
+                    // set textarea content
+                    if (tasktinymce = tinymce.get("content_{{ rand }}")) {
+                        tasktinymce.setContent(data.content);
+                    }
+                }
 
-               // set textarea content
-               if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                  tasktinymce.setContent(data.content);
+                if (data.taskcategories_id !== undefined) {
+                    // set category
+                    const taskcategories_id = isNaN(parseInt(data.taskcategories_id))
+                        ? 0
+                        : parseInt(data.taskcategories_id);
+                    $("#dropdown_taskcategories_id{{ rand }}").trigger("setValue", taskcategories_id);
+                }
+
+                if (data.is_private !== undefined) {
+                    // set is_private
+                    $("#is_private_{{ rand }}")
+                        .prop("checked", data.is_private == "0"
+                            ? false
+                            : true);
+                }
+
+                if (data.state !== undefined) {
+                    // Set state
+                    $("#dropdown_state{{ rand }}").trigger('setValue', data.state);
+                }
+
+                if (data.actiontime !== undefined) {
+                    // Set duration
+                    $("#dropdown_actiontime{{ rand }}").trigger('setValue', data.actiontime);
+                }
+
+                if (data.users_id_tech !== undefined) {
+                    // Set user
+                    $("#dropdown_users_id_tech{{ rand }}").trigger('setValue', data.users_id_tech);
+                }
+
+               if (data.groups_id_tech !== undefined) {
+                   // Set group
+                   $("#dropdown_groups_id_tech{{ rand }}").trigger('setValue', data.groups_id_tech);
                }
-               // set category
-               $("#dropdown_requesttypes_id{{ rand }}").trigger("setValue", requesttypes_id);
-               // set is_private
-               $("#is_private_{{ rand }}")
-                  .prop("checked", data.is_private == "0"
-                     ? false
-                     : true);
             });
          }
       </script>

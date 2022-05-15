@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -472,7 +474,7 @@ class CommonDBTM extends CommonGLPI
      * Use a twig template to detect automatically fields and display them in a two column layout
      *
      * @param int   $ID        ID of the item
-     * @param array $options   possible optionnal options:
+     * @param array $options   possible optional options:
      *     - target for the Form
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
@@ -490,7 +492,28 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Actions done to not show some fields when geting a single item from API calls
+     * Retrieve locked field for the current item
+     *
+     * @return array
+     */
+    public function getLockedFields()
+    {
+        $locks = [];
+        $lockedfield = new Lockedfield();
+        if (
+            !$this instanceof Lockedfield
+            && !$this->isNewItem()
+            && $lockedfield->isHandled($this)
+        ) {
+            $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);
+        }
+
+        return $locks;
+    }
+
+
+    /**
+     * Actions done to not show some fields when getting a single item from API calls
      *
      * @param array $fields Fields to unset undiscloseds
      *
@@ -1074,6 +1097,12 @@ class CommonDBTM extends CommonGLPI
         if (in_array($this->getType(), $CFG_GLPI['domain_types'])) {
             $this->deleteChildrenAndRelationsFromDb([
                 Domain_Item::class
+            ]);
+        }
+
+        if (in_array($this->getType(), $CFG_GLPI['line_types'])) {
+            $this->deleteChildrenAndRelationsFromDb([
+                Item_Line::class
             ]);
         }
 
@@ -2685,6 +2714,7 @@ class CommonDBTM extends CommonGLPI
             'formoptions'    => '',
             'canedit'        => true,
             'formtitle'      => null,
+            'no_header'      => false,
             'noid'           => false,
             'header_toolbar' => [],
         ];
@@ -2710,6 +2740,7 @@ class CommonDBTM extends CommonGLPI
         TemplateRenderer::getInstance()->display('components/form/header.html.twig', [
             'item'           => $this,
             'params'         => $params,
+            'no_header'      => $params['no_header'],
             'header_toolbar' => $header_toolbar,
         ]);
 
@@ -5951,7 +5982,7 @@ class CommonDBTM extends CommonGLPI
         foreach ($urls as $url) {
             if (!empty($url)) {
                 $resolved_url = \Toolbox::getPictureUrl($url);
-                $src_file = GLPI_DOC_DIR . '/_pictures/' . '/' . $url;
+                $src_file = GLPI_PICTURE_DIR . '/' . $url;
                 if (file_exists($src_file)) {
                     $size = getimagesize($src_file);
                     $pictures[] = [
@@ -6368,5 +6399,27 @@ class CommonDBTM extends CommonGLPI
             $menus[2] ?? '',
             false
         );
+    }
+
+    /**
+     * Delete alerts of given types related to current item.
+     *
+     * @param array $types
+     *
+     * @return void
+     *
+     * @since 10.0.0
+     */
+    final public function cleanAlerts(array $types): void
+    {
+        if (in_array('date_expiration', $this->updates)) {
+            $input = [
+                'type'     => $types,
+                'itemtype' => $this->getType(),
+                'items_id' => $this->fields['id'],
+            ];
+            $alert = new Alert();
+            $alert->deleteByCriteria($input, 1);
+        }
     }
 }

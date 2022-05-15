@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -95,15 +97,25 @@ class Update
         $DB = $this->DB;
 
         if (!$DB->tableExists('glpi_config') && !$DB->tableExists('glpi_configs')) {
-           //very, very old version!
-            $currents = [
-                'version'   => '0.1',
-                'dbversion' => '0.1',
-                'language'  => 'en_GB'
-            ];
+            if ($DB->listTables()->count() > 0) {
+                // < 0.31
+                // Version was not yet stored in DB
+                $currents = [
+                    'version'   => '0.1',
+                    'dbversion' => '0.1',
+                    'language'  => 'en_GB',
+                ];
+            } else {
+                // Not a GLPI database
+                $currents = [
+                    'version'   => null,
+                    'dbversion' => null,
+                    'language'  => 'en_GB',
+                ];
+            }
         } else if (!$DB->tableExists("glpi_configs")) {
-           // < 0.78
-           // Get current version
+            // >= 0.31 and < 0.78
+            // Get current version
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
                 'FROM'   => 'glpi_config'
@@ -113,8 +125,8 @@ class Update
             $currents['dbversion']  = $currents['version'];
             $currents['language']   = trim($result['language']);
         } else if ($DB->fieldExists('glpi_configs', 'version')) {
-           // < 0.85
-           // Get current version and language
+            // < 0.85
+            // Get current version and language
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
                 'FROM'   => 'glpi_configs'
@@ -124,14 +136,15 @@ class Update
             $currents['dbversion']  = $currents['version'];
             $currents['language']   = trim($result['language']);
         } else {
-            $currents = Config::getConfigurationValues(
+            // >= 0.85
+            $values = Config::getConfigurationValues(
                 'core',
                 ['version', 'dbversion', 'language']
             );
 
-            if (!isset($currents['dbversion'])) {
-                $currents['dbversion'] = $currents['version'];
-            }
+            $currents['version']   = $values['version'] ?? null;
+            $currents['dbversion'] = $values['dbversion'] ?? $currents['version']; // `dbversion` was not existing prior to 9.2.0
+            $currents['language']  = $values['language'] ?? 'en_GB';
         }
 
         $this->version    = $currents['version'];
@@ -233,24 +246,26 @@ class Update
             $this->migration->displayError($message);
         }
         /*
-         * FIXME: Remove `$DB->use_utf8mb4` condition in GLPI 10.1.
-         * This condition is here only to prevent having this message on every migration GLPI 10.0.
+         * FIXME: Remove `$DB->use_utf8mb4` and `$exclude_plugins = true` conditions in GLPI 10.1.
+         * These conditions are here only to prevent having this message on every migration to GLPI 10.0.x.
          * Indeed, as migration command was not available in previous versions, users may not understand
          * why this is considered as an error.
+         * Also, some plugins may not have yet handle the switch to utf8mb4.
          */
-        if ($DB->use_utf8mb4 && ($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+        if ($DB->use_utf8mb4 && ($non_utf8mb4_count = $DB->getNonUtf8mb4Tables(true)->count()) > 0) {
             $message = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
             $this->migration->displayError($message);
         }
         /*
-         * FIXME: Remove `!$DB->allow_signed_keys` condition in GLPI 10.1.
-         * This condition is here only to prevent having this message on every migration GLPI 10.0.
+         * FIXME: Remove `!$DB->allow_signed_keys` and `$exclude_plugins = true` conditions in GLPI 10.1.
+         * These conditions are here only to prevent having this message on every migration to GLPI 10.0.x.
          * Indeed, as migration command was not available in previous versions, users may not understand
          * why this is considered as an error.
+         * Also, some plugins may not have yet handle the switch to unsigned keys.
          */
-        if (!$DB->allow_signed_keys && ($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
+        if (!$DB->allow_signed_keys && ($signed_keys_col_count = $DB->getSignedKeysColumns(true)->count()) > 0) {
             $message = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:unsigned_keys');

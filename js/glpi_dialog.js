@@ -1,12 +1,13 @@
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -333,7 +335,13 @@ const glpi_toast = (title, message, css_class, options = {}) => {
     }, options);
 
     const animation_classes = options.animated ? `animate_animated ${options.animation} ${options.animation_extra_classes}` : '';
-    const html = `<div class='toast-container bottom-0 end-0 p-3 messages_after_redirect'>
+    let location = CFG_GLPI.toast_location || 'bottom-right';
+    const valid_locations = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+    // If location is not valid, change it to bottom-right
+    if (!valid_locations.includes(location)) {
+        location = 'bottom-right';
+    }
+    const html = `<div class='toast-container ${location} p-3 messages_after_redirect'>
       <div id='toast_js_${toast_id}' class='toast ${css_class} ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
          <div class='toast-header'>
             <strong class='me-auto'>${title}</strong>

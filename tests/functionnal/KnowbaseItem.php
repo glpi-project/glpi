@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -393,5 +395,72 @@ class KnowbaseItem extends DbTestCase
         $this->string($answer)->contains('<a href="#title-1b">');
         $this->string($answer)->contains('<h1 id="title-1c">');
         $this->string($answer)->contains('<a href="#title-1c">');
+    }
+
+    public function testCreateWithCategories()
+    {
+        global $DB;
+
+        // Create 2 new KB categories
+        $kb_category = new \KnowbaseItemCategory();
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $kb_cat_id1 = $kb_category->add([
+            'name' => __FUNCTION__ . '_1',
+            'comment' => __FUNCTION__ . '_1',
+            'entities_id' => $root_entity,
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+        $this->integer($kb_cat_id1)->isGreaterThan(0);
+
+        $kb_cat_id2 = $kb_category->add([
+            'name' => __FUNCTION__ . '_2',
+            'comment' => __FUNCTION__ . '_2',
+            'entities_id' => $root_entity,
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+        $this->integer($kb_cat_id2)->isGreaterThan(0);
+
+        $kbitem = new \KnowbaseItem();
+        // Create a new KB item with the first category
+        $kbitems_id1 = $kbitem->add([
+            'name' => __FUNCTION__ . '_1',
+            'answer' => __FUNCTION__ . '_1',
+            'knowbaseitemcategories_id' => $kb_cat_id1,
+        ]);
+        $this->integer($kbitems_id1)->isGreaterThan(0);
+
+        // Expect the KB item to have the first category
+        $iterator = $DB->request([
+            'FROM' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+            'WHERE' => [
+                'knowbaseitems_id' => $kbitems_id1,
+            ],
+        ]);
+        $this->integer($iterator->count())->isEqualTo(1);
+        $this->integer($iterator->current()['knowbaseitemcategories_id'])->isEqualTo($kb_cat_id1);
+
+        // Create a new KB item with both categories
+        $kbitems_id2 = $kbitem->add([
+            'name' => __FUNCTION__ . '_2',
+            'answer' => __FUNCTION__ . '_2',
+            'knowbaseitemcategories_id' => [$kb_cat_id1, $kb_cat_id2],
+        ]);
+        $this->integer($kbitems_id2)->isGreaterThan(0);
+
+        // Expect the KB item to have both categories
+        $iterator = $DB->request([
+            'FROM' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+            'WHERE' => [
+                'knowbaseitems_id' => $kbitems_id2,
+            ],
+        ]);
+        $this->integer($iterator->count())->isEqualTo(2);
+        $category_ids = [];
+        foreach ($iterator as $row) {
+            $category_ids[] = $row['knowbaseitemcategories_id'];
+        }
+        $this->array($category_ids)->containsValues([$kb_cat_id1, $kb_cat_id2]);
     }
 }

@@ -1,12 +1,13 @@
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -36,6 +38,18 @@ require('../../../js/modules/Search/Table.js');
 describe('Search Table', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        // Mock reload function
+        delete window.location;
+        Object.defineProperty(window, 'location', {
+            value: {
+                href: '',
+                reload: jest.fn().mockImplementation(() => {})
+            },
+            writable: true,
+            configurable: true,
+        });
+        window_reload_spy = jest.spyOn(window.location, 'reload');
+        window.AjaxMock.start();
     });
     $(document.body).append(`
     <div class="search-container">
@@ -51,56 +65,58 @@ describe('Search Table', () => {
         </form>
         <div class="ajax-container search-display-data">
             <form id="massformComputer" data-search-itemtype="Computer">
-                <select class="search-limit-dropdown">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15" selected="selected">15</option>
-                    <option value="20">20</option>
-                </select>
-                <div class="table-responsive-md">
-                    <table id="search_9439839" class="search-results">
-                        <thead>
-                            <th data-searchopt-id="1" data-sort-order="ASC" data-sort-num="0"></th>
-                            <th data-searchopt-id="2" data-sort-order="nosort"></th>
-                            <th data-searchopt-id="3" data-sort-order="nosort"></th>
-                            <th data-searchopt-id="4" data-sort-order="nosort"></th>
-                        </thead>
-                    </table>
+                <div class="search-card">
+                    <select class="search-limit-dropdown">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15" selected="selected">15</option>
+                        <option value="20">20</option>
+                    </select>
+                    <div class="table-responsive-md">
+                        <table id="search_9439839" class="search-results">
+                            <thead>
+                                <th data-searchopt-id="1" data-sort-order="ASC" data-sort-num="0"></th>
+                                <th data-searchopt-id="2" data-sort-order="nosort"></th>
+                                <th data-searchopt-id="3" data-sort-order="nosort"></th>
+                                <th data-searchopt-id="4" data-sort-order="nosort"></th>
+                            </thead>
+                        </table>
+                    </div>
+                    <select class="search-limit-dropdown">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15" selected="selected">15</option>
+                        <option value="20">20</option>
+                    </select>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link page-link-start" href="#" data-start="0">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link page-link-prev" href="#" data-start="15">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link page-link-num" href="#" data-start="30">30</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link page-link-num" href="#" data-start="45">45</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link page-link-next" href="#" data-start="60">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link page-link-last" href="#" data-start="75">
+                            <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <select class="search-limit-dropdown">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15" selected="selected">15</option>
-                    <option value="20">20</option>
-                </select>
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link page-link-start" href="#" data-start="0">
-                            <i class="fas fa-angle-double-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link page-link-prev" href="#" data-start="15">
-                            <i class="fas fa-angle-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item active">
-                        <a class="page-link page-link-num" href="#" data-start="30">30</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link page-link-num" href="#" data-start="45">45</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link page-link-next" href="#" data-start="60">
-                            <i class="fas fa-angle-right"></i>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link page-link-last" href="#" data-start="75">
-                        <i class="fas fa-angle-double-right"></i>
-                        </a>
-                    </li>
-                </ul>
             </form>
         </div>
     </div>
@@ -121,11 +137,12 @@ describe('Search Table', () => {
         callback();
     });
 
-    const jquery_load = jest.spyOn($.fn, 'load');
+    let window_reload_spy = null;
     const table_showSpinner = jest.spyOn(real_table, 'showLoadingSpinner');
     const table_hideSpinner = jest.spyOn(real_table, 'hideLoadingSpinner');
     const table_onLimitChange = jest.spyOn(real_table, 'onLimitChange');
     const table_onSearch = jest.spyOn(real_table, 'onSearch');
+    const table_onPageChange = jest.spyOn(real_table, 'onPageChange');
 
     const table_el = real_table.getElement();
     const restore_initial_sort_state = () => {
@@ -217,48 +234,57 @@ describe('Search Table', () => {
         restore_initial_sort_state();
         verify_initial_sort_state();
     });
-    test('AJAX refresh on sort', () => {
+    test('AJAX refresh on sort', async () => {
         restore_initial_sort_state();
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {}, () => {
+            return $('div.ajax-container').html();
+        }));
+
         real_table.getElement().find('th').eq(0).click();
+        // Wait for mocked AJAX response to resolve
+        await new Promise(process.nextTick);
         expect(table_showSpinner).toHaveBeenCalledTimes(1);
-        expect(jquery_load).toHaveBeenCalledTimes(1);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
         expect(table_hideSpinner).toHaveBeenCalledTimes(1);
         restore_initial_sort_state();
     });
-    test('AJAX refresh on limit change', () => {
+    test('AJAX refresh on limit change', async () => {
+        const history_push_spy = jest.spyOn(window.history, 'pushState');
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {
+            glpilist_limit: '10',
+        }, () => {
+            return $('div.ajax-container').html();
+        }));
         real_table.getElement().closest('form').find('select.search-limit-dropdown').first().val(10).trigger('change');
+
+        // Wait for mocked AJAX response to resolve
+        await new Promise(process.nextTick);
         expect(table_showSpinner).toHaveBeenCalledTimes(1);
-        expect(jquery_load).toHaveBeenCalledTimes(1);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
         expect(table_hideSpinner).toHaveBeenCalledTimes(1);
         expect(table_onLimitChange).toHaveBeenCalledTimes(1);
-        const dropdowns = real_table.getElement().closest('form').find('.search-limit-dropdown');
-        expect(dropdowns.length).toBe(2);
-        dropdowns.each(function () {
-            expect($(this).val()).toBe("10");
-        });
+        expect(history_push_spy).toHaveBeenCalledTimes(1);
     });
-    test('AJAX refresh on search', () => {
+    test('AJAX refresh on search', async () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {
+            'criteria[0][link]': 'AND',
+            'criteria[0][field]': 'view',
+            'criteria[0][searchtype]': 'contains',
+            'criteria[0][value]': 'criteria_test',
+            'is_deleted': '0',
+            'as_map': '0',
+        }, () => {
+            return $('div.ajax-container').html();
+        }));
         real_table.getElement().closest('.search-container').find('form.search-form-container button[name="search"]').trigger('click');
+        // Wait for mocked AJAX response to resolve
+        await new Promise(process.nextTick);
         expect(table_showSpinner).toHaveBeenCalledTimes(1);
-        expect(jquery_load).toHaveBeenCalledTimes(1);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
         expect(table_hideSpinner).toHaveBeenCalledTimes(1);
         expect(table_onSearch).toHaveBeenCalledTimes(1);
-
-        const load_data = jquery_load.mock.calls[0][1];
-        expect( 'criteria[0][link]' in load_data).toBeTrue();
-        expect(load_data['criteria[0][link]']).toBe('AND');
-        expect( 'criteria[0][field]' in load_data).toBeTrue();
-        expect(load_data['criteria[0][field]']).toBe('view');
-        expect( 'criteria[0][searchtype]' in load_data).toBeTrue();
-        expect(load_data['criteria[0][searchtype]']).toBe('contains');
-        expect( 'criteria[0][value]' in load_data).toBeTrue();
-        expect(load_data['criteria[0][value]']).toBe('criteria_test');
-        expect(load_data).toHaveProperty('is_deleted');
-        expect(load_data['is_deleted']).toBe('0');
-        expect(load_data).toHaveProperty('as_map');
-        expect(load_data['as_map']).toBe('0');
     });
-    test('AJAX refresh on page change', () => {
+    test('AJAX refresh on page change', async () => {
         const pagination = real_table.getElement().closest('.search-container').find('.pagination');
         const pagination_items = pagination.find('li');
 
@@ -266,9 +292,6 @@ describe('Search Table', () => {
             for (let i = 0; i < pagination_items.length; i++) {
                 expect(pagination_items.eq(i).hasClass('selected')).toBe(i === index);
             }
-        };
-        const expectResultStart = (start) => {
-            expect(jquery_load.mock.calls[jquery_load.mock.calls.length - 1][1]['start']).toBe(start);
         };
 
         // This is more to test that no other test changes the active item
@@ -278,8 +301,9 @@ describe('Search Table', () => {
         for (let i = 0; i < click_order.length; i++) {
             const p = click_order[i];
             pagination_items.eq(p).find('.page-link').click();
+            // Wait for mocked AJAX response to resolve
+            expect(table_onPageChange).toHaveBeenCalledTimes(i + 1);
             expectOnlyActive(p);
-            expectResultStart(String(p * 15));
         }
     });
     test('Show and Hide loading spinner', () => {
@@ -298,13 +322,20 @@ describe('Search Table', () => {
         expect(overlay.length).toBe(1);
         expect(overlay.css('visibility')).toBe('visible');
     });
-    test('Hide loading spinner after refresh exception', () => {
+    test('Reload after refresh exception', async () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {}, () => {
+            return $('div.ajax-container').html();
+        }));
         const get_sort = jest.spyOn(real_table, 'getSortState');
         get_sort.mockImplementation(() => {
             throw 'Test exception';
         });
         real_table.refreshResults();
-        expect(table_hideSpinner).toHaveBeenCalledTimes(1);
-        expect(jquery_load).toHaveBeenCalledTimes(0);
+        // Wait for mocked AJAX response to resolve
+        await new Promise(process.nextTick);
+        expect(table_hideSpinner).toHaveBeenCalledTimes(0);
+        // We expect the refresh to fail before the AJAX call
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeFalse();
+        expect(window_reload_spy).toHaveBeenCalledTimes(1);
     });
 });

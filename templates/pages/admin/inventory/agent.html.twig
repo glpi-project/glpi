@@ -1,0 +1,145 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set field_options = field_options ?? {} %}
+
+{% block more_fields %}
+    {{ fields.dropdownYesNo(
+       'locked',
+       item.fields['locked'],
+       __('Locked'),
+       field_options
+    ) }}
+
+    {{ fields.textField(
+        'deviceid',
+        item.fields['deviceid'],
+        __('Device id'),
+        field_options
+    ) }}
+
+    {{ fields.numberField(
+        'port',
+        item.fields['port'],
+        _n('Port', 'Ports', 1),
+        field_options
+    ) }}
+
+    {{ fields.nullField() }}
+
+    {{ fields.dropdownArrayField(
+        'itemtype',
+        item.fields['itemtype'],
+        itemtypes,
+        __('Item type'),
+        field_options
+    ) }}
+
+    {% if not item.isNewItem() %}
+        {% set asset_item = get_item(item.fields['itemtype'], item.fields['items_id']) %}
+        {{ fields.htmlField(
+            'items_id',
+            asset_item.getLink(),
+            __('Item link'),
+            field_options
+        ) }}
+        <input type="hidden" name="items_id" value="{{ items.fields['items_id'] }}">
+
+        {% set versions %}
+            {% set versions_array = call("importArrayFromDB", [versions_field]) %}
+            {% if versions_array|length %}
+                <ul>
+                {% for module, version in versions_array %}
+                    <li><strong>{{ module }}</strong>: {{ version }}</li>
+                {% endfor %}
+                </ul>
+            {% elseif versions_field|length %}
+                {{ versions_field }}
+            {% endif %}
+        {% endset %}
+        {{ fields.htmlField(
+            'versions',
+            versions,
+            _n('Version', 'Versions', 1),
+            field_options
+        ) }}
+
+        {{ fields.readOnlyField(
+            'tag',
+            item.fields['tag'],
+            __('Tag'),
+            field_options
+        ) }}
+
+        {{ fields.readOnlyField(
+            'useragent',
+            item.fields['useragent'],
+            __('Useragent'),
+            field_options
+        ) }}
+
+        {{ fields.htmlField(
+            'last_contact',
+            call("Html::convDateTime", [item.fields['last_contact']]),
+            __('Last contact'),
+            field_options
+        ) }}
+
+        {% for netfield, netlabel in {
+            'threads_networkdiscovery': __('Network discovery threads'),
+            'timeout_networkdiscovery': __('Network discovery timeout'),
+            'threads_networkinventory': __('Network inventory threads'),
+            'timeout_networkinventory': __('Network inventory timeout'),
+        } %}
+            {% set general = __('General setup') %}
+            {% if config(netfield) != null %}
+                {% set general = "%1$s (%2$s)"|format(general, config(netfield)) %}
+            {% endif %}
+
+            {{ fields.dropdownNumberField(
+                netfield,
+                item.fields[netfield],
+                netlabel,
+                field_options|merge({
+                    'min': 1,
+                    'toadd': [
+                        general
+                    ]
+                })
+            ) }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

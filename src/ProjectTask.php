@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -1586,152 +1588,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
        // Add items
 
         return true;
-    }
-
-
-    /** Get data to display on GANTT for a project task
-     *
-     * @param $ID ID of the project task
-     */
-    public static function getDataToDisplayOnGantt($ID)
-    {
-        global $DB;
-
-        $todisplay = [];
-
-        $task = new self();
-       // echo $ID.'<br>';
-        if ($task->getFromDB($ID)) {
-            $subtasks = [];
-            foreach (
-                $DB->request(
-                    'glpi_projecttasks',
-                    ['projecttasks_id' => $ID,
-                        'ORDER'           => ['plan_start_date',
-                            'real_start_date'
-                        ]
-                    ]
-                ) as $data
-            ) {
-                $subtasks += static::getDataToDisplayOnGantt($data['id']);
-            }
-
-            $real_begin = null;
-            $real_end   = null;
-           // Use real if set
-            if (!is_null($task->fields['real_start_date'])) {
-                $real_begin = $task->fields['real_start_date'];
-            }
-
-           // Determine begin / end date of current task if not set (min/max sub projects / tasks)
-            if (is_null($real_begin)) {
-                if (!is_null($task->fields['plan_start_date'])) {
-                    $real_begin = $task->fields['plan_start_date'];
-                } else {
-                    foreach ($subtasks as $subtask) {
-                        if (
-                            is_null($real_begin)
-                            || (!is_null($subtask['from'])
-                            && ($real_begin > $subtask['from']))
-                        ) {
-                            $real_begin = $subtask['from'];
-                        }
-                    }
-                }
-            }
-
-           // Use real if set
-            if (!is_null($task->fields['real_end_date'])) {
-                $real_end = $task->fields['real_end_date'];
-            }
-            if (is_null($real_end)) {
-                if (!is_null($task->fields['plan_end_date'])) {
-                    $real_end = $task->fields['plan_end_date'];
-                } else {
-                    foreach ($subtasks as $subtask) {
-                        if (
-                            is_null($real_end)
-                            || (!is_null($subtask['to'])
-                            && ($real_end < $subtask['to']))
-                        ) {
-                            $real_end = $subtask['to'];
-                        }
-                    }
-                }
-            }
-
-            $parents = 0;
-            if ($task->fields['projecttasks_id'] > 0) {
-                $parents = count(getAncestorsOf("glpi_projecttasks", $ID));
-            }
-
-            if ($task->fields['is_milestone']) {
-                $percent = "";
-            } else {
-                $percent = isset($task->fields['percent_done']) ? $task->fields['percent_done'] : 0;
-            }
-
-           // use uuid as parent_id for DHTMLX Gantt tasks
-            $parent_id = $task->fields['projects_id']; // default
-            if ($task->fields['projecttasks_id'] > 0) {
-                $pt = new ProjectTask();
-                $pt->getFromDB($task->fields['projecttasks_id']);
-                $parent_id = $pt->fields['uuid'];       // uuid if parent task exist
-            }
-
-           // Add current task
-            $todisplay[$real_begin . '#' . $real_end . '#task' . $task->getID()]
-                           = ['id'      => $task->fields['uuid'],
-                               'parent_id' => $parent_id,
-                               'name'    => $task->fields['name'],
-                               'desc'    => RichText::getTextFromHtml($task->fields['content'], true, false),
-                               'link'    => $task->getlink(),
-                               'type'    => 'task',
-                               'percent' => $percent,
-                               'from'    => $real_begin,
-                               'parents' => $parents,
-                               'to'      => $real_end,
-                               'is_milestone' => $task->fields['is_milestone']
-                           ];
-
-           // Add ordered subtasks
-            foreach ($subtasks as $key => $val) {
-                $todisplay[$key] = $val;
-            }
-        }
-        return $todisplay;
-    }
-
-
-    /** Get data to display on GANTT for a project
-     *
-     * @param $ID ID of the project
-     */
-    public static function getDataToDisplayOnGanttForProject($ID)
-    {
-        global $DB;
-
-        $todisplay = [];
-
-        $task      = new self();
-       // Get all tasks without father
-        foreach (
-            $DB->request(
-                'glpi_projecttasks',
-                ['projects_id'     => $ID,
-                    'projecttasks_id' => 0,
-                    'ORDER'           => ['plan_start_date',
-                        'real_start_date'
-                    ]
-                ]
-            ) as $data
-        ) {
-            if ($task->getFromDB($data['id'])) {
-                $todisplay += static::getDataToDisplayOnGantt($data['id']);
-            }
-        }
-
-        return $todisplay;
     }
 
 

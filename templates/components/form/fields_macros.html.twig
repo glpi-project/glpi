@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,18 +15,19 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
@@ -355,7 +357,7 @@
 
 {% macro colorField(name, value, label = '', options = {}) %}
    {% set field %}
-      <input data-jscolor="" id="%id%"
+      <input id="%id%"
              class="form-control"
              name="{{ name }}" value="{{ value|verbatim_value }}"
          {{ options.readonly ? 'readonly' : '' }}
@@ -363,7 +365,11 @@
          {{ options.required ? 'required' : '' }} />
       <script>
       $(function() {
-         jscolor.install();
+        $("#%id%").spectrum({
+            showInput: true,
+            preferredFormat: "hex",
+            type: "text",
+        });
       });
       </script>
    {% endset %}
@@ -392,9 +398,20 @@
    {% set options = {
       'rand': random(),
       'name': name,
+      'simple': false,
    }|merge(options) %}
    {% set field %}
-      {% do call('Html::file', [options]) %}
+      {% if options.simple %}
+        <input type="file" id="%id%"
+               class="form-control"
+               name="{{ name }}"
+               {{ options.mulitple ? 'multiple' : '' }}
+               {{ options.readonly ? 'readonly' : '' }}
+               {{ options.disabled ? 'disabled' : '' }}
+               {{ options.required ? 'required' : '' }} />
+      {% else %}
+        {% do call('Html::file', [options]) %}
+      {% endif %}
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
@@ -672,7 +689,13 @@
       'is_horizontal': true,
       'include_field': true,
       'add_field_html': '',
+      'locked': false,
+      'locked_fields': [],
    }|merge(options) %}
+
+   {% if name in options.locked_fields %}
+      {% set options = options|merge({'locked': true}) %}
+   {% endif %}
 
    {% if not options.include_field %}
       {{ field }}
@@ -824,6 +847,10 @@
 
 
 {% macro label(label, id, options = {}, class = 'form-label') %}
+    {% set options = {
+        locked: false
+    }|merge(options) %}
+
    {% set required_mark = '' %}
    {% if options.fields_template.isMandatoryField(options.name) or options.required %}
       {% set required_mark = '<span class="required">*</span>' %}
@@ -839,8 +866,18 @@
       {% endset %}
    {% endif %}
 
+   {% set locked_mark = '' %}
+   {% if options.locked %}
+      {% set locked_mark %}
+        <i class="ti ti-lock"
+           title="{{ __('Field will not be updated from inventory') }}"
+           data-bs-toggle="tooltip"></i>
+      {% endset %}
+   {% endif %}
+
    <label class="{{ class }}" for="{{ id }}">
       {{ label|raw }}
+      {{ locked_mark|raw }}
       {{ required_mark|raw }}
       {{ helper|raw }}
    </label>

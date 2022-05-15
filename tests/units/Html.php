@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,6 +37,7 @@ namespace tests\units;
 
 use org\bovigo\vfs\vfsStream;
 use Psr\Log\LogLevel;
+use Glpi\Toolbox\FrontEnd;
 
 /* Test for inc/html.class.php */
 
@@ -387,8 +390,9 @@ class Html extends \GLPITestCase
             'other-min.css'
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
+        $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<link rel="stylesheet" type="text/css" href="' .
-         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . GLPI_VERSION . '" %attrs>';
+         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '" %attrs>';
         $base_attrs = 'media="all"';
 
        //create test files
@@ -465,8 +469,8 @@ class Html extends \GLPITestCase
        //expect minified file and specific version
         $fake_version = '0.0.1';
         $expected = str_replace(
-            ['%url', '%attrs', GLPI_VERSION],
-            ['file.min.css', $base_attrs, $fake_version],
+            ['%url', '%attrs', $version_key],
+            ['file.min.css', $base_attrs, FrontEnd::getVersionCacheKey($fake_version)],
             $base_expected
         );
         $this->string(\Html::css($dir . '/file.css', ['version' => $fake_version]))->isIdenticalTo($expected);
@@ -497,8 +501,9 @@ class Html extends \GLPITestCase
             'other-min.js'
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
+        $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<script type="text/javascript" src="' .
-         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . GLPI_VERSION . '"></script>';
+         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
 
        //create test files
         foreach ($fake_files as $fake_file) {
@@ -558,8 +563,8 @@ class Html extends \GLPITestCase
        //expect minified file and specific version
         $fake_version = '0.0.1';
         $expected = str_replace(
-            ['%url', GLPI_VERSION],
-            ['file.min.js', $fake_version],
+            ['%url', $version_key],
+            ['file.min.js', FrontEnd::getVersionCacheKey($fake_version)],
             $base_expected
         );
         $this->string(\Html::script($dir . '/file.js', ['version' => $fake_version]))->isIdenticalTo($expected);

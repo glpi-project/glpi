@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -1065,6 +1067,16 @@ class Ticket extends CommonITILObject
             }
         }
 
+        $can_assign_slm = Session::haveRight(SLM::$rightname, SLM::RIGHT_ASSIGN);
+        if (!$can_assign_slm) {
+            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                [$dateField, $slaField] = SLA::getFieldNames($slmType);
+                unset($input[$dateField], $input[$slaField]);
+                [$dateField, $olaField] = OLA::getFieldNames($slmType);
+                unset($input[$dateField], $input[$olaField]);
+            }
+        }
+
        //must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
         $input = $this->handleTemplateFields($input);
         if ($input === false) {
@@ -1594,9 +1606,6 @@ class Ticket extends CommonITILObject
 
         parent::post_updateItem($history);
 
-       //Action for send_validation rule : do validation before clean
-        $this->manageValidationAdd($this->input);
-
        // Put same status on duplicated tickets when solving or closing (autoclose on solve)
         if (
             isset($this->input['status'])
@@ -1806,6 +1815,16 @@ class Ticket extends CommonITILObject
             }
         }
 
+        $can_assign_slm = Session::haveRight(SLM::$rightname, SLM::RIGHT_ASSIGN);
+        if (!$can_assign_slm) {
+            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                [$dateField, $slaField] = SLA::getFieldNames($slmType);
+                unset($input[$dateField], $input[$slaField]);
+                [$dateField, $olaField] = OLA::getFieldNames($slmType);
+                unset($input[$dateField], $input[$olaField]);
+            }
+        }
+
        // Business Rules do not override manual SLA and OLA
         $manual_slas_id = [];
         $manual_olas_id = [];
@@ -1964,8 +1983,6 @@ class Ticket extends CommonITILObject
     public function post_addItem()
     {
         global $CFG_GLPI;
-
-        $this->manageValidationAdd($this->input);
 
        // Log this event
         $username = 'anonymous';
@@ -2158,205 +2175,6 @@ class Ticket extends CommonITILObject
                 )
             ));
         }
-    }
-
-
-    /**
-     * Manage Validation add from input
-     *
-     * @since 0.85
-     *
-     * @param $input array : input array
-     *
-     * @return boolean
-     **/
-    public function manageValidationAdd($input)
-    {
-
-       //Action for send_validation rule
-        if (isset($input["_add_validation"])) {
-            if (isset($input['entities_id'])) {
-                $entid = $input['entities_id'];
-            } else if (isset($this->fields['entities_id'])) {
-                $entid = $this->fields['entities_id'];
-            } else {
-                return false;
-            }
-
-            $validations_to_send = [];
-            if (!is_array($input["_add_validation"])) {
-                $input["_add_validation"] = [$input["_add_validation"]];
-            }
-
-            foreach ($input["_add_validation"] as $key => $validation) {
-                switch ($validation) {
-                    case 'requester_supervisor':
-                        if (
-                            isset($input['_groups_id_requester'])
-                            && $input['_groups_id_requester']
-                        ) {
-                            $users = Group_User::getGroupUsers(
-                                $input['_groups_id_requester'],
-                                ['is_manager' => 1]
-                            );
-                            foreach ($users as $data) {
-                                 $validations_to_send[] = $data['id'];
-                            }
-                        }
-                        // Add to already set groups
-                        foreach ($this->getGroups(CommonITILActor::REQUESTER) as $d) {
-                            $users = Group_User::getGroupUsers(
-                                $d['groups_id'],
-                                ['is_manager' => 1]
-                            );
-                            foreach ($users as $data) {
-                                $validations_to_send[] = $data['id'];
-                            }
-                        }
-                        break;
-
-                    case 'assign_supervisor':
-                        if (
-                            isset($input['_groups_id_assign'])
-                            && $input['_groups_id_assign']
-                        ) {
-                            $users = Group_User::getGroupUsers(
-                                $input['_groups_id_assign'],
-                                ['is_manager' => 1]
-                            );
-                            foreach ($users as $data) {
-                                $validations_to_send[] = $data['id'];
-                            }
-                        }
-                        foreach ($this->getGroups(CommonITILActor::ASSIGN) as $d) {
-                            $users = Group_User::getGroupUsers(
-                                $d['groups_id'],
-                                ['is_manager' => 1]
-                            );
-                            foreach ($users as $data) {
-                                 $validations_to_send[] = $data['id'];
-                            }
-                        }
-                        break;
-
-                    case 'requester_responsible':
-                        if (isset($input['_users_id_requester'])) {
-                            if (is_array($input['_users_id_requester'])) {
-                                foreach ($input['_users_id_requester'] as $users_id) {
-                                    $user = new User();
-                                    if ($user->getFromDB($users_id)) {
-                                          $validations_to_send[] = $user->getField('users_id_supervisor');
-                                    }
-                                }
-                            } else {
-                                $user = new User();
-                                if ($user->getFromDB($input['_users_id_requester'])) {
-                                     $validations_to_send[] = $user->getField('users_id_supervisor');
-                                }
-                            }
-                        }
-                        break;
-
-                    default:
-                       // Group case from rules
-                        if ($key === 'group') {
-                            foreach ($validation as $groups_id) {
-                                 $validation_right = 'validate_incident';
-                                if (
-                                    isset($input['type'])
-                                     && ($input['type'] == Ticket::DEMAND_TYPE)
-                                ) {
-                                    $validation_right = 'validate_request';
-                                }
-                                $opt = ['groups_id' => $groups_id,
-                                    'right'     => $validation_right,
-                                    'entity'    => $entid
-                                ];
-
-                                $data_users = TicketValidation::getGroupUserHaveRights($opt);
-
-                                foreach ($data_users as $user) {
-                                    $validations_to_send[] = $user['id'];
-                                }
-                            }
-                        } else {
-                            $validations_to_send[] = $validation;
-                        }
-                }
-            }
-
-           // Validation user added on ticket form
-            if (isset($input['users_id_validate'])) {
-                if (array_key_exists('groups_id', $input['users_id_validate'])) {
-                    foreach ($input['users_id_validate'] as $key => $validation_to_add) {
-                        if (is_numeric($key)) {
-                            $validations_to_send[] = $validation_to_add;
-                        }
-                    }
-                } else {
-                    foreach ($input['users_id_validate'] as $key => $validation_to_add) {
-                        if (is_numeric($key)) {
-                             $validations_to_send[] = $validation_to_add;
-                        }
-                    }
-                }
-            }
-
-           // Keep only one
-            $validations_to_send = array_unique($validations_to_send);
-
-            $validation          = new TicketValidation();
-
-            if (count($validations_to_send)) {
-                $values                = [];
-                $values['tickets_id']  = $this->fields['id'];
-                if (isset($input['id']) && $input['id'] != $this->fields['id']) {
-                    $values['_ticket_add'] = true;
-                }
-
-               // to know update by rules
-                if (isset($input["_rule_process"])) {
-                    $values['_rule_process'] = $input["_rule_process"];
-                }
-               // if auto_import, tranfert it for validation
-                if (isset($input['_auto_import'])) {
-                    $values['_auto_import'] = $input['_auto_import'];
-                }
-
-               // Cron or rule process of hability to do
-                if (
-                    Session::isCron()
-                    || isset($input["_auto_import"])
-                    || isset($input["_rule_process"])
-                    || $validation->can(-1, CREATE, $values)
-                ) { // cron or allowed user
-                    $add_done = false;
-                    foreach ($validations_to_send as $user) {
-                       // Do not auto add twice same validation
-                        if (!TicketValidation::alreadyExists($values['tickets_id'], $user)) {
-                             $values["users_id_validate"] = $user;
-                            if ($validation->add($values)) {
-                                $add_done = true;
-                            }
-                        }
-                    }
-                    if ($add_done) {
-                        Event::log(
-                            $this->fields['id'],
-                            "ticket",
-                            4,
-                            "tracking",
-                            sprintf(
-                                __('%1$s updates the item %2$s'),
-                                $_SESSION["glpiname"],
-                                $this->fields['id']
-                            )
-                        );
-                    }
-                }
-            }
-        }
-        return true;
     }
 
 
@@ -4334,6 +4152,7 @@ JAVASCRIPT;
             '_filename'                 => [],
             '_tag_filename'             => [],
             '_actors'                   => [],
+            '_contracts_id'             => 0,
         ];
     }
 
@@ -4479,9 +4298,10 @@ JAVASCRIPT;
             ) {
                 // If entity is not in the list of user's entities,
                 // then use as default value the first value of the user's entites list
-                $this->fields["entities_id"] = $userentities[0];
+                $first_entity = current($userentities);
+                $this->fields["entities_id"] = $first_entity;
                 // Pass to values
-                $options['entities_id']      = $userentities[0];
+                $options['entities_id']      = $first_entity;
             }
         }
 
@@ -4521,6 +4341,17 @@ JAVASCRIPT;
         $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
         $canassigntome = $this->canAssignToMe();
+        $cancreateuser = (bool) User::canCreate();
+
+        if ($cancreateuser) {
+            echo Ajax::createIframeModalWindow('add_' . $ID, User::getFormURL(), [
+                'display' => false,
+                'extradata' => [
+                    'entities_id' => $this->fields['entities_id'],
+                    'simplified_form' => 1,
+                ]
+            ]);
+        }
 
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
             $canupdate = false;
@@ -4557,6 +4388,7 @@ JAVASCRIPT;
             'canassigntome'      => $canassigntome,
             'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
             'userentities'       => $userentities,
+            'cancreateuser'      => $cancreateuser,
         ]);
 
         return true;
@@ -6262,8 +6094,7 @@ JAVASCRIPT;
         if (isset($this->fields['slas_id_ttr']) && $this->fields['slas_id_ttr'] > 0) {
             $sla = new SLA();
             if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
-                // not -1: calendar of the entity
-                if ($sla->getField('calendars_id') >= 0) {
+                if (!$sla->fields['use_ticket_calendar']) {
                     return $sla->getField('calendars_id');
                 }
             }
@@ -6311,17 +6142,17 @@ JAVASCRIPT;
     public function showStatsDates()
     {
         $now                      = time();
-        $date_creation            = strtotime($this->fields['date']);
+        $date_creation            = strtotime($this->fields['date'] ?? '');
         $date_takeintoaccount     = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         if ($date_takeintoaccount == $date_creation) {
             $date_takeintoaccount  = 0;
         }
-        $internal_time_to_own     = strtotime($this->fields['internal_time_to_own']);
-        $time_to_own              = strtotime($this->fields['time_to_own']);
-        $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve']);
-        $time_to_resolve          = strtotime($this->fields['time_to_resolve']);
-        $solvedate                = strtotime($this->fields['solvedate']);
-        $closedate                = strtotime($this->fields['closedate']);
+        $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
+        $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
+        $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');
+        $time_to_resolve          = strtotime($this->fields['time_to_resolve'] ?? '');
+        $solvedate                = strtotime($this->fields['solvedate'] ?? '');
+        $closedate                = strtotime($this->fields['closedate'] ?? '');
         $goal_takeintoaccount     = ($date_takeintoaccount > 0 ? $date_takeintoaccount : $now);
         $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);
 

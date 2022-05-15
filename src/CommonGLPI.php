@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -642,7 +644,7 @@ class CommonGLPI implements CommonGLPIInterface
             default:
                 $data     = explode('$', $tab);
                 $itemtype = $data[0];
-               // Default set
+                // Default set
                 $tabnum   = 1;
                 if (isset($data[1])) {
                     $tabnum = $data[1];
@@ -654,25 +656,6 @@ class CommonGLPI implements CommonGLPIInterface
                     Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                     $ret = $item->showForm($item->getID(), $options);
 
-                    $lockedfield = new Lockedfield();
-                    if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
-                        $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
-                        if (count($locks)) {
-                             $js_expr = '[name=' . implode('], [name=', $locks) . ']';
-                             $lockedtitle = __s('Field will not be updated from inventory');
-
-                             $locked_js = <<<JAVASCRIPT
-                        $(function() {
-                            $("{$js_expr}").closest("td").prev()
-                            .append("<i class=\"fas fa-lock\" title=\"{$lockedtitle}\"></i>")
-                            .toggleClass("lockedfield", true)
-                            .removeClass("lockfield") //to drop duplicated fusion icon
-                            ;
-                        });
-JAVASCRIPT;
-                             echo Html::scriptBlock($locked_js);
-                        }
-                    }
                     Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                     return $ret;
                 }
@@ -685,6 +668,7 @@ JAVASCRIPT;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
+
                     Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                     return $ret;
                 }
@@ -868,12 +852,12 @@ JAVASCRIPT;
             if ($this instanceof CommonITILObject && $this->isNewItem()) {
                 $this->input = $cleaned_options;
                 $this->saveInput();
-               // $extraparamhtml can be tool long in case of ticket with content
+               // $extraparamhtml can be too long in case of ticket with content
                // (passed in GET in ajax request)
                 unset($cleaned_options['content']);
             }
 
-           // prevent double sanitize, because the includes.php sanitize all data
+            // prevent double sanitize, because the includes.php sanitize all data
             $cleaned_options = Sanitizer::unsanitize($cleaned_options);
 
             $extraparamhtml = "&amp;" . Toolbox::append_params($cleaned_options, '&amp;');
@@ -898,7 +882,7 @@ JAVASCRIPT;
                 ];
             }
 
-           // Not all tab for templates and if only 1 tab
+            // Not all tab for templates and if only 1 tab
             if (
                 $display_all
                 && empty($withtemplate)

@@ -3,13 +3,12 @@
     "version": "",
     "private": true,
     "description": "GLPI dependencies",
-    "license": "GPL-2.0",
+    "license": "GPL-3.0-or-later",
     "engines": {
         "node": ">= 16.0",
         "npm": ">= 7.0"
     },
     "dependencies": {
-        "@eastdesire/jscolor": "^2.4.6",
         "@fontsource/inter": "^4.5.4",
         "@fortawesome/fontawesome-free": "^6.0.0",
         "@fullcalendar/bootstrap": "^4.4.0",
@@ -20,7 +19,7 @@
         "@fullcalendar/rrule": "^4.4.0",
         "@fullcalendar/timegrid": "^4.4.0",
         "@tabler/core": "^1.0.0-beta9",
-        "@tabler/icons": "^1.53.0",
+        "@tabler/icons": "^1.68.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.1.1",
         "chartist": "^0.11.4",
@@ -33,7 +32,6 @@
         "cytoscape-context-menus": "^4.0.0",
         "cytoscape-dagre": "^2.2.1",
         "cytoscape-grid-guide": "^2.3.0",
-        "dhtmlx-gantt": "^7.1.0",
         "diff-match-patch": "^1.0.4",
         "fittext.js": "^1.2.0",
         "flatpickr": "^4.6.3",
@@ -63,8 +61,9 @@
         "qtip2": "^3.0.3",
         "rrule": "^2.6.3",
         "select2": "^4.0.13",
+        "spectrum-colorpicker2": "^2.0.9",
         "spin.js": "^4.1.0",
-        "tinymce": "^5.7.0",
+        "tinymce": "^6.0.2",
         "tinymce-i18n": "^22.2.11"
     },
     "scripts": {
