@@ -6567,7 +6567,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $is_deleted = false;
                 $classname = "Item_" . static::class;
                 $item_ticket = new $classname();
-                $data = $item_ticket->find([strtolower(static::class) . 's_id' => $item->fields['id']]);
+                $data = $item_ticket->find([getForeignKeyFieldForItemType(static::class) => $item->fields['id']]);
                 if ($item->getType() == 'Ticket') {
                     if (!empty($data)) {
                         foreach ($data as $val) {

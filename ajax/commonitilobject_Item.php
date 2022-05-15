@@ -59,7 +59,7 @@ switch ($_GET['action']) {
             $deleted = true;
             if ($_GET['params']['id'] > 0) {
                 $deleted = $item_obj::deleteByCriteria([
-                    strtolower($item_obj::$itemtype_1) . 's_id' => $_GET['params']['id'],
+                    getForeignKeyFieldForItemType($itemtype_1) => $_GET['params']['id'],
                     'items_id'   => $_GET['items_id'],
                     'itemtype'   => $_GET['itemtype']
                 ]);

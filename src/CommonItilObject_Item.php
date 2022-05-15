@@ -244,6 +244,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $count = 0;
         $twig_params = [
             'rand'               => $rand,
+            'item_class'         => strtolower(static::class),
             'can_edit'           => $canedit,
             'my_items_dropdown'  => '',
             'all_items_dropdown' => '',
@@ -333,35 +334,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/add_items.html.twig', $twig_params);
-    }
-
-    /**
-     * Generate JavaScript Code to load the list of itmes
-     *
-     * @param $rand  int random number use for dropdown name
-     * @param $opt   array of possible options to be include in the call
-     *
-     * @return void
-     **/
-    public static function getJs($rand, $opt)
-    {
-        global $CFG_GLPI;
-        $js  = " function itemAction$rand(action, itemtype, items_id) {";
-        $js .= "    $.ajax({
-                    url: '" . $CFG_GLPI['root_doc'] . '/ajax/' . strtolower(static::class) . ".php',
-                    dataType: 'html',
-                    data: {'action'     : action,
-                                'rand'       : $rand,
-                                'params'     : " . json_encode($opt) . ",
-                                'my_items'   : $('#dropdown_my_items$rand').val(),
-                                'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype,
-                                'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id$rand').val() : items_id},
-                    success: function(response) {";
-        $js .= "          $(\"#itemAddForm$rand\").replaceWith(response);";
-        $js .= "       }";
-        $js .= "    });";
-        $js .= " }";
-        return $js;
     }
 
     /**
