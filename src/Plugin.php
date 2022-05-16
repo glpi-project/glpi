@@ -358,11 +358,15 @@ class Plugin extends CommonDBTM
                 continue;
             }
             $locales_dir = "$base_dir/$plugin_key/locales/";
-            if (file_exists($locales_dir . $CFG_GLPI["languages"][$trytoload][1])) {
+            if (
+                array_key_exists($trytoload, $CFG_GLPI["languages"])
+                && file_exists($locales_dir . $CFG_GLPI["languages"][$trytoload][1])
+            ) {
                 $mofile = $locales_dir . $CFG_GLPI["languages"][$trytoload][1];
             } else if (
                 !empty($CFG_GLPI["language"])
-                    && file_exists($locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1])
+                && array_key_exists($CFG_GLPI["language"], $CFG_GLPI["languages"])
+                && file_exists($locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1])
             ) {
                 $mofile = $locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1];
             } else if (file_exists($locales_dir . "en_GB.mo")) {
