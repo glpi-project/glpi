@@ -1761,7 +1761,7 @@ HTML;
         $tpl_vars += self::getPageHeaderTplVars();
 
         $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
-        $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'http://glpi-project.org/help-central';
+        $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'https://glpi-project.org/documentation/';
 
         $tpl_vars['help_url'] = $help_url;
 
@@ -6170,7 +6170,7 @@ HTML;
      */
     public static function getCopyrightMessage($withVersion = true)
     {
-        $message = "<a href=\"http://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
+        $message = "<a href=\"https://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
         $message .= "GLPI ";
        // if required, add GLPI version (eg not for login page)
         if ($withVersion) {
