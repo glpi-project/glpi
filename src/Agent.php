@@ -183,7 +183,7 @@ class Agent extends CommonDBTM
 
         $tab[] = [
             'id'         => 901,
-            'field'      => 'name',
+            'field'      => 'tag',
             'name'       => __('Tag'),
             'datatype'   => 'text',
         ] + $baseopts;
