@@ -157,6 +157,61 @@ class Agent extends CommonDBTM
         return $tab;
     }
 
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+
+        // separator
+        $tab[] = [
+            'id'   => 'agent',
+            'name' => self::getTypeName(1),
+        ];
+
+        $baseopts = [
+            'table'      => self::getTable(),
+            'joinparams' => [
+                'jointype' => 'itemtype_item',
+            ],
+        ];
+
+        $tab[] = [
+            'id'         => 900,
+            'field'      => 'name',
+            'name'       => __('Name'),
+            'datatype'   => 'itemlink',
+        ] + $baseopts;
+
+        $tab[] = [
+            'id'         => 901,
+            'field'      => 'name',
+            'name'       => __('Tag'),
+            'datatype'   => 'text',
+        ] + $baseopts;
+
+        $tab[] = [
+            'id'         => 902,
+            'field'      => 'last_contact',
+            'name'       => __('Last contact'),
+            'datatype'   => 'text',
+        ] + $baseopts;
+
+        $tab[] = [
+            'id'         => 903,
+            'field'      => 'version',
+            'name'       => _n('Version', 'Versions', 1),
+            'datatype'   => 'text',
+        ] + $baseopts;
+
+        $tab[] = [
+            'id'         => 904,
+            'field'      => 'deviceid',
+            'name'       => __('Device id'),
+            'datatype'   => 'text',
+        ] + $baseopts;
+
+        return $tab;
+    }
+
     /**
      * Define tabs to display on form page
      *
