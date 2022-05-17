@@ -50,11 +50,6 @@ class Update
     private $dbversion;
     private $language;
 
-    public const VERIFY_NONE        = 0;
-    public const VERIFY_PRE_UPDATE  = 1;
-    public const VERIFY_POST_UPDATE = 2;
-    public const VERIFY_ALL         = 3;
-
     /**
      * Constructor
      *
@@ -195,12 +190,11 @@ class Update
      *
      * @param string $current_version  Current version
      * @param bool   $force_latest     Force replay of latest migration
-     * @param int    $verification     Verification mode for checking database schema integrity.
-     * Can be {@link self::VERIFY_NONE}, {@link self::VERIFY_PRE_UPDATE}, {@link self::VERIFY_POST_UPDATE} or {@link self::VERIFY_ALL}.
+     * @param bool   $verification     Verify the database schema after the update
      *
      * @return void
      */
-    public function doUpdates($current_version = null, bool $force_latest = false, int $verification = self::VERIFY_NONE)
+    public function doUpdates($current_version = null, bool $force_latest = false, bool $verification = false)
     {
         if ($current_version === null) {
             if ($this->version === null) {
@@ -249,10 +243,6 @@ class Update
        // Update process desactivate all plugins
         $plugin = new Plugin();
         $plugin->unactivateAll();
-
-        if ((($verification & self::VERIFY_PRE_UPDATE) === self::VERIFY_PRE_UPDATE) && !$this->checkSchemaIntegrity()) {
-            die(1);
-        }
 
         if (version_compare($current_version, '0.80', '<') || version_compare($current_version, GLPI_VERSION, '>')) {
             $message = sprintf(
@@ -348,11 +338,11 @@ class Update
             $this->migration->displayWarning(__('Unable to create security key file! You have to run "php bin/console glpi:security:change_key" command to manually create this file.'), true);
         }
 
-        if ((($verification & self::VERIFY_POST_UPDATE) === self::VERIFY_POST_UPDATE) && !$this->checkSchemaIntegrity()) {
+        if ($verification && !$this->checkSchemaIntegrity()) {
             die(1);
         }
 
-        if ($verification === self::VERIFY_NONE) {
+        if ($verification === false) {
             $this->migration->displayMessage(__('It is highly recommended to run the "php bin/console glpi:database:check_schema_integrity" command to verify the database schema integrity.'), 'strong');
         }
     }

@@ -98,14 +98,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         );
 
         $this->addOption(
-            'verify-before-update',
-            null,
-            InputOption::VALUE_NONE,
-            __('Check database schema integrity before update')
-        );
-
-        $this->addOption(
-            'verify-after-update',
+            'verify',
             null,
             InputOption::VALUE_NONE,
             __('Check database schema integrity after update')
@@ -202,14 +195,11 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
         $this->askForConfirmation();
 
-        $verify_level = $update::VERIFY_NONE;
-        if ($this->input->getOption('verify-before-update')) {
-            $verify_level |= $update::VERIFY_PRE_UPDATE;
+        $verify = false;
+        if ($this->input->getOption('verify')) {
+            $verify = true;
         }
-        if ($this->input->getOption('verify-after-update')) {
-            $verify_level |= $update::VERIFY_POST_UPDATE;
-        }
-        $update->doUpdates($current_version, $force, $verify_level);
+        $update->doUpdates($current_version, $force, $verify);
         $output->writeln('<info>' . __('Migration done.') . '</info>');
 
         (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
