@@ -1,0 +1,545 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Search;
+
+use CommonITILObject;
+use Glpi\Search\Output\AbstractSearchOutput;
+use Glpi\Search\Output\CSVSearchOutput;
+use Glpi\Search\Output\GlobalSearchOutput;
+use Glpi\Search\Output\MapSearchOutput;
+use Glpi\Search\Output\NamesListSearchOutput;
+use Glpi\Search\Output\PDFLandscapeSearchOutput;
+use Glpi\Search\Output\PDFPortraitSearchOutput;
+use Glpi\Search\Output\SYLKSearchOutput;
+use Glpi\Search\Output\TableSearchOutput;
+
+/**
+ * The search engine.
+ *
+ * This is not currently the recommended entrypoint for the Search engine.
+ * Use {@link Search} instead!
+ *
+ * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
+ */
+final class SearchEngine
+{
+
+    /**
+     * @param int $output_type
+     * @param array $data
+     * @return AbstractSearchOutput
+     */
+    public static function getOutputForLegacyKey(int $output_type, array $data = []): AbstractSearchOutput
+    {
+        switch ($output_type) {
+            case \Search::GLOBAL_SEARCH:
+                return new GlobalSearchOutput();
+            case \Search::HTML_OUTPUT:
+                return (isset($data['as_map']) && $data['as_map']) ? new MapSearchOutput() : new TableSearchOutput();
+            case \Search::PDF_OUTPUT_LANDSCAPE:
+                return new PDFLandscapeSearchOutput();
+            case \Search::PDF_OUTPUT_PORTRAIT:
+                return new PDFPortraitSearchOutput();
+            case \Search::SYLK_OUTPUT:
+                return new SYLKSearchOutput();
+            case \Search::CSV_OUTPUT:
+                return new CSVSearchOutput();
+            case \Search::NAMES_OUTPUT:
+                return new NamesListSearchOutput();
+            default:
+                throw new \RuntimeException('Unknown output type: ' . $output_type);
+        }
+    }
+
+    /**
+     * Get meta types available for search engine
+     *
+     * @param string $itemtype Type to display the form
+     *
+     * @return class-string<\CommonDBTM>[] Array of available itemtype
+     **/
+    public static function getMetaItemtypeAvailable($itemtype): array
+    {
+        global $CFG_GLPI;
+
+        $ref_itemtype = self::getMetaReferenceItemtype($itemtype);
+        if ($ref_itemtype === false) {
+            return [];
+        }
+
+        if (!(($item = getItemForItemtype($ref_itemtype)) instanceof \CommonDBTM)) {
+            return [];
+        }
+
+        $linked = [];
+        foreach ($CFG_GLPI as $key => $values) {
+            if ($key === 'link_types') {
+                // Links are associated to all items of a type, it does not make any sense to use them in meta search
+                continue;
+            }
+            if ($key === 'ticket_types' && $item instanceof \CommonITILObject) {
+                // Linked are filtered by CommonITILObject::getAllTypesForHelpdesk()
+                $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk()));
+                continue;
+            }
+
+            foreach (self::getMetaParentItemtypesForTypesConfig($key) as $config_itemtype) {
+                if ($ref_itemtype === $config_itemtype::getType()) {
+                    // List is related to source itemtype, all types of list are so linked
+                    $linked = array_merge($linked, $values);
+                } else if (in_array($ref_itemtype, $values)) {
+                    // Source itemtype is inside list, type corresponding to list is so linked
+                    $linked[] = $config_itemtype::getType();
+                }
+            }
+        }
+
+        return array_unique($linked);
+    }
+
+    /**
+     * Returns parents itemtypes having subitems defined in given config key.
+     * This list is filtered and is only valid in a "meta" search context.
+     *
+     * @param string $config_key
+     *
+     * @return string[]
+     */
+    public static function getMetaParentItemtypesForTypesConfig(string $config_key): array
+    {
+        $matches = [];
+        if (preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
+            return [];
+        }
+
+        $key_to_itemtypes = [
+            'directconnect_types'  => ['Computer'],
+            'infocom_types'        => ['Budget', 'Infocom'],
+            'linkgroup_types'      => ['Group'],
+            // 'linkgroup_tech_types' => ['Group'], // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
+            'linkuser_types'       => ['User'],
+            // 'linkuser_tech_types'  => ['User'], // Cannot handle ambiguity with 'User' from 'linkuser_types'
+            'project_asset_types'  => ['Project'],
+            'rackable_types'       => ['Enclosure', 'Rack'],
+            'socket_types'         => [\Glpi\Socket::class],
+            'ticket_types'         => ['Change', 'Problem', 'Ticket'],
+        ];
+
+        if (array_key_exists($config_key, $key_to_itemtypes)) {
+            return $key_to_itemtypes[$config_key];
+        }
+
+        $itemclass = $matches[1];
+        if (is_a($itemclass, \CommonDBTM::class, true)) {
+            return [$itemclass::getType()];
+        }
+
+        return [];
+    }
+
+    /**
+     * Check if an itemtype is a possible subitem of another itemtype in a "meta" search context.
+     *
+     * @param string $parent_itemtype
+     * @param string $child_itemtype
+     *
+     * @return boolean
+     */
+    public static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype): bool
+    {
+        global $CFG_GLPI;
+
+        if (
+            is_a($parent_itemtype, \CommonITILObject::class, true)
+            && in_array($child_itemtype, array_keys($parent_itemtype::getAllTypesForHelpdesk()))
+        ) {
+            return true;
+        }
+
+        foreach ($CFG_GLPI as $key => $values) {
+            if (
+                in_array($parent_itemtype, self::getMetaParentItemtypesForTypesConfig($key))
+                && in_array($child_itemtype, $values)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param $itemtype
+     * @return class-string<\CommonDBTM>|false
+     **/
+    public static function getMetaReferenceItemtype($itemtype)
+    {
+
+        if (!isPluginItemType($itemtype)) {
+            return $itemtype;
+        }
+
+        // Use reference type if given itemtype extends a reference type.
+        $types = [
+            'Computer',
+            'Problem',
+            'Change',
+            'Ticket',
+            'Printer',
+            'Monitor',
+            'Peripheral',
+            'Software',
+            'Phone'
+        ];
+        foreach ($types as $type) {
+            if (is_a($itemtype, $type, true)) {
+                return $type;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Prepare search criteria to be used for a search
+     *
+     * @since 0.85
+     *
+     * @param string $itemtype      Item type
+     * @param array  $params        Array of parameters
+     *                               may include sort, order, start, list_limit, deleted, criteria, metacriteria
+     * @param array  $forcedisplay  Array of columns to display (default empty = empty use display pref and search criterias)
+     *
+     * @return array prepare to be used for a search (include criteria and others needed information)
+     **/
+    public static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = []): array
+    {
+        global $CFG_GLPI;
+
+        // Default values of parameters
+        $p = [
+            'criteria'              => [],
+            'metacriteria'          => [],
+            'sort'                  => ['1'],
+            'order'                 => ['ASC'],
+            'start'                 => 0,
+            'is_deleted'            => 0,
+            'export_all'            => 0,
+            'display_type'          => \Search::HTML_OUTPUT,
+            'showmassiveactions'    => true,
+            'dont_flush'            => false,
+            'show_pager'            => true,
+            'show_footer'           => true,
+            'no_sort'               => false,
+            'list_limit'            => $_SESSION['glpilist_limit'],
+            'massiveactionparams'   => [],
+        ];
+        if (class_exists($itemtype)) {
+            $p['target']       = $itemtype::getSearchURL();
+        } else {
+            $p['target']       = \Toolbox::getItemTypeSearchURL($itemtype);
+        }
+
+        if ($itemtype == \KnowbaseItem::class) {
+            $params = \KnowbaseItem::getAdditionalSearchCriteria($params);
+        }
+
+        foreach ($params as $key => $val) {
+            switch ($key) {
+                case 'order':
+                    if (!is_array($val)) {
+                        // Backward compatibility with GLPI < 10.0 links
+                        if (in_array($val, ['ASC', 'DESC'])) {
+                            $p[$key] = [$val];
+                        }
+                        break;
+                    }
+                    $p[$key] = $val;
+                    break;
+                case 'sort':
+                    if (!is_array($val)) {
+                        // Backward compatibility with GLPI < 10.0 links
+                        $val = (int) $val;
+                        if ($val >= 0) {
+                            $p[$key] = [$val];
+                        }
+                        break;
+                    }
+                    $p[$key] = $val;
+                    break;
+                case 'is_deleted':
+                    if ($val == 1) {
+                        $p[$key] = '1';
+                    }
+                    break;
+                default:
+                    $p[$key] = $val;
+                    break;
+            }
+        }
+
+        // Set display type for export if define
+        if (isset($p['display_type'])) {
+            // Limit to 10 element
+            if ($p['display_type'] == \Search::GLOBAL_SEARCH) {
+                $p['list_limit'] = \Search::GLOBAL_DISPLAY_COUNT;
+            }
+        }
+
+        if ($p['export_all']) {
+            $p['start'] = 0;
+        }
+
+        $data             = [];
+        $data['search']   = $p;
+        $data['itemtype'] = $itemtype;
+
+        // Instanciate an object to access method
+        $data['item'] = null;
+
+        if ($itemtype != \AllAssets::getType()) {
+            $data['item'] = getItemForItemtype($itemtype);
+        }
+
+        $data['display_type'] = $data['search']['display_type'];
+
+        if (!$CFG_GLPI['allow_search_all']) {
+            foreach ($p['criteria'] as $val) {
+                if (isset($val['field']) && $val['field'] == 'all') {
+                    \Html::displayRightError();
+                }
+            }
+        }
+        if (!$CFG_GLPI['allow_search_view']) {
+            foreach ($p['criteria'] as $val) {
+                if (isset($val['field']) && $val['field'] == 'view') {
+                    \Html::displayRightError();
+                }
+            }
+        }
+
+        /// Get the items to display
+        // Add searched items
+
+        $forcetoview = false;
+        if (is_array($forcedisplay) && count($forcedisplay)) {
+            $forcetoview = true;
+        }
+        $data['search']['all_search']  = false;
+        $data['search']['view_search'] = false;
+        // If no research limit research to display item and compute number of item using simple request
+        $data['search']['no_search']   = true;
+
+        $data['toview'] = self::addDefaultToView($itemtype, $params);
+        $data['meta_toview'] = [];
+        if (!$forcetoview) {
+            // Add items to display depending of personal prefs
+            $displaypref = \DisplayPreference::getForTypeUser($itemtype, \Session::getLoginUserID());
+            if (count($displaypref)) {
+                foreach ($displaypref as $val) {
+                    array_push($data['toview'], $val);
+                }
+            }
+        } else {
+            $data['toview'] = array_merge($data['toview'], $forcedisplay);
+        }
+
+        if (count($p['criteria']) > 0) {
+            // use a recursive closure to push searchoption when using nested criteria
+            $parse_criteria = function ($criteria) use (&$parse_criteria, &$data) {
+                foreach ($criteria as $criterion) {
+                    // recursive call
+                    if (isset($criterion['criteria'])) {
+                        $parse_criteria($criterion['criteria']);
+                    } else {
+                        // normal behavior
+                        if (
+                            isset($criterion['field'])
+                            && !in_array($criterion['field'], $data['toview'])
+                        ) {
+                            if (
+                                $criterion['field'] != 'all'
+                                && $criterion['field'] != 'view'
+                                && (!isset($criterion['meta'])
+                                    || !$criterion['meta'])
+                            ) {
+                                array_push($data['toview'], $criterion['field']);
+                            } else if ($criterion['field'] == 'all') {
+                                $data['search']['all_search'] = true;
+                            } else if ($criterion['field'] == 'view') {
+                                $data['search']['view_search'] = true;
+                            }
+                            if (isset($criterion['virtual']) && $criterion['virtual']) {
+                                $data['virtual'][$criterion['field']] = $criterion['field'];
+                            }
+                        }
+
+                        if (
+                            isset($criterion['value'])
+                            && (strlen($criterion['value']) > 0)
+                        ) {
+                            $data['search']['no_search'] = false;
+                        }
+                    }
+                }
+            };
+
+            // call the closure
+            $parse_criteria($p['criteria']);
+        }
+
+        if (count($p['metacriteria'])) {
+            $data['search']['no_search'] = false;
+        }
+
+        // Add order item
+        $to_add_view = array_diff($p['sort'], $data['toview']);
+        array_push($data['toview'], ...$to_add_view);
+
+        // Special case for CommonITILObjects : put ID in front
+        if (is_a($itemtype, CommonITILObject::class, true)) {
+            array_unshift($data['toview'], 2);
+        }
+
+        $limitsearchopt   = SearchOption::getCleanedOptions($itemtype);
+        // Clean and reorder toview
+        $tmpview = [];
+        foreach ($data['toview'] as $val) {
+            if (isset($limitsearchopt[$val]) && !in_array($val, $tmpview)) {
+                $tmpview[] = $val;
+            }
+        }
+        $data['tocompute'] = $tmpview;
+        $data['toview'] = array_diff($data['tocompute'], $data['virtual'] ?? []);
+
+        // Force item to display
+        if ($forcetoview) {
+            foreach ($data['toview'] as $val) {
+                if (!in_array($val, $data['tocompute'])) {
+                    array_push($data['tocompute'], $val);
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Generic Function to add default columns to view
+     *
+     * @param class-string<\CommonDBTM> $itemtype device type
+     * @param array  $params   array of parameters
+     *
+     * @return array
+     **/
+    public static function addDefaultToView($itemtype, $params): array
+    {
+        global $CFG_GLPI;
+
+        $toview = [];
+        $item   = null;
+        $entity_check = true;
+
+        if ($itemtype != \AllAssets::getType()) {
+            $item = getItemForItemtype($itemtype);
+            $entity_check = $item->isEntityAssign();
+        }
+        // Add first element (name)
+        array_push($toview, 1);
+
+        if (isset($params['as_map']) && $params['as_map'] == 1) {
+            // Add location name when map mode
+            array_push($toview, ($itemtype == 'Location' ? 1 : ($itemtype == 'Ticket' ? 83 : 3)));
+        }
+
+        // Add entity view :
+        if (
+            \Session::isMultiEntitiesMode()
+            && $entity_check
+            && (isset($CFG_GLPI["union_search_type"][$itemtype])
+                || ($item && $item->maybeRecursive())
+                || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
+        ) {
+            array_push($toview, 80);
+        }
+        return $toview;
+    }
+
+    /**
+     * Reset save searches
+     *
+     * @return void
+     **/
+    public static function resetSaveSearch(): void
+    {
+        unset($_SESSION['glpisearch']);
+        $_SESSION['glpisearch'] = [];
+    }
+
+    /**
+     * @param bool $only_not
+     * @return array
+     */
+    public static function getLogicalOperators($only_not = false): array
+    {
+        if ($only_not) {
+            return [
+                'AND'     => \Dropdown::EMPTY_VALUE,
+                'AND NOT' => __("NOT")
+            ];
+        }
+
+        return [
+            'AND'     => __('AND'),
+            'OR'      => __('OR'),
+            'AND NOT' => __('AND NOT'),
+            'OR NOT'  => __('OR NOT')
+        ];
+    }
+
+    /**
+     * Get table name for item type
+     *
+     * @param string $itemtype
+     *
+     * @return string
+     */
+    public static function getOrigTableName(string $itemtype): string
+    {
+        return (is_a($itemtype, \CommonDBTM::class, true)) ? $itemtype::getTable() : getTableForItemType($itemtype);
+    }
+}
