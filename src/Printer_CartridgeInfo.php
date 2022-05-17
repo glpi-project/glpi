@@ -133,7 +133,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                 'name'              => sprintf(__('%s toner percentage'), $color_name),
                 'datatype'          => 'specific',
                 'massiveaction'     => false,
-                'nosearch'          => false,
+                'nosearch'          => true,
                 'joinparams'        => [
                     'jointype' => 'child'
                 ],
