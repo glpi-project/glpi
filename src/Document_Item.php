@@ -1138,4 +1138,9 @@ class Document_Item extends CommonDBRelation
 
         return $criteria;
     }
+
+    public static function getIcon()
+    {
+        return Document::getIcon();
+    }
 }
