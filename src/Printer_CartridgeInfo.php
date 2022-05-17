@@ -197,46 +197,61 @@ class Printer_CartridgeInfo extends CommonDBChild
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
+        $color_aliases = [
+            'grey'      => 'gray',
+            'darkgrey'  => 'darkgray'
+        ];
         $printer = new Printer();
         if (strpos($field, '_virtual_toner') === 0) {
             $color = preg_match('/_virtual_toner_(.*)_percent/', $field, $matches) ? $matches[1] : '';
-            $max_field = "toner{$color}max";
-            $used_field = "toner{$color}used";
-            $remaining_field = "toner{$color}remaining";
             $search_option_id = $printer->getSearchOptionIDByField('field', $field);
-
             $raw_search_opt_values = $options['raw_data']['Printer_' . $search_option_id];
-            if ($raw_search_opt_values !== null) {
-                unset($raw_search_opt_values['count']);
-                // Get the max and used values (stored in property key and value key of elements)
-                $max_value = null;
-                $used_value = null;
-                $remaining_value = null;
-                foreach ($raw_search_opt_values as $raw_search_opt_value) {
-                    if ($raw_search_opt_value['property'] === $max_field) {
-                        $max_value = $raw_search_opt_value['value'];
-                    } elseif ($raw_search_opt_value['property'] === $used_field) {
-                        $used_value = $raw_search_opt_value['value'];
-                    } elseif ($raw_search_opt_value['property'] === $remaining_field) {
-                        $remaining_value = $raw_search_opt_value['value'];
-                    }
-                }
-                // If max is not set or 0, we cannot display anything
-                if ($max_value !== null && (int)$max_value > 0) {
-                    // If remaining is not set, we can calculate it from used
-                    if ($remaining_value === null && $used_value !== null) {
-                        $remaining_value = $max_value - $used_value;
-                    }
-                    $percent_remaining = round(($remaining_value / $max_value) * 100);
 
-                    return Html::progressBar('pb' . mt_rand(), [
-                        'percent' => $percent_remaining,
-                        'message' => $percent_remaining . '%',
-                        'display' => false,
-                        'create' => true,
-                        'colors' => self::getProgressColorsForColor($color)
-                    ]);
+            $get_percent_remaining = static function ($color, $field, $raw_search_opt_values) {
+                $max_field = "toner{$color}max";
+                $used_field = "toner{$color}used";
+                $remaining_field = "toner{$color}remaining";
+
+                if ($raw_search_opt_values !== null) {
+                    unset($raw_search_opt_values['count']);
+                    // Get the max and used values (stored in property key and value key of elements)
+                    $max_value = null;
+                    $used_value = null;
+                    $remaining_value = null;
+                    foreach ($raw_search_opt_values as $raw_search_opt_value) {
+                        if ($raw_search_opt_value['property'] === $max_field) {
+                            $max_value = $raw_search_opt_value['value'];
+                        } elseif ($raw_search_opt_value['property'] === $used_field) {
+                            $used_value = $raw_search_opt_value['value'];
+                        } elseif ($raw_search_opt_value['property'] === $remaining_field) {
+                            $remaining_value = $raw_search_opt_value['value'];
+                        }
+                    }
+                    // If max is not set or 0, we cannot display anything
+                    if ($max_value !== null && (int)$max_value > 0) {
+                        // If remaining is not set, we can calculate it from used
+                        if ($remaining_value === null && $used_value !== null) {
+                            $remaining_value = $max_value - $used_value;
+                        }
+                        return round(($remaining_value / $max_value) * 100);
+                    }
                 }
+                return null;
+            };
+
+            $percent_remaining = $get_percent_remaining($color, $field, $raw_search_opt_values);
+            if ($percent_remaining === null && array_key_exists($color, $color_aliases)) {
+                $percent_remaining = $get_percent_remaining($color_aliases[$color], $field, $raw_search_opt_values);
+            }
+
+            if ($percent_remaining !== null) {
+                return Html::progressBar('pb' . mt_rand(), [
+                    'percent' => $percent_remaining,
+                    'message' => $percent_remaining . '%',
+                    'display' => false,
+                    'create' => true,
+                    'colors' => self::getProgressColorsForColor($color)
+                ]);
             }
             // Need to return some non-empty value otherwise Search engine will throw errors.
             return null;
