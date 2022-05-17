@@ -2137,7 +2137,7 @@ class Search extends DbTestCase
         $this->array($names)->isEqualTo($expected);
     }
 
-    private function isVirtualFieldProvider(): array
+    protected function isVirtualFieldProvider(): array
     {
         return [
             ['name', false],
