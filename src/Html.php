@@ -6805,7 +6805,7 @@ HTML;
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, true);
             if (isset($args['debug'])) {
-                $msg = 'An error occured during SCSS compilation: ' . $e->getMessage();
+                $msg = 'An error occurred during SCSS compilation: ' . $e->getMessage();
                 $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);
                 $css = <<<CSS
               html::before {

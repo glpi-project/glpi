@@ -325,7 +325,7 @@ class Search
                );
             }).fail(function (response) {
                var _data = response.responseJSON;
-               var _message = '" . __s('An error occured loading data :(') . "';
+               var _message = '" . __s('An error occurred loading data :(') . "';
                if (_data.message) {
                   _message = _data.message;
                }

@@ -179,7 +179,7 @@ class ConfigureCommand extends AbstractCommand
             try {
                 $this->cache_manager->testConnection($dsn);
             } catch (\Throwable $e) {
-                $error_msg = sprintf(__('An error occured during connection to cache system: "%s"'), $e->getMessage());
+                $error_msg = sprintf(__('An error occurred during connection to cache system: "%s"'), $e->getMessage());
                 throw new \Glpi\Console\Exception\EarlyExitException(
                     '<error>' . $error_msg . '</error>',
                     self::ERROR_UNABLE_TO_WRITE_CONFIG

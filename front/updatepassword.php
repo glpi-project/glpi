@@ -77,7 +77,7 @@ if (array_key_exists('update', $_POST)) {
                 if ($user->update($input)) {
                     $success = true;
                 } else {
-                    $error_messages = [__('An error occured during password update')];
+                    $error_messages = [__('An error occurred during password update')];
                 }
             } catch (\Glpi\Exception\PasswordTooWeakException $exception) {
                 $error_messages = $exception->getMessages();
