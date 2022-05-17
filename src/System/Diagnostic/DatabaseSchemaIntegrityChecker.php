@@ -36,6 +36,7 @@
 namespace Glpi\System\Diagnostic;
 
 use DBmysql;
+use RuntimeException;
 use SebastianBergmann\Diff\Differ;
 
 /**
@@ -168,6 +169,40 @@ class DatabaseSchemaIntegrityChecker
             $proper_create_table_sql,
             $effective_create_table_sql
         );
+    }
+
+    /**
+     * Read the contents of the schema file.
+     *
+     * A RuntimeException is thrown if the specified schema file cannot be read.
+     * @param string $schema_path The absolute path to the schema file
+     * @return array The parsed contents of the schema file
+     * @throws RuntimeException
+     */
+    public function readSchemaFile(string $schema_path): array
+    {
+        if (
+            false === ($empty_file = realpath($schema_path))
+            || false === ($empty_sql = file_get_contents($empty_file))
+        ) {
+            $message = sprintf(__('Unable to read installation file "%s".'), $empty_file);
+            throw new RuntimeException($message, 1);
+        }
+
+        $matches = [];
+        preg_match_all('/CREATE TABLE[^`]*`(.+)`[^;]+/', $empty_sql, $matches);
+        $empty_tables_names   = $matches[1];
+        $empty_tables_schemas = $matches[0];
+
+        $schema = [];
+
+        foreach ($empty_tables_schemas as $index => $table_schema) {
+            $schema[] = [
+                'name'      => $empty_tables_names[$index],
+                'schema'    => $table_schema
+            ];
+        }
+        return $schema;
     }
 
     /**

@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 
 /**
@@ -163,26 +164,32 @@ class Update
      */
     private function checkSchemaIntegrity(): bool
     {
-        // Initialize console application
-        $console = new \Glpi\Console\Application();
-        $output = new Symfony\Component\Console\Output\BufferedOutput();
-        $input = new \Symfony\Component\Console\Input\ArrayInput([
-            '--check-all-migrations' => true
-        ]);
-        try {
-            $this->migration->displayMessage(__('Checking database schema integrity...'), 'strong');
-            $result = $console->find('glpi:database:check_schema_integrity')->run($input, $output);
-            if ($result !== 0) {
-                $this->migration->displayError(__('The database schema is not consistent with the current GLPI version.'));
-                $this->migration->displayMessage($output->fetch(), 'strong');
+        global $DB;
+
+        $checker = new DatabaseSchemaIntegrityChecker($DB, false);
+        $schema = $checker->readSchemaFile(GLPI_ROOT . '/install/mysql/glpi-empty.sql');
+
+        $has_differences = false;
+
+        foreach ($schema as $table_info) {
+            $this->migration->displayMessage(sprintf(__('Processing table "%s"...'), $table_info['name']));
+
+            if ($checker->hasDifferences($table_info['name'], $table_info['schema'])) {
+                $diff = $checker->getDiff($table_info['name'], $table_info['schema']);
+
+                $has_differences = true;
+                $message = sprintf(__('Table schema differs for table "%s".'), $table_info['name']);
+                $this->migration->displayWarning($message);
+                $this->migration->displayMessage($diff, 'strong');
             }
-        } catch (\Exception $e) {
-            $this->migration->displayError(__('Unable to check database schema integrity.'));
-            $this->migration->displayError($e->getMessage());
-            return false;
         }
 
-        return $result === 0;
+        if ($has_differences) {
+            $this->migration->displayError(__('The database schema is not consistent with the current GLPI version.'));
+        } else {
+            $this->migration->displayMessage(__('Database schema is OK.'), 'strong');
+        }
+        return !$has_differences;
     }
 
     /**

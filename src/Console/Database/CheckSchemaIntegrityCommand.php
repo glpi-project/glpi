@@ -37,6 +37,7 @@ namespace Glpi\Console\Database;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -134,38 +135,30 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             !$input->getOption('check-all-migrations') && !$input->getOption('check-unsigned-keys-migration')
         );
 
-        if (
-            false === ($empty_file = realpath(GLPI_ROOT . '/install/mysql/glpi-empty.sql'))
-            || false === ($empty_sql = file_get_contents($empty_file))
-        ) {
-            $message = sprintf(__('Unable to read installation file "%s".'), $empty_file);
+        try {
+            $empty_schema = $checker->readSchemaFile(GLPI_ROOT . '/install/mysql/glpi-empty.sql');
+        } catch (RuntimeException $e) {
             $output->writeln(
-                '<error>' . $message . '</error>',
+                '<error>' . $e->getMessage() . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
             return self::ERROR_UNABLE_TO_READ_EMPTYSQL;
         }
 
-        $matches = [];
-        preg_match_all('/CREATE TABLE[^`]*`(.+)`[^;]+/', $empty_sql, $matches);
-        $empty_tables_names   = $matches[1];
-        $empty_tables_schemas = $matches[0];
-
         $has_differences = false;
 
-        foreach ($empty_tables_schemas as $index => $table_schema) {
-            $table_name = $empty_tables_names[$index];
+        foreach ($empty_schema as $table_info) {
 
             $output->writeln(
-                sprintf(__('Processing table "%s"...'), $table_name),
+                sprintf(__('Processing table "%s"...'), $table_info['name']),
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            if ($checker->hasDifferences($table_name, $table_schema)) {
-                $diff = $checker->getDiff($table_name, $table_schema);
+            if ($checker->hasDifferences($table_info['name'], $table_info['schema'])) {
+                $diff = $checker->getDiff($table_info['name'], $table_info['schema']);
 
                 $has_differences = true;
-                $message = sprintf(__('Table schema differs for table "%s".'), $table_name);
+                $message = sprintf(__('Table schema differs for table "%s".'), $table_info['name']);
                 $output->writeln(
                     '<info>' . $message . '</info>',
                     OutputInterface::VERBOSITY_QUIET
