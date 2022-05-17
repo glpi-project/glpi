@@ -379,6 +379,12 @@ abstract class CommonITILObject extends CommonDBTM
 
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
+        if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
+            $canupdate = false;
+            // No update for actors
+            $options['_noupdate'] = true;
+        }
+
         if (!$this->isNewItem()) {
             $options['formtitle'] = sprintf(
                 __('%1$s - ID %2$d'),
