@@ -239,7 +239,7 @@ class Event extends CommonDBTM
     /**
      * Print a nice tab for last event from inventory section
      *
-     * Print a great tab to present lasts events occured on glpi
+     * Print a great tab to present lasts events occurred on glpi
      *
      * @param string $user  name user to search on message (default '')
      * @param bool $display if false, return html
@@ -360,7 +360,7 @@ class Event extends CommonDBTM
     /**
      * Print a nice tab for last event
      *
-     * Print a great tab to present lasts events occured on glpi
+     * Print a great tab to present lasts events occurred on glpi
      *
      * @param string  $target  where to go when complete
      * @param string  $order   order by clause occurences (eg: ) (default 'DESC')
