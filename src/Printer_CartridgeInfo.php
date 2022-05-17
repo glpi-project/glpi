@@ -125,7 +125,7 @@ class Printer_CartridgeInfo extends CommonDBChild
             'name' => self::getTypeName(1)
         ];
 
-        $create_toner_percent_option = static function(int $ID, string $color_key, string $color_name): array {
+        $create_toner_percent_option = static function (int $ID, string $color_key, string $color_name): array {
             return [
                 'id'                => (string) $ID,
                 'table'             => self::getTable(),
@@ -169,25 +169,25 @@ class Printer_CartridgeInfo extends CommonDBChild
             case 'cyan':
             case 'light_cyan':
                 return [
-                    'fg' => '#00ffff'.$fg_transparency_hex,
+                    'fg' => '#00ffff' . $fg_transparency_hex,
                     'text' => 'inherit'
                 ];
             case 'magenta':
             case 'light_magenta':
                 return [
-                    'fg' => '#ff00ff'.$fg_transparency_hex,
+                    'fg' => '#ff00ff' . $fg_transparency_hex,
                     'text' => 'inherit'
                 ];
             case 'yellow':
                 return [
-                    'fg' => '#ffff00'.$fg_transparency_hex,
+                    'fg' => '#ffff00' . $fg_transparency_hex,
                     'text' => 'inherit'
                 ];
             case 'black':
             case 'grey':
             case 'darkgrey':
                 return [
-                    'fg' => '#303030'.$fg_transparency_hex,
+                    'fg' => '#303030' . $fg_transparency_hex,
                     'text' => 'inherit'
                 ];
         }
@@ -205,7 +205,7 @@ class Printer_CartridgeInfo extends CommonDBChild
             $remaining_field = "toner{$color}remaining";
             $search_option_id = $printer->getSearchOptionIDByField('field', $field);
 
-            $raw_search_opt_values = $options['raw_data']['Printer_'.$search_option_id];
+            $raw_search_opt_values = $options['raw_data']['Printer_' . $search_option_id];
             if ($raw_search_opt_values !== null) {
                 unset($raw_search_opt_values['count']);
                 // Get the max and used values (stored in property key and value key of elements)
@@ -229,9 +229,9 @@ class Printer_CartridgeInfo extends CommonDBChild
                     }
                     $percent_remaining = round(($remaining_value / $max_value) * 100);
 
-                    return Html::progressBar('pb'.mt_rand(), [
+                    return Html::progressBar('pb' . mt_rand(), [
                         'percent' => $percent_remaining,
-                        'message' => $percent_remaining.'%',
+                        'message' => $percent_remaining . '%',
                         'display' => false,
                         'create' => true,
                         'colors' => self::getProgressColorsForColor($color)

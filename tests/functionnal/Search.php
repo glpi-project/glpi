@@ -2147,6 +2147,12 @@ class Search extends DbTestCase
         ];
     }
 
+    /**
+     * @param string $field
+     * @param bool $expected
+     * @return void
+     * @dataProvider isVirtualFieldProvider
+     */
     public function testIsVirtualField(string $field, bool $expected): void
     {
         $this->boolean(\Search::isVirtualField($field))->isEqualTo($expected);
