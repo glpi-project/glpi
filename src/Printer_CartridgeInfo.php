@@ -125,133 +125,34 @@ class Printer_CartridgeInfo extends CommonDBChild
             'name' => self::getTypeName(1)
         ];
 
-        $tab[] = [
-            'id'                 => '1400',
-            'table'              => self::getTable(),
-            'field'              => '_virtual_toner_black_percent',
-            'name'               => sprintf(__('%s toner percentage'), __('Black')),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-            'nosearch'           => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'additionalfields'   => ['property', 'value'],
-            'forcegroupby'       => true,
-            'aggregate'          => true
-        ];
+        $create_toner_percent_option = static function(int $ID, string $color_key, string $color_name): array {
+            return [
+                'id'                => (string) $ID,
+                'table'             => self::getTable(),
+                'field'             => "_virtual_toner_{$color_key}_percent",
+                'name'              => sprintf(__('%s toner percentage'), $color_name),
+                'datatype'          => 'specific',
+                'massiveaction'     => false,
+                'nosearch'          => false,
+                'joinparams'        => [
+                    'jointype' => 'child'
+                ],
+                'additionalfields'  => ['property', 'value'],
+                'forcegroupby'      => true,
+                'aggregate'         => true,
+                'searchtype'        => ['contains'],
+                'nosort'            => true
+            ];
+        };
 
-        $tab[] = [
-            'id'                 => '1401',
-            'table'              => self::getTable(),
-            'field'              => '_virtual_toner_cyan_percent',
-            'name'               => sprintf(__('%s toner percentage'), __('Cyan')),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-            'nosearch'           => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'additionalfields'   => ['property', 'value'],
-            'forcegroupby'       => true,
-            'aggregate'          => true
-        ];
-
-        $tab[] = [
-            'id'                 => '1402',
-            'table'              => self::getTable(),
-            'field'              => '_virtual_toner_cyanlight_percent',
-            'name'               => sprintf(__('%s toner percentage'), __('Light cyan')),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-            'nosearch'           => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'additionalfields'   => ['property', 'value'],
-            'forcegroupby'       => true,
-            'aggregate'          => true
-        ];
-
-        $tab[] = [
-            'id'                 => '1403',
-            'table'              => self::getTable(),
-            'field'              => '_virtual_toner_magenta_percent',
-            'name'               => sprintf(__('%s toner percentage'), __('Magenta')),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-            'nosearch'           => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'additionalfields'   => ['property', 'value'],
-            'forcegroupby'       => true,
-            'aggregate'          => true
-        ];
-
-        $tab[] = [
-            'id'                 => '1404',
-            'table'              => self::getTable(),
-            'field'              => '_virtual_toner_magentalight_percent',
-            'name'               => sprintf(__('%s toner percentage'), __('Light magenta')),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-            'nosearch'           => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'additionalfields'   => ['property', 'value'],
-            'forcegroupby'       => true,
-            'aggregate'          => true
-        ];
-
-        $tab[] = [
-            'id'                 => '1405',
-            'table'              => self::getTable(),
-            'field'              => '_virtual_toner_yellow_percent',
-            'name'               => sprintf(__('%s toner percentage'), __('Yellow')),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-            'nosearch'           => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'additionalfields'   => ['property', 'value'],
-            'forcegroupby'       => true,
-            'aggregate'          => true
-        ];
-
-        $tab[] = [
-            'id'                 => '1406',
-            'table'              => self::getTable(),
-            'field'              => '_virtual_toner_grey_percent',
-            'name'               => sprintf(__('%s toner percentage'), __('Grey')),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-            'nosearch'           => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'additionalfields'   => ['property', 'value'],
-            'forcegroupby'       => true,
-            'aggregate'          => true
-        ];
-
-        $tab[] = [
-            'id'                 => '1407',
-            'table'              => self::getTable(),
-            'field'              => '_virtual_toner_darkgrey_percent',
-            'name'               => sprintf(__('%s toner percentage'), __('Dark grey')),
-            'datatype'           => 'specific',
-            'massiveaction'      => false,
-            'nosearch'           => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'additionalfields'   => ['property', 'value'],
-            'forcegroupby'       => true,
-            'aggregate'          => true
-        ];
+        $tab[] = $create_toner_percent_option(1400, 'black', __('Black'));
+        $tab[] = $create_toner_percent_option(1401, 'cyan', __('Cyan'));
+        $tab[] = $create_toner_percent_option(1402, 'cyanlight', __('Light cyan'));
+        $tab[] = $create_toner_percent_option(1403, 'magenta', __('Magenta'));
+        $tab[] = $create_toner_percent_option(1404, 'magentalight', __('Light magenta'));
+        $tab[] = $create_toner_percent_option(1405, 'yellow', __('Yellow'));
+        $tab[] = $create_toner_percent_option(1406, 'grey', __('Grey'));
+        $tab[] = $create_toner_percent_option(1407, 'darkgrey', __('Dark grey'));
 
         return $tab;
     }
