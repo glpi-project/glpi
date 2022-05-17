@@ -432,8 +432,8 @@ class Rack extends CommonDBTM
         $rows     = (int) $room->fields['vis_rows'];
         $cols     = (int) $room->fields['vis_cols'];
         $w_prct   = 100 / $cols;
-        $cell_w   = 40;
-        $cell_h   = 39;
+        $cell_w   = (int) $room->fields['vis_cell_width'];
+        $cell_h   = (int) $room->fields['vis_cell_height'];
         $grid_w   = $cell_w * $cols;
         $grid_h   = $cell_h * $rows;
         $ajax_url = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
