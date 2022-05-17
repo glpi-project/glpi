@@ -42,19 +42,6 @@
 {% else %}
     {% for note in notes %}
         {% set id = "note#{ note['id'] }#{ rand }" %}
-        <div class='boxnote' id='view{{ id }}'>
-            <div class='boxnoteleft'>
-                {{ include('components/user/picture.html.twig', {
-                    'users_id': note['users_id_lastupdater'],
-                    'with_link': false,
-                    'avatar_size': '',
-                }, with_context = false) }}
-            </div>
-            <div class='boxnotecontent'>
-                <div class='boxnotetext'>
-                    {{ note['content'] }}
-                </div>
-            </div>
-        </div>
+        <div class="alert alert-info entitynote" role="alert" id='view{{ id }}'>{{ note['content'] }}</div>
     {% endfor %}
 {% endif %}

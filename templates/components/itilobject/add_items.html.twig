@@ -105,7 +105,7 @@
 
       function refreshNoteCounter{{ rand }}() {
          const item_form = $(".accordion-notes");
-         let item_count = item_form.find('.boxnote').length;
+         let item_count = item_form.find('.entitynote').length;
          item_form.closest('.accordion-item').find('.note-counter').text(item_count);
       }
       refreshNoteCounter{{ rand }}();
