@@ -148,7 +148,7 @@ class Notepad extends CommonDBChild
     /**
      * @param $item   CommonDBTM object
      **/
-    public static function getAllForItem(CommonDBTM $item)
+    public static function getAllForItem(CommonDBTM $item, $checkrights = false)
     {
         global $DB;
 
@@ -175,7 +175,9 @@ class Notepad extends CommonDBChild
         ]);
 
         foreach ($iterator as $note) {
-            $data[] = $note;
+            if (!$checkrights || Session::haveRight($item::$rightname, READNOTE)) {
+                $data[] = $note;
+            }
         }
         return $data;
     }

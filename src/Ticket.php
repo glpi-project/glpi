@@ -4435,6 +4435,7 @@ JAVASCRIPT;
             'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
             'userentities'       => $userentities,
             'cancreateuser'      => $cancreateuser,
+            'canreadnote'        => Session::haveRight('entity', READNOTE),
         ]);
 
         return true;

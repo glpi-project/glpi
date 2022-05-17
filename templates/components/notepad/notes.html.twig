@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,39 +15,46 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
 {% set rand = random() %}
 {% set entity = get_item('Entity', item.fields['entities_id']) %}
-{% set notes = call('Notepad::getAllForItem', [entity]) %}
 
-{% for note in notes %}
-    {% set id = "note#{ note['id'] }#{ rand }" %}
-    <div class='boxnote' id='view{{ id }}'>
-        <div class='boxnoteleft'>
-            {{ include('components/user/picture.html.twig', {
-                'users_id': note['users_id_lastupdater'],
-                'with_link': false,
-                'avatar_size': '',
-            }, with_context = false) }}
-        </div>
-        <div class='boxnotecontent'>
-            <div class='boxnotetext'>
-                {{ note['content'] }}
+{% set notes = call('Notepad::getAllForItem', [entity, true]) %}
+{% if notes|length == 0 %}
+    <div class="alert alert-info" role="alert">
+        {{ __('There is no notes on this entity') }}
+    </div>
+{% else %}
+    {% for note in notes %}
+        {% set id = "note#{ note['id'] }#{ rand }" %}
+        <div class='boxnote' id='view{{ id }}'>
+            <div class='boxnoteleft'>
+                {{ include('components/user/picture.html.twig', {
+                    'users_id': note['users_id_lastupdater'],
+                    'with_link': false,
+                    'avatar_size': '',
+                }, with_context = false) }}
+            </div>
+            <div class='boxnotecontent'>
+                <div class='boxnotetext'>
+                    {{ note['content'] }}
+                </div>
             </div>
         </div>
-    </div>
-{% endfor %}
+    {% endfor %}
+{% endif %}
