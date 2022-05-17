@@ -2136,6 +2136,21 @@ class Search extends DbTestCase
        // Check results
         $this->array($names)->isEqualTo($expected);
     }
+
+    private function isVirtualFieldProvider(): array
+    {
+        return [
+            ['name', false],
+            ['name_virtual', false],
+            ['_virtual', true],
+            ['_virtual_name', true]
+        ];
+    }
+
+    public function testIsVirtualField(string $field, bool $expected): void
+    {
+        $this->boolean(\Search::isVirtualField($field))->isEqualTo($expected);
+    }
 }
 
 // @codingStandardsIgnoreStart
