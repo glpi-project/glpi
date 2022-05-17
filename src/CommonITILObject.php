@@ -6904,6 +6904,7 @@ abstract class CommonITILObject extends CommonDBTM
             'label'         => _x('button', 'Add a document'),
             'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
             'item'          => new Document_Item(),
+            'hide_in_menu'  => !$canadd_document
         ];
         if ($validation !== null) {
             $itemtypes['validation'] = [
