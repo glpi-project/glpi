@@ -52,7 +52,8 @@ class Monitor extends InventoryAsset
         $mapping = [
             'caption'      => 'name',
             'manufacturer' => 'manufacturers_id',
-            'description'  => 'comment'
+            'description'  => 'comment',
+            'type'         => 'monitortypes_id'
         ];
 
         foreach ($this->data as &$val) {
@@ -64,6 +65,10 @@ class Monitor extends InventoryAsset
 
             if (!property_exists($val, 'name')) {
                 $val->name = '';
+            }
+
+            if (property_exists($val, 'caption')) {
+                $val->monitormodels_id = $val->caption;
             }
 
             if (property_exists($val, 'comment')) {
