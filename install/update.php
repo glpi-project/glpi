@@ -245,9 +245,6 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             echo "<div class='text-center'>";
             doUpdateDb();
             echo "</div>";
-            echo '<div class="text-center fw-bold">';
-            echo '<p>' . __('It is highly recommended to run the "php bin/console glpi:database:check_schema_integrity" command to verify the database schema integrity.') . '</p>';
-            echo "</div>";
 
             $_SESSION['telemetry_from_install'] = true;
 
