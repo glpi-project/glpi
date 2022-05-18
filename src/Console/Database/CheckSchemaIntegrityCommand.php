@@ -148,7 +148,6 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         $has_differences = false;
 
         foreach ($empty_schema as $table_info) {
-
             $output->writeln(
                 sprintf(__('Processing table "%s"...'), $table_info['name']),
                 OutputInterface::VERBOSITY_VERY_VERBOSE
