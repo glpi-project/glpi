@@ -70,6 +70,10 @@ class Antivirus extends InventoryAsset
                 $val->is_active = 0;
             }
 
+            if (!property_exists($val, 'is_uptodate') || empty($val->is_uptodate)) {
+                $val->is_uptodate = 0;
+            }
+
             $val->is_dynamic = 1;
         }
 
