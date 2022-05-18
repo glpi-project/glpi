@@ -125,7 +125,7 @@
 
                      {% set dc_breadcrumbs %}
                         {% if item is usingtrait('Glpi\\Features\\DCBreadcrumb') %}
-                           {{ call(item.getType() ~ '::getDcBreadcrumbSpecificValueToDisplay', [
+                           {{ call(item.getType() ~ '::renderDcBreadcrumb', [
                               item.fields['id']
                            ])|raw }}
                         {% endif %}

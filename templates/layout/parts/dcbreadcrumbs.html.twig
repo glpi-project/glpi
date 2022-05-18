@@ -32,27 +32,37 @@
  #}
 {% if breadcrumbs|length > 0 %}
     <div class="row">
+        {% set previous_location_id = null %}
         {% for breadcrumb_item in breadcrumbs %}
             <div class="col-auto p-1">
                 {{ breadcrumb_item['link']|raw }}
 
-                {% if breadcrumb_item['location']['name'] is defined %}
+                {% if breadcrumb_item['position'] is defined %}
+                    {{ __('(U%1$u)')|format(breadcrumb_item['position']) }}
+                {% endif %}
+
+                {% if breadcrumb_item['location'] is not null and breadcrumb_item['location']['id'] != previous_location_id %}
                     <br>
-                    <span class='p-0 float-left badge bg-blue-lt d-inline-block text-truncate'
-                        data-bs-toggle='tooltip'
-                        title='{{ breadcrumb_item['location']['completename']|verbatim_value }}'
-                        style='max-width: 100px;'>
-                        <i class="{{ call('Location::getIcon') }}"></i>{{ breadcrumb_item['location']['name']|verbatim_value }}
+                    <span class="p-0 float-left badge bg-blue-lt d-inline-block text-truncate"
+                          data-bs-toggle="tooltip"
+                          title="{{ breadcrumb_item['location']['completename']|verbatim_value }}"
+                          style="max-width: 100px;">
+                        <i class="{{ call('Location::getIcon') }}"></i>
+                        {% if breadcrumb_item['location']['locations_id'] == previous_location_id %}
+                           {% if previous_location_id is not null %}
+                              &gt;
+                           {% endif %}
+                           {{ breadcrumb_item['location']['name']|verbatim_value }}
+                        {% else %}
+                           {{ breadcrumb_item['location']['completename']|verbatim_value }}
+                        {% endif %}
                     </span>
+                    {% set previous_location_id = breadcrumb_item['location']['id'] %}
                 {% endif %}
             </div>
             {% if loop.last == false %}
                 <div class="col-auto p-1">
                     &gt;
-                </div>
-            {% else %}
-                <div class="col-auto pt-1 p-0">
-                    {{ breadcrumb_item['position']|raw }}
                 </div>
             {% endif %}
         {% endfor %}

@@ -35,6 +35,7 @@
 
 namespace Glpi\Features;
 
+use CommonDBTM;
 use Datacenter;
 use DCRoom;
 use Enclosure;
@@ -43,6 +44,7 @@ use Item_Enclosure;
 use Item_Rack;
 use Location;
 use Rack;
+use Toolbox;
 
 /**
  * Datacenter breadcrumb
@@ -53,9 +55,13 @@ trait DCBreadcrumb
      * Get datacenter element breadcrumb
      *
      * @return array
+     *
+     * @deprecated 10.1.0
      */
-    public function getDcBreadcrumb($with_location = true)
+    public function getDcBreadcrumb()
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         $item = $this;
@@ -72,17 +78,8 @@ trait DCBreadcrumb
                     'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
                     'icon'       => true
                 ];
-
-                $position = $this->getItemEnclosurePosition($item->getType(), $item->getID());
-                $breadcrumb_item = [
-                    'link' => $enclosure->getLink($options),
-                    'position' => $position
-                ];
-
-                if ($with_location) {
-                    $breadcrumb_item['location']['item'] = Location::getFromItem($enclosure);
-                }
-                $breadcrumb[Enclosure::getType()] = $breadcrumb_item;
+                $position = sprintf(__('(U%1$u)'), (int)$item->getPositionInEnclosure());
+                $breadcrumb[] = $enclosure->getLink($options) . '&nbsp;' . $position;
                 $item = $enclosure;
             }
         }
@@ -94,18 +91,8 @@ trait DCBreadcrumb
                     'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
                     'icon'       => true
                 ];
-
-                $position = $this->getItemRackPosition($item->getType(), $item->getID());
-                $breadcrumb_item = [
-                    'link' => $rack->getLink($options),
-                    'position' => $position
-                ];
-
-                if ($with_location) {
-                    $breadcrumb_item['location']['item'] = Location::getFromItem($rack);
-                }
-
-                $breadcrumb[Rack::getType()] = $breadcrumb_item;
+                $position = sprintf(__('(U%1$u)'), (int)$this->getPositionInRack());
+                $breadcrumb[] = $rack->getLink($options) . '&nbsp;' . $position;
                 $item = $rack;
             }
         }
@@ -118,16 +105,7 @@ trait DCBreadcrumb
                         'linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : '',
                         'icon'       => true
                     ];
-
-                    $breadcrumb_item = [
-                        'link' => $dcroom->getLink($options),
-                    ];
-
-                    if ($with_location) {
-                        $breadcrumb_item['location']['item'] = Location::getFromItem($dcroom);
-                    }
-
-                    $breadcrumb[DCRoom::getType()] = $breadcrumb_item;
+                    $breadcrumb[] = $dcroom->getLink($options);
                     $item = $dcroom;
                 }
             }
@@ -141,83 +119,9 @@ trait DCBreadcrumb
                         'linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : '',
                         'icon'       => true
                     ];
-
-                    $breadcrumb_item = [
-                        'link' => $datacenter->getLink($options),
-                    ];
-
-                    if ($with_location) {
-                        $breadcrumb_item['location']['item'] = Location::getFromItem($datacenter);
-                    }
-
-                    $breadcrumb[Datacenter::getType()] = $breadcrumb_item;
+                    $breadcrumb[] = $datacenter->getLink($options);
                 }
             }
-        }
-
-        $breadcrumb = array_reverse($breadcrumb);
-
-        if ($with_location) {
-            $breadcrumb = $this->cleanLocationInformations($breadcrumb);
-        }
-
-        return $breadcrumb;
-    }
-
-    /**
-     * Clean Location information foreach item breadcrumb
-     * If Current item Location = Parent item Location              -> do not display Location
-     * If Current item Location is child of Parent item Location    -> display only Location name instead of completename
-     * Else Current item Location != Parent item Location           -> display Location completename
-     *
-     * @param array $breadcrumb
-     *
-     * @return array cleanded $breadcrumb
-     */
-    private function cleanLocationInformations(array $breadcrumb)
-    {
-        $rack_location = isset($breadcrumb[Rack::getType()]) ? $breadcrumb[Rack::getType()]['location']['item'] : null;
-        $enclosure_location = isset($breadcrumb[Enclosure::getType()]) ? $breadcrumb[Enclosure::getType()]['location']['item'] : null;
-        $dcroom_location = isset($breadcrumb[DCRoom::getType()]) ? $breadcrumb[DCRoom::getType()]['location']['item'] : null;
-        $datacenter_location = isset($breadcrumb[Datacenter::getType()]) ? $breadcrumb[Datacenter::getType()]['location']['item'] : null;
-
-        if ($rack_location) {
-            if ($rack_location->fields['id'] ==  $dcroom_location->fields['id']) {
-                unset($breadcrumb[Rack::getType()]['location']);
-            } else if ($rack_location->fields['locations_id'] == $dcroom_location->fields['id']) {
-                $breadcrumb[Rack::getType()]['location']['name'] = "> " . $rack_location->fields['name'];
-            } else {
-                $breadcrumb[Rack::getType()]['location']['name'] = $rack_location->fields['completename'];
-            }
-            $breadcrumb[Rack::getType()]['location']['completename'] = $rack_location->fields['completename'];
-        }
-
-        if ($enclosure_location) {
-            if ($enclosure_location->fields['id'] ==  $dcroom_location->fields['id']) {
-                unset($breadcrumb[Enclosure::getType()]['location']);
-            } else if ($enclosure_location->fields['locations_id'] == $dcroom_location->fields['id']) {
-                $breadcrumb[Enclosure::getType()]['location']['name'] = "> " . $enclosure_location->fields['name'];
-            } else {
-                $breadcrumb[Enclosure::getType()]['location']['name'] = $enclosure_location->fields['completename'];
-            }
-            $breadcrumb[Enclosure::getType()]['location']['completename'] = $enclosure_location->fields['completename'];
-        }
-
-        if ($dcroom_location) {
-            if ($dcroom_location->fields['id'] == $datacenter_location->fields['id']) {
-                unset($breadcrumb[DCRoom::getType()]['location']);
-            } else if ($dcroom_location->fields['locations_id'] == $datacenter_location->fields['id']) {
-                $breadcrumb[DCRoom::getType()]['location']['name'] = "> " . $dcroom_location->fields['name'];
-            } else {
-                $breadcrumb[DCRoom::getType()]['location']['name'] = $dcroom_location->fields['completename'];
-            }
-            $breadcrumb[DCRoom::getType()]['location']['completename'] = $dcroom_location->fields['completename'];
-        }
-
-        //keep datacenter location completename name (start of breadcrumb)
-        if ($datacenter_location) {
-            $breadcrumb[Datacenter::getType()]['location']['name'] = $datacenter_location->fields['completename'];
-            $breadcrumb[Datacenter::getType()]['location']['completename'] = $datacenter_location->fields['completename'];
         }
 
         return $breadcrumb;
@@ -231,9 +135,13 @@ trait DCBreadcrumb
      * @param boolean $getobj   Whether to return enclosure object
      *
      * @return false|Enclosure
+     *
+     * @deprecated 10.1.0
      */
     public function isEnclosurePart($itemtype, $items_id, $getobj = false)
     {
+        Toolbox::deprecated();
+
         $ien = new Item_Enclosure();
         $found = $ien->getFromDBByCrit([
             'itemtype'  => $itemtype,
@@ -254,58 +162,6 @@ trait DCBreadcrumb
     }
 
     /**
-     * get item position from Enclosure
-     *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
-     *
-     * @return string
-     */
-    private function getItemEnclosurePosition($itemtype, $items_id)
-    {
-        $position = 0;
-        $ien = new Item_Enclosure();
-
-        if (
-            $ien->getFromDBByCrit([
-                'itemtype'  => $itemtype,
-                'items_id'  => $items_id
-            ])
-        ) {
-            $position = $ien->getField('position');
-        }
-
-        $position = sprintf(__('(U%1$u)'), $position);
-        return $position;
-    }
-
-    /**
-     * get item position from Rack
-     *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
-     *
-     * @return string
-     */
-    private function getItemRackPosition($itemtype, $items_id)
-    {
-        $position = 0;
-        $ira = new Item_Rack();
-
-        if (
-            $ira->getFromDBByCrit([
-                'itemtype'  => $itemtype,
-                'items_id'  => $items_id
-            ])
-        ) {
-            $position = $ira->getField('position');
-        }
-
-        $position = sprintf(__('(U%1$u)'), $position);
-        return $position;
-    }
-
-    /**
      * Check if an item is part of a rack
      *
      * @param string  $itemtype Item type
@@ -313,9 +169,13 @@ trait DCBreadcrumb
      * @param boolean $getobj   Whether to return rack object
      *
      * @return false|Rack
+     *
+     * @deprecated 10.1.0
      */
     public function isRackPart($itemtype, $items_id, $getobj = false)
     {
+        Toolbox::deprecated();
+
         $ira = new Item_Rack();
         $found = $ira->getFromDBByCrit([
             'itemtype'  => $itemtype,
@@ -337,23 +197,201 @@ trait DCBreadcrumb
     /**
      * Specific value for "Data center position".
      *
-     * @param integer $items_id
+     * @return array
      *
-     * @return string
+     * @deprecated 10.1.0
      */
     public static function getDcBreadcrumbSpecificValueToDisplay($items_id)
     {
+        Toolbox::deprecated();
+
+        $item = new static();
+
+        if ($item->getFromDB($items_id)) {
+            $breadcrumb = $item->getDcBreadcrumb();
+            if (count($breadcrumb) > 0) {
+                return implode(' &gt; ', array_reverse($breadcrumb));
+            }
+        }
+
+        return '&nbsp;';
+    }
+
+    /**
+     * Specific value for "Data center position".
+     *
+     * @param int $items_id
+     *
+     * @return string
+     */
+    final public static function renderDcBreadcrumb(int $items_id): string
+    {
+        global $CFG_GLPI;
+
         $breadcrumb = [];
 
         $item = new static();
         if ($item->getFromDB($items_id)) {
-            $breadcrumb = $item->getDcBreadcrumb(true);
+            $types = $CFG_GLPI['rackable_types'];
+
+            // Add Enclosure part of breadcrumb
+            $enclosure_types = $types;
+            unset($enclosure_types[array_search('Enclosure', $enclosure_types)]);
+            if (in_array($item->getType(), $enclosure_types) && $enclosure = $item->getParentEnclosure()) {
+                $location = Location::getFromItem($enclosure) ?: null;
+                $breadcrumb[Enclosure::getType()] = [
+                    'link'     => $enclosure->getLink(
+                        [
+                            'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
+                            'icon'       => true
+                        ]
+                    ),
+                    'position' => $item->getPositionInEnclosure(),
+                    'location' => $location !== null ? $location->fields : null,
+                ];
+
+                $item = $enclosure; // use Enclosure for previous breadcrumb item
+            }
+
+            // Add Rack part of breadcrumb
+            if (in_array($item->getType(), $types) && $rack = $item->getParentRack()) {
+                $location = Location::getFromItem($rack) ?: null;
+                $breadcrumb[Rack::getType()] = [
+                    'link'     => $rack->getLink(
+                        [
+                            'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
+                            'icon'       => true
+                        ]
+                    ),
+                    'position' => $item->getPositionInRack(),
+                    'location' => $location !== null ? $location->fields : null,
+                ];
+
+                $item = $rack; // use Rack for previous breadcrumb item
+            }
+
+            // Add DCRoom part of breadcrumb
+            $dcroom = new DCRoom();
+            if (
+                $item->getType() == Rack::getType()
+                && $item->fields['dcrooms_id'] > 0
+                && $dcroom->getFromDB($item->fields['dcrooms_id'])
+            ) {
+                $location = Location::getFromItem($dcroom) ?: null;
+                $breadcrumb[DCRoom::getType()] = [
+                    'link'     => $dcroom->getLink(
+                        [
+                            'linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : '',
+                            'icon'       => true
+                        ]
+                    ),
+                    'location' => $location !== null ? $location->fields : null,
+                ];
+
+                $item = $dcroom; // use DCRoom for previous breadcrumb item
+            }
+
+            // Add Datacenter part of breadcrumb
+            $datacenter = new Datacenter();
+            if (
+                $item->getType() == DCRoom::getType()
+                && $item->fields['datacenters_id'] > 0
+                && $datacenter->getFromDB($item->fields['datacenters_id'])
+            ) {
+                $location = Location::getFromItem($datacenter) ?: null;
+                $breadcrumb[Datacenter::getType()] = [
+                    'link'     => $datacenter->getLink(
+                        [
+                            'linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : '',
+                            'icon'       => true
+                        ]
+                    ),
+                    'location' => $location !== null ? $location->fields : null,
+                ];
+            }
+
+            $breadcrumb = array_reverse($breadcrumb);
         }
+
         return TemplateRenderer::getInstance()->render(
             'layout/parts/dcbreadcrumbs.html.twig',
             [
                 'breadcrumbs'   => $breadcrumb
             ]
         );
+    }
+
+    /**
+     * Get parent Enclosure.
+     *
+     * @return Enclosure|null
+     */
+    private function getParentEnclosure(): ?Enclosure
+    {
+        $ien = new Item_Enclosure();
+        if (
+            !($this instanceof CommonDBTM)
+            || !$ien->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+        ) {
+            return null;
+        }
+
+        $enclosure = new Enclosure();
+        return $enclosure->getFromDB($ien->fields['enclosures_id']) ? $enclosure : null;
+    }
+
+    /**
+     * Get position in Enclosure.
+     *
+     * @return int|null
+     */
+    private function getPositionInEnclosure(): ?int
+    {
+        $ien = new Item_Enclosure();
+        if (
+            !($this instanceof CommonDBTM)
+            || !$ien->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+        ) {
+            return null;
+        }
+
+        return $ien->fields['position'];
+    }
+
+    /**
+     * Get parent Rack.
+     *
+     * @return Rack|null
+     */
+    private function getParentRack(): ?Rack
+    {
+        $ira = new Item_Rack();
+        if (
+            !($this instanceof CommonDBTM)
+            || !$ira->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+        ) {
+            return null;
+        }
+
+        $rack = new Rack();
+        return $rack->getFromDB($ira->fields['racks_id']) ? $rack : null;
+    }
+
+    /**
+     * Get position in Rack.
+     *
+     * @return int|null
+     */
+    private function getPositionInRack(): ?int
+    {
+        $ira = new Item_Rack();
+        if (
+            !($this instanceof CommonDBTM)
+            || !$ira->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+        ) {
+            return null;
+        }
+
+        return $ira->fields['position'];
     }
 }
