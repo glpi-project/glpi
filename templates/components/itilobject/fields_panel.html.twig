@@ -282,6 +282,9 @@
                     {{ _n('Item', 'Items', get_plural_number()) }}
                 </span>
                <span class="item-counter badge bg-secondary ms-2"></span>
+               {% if itiltemplate.isMandatoryField('items_id') %}
+                  <span class="required">*</span>
+               {% endif %}
             </button>
          </h2>
          <div id="items" class="accordion-collapse collapse {{ items_show ? "show" : "" }}" aria-labelledby="items-heading">

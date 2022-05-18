@@ -3,10 +3,9 @@
     "description": "GLPI dependencies",
     "license": "GPL-3.0-or-later",
     "type": "project",
-    "homepage": "http://www.glpi-project.org/",
+    "homepage": "https://www.glpi-project.org/",
     "support": {
-        "irc": "irc://irc.freenode.org/glpi",
-        "forum": "http://forum.glpi-project.org/",
+        "forum": "https://forum.glpi-project.org/",
         "issues": "https://github.com/glpi-project/glpi/issues",
         "docs": "https://github.com/glpi-project/doc"
     },

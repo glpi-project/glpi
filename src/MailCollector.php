@@ -407,7 +407,7 @@ class MailCollector extends CommonDBTM
             $this->connect();
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e);
-            echo __('An error occured trying to connect to collector.');
+            echo __('An error occurred trying to connect to collector.');
             return;
         }
 
@@ -713,7 +713,7 @@ class MailCollector extends CommonDBTM
             } catch (\Throwable $e) {
                 ErrorHandler::getInstance()->handleException($e);
                 Session::addMessageAfterRedirect(
-                    __('An error occured trying to connect to collector.') . "<br/>" . $e->getMessage(),
+                    __('An error occurred trying to connect to collector.') . "<br/>" . $e->getMessage(),
                     false,
                     ERROR
                 );

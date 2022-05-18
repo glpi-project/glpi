@@ -379,6 +379,12 @@ abstract class CommonITILObject extends CommonDBTM
 
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
+        if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
+            $canupdate = false;
+            // No update for actors
+            $options['_noupdate'] = true;
+        }
+
         if (!$this->isNewItem()) {
             $options['formtitle'] = sprintf(
                 __('%1$s - ID %2$d'),
@@ -408,6 +414,7 @@ abstract class CommonITILObject extends CommonDBTM
             'timeline_itemtypes'      => $this->getTimelineItemtypes(),
             'legacy_timeline_actions' => $this->getLegacyTimelineActionsHTML(),
             'params'                  => $options,
+            'entities_id'             => $ID ? $this->fields['entities_id'] : $options['entities_id'],
             'timeline'                => $this->getTimelineItems(),
             'itiltemplate_key'        => static::getTemplateFormFieldName(),
             'itiltemplate'            => $tt,
@@ -6891,6 +6898,15 @@ abstract class CommonITILObject extends CommonDBTM
             'item'          => new ITILSolution(),
             'hide_in_menu'  => !$canadd_solution
         ];
+        $itemtypes['document'] = [
+            'type'          => 'Document_Item',
+            'class'         => Document_Item::class,
+            'icon'          => Document_Item::getIcon(),
+            'label'         => _x('button', 'Add a document'),
+            'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
+            'item'          => new Document_Item(),
+            'hide_in_menu'  => !$canadd_document
+        ];
         if ($validation !== null) {
             $itemtypes['validation'] = [
                 'type'          => 'ITILValidation',
@@ -6902,15 +6918,6 @@ abstract class CommonITILObject extends CommonDBTM
                 'hide_in_menu'  => !$canadd_validation
             ];
         }
-        $itemtypes['document'] = [
-            'type'          => 'Document_Item',
-            'class'         => Document_Item::class,
-            'icon'          => Document_Item::getIcon(),
-            'label'         => _x('button', 'Add a document'),
-            'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
-            'item'          => new Document_Item(),
-            'hide_in_menu'  => true
-        ];
 
         if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS])) {
             foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS] as $plugin => $hook_itemtypes) {

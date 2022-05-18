@@ -71,7 +71,7 @@ class APIRest extends APIBaseClass
 
     public function afterTestMethod($method)
     {
-        // Check that no errors occured on the test server
+        // Check that no errors occurred on the test server
         $this->string(file_get_contents($this->getLogFilePath()))->isEmpty();
     }
 

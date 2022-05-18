@@ -43,6 +43,12 @@
         z-index: $zindex-fixed;
     }
 
+    .answer-action {
+        &:hover {
+            font-weight: bold;
+        }
+    }
+
     .action-task {
         background-color: $timeline-task-bg;
         color: $timeline-task-fg;
@@ -51,6 +57,11 @@
     .action-solution {
         background-color: $timeline-sol-bg;
         color: $timeline-sol-fg;
+    }
+
+    .action-document {
+        background-color: $timeline-doc-bg;
+        color: $timeline-doc-fg;
     }
 
     #debugajax {

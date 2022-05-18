@@ -137,6 +137,10 @@ class Inventory extends InventoryTestCase
         $this->array($mmanuf);
         $manufacturers_id = $mmanuf['id'];
 
+        $mmodel = $DB->request(['FROM' => \MonitorModel::getTable(), 'WHERE' => ['name' => 'DJCP6']])->current();
+        $this->array($mmodel);
+        $models_id = $mmodel['id'];
+
         $expected = [
             'id' => $monitor_link['id'],
             'entities_id' => 0,
@@ -159,7 +163,7 @@ class Inventory extends InventoryTestCase
             'have_displayport' => 0,
             'locations_id' => 0,
             'monitortypes_id' => 0,
-            'monitormodels_id' => 0,
+            'monitormodels_id' => $models_id,
             'manufacturers_id' => $manufacturers_id,
             'is_global' => 0,
             'is_deleted' => 0,

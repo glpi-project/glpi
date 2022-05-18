@@ -233,7 +233,7 @@ class TimestampsCommand extends AbstractCommand
 
         if ($errors) {
             throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . __('Errors occured during migration.') . '</error>',
+                '<error>' . __('Errors occurred during migration.') . '</error>',
                 self::ERROR_TABLE_MIGRATION_FAILED
             );
         }

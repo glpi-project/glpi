@@ -121,7 +121,7 @@ class PendingReason extends DbTestCase
                 'expected' => false
             ],
             [
-            // Case 3: 0/5 bump occured yet
+            // Case 3: 0/5 bump occurred yet
                 'fields' => [
                     'followup_frequency'          => 60,
                     'followups_before_resolution' => 5,
@@ -131,7 +131,7 @@ class PendingReason extends DbTestCase
                 'expected' => '2021-02-25 14:06:00'
             ],
             [
-            // Case 4: 1/5 bump occured
+            // Case 4: 1/5 bump occurred
                 'fields' => [
                     'followup_frequency'          => 60,
                     'followups_before_resolution' => 5,
@@ -141,7 +141,7 @@ class PendingReason extends DbTestCase
                 'expected' => '2021-02-25 15:05:00'
             ],
             [
-            // Case 5: 2/5 bump occured
+            // Case 5: 2/5 bump occurred
                 'fields' => [
                     'followup_frequency'          => 60,
                     'followups_before_resolution' => 5,
@@ -151,7 +151,7 @@ class PendingReason extends DbTestCase
                 'expected' => '2021-02-25 16:04:00'
             ],
             [
-            // Case 5: 3/5 bump occured
+            // Case 5: 3/5 bump occurred
                 'fields' => [
                     'followup_frequency'          => 60,
                     'followups_before_resolution' => 5,
@@ -161,7 +161,7 @@ class PendingReason extends DbTestCase
                 'expected' => '2021-02-25 17:03:00'
             ],
             [
-            // Case 5: 4/5 bump occured
+            // Case 5: 4/5 bump occurred
                 'fields' => [
                     'followup_frequency'          => 60,
                     'followups_before_resolution' => 5,
@@ -171,7 +171,7 @@ class PendingReason extends DbTestCase
                 'expected' => '2021-02-25 18:02:00'
             ],
             [
-            // Case 5: 5/5 bump occured
+            // Case 5: 5/5 bump occurred
                 'fields' => [
                     'followup_frequency'          => 60,
                     'followups_before_resolution' => 5,
