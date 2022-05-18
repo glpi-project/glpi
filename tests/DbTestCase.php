@@ -154,17 +154,28 @@ class DbTestCase extends \GLPITestCase
             ]
         );
 
+        $files_iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
         $classes = [];
-        foreach (new \DirectoryIterator('src/') as $fileInfo) {
+        foreach ($files_iterator as $fileInfo) {
             if ($fileInfo->getExtension() !== 'php') {
                 continue;
             }
 
             $classname = $fileInfo->getBasename('.php');
+
+            $is_excluded = false;
             foreach ($excludes as $exclude) {
                 if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                     break 2; // Class is excluded from results, go to next file
+                     $is_excluded = true;
+                     break;
                 }
+            }
+            if ($is_excluded) {
+                continue;
             }
 
             if (!class_exists($classname)) {
