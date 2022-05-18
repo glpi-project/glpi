@@ -172,18 +172,15 @@ class Update
         $has_differences = false;
 
         foreach ($schema as $table_info) {
-            $this->migration->displayMessage(sprintf(__('Processing table "%s"...'), $table_info['name']));
-
             if ($checker->hasDifferences($table_info['name'], $table_info['schema'])) {
                 $has_differences = true;
+                break;
             }
         }
 
         if ($has_differences) {
             $this->migration->displayWarning(__('The database schema is not consistent with the current GLPI version.'));
             $this->migration->displayWarning(__('It is recommended to run the "php bin/console glpi:database:check_schema_integrity" command to see the differences.'));
-        } else {
-            $this->migration->displayMessage(__('Database schema is OK.'), 'strong');
         }
         return !$has_differences;
     }
@@ -193,7 +190,6 @@ class Update
      *
      * @param string $current_version  Current version
      * @param bool   $force_latest     Force replay of latest migration
-     * @param bool   $verification     Verify the database schema after the update
      *
      * @return void
      */
