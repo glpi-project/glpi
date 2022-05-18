@@ -1626,7 +1626,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo "</td>";
         $plugin = new Plugin();
         if ($plugin->isActivated('gantt')) {
-            echo "<td>" . __('Show on global gantt') . "</td>";
+            echo "<td>" . __('Show on global Gantt') . "</td>";
             echo "<td>";
             Dropdown::showYesNo("show_on_global_gantt", $this->fields["show_on_global_gantt"]);
             echo "</td>";
