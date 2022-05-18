@@ -466,8 +466,9 @@ class Item_SoftwareVersion extends CommonDBRelation
         $canshowitems  = [];
         $item_version_table = self::getTable(__CLASS__);
 
-        $refcolumns = ['vername'           => _n('Version', 'Versions', Session::getPluralNumber()),
-            'item_type'          => __('Item type'),
+        $refcolumns = [
+            'version'           => _n('Version', 'Versions', Session::getPluralNumber()),
+            'item_type'         => __('Item type'),
             'itemname'          => __('Name'),
             'entity'            => Entity::getTypeName(1),
             'serial'            => __('Serial number'),
@@ -480,7 +481,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             'date_install'      => __('Installation date')
         ];
         if ($crit != "softwares_id") {
-            unset($refcolumns['vername']);
+            unset($refcolumns['version']);
         }
 
         if (isset($_GET["start"])) {
@@ -749,9 +750,11 @@ class Item_SoftwareVersion extends CommonDBRelation
                 if ($key[0] == '_') {
                     $header_end .= "<th>$val</th>";
                 } else {
-                    $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">" .
-                     "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
-                        (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
+                    $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">";
+                    $header_end .= $key !== 'lname'
+                        ? "<a href='javascript:reloadTab(\"sort=$key&amp;order=" . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a>"
+                        : $val;
+                    $header_end .= "</th>";
                 }
             }
 
