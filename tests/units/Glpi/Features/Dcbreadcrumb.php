@@ -35,8 +35,6 @@
 
 namespace tests\units\Glpi\Features;
 
-use Toolbox;
-
 /**
  * Test for the {@link \Glpi\Features\Clonable} feature
  */
@@ -164,143 +162,270 @@ class DCBreadcrumb extends \DbTestCase
     }
 
 
-    /**
-     * Test DCBreadCrumb
-     */
-    public function testRenderDcBreadcrumb()
+    protected function renderDcBreadcrumbProvider(): iterable
     {
-        $this->login();
+        // Create location tree
+        $location = new \Location();
 
-        //create Location for Datacenter
-        $location_datacenter = new \Location();
-        $location_datacenter_name = 'Saint-Petersbourg';
-        $location_datacenter_id = $location_datacenter->add($location_datacenter_input = [
-            'name'         => $location_datacenter_name,
-        ]);
-        $this->checkInput($location_datacenter, $location_datacenter_id, $location_datacenter_input);
+        $location_1_name  = 'root location 1';
+        $location_1_input = [
+            'name' => $location_1_name,
+        ];
+        $location_1_id    = $location->add($location_1_input);
+        $this->checkInput($location, $location_1_id, $location_1_input);
+        $location_1 = getItemByTypeName('Location', $location_1_name);
+
+        $location_1_1_name  = 'sub location 1.1';
+        $location_1_1_input = [
+            'name'         => $location_1_1_name,
+            'locations_id' => $location_1_id,
+        ];
+        $location_1_1_id    = $location->add($location_1_1_input);
+        $this->checkInput($location, $location_1_1_id, $location_1_1_input);
+        $location_1_1 = getItemByTypeName('Location', $location_1_1_name);
+
+        $location_2_name  = 'root location 2';
+        $location_2_input = [
+            'name' => $location_2_name,
+        ];
+        $location_2_id    = $location->add($location_2_input);
+        $this->checkInput($location, $location_2_id, $location_2_input);
+        $location_2 = getItemByTypeName('Location', $location_2_name);
+
+        $location_2_1_name  = 'sub location 2.1';
+        $location_2_1_input = [
+            'name'         => $location_2_1_name,
+            'locations_id' => $location_2_id,
+        ];
+        $location_2_1_id    = $location->add($location_2_1_input);
+        $this->checkInput($location, $location_2_1_id, $location_2_1_input);
+        $location_2_1 = getItemByTypeName('Location', $location_2_1_name);
+
+        // Location template
+        $location_tpl = <<<HTML
+            <br>
+            <span class="p-0 float-left badge bg-blue-lt d-inline-block text-truncate"
+                  data-bs-toggle="tooltip"
+                  title="%1\$s"
+                  style="max-width: 100px;">
+                <i class="ti ti-map-pin"></i>
+                %2\$s
+            </span>
+HTML;
+
+        yield [
+            'datacenter_location_id'   => 0,
+            'dcroom_location_id'       => 0,
+            'rack_location_id'         => 0,
+            'enclosure_location_id'    => 0,
+            'datacenter_location_text' => '',
+            'dcroom_location_text'     => '',
+            'rack_location_text'       => '',
+            'enclosure_location_text'  => '',
+        ];
+
+        yield [
+            'datacenter_location_id'   => $location_1_id,
+            'dcroom_location_id'       => $location_1_id,
+            'rack_location_id'         => $location_1_id,
+            'enclosure_location_id'    => $location_1_id,
+            'datacenter_location_text' => sprintf(
+                $location_tpl,
+                htmlentities($location_1->fields['completename']),
+                htmlentities($location_1->fields['completename']) // first location, show completename
+            ),
+            'dcroom_location_text'     => '', // same as previous location, not displayed
+            'rack_location_text'       => '', // same as previous location, not displayed
+            'enclosure_location_text'  => '', // same as previous location, not displayed
+        ];
+
+        yield [
+            'datacenter_location_id'   => $location_1_id,
+            'dcroom_location_id'       => 0,
+            'rack_location_id'         => $location_1_1_id,
+            'enclosure_location_id'    => $location_1_1_id,
+            'datacenter_location_text' => sprintf(
+                $location_tpl,
+                htmlentities($location_1->fields['completename']),
+                htmlentities($location_1->fields['completename']) // first location, show completename
+            ),
+            'dcroom_location_text'     => '',
+            'rack_location_text'       => sprintf(
+                $location_tpl,
+                htmlentities($location_1_1->fields['completename']),
+                htmlentities('> ' . $location_1_1->fields['name']) // child of previous location, show only name, prefixed by ">"
+            ),
+            'enclosure_location_text'  => '', // same as previous location, not displayed
+        ];
+
+        yield [
+            'datacenter_location_id'   => $location_1_id,
+            'dcroom_location_id'       => 0,
+            'rack_location_id'         => $location_2_id,
+            'enclosure_location_id'    => $location_2_1_id,
+            'datacenter_location_text' => sprintf(
+                $location_tpl,
+                htmlentities($location_1->fields['completename']),
+                htmlentities($location_1->fields['completename']) // first location, show completename
+            ),
+            'dcroom_location_text'     => '',
+            'rack_location_text'       => sprintf(
+                $location_tpl,
+                htmlentities($location_2->fields['completename']),
+                htmlentities($location_2->fields['completename']) // not child of previous location, show complete name
+            ),
+            'enclosure_location_text'  => sprintf(
+                $location_tpl,
+                htmlentities($location_2_1->fields['completename']),
+                htmlentities('> ' . $location_2_1->fields['name']) // child of previous location, show only name, prefixed by ">"
+            ),
+        ];
+
+        yield [
+            'datacenter_location_id'   => 0,
+            'dcroom_location_id'       => 0,
+            'rack_location_id'         => $location_2_id,
+            'enclosure_location_id'    => $location_1_id,
+            'datacenter_location_text' => '',
+            'dcroom_location_text'     => '',
+            'rack_location_text'       => sprintf(
+                $location_tpl,
+                htmlentities($location_2->fields['completename']),
+                htmlentities($location_2->fields['completename']) // first locatio, show complete name
+            ),
+            'enclosure_location_text'  => sprintf(
+                $location_tpl,
+                htmlentities($location_1->fields['completename']),
+                htmlentities($location_1->fields['completename']) // not child of previous location, show completename
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider renderDcBreadcrumbProvider
+     */
+    public function testRenderDcBreadcrumb(
+        int $datacenter_location_id,
+        int $dcroom_location_id,
+        int $rack_location_id,
+        int $enclosure_location_id,
+        string $datacenter_location_text,
+        string $dcroom_location_text,
+        string $rack_location_text,
+        string $enclosure_location_text
+    ) {
+        $this->login();
 
         //create DataCenter
         $datacenter = new \Datacenter();
         $datacenter_name = 'test datacenter';
         $datacenter_id = $datacenter->add($datacenter_input = [
             'name'         => $datacenter_name,
-            'locations_id' => $location_datacenter_id,
+            'locations_id' => $datacenter_location_id,
         ]);
         $this->checkInput($datacenter, $datacenter_id, $datacenter_input);
 
-        //create Location for DCRoom (child of location_datacenter)
-        $location_dcroom = new \Location();
-        $location_dcroom_name = 'room1';
-        $location_dcroom_id = $location_dcroom->add($location_dcroom_input = [
-            'name'         => $location_dcroom_name,
-            'locations_id' => $location_datacenter_id,
-        ]);
-        $this->checkInput($location_dcroom, $location_dcroom_id, $location_dcroom_input);
-        $location_dcroom_completename = $location_dcroom->fields['completename'];
-
         //create DCRoom
-        $DCroom = new \DCRoom();
-        $DCroom_name = 'test room';
-        $DCroom_id = $DCroom->add($DCroom_input = [
-            'name'           => $DCroom_name,
+        $dcroom = new \DCRoom();
+        $dcroom_name = 'test room';
+        $dcroom_id = $dcroom->add($dcroom_input = [
+            'name'           => $dcroom_name,
             'vis_cols'       => 10,
             'vis_rows'       => 10,
             'datacenters_id' => $datacenter_id,
-            'locations_id'   => $location_dcroom_id,
+            'locations_id'   => $dcroom_location_id,
         ]);
-        $this->checkInput($DCroom, $DCroom_id, $DCroom_input);
-
-        //create Location for Rack
-        $location_rack = new \Location();
-        $location_rack_name = 'rack01';
-        $location_rack_id = $location_rack->add($location_rack_input = [
-            'name'         => $location_rack_name,
-        ]);
-        $this->checkInput($location_rack, $location_rack_id, $location_rack_input);
+        $this->checkInput($dcroom, $dcroom_id, $dcroom_input);
 
         //create Rack
         $rack = new \Rack();
         $rack_name = 'test rack';
         $rack_id = $rack->add($rack_input = [
             'name'         => $rack_name,
-            'entities_id'   => 0,
-            'dcrooms_id'   => $DCroom_id,
+            'entities_id'  => 0,
+            'dcrooms_id'   => $dcroom_id,
             'number_units' => 42,
-            'position' => 62,
-            'locations_id' => $location_rack_id,
+            'position'     => 62,
+            'locations_id' => $rack_location_id,
         ]);
         $this->checkInput($rack, $rack_id, $rack_input);
 
-       //load computer and add it to rack
-        $computer1 = getItemByTypeName('Computer', '_test_pc01');
-
-       //create Rack_Item
-        $Itemrack = new \Item_Rack();
-        $rack_position = 37;
-        $Itemrack_id = $Itemrack->add($Itemrack_input = [
-            'racks_id' => $rack_id,
-            'itemtype' => "Computer",
-            'items_id' => $computer1->getID(),
-            'position' => $rack_position,
+        //create Enclosure
+        $enclosure = new \Enclosure();
+        $enclosure_name = 'test enclosure';
+        $enclosure_id = $enclosure->add($enclosure_input = [
+            'name'         => $enclosure_name,
+            'entities_id'  => 0,
+            'locations_id' => $enclosure_location_id,
         ]);
-        $this->checkInput($Itemrack, $Itemrack_id, $Itemrack_input);
+        $this->checkInput($enclosure, $enclosure_id, $enclosure_input);
 
-        $DCBreadcrumb = \Computer::renderDcBreadcrumb($computer1->getID());
+        //create Rack Item
+        $item_rack = new \Item_Rack();
+        $position_in_rack = rand(1, 42);
+        $item_rack_id = $item_rack->add($item_rack_input = [
+            'racks_id' => $rack_id,
+            'itemtype' => "Enclosure",
+            'items_id' => $enclosure_id,
+            'position' => $position_in_rack,
+        ]);
+        $this->checkInput($item_rack, $item_rack_id, $item_rack_input);
 
-        $location_dcroom_completename = htmlentities($location_dcroom_completename); // > separator will be encoded in result
+        //create Computer
+        $computer = new \Computer();
+        $computer_id = $computer->add($computer_input = [
+            'name'         => 'test computer',
+            'entities_id'  => 0,
+        ]);
+        $this->checkInput($computer, $computer_id, $computer_input);
+
+        //create Enclosure Item
+        $item_enclosure = new \Item_Enclosure();
+        $position_in_enclosure = rand(1, 10);
+        $item_enclosure_id = $item_enclosure->add($item_enclosure_input = [
+            'enclosures_id' => $enclosure_id,
+            'itemtype'      => "Computer",
+            'items_id'      => $computer_id,
+            'position'      => $position_in_enclosure,
+        ]);
+        $this->checkInput($item_enclosure, $item_enclosure_id, $item_enclosure_input);
+
         $expected = <<<HTML
-    <div class="row">
-                            <div class="col-auto p-1">
-                <i class='ti ti-building-warehouse'></i> {$datacenter_name}
-
-                
-                                    <br>
-                    <span class="p-0 float-left badge bg-blue-lt d-inline-block text-truncate"
-                          data-bs-toggle="tooltip"
-                          title="{$location_datacenter_name}"
-                          style="max-width: 100px;">
-                        <i class="ti ti-map-pin"></i>
-                                                                              {$location_datacenter_name}
-                                            </span>
-                                                </div>
-                            <div class="col-auto p-1">
+            <div class="row">
+                <div class="col-auto p-1">
+                    <i class='ti ti-building-warehouse'></i> {$datacenter_name}
+                    {$datacenter_location_text}
+                </div>
+                <div class="col-auto p-1">
                     &gt;
                 </div>
-                                <div class="col-auto p-1">
-                <i class='ti ti-building'></i> {$DCroom_name}
-
-                
-                                    <br>
-                    <span class="p-0 float-left badge bg-blue-lt d-inline-block text-truncate"
-                          data-bs-toggle="tooltip"
-                          title="{$location_dcroom_completename}"
-                          style="max-width: 100px;">
-                        <i class="ti ti-map-pin"></i>
-                                                                                 &gt;
-                                                      {$location_dcroom_name}
-                                            </span>
-                                                </div>
-                            <div class="col-auto p-1">
+                <div class="col-auto p-1">
+                    <i class='ti ti-building'></i> {$dcroom_name}
+                    {$dcroom_location_text}
+                </div>
+                <div class="col-auto p-1">
                     &gt;
                 </div>
-                                <div class="col-auto p-1">
-                <i class='ti ti-server'></i> {$rack_name}
-
-                                    (U{$rack_position})
-                
-                                    <br>
-                    <span class="p-0 float-left badge bg-blue-lt d-inline-block text-truncate"
-                          data-bs-toggle="tooltip"
-                          title="{$location_rack_name}"
-                          style="max-width: 100px;">
-                        <i class="ti ti-map-pin"></i>
-                                                   {$location_rack_name}
-                                            </span>
-                                                </div>
-                        </div>
-
+                <div class="col-auto p-1">
+                    <i class='ti ti-server'></i> {$rack_name} (U{$position_in_rack})
+                    {$rack_location_text}
+                </div>
+                <div class="col-auto p-1">
+                    &gt;
+                </div>
+                <div class="col-auto p-1">
+                    <i class='ti ti-columns'></i> {$enclosure_name} (U{$position_in_enclosure})
+                    {$enclosure_location_text}
+                </div>
+            </div>
 HTML;
-        $this->string($DCBreadcrumb)->isIdenticalTo($expected);
+        $result = \Computer::renderDcBreadcrumb($computer_id);
+
+        // Deduplicate whitespaces to not have to deal with indentation.
+        $expected = preg_replace('/\s+/', ' ', trim($expected));
+        $result = preg_replace('/\s+/', ' ', trim($result));
+
+        $this->string($result)->isIdenticalTo($expected);
 
        //load computer without Rack link
         $computer2 = getItemByTypeName('Computer', '_test_pc02');

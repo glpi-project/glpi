@@ -326,7 +326,7 @@ trait DCBreadcrumb
      *
      * @return Enclosure|null
      */
-    private function getParentEnclosure(): ?Enclosure
+    final public function getParentEnclosure(): ?Enclosure
     {
         $ien = new Item_Enclosure();
         if (
@@ -345,7 +345,7 @@ trait DCBreadcrumb
      *
      * @return int|null
      */
-    private function getPositionInEnclosure(): ?int
+    final public function getPositionInEnclosure(): ?int
     {
         $ien = new Item_Enclosure();
         if (
@@ -363,7 +363,7 @@ trait DCBreadcrumb
      *
      * @return Rack|null
      */
-    private function getParentRack(): ?Rack
+    final public function getParentRack(): ?Rack
     {
         $ira = new Item_Rack();
         if (
@@ -382,7 +382,7 @@ trait DCBreadcrumb
      *
      * @return int|null
      */
-    private function getPositionInRack(): ?int
+    final public function getPositionInRack(): ?int
     {
         $ira = new Item_Rack();
         if (
