@@ -175,17 +175,13 @@ class Update
             $this->migration->displayMessage(sprintf(__('Processing table "%s"...'), $table_info['name']));
 
             if ($checker->hasDifferences($table_info['name'], $table_info['schema'])) {
-                $diff = $checker->getDiff($table_info['name'], $table_info['schema']);
-
                 $has_differences = true;
-                $message = sprintf(__('Table schema differs for table "%s".'), $table_info['name']);
-                $this->migration->displayWarning($message);
-                $this->migration->displayMessage($diff, 'strong');
             }
         }
 
         if ($has_differences) {
-            $this->migration->displayError(__('The database schema is not consistent with the current GLPI version.'));
+            $this->migration->displayWarning(__('The database schema is not consistent with the current GLPI version.'));
+            $this->migration->displayWarning(__('It is recommended to run the "php bin/console glpi:database:check_schema_integrity" command to see the differences.'));
         } else {
             $this->migration->displayMessage(__('Database schema is OK.'), 'strong');
         }
@@ -201,7 +197,7 @@ class Update
      *
      * @return void
      */
-    public function doUpdates($current_version = null, bool $force_latest = false, bool $verification = false)
+    public function doUpdates($current_version = null, bool $force_latest = false)
     {
         if ($current_version === null) {
             if ($this->version === null) {
@@ -345,13 +341,8 @@ class Update
             $this->migration->displayWarning(__('Unable to create security key file! You have to run "php bin/console glpi:security:change_key" command to manually create this file.'), true);
         }
 
-        if ($verification && !$this->checkSchemaIntegrity()) {
-            die(1);
-        }
-
-        if ($verification === false) {
-            $this->migration->displayMessage(__('It is highly recommended to run the "php bin/console glpi:database:check_schema_integrity" command to verify the database schema integrity.'), 'strong');
-        }
+        // Check if schema has differences from the expected one but do not block the upgrade
+        $this->checkSchemaIntegrity();
     }
 
     /**
