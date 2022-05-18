@@ -404,9 +404,9 @@ class Location extends CommonTreeDropdown
      *
      * @param CommonDBTM  $item
      *
-     * @return Location|false
+     * @return Location|null
      **/
-    public static function getFromItem(CommonDBTM $item)
+    final public static function getFromItem(CommonDBTM $item): ?Location
     {
         if ($item->maybeLocated()) {
             $loc = new self();
@@ -414,7 +414,7 @@ class Location extends CommonTreeDropdown
                 return $loc;
             }
         }
-        return false;
+        return null;
     }
 
     /**
