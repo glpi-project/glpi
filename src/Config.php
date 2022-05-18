@@ -2557,6 +2557,11 @@ HTML;
                 $CFG_GLPI['root_doc'] = parse_url($url_base, PHP_URL_PATH) ?? '';
             }
         }
+
+        // Path for icon of document type (web mode only)
+        if (isset($CFG_GLPI['root_doc'])) {
+            $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
+        }
     }
 
 
@@ -3049,11 +3054,6 @@ HTML;
             $prof->getFromDB($CFG_GLPI['lock_lockprofile_id']);
             $prof->cleanProfile();
             $CFG_GLPI['lock_lockprofile'] = $prof->fields;
-        }
-
-       // Path for icon of document type (web mode only)
-        if (isset($CFG_GLPI['root_doc'])) {
-            $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
         }
 
         if (isset($CFG_GLPI['planning_work_days'])) {
