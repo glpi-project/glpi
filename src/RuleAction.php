@@ -96,7 +96,9 @@ class RuleAction extends CommonDBChild
     {
 
         if ($rule = getItemForItemtype(static::$itemtype)) {
-            return Toolbox::stripTags($rule->getMinimalActionText($this->fields));
+            $action_row = $rule->getMinimalActionText($this->fields);
+            $action_text = trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $action_row));
+            return $action_text;
         }
         return '';
     }
