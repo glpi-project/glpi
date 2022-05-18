@@ -192,7 +192,7 @@ class Agent extends CommonDBTM
             'id'         => 902,
             'field'      => 'last_contact',
             'name'       => __('Last contact'),
-            'datatype'   => 'text',
+            'datatype'   => 'datetime',
         ] + $baseopts;
 
         $tab[] = [
