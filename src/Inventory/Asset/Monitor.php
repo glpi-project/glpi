@@ -62,6 +62,7 @@ class Monitor extends InventoryAsset
                     $val->$dest = $val->$origin;
                 }
             }
+            $val->is_dynamic = 1;
 
             if (!property_exists($val, 'name')) {
                 $val->name = '';
@@ -165,6 +166,7 @@ class Monitor extends InventoryAsset
                     $items_id = $monitor->add(Toolbox::addslashes_deep((array)$val));
                 } else {
                     $items_id = $data['found_inventories'][0];
+                    $monitor->update(Toolbox::addslashes_deep((array)$val + ['id' => $items_id]));
                 }
 
                 $monitors[] = $items_id;
