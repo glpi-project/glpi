@@ -1938,7 +1938,8 @@ class Search extends DbTestCase
                 'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
                 'NetworkPortMigration', // Tables only exists in specific cases
                 'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
-                'PendingReasonCron'
+                'PendingReasonCron',
+                'ApprovalReminder'
             ]
         );
         $searchable_classes = [];

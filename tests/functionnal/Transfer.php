@@ -113,6 +113,7 @@ class Transfer extends DbTestCase
                 'Socket',
                 'Netpoint',
                 'Link_Itemtype',
+                'ApprovalReminder',
             ]
         );
 
