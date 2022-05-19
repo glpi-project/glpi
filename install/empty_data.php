@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
 
@@ -345,6 +346,7 @@ $empty_data_builder = new class
             'planning_work_days' => exportArrayToDB([0, 1, 2, 3, 4, 5, 6]),
             'system_user' => 6,
             'support_legacy_data' => 0, // New installation should not support legacy data
+            'inventory_frequency' => AbstractRequest::DEFAULT_FREQUENCY
         ];
 
         $tables['glpi_configs'] = [];

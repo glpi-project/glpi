@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
@@ -645,7 +646,19 @@ class Config extends CommonDBTM
 
         echo "<input type='hidden' name='_update_devices_in_menu' value='1'>";
         echo "</td>";
-        echo "</tr>\n";
+
+        echo "<td><label for='dropdown_inventory_frequency$rand'>" . __('Inventory frequency (in hours)') .
+            "</label></td><td>";
+        Dropdown::showNumber(
+            "inventory_frequency",
+            [
+                'value' => $CFG_GLPI['inventory_frequency'],
+                'min' => 1,
+                'max' => 240,
+                'rand' => $rand
+            ]
+        );
+        echo "</td></tr>\n";
 
         echo "</table>";
 
