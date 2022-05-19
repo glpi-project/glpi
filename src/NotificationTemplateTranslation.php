@@ -376,7 +376,7 @@ class NotificationTemplateTranslation extends CommonDBChild
      **/
     public static function showAvailableTags($itemtype)
     {
-        $target = NotificationTarget::getInstanceByType(stripslashes($itemtype));
+        $target = NotificationTarget::getInstanceByType($itemtype);
         $target->getTags();
 
         echo "<div class='center'>";
