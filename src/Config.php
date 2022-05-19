@@ -647,7 +647,7 @@ class Config extends CommonDBTM
         echo "<input type='hidden' name='_update_devices_in_menu' value='1'>";
         echo "</td>";
 
-        echo "<td><label for='dropdown_inventory_frequency$rand'>" . __('Inventory frequency') .
+        echo "<td><label for='dropdown_inventory_frequency$rand'>" . __('Inventory frequency (in hours)') .
             "</label></td><td>";
         Dropdown::showNumber(
             "inventory_frequency",
