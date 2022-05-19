@@ -43,7 +43,7 @@ if (strpos($_SERVER['PHP_SELF'], "ticketsatisfaction.php")) {
 
 $entity = new Entity();
 
-if (isset($_POST['inquest_config'], $_POST['entities_id'])) {
+if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
     if ($entity->getFromDB($_POST['entities_id'])) {
         $inquest_delay     = $entity->getfield('inquest_delay');
         $inquest_rate      = $entity->getfield('inquest_rate');

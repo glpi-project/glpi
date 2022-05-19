@@ -46,14 +46,14 @@ switch ($_GET['action']) {
         if (isset($_GET['my_items']) && !empty($_GET['my_items'])) {
             list($_GET['itemtype'], $_GET['items_id']) = explode('_', $_GET['my_items']);
         }
-        if (isset($_GET['items_id'], $_GET['itemtype']) && !empty($_GET['items_id'])) {
+        if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
             $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
         }
         Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
         break;
 
     case 'delete':
-        if (isset($_GET['items_id'], $_GET['itemtype']) && !empty($_GET['items_id'])) {
+        if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
             $deleted = true;
             if ($_GET['params']['id'] > 0) {
                 $deleted = $item_ticket->deleteByCriteria(['tickets_id' => $_GET['params']['id'],

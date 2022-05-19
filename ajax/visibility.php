@@ -46,7 +46,8 @@ Session::checkLoginUser();
 /** @global array $CFG_GLPI */
 
 if (
-    isset($_POST['type'], $_POST['right']) && !empty($_POST['type'])
+    isset($_POST['type']) && !empty($_POST['type'])
+    && isset($_POST['right'])
 ) {
     $display = false;
     $rand    = mt_rand();

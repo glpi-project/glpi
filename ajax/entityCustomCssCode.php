@@ -44,7 +44,7 @@ if (strpos($_SERVER['PHP_SELF'], 'entityCustomCssCode.php')) {
 $entity = new Entity();
 $entity->getFromDB($_POST['entities_id']);
 
-if (isset($_POST['enable_custom_css'], $_POST['entities_id'])) {
+if (isset($_POST['enable_custom_css']) && isset($_POST['entities_id'])) {
     $enable_custom_css = $_POST['enable_custom_css'] == '1';
 
     if (Entity::CONFIG_PARENT == $_POST['enable_custom_css']) {

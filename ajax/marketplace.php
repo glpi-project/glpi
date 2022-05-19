@@ -65,7 +65,7 @@ Session::checkRight("config", UPDATE);
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 
-if (isset($_POST['key'], $_POST["action"])) {
+if (isset($_POST['key']) && isset($_POST["action"])) {
     $marketplace_ctrl = new MarketplaceController($_POST['key']);
     if (
         $_POST["action"] == "download_plugin"

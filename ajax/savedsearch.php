@@ -64,7 +64,8 @@ if (isset($_POST["name"])) {
 }
 
 if (
-    isset($_GET['mark_default'], $_GET["id"])
+    isset($_GET['mark_default'])
+           && isset($_GET["id"])
 ) {
     $savedsearch->check($_GET["id"], READ);
 

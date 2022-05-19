@@ -48,7 +48,8 @@ Session::checkLoginUser();
 
 /** @global DBmysql $DB */
 if (
-    isset($_POST["table"], $_POST["value"])
+    isset($_POST["table"])
+    && isset($_POST["value"])
 ) {
    // Security
     if (!$DB->tableExists($_POST['table'])) {

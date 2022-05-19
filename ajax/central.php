@@ -43,7 +43,8 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (
-    !isset($_REQUEST['params']['_idor_token'], $_REQUEST['itemtype']) || empty($_REQUEST['params']['_idor_token']) || !isset($_REQUEST['widget'])
+    (!isset($_REQUEST['params']['_idor_token']) || empty($_REQUEST['params']['_idor_token'])) || !isset($_REQUEST['itemtype'])
+    || !isset($_REQUEST['widget'])
 ) {
     http_response_code(400);
     die();

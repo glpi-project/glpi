@@ -45,7 +45,8 @@ Session::checkLoginUser();
 /** @global array $CFG_GLPI */
 
 if (
-    isset($_POST["itemtype"], $_POST["value"])
+    isset($_POST["itemtype"])
+    && isset($_POST["value"])
 ) {
    // Security
     if (!is_subclass_of($_POST["itemtype"], "CommonDBTM")) {

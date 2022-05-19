@@ -43,7 +43,8 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (
-    isset($_POST['duration'], $_POST['name']) && ($_POST['duration'] == 0)
+    isset($_POST['duration']) && ($_POST['duration'] == 0)
+    && isset($_POST['name'])
 ) {
     if (!isset($_POST['global_begin'])) {
         $_POST['global_begin'] = '';

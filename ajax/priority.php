@@ -40,7 +40,8 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (
-    isset($_REQUEST["urgency"], $_REQUEST["impact"])
+    isset($_REQUEST["urgency"])
+    && isset($_REQUEST["impact"])
 ) {
     $priority = Ticket::computePriority($_REQUEST["urgency"], $_REQUEST["impact"]);
 

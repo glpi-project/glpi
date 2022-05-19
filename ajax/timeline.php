@@ -43,7 +43,8 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: application/json; charset=UTF-8");
 
     if (
-        !isset($_POST['tasks_id'], $_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
+        !isset($_POST['tasks_id'])
+        || !isset($_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
     ) {
         exit();
     }
