@@ -45,7 +45,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (!isset($_POST['kbid'], $_POST['oldid'], $_POST['diffid'])) {
+if (!isset($_POST['kbid'], $_POST['oldid']) || !isset($_POST['diffid'])) {
     throw new \RuntimeException('Required argument missing!');
 }
 

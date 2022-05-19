@@ -44,7 +44,7 @@ Session::checkCentralAccess();
 
 // Make a select box
 if (
-    isset($_POST["type"], $_POST["actortype"], $_POST["itemtype"])
+    isset($_POST["type"], $_POST["actortype"]) && isset($_POST["itemtype"])
 ) {
     $rand = mt_rand();
     $withemail = isset($_POST['allow_email']) && filter_var($_POST['allow_email'], FILTER_VALIDATE_BOOLEAN);
