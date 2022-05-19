@@ -46,6 +46,9 @@ window.CFG_GLPI = {
     root_doc: '/'
 };
 
+// Mock frontend version to 32 bit random hex string
+window.GLPI_FRONTEND_VERSION = '0x' + Math.floor(Math.random() * 0x100000000).toString(16);
+
 // Mock localization
 // eslint-disable-next-line no-unused-vars
 window.__ = function (msgid, domain /* , extra */) {
@@ -159,3 +162,5 @@ class AjaxMock {
 window.AjaxMock = new AjaxMock();
 
 await import('../../js/common.js');
+// Load GLPI core module
+await import('../../js/modules/GLPI.js');

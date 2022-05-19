@@ -567,7 +567,7 @@ $CFG_GLPI['javascript'] = [
     ],
     'helpdesk'  => [
         'dashboard' => ['dashboard'],
-        'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
+        'planning'  => ['fullcalendar', 'tinymce', 'planning'],
         'ticket'    => ['rateit', 'tinymce', 'kanban', 'dashboard'],
         'problem'   => ['tinymce', 'kanban', 'sortable'],
         'change'    => ['tinymce', 'kanban', 'sortable', 'rateit'],
@@ -598,18 +598,16 @@ $CFG_GLPI['javascript'] = [
         ],
         'plugin' => [
             'marketplace' => ['marketplace']
-        ],
-        'config' => ['clipboard']
+        ]
     ],
-    'admin'        => ['clipboard', 'sortable'],
-    'preference'   => ['clipboard'],
+    'admin'        => ['sortable'],
     'self-service' => array_merge(['tinymce'], $reservations_libs),
     'tickets'      => [
         'ticket' => ['tinymce']
     ],
     'create_ticket' => ['tinymce'],
     'reservation'   => array_merge(['tinymce'], $reservations_libs),
-    'faq'           => ['tinymce'],
+    'faq'           => ['tinymce']
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)

@@ -1208,14 +1208,17 @@ HTML;
         $theme = ThemeManager::getInstance()->getCurrentTheme();
 
         $tpl_vars = [
-            'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-            'title'     => $title,
-            'theme'     => $theme,
-            'css_files' => [],
-            'js_files'  => [],
+            'lang'          => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'title'         => $title,
+            'theme'         => $theme,
+            'css_files'     => [],
+            'js_files'      => [],
+            'js_modules'    => [],
         ];
 
         $tpl_vars['css_files'][] = ['path' => 'public/lib/base.css'];
+        // Load core GLPI JS module
+        $tpl_vars['js_modules'][] = ['path' => 'js/modules/GLPI.js'];
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
             Html::requireJs('notifications_ajax');
@@ -1314,10 +1317,6 @@ HTML;
 
             if (in_array('tinymce', $jslibs)) {
                 Html::requireJs('tinymce');
-            }
-
-            if (in_array('clipboard', $jslibs)) {
-                Html::requireJs('clipboard');
             }
 
             if (in_array('charts', $jslibs)) {
@@ -6055,24 +6054,11 @@ HTML;
      * by a prettier dialog.
      *
      * @since 9.1
+     * @deprecated 10.1.0
      **/
     public static function redefineAlert()
     {
-
-        echo self::scriptBlock("
-      window.old_alert = window.alert;
-      window.alert = function(message, caption) {
-         // Don't apply methods on undefined objects... ;-) #3866
-         if(typeof message == 'string') {
-            message = message.replace('\\n', '<br>');
-         }
-         caption = caption || '" . _sn('Information', 'Information', 1) . "';
-
-         glpi_alert({
-            title: caption,
-            message: message,
-         });
-      };");
+        Toolbox::deprecated('Alert and Confirm dialogs are now redefined in js/GLPI.js');
     }
 
 
@@ -6116,55 +6102,11 @@ HTML;
      * In this case, we trigger a new click on element to return the value (and without display dialog)
      *
      * @since 9.1
+     * @deprecated 10.1.0
      */
     public static function redefineConfirm()
     {
-
-        echo self::scriptBlock("
-      var confirmed = false;
-      var lastClickedElement;
-
-      // store last clicked element on dom
-      $(document).click(function(event) {
-          lastClickedElement = $(event.target);
-      });
-
-      // asynchronous confirm dialog with jquery ui
-      var newConfirm = function(message, caption) {
-         message = message.replace('\\n', '<br>');
-         caption = caption || '';
-
-         glpi_confirm({
-            title: caption,
-            message: message,
-            confirm_callback: function() {
-               confirmed = true;
-
-               //trigger click on the same element (to return true value)
-               lastClickedElement.click();
-
-               // re-init confirmed (to permit usage of 'confirm' function again in the page)
-               // maybe timeout is not essential ...
-               setTimeout(function() {
-                  confirmed = false;
-               }, 100);
-            }
-         });
-      };
-
-      window.nativeConfirm = window.confirm;
-
-      // redefine native 'confirm' function
-      window.confirm = function (message, caption) {
-         // if watched var isn't true, we can display dialog
-         if(!confirmed) {
-            // call asynchronous dialog
-            newConfirm(message, caption);
-         }
-
-         // return early
-         return confirmed;
-      };");
+        Toolbox::deprecated('Alert and Confirm dialogs are now redefined in js/GLPI.js');
     }
 
 
@@ -6292,9 +6234,6 @@ HTML;
         switch ($name) {
             case 'glpi_dialog':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/glpi_dialog.js';
-                break;
-            case 'clipboard':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
                 break;
             case 'tinymce':
                 $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
@@ -6547,10 +6486,12 @@ HTML;
             $plugins_path[$key] = Plugin::getWebDir($key, false);
         }
         $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
+        $glpi_version = 'const GLPI_FRONTEND_VERSION = "' . FrontEnd::getVersionCacheKey(GLPI_VERSION) . '";';
 
         return self::scriptBlock("
             $cfg_glpi
             $plugins_path
+            $glpi_version
         ");
     }
 
