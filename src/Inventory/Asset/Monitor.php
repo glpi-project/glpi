@@ -151,7 +151,6 @@ class Monitor extends InventoryAsset
                 'itemtype'     => 'Monitor',
                 'name'         => $val->name,
                 'serial'       => $val->serial ?? '',
-                'is_dynamic'   => 1,
                 'entities_id'  => $entities_id
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
