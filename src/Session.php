@@ -1598,10 +1598,23 @@ class Session
             return false; // Cannot impersonate invalid user, self, or already impersonated user
         }
 
-       // For now we do not check more than config update right, but we may
-       // implement more fine checks in the future.
+        // Cannot impersonate if we don't have config right
+        if (!self::haveRight(Config::$rightname, UPDATE)) {
+            return false;
+        }
 
-        return self::haveRight(Config::$rightname, UPDATE);
+        // Cannot impersonate inactive user
+        $user = new User();
+        if (!$user->getFromDB($user_id) || !$user->getField('is_active')) {
+            return false;
+        }
+
+        // Cannot impersonate user with no profile
+        if (Profile_User::getUserProfiles($user_id, true) == []) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
