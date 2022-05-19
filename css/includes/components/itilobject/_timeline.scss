@@ -169,6 +169,7 @@
     }
 
     &.ITILFollowup,
+    &.NotepadItem,
     &.KnowbaseItemComment {
         .timeline-content {
             background-color: $timeline-fup-bg;
@@ -390,6 +391,7 @@
             &.ITILTask.info,
             &.Document_Item,
             &.Log,
+            &.NotepadItem,
             &.KnowbaseItemComment {
                 display: none;
             }

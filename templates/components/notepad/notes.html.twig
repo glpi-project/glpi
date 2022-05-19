@@ -34,7 +34,7 @@
 {% set rand = random() %}
 {% set entity = get_item('Entity', item.fields['entities_id']) %}
 
-{% set notes = call('Notepad::getAllForItem', [entity, true]) %}
+{% set notes = call('Notepad::getAllForItem', [entity, 'Ticket']) %}
 {% if notes|length == 0 %}
     <div class="alert alert-info" role="alert">
         {{ __('There is no notes on this entity') }}
