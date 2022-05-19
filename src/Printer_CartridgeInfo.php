@@ -202,7 +202,7 @@ class Printer_CartridgeInfo extends CommonDBChild
             'darkgrey'  => 'darkgray'
         ];
         $printer = new Printer();
-        if (strpos($field, '_virtual_toner') === 0) {
+        if (str_starts_with($field, '_virtual_toner')) {
             $color = preg_match('/_virtual_toner_(.*)_percent/', $field, $matches) ? $matches[1] : '';
             $search_option_id = $printer->getSearchOptionIDByField('field', $field);
             $raw_search_opt_values = $options['raw_data']['Printer_' . $search_option_id];
