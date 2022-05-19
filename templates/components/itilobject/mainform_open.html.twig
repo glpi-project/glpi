@@ -89,6 +89,11 @@
       <input type="hidden" name="_skip_promoted_fields" value="{{ params['_skip_promoted_fields'] }}" />
    {% endif %}
 
+   {# Ticket specific: created from project task, need to keep track of task id #}
+   {% if params['_projecttasks_id'] is defined and params['_projecttasks_id'] > 0 %}
+      <input type="hidden" name="_projecttasks_id" value="{{ params['_projecttasks_id'] }}" />
+   {% endif %}
+
    {% if params['_tasktemplates_id'] is defined and params['_tasktemplates_id']|length > 0 %}
       {% for tasktemplate_id in params['_tasktemplates_id'] %}
          <input type="hidden" name="_tasktemplates_id[]" value="{{ tasktemplate_id }}" />
