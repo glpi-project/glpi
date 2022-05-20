@@ -4505,7 +4505,7 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             $newtab['condition'] = array_merge(
                 $newtab['condition'],
-                ['id' => [$_SESSION['glpigroups']]]
+                ['id' => $_SESSION['glpigroups']]
             );
         }
         $tab[] = $newtab;
