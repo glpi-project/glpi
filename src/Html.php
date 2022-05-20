@@ -2229,14 +2229,19 @@ HTML;
         //Toolbox::deprecated('openArrowMassives() method is deprecated');
 
         if ($fixed) {
-            echo "<table class='tab_glpi' width='950px'>";
+            echo "<table width='950px'>";
         } else {
-            echo "<table class='tab_glpi' width='80%'>";
+            echo "<table width='80%'>";
+        }
+
+        $arrow = "fas fa-level-down-alt";
+        if (!$ontop) {
+            $arrow = "fas fa-level-up-alt";
         }
 
         echo "<tr>";
         if (!$onright) {
-            echo "<td><i class='fas fa-level-down-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
+            echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
         } else {
             echo "<td class='left' width='80%'></td>";
         }
@@ -2249,7 +2254,7 @@ HTML;
              href='#'>" . __('Uncheck all') . "</a></td>";
 
         if ($onright) {
-            echo "<td><i class='fas fa-level-down-alt fa-lg mx-2'></i>";
+            echo "<td><i class='$arrow fa-lg mx-2'></i>";
         } else {
             echo "<td class='left' width='80%'>";
         }
