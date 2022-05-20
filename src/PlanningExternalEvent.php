@@ -149,7 +149,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
         if (
             ($options['from_planning_ajax'] ?? false)
-            || ($options['from_planning_edit_ajax'] ?? false)) {
+            || ($options['from_planning_edit_ajax'] ?? false)
+        ) {
             $options['no_header'] = true;
         }
         $this->initForm($ID, $options);

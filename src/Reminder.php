@@ -611,7 +611,8 @@ class Reminder extends CommonDBVisible implements
 
         if (
             ($options['from_planning_ajax'] ?? false)
-            || ($options['from_planning_edit_ajax'] ?? false)) {
+            || ($options['from_planning_edit_ajax'] ?? false)
+        ) {
             $options['no_header'] = true;
         }
         $this->showFormHeader($options);
