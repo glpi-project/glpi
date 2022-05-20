@@ -38,7 +38,7 @@
  *
  * @since 10.1.0
  */
-class ApprovalReminder extends CommonDBTM
+class CommonITILValidationCron extends CommonDBTM
 {
     /**
      * Get cron task's description
