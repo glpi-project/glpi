@@ -200,12 +200,6 @@ class Socket extends CommonDBChild
     public function showForm($ID, array $options = [])
     {
 
-        global $DB;
-
-        global $DB;
-
-        global $DB;
-
         $itemtype = null;
         if (isset($options['itemtype']) && !empty($options['itemtype'])) {
             $itemtype = $options['itemtype'];
@@ -219,6 +213,93 @@ class Socket extends CommonDBChild
         if ($ID > 0) {
             $this->check($ID, READ);
             $item->getFromDB($this->fields['items_id']);
+
+            $leftJoins = [
+                'glpi_sockets' . ' AS socket_endpoint_a' => [
+                    'FKEY' => [
+                        'glpi_cables'   => 'sockets_id_endpoint_a',
+                        'socket_endpoint_a' => 'id'
+                    ]
+                ],
+
+                'glpi_sockets' . ' AS socket_endpoint_b' => [
+                    'FKEY'   => [
+                        'glpi_cables'   => 'sockets_id_endpoint_b',
+                        'socket_endpoint_b' => 'id'
+                    ]
+                ],
+            ];
+
+            $itemTypeTables = [
+                'glpi_computers',
+                'glpi_networkequipments',
+                'glpi_printers',
+                'glpi_passivedcequipments',
+                'glpi_phones',
+                'glpi_passivedcequipments'
+            ];
+
+            foreach ($itemTypeTables as $itemTypeTable) {
+                $leftJoin = [
+                    $itemTypeTable . ' AS ' . $itemTypeTable . '_a' => [
+                        'FKEY'   => [
+                            'glpi_cables'   => 'items_id_endpoint_a',
+                            $itemTypeTable . '_a' => 'id'
+                        ]
+                    ],
+                ];
+                $leftJoins = array_merge($leftJoins, $leftJoin);
+                $leftJoin = [
+                    $itemTypeTable . ' AS ' . $itemTypeTable . '_b' => [
+                        'FKEY'   => [
+                            'glpi_cables'   => 'items_id_endpoint_b',
+                            $itemTypeTable . '_b' => 'id'
+                        ]
+                    ],
+                ];
+                $leftJoins = array_merge($leftJoins, $leftJoin);
+            }
+
+            $where = function ($wiringSide, $ID) {
+                return [
+                    'WHERE' => [
+                        'glpi_cables.wiring_side' => $wiringSide,
+                        'OR' => [
+                            'glpi_cables.sockets_id_endpoint_a' => $ID,
+                            'glpi_cables.sockets_id_endpoint_a' => $ID
+                        ]
+                    ]
+                ];
+            };
+
+            $criteria = [
+                'SELECT' => new \QueryExpression(
+                    'glpi_cables.*,
+                    socket_endpoint_a.name as socket_name_endpoint_a,
+                    socket_endpoint_b.name as socket_name_endpoint_b,
+                    CASE glpi_cables.itemtype_endpoint_a
+                        WHEN "Computer" THEN glpi_computers_a.name
+                        WHEN "Networkequipment" THEN glpi_networkequipments_a.name
+                        WHEN "Printer" THEN glpi_printers_a.name
+                        WHEN "Phone" THEN glpi_phones_a.name
+                        WHEN "PassiveDCEquipment" THEN glpi_passivedcequipments_a.name
+                        ELSE NULL
+                    END endpoint_a_name,
+                    CASE glpi_cables.itemtype_endpoint_b
+                        WHEN "Computer" THEN glpi_computers_b.name
+                        WHEN "Networkequipment" THEN glpi_networkequipments_b.name
+                        WHEN "Printer" THEN glpi_printers_b.name
+                        WHEN "Phone" THEN glpi_phones_b.name
+                        WHEN "PassiveDCEquipment" THEN glpi_passivedcequipments_b.name
+                        ELSE NULL
+                    END endpoint_b_name'
+                ),
+                'FROM'   => 'glpi_cables',
+                'LEFT JOIN' => $leftJoins
+            ];
+
+            $rearCable = $DB->request(array_merge($criteria, $where(1, $ID)))->current();
+            $frontCable = $DB->request(array_merge($criteria, $where(2, $ID)))->current();
         } else {
             $this->check(-1, CREATE, $options);
             $item->getFromDB($options['items_id']);
