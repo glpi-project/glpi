@@ -503,6 +503,34 @@ class Profile_User extends CommonDBRelation
 
         $nb = count($iterator);
 
+        if ($canedit) {
+            $used_users = array_column(iterator_to_array($iterator) ?? [], 'id');
+            echo "<div class='firstbloc'>";
+            echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
+            echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'><th colspan='6'>" . __('Add an authorization to a user') . "</tr>";
+
+            echo "<tr class='tab_bg_2'><td class='center'>";
+            echo "<input type='hidden' name='profiles_id' value='$ID'>";
+            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
+            echo "</td><td class='center'>" . User::getTypeName(1) . "</td><td>";
+            User::dropdown([
+                'entity'    => $_SESSION['glpiactiveentities'],
+                'right'     => 'all',
+                'used'      => $used_users,
+            ]);
+            echo "</td><td>" . __('Recursive') . "</td><td>";
+            Dropdown::showYesNo("is_recursive", 0);
+            echo "</td><td class='center'>";
+            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+            echo "</td></tr>";
+
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
+        }
+
         echo "<div class='spaced'>";
 
         if ($canedit && $nb) {
