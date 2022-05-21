@@ -61,6 +61,11 @@ class Controller extends CommonGLPI
     const MP_REPLACE_YES   = 2;
     const MP_REPLACE_NEVER = 3;
 
+    const MP_MODE_DISABLED = 0;
+    const MP_MODE_CLI_ONLY = 1;
+    const MP_MODE_WEB_ONLY = 2;
+    const MP_MODE_FULL     = 3;
+
     public function __construct(string $plugin_key = "")
     {
         $this->plugin_key = $plugin_key;
@@ -70,6 +75,16 @@ class Controller extends CommonGLPI
     public static function getTypeName($nb = 0)
     {
         return __('Marketplace');
+    }
+
+    public static function isCLIAllowed()
+    {
+        return (GLPI_MARKETPLACE_ENABLE & self::MP_MODE_CLI_ONLY) === self::MP_MODE_CLI_ONLY;
+    }
+
+    public static function isWebAllowed()
+    {
+        return (GLPI_MARKETPLACE_ENABLE & self::MP_MODE_WEB_ONLY) === self::MP_MODE_WEB_ONLY;
     }
 
     /**

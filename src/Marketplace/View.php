@@ -106,6 +106,9 @@ class View extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!Controller::isWebAllowed()) {
+            return '';
+        }
         if ($item->getType() == __CLASS__) {
             return [
                 self::createTabEntry(__("Installed")),
@@ -118,6 +121,9 @@ class View extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!Controller::isWebAllowed()) {
+            return false;
+        }
         if ($item->getType() == __CLASS__) {
             switch ($tabnum) {
                 case 0:
