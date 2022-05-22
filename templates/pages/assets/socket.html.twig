@@ -45,16 +45,7 @@
       __('Position')
    ) }}
 
-
-   {% set wiring_side %}
-      {% do call('Glpi\\Socket::dropdownWiringSide', [
-         'wiring_side',
-         {
-            'value': item.fields['wiring_side'],
-         }
-      ]) %}
-
-		{{ fields.dropdownNumberField(
+	{{ fields.dropdownNumberField(
          'to',
          1,
          __('To'),
