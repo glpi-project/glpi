@@ -45,6 +45,8 @@
       __('Position')
    ) }}
 
+	{% if params["several"] is defined %}
+
 	{{ fields.dropdownNumberField(
          'to',
          1,
