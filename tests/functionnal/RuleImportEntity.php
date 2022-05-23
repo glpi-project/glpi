@@ -41,10 +41,10 @@ use DbTestCase;
 
 class RuleImportEntity extends DbTestCase
 {
+    protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+
     public function testTwoRegexpEntitiesTest()
     {
-        global $DB;
-
         $this->login();
         $entity = new \Entity();
 
@@ -313,5 +313,113 @@ class RuleImportEntity extends DbTestCase
             '_ruleid'        => $rule_id,
         ];
         $this->array($ent)->isEqualTo($expected);
+    }
+
+    public function testEntityInheritance()
+    {
+        global $DB;
+
+        $this->login();
+        $entity = new \Entity();
+
+        //create entity rule: anything will be linked to IntEnv entity
+        $entities_id_a = $entity->add([
+            'name'         => 'Inventory Entity',
+            'entities_id'  => 0,
+            'completename' => 'Root entitiy > Entity A',
+            'level'        => 2,
+            'tag'          => 'InvEnt'
+        ]);
+        $this->integer($entities_id_a)->isGreaterThan(0);
+
+        // Add a rule for get entity tag (1)
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'entity rule 1',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportEntity',
+            'ranking'   => 1
+        ];
+        $rule1_id = $rule->add($input);
+        $this->integer($rule1_id)->isGreaterThan(0);
+
+        // Add criteria
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rule1_id,
+            'criteria'  => "name",
+            'pattern'   => "/^(.*)$/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->integer($rulecriteria->add($input))->isGreaterThan(0);
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'regex_result',
+            'field'       => '_affect_entity_by_tag',
+            'value'       => 'InvEnt'
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+
+        $input = [
+            'name' => 'computer01 - entC'
+        ];
+
+        $ruleEntity = new \RuleImportEntityCollection();
+        $ruleEntity->getCollectionPart();
+        $ent = $ruleEntity->processAllRules($input, []);
+
+        $expected = [
+            'entities_id'  => $entities_id_a,
+            '_ruleid'      => $rule1_id
+        ];
+        $this->array($ent)->isEqualTo($expected);
+
+        //proceed a real inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        $this->integer($computer->fields['entities_id'])->isIdenticalTo($entities_id_a);
+
+        //get connected items
+        $iterator = $DB->request(\Computer_Item::getTable(), ['computers_id' => $computer->fields['id']]);
+        $this->integer(count($iterator))->isIdenticalTo(2); //1 printer, 1 monitor
+        foreach ($iterator as $item) {
+            $asset = new $item['itemtype']();
+            $this->boolean($asset->getFromDb($item['items_id']))->isTrue();
+            $this->integer($asset->fields['entities_id'])->isIdenticalTo(
+                $entities_id_a,
+                sprintf(
+                    '%s #%s does not have the correct entity (%s expected, got %s)',
+                    $item['itemtype'],
+                    $item['items_id'],
+                    $entities_id_a,
+                    $asset->fields['entities_id']
+                )
+            );
+        }
     }
 }
