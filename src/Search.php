@@ -46,25 +46,101 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class Search
 {
-   // Default number of items displayed in global search
+    /**
+     * Default number of items displayed in global search
+     * @var int
+     * @see GLOBAL_SEARCH
+     */
     const GLOBAL_DISPLAY_COUNT = 10;
+
    // EXPORT TYPE
+    /**
+     * The global search view (Search across many item types).
+     * This is NOT the same as the AllAssets view which is just a special itemtype.
+     * @var int
+     */
     const GLOBAL_SEARCH        = -1;
+
+    /**
+     * The standard view.
+     * This includes the following sub-views:
+     * - Table/List
+     * - Map
+     * - Browse
+     * @var int
+     */
     const HTML_OUTPUT          = 0;
+
+    /**
+     * SYLK export format
+     * @var int
+     */
     const SYLK_OUTPUT          = 1;
+
+    /**
+     * PDF export format (Landscape mode)
+     * @var int
+     */
     const PDF_OUTPUT_LANDSCAPE = 2;
+
+    /**
+     * CSV export format
+     * @var int
+     */
     const CSV_OUTPUT           = 3;
+
+    /**
+     * PDF export format (Portrait mode)
+     * @var int
+     */
     const PDF_OUTPUT_PORTRAIT  = 4;
+
+    /**
+     * Names list export format
+     * @var int
+     */
     const NAMES_OUTPUT         = 5;
 
+    /**
+     * Placeholder for a <br> line break
+     * @var string
+     */
     const LBBR = '#LBBR#';
+
+    /**
+     * Placeholder for a <hr> line break
+     * @var string
+     */
     const LBHR = '#LBHR#';
 
+    /**
+     * Separator used for GROUP_CONCAT MySQL function.
+     *
+     * Unknown specific use cases.
+     * @var string
+     * @see LONGSEP
+     */
     const SHORTSEP = '$#$';
+
+    /**
+     * Separator used for GROUP_CONCAT MySQL function.
+     *
+     * Unknown specific use cases.
+     * @var string
+     * @see SHORTSEP
+     */
     const LONGSEP  = '$$##$$';
 
+    /**
+     * Placeholder for a null value
+     * @var string
+     */
     const NULLVALUE = '__NULL__';
 
+    /**
+     * The output format for the search results
+     * @var int
+     */
     public static $output_type = self::HTML_OUTPUT;
     public static $search = [];
 
@@ -109,7 +185,7 @@ class Search
     /**
      * Display result table for search engine for an type
      *
-     * @param string $itemtype     Item type to manage
+     * @param class-string<CommonDBTM> $itemtype Item type to manage
      * @param array  $params       Search params passed to
      *                             prepareDatasForSearch function
      * @param array  $forcedisplay Array of columns to display (default empty
@@ -143,7 +219,7 @@ class Search
     /**
      * Display result table for search engine for an type as a map
      *
-     * @param string $itemtype Item type to manage
+     * @param class-string<CommonDBTM> $itemtype Item type to manage
      * @param array  $params   Search params passed to prepareDatasForSearch function
      *
      * @return void
@@ -359,7 +435,7 @@ class Search
      *
      * @since 0.85
      *
-     * @param string $itemtype      Item type to manage
+     * @param class-string<CommonDBTM> $itemtype Item type to manage
      * @param array  $params        Search params passed to prepareDatasForSearch function
      * @param array  $forcedisplay  Array of columns to display (default empty = empty use display pref and search criteria)
      *
@@ -381,7 +457,7 @@ class Search
      *
      * @since 0.85
      *
-     * @param string $itemtype      Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param array  $params        Array of parameters
      *                               may include sort, order, start, list_limit, deleted, criteria, metacriteria
      * @param array  $forcedisplay  Array of columns to display (default empty = empty use display pref and search criterias)
@@ -605,7 +681,7 @@ class Search
      *
      * @param array $data  Array of search datas prepared to generate SQL
      *
-     * @return void
+     * @return void|false May return false if the search request data is invalid
      **/
     public static function constructSQL(array &$data)
     {
@@ -1350,7 +1426,7 @@ class Search
      * @param array   $data      array of search data prepared to get data
      * @param boolean $onlycount If we just want to count results
      *
-     * @return void
+     * @return void|false May return false if the SQL data in $data is not valid
      **/
     public static function constructData(array &$data, $onlycount = false)
     {
@@ -2232,7 +2308,7 @@ class Search
     /**
      * Get meta types available for search engine
      *
-     * @param string $itemtype Type to display the form
+     * @param class-string<CommonDBTM> $itemtype Type to display the form
      *
      * @return array Array of available itemtype
      **/
@@ -2344,10 +2420,14 @@ class Search
     }
 
     /**
-     * @since 0.85
+     * Gets the class to use if the specified itemtyoe extends one of the known reference types.
      *
-     * @param $itemtype
-     **/
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return string|false The reference class name. If the provided itemtype is from a plugin, the provided itemtype is returned.
+     *                      If the itemtype is not from a plugin and not exactly or extended from a reference itemtype, false will be returned.
+     * @since 0.85
+     */
     public static function getMetaReferenceItemtype($itemtype)
     {
 
@@ -2378,6 +2458,8 @@ class Search
 
 
     /**
+     * Get dropdown options of logical operators.
+     * @return string[]|array<string, string>
      * @since 0.85
      **/
     public static function getLogicalOperators($only_not = false)
@@ -2403,7 +2485,7 @@ class Search
      *
      * Params need to parsed before using Search::manageParams function
      *
-     * @param string $itemtype  Type to display the form
+     * @param class-string<CommonDBTM> $itemtype  Type to display the form
      * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
      *
      * @return void
@@ -3022,7 +3104,7 @@ JAVASCRIPT;
      * @param  integer $num         index of the criteria
      * @param  array   $parents_num node indexes of the parents (@see displayCriteriaGroup)
      *
-     * @return mixed   the found criteria array of false of nothing found
+     * @return array|false   the found criteria array, or false if nothing found
      */
     public static function findCriteriaInSession($itemtype = '', $num = 0, $parents_num = [])
     {
@@ -3055,7 +3137,7 @@ JAVASCRIPT;
      *
      * @since 9.4
      *
-     * @param  string $itemtype
+     * @param  class-string<CommonDBTM> $itemtype
      *
      * @return array  criteria
      */
@@ -3328,7 +3410,7 @@ JAVASCRIPT;
 
 
     /**
-     * Generic Function to add GROUP BY to a request
+     * Generic Function to add to a HAVING clause
      *
      * @since 9.4: $num param has been dropped
      *
@@ -3339,7 +3421,8 @@ JAVASCRIPT;
      * @param string  $searchtype     search type ('contains' or 'equals')
      * @param string  $val            value search
      *
-     * @return select string
+     * @return string|false HAVING clause sub-string (Does not include the "HAVING" keyword).
+     *                      May return false if the related search option is not valid for SQL searching.
      **/
     public static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val)
     {
@@ -3486,7 +3569,7 @@ JAVASCRIPT;
      *    Old functionality maintained by checking the type of the first parameter.
      *    This backwards compatibility will be removed in a later version.
      *
-     * @param string $itemtype The itemtype
+     * @param class-string<CommonDBTM> $itemtype The itemtype
      * @param array  $sort_fields The search options to order on. This array should contain one or more associative arrays containing:
      *    - id: The search option ID
      *    - order: The sort direction (Default: ASC). Invalid sort directions will be replaced with the default option
@@ -3664,10 +3747,10 @@ JAVASCRIPT;
     /**
      * Generic Function to add default columns to view
      *
-     * @param string $itemtype device type
+     * @param class-string<CommonDBTM> $itemtype  Item type
      * @param array  $params   array of parameters
      *
-     * @return select string
+     * @return array Array of search option IDs to be shown in the results
      **/
     public static function addDefaultToView($itemtype, $params)
     {
@@ -3706,7 +3789,7 @@ JAVASCRIPT;
     /**
      * Generic Function to add default select to a request
      *
-     * @param string $itemtype device type
+     * @param class-string<CommonDBTM> $itemtype device type
      *
      * @return string Select string
      **/
@@ -4132,7 +4215,7 @@ JAVASCRIPT;
     /**
      * Generic Function to add default where to a request
      *
-     * @param string $itemtype device type
+     * @param class-string<CommonDBTM> $itemtype device type
      *
      * @return string Where string
      **/
@@ -5130,7 +5213,7 @@ JAVASCRIPT;
     /**
      * Generic Function to add Default left join to a request
      *
-     * @param string $itemtype             Reference item type
+     * @param class-string<CommonDBTM> $itemtype Reference item type
      * @param string $ref_table            Reference table
      * @param array &$already_link_tables  Array of tables already joined
      *
@@ -7586,7 +7669,7 @@ HTML;
      *
      * Get an option number in the SEARCH_OPTION array
      *
-     * @param string $itemtype  Item type
+     * @param class-string<CommonDBTM> $itemtype  Item type
      * @param string $field     Name
      *
      * @return integer
@@ -8816,7 +8899,7 @@ HTML;
      *
      * @param string $alias    Alias for translation table
      * @param string $table    Table to join on
-     * @param string $itemtype Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param string $field    Field name
      *
      * @return string
@@ -8834,7 +8917,7 @@ HTML;
     /**
      * Get table name for item type
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return string
      */
