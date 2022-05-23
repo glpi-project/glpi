@@ -414,10 +414,6 @@ class Search
         $p['list_limit']          = $_SESSION['glpilist_limit'];
         $p['massiveactionparams'] = [];
 
-        if ($itemtype == KnowbaseItem::class) {
-            $params = KnowbaseItem::getAdditionalSearchCriteria($params);
-        }
-
         foreach ($params as $key => $val) {
             switch ($key) {
                 case 'order':
