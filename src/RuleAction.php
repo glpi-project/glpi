@@ -52,7 +52,7 @@ class RuleAction extends CommonDBChild
 
         if (isset($_POST['rule_class_name'])) {
             $rule = new $_POST['rule_class_name']();
-            if ($rule->maxActionsCount() == 1) {
+            if ($rule instanceof \Rule && $rule->maxActionsCount() == 1) {
                 $forbidden[] = 'clone';
             }
         }
