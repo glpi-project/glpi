@@ -2375,9 +2375,9 @@ class Entity extends CommonTreeDropdown
 
         echo "<tr class='tab_bg_1'>";
         echo "<th colspan='2' rowspan='1'>";
-        echo _n('Ticket', 'Tickets', Session::getPluralNumber());
+        echo Ticket::getTypeName(Session::getPluralNumber());
         echo " / ";
-        echo _n('Change', 'Changes', Session::getPluralNumber());
+        echo Change::getTypeName(Session::getPluralNumber());
         echo "</th>";
         echo "<td>" . __('Approval reminder frequency') . "</td><td>";
         $default_value = $entity->fields['approval_reminder_repeat_interval'];
