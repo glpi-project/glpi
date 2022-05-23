@@ -40,11 +40,12 @@ use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Glpi\Toolbox\VersionParser;
 
 class CheckSchemaIntegrityCommand extends AbstractCommand
 {
     /**
-     * Error code returned when failed to check empty SQL file.
+     * Error code returned when empty SQL file is not available / readable.
      *
      * @var integer
      */
@@ -56,6 +57,15 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
      * @var integer
      */
     const ERROR_FOUND_DIFFERENCES = 2;
+
+    /**
+     * Error code returned when a DB update is necessary to be able to perform the check.
+     *
+     * @var integer
+     */
+    const ERROR_REQUIRE_DB_UPDATE = 3;
+
+    protected $requires_db_up_to_date = false;
 
     protected function configure()
     {
@@ -123,6 +133,45 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        global $CFG_GLPI;
+
+        $installed_version = $CFG_GLPI['dbversion'];
+        $current_version   = GLPI_SCHEMA_VERSION;
+        // Normalize versions: remove @sha suffix and stability flags
+        $install_version_normalized = VersionParser::getNormalizedVersion(preg_replace('/@.+$/', '', $installed_version), false);
+        $current_version_normalized = VersionParser::getNormalizedVersion(preg_replace('/@.+$/', '', $current_version), false);
+
+        if (
+            $install_version_normalized === $current_version_normalized
+            && $installed_version !== $current_version
+        ) {
+            // Installed version is same as current version, but with a different hash/stability flag.
+            // It was probably done from a branch in development or a pre-release.
+            // Check will likely find differences, as schema file changed, but these differences would
+            // probably be fixed by running update again.
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>'
+                    . sprintf(
+                        __('Cannot check database integrity of intermediate unstable version "%s". Please process to database update and run the command again.'),
+                        $installed_version
+                    )
+                    . '</error>',
+                self::ERROR_REQUIRE_DB_UPDATE
+            );
+        }
+
+        $schema_file = sprintf(
+            '%s/install/mysql/%s-empty.sql',
+            GLPI_ROOT,
+            $install_version_normalized === $current_version_normalized ? 'glpi' : sprintf('glpi-%s', $install_version_normalized)
+        );
+        if (!file_exists($schema_file)) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version) . '</error>',
+                self::ERROR_UNABLE_TO_READ_EMPTYSQL
+            );
+        }
+
         $checker = new DatabaseSchemaIntegrityChecker(
             $this->db,
             $input->getOption('strict'),
@@ -134,7 +183,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         );
 
         try {
-            $differences = $checker->checkCompleteSchema(GLPI_ROOT . '/install/mysql/glpi-empty.sql', true);
+            $differences = $checker->checkCompleteSchema($schema_file, true);
         } catch (\Throwable $e) {
             $output->writeln(
                 '<error>' . $e->getMessage() . '</error>',

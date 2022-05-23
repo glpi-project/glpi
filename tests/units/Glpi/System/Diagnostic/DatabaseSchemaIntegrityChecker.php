@@ -41,11 +41,9 @@ class DatabaseSchemaIntegrityChecker extends \GLPITestCase
 {
     protected function schemaProvider(): iterable
     {
-        $mysql_5_7_version_string = '5.7.50-log';
-
         $table_increment = 0;
 
-        $convert_to_provider_entry = static function (array $tables, string $version_string, array $args) {
+        $convert_to_provider_entry = static function (array $tables, array $args) {
             return [
                 'schema'               => implode(
                     "\n",
@@ -60,14 +58,86 @@ class DatabaseSchemaIntegrityChecker extends \GLPITestCase
                 'normalized_tables'    => array_combine(array_column($tables, 'name'), array_column($tables, 'normalized_sql')),
                 'effective_tables'     => array_combine(array_column($tables, 'name'), array_column($tables, 'effective_sql')),
                 'expected_differences' => array_filter(array_combine(array_column($tables, 'name'), array_column($tables, 'differences'))),
-                'version_string'       => $version_string,
                 'args'                 => $args,
             ];
         };
 
-        // Checks using strict mode and including tokens related to migrations.
+        // Checks related to normalization of tokens that may differ depending on
+        // application used to export schema or tokens that have no incidence on data.
 
         $tables = [
+            // Whitespaces, case, optional quotes, and funcion/constant usages should be normalized:
+            // - extra whitespaces should be removed;
+            // - quotes around default numeric values should be removed;
+            // - quotes around collate value should be removed;
+            // - auto_increment should be replaced by by AUTO_INCREMENT;
+            // - current_timestamp() should be replaced by CURRENT_TIMESTAMP.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL auto_increment,
+  `name` VARCHAR(255) NOT NULL,
+  `nameid`varchar ( 255 ) NOT NULL,
+  `description` TEXT
+                NOT NULL
+                CHARSET latin1 COLLATE 'latin1_general_ci',
+  `value` INT       NOT NULL DEFAULT '0',
+  `steps` FLOAT     NOT NULL DEFAULT '-0.7',
+  `max`    int    NOT  NULL    DEFAULT    '100',
+  `created_at` TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  PRIMARY   KEY     (`id`),
+  UNIQUE KEY `nameid` (`name`), UNIQUE KEY `nameid` (`nameid`),
+  FULLTEXT KEY `description` ( `description` ),
+  KEY`is_deleted`(`is_deleted`),
+  KEY `values` (
+    `value`,
+    `steps`,    
+    `max`
+  )
+) ENGINE=MyISAM
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `nameid` varchar(255) NOT NULL,
+  `description` text NOT NULL CHARSET latin1 COLLATE latin1_general_ci,
+  `value` int NOT NULL DEFAULT 0,
+  `steps` float NOT NULL DEFAULT -0.7,
+  `max` int NOT NULL DEFAULT 100,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_deleted` tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nameid` (`name`),
+  UNIQUE KEY `nameid` (`nameid`),
+  FULLTEXT KEY `description` (`description`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `values` (`value`,`steps`,`max`)
+) ENGINE=MyISAM
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `nameid` varchar(255) NOT NULL,
+  `description` text NOT NULL CHARSET latin1 COLLATE latin1_general_ci,
+  `value` int NOT NULL DEFAULT 0,
+  `steps` float NOT NULL DEFAULT -0.7,
+  `max` int NOT NULL DEFAULT '100',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_deleted` tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nameid` (`name`),
+  UNIQUE KEY `nameid` (`nameid`),
+  FULLTEXT KEY `description` (`description`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `values` (`value`, `steps`, `max`)
+) ENGINE=MyISAM
+SQL,
+                'differences'    => null,
+            ],
             // AUTO_INCREMENT, integer display width, and comments should be removed
             // and should not be included in diff.
             [
@@ -98,7 +168,121 @@ CREATE TABLE `table_{$table_increment}` (
 SQL,
                 'differences'    => null,
             ],
+            // Implicit NULL and implicit default values should be removed.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `nameid` varchar(255) NULL DEFAULT NULL,
+  `description` text NULL DEFAULT NULL,
+  `value` int NOT NULL DEFAULT '0',
+  `steps` float NULL DEFAULT '-0.7',
+  `date` timestamp NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `nameid` varchar(255),
+  `description` text,
+  `value` int NOT NULL DEFAULT 0,
+  `steps` float DEFAULT -0.7,
+  `date` timestamp,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `nameid` varchar(255) NULL,
+  `description` text NULL,
+  `value` int NOT NULL DEFAULT 0,
+  `steps` float NULL DEFAULT -0.7,
+  `date` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM
+SQL,
+                'differences'    => null,
+            ],
+            // Indexes definition should be normalized:
+            // - INDEX should be replaced by KEY;
+            // - missing optional KEY should be added;
+            // - missing index identifier should be added.
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `nameid` varchar(255) NOT NULL,
+  `description` text,
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `name` (`name`),
+  UNIQUE `nameid` (`nameid`),
+  FULLTEXT (`description`),
+  INDEX `is_deleted` (`is_deleted`),
+) ENGINE=MyISAM
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `nameid` varchar(255) NOT NULL,
+  `description` text,
+  `is_deleted` tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `nameid` (`nameid`),
+  FULLTEXT KEY `description` (`description`),
+  KEY `is_deleted` (`is_deleted`)
+) ENGINE=MyISAM
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `nameid` varchar(255) NOT NULL,
+  `description` text,
+  `is_deleted` tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE `name` (`name`),
+  UNIQUE `nameid` (`nameid`),
+  FULLTEXT `description` (`description`),
+  KEY `is_deleted` (`is_deleted`)
+) ENGINE=MyISAM
+SQL,
+                'differences'    => null,
+            ],
+        ];
 
+        yield $convert_to_provider_entry(
+            $tables,
+            [
+                'strict' => true,
+                'use_utf8mb4' => true,
+                'ignore_innodb_migration' => false,
+                'ignore_timestamps_migration' => false,
+                'ignore_utf8mb4_migration' => false,
+                'ignore_dynamic_row_format_migration' => false,
+                'ignore_unsigned_keys_migration' => false
+            ]
+        );
+
+        // Checks using strict mode and including tokens related to migrations.
+
+        $tables = [
             // Strict mode do not reorder columns/indexes and do not remove ROW_FORMAT=DYNAMIC.
             // Order differences should be included in diff.
             [
@@ -318,7 +502,7 @@ SQL,
 CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL,
+  `updated_at` timestamp,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
 SQL,
@@ -339,7 +523,7 @@ SQL,
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
 -  `created_at` timestamp NOT NULL,
--  `updated_at` timestamp NULL,
+-  `updated_at` timestamp,
 +  `created_at` datetime NOT NULL,
 +  `updated_at` datetime,
    PRIMARY KEY (`id`)
@@ -449,9 +633,9 @@ CREATE TABLE `table_{$table_increment}` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `users_id` int unsigned NOT NULL,
-  `users_id_tech` int DEFAULT NULL,
+  `users_id_tech` int,
   `groups_id` int NOT NULL,
-  `groups_id_tech` int unsigned DEFAULT NULL,
+  `groups_id_tech` int unsigned,
   `uid` int unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
@@ -478,13 +662,13 @@ SQL,
    `id` int unsigned NOT NULL AUTO_INCREMENT,
    `name` varchar(255) NOT NULL,
 -  `users_id` int unsigned NOT NULL,
--  `users_id_tech` int DEFAULT NULL,
+-  `users_id_tech` int,
 -  `groups_id` int NOT NULL,
--  `groups_id_tech` int unsigned DEFAULT NULL,
+-  `groups_id_tech` int unsigned,
 +  `users_id` int NOT NULL,
-+  `users_id_tech` int unsigned DEFAULT NULL,
++  `users_id_tech` int unsigned,
 +  `groups_id` int unsigned NOT NULL,
-+  `groups_id_tech` int DEFAULT NULL,
++  `groups_id_tech` int,
    `uid` int unsigned NOT NULL,
    PRIMARY KEY (`id`)
  ) ENGINE=InnoDB
@@ -496,7 +680,6 @@ DIFF,
 
         yield $convert_to_provider_entry(
             $tables,
-            $mysql_5_7_version_string,
             [
                 'strict' => true,
                 'use_utf8mb4' => true,
@@ -723,10 +906,10 @@ SQL,
                 'normalized_sql' => <<<SQL
 CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `groups_id_tech` int DEFAULT NULL,
+  `groups_id_tech` int,
   `groups_id` int NOT NULL,
   `uid` int unsigned NOT NULL,
-  `users_id_tech` int DEFAULT NULL,
+  `users_id_tech` int,
   `users_id` int NOT NULL,
   PRIMARY KEY (`id`)
 )
@@ -748,7 +931,6 @@ SQL,
 
         yield $convert_to_provider_entry(
             $tables,
-            $mysql_5_7_version_string,
             [
                 'strict' => false,
                 'use_utf8mb4' => true,
@@ -828,7 +1010,6 @@ DIFF,
 
         yield $convert_to_provider_entry(
             $tables,
-            $mysql_5_7_version_string,
             [
                 'strict' => true,
                 'use_utf8mb4' => false,
@@ -898,7 +1079,6 @@ DIFF,
 
         yield $convert_to_provider_entry(
             $tables,
-            $mysql_5_7_version_string,
             [
                 'strict' => true,
                 'use_utf8mb4' => false,
@@ -977,7 +1157,6 @@ DIFF,
 
         yield $convert_to_provider_entry(
             $tables,
-            $mysql_5_7_version_string,
             [
                 'strict' => true,
                 'use_utf8mb4' => false,
@@ -986,66 +1165,6 @@ DIFF,
                 'ignore_utf8mb4_migration' => true,
                 'ignore_dynamic_row_format_migration' => true,
                 'ignore_unsigned_keys_migration' => true
-            ]
-        );
-
-        // Checks related to normalization of tokens returned by MariaDB.
-
-        $tables = [
-            // DB on MariaDB 10.2+ resuls should be normalized by:
-            // - surrounding default numeric values by quotes;
-            // - replacing current_timestamp() by CURRENT_TIMESTAMP;
-            // - removing DEFAULT NULL on text fields.
-            [
-                'name' => sprintf('table_%s', ++$table_increment),
-                'raw_sql' => <<<SQL
-CREATE TABLE `table_{$table_increment}` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `description` text NULL DEFAULT NULL,
-  `value` int NOT NULL DEFAULT 0,
-  `steps` float NOT NULL DEFAULT -0.7,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM
-SQL,
-                'normalized_sql' => <<<SQL
-CREATE TABLE `table_{$table_increment}` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `description` text NULL,
-  `value` int NOT NULL DEFAULT '0',
-  `steps` float NOT NULL DEFAULT '-0.7',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM
-SQL,
-                'effective_sql'  => <<<SQL
-CREATE TABLE `table_{$table_increment}` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `description` text NULL,
-  `value` int NOT NULL DEFAULT '0',
-  `steps` float NOT NULL DEFAULT '-0.7',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM
-SQL,
-                'differences'    => null,
-            ],
-        ];
-
-        yield $convert_to_provider_entry(
-            $tables,
-            '10.2.36-MariaDB',
-            [
-                'strict' => true,
-                'use_utf8mb4' => true,
-                'ignore_innodb_migration' => false,
-                'ignore_timestamps_migration' => false,
-                'ignore_utf8mb4_migration' => false,
-                'ignore_dynamic_row_format_migration' => false,
-                'ignore_unsigned_keys_migration' => false
             ]
         );
     }
@@ -1059,14 +1178,12 @@ SQL,
         array $normalized_tables,
         array $effective_tables, // ignored
         array $expected_differences, // ignored
-        string $version_string,
         array $args
     ) {
         $this->mockGenerator->orphanize('__construct');
 
         $db = new \mock\DBmysql();
         $db->use_utf8mb4 = $args['use_utf8mb4'];
-        $this->calling($db)->getVersion = $version_string;
 
         $this->newTestedInstance(
             $db,
@@ -1095,14 +1212,12 @@ SQL,
         array $normalized_tables, // ignored
         array $effective_tables,
         array $expected_differences,
-        string $version_string,
         array $args
     ) {
         $this->mockGenerator->orphanize('__construct');
 
         $db = new \mock\DBmysql();
         $db->use_utf8mb4 = $args['use_utf8mb4'];
-        $this->calling($db)->getVersion = $version_string;
 
         $this->newTestedInstance(
             $db,
@@ -1137,7 +1252,6 @@ SQL,
         array $normalized_tables, // ignored
         array $effective_tables, // ignored
         array $expected_differences, // ignored
-        string $version_string, // ignored
         array $args // ignored
     ) {
         vfsStream::setup(
@@ -1167,7 +1281,6 @@ SQL,
         array $normalized_tables, // ignored
         array $effective_tables,
         array $expected_differences,
-        string $version_string,
         array $args
     ) {
         vfsStream::setup(
@@ -1183,7 +1296,6 @@ SQL,
         $this->mockGenerator->orphanize('__construct');
         $db = new \mock\DBmysql();
         $db->use_utf8mb4 = $args['use_utf8mb4'];
-        $this->calling($db)->getVersion = $version_string;
         $this->calling($db)->tableExists = true;
         $that = $this;
         $this->calling($db)->query = function ($query) use ($effective_tables, $that) {
@@ -1273,7 +1385,6 @@ SQL,
             $this->mockGenerator->orphanize('__construct');
             $db = new \mock\DBmysql();
             $db->use_utf8mb4 = true;
-            $this->calling($db)->getVersion = '5.7.50-log';
             $this->calling($db)->tableExists = function ($table_name) use ($table_prefix) {
                 return $table_name !== "glpi_{$table_prefix}missingtable";
             };
