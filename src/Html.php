@@ -1266,7 +1266,7 @@ HTML;
         $tpl_vars = [
             'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
             'title'     => $title,
-            'theme'     => $theme,
+            'theme'     => \Glpi\UI\Theme::getCurrentTheme(),
             'css_files' => [],
             'js_files'  => [],
         ];
@@ -3921,7 +3921,8 @@ JS;
        // init tinymce
         $js = <<<JS
          $(function() {
-            var is_dark = $('html').css('--is-dark').trim() === 'true';
+            const html_el = $('html');
+            var is_dark = html_el.attr('data-glpi-theme-dark') || html_el.css('--is-dark').trim() === 'true';
             var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
             // init editor

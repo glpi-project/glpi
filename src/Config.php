@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\UI\Theme;
 use SimplePie\SimplePie;
 
 /**
@@ -1331,7 +1331,7 @@ class Config extends CommonDBTM
                 return theme.text;
              }
 
-             return $('<span></span>').html('<img src=\'../css/palettes/previews/' + theme.text.toLowerCase() + '.png\'/>'
+             return $('<span></span>').html('<img src=\'../css/palettes/previews/' + theme.id.toLowerCase() + '.png\'/>'
                       + '&nbsp;' + theme.text);
          }
          $(\"#theme-selector\").select2({
@@ -3222,13 +3222,10 @@ HTML;
      */
     public function getPalettes()
     {
-        $themes_files = scandir(GLPI_ROOT . "/css/palettes/");
+        $all_themes = Theme::getAllThemes();
         $themes = [];
-        foreach ($themes_files as $file) {
-            if (preg_match('/^[^_].*\.scss$/', $file) === 1) {
-                $name          = basename($file, '.scss');
-                $themes[$name] = ucfirst($name);
-            }
+        foreach ($all_themes as $theme) {
+            $themes[$theme->getKey()] = $theme->getName();
         }
         return $themes;
     }
