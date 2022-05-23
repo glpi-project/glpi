@@ -44,7 +44,8 @@ $migration->addPostQuery(
             'pattern' => '/(.*)[,|\\/]/',
         ],
         [
-            'id' => 19
+            'id' => 19,
+            'pattern' => '/(.*),/',
         ]
     )
 );
