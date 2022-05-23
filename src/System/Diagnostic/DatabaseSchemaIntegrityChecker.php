@@ -205,9 +205,9 @@ class DatabaseSchemaIntegrityChecker
         }
 
         $matches = [];
-        preg_match_all('/CREATE TABLE[^`]*`(.+)`[^;]+/', $schema_sql, $matches);
-        $tables_names             = $matches[1];
-        $create_table_sql_queries = $matches[0];
+        preg_match_all('/(?<sql_query>CREATE TABLE[^`]*`(?<table_name>.+)`[^;]+);/', $schema_sql, $matches);
+        $tables_names             = $matches['table_name'];
+        $create_table_sql_queries = $matches['sql_query'];
 
         $schema = [];
         foreach ($create_table_sql_queries as $index => $create_table_sql_query) {
@@ -330,9 +330,12 @@ class DatabaseSchemaIntegrityChecker
             return $this->normalized[$cache_key];
         }
 
-       // Extract information
+        // Clean whitespaces
+        $create_table_sql = $this->normalizeWhitespaces($create_table_sql);
+
+        // Extract information
         $matches = [];
-        if (!preg_match('/^CREATE TABLE `(?<table>\w+)` \((?<structure>.+)\)(?<properties>[^\)]*)$/is', $create_table_sql, $matches)) {
+        if (!preg_match('/^CREATE TABLE[^`]*`(?<table>\w+)` \((?<structure>.+)\)(?<properties>[^\)]*)$/is', $create_table_sql, $matches)) {
             return $create_table_sql;// Unable to normalize
         }
 
@@ -344,8 +347,8 @@ class DatabaseSchemaIntegrityChecker
         $indexes_matches = [];
         $properties_matches = [];
         if (
-            !preg_match_all('/^\s*(?<column>`\w+` .+?),?$/im', $structure_sql, $columns_matches)
-            || !preg_match_all('/^\s*(?<index>(CONSTRAINT|(UNIQUE |PRIMARY |FULLTEXT )?KEY) .+?),?$/im', $structure_sql, $indexes_matches)
+            !preg_match_all('/^\s*(?<column>`\w+`.+?),?$/im', $structure_sql, $columns_matches)
+            || !preg_match_all('/^\s*(?<index>(CONSTRAINT|PRIMARY KEY|(UNIQUE|FULLTEXT)( (KEY|INDEX))?|KEY|INDEX).+?),?$/im', $structure_sql, $indexes_matches)
             || !preg_match_all('/\s+((?<property>[^=]+[^\s])\s*=\s*(?<value>(\w+|\'(\\.|[^"])+\')))/i', $properties_sql, $properties_matches)
         ) {
             return $create_table_sql;// Unable to normalize
@@ -354,42 +357,66 @@ class DatabaseSchemaIntegrityChecker
         $indexes = $indexes_matches['index'];
         $properties = array_combine($properties_matches['property'], $properties_matches['value']);
 
-        $db_version_string = $this->db->getVersion();
-        $db_server  = preg_match('/-MariaDB/', $db_version_string) ? 'MariaDB' : 'MySQL';
-        $db_version = preg_replace('/^((\d+\.?)+).*$/', '$1', $db_version_string);
-
         // Normalize columns definitions
         if (!$this->strict) {
             usort(
                 $columns,
                 function (string $a, string $b) {
                     // Move id / AUTO_INCREMENT column first
-                    if (preg_match('/(`id`|AUTO_INCREMENT)/', $a)) {
+                    if (preg_match('/(`id`|AUTO_INCREMENT)/i', $a)) {
                         return -1;
                     }
-                    if (preg_match('/(`id`|AUTO_INCREMENT)/', $b)) {
+                    if (preg_match('/(`id`|AUTO_INCREMENT)/i', $b)) {
                         return 1;
                     }
                     return strcmp($a, $b);
                 }
             );
         }
+
+        // Lowercase types
+        $column_pattern = '/^'
+            // column name surrounded by backquotes
+            . '(?<name>`\w+`)'
+            // optional space
+            . '\s*'
+            // column type
+            . '(?<type>[a-z]+)'
+            // optional column length, preceded by optional space
+            . '(\s*(?<length>\(\d+\)))?'
+            // optional extra column properties
+            . '(?<extra>[^a-z].*)?'
+            . '$/i';
+        $columns = preg_replace_callback(
+            $column_pattern,
+            function ($matches) {
+                return $matches['name'] . ' ' . strtolower($matches['type']) . ($matches['length'] ?? '') . ($matches['extra'] ?? '');
+            },
+            $columns
+        );
+
         $column_replacements = [
             // Remove comments
             '/ COMMENT \'.+\'/i' => '',
             // Remove integer display width
             '/( (tiny|small|medium|big)?int)\(\d+\)/i' => '$1',
-        ];
-        if ($db_server === 'MariaDB') {
-            // Add surrounding quotes on default numeric values (MySQL has quotes while MariaDB 10.2+ has not)
-            $column_replacements['/(DEFAULT) ([-|+]?\d+(\.\d+)?)/i'] = '$1 \'$2\'';
             // Replace function current_timestamp() by CURRENT_TIMESTAMP (MySQL uses constant while MariaDB 10.2+ uses function)
-            $column_replacements['/current_timestamp\(\)/i'] = 'CURRENT_TIMESTAMP';
-            // Remove DEFAULT NULL on text fields (MySQL has not while MariaDB 10.2+ has)
-            $column_replacements['/( (medium|long)?(blob|text)[^,]*) DEFAULT NULL/i'] = '$1';
-        }
+            '/current_timestamp\(\)/i' => 'CURRENT_TIMESTAMP',
+            // Uppercase AUTO_INCREMENT (it seems that some tools are output it in lower case)
+            '/auto_increment/i' => 'AUTO_INCREMENT',
+            // Remove implicit DEFAULT NULL
+            '/ DEFAULT NULL/i' => '',
+            // Remove implicit NULL
+            '/ (?<!NOT )NULL/i' => '$1',
+            // Remove implicit default for datetime/timestamps where column cannot be null
+            '/ (timestamp|datetime) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP/' => ' $1 NOT NULL',
+            // Remove surrounding quotes on default numeric values (quotes are optional, MySQL uses quotes while MariaDB 10.2+ does not)
+            '/(DEFAULT) \'([-|+]?\d+(\.\d+)?)\'/i' => '$1 $2',
+            // Remove surrounding quotes on collate values (quotes are optional)
+            '/(COLLATE) \'([-|+]?\w+(\.\d+)?)\'/i' => '$1 $2',
+        ];
         if ($this->ignore_timestamps_migration) {
-            $column_replacements['/ timestamp( NULL)?/i'] = ' datetime';
+            $column_replacements['/(`\w+`)\s*timestamp/i'] = '$1 datetime';
         }
         // Normalize utf8mb3 to utf8
         $column_replacements['/utf8mb3/i'] = 'utf8';
@@ -413,6 +440,15 @@ class DatabaseSchemaIntegrityChecker
         $columns = preg_replace(array_keys($column_replacements), array_values($column_replacements), $columns);
 
         // Normalize indexes definitions
+        $indexes_replacements = [
+            // Always use `KEY` word
+            '/INDEX\s*(`\w+`)/' => 'KEY $1',
+            // Add `KEY` word when missing from UNIQUE/FULLTEXT
+            '/(UNIQUE|FULLTEXT)\s*(`|\()/' => '$1 KEY $2',
+            // Always have a key identifier (except on PRIMARY key)
+            '/(?<!PRIMARY )KEY\s*\((`\w+`)\)/' => 'KEY $1 ($1)',
+        ];
+        $indexes = preg_replace(array_keys($indexes_replacements), array_values($indexes_replacements), $indexes);
         if (!$this->strict) {
             usort(
                 $indexes,
@@ -476,7 +512,7 @@ class DatabaseSchemaIntegrityChecker
         $normalized_sql = "CREATE TABLE `{$table_name}` (\n";
         $definitions = array_merge($columns, $indexes);
         foreach ($definitions as $i => $definition) {
-            $normalized_sql .= '  ' . $definition . ($i < count($definitions) - 1 ? ',' : '') . "\n";
+            $normalized_sql .= '  ' . trim($definition) . ($i < count($definitions) - 1 ? ',' : '') . "\n";
         }
         $normalized_sql .= ')';
         foreach ($properties as $key => $value) {
@@ -487,5 +523,104 @@ class DatabaseSchemaIntegrityChecker
         $this->normalized[$cache_key] = $normalized_sql;
 
         return $normalized_sql;
+    }
+
+    /**
+     * Normalize whitespaces in "CREATE TABLE" sql query to make it easier to extract definitions and
+     * to avoid detection of differences on whitespaces.
+     *
+     * @param string $sql
+     *
+     * @return string
+     */
+    private function normalizeWhitespaces(string $sql): string
+    {
+        $is_protected      = false;
+        $is_quoted         = false;
+        $parenthesis_level = 0;
+
+        for ($i = 0; $i < strlen($sql); $i++) {
+            if ($sql[$i] === '\\') {
+                // backslash found, next char is ignored
+                $i += 1;
+                continue;
+            }
+
+            // Do not touch chars surrounded by backticks
+            if ($sql[$i] === '`') {
+                if ($parenthesis_level === 1) {
+                    // Ensure there are spaces around column / indexes names.
+                    if (!$is_protected && preg_match('/\s/', $sql[$i - 1]) !== 1) {
+                        // Opening backtick, ensure there is a space before
+                        $sql = substr($sql, 0, $i) . ' ' . substr($sql, $i);
+                        $i++;
+                    } else if ($is_protected && preg_match('/\s/', $sql[$i + 1]) !== 1) {
+                        // Closing backtick, ensure there is a space before
+                        $sql = substr($sql, 0, $i + 1) . ' ' . substr($sql, $i + 1);
+                        $i++;
+                    }
+                }
+
+                $is_protected = !$is_protected;
+                continue;
+            } else if ($is_protected) {
+                continue;
+            }
+
+            // Do not touch chars surrounded by quotes
+            if ($sql[$i] === '\'') {
+                $is_quoted = !$is_quoted;
+                continue;
+            } else if ($is_quoted) {
+                //exit();
+                continue;
+            }
+
+            if ($sql[$i] === '(') {
+                $parenthesis_level++;
+            } else if ($sql[$i] === ')') {
+                $parenthesis_level--;
+            }
+
+            // Replace \n, \t, ... by a simple space char
+            if (preg_match('/\s/', $sql[$i]) && $sql[$i] !== ' ') {
+                $sql[$i] = ' ';
+            }
+
+            // Ensure there is a new line:
+            // - after columns/indexes definition opening parenthesis
+            // - before columns/indexes definition opening parenthesis
+            // - after each column/index definition
+            if ($parenthesis_level === 1 && $sql[$i] === '(') {
+                $sql = substr($sql, 0, $i + 1) . "\n" . substr($sql, $i + 1);
+                $i++;
+            } else if ($parenthesis_level === 0 && $sql[$i] === ')') {
+                $sql = substr($sql, 0, $i) . "\n" . substr($sql, $i);
+                $i++;
+            } else if ($parenthesis_level === 1 && $sql[$i] === ',') {
+                $sql = substr($sql, 0, $i + 1) . "\n" . substr($sql, $i + 1);
+                $i++;
+            }
+
+            if (preg_match('/\s/', $sql[$i])) {
+                if ($parenthesis_level === 2) {
+                    // Remove whitespaces between tokens in index fields list, datatype length, ...
+                    $sql = substr($sql, 0, $i) . substr($sql, $i + 1);
+                    $i--;
+                } else {
+                    // Remove following whitespace chars if current char is a whitespace
+                    $extraspaces = 0;
+                    $max         = strlen($sql) - $i - 1;
+                    while ($extraspaces < $max && preg_match('/\s/', $sql[$i + 1 + $extraspaces])) {
+                        $extraspaces++;
+                    }
+                    if ($extraspaces > 0) {
+                        $sql = substr($sql, 0, $i + 1) . substr($sql, $i + 1 + $extraspaces);
+                    }
+                }
+            }
+        }
+
+        return $sql;
     }
 }
