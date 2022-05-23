@@ -167,7 +167,7 @@ class Update
     {
         global $DB;
 
-        $checker = new DatabaseSchemaIntegrityChecker($DB, false);
+        $checker = new DatabaseSchemaIntegrityChecker($DB, false, true, true, true, true, true);
         $differences = $checker->checkCompleteSchema(GLPI_ROOT . '/install/mysql/glpi-empty.sql', true);
 
         if (count($differences) > 0) {
