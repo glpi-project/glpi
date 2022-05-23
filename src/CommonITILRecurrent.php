@@ -193,7 +193,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 'name'  => 'create_before',
                 'label' => __('Preliminary creation'),
                 'type'  => 'timestamp',
-                'max'   => 7 * DAY_TIMESTAMP,
+                'max'   => 2 * WEEK_TIMESTAMP,
                 'step'  => HOUR_TIMESTAMP
             ],
             [
