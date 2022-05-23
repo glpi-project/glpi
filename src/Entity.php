@@ -124,6 +124,7 @@ class Entity extends CommonTreeDropdown
             'autoclose_delay', 'inquest_config',
             'inquest_rate', 'inquest_delay',
             'inquest_duration','inquest_URL',
+            'inquest_max_rate', 'inquest_default_rate', 'inquest_mandatory_comment',
             'max_closedate', 'tickettemplates_strategy', 'tickettemplates_id',
             'changetemplates_strategy', 'changetemplates_id', 'problemtemplates_strategy', 'problemtemplates_id',
             'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents', 'display_users_initials',
