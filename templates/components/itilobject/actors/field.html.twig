@@ -110,8 +110,7 @@
          var actions = "";
          {% if canupdate %}
          if (['User', 'Supplier', 'Email'].includes(itemtype)
-            && is_selection
-            && {{ entity_config('is_notif_enable_default', entities_id, 1) }}) {
+            && is_selection) {
             var fa_class = "far";
             if (use_notif) {
                fa_class = "fas";
