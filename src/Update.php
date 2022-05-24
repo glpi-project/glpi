@@ -168,7 +168,10 @@ class Update
         global $DB;
 
         $checker = new DatabaseSchemaIntegrityChecker($DB, false, true, true, true, true, true);
-        $differences = $checker->checkCompleteSchema(GLPI_ROOT . '/install/mysql/glpi-empty.sql', true);
+        $differences = $checker->checkCompleteSchema(
+            sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, GLPI_VERSION),
+            true
+        );
 
         if (count($differences) > 0) {
             $this->migration->displayError(

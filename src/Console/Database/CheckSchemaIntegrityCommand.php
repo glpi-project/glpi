@@ -160,11 +160,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             );
         }
 
-        $schema_file = sprintf(
-            '%s/install/mysql/%s-empty.sql',
-            GLPI_ROOT,
-            $install_version_normalized === $current_version_normalized ? 'glpi' : sprintf('glpi-%s', $install_version_normalized)
-        );
+        $schema_file = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $install_version_normalized);
         if (!file_exists($schema_file)) {
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version) . '</error>',
