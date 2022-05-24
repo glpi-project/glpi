@@ -120,7 +120,7 @@ if (isset($_POST['searchtype'])) {
 
 
                     case "glpi_users.name":
-                        $options2['right']            = (isset($searchopt['right']) ? $searchopt['right'] : 'all');
+                        $options2['right']            = ($searchopt['right'] ?? 'all');
                         $options2['inactive_deleted'] = 1;
                         break;
                 }

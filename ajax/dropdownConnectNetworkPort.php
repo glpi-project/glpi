@@ -46,6 +46,7 @@ Html::header_nocache();
 
 Session::checkRight("networking", UPDATE);
 
+/** @global DBmysql $DB */
 // Make a select box
 if (
     class_exists($_POST["itemtype"])

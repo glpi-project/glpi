@@ -44,19 +44,10 @@ if (!isset($_POST['kbitem_id'])) {
 }
 
 $kbitem_id = $_POST['kbitem_id'];
-$lang = null;
-if (isset($_POST['language'])) {
-    $lang = $_POST['language'];
-}
+$lang = $_POST['language'] ?? null;
 
-$edit = false;
-if (isset($_POST['edit'])) {
-    $edit = $_POST['edit'];
-}
+$edit = $_POST['edit'] ?? false;
 
-$answer = false;
-if (isset($_POST['answer'])) {
-    $answer = $_POST['answer'];
-}
+$answer = $_POST['answer'] ?? false;
 
 echo KnowbaseItem_Comment::getCommentForm($kbitem_id, $lang, $edit, $answer);

@@ -48,15 +48,9 @@ if (
 $item = new $_REQUEST['itemtype']();
 $item->getFromDB((int) $_REQUEST['items_id']);
 
-$locations_id = 0;
-if (isset($item->fields['locations_id'])) {
-    $locations_id = $item->fields['locations_id'];
-}
+$locations_id = $item->fields['locations_id'] ?? 0;
 
-$entities_id = $_SESSION['glpiactive_entity'];
-if (isset($item->fields['entities_id'])) {
-    $entities_id = $item->fields['entities_id'];
-}
+$entities_id = $item->fields['entities_id'] ?? $_SESSION['glpiactive_entity'];
 
 $is_recursive = $_SESSION['glpiactive_entity_recursive'];
 if (isset($_REQUEST['is_recursive'])) {

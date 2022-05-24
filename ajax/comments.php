@@ -42,6 +42,8 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+/** @global array $CFG_GLPI */
+
 if (
     isset($_POST["itemtype"])
     && isset($_POST["value"])

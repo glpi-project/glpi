@@ -43,6 +43,8 @@ include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
+/** @global array $CFG_GLPI */
+
 if (isset($_POST["validatortype"])) {
     switch ($_POST["validatortype"]) {
         case 'user':
@@ -50,7 +52,7 @@ if (isset($_POST["validatortype"])) {
             if (isset($_POST['users_id_validate']['groups_id'])) {
                 $_POST['users_id_validate'] = [];
             }
-            $value = (isset($_POST['users_id_validate'][0]) ? $_POST['users_id_validate'][0] : 0);
+            $value = ($_POST['users_id_validate'][0] ?? 0);
             User::dropdown([
                 'name'   => !empty($_POST['name']) ? $_POST['name'] . '[]' : 'users_id_validate[]',
                 'entity' => $_POST['entity'],
@@ -63,7 +65,7 @@ if (isset($_POST["validatortype"])) {
         case 'group':
         case 'Group':
             $name = !empty($_POST['name']) ? $_POST['name'] . '[groups_id]' : 'groups_id';
-            $value = (isset($_POST['users_id_validate']['groups_id']) ? $_POST['users_id_validate']['groups_id'] : $_POST['groups_id']);
+            $value = ($_POST['users_id_validate']['groups_id'] ?? $_POST['groups_id']);
 
             $rand = Group::dropdown([
                 'name'   => $name,
@@ -74,8 +76,7 @@ if (isset($_POST["validatortype"])) {
 
             $param                        = ['validatortype' => 'list_users'];
             $param['name']                = !empty($_POST['name']) ? $_POST['name'] : '';
-            $param['users_id_validate']   = isset($_POST['users_id_validate'])
-                                             ? $_POST['users_id_validate'] : '';
+            $param['users_id_validate']   = $_POST['users_id_validate'] ?? '';
             $param['right']               = $_POST['right'];
             $param['entity']              = $_POST["entity"];
             $param['groups_id']           = '__VALUE__';

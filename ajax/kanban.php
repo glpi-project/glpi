@@ -48,6 +48,8 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+/** @global array $_UPOST */
+
 if (!isset($_REQUEST['action'])) {
     Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
 }

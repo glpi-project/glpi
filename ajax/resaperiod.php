@@ -47,7 +47,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['type']) && isset($_POST['end'])) {
-    echo "<table width='90%'>";
+    echo "<table style='width: 90%'>";
     switch ($_POST['type']) {
         case 'day':
             echo "<tr><td>" . __('End date') . '</td><td>';

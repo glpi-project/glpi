@@ -53,7 +53,7 @@ if (($_POST["action"] ?? null) == "update_event_times") {
 }
 
 if (($_POST["action"] ?? null) == "view_changed") {
-    echo Planning::viewChanged($_POST['view']);
+    Planning::viewChanged($_POST['view']);
     exit;
 }
 

@@ -69,6 +69,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     $_GET['id'] = (int)$_GET['id'];
 }
 
+/** @global array $_UGET */
+
 if ($item = getItemForItemtype($_UGET['_itemtype'])) {
     if ($item->get_item_to_display_tab) {
        // No id if ruleCollection but check right
