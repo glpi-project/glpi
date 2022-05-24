@@ -354,6 +354,22 @@ class Conf extends CommonGLPI
             'id'        => 'import_monitor_on_partial_sn',
             'checked'   => $config['import_monitor_on_partial_sn']
         ]);
+
+        echo "</td>";
+
+        $rand = mt_rand();
+        echo "<td><label for='dropdown_inventory_frequency$rand'>" . __('Inventory frequency (in hours)') .
+            "</label></td><td>";
+        \Dropdown::showNumber(
+            "inventory_frequency",
+            [
+                'value' => $config['inventory_frequency'],
+                'min' => 1,
+                'max' => 240,
+                'rand' => $rand
+            ]
+        );
+
         echo "</td>";
         echo "</tr>";
 

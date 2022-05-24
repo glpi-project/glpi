@@ -645,19 +645,6 @@ class Config extends CommonDBTM
         Dropdown::showFromArray($dd_params['name'], $item_devices_types, $dd_params);
 
         echo "<input type='hidden' name='_update_devices_in_menu' value='1'>";
-        echo "</td>";
-
-        echo "<td><label for='dropdown_inventory_frequency$rand'>" . __('Inventory frequency (in hours)') .
-            "</label></td><td>";
-        Dropdown::showNumber(
-            "inventory_frequency",
-            [
-                'value' => $CFG_GLPI['inventory_frequency'],
-                'min' => 1,
-                'max' => 240,
-                'rand' => $rand
-            ]
-        );
         echo "</td></tr>\n";
 
         echo "</table>";
