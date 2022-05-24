@@ -53,7 +53,7 @@ $migration->addPreQuery(
         ]
     )
 );
-$migration->addConfig([
-    'inventory_frequency' => AbstractRequest::DEFAULT_FREQUENCY,
+$migration->addConfig(
+    ['inventory_frequency' => AbstractRequest::DEFAULT_FREQUENCY],
     'inventory'
-]);
+);
