@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {branch: "main", php-version: "8.1", db-image: "mariadb:10.7"}
+          - {branch: "main", php-version: "8.1", db-image: "mariadb:10.8"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
