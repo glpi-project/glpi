@@ -126,6 +126,9 @@
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons"
+        ],
+        "build": [
+            "bin/console dependencies install && bin/console locales:compile"
         ]
     },
     "repositories": {
