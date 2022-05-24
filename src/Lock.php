@@ -62,7 +62,7 @@ class Lock extends CommonGLPI
      **/
     public static function showForItem(CommonDBTM $item)
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $ID       = $item->getID();
         $itemtype = $item->getType();
@@ -154,7 +154,7 @@ class Lock extends CommonGLPI
         if ($itemtype == 'Computer') {
             $computer_item = new Computer_Item();
             //Locks for items recorded in glpi_computers_items table
-            $types = ['Monitor', 'Peripheral', 'Printer'];
+            $types = $CFG_GLPI['directconnect_types'];
             foreach ($types as $type) {
                 $params = ['is_dynamic'    => 1,
                     'is_deleted'    => 1,
