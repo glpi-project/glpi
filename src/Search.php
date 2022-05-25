@@ -414,6 +414,10 @@ class Search
         $p['list_limit']          = $_SESSION['glpilist_limit'];
         $p['massiveactionparams'] = [];
 
+        if ($itemtype == KnowbaseItem::class) {
+            $params = KnowbaseItem::getAdditionalSearchCriteria($params);
+        }
+
         foreach ($params as $key => $val) {
             switch ($key) {
                 case 'order':
@@ -2436,7 +2440,7 @@ class Search
         $p['addhidden']    = [];
         $p['actionname']   = 'search';
         $p['actionvalue']  = _sx('button', 'Search');
-        $p['unpublished']  = 0;
+        $p['unpublished']  = 1;
 
         foreach ($params as $key => $val) {
             $p[$key] = $val;
@@ -6974,6 +6978,67 @@ JAVASCRIPT;
                     return "<div class='priority_block' style='border-color: $color'>
                         <span style='background: $color'></span>&nbsp;$name
                        </div>";
+
+                case "glpi_knowbaseitems.name":
+                    global $DB;
+                    $result = $DB->request([
+                        'SELECT' => [
+                            KnowbaseItem::getTable() . '.is_faq',
+                            KnowbaseItem::getTable() . '.id'
+                        ],
+                        'FROM'   => KnowbaseItem::getTable(),
+                        'LEFT JOIN' => [
+                            Entity_KnowbaseItem::getTable() => [
+                                'ON'  => [
+                                    Entity_KnowbaseItem::getTable() => KnowbaseItem::getForeignKeyField(),
+                                    KnowbaseItem::getTable()        => 'id'
+                                ]
+                            ],
+                            KnowbaseItem_Profile::getTable() => [
+                                'ON'  => [
+                                    KnowbaseItem_Profile::getTable() => KnowbaseItem::getForeignKeyField(),
+                                    KnowbaseItem::getTable()         => 'id'
+                                ]
+                            ],
+                            Group_KnowbaseItem::getTable() => [
+                                'ON'  => [
+                                    Group_KnowbaseItem::getTable() => KnowbaseItem::getForeignKeyField(),
+                                    KnowbaseItem::getTable()       => 'id'
+                                ]
+                            ],
+                            KnowbaseItem_User::getTable() => [
+                                'ON'  => [
+                                    KnowbaseItem_User::getTable() => KnowbaseItem::getForeignKeyField(),
+                                    KnowbaseItem::getTable()      => 'id'
+                                ]
+                            ],
+                        ],
+                        'WHERE'  => [
+                            KnowbaseItem::getTable() . '.id' => $data[$ID][0]['id'],
+                            'OR' => [
+                                Entity_KnowbaseItem::getTable() . '.id' => ['>=', 0],
+                                KnowbaseItem_Profile::getTable() . '.id' => ['>=', 0],
+                                Group_KnowbaseItem::getTable() . '.id' => ['>=', 0],
+                                KnowbaseItem_User::getTable() . '.id' => ['>=', 0],
+                            ]
+                        ],
+                    ]);
+                    $name = $data[$ID][0]['name'];
+                    $fa_class = "";
+                    $fa_title = "";
+                    $href = KnowbaseItem::getFormURLWithID($data[$ID][0]['id']);
+                    if (count($result) > 0) {
+                        foreach ($result as $row) {
+                            if ($row['is_faq']) {
+                                $fa_class = "fa-question-circle faq";
+                                $fa_title = __s("This item is part of the FAQ");
+                            }
+                        }
+                    } else {
+                        $fa_class = "fa-eye-slash not-published";
+                        $fa_title = __s("This item is not published yet");
+                    }
+                    return "<div class='kb'> <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a href='$href'>$name</a></div>";
             }
         }
 
@@ -7390,7 +7455,7 @@ HTML;
         $default_values["is_deleted"]  = 0;
         $default_values["as_map"]      = 0;
         $default_values["browse"]      = $itemtype::$browse_default ?? 0;
-        $default_values["unpublished"] = 0;
+        $default_values["unpublished"] = 1;
 
         if (isset($params['start'])) {
             $params['start'] = (int)$params['start'];

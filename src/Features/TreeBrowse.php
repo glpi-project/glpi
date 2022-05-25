@@ -40,7 +40,6 @@ use CommonTreeDropdown;
 use DropdownTranslation;
 use Html;
 use ITILCategory;
-use KnowbaseItem;
 use QuerySubQuery;
 use QueryExpression;
 use Search;
@@ -72,11 +71,7 @@ trait TreeBrowse
                             : 0;
         $unpublished = isset($params['unpublished'])
                             ? $params['unpublished']
-                            : 0;
-
-        if ($itemtype == KnowbaseItem::class) {
-            $params = KnowbaseItem::getAdditionalSearchCriteria($params);
-        }
+                            : 1;
         $criteria    = json_encode($params['criteria']);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));

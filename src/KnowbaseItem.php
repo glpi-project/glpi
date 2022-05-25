@@ -2221,6 +2221,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'name'               => __('Target') . ' - ' . Entity::getTypeName(1),
             'datatype'           => 'dropdown',
             'forcegroupby'       => true,
+            'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => Entity_KnowbaseItem::getTable(),
@@ -2238,6 +2239,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'name'               => __('Target') . ' - ' . Profile::getTypeName(1),
             'datatype'           => 'dropdown',
             'forcegroupby'       => true,
+            'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => KnowbaseItem_Profile::getTable(),
@@ -2255,6 +2257,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'name'               => __('Target') . ' - ' . Group::getTypeName(1),
             'datatype'           => 'dropdown',
             'forcegroupby'       => true,
+            'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => Group_KnowbaseItem::getTable(),
@@ -2272,6 +2275,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'name'               => __('Target') . ' - ' . User::getTypeName(1),
             'datatype'           => 'dropdown',
             'forcegroupby'       => true,
+            'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => KnowbaseItem_User::getTable(),
@@ -2501,15 +2505,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             ],
         ];
         if (
-            Session::haveRightsOr(self::$rightname, [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])
-            && isset($params['unpublished'])
-            && $params['unpublished']
+            !Session::haveRightsOr(self::$rightname, [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])
+            || !isset($params['unpublished'])
+            || !$params['unpublished']
         ) {
-            $params['criteria'][] = [
-                'link'     => "AND",
-                'criteria' => $unpublished
-            ];
-        } else {
             $params['criteria'][] = [
                 'link'     => "AND NOT",
                 'criteria' => $unpublished
