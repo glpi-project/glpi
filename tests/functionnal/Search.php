@@ -855,7 +855,7 @@ class Search extends DbTestCase
             'metacriteria' => [],
             'as_map'       => 0,
             'browse'       => 0,
-            'unpublished'  => 0,
+            'unpublished'  => 1,
         ]);
 
        // now add a bookmark on Ticket view
@@ -903,7 +903,7 @@ class Search extends DbTestCase
             'savedsearches_id' => $bk_id,
             'as_map'           => 0,
             'browse'           => 0,
-            'unpublished'      => 0,
+            'unpublished'      => 1,
         ]);
 
        // let's test for Computers
@@ -926,7 +926,7 @@ class Search extends DbTestCase
             'metacriteria' => [],
             'as_map'       => 0,
             'browse'       => 0,
-            'unpublished'  => 0,
+            'unpublished'  => 1,
         ]);
 
        // now add a bookmark on Computer view
@@ -974,7 +974,7 @@ class Search extends DbTestCase
             'savedsearches_id' => $bk_id,
             'as_map'           => 0,
             'browse'           => 0,
-            'unpublished'      => 0,
+            'unpublished'      => 1,
         ]);
     }
 
