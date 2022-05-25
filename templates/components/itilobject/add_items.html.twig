@@ -107,6 +107,11 @@
          const item_form = $(".accordion-notes");
          let item_count = item_form.find('.entitynote').length;
          item_form.closest('.accordion-item').find('.note-counter').text(item_count);
+         if (item_count > 0) {
+            item_form.closest('.accordion-item').show();
+         } else {
+            item_form.closest('.accordion-item').hide();
+         }
       }
       refreshNoteCounter{{ rand }}();
    </script>
