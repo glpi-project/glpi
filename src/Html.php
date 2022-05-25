@@ -1005,24 +1005,57 @@ class Html
     public static function progressBar($id, array $options = [])
     {
 
-        $params            = [];
-        $params['create']  = false;
-        $params['message'] = null;
-        $params['percent'] = -1;
-        $params['display'] = true;
+        $params = [
+            'create'    => false,
+            'message'   => null,
+            'percent'   => -1,
+            'display'   => true,
+            'colors'    => null,
+        ];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
-                $params[$key] = $val;
+                if ($key === 'colors' && $val !== null) {
+                    $params['colors'] = array_merge([
+                        'bg' => null,
+                        'fg' => null,
+                        'border' => null,
+                        'text' => null,
+                    ], $val);
+                } else {
+                    $params[$key] = $val;
+                }
             }
         }
 
         $out = '';
         if ($params['create']) {
+            $apply_custom_colors = $params['colors'] !== null;
+            $outer_style = 'height: 16px;';
+            if ($apply_custom_colors) {
+                if ($params['colors']['bg']) {
+                    $outer_style .= 'background-color: ' . $params['colors']['bg'] . ';';
+                }
+                if ($params['colors']['border']) {
+                    $outer_style .= 'border: 1px solid ' . $params['colors']['border'] . ';';
+                }
+            }
+            $inner_style = 'width: 0%;';
+            $inner_class = 'progress-bar';
+            if (!$apply_custom_colors) {
+                $inner_class .= ' progress-bar-striped bg-info';
+            } else {
+                if ($params['colors']['fg']) {
+                    $inner_style .= 'background-color: ' . $params['colors']['fg'] . ';';
+                }
+                if ($params['colors']['text']) {
+                    $inner_style .= 'color: ' . $params['colors']['text'] . ';';
+                }
+            }
             $out = <<<HTML
-            <div class="progress" style="height: 16px" id="{$id}">
-               <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                     style="width: 0%;"
+            <div class="progress" style="$outer_style" id="{$id}">
+               <div class="$inner_class" role="progressbar"
+                     style="$inner_style"
                      aria-valuenow="0"
                      aria-valuemin="0" aria-valuemax="100"
                      id="{$id}_text">
