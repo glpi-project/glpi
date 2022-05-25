@@ -97,7 +97,7 @@ if (
                     $toupdate[] = ['value_fieldname' => 'value',
                         'to_update'       => "countassign_$rand",
                         'url'             => $CFG_GLPI["root_doc"] .
-                                                            "/ajax/ticketinformation.php",
+                                                            "/ajax/actorinformation.php",
                         'moreparams'      => ['users_id_assign' => '__VALUE__']
                     ];
                     $options['toupdate'] = $toupdate;
@@ -155,7 +155,7 @@ if (
                     $param['toupdate'] = ['value_fieldname' => 'value',
                         'to_update'       => "countgroupassign_$rand",
                         'url'             => $CFG_GLPI["root_doc"] .
-                                                                  "/ajax/ticketinformation.php",
+                                                                  "/ajax/actorinformation.php",
                         'moreparams'      => ['groups_id_assign'
                                                                         => '__VALUE__'
                         ]
@@ -205,7 +205,7 @@ if (
                     $toupdate[] = ['value_fieldname' => 'value',
                         'to_update'       => "countassign_$rand",
                         'url'             => $CFG_GLPI["root_doc"] .
-                                                            "/ajax/ticketinformation.php",
+                                                            "/ajax/actorinformation.php",
                         'moreparams'      => ['suppliers_id_assign' => '__VALUE__']
                     ];
                     $options['toupdate'] = $toupdate;

@@ -168,7 +168,7 @@
             }
             option_element.append(existing_element);
 
-            $.get("{{ path('/ajax/ticketinformation.php') }}", {
+            $.get("{{ path('/ajax/actorinformation.php') }}", {
                [fk]: items_id,
                only_number: true,
             }).done(function (number) {
