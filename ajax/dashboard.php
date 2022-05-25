@@ -74,7 +74,7 @@ switch ($_POST['action'] ?? null) {
 
     case 'save_rights':
         $dashboard->setPrivate($_POST['is_private'] != '0');
-        echo $dashboard->saveRights($_POST['rights'] ?? []);
+        $dashboard->saveRights($_POST['rights'] ?? []);
         exit;
 
     case 'save_filter_data':
@@ -87,7 +87,7 @@ switch ($_POST['action'] ?? null) {
 
     case 'set_last_dashboard':
         $grid = new Grid($_POST['dashboard'] ?? "");
-        echo $grid->setLastDashboard($_POST['page'], $_POST['dashboard']);
+        $grid->setLastDashboard($_POST['page'], $_POST['dashboard']);
         exit;
 
     case 'clone_dashboard':

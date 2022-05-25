@@ -161,6 +161,8 @@ abstract class CommonITILObject extends CommonDBTM
         $actors = [];
 
         $actortypestring = self::getActorFieldNameType($actortype);
+        $entities_id = $params['entities_id'] ?? $_SESSION['glpiactive_entity'];
+        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1);
 
         if ($this->isNewItem()) {
             // load default user from preference only at the first load of new ticket form
@@ -183,7 +185,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'          => 'User',
                             'text'              => $name,
                             'title'             => $name,
-                            'use_notification'  => strlen($email) > 0,
+                            'use_notification'  => $email === '' ? false : $default_use_notif,
                             'alternative_email' => $email,
                         ];
                     }
@@ -210,7 +212,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'          => 'User',
                             'text'              => $name,
                             'title'             => $name,
-                            'use_notification'  => strlen($email) > 0,
+                            'use_notification'  => $email === '' ? false : $default_use_notif,
                             'alternative_email' => $email,
                         ];
                     }
@@ -238,7 +240,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'          => 'Supplier',
                             'text'              => $supplier_obj->fields['name'],
                             'title'             => $supplier_obj->fields['name'],
-                            'use_notification'  => strlen($supplier_obj->fields['email']) > 0,
+                            'use_notification'  => $supplier_obj->fields['email'] === '' ? false : $default_use_notif,
                             'alternative_email' => $supplier_obj->fields['email'],
                         ];
                     }
@@ -4505,7 +4507,7 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             $newtab['condition'] = array_merge(
                 $newtab['condition'],
-                ['id' => [$_SESSION['glpigroups']]]
+                ['id' => $_SESSION['glpigroups']]
             );
         }
         $tab[] = $newtab;

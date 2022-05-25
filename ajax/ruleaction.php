@@ -44,6 +44,8 @@ if (strpos($_SERVER['PHP_SELF'], "ruleaction.php")) {
 
 Session::checkLoginUser();
 
+/** @global array $CFG_GLPI */
+
 // Non define case
 if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
     if (!isset($_POST["field"])) {
@@ -68,12 +70,9 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         $already_used = in_array($_POST["field"], $used);
     }
 
-    echo "<table width='100%'><tr><td width='30%'>";
+    echo "<table class='w-100'><tr><td style='width: 30%'>";
 
-    $action_type = '';
-    if (isset($_POST["action_type"])) {
-        $action_type = $_POST["action_type"];
-    }
+    $action_type = $_POST["action_type"] ?? '';
 
     $randaction = RuleAction::dropdownActions(['subtype'     => $_POST["sub_type"],
         'name'        => "action_type",

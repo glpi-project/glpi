@@ -46,6 +46,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+/** @global DBmysql $DB */
 if (
     isset($_POST["table"])
     && isset($_POST["value"])

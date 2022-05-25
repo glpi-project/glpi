@@ -44,6 +44,8 @@ if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
 
 Session::checkLoginUser();
 
+/** @global array $CFG_GLPI */
+
 if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {
     $criterias = $rule->getAllCriteria();
 
@@ -53,11 +55,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
             $_POST["criteria"] = key($criterias);
         }
 
-        if (isset($criterias[$_POST["criteria"]]['allow_condition'])) {
-            $allow_condition = $criterias[$_POST["criteria"]]['allow_condition'];
-        } else {
-            $allow_condition = [];
-        }
+        $allow_condition = $criterias[$_POST["criteria"]]['allow_condition'] ?? [];
 
         $condparam = ['criterion'        => $_POST["criteria"],
             'allow_conditions' => $allow_condition
@@ -65,7 +63,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
         if (isset($_POST['condition'])) {
             $condparam['value'] = $_POST['condition'];
         }
-        echo "<table width='100%'><tr><td width='30%'>";
+        echo "<table class='w-100'><tr><td style='width: 30%'>";
         $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"], $condparam);
         echo "</td><td>";
         echo "<span id='condition_span$randcrit'>\n";

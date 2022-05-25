@@ -303,4 +303,14 @@ class Unmanaged extends CommonDBTM
         }
         $this->deleteFromDB(1);
     }
+
+    public static function canDelete()
+    {
+        return static::canUpdate();
+    }
+
+    public static function canPurge()
+    {
+        return static::canUpdate();
+    }
 }

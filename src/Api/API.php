@@ -841,8 +841,8 @@ abstract class API
                         ],
                         'glpi_entities'   => [
                             'ON' => [
-                                'glpi_contracts_items'  => 'entities_id',
-                                'glpi_entities'         => 'id'
+                                'glpi_contracts'    => 'entities_id',
+                                'glpi_entities'     => 'id'
                             ]
                         ]
                     ],

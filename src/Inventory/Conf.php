@@ -48,6 +48,7 @@ use DevicePowerSupply;
 use DeviceProcessor;
 use DeviceSimcard;
 use DeviceSoundCard;
+use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 use Html;
@@ -89,7 +90,8 @@ class Conf extends CommonGLPI
         'vm_components'                  => 0,
         'vm_as_computer'                 => 0,
         'component_removablemedia'       => 1,
-        'component_powersupply'          => 1
+        'component_powersupply'          => 1,
+        'inventory_frequency'            => AbstractRequest::DEFAULT_FREQUENCY
     ];
 
     /**
@@ -354,6 +356,22 @@ class Conf extends CommonGLPI
             'id'        => 'import_monitor_on_partial_sn',
             'checked'   => $config['import_monitor_on_partial_sn']
         ]);
+
+        echo "</td>";
+
+        $rand = mt_rand();
+        echo "<td><label for='dropdown_inventory_frequency$rand'>" . __('Inventory frequency (in hours)') .
+            "</label></td><td>";
+        \Dropdown::showNumber(
+            "inventory_frequency",
+            [
+                'value' => $config['inventory_frequency'],
+                'min' => 1,
+                'max' => 240,
+                'rand' => $rand
+            ]
+        );
+
         echo "</td>";
         echo "</tr>";
 

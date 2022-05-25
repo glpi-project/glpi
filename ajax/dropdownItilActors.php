@@ -40,6 +40,8 @@ Html::header_nocache();
 
 Session::checkCentralAccess();
 
+/** @global array $CFG_GLPI */
+
 // Make a select box
 if (
     isset($_POST["type"])

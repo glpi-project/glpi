@@ -45,6 +45,8 @@ Session::checkLoginUser();
 $context  = $_POST['context'] ?? '';
 $itemtype = $_POST["itemtype"] ?? '';
 
+/** @global array $CFG_GLPI */
+
 // Check for required params
 if (empty($itemtype)) {
     Response::sendError(400, "Bad request: itemtype cannot be empty", Response::CONTENT_TYPE_TEXT_HTML);
@@ -62,12 +64,9 @@ if ($context == "impact") {
 if ($isValidItemtype) {
     $table = getTableForItemType($itemtype);
 
-    $rand = mt_rand();
-    if (isset($_POST["rand"])) {
-        $rand = $_POST["rand"];
-    }
+    $rand = $_POST["rand"] ?? mt_rand();
 
-   // Message for post-only
+    // Message for post-only
     if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {
         echo "<span class='text-muted'>" .
          __('Enter the first letters (user, item name, serial or asset number)')

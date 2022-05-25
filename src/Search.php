@@ -4154,6 +4154,10 @@ JAVASCRIPT;
         $condition = '';
 
         switch ($itemtype) {
+            case 'Reservation':
+                $condition = getEntitiesRestrictRequest("", ReservationItem::getTable(), '', '', true);
+                break;
+
             case 'Reminder':
                 $condition = Reminder::addVisibilityRestrict();
                 break;
@@ -5165,6 +5169,16 @@ JAVASCRIPT;
                     0,
                     0,
                     ['jointype' => 'child']
+                );
+                break;
+
+            case 'Reservation':
+                $out .= self::addLeftJoin(
+                    $itemtype,
+                    $ref_table,
+                    $already_link_tables,
+                    ReservationItem::getTable(),
+                    ReservationItem::getForeignKeyField(),
                 );
                 break;
 

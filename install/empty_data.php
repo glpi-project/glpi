@@ -8122,7 +8122,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rules_id' => 10,
                 'criteria' => 'contact',
                 'condition' => 6,
-                'pattern' => '/(.*),/',
+                'pattern' => '/(.*)[,|\\/]/',
             ], [
                 'id' => 20,
                 'rules_id' => 11,

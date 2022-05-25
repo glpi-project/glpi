@@ -37,6 +37,7 @@ use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\Toolbox\VersionParser;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
@@ -2257,7 +2258,8 @@ class Toolbox
        // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
         $DB = $database;
 
-        if (!$DB->runFile(GLPI_ROOT . "/install/mysql/glpi-empty.sql")) {
+        $normalized_nersion = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $normalized_nersion))) {
             echo "Errors occurred inserting default database";
         } else {
            //dataset

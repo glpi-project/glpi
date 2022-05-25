@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
@@ -644,8 +645,7 @@ class Config extends CommonDBTM
         Dropdown::showFromArray($dd_params['name'], $item_devices_types, $dd_params);
 
         echo "<input type='hidden' name='_update_devices_in_menu' value='1'>";
-        echo "</td>";
-        echo "</tr>\n";
+        echo "</td></tr>\n";
 
         echo "</table>";
 

@@ -43,6 +43,8 @@ if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
 
 Session::checkLoginUser();
 
+/** @global array $CFG_GLPI */
+
 if (
     isset($_POST['type']) && !empty($_POST['type'])
     && isset($_POST['right'])

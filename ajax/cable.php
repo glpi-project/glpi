@@ -42,7 +42,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
 
-$action = (!isset($_POST['action'])) ? $_GET["action"] : $_POST['action'];
+$action = $_POST['action'] ?? $_GET["action"];
 
 switch ($action) {
     case 'get_items_from_itemtype':
