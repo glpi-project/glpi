@@ -35,6 +35,8 @@
 
 namespace Glpi\Plugin;
 
+use Toolbox;
+
 class HookManager
 {
     protected string $plugin;
