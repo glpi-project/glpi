@@ -149,6 +149,7 @@ class TicketParameters extends CommonITILObjectParameters
         foreach ($items_ticket as $item_ticket) {
             $itemtype = $item_ticket->fields['itemtype'];
             if (!class_exists($itemtype)) {
+                trigger_error(sprintf('No class found for type %s', $itemtype), E_USER_WARNING);
                 // May happen if the itemtype belongs to a plugin and this plugin is inactive
                 continue;
             }
