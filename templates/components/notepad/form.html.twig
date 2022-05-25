@@ -93,24 +93,13 @@
                                     {% if canedit %}
                                         {% set edit_btn %}
                                             <li>
-                                            <a class="dropdown-item edit-timeline-item" href="#" data-id="{{ id }}">
+                                            <a class="dropdown-item edit-note" href="#" data-id="{{ id }}">
                                                 <i class="fa-fw ti ti-edit"></i>
                                                 <span>{{ __('Edit') }}</span>
                                             </a>
                                             </li>
                                         {% endset %}
                                         {% set actions = actions|merge({edit_btn}) %}
-                                    {% endif %}
-                                    {% if candelete %}
-                                        {% set delete_btn %}
-                                            <li>
-                                            <a class="dropdown-item delete-timeline-item" href="#" data-id="{{ id }}">
-                                                <i class="fa-fw ti ti-trash"></i>
-                                                <span>{{ __('Delete') }}</span>
-                                            </a>
-                                            </li>
-                                        {% endset %}
-                                        {% set actions = actions|merge({delete_btn}) %}
                                     {% endif %}
                                     {% if actions|length %}
                                         <div class="dropdown ms-2">
@@ -129,8 +118,8 @@
                                     <i class="ti ti-x"></i>
                                 </button>
                             </div>
-                            <div class="entitynote" role="alert" id='view{{ id }}'>{{ note['content'] }}</div>
-                            <textarea name='content' class='form-control d-none' rows='5' id='content{{ id }}'>{{ note['content'] }}</textarea>
+                            <div class="entitynote" role="alert" id='view{{ id }}'>{{ note['content']|verbatim_value }}</div>
+                            <textarea name='content' class='form-control d-none' rows='5' id='content{{ id }}'>{{ note['content']|verbatim_value }}</textarea>
                             <br>
                             <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0"
                                     data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Visible on tickets') }}">
@@ -142,6 +131,11 @@
                             <button type="submit" value="Update" name="update" class="btn btn-primary d-none" id="submit{{ id }}">
                                 <span>{{ __('Update') }}</span>
                             </button>
+                            <button class="btn btn-outline-danger me-2 d-none" type="submit" name="purge" value="1" id="purge{{ id }}"
+                                    onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                                <i class="ti ti-trash"></i>
+                                <span>{{ _x('button', 'Delete permanently') }}</span>
+                            </button>
                         </form>
                     </div>
                 </span>
@@ -152,11 +146,12 @@
 
 <script type="text/javascript">
 $(function() {
-    $('.edit-timeline-item').on('click', function(e) {
+    $('.edit-note').on('click', function(e) {
         var id = this.dataset.id;
         $('#view' + id).addClass('d-none');
         $('#content' + id).removeClass('d-none');
         $('#submit' + id).removeClass('d-none');
+        $('#purge' + id).removeClass('d-none');
         $('#ticket' + id).removeAttr('disabled');
     });
 });

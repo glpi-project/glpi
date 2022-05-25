@@ -184,9 +184,7 @@ class Notepad extends CommonDBChild
         $iterator = $DB->request($query);
 
         foreach ($iterator as $note) {
-            if (Session::haveRight($item::$rightname, READNOTE)) {
-                $data[] = $note;
-            }
+            $data[] = $note;
         }
         return $data;
     }
