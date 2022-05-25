@@ -46,38 +46,38 @@ Session::checkLoginUser();
 $only_number = boolval($_REQUEST['only_number'] ?? false);
 
 if (isset($_REQUEST['users_id_requester']) && ($_REQUEST['users_id_requester'] > 0)) {
-   $ticket = new Ticket();
+    $ticket = new Ticket();
 
-   $options2 = [
-      'criteria' => [
-         [
-            'field'      => 4, // users_id_requester
-            'searchtype' => 'equals',
-            'value'      => $_REQUEST['users_id_requester'],
-            'link'       => 'AND',
-         ],
-         [
-            'field'      => 12, // status
-            'searchtype' => 'equals',
-            'value'      => 'notold',
-            'link'       => 'AND',
-         ],
-      ],
-      'reset' => 'reset',
-   ];
+    $options2 = [
+        'criteria' => [
+            [
+                'field'      => 4, // users_id_requester
+                'searchtype' => 'equals',
+                'value'      => $_REQUEST['users_id_requester'],
+                'link'       => 'AND',
+            ],
+            [
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => 'notold',
+                'link'       => 'AND',
+            ],
+        ],
+        'reset' => 'reset',
+    ];
 
-   $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-   $nb  = $ticket->countActiveObjectsForUser($_REQUEST['users_id_requester']);
+    $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+    $nb  = $ticket->countActiveObjectsForUser($_REQUEST['users_id_requester']);
 
-   if ($only_number) {
-      if ($nb > 0) {
-         echo "<a href='$url'>" . $nb . "</a>";
-      }
-   } else {
-      echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-      printf(__('%1$s: %2$s'), __('Processing'), $nb);
-      echo ")</a>";
-   }
+    if ($only_number) {
+        if ($nb > 0) {
+            echo "<a href='$url'>" . $nb . "</a>";
+        }
+    } else {
+        echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
+        printf(__('%1$s: %2$s'), __('Processing'), $nb);
+        echo ")</a>";
+    }
 } else if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
     $ticket = new Ticket();
 
