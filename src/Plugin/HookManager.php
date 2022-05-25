@@ -49,6 +49,7 @@ class HookManager
      */
     public function enableCSRF(): void
     {
+        Toolbox::deprecated();
         $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->plugin] = true;
     }
 

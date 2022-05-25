@@ -836,19 +836,6 @@ class Plugin extends CommonDBTM
            // Enable autoloader and load plugin hooks
             self::load($this->fields['directory'], true);
 
-           // No activation if not CSRF compliant
-            if (
-                !isset($PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->fields['directory']])
-                || !$PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->fields['directory']]
-            ) {
-                Session::addMessageAfterRedirect(
-                    sprintf(__('Plugin %1$s is not CSRF compliant!'), $this->fields['name']),
-                    true,
-                    ERROR
-                );
-                return false;
-            }
-
             $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
             if (function_exists($function)) {
                 ob_start();
@@ -2397,13 +2384,7 @@ class Plugin extends CommonDBTM
                     }
                     ob_end_clean();
                     $function = 'plugin_' . $directory . '_check_prerequisites';
-                    if (
-                        !isset($PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$directory])
-                        || !$PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$directory]
-                    ) {
-                        $output .= "<span class='error'>" . __('Not CSRF compliant') . "</span>";
-                        $do_activate = false;
-                    } else if (function_exists($function) && $do_activate) {
+                    if (function_exists($function) && $do_activate) {
                         ob_start();
                         $do_activate = $function();
                         if (!$do_activate) {

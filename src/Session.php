@@ -1428,11 +1428,14 @@ class Session
      **/
     public static function checkCSRF($data)
     {
+        if (!GLPI_USE_CSRF_CHECK) {
+            trigger_error(
+                'Definition of "GLPI_USE_CSRF_CHECK" constant is deprecated and is ignore for security reasons.',
+                E_USER_WARNING
+            );
+        }
 
-        if (
-            GLPI_USE_CSRF_CHECK
-            && (!Session::validateCSRF($data))
-        ) {
+        if (!Session::validateCSRF($data)) {
            // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
