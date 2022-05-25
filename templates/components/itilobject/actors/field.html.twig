@@ -150,50 +150,36 @@
          // manage ticket information (number of assigned ticket for an actor)
          if (is_selection && itemtype != "Email") {
             if ("{{ actortype }}" == "assign") {
-               var already_assign_element = $(
+               var already_element = $(
                        `<span class="assign_infos ms-1" title="{{ __('Number of tickets already assigned') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top"
                      data-id="${items_id}" data-fk="${fk}">
                   <i class="fas fa-spinner fa-spin"></i>
                </span>`
                );
-               option_element.append(already_assign_element);
-
-               $.get("{{ path('/ajax/ticketassigninformation.php') }}", {
-                  [fk]: items_id,
-                  only_number: true,
-               }).done(function (number) {
-                  var badge = "";
-                  if (number.length > 0) {
-                     badge = `<span class="badge bg-secondary-lt">
-                     ${number}
-                  </span>`;
-                  }
-                  already_assign_element.html(badge);
-               });
             } else if ("{{ actortype }}" == "requester") {
-               var already_requester_element = $(
+               var already_element = $(
                        `<span class="assign_infos ms-1" title="{{ __('Number of tickets as requester') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top"
                      data-id="${items_id}" data-fk="${fk}">
                   <i class="fas fa-spinner fa-spin"></i>
                </span>`
                );
-               option_element.append(already_requester_element);
-
-               $.get("{{ path('/ajax/ticketrequesterinformation.php') }}", {
-                  [fk]: items_id,
-                  only_number: true,
-               }).done(function(number) {
-                  var badge = "";
-                  if (number.length > 0) {
-                     badge = `<span class="badge bg-secondary-lt">
-                     ${number}
-                  </span>`;
-                  }
-                  already_requester_element.html(badge);
-               });
             }
+            option_element.append(already_element);
+
+            $.get("{{ path('/ajax/ticketinformation.php') }}", {
+               [fk]: items_id,
+               only_number: true,
+            }).done(function (number) {
+               var badge = "";
+               if (number.length > 0) {
+                  badge = `<span class="badge bg-secondary-lt">
+                  ${number}
+               </span>`;
+               }
+               already_element.html(badge);
+            });
          }
 
          return option_element;
