@@ -150,7 +150,7 @@
          // manage ticket information (number of assigned ticket for an actor)
          if (is_selection && itemtype != "Email") {
             if ("{{ actortype }}" == "assign") {
-               var already_element = $(
+               var existing_element = $(
                        `<span class="assign_infos ms-1" title="{{ __('Number of tickets already assigned') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top"
                      data-id="${items_id}" data-fk="${fk}">
@@ -158,7 +158,7 @@
                </span>`
                );
             } else if ("{{ actortype }}" == "requester") {
-               var already_element = $(
+               var existing_element = $(
                        `<span class="assign_infos ms-1" title="{{ __('Number of tickets as requester') }}"
                      data-bs-toggle="tooltip" data-bs-placement="top"
                      data-id="${items_id}" data-fk="${fk}">
@@ -166,7 +166,7 @@
                </span>`
                );
             }
-            option_element.append(already_element);
+            option_element.append(existing_element);
 
             $.get("{{ path('/ajax/ticketinformation.php') }}", {
                [fk]: items_id,
@@ -178,7 +178,7 @@
                   ${number}
                </span>`;
                }
-               already_element.html(badge);
+               existing_element.html(badge);
             });
          }
 
