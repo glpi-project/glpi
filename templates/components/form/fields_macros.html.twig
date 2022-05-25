@@ -647,6 +647,27 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
 {% endmacro %}
 
+{% macro dropdownFrequency(name, value, label = '', options = {}) %}
+   {% set options = {'rand': random()}|merge(options) %}
+   {% if options.fields_template.isMandatoryField(name) %}
+      {% set options = {'required': true}|merge(options) %}
+   {% endif %}
+
+   {% if options.disabled %}
+      {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+   {% endif %}
+
+   {% set field %}
+      {% do call('Dropdown::showFrequency', [name, value, {
+         'rand': rand,
+         'width': '100%',
+         'value': value
+      }|merge(options)]) %}
+   {% endset %}
+
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ '_' ~ options.rand})) }}
+{% endmacro %}
+
 {% macro dropdownField(itemtype, name, value, label = '', options = {}) %}
    {% if options.multiple %}
       {# Needed for empty value as the input wont be sent in this case... we need something to know the input was displayed AND empty #}

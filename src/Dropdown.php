@@ -2256,10 +2256,11 @@ class Dropdown
      *
      * @param string  $name   select name
      * @param integer $value  default value (default 0)
+     * @param array   $options
      *
      * @return string|integer HTML output, or random part of dropdown ID.
      **/
-    public static function showFrequency($name, $value = 0)
+    public static function showFrequency($name, $value = 0, $options = [])
     {
 
         $tab = [];
@@ -2285,7 +2286,9 @@ class Dropdown
         $tab[WEEK_TIMESTAMP]  = __('Each week');
         $tab[MONTH_TIMESTAMP] = __('Each month');
 
-        Dropdown::showFromArray($name, $tab, ['value' => $value]);
+        Dropdown::showFromArray($name, $tab, $options + [
+            'value' => $value
+        ]);
     }
 
     /**
