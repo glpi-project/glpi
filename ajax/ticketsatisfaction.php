@@ -129,7 +129,7 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
         );
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td width='50%'>" . __('Comment required if score is less than or equal to') . "</td>";
+        echo "<tr class='tab_bg_1'><td width='50%'>" . __('Comment required if score is <= to') . "</td>";
         echo "<td>";
         Dropdown::showNumber(
             'inquest_mandatory_comment',
