@@ -2351,7 +2351,7 @@ JAVASCRIPT;
                   <i class="fas fa-user-secret fa-lg"></i>
                </button>
 HTML;
-               $header_toolbar[] = $impersonate_btn;
+                $header_toolbar[] = $impersonate_btn;
             }
         }
 
