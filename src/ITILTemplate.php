@@ -396,8 +396,8 @@ abstract class ITILTemplate extends CommonDropdown
             switch ($item->getType()) {
                 case 'TicketTemplate':
                     return [
-                        1 => __('Standard interface'),
-                        2 => __('Simplified interface')
+                        1 => __('Preview (Standard interface)'),
+                        2 => __('Preview (Simplified interface)')
                     ];
                 case 'ChangeTemplate':
                 case 'ProblemTemplate':
