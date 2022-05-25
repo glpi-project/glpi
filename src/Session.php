@@ -1585,13 +1585,14 @@ class Session
      *
      * @return boolean
      */
-    public static function canImpersonate($user_id)
+    public static function canImpersonate($user_id, &$message = "")
     {
 
         if (
             $user_id <= 0 || self::getLoginUserID() == $user_id
             || (self::isImpersonateActive() && self::getImpersonatorId() == $user_id)
         ) {
+            $message = __("You can't impersonate yourself.");
             return false; // Cannot impersonate invalid user, self, or already impersonated user
         }
 
@@ -1603,11 +1604,13 @@ class Session
         // Cannot impersonate inactive user
         $user = new User();
         if (!$user->getFromDB($user_id) || !$user->getField('is_active')) {
+            $message = __("The user is not active.");
             return false;
         }
 
         // Cannot impersonate user with no profile
-        if (Profile_User::getUserProfiles($user_id, true) == []) {
+        if (Profile_User::getUserProfiles($user_id) == []) {
+            $message = __("The user doesn't have any profile.");
             return false;
         }
 

@@ -2317,7 +2317,8 @@ class User extends CommonDBTM
 HTML;
             $header_toolbar[] = $vcard_btn;
 
-            if (Session::canImpersonate($ID)) {
+            $error_message = "";
+            if (Session::canImpersonate($ID, $error_message)) {
                 $impersonate_lbl = __s('Impersonate');
                 $impersonate_btn = <<<HTML
                <button type="button" name="impersonate" value="1"
@@ -2341,6 +2342,16 @@ HTML;
                })(jQuery);
 JAVASCRIPT;
                 $header_toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
+            } elseif (strlen($error_message) > 0) {
+                $impersonate_btn = <<<HTML
+               <button type="button" name="impersonate" value="1"
+                       class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
+                       title="{$error_message}"
+                       data-bs-toggle="tooltip" data-bs-placement="bottom">
+                  <i class="fas fa-user-secret fa-lg"></i>
+               </button>
+HTML;
+               $header_toolbar[] = $impersonate_btn;
             }
         }
 
