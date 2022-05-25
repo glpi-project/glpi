@@ -1817,6 +1817,7 @@ $empty_data_builder = new class
         $ADDTODISPLAYPREF['Database'] = [2, 3, 6, 9, 10];
         $ADDTODISPLAYPREF[Socket::class] = [5, 6, 9, 8, 7];
         $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
+        $ADDTODISPLAYPREF[KnowbaseItem::class] = [79, 131, 13];
 
         foreach ($ADDTODISPLAYPREF as $type => $options) {
             $rank = 1;
