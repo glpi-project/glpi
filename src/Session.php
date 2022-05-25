@@ -1585,7 +1585,7 @@ class Session
      *
      * @return boolean
      */
-    public static function canImpersonate($user_id, &$message = "")
+    public static function canImpersonate($user_id, ?string &$message = null)
     {
 
         if (
