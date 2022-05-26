@@ -1235,4 +1235,110 @@ JAVASCRIPT;
     {
         return "ti ti-calendar-event";
     }
+
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
+    {
+        global $CFG_GLPI;
+
+        $action_prefix = 'Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR;
+        if (in_array($itemtype, $CFG_GLPI["reservation_types"], true)) {
+            $actions[$action_prefix . 'enable'] = __('Authorize reservations');
+            $actions[$action_prefix . 'disable'] = __('Prohibit reservations');
+            $actions[$action_prefix . 'available'] = __('Make available for reservations');
+            $actions[$action_prefix . 'unavailable'] = __('Make unavailable for reservations');
+        }
+    }
+
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        $input = $ma->getInput();
+
+        switch ($ma->getAction()) {
+            case 'enable':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Authorize reservations') . "'>";
+                return true;
+            case 'disable':
+                echo '<div class="alert alert-warning">';
+                echo __('Are you sure you want to return this non-reservable item?');
+                echo '<br>';
+                echo "<span class='fw-bold'>" . __('That will remove all the reservations in progress.') . "</span>";
+                echo '</div>';
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Prohibit reservations') . "'>";
+                return true;
+            case 'available':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Make available for reservations') . "'>";
+                return true;
+            case 'unavailable':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Make unavailable for reservations') . "'>";
+                return true;
+        }
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    {
+        if (!ReservationItem::canUpdate()) {
+            return false;
+        }
+        $reservation_item = new ReservationItem();
+
+        switch ($ma->getAction()) {
+            case 'enable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        // Treat as OK
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $result = $reservation_item->add([
+                            'itemtype' => $item->getType(),
+                            'items_id' => $id,
+                            'is_active' => 1
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    }
+                }
+                break;
+            case 'disable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->delete(['id' => $reservation_item->getID()]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+            case 'available':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->update([
+                            'id' => $reservation_item->getID(),
+                            'is_active' => 1
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+            case 'unavailable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->update([
+                            'id' => $reservation_item->getID(),
+                            'is_active' => 0
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
 }
