@@ -64,8 +64,8 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
         [
             'glpi_networkportethernets'   => [
                 'ON'  => [
-                    'glpi_networkportethernets'   => 'sockets_id',
-                    'glpi_sockets'              => 'id'
+                    'glpi_networkportethernets' => 'networkports_id',
+                    'glpi_sockets'              => 'networkports_id'
                 ]
             ]
         ], //inner join
