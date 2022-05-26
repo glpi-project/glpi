@@ -70,8 +70,8 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
             ],
             'glpi_networkportethernets'   => [
                 'ON'  => [
-                    'glpi_networkportethernets'   => 'sockets_id',
-                    'glpi_sockets'              => 'id'
+                    'glpi_networkportethernets' => 'networkports_id',
+                    'glpi_sockets'              => 'networkports_id'
                 ]
             ]
         ], //inner join
