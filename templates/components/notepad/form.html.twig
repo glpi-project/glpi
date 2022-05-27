@@ -118,16 +118,25 @@
                                     <i class="ti ti-x"></i>
                                 </button>
                             </div>
-                            <div class="entitynote" role="alert" id='view{{ id }}'>{{ note['content']|verbatim_value }}</div>
+                            <div class="entitynote" role="alert" id='contentread{{ id }}'>{{ note['content']|verbatim_value }}</div>
                             <textarea name='content' class='form-control d-none' rows='5' id='content{{ id }}'>{{ note['content']|verbatim_value }}</textarea>
                             <br>
-                            <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0"
+                            <label id='visible{{ id }}' class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 d-none"
                                     data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Visible on tickets') }}">
                                 <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
-                                        name="visible_from_ticket" value="1" autocomplete="off" id="ticket{{ id }}"
-                                        {{ note['visible_from_ticket'] == 1 ? 'checked' : '' }} disabled />
+                                        name="visible_from_ticket" value="1" autocomplete="off"
+                                        {{ note['visible_from_ticket'] == 1 ? 'checked' : '' }} />
                                 <span class="form-check-label mb-1 mb-sm-0">{{ __('Visible on tickets') }}</span>
                             </label>
+                            <span id='visibleread{{ id }}'>
+                                {% if note['visible_from_ticket'] == 1 %}
+                                    <i class="fa fa-lg fa-eye"></i>
+                                    {{ __('Visible on tickets') }}
+                                {% else %}
+                                    <i class="fa fa-lg fa-eye-slash"></i>
+                                    {{ __('Not visible on tickets') }}
+                                {% endif %}
+                            </span>
                             <button type="submit" value="Update" name="update" class="btn btn-primary d-none" id="submit{{ id }}">
                                 <span>{{ __('Update') }}</span>
                             </button>
@@ -148,11 +157,12 @@
 $(function() {
     $('.edit-note').on('click', function(e) {
         var id = this.dataset.id;
-        $('#view' + id).addClass('d-none');
+        $('#contentread' + id).addClass('d-none');
+        $('#visibleread' + id).addClass('d-none');
         $('#content' + id).removeClass('d-none');
+        $('#visible' + id).removeClass('d-none');
         $('#submit' + id).removeClass('d-none');
         $('#purge' + id).removeClass('d-none');
-        $('#ticket' + id).removeAttr('disabled');
     });
 });
 </script>
