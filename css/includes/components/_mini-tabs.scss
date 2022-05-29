@@ -83,7 +83,8 @@
             content: "\f204";
             left: 0;
             top: 0;
-            font: 15px var(--fa-font-solid);
+            font: var(--fa-font-solid);
+            font-size: 15px;
             position: absolute;
         }
 

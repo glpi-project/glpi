@@ -286,7 +286,7 @@ class ErrorHandler
     /**
      * Twig error handler.
      *
-     * This handler is manually called by application when an error occured during Twig template rendering.
+     * This handler is manually called by application when an error occurred during Twig template rendering.
      *
      * @param \Twig\Error\Error $error
      *
@@ -316,7 +316,7 @@ class ErrorHandler
     /**
      * SQL error handler.
      *
-     * This handler is manually called by application when a SQL error occured.
+     * This handler is manually called by application when a SQL error occurred.
      *
      * @param integer $error_code
      * @param string  $error_message

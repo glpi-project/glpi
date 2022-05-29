@@ -2263,11 +2263,11 @@ class Rule extends CommonDBTM
 
         // Some data may come from the database, and be sanitized (i.e. html special chars already encoded),
         // but some data may have been build from translation or from some plugin code and may be not sanitized.
-        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode entities to
+        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode special chars to
         // ensure HTML validity (and to prevent XSS).
-        $text  = "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($criterion)) . "</td>";
-        $text .= "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($condition)) . "</td>";
-        $text .= "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($pattern)) . "</td>";
+        $text  = "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($criterion)) . "</td>";
+        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($condition)) . "</td>";
+        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern)) . "</td>";
         return $text;
     }
 
@@ -2286,11 +2286,11 @@ class Rule extends CommonDBTM
 
         // Some data may come from the database, and be sanitized (i.e. html special chars already encoded),
         // but some data may have been build from translation or from some plugin code and may be not sanitized.
-        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode entities to
+        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode special chars to
         // ensure HTML validity (and to prevent XSS).
-        $text  = "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($field)) . "</td>";
-        $text .= "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($type)) . "</td>";
-        $text .= "<td $addtotd>" . Html::entities_deep(Sanitizer::getVerbatimValue($value)) . "</td>";
+        $text  = "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($field)) . "</td>";
+        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($type)) . "</td>";
+        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($value)) . "</td>";
         return $text;
     }
 

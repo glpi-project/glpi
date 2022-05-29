@@ -110,8 +110,7 @@
          var actions = "";
          {% if canupdate %}
          if (['User', 'Supplier', 'Email'].includes(itemtype)
-            && is_selection
-            && {{ entity_config('is_notif_enable_default', entities_id, 1) }}) {
+            && is_selection) {
             var fa_class = "far";
             if (use_notif) {
                fa_class = "fas";
@@ -209,7 +208,7 @@
                   action: 'getActors',
                   actortype: actorytype,
                   users_right: '{{ users_right ?? 'all' }}',
-                  entity_restrict: {{ item.fields['entities_id'] }},
+                  entity_restrict: {{ entities_id }},
                   searchText: params.term,
                   _idor_token: '{{ idor_token() }}',
                   itiltemplate_class: '{{ itiltemplate.getType() }}',

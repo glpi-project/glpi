@@ -42,6 +42,8 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownSoftwareLicense.php")) {
 
 Session::checkRight("software", UPDATE);
 
+/** @global DBmysql $DB */
+
 if ($_POST['softwares_id'] > 0) {
     if (!isset($_POST['value'])) {
         $_POST['value'] = 0;

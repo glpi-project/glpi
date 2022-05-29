@@ -232,7 +232,9 @@ class Unmanaged extends CommonDBTM
         switch ($ma->getAction()) {
             case 'convert':
                 echo __('Select an itemtype: ') . ' ';
-                Dropdown::showFromArray('itemtype', array_combine($CFG_GLPI['inventory_types'], $CFG_GLPI['inventory_types']));
+                Dropdown::showItemType($CFG_GLPI['inventory_types'], [
+                    'display_emptychoice' => false,
+                ]);
                 break;
         }
         return parent::showMassiveActionsSubForm($ma);
@@ -300,5 +302,15 @@ class Unmanaged extends CommonDBTM
             $netport->update(Toolbox::addslashes_deep($row));
         }
         $this->deleteFromDB(1);
+    }
+
+    public static function canDelete()
+    {
+        return static::canUpdate();
+    }
+
+    public static function canPurge()
+    {
+        return static::canUpdate();
     }
 }

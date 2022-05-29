@@ -1270,7 +1270,10 @@ class Planning extends CommonGLPI
     {
         if (!$params['itemtype'] instanceof CommonDBTM) {
             echo "<div class='center'>";
-            echo "<a href='" . $params['url'] . "'>" . __("View this item in his context") . "</a>";
+            echo "<a href='" . $params['url'] . "' class='btn btn-outline-secondary'>" .
+                "<i class='ti ti-eye'></i>" .
+                "<span>" . __("View this item in his context") . "</span>" .
+            "</a>";
             echo "</div>";
             echo "<hr>";
             $rand = mt_rand();

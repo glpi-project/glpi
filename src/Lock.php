@@ -62,151 +62,35 @@ class Lock extends CommonGLPI
      **/
     public static function showForItem(CommonDBTM $item)
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $ID       = $item->getID();
         $itemtype = $item->getType();
         $header   = false;
 
-       //If user doesn't have update right on the item, lock form must not be displayed
+        //If user doesn't have update right on the item, lock form must not be displayed
         if (!$item->isDynamic() || !$item->can($item->fields['id'], UPDATE)) {
             return false;
         }
 
-        $rand = mt_rand();
-        Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-        $massiveactionparams = [
-            'container'      => 'mass' . __CLASS__ . $rand,
-        ];
-        Html::showMassiveActions($massiveactionparams);
-
-        echo "<table class='tab_cadre_fixehov'>";
-
-        echo "<tr>";
-        echo "<th>";
-        echo Html::getCheckAllAsCheckbox("mass'.__CLASS__.$rand", '__RAND__');
-        echo "</th>";
-        echo "<th>" . __('Locked items') . "</th></tr>";
-
-       //Use a hook to allow external inventory tools to manage per field lock
-        $results =  Plugin::doHookFunction(Hooks::DISPLAY_LOCKED_FIELDS, ['item'   => $item,
-            'header' => $header
-        ]);
-        $header |= $results['header'];
-
-       //Special locks for computers only
-        if ($itemtype == 'Computer') {
-            $computer_item = new Computer_Item();
-           //Locks for items recorded in glpi_computers_items table
-            $types = ['Monitor', 'Peripheral', 'Printer'];
-            foreach ($types as $type) {
-                $params = ['is_dynamic'    => 1,
-                    'is_deleted'    => 1,
-                    'computers_id'  => $ID,
-                    'itemtype'      => $type
-                ];
-                $params['FIELDS'] = ['id', 'items_id'];
-                $first  = true;
-                foreach ($DB->request('glpi_computers_items', $params) as $line) {
-                    /** @var CommonDBTM $asset */
-                    $asset = new $type();
-                    $asset->getFromDB($line['items_id']);
-                    if ($first) {
-                        echo "<tr>";
-                        echo "<th>";
-                        Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $type]]);
-                        echo "</th>";
-                        echo "<th>" . $type::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
-                        $first = false;
-                    }
-
-                    echo "<tr class='tab_bg_1'>";
-
-                    echo "<td class='center' width='10'>";
-                    if ($computer_item->can($line['id'], UPDATE) || $computer_item->can($line['id'], PURGE)) {
-                        $header = true;
-                        echo Html::getMassiveActionCheckBox(Computer_Item::class, $line['id'], ['massive_tags' => 'select_' . $type]);
-                    }
-                    echo "</td>";
-
-                    echo "<td class='left' width='95%'>" . $asset->getName() . "</td>";
-                    echo "</tr>\n";
-                }
-            }
-
-           //items disks
-            $item_disk = new Item_Disk();
-            $params = [
-                'is_dynamic'   => 1,
-                'is_deleted'   => 1,
-                'items_id'     => $ID,
-                'itemtype'     => $itemtype
-            ];
-            $params['FIELDS'] = ['id', 'name'];
-            $first  = true;
-            foreach ($DB->request($item_disk->getTable(), $params) as $line) {
-                if ($first) {
-                    echo "<tr>";
-                    echo "<th>";
-                    Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $item_disk::getType()]]);
-                    echo "</th>";
-                    echo "<th>" . $item_disk->getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
-                    $first = false;
-                }
-
-                echo "<tr class='tab_bg_1'>";
-
-                echo "<td class='center' width='10'>";
-                if ($item_disk->can($line['id'], UPDATE) || $item_disk->can($line['id'], PURGE)) {
-                    $header = true;
-                    echo Html::getMassiveActionCheckBox(Item_Disk::class, $line['id'], ['massive_tags' => 'select_' . $item_disk::getType()]);
-                }
-                echo "</td>";
-
-                echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
-                echo "</tr>\n";
-            }
-
-            $computer_vm = new ComputerVirtualMachine();
-            $params = ['is_dynamic'    => 1,
-                'is_deleted'    => 1,
-                'computers_id'  => $ID
-            ];
-            $params['FIELDS'] = ['id', 'name'];
-            $first  = true;
-            foreach ($DB->request($computer_vm->getTable(), $params) as $line) {
-                if ($first) {
-                    echo "<tr>";
-                    echo "<th>";
-                    Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $computer_vm::getType()]]);
-                    echo "</th>";
-                    echo "<th>" . $computer_vm->getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
-                    $first = false;
-                }
-
-                echo "<tr class='tab_bg_1'>";
-
-                echo "<td class='center' width='10'>";
-                if ($computer_vm->can($line['id'], UPDATE) || $computer_vm->can($line['id'], PURGE)) {
-                    $header = true;
-                    echo Html::getMassiveActionCheckBox(ComputerVirtualMachine::class, $line['id'], ['massive_tags' => 'select_' . $computer_vm::getType()]);
-                }
-                echo "</td>";
-
-                echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
-                echo "</tr>\n";
-            }
-        }
-
         $lockedfield = new Lockedfield();
         if ($lockedfield->isHandled($item)) {
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+            $massiveactionparams = [
+                'container'      => 'mass' . __CLASS__ . $rand,
+            ];
+            Html::showMassiveActions($massiveactionparams);
+
+            echo "<table class='tab_cadre_fixehov'>";
+
             echo "<tr>";
-            echo "<th>";
+            echo "<th width='10'>";
             Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $lockedfield::getType()]]);
             echo "</th>";
             echo "<th>" . $lockedfield->getTypeName() . "</th></tr>";
 
-           //inventory locked fields
+            //inventory locked fields
             $locked_iterator = $DB->request([
                 'FROM'   => $lockedfield->getTable(),
                 'WHERE'  => [
@@ -215,7 +99,7 @@ class Lock extends CommonGLPI
                 ]
             ]);
 
-           //get fields labels
+            //get fields labels
             $so = $item->rawSearchOptions();
             $so_fields = [];
             foreach ($so as $sof) {
@@ -245,9 +129,120 @@ class Lock extends CommonGLPI
                 echo "<td class='left' width='95%'>" . $field_label . "</td>";
                 echo "</tr>\n";
             }
+
+            echo "</table>";
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
         }
 
-       //Software versions
+        echo "<div width='50%'>";
+        echo "<form method='post' id='lock_form'
+             name='lock_form' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+        echo "<input type='hidden' name='id' value='$ID'>\n";
+        echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
+        echo "<table class='tab_cadre_fixe'>";
+        echo "<tr><th colspan='2'>" . __('Locked items') . "</th></tr>";
+
+        //Use a hook to allow external inventory tools to manage per field lock
+        $results =  Plugin::doHookFunction(Hooks::DISPLAY_LOCKED_FIELDS, ['item'   => $item,
+            'header' => $header
+        ]);
+        $header |= $results['header'];
+
+        //Special locks for computers only
+        if ($itemtype == 'Computer') {
+            $computer_item = new Computer_Item();
+            //Locks for items recorded in glpi_computers_items table
+            $types = $CFG_GLPI['directconnect_types'];
+            foreach ($types as $type) {
+                $params = ['is_dynamic'    => 1,
+                    'is_deleted'    => 1,
+                    'computers_id'  => $ID,
+                    'itemtype'      => $type
+                ];
+                $params['FIELDS'] = ['id', 'items_id'];
+                $first  = true;
+                foreach ($DB->request('glpi_computers_items', $params) as $line) {
+                    /** @var CommonDBTM $asset */
+                    $asset = new $type();
+                    $asset->getFromDB($line['items_id']);
+                    if ($first) {
+                        echo "<tr><th colspan='2'>" . $type::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+                        $first = false;
+                    }
+
+                    echo "<tr class='tab_bg_1'>";
+
+                    echo "<td class='center' width='10'>";
+                    if ($computer_item->can($line['id'], UPDATE) || $computer_item->can($line['id'], PURGE)) {
+                        $header = true;
+                        echo "<input type='checkbox' name='Computer_Item[" . $line['id'] . "]'>";
+                    }
+                    echo "</td>";
+
+                    echo "<td class='left' width='95%'>" . $asset->getName() . "</td>";
+                    echo "</tr>\n";
+                }
+            }
+
+            //items disks
+            $item_disk = new Item_Disk();
+            $params = [
+                'is_dynamic'   => 1,
+                'is_deleted'   => 1,
+                'items_id'     => $ID,
+                'itemtype'     => $itemtype
+            ];
+            $params['FIELDS'] = ['id', 'name'];
+            $first  = true;
+            foreach ($DB->request($item_disk->getTable(), $params) as $line) {
+                if ($first) {
+                    echo "<tr><th colspan='2'>" . $item_disk->getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+                    $first = false;
+                }
+
+                echo "<tr class='tab_bg_1'>";
+
+                echo "<td class='center' width='10'>";
+                if ($item_disk->can($line['id'], UPDATE) || $item_disk->can($line['id'], PURGE)) {
+                    $header = true;
+                    echo "<input type='checkbox' name='Item_Disk[" . $line['id'] . "]'>";
+                }
+                echo "</td>";
+
+                echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
+                echo "</tr>\n";
+            }
+
+            $computer_vm = new ComputerVirtualMachine();
+            $params = ['is_dynamic'    => 1,
+                'is_deleted'    => 1,
+                'computers_id'  => $ID
+            ];
+            $params['FIELDS'] = ['id', 'name'];
+            $first  = true;
+            foreach ($DB->request($computer_vm->getTable(), $params) as $line) {
+                if ($first) {
+                    echo "<tr><th colspan='2'>" . $computer_vm->getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+                    $first = false;
+                }
+
+                echo "<tr class='tab_bg_1'>";
+
+                echo "<td class='center' width='10'>";
+                if ($computer_vm->can($line['id'], UPDATE) || $computer_vm->can($line['id'], PURGE)) {
+                    $header = true;
+                    echo "<input type='checkbox' name='ComputerVirtualMachine[" . $line['id'] . "]'>";
+                }
+                echo "</td>";
+
+                echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
+                echo "</tr>\n";
+            }
+        }
+
+        //Software versions
         $item_sv = new Item_SoftwareVersion();
         $item_sv_table = Item_SoftwareVersion::getTable();
 
@@ -279,18 +274,14 @@ class Lock extends CommonGLPI
                 'isv.itemtype'    => $itemtype,
             ]
         ]);
-        echo "<tr>";
-        echo "<th>";
-        Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . Software::getType()]]);
-        echo "</th>";
-        echo "<th>" . Software::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+        echo "<tr><th colspan='2'>" . Software::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_1'>";
 
             echo "<td class='center' width='10'>";
             if ($item_sv->can($data['id'], UPDATE) || $item_sv->can($data['id'], PURGE)) {
                 $header = true;
-                echo Html::getMassiveActionCheckBox(Item_SoftwareVersion::class, $data['id'], ['massive_tags' => 'select_' . Software::getType()]);
+                echo "<input type='checkbox' name='Item_SoftwareVersion[" . $data['id'] . "]'>";
             }
             echo "</td>";
 
@@ -298,7 +289,7 @@ class Lock extends CommonGLPI
             echo "</tr>\n";
         }
 
-       //Software licenses
+        //Software licenses
         $item_sl = new Item_SoftwareLicense();
         $item_sl_table = Item_SoftwareLicense::getTable();
 
@@ -331,18 +322,14 @@ class Lock extends CommonGLPI
             ]
         ]);
 
-        echo "<tr>";
-        echo "<th>";
-        Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . SoftwareLicense::getType()]]);
-        echo "</th>";
-        echo "<th>" . SoftwareLicense::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+        echo "<tr><th colspan='2'>" . SoftwareLicense::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
         foreach ($iterator as $data) {
             echo "<tr class='tab_bg_1'>";
 
             echo "<td class='center' width='10'>";
             if ($item_sl->can($data['id'], UPDATE) || $item_sl->can($data['id'], PURGE)) {
                 $header = true;
-                echo Html::getMassiveActionCheckBox(Item_SoftwareLicense::class, $data['id'], ['massive_tags' => 'select_' . SoftwareLicense::getType()]);
+                echo "<input type='checkbox' name='Item_SoftwareLicense[" . $data['id'] . "]'>";
             }
             echo "</td>";
 
@@ -361,11 +348,7 @@ class Lock extends CommonGLPI
         foreach ($DB->request($networkport->getTable(), $params) as $line) {
             $networkport->getFromDB($line['id']);
             if ($first) {
-                echo "<tr>";
-                echo "<th>";
-                Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $networkport::getType()]]);
-                echo "</th>";
-                echo "<th>" . $networkport->getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+                echo "<tr><th colspan='2'>" . $networkport->getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
                 $first = false;
             }
 
@@ -374,7 +357,7 @@ class Lock extends CommonGLPI
             echo "<td class='center' width='10'>";
             if ($networkport->can($line['id'], UPDATE) || $networkport->can($line['id'], PURGE)) {
                 $header = true;
-                echo Html::getMassiveActionCheckBox(NetworkPort::class, $line['id'], ['massive_tags' => 'select_' . $networkport::getType()]);
+                echo "<input type='checkbox' name='NetworkPort[" . $line['id'] . "]'>";
             }
             echo "</td>";
 
@@ -396,11 +379,7 @@ class Lock extends CommonGLPI
         foreach ($DB->request(['glpi_networknames', 'glpi_networkports'], $params) as $line) {
             $networkname->getFromDB($line['id']);
             if ($first) {
-                echo "<tr>";
-                echo "<th>";
-                Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $networkname::getType()]]);
-                echo "</th>";
-                echo "<th>" . NetworkName::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+                echo "<tr><th colspan='2'>" . NetworkName::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
                 $first = false;
             }
 
@@ -409,7 +388,7 @@ class Lock extends CommonGLPI
             echo "<td class='center' width='10'>";
             if ($networkname->can($line['id'], UPDATE) || $networkname->can($line['id'], PURGE)) {
                 $header = true;
-                echo Html::getMassiveActionCheckBox(NetworkName::class, $line['id'], ['massive_tags' => 'select_' . $networkname::getType()]);
+                echo "<input type='checkbox' name='NetworkName[" . $line['id'] . "]'>";
             }
             echo "</td>";
 
@@ -438,11 +417,7 @@ class Lock extends CommonGLPI
         ) {
             $ipaddress->getFromDB($line['id']);
             if ($first) {
-                echo "<tr>";
-                echo "<th>";
-                Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . IPAddress::getType()]]);
-                echo "</th>";
-                echo "<th>" . IPAddress::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+                echo "<tr><th colspan='2'>" . IPAddress::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
                 $first = false;
             }
 
@@ -451,7 +426,7 @@ class Lock extends CommonGLPI
             echo "<td class='center' width='10'>";
             if ($ipaddress->can($line['id'], UPDATE) || $ipaddress->can($line['id'], PURGE)) {
                 $header = true;
-                echo Html::getMassiveActionCheckBox(IPAddress::class, $line['id'], ['massive_tags' => 'select_' . $ipaddress::getType()]);
+                echo "<input type='checkbox' name='IPAddress[" . $line['id'] . "]'>";
             }
             echo "</td>";
 
@@ -472,11 +447,7 @@ class Lock extends CommonGLPI
             );
         }
         if ($nb) {
-            echo "<tr>";
-            echo "<th>";
-            Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_components']]);
-            echo "</th>";
-            echo "<th>" . _n('Component', 'Components', Session::getPluralNumber()) . "</th></tr>\n";
+            echo "<tr><th colspan='2'>" . _n('Component', 'Components', Session::getPluralNumber()) . "</th></tr>\n";
             foreach ($types as $type) {
                 $type_item = new $type();
 
@@ -512,7 +483,7 @@ class Lock extends CommonGLPI
                      echo "<td class='center' width='10'>";
                     if ($type_item->can($data['id'], UPDATE) || $type_item->can($data['id'], PURGE)) {
                         $header = true;
-                        echo Html::getMassiveActionCheckBox($type, $data['id'], ['massive_tags' => 'select_components']);
+                        echo "<input type='checkbox' name='" . $type . "[" . $data['id'] . "]'>";
                     }
                      echo "</td>";
 
@@ -523,9 +494,21 @@ class Lock extends CommonGLPI
             }
         }
 
-        echo "</table>";
-        $massiveactionparams['ontop'] = false;
-        Html::showMassiveActions($massiveactionparams);
+
+        if ($header) {
+            echo "<tr><th>";
+            //echo Html::getCheckAllAsCheckbox('lock_form');
+            echo "</th><th>&nbsp</th></tr>\n";
+            echo "</table>";
+            Html::openArrowMassives('lock_form', true);
+            Html::closeArrowMassives(['unlock' => _sx('button', 'Unlock'),
+                'purge'  => _sx('button', 'Delete permanently')
+            ]);
+        } else {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center' colspan='2'>" . __('No locked item') . "</td></tr>";
+            echo "</table>";
+        }
         Html::closeForm();
 
         echo "</div>\n";

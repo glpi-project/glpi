@@ -148,6 +148,11 @@ class TicketParameters extends CommonITILObjectParameters
         $items_ticket = Item_Ticket::getItemsAssociatedTo($ticket::getType(), $fields['id']);
         foreach ($items_ticket as $item_ticket) {
             $itemtype = $item_ticket->fields['itemtype'];
+            if (!class_exists($itemtype)) {
+                trigger_error(sprintf('No class found for type %s', $itemtype), E_USER_WARNING);
+                // May happen if the itemtype belongs to a plugin and this plugin is inactive
+                continue;
+            }
             if ($item = $itemtype::getById($item_ticket->fields['items_id'])) {
                 $asset_parameters = new AssetParameters();
                 $values['assets'][] = $asset_parameters->getValues($item);

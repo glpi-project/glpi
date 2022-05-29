@@ -47,6 +47,8 @@ if (strpos($_SERVER['PHP_SELF'], "planningcheck.php")) {
 
 Session::checkLoginUser();
 
+/** @global array $CFG_GLPI */
+
 if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {
       $rand = mt_rand();
       echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";

@@ -65,10 +65,20 @@ class DownloadCommand extends AbstractMarketplaceCommand
 
         $plugins = $input->getArgument('plugins');
 
+        $plugin_versions = [];
         foreach ($plugins as $plugin) {
             if (empty(trim($plugin))) {
                 continue;
             }
+            if (str_contains($plugin, ':')) {
+                [$plugin, $version] = explode(':', $plugin);
+                $plugin_versions[$plugin] = $version;
+            } else {
+                $plugin_versions[$plugin] = null;
+            }
+        }
+
+        foreach ($plugin_versions as $plugin => $version) {
             // If the plugin is already downloaded, refuse to download it again
             if (!$input->getOption('force') && is_dir(GLPI_MARKETPLACE_DIR . '/' . $plugin)) {
                 if (Controller::hasVcsDirectory($plugin)) {
@@ -81,8 +91,8 @@ class DownloadCommand extends AbstractMarketplaceCommand
                 continue;
             }
             $controller = new Controller($plugin);
-            if ($controller->canBeDownloaded()) {
-                $result = $controller->downloadPlugin(false);
+            if ($controller->canBeDownloaded($version)) {
+                $result = $controller->downloadPlugin(false, $version);
                 $success_msg = sprintf(__("Plugin %s downloaded successfully"), $plugin);
                 $error_msg = sprintf(__("Plugin %s could not be downloaded"), $plugin);
                 if ($result) {

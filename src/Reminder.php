@@ -607,10 +607,14 @@ class Reminder extends CommonDBVisible implements
         $this->initForm($ID, $options);
         $rand = mt_rand();
 
-       // Show Reminder or blank form
-
         $canedit = $this->can($ID, UPDATE);
 
+        if (
+            ($options['from_planning_ajax'] ?? false)
+            || ($options['from_planning_edit_ajax'] ?? false)
+        ) {
+            $options['no_header'] = true;
+        }
         $this->showFormHeader($options);
 
         echo "<tr class='tab_bg_2'><td>" . __('Title') . "</td>";
@@ -623,7 +627,6 @@ class Reminder extends CommonDBVisible implements
                 'name',
                 [
                     'value'   => $this->fields['name'],
-                    'size'    => '80',
                 ]
             );
         } else {

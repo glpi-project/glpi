@@ -35,12 +35,16 @@
 
 namespace Glpi\Features;
 
+use CommonDBTM;
 use Datacenter;
 use DCRoom;
 use Enclosure;
+use Glpi\Application\View\TemplateRenderer;
 use Item_Enclosure;
 use Item_Rack;
+use Location;
 use Rack;
+use Toolbox;
 
 /**
  * Datacenter breadcrumb
@@ -51,9 +55,13 @@ trait DCBreadcrumb
      * Get datacenter element breadcrumb
      *
      * @return array
+     *
+     * @deprecated 10.1.0
      */
     public function getDcBreadcrumb()
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         $item = $this;
@@ -70,8 +78,8 @@ trait DCBreadcrumb
                     'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
                     'icon'       => true
                 ];
-                $position = $this->getItemEnclosurePosition($item->getType(), $item->getID());
-                $breadcrumb[] = $enclosure->getLink($options) . $position;
+                $position = sprintf(__('(U%1$u)'), (int)$item->getPositionInEnclosure());
+                $breadcrumb[] = $enclosure->getLink($options) . '&nbsp;' . $position;
                 $item = $enclosure;
             }
         }
@@ -83,8 +91,8 @@ trait DCBreadcrumb
                     'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
                     'icon'       => true
                 ];
-                $position = $this->getItemRackPosition($item->getType(), $item->getID());
-                $breadcrumb[] = $rack->getLink($options) . $position;
+                $position = sprintf(__('(U%1$u)'), (int)$this->getPositionInRack());
+                $breadcrumb[] = $rack->getLink($options) . '&nbsp;' . $position;
                 $item = $rack;
             }
         }
@@ -127,9 +135,13 @@ trait DCBreadcrumb
      * @param boolean $getobj   Whether to return enclosure object
      *
      * @return false|Enclosure
+     *
+     * @deprecated 10.1.0
      */
     public function isEnclosurePart($itemtype, $items_id, $getobj = false)
     {
+        Toolbox::deprecated();
+
         $ien = new Item_Enclosure();
         $found = $ien->getFromDBByCrit([
             'itemtype'  => $itemtype,
@@ -150,58 +162,6 @@ trait DCBreadcrumb
     }
 
     /**
-     * get item position from Enclosure
-     *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
-     *
-     * @return string
-     */
-    private function getItemEnclosurePosition($itemtype, $items_id)
-    {
-        $position = 0;
-        $ien = new Item_Enclosure();
-
-        if (
-            $ien->getFromDBByCrit([
-                'itemtype'  => $itemtype,
-                'items_id'  => $items_id
-            ])
-        ) {
-            $position = $ien->getField('position');
-        }
-
-        $position = "&nbsp;" . sprintf(__('(U%1$u)'), $position);
-        return $position;
-    }
-
-    /**
-     * get item position from Rack
-     *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
-     *
-     * @return string
-     */
-    private function getItemRackPosition($itemtype, $items_id)
-    {
-        $position = 0;
-        $ira = new Item_Rack();
-
-        if (
-            $ira->getFromDBByCrit([
-                'itemtype'  => $itemtype,
-                'items_id'  => $items_id
-            ])
-        ) {
-            $position = $ira->getField('position');
-        }
-
-        $position = "&nbsp;" . sprintf(__('(U%1$u)'), $position);
-        return $position;
-    }
-
-    /**
      * Check if an item is part of a rack
      *
      * @param string  $itemtype Item type
@@ -209,9 +169,13 @@ trait DCBreadcrumb
      * @param boolean $getobj   Whether to return rack object
      *
      * @return false|Rack
+     *
+     * @deprecated 10.1.0
      */
     public function isRackPart($itemtype, $items_id, $getobj = false)
     {
+        Toolbox::deprecated();
+
         $ira = new Item_Rack();
         $found = $ira->getFromDBByCrit([
             'itemtype'  => $itemtype,
@@ -234,19 +198,200 @@ trait DCBreadcrumb
      * Specific value for "Data center position".
      *
      * @return array
+     *
+     * @deprecated 10.1.0
      */
     public static function getDcBreadcrumbSpecificValueToDisplay($items_id)
     {
+        Toolbox::deprecated();
 
         $item = new static();
 
         if ($item->getFromDB($items_id)) {
             $breadcrumb = $item->getDcBreadcrumb();
             if (count($breadcrumb) > 0) {
-                return implode(' &gt; ', array_reverse($item->getDcBreadcrumb()));
+                return implode(' &gt; ', array_reverse($breadcrumb));
             }
         }
 
         return '&nbsp;';
+    }
+
+    /**
+     * Specific value for "Data center position".
+     *
+     * @param int $items_id
+     *
+     * @return string
+     */
+    final public static function renderDcBreadcrumb(int $items_id): string
+    {
+        global $CFG_GLPI;
+
+        $breadcrumb = [];
+
+        $item = new static();
+        if ($item->getFromDB($items_id)) {
+            $types = $CFG_GLPI['rackable_types'];
+
+            // Add Enclosure part of breadcrumb
+            $enclosure_types = $types;
+            unset($enclosure_types[array_search('Enclosure', $enclosure_types)]);
+            if (in_array($item->getType(), $enclosure_types) && $enclosure = $item->getParentEnclosure()) {
+                $location = Location::getFromItem($enclosure) ?: null;
+                $breadcrumb[Enclosure::getType()] = [
+                    'link'     => $enclosure->getLink(
+                        [
+                            'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
+                            'icon'       => true
+                        ]
+                    ),
+                    'position' => $item->getPositionInEnclosure(),
+                    'location' => $location !== null ? $location->fields : null,
+                ];
+
+                $item = $enclosure; // use Enclosure for previous breadcrumb item
+            }
+
+            // Add Rack part of breadcrumb
+            if (in_array($item->getType(), $types) && $rack = $item->getParentRack()) {
+                $location = Location::getFromItem($rack) ?: null;
+                $breadcrumb[Rack::getType()] = [
+                    'link'     => $rack->getLink(
+                        [
+                            'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
+                            'icon'       => true
+                        ]
+                    ),
+                    'position' => $item->getPositionInRack(),
+                    'location' => $location !== null ? $location->fields : null,
+                ];
+
+                $item = $rack; // use Rack for previous breadcrumb item
+            }
+
+            // Add DCRoom part of breadcrumb
+            $dcroom = new DCRoom();
+            if (
+                $item->getType() == Rack::getType()
+                && $item->fields['dcrooms_id'] > 0
+                && $dcroom->getFromDB($item->fields['dcrooms_id'])
+            ) {
+                $location = Location::getFromItem($dcroom) ?: null;
+                $breadcrumb[DCRoom::getType()] = [
+                    'link'     => $dcroom->getLink(
+                        [
+                            'linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : '',
+                            'icon'       => true
+                        ]
+                    ),
+                    'location' => $location !== null ? $location->fields : null,
+                ];
+
+                $item = $dcroom; // use DCRoom for previous breadcrumb item
+            }
+
+            // Add Datacenter part of breadcrumb
+            $datacenter = new Datacenter();
+            if (
+                $item->getType() == DCRoom::getType()
+                && $item->fields['datacenters_id'] > 0
+                && $datacenter->getFromDB($item->fields['datacenters_id'])
+            ) {
+                $location = Location::getFromItem($datacenter) ?: null;
+                $breadcrumb[Datacenter::getType()] = [
+                    'link'     => $datacenter->getLink(
+                        [
+                            'linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : '',
+                            'icon'       => true
+                        ]
+                    ),
+                    'location' => $location !== null ? $location->fields : null,
+                ];
+            }
+
+            $breadcrumb = array_reverse($breadcrumb);
+        }
+
+        return TemplateRenderer::getInstance()->render(
+            'layout/parts/dcbreadcrumbs.html.twig',
+            [
+                'breadcrumbs'   => $breadcrumb
+            ]
+        );
+    }
+
+    /**
+     * Get parent Enclosure.
+     *
+     * @return Enclosure|null
+     */
+    final public function getParentEnclosure(): ?Enclosure
+    {
+        $ien = new Item_Enclosure();
+        if (
+            !($this instanceof CommonDBTM)
+            || !$ien->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+        ) {
+            return null;
+        }
+
+        $enclosure = new Enclosure();
+        return $enclosure->getFromDB($ien->fields['enclosures_id']) ? $enclosure : null;
+    }
+
+    /**
+     * Get position in Enclosure.
+     *
+     * @return int|null
+     */
+    final public function getPositionInEnclosure(): ?int
+    {
+        $ien = new Item_Enclosure();
+        if (
+            !($this instanceof CommonDBTM)
+            || !$ien->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+        ) {
+            return null;
+        }
+
+        return $ien->fields['position'];
+    }
+
+    /**
+     * Get parent Rack.
+     *
+     * @return Rack|null
+     */
+    final public function getParentRack(): ?Rack
+    {
+        $ira = new Item_Rack();
+        if (
+            !($this instanceof CommonDBTM)
+            || !$ira->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+        ) {
+            return null;
+        }
+
+        $rack = new Rack();
+        return $rack->getFromDB($ira->fields['racks_id']) ? $rack : null;
+    }
+
+    /**
+     * Get position in Rack.
+     *
+     * @return int|null
+     */
+    final public function getPositionInRack(): ?int
+    {
+        $ira = new Item_Rack();
+        if (
+            !($this instanceof CommonDBTM)
+            || !$ira->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+        ) {
+            return null;
+        }
+
+        return $ira->fields['position'];
     }
 }

@@ -161,6 +161,8 @@ abstract class CommonITILObject extends CommonDBTM
         $actors = [];
 
         $actortypestring = self::getActorFieldNameType($actortype);
+        $entities_id = $params['entities_id'] ?? $_SESSION['glpiactive_entity'];
+        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1);
 
         if ($this->isNewItem()) {
             // load default user from preference only at the first load of new ticket form
@@ -183,7 +185,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'          => 'User',
                             'text'              => $name,
                             'title'             => $name,
-                            'use_notification'  => strlen($email) > 0,
+                            'use_notification'  => $email === '' ? false : $default_use_notif,
                             'alternative_email' => $email,
                         ];
                     }
@@ -210,7 +212,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'          => 'User',
                             'text'              => $name,
                             'title'             => $name,
-                            'use_notification'  => strlen($email) > 0,
+                            'use_notification'  => $email === '' ? false : $default_use_notif,
                             'alternative_email' => $email,
                         ];
                     }
@@ -238,7 +240,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'itemtype'          => 'Supplier',
                             'text'              => $supplier_obj->fields['name'],
                             'title'             => $supplier_obj->fields['name'],
-                            'use_notification'  => strlen($supplier_obj->fields['email']) > 0,
+                            'use_notification'  => $supplier_obj->fields['email'] === '' ? false : $default_use_notif,
                             'alternative_email' => $supplier_obj->fields['email'],
                         ];
                     }
@@ -379,6 +381,12 @@ abstract class CommonITILObject extends CommonDBTM
 
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
+        if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
+            $canupdate = false;
+            // No update for actors
+            $options['_noupdate'] = true;
+        }
+
         if (!$this->isNewItem()) {
             $options['formtitle'] = sprintf(
                 __('%1$s - ID %2$d'),
@@ -408,6 +416,7 @@ abstract class CommonITILObject extends CommonDBTM
             'timeline_itemtypes'      => $this->getTimelineItemtypes(),
             'legacy_timeline_actions' => $this->getLegacyTimelineActionsHTML(),
             'params'                  => $options,
+            'entities_id'             => $ID ? $this->fields['entities_id'] : $options['entities_id'],
             'timeline'                => $this->getTimelineItems(),
             'itiltemplate_key'        => static::getTemplateFormFieldName(),
             'itiltemplate'            => $tt,
@@ -4556,7 +4565,7 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             $newtab['condition'] = array_merge(
                 $newtab['condition'],
-                ['id' => [$_SESSION['glpigroups']]]
+                ['id' => $_SESSION['glpigroups']]
             );
         }
         $tab[] = $newtab;
@@ -6950,6 +6959,15 @@ abstract class CommonITILObject extends CommonDBTM
             'item'          => new ITILSolution(),
             'hide_in_menu'  => !$canadd_solution
         ];
+        $itemtypes['document'] = [
+            'type'          => 'Document_Item',
+            'class'         => Document_Item::class,
+            'icon'          => Document_Item::getIcon(),
+            'label'         => _x('button', 'Add a document'),
+            'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
+            'item'          => new Document_Item(),
+            'hide_in_menu'  => !$canadd_document
+        ];
         if ($validation !== null) {
             $itemtypes['validation'] = [
                 'type'          => 'ITILValidation',
@@ -6961,15 +6979,6 @@ abstract class CommonITILObject extends CommonDBTM
                 'hide_in_menu'  => !$canadd_validation
             ];
         }
-        $itemtypes['document'] = [
-            'type'          => 'Document_Item',
-            'class'         => Document_Item::class,
-            'icon'          => Document_Item::getIcon(),
-            'label'         => _x('button', 'Add a document'),
-            'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
-            'item'          => new Document_Item(),
-            'hide_in_menu'  => true
-        ];
 
         if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS])) {
             foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS] as $plugin => $hook_itemtypes) {

@@ -49,6 +49,14 @@ class RuleAction extends CommonDBChild
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
+
+        if (isset($_POST['rule_class_name']) && is_subclass_of(\Rule::class, $_POST['rule_class_name'])) {
+            $rule = new $_POST['rule_class_name']();
+            if ($rule->maxActionsCount() == 1) {
+                $forbidden[] = 'clone';
+            }
+        }
+        //maxActionsCount on Rule
         return $forbidden;
     }
 
@@ -96,7 +104,9 @@ class RuleAction extends CommonDBChild
     {
 
         if ($rule = getItemForItemtype(static::$itemtype)) {
-            return Toolbox::stripTags($rule->getMinimalActionText($this->fields));
+            $action_row = $rule->getMinimalActionText($this->fields);
+            $action_text = trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $action_row));
+            return $action_text;
         }
         return '';
     }

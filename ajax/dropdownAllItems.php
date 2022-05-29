@@ -40,6 +40,8 @@ Html::header_nocache();
 
 Session::checkCentralAccess();
 
+/** @global array $CFG_GLPI */
+
 // Make a select box
 if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    // Link to user for search only > normal users
@@ -49,10 +51,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         $link = "getDropdownUsers.php";
     }
 
-    $rand     = mt_rand();
-    if (isset($_POST['rand'])) {
-        $rand = $_POST['rand'];
-    }
+    $rand = $_POST['rand'] ?? mt_rand();
 
     $field_id = Html::cleanId("dropdown_" . $_POST["name"] . $rand);
 

@@ -184,6 +184,16 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
         if (isCommandLine()) {
             echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.');
             echo "\n";
+            exit();
+        }
+
+        if (defined('SKIP_UPDATES')) {
+            // Show warning for the main request
+            if (!Toolbox::isAjax()) {
+                echo "<div class='banner-need-update'>";
+                echo __("You are bypassing a needed update");
+                echo "</div>";
+            }
         } else {
             Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
             echo "<div class='container-fluid mb-4'>";
@@ -216,21 +226,21 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
                 );
 
                 if ($outdated !== true) {
-                     echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/install/update.php'>";
+                    echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/install/update.php'>";
                     if (!VersionParser::isStableRelease(GLPI_VERSION)) {
                         echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
                     }
-                     echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
-                     echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.') . "</p>";
-                     echo Html::submit(_sx('button', 'Upgrade'), [
-                         'name'  => 'from_update',
-                         'class' => "btn btn-primary",
-                         'icon'  => "fas fa-check",
-                     ]);
-                     Html::closeForm();
+                    echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
+                    echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.') . "</p>";
+                    echo Html::submit(_sx('button', 'Upgrade'), [
+                        'name'  => 'from_update',
+                        'class' => "btn btn-primary",
+                        'icon'  => "fas fa-check",
+                    ]);
+                    Html::closeForm();
                 } else {
                     echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>" .
-                     __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.') . "</p>";
+                        __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.') . "</p>";
                 }
             }
 
@@ -239,8 +249,8 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
             echo "</div>";
             echo "</div>";
             Html::nullFooter();
+            exit();
         }
-        exit();
     }
 }
 

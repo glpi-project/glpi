@@ -2553,12 +2553,16 @@ class Ticket extends CommonITILObject
                 $actions['Ticket_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                 = "<i class='fa-fw fas fa-link'></i>" .
                  _x('button', 'Link tickets');
-                $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                = "<i class='fa-fw fas fa-link'></i>" .
-                _x('button', 'Link project task');
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
-                = "<i class='fa-fw " . Contract::getIcon() . "'></i>" .
-                 _x('button', 'Add contract');
+                if (ProjectTask_Ticket::canCreate()) {
+                    $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
+                        = "<i class='fa-fw fas fa-link'></i>" .
+                        _x('button', 'Link project task');
+                }
+                if (Ticket_Contract::canCreate()) {
+                    $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
+                        = "<i class='fa-fw " . Contract::getIcon() . "'></i>" .
+                        _x('button', 'Add contract');
+                }
 
                 KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
             }
@@ -4373,6 +4377,7 @@ JAVASCRIPT;
             'timeline_itemtypes' => $this->getTimelineItemtypes(),
             'legacy_timeline_actions'  => $this->getLegacyTimelineActionsHTML(),
             'params'             => $options,
+            'entities_id'        => $ID ? $this->fields['entities_id'] : $options['entities_id'],
             'timeline'           => $this->getTimelineItems(),
             'itiltemplate_key'   => self::getTemplateFormFieldName(),
             'itiltemplate'       => $tt,

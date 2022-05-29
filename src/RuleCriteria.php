@@ -101,7 +101,9 @@ class RuleCriteria extends CommonDBChild
     {
 
         if ($rule = getItemForItemtype(static::$itemtype)) {
-            return trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $rule->getMinimalCriteriaText($this->fields)));
+            $criteria_row = $rule->getMinimalCriteriaText($this->fields);
+            $criteria_text = trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $criteria_row));
+            return $criteria_text;
         }
         return '';
     }

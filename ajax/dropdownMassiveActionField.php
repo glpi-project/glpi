@@ -71,7 +71,7 @@ if (
 
     $search            = $search[$_POST["id_field"]];
 
-    echo "<table class='tab_glpi' width='100%'><tr><td>";
+    echo "<table class='tab_glpi w-100'><tr><td>";
 
     $plugdisplay = false;
    // Specific plugin Type case

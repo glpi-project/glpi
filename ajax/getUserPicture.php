@@ -75,7 +75,7 @@ foreach ($_GET['users_id'] as $user_id) {
                 'title'  => getUserName($user_id),
                 'width'  => $_GET['size'],
                 'height' => $_GET['size'],
-                'class'  => isset($_GET['class']) ? $_GET['class'] : ''
+                'class'  => $_GET['class'] ?? ''
             ]);
             if (isset($_GET['link']) && $_GET['link']) {
                  $imgs[$user_id] = Html::link($img, User::getFormURLWithID($user_id));

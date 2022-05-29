@@ -692,7 +692,6 @@ abstract class MainAsset extends InventoryAsset
                 $fw = new Firmware($this->item, [$val->firmware]);
                 if ($fw->checkConf($this->conf)) {
                     $fw->setAgent($this->getAgent());
-                    $fw->setEntityID($this->getEntityID());
                     $fw->prepare();
                     $fw->handleLinks();
                     $this->assets['Glpi\Inventory\Asset\Firmware'] = [$fw];
@@ -777,8 +776,8 @@ abstract class MainAsset extends InventoryAsset
         $controllers = [];
         $ignored_controllers = [];
 
-       //ensure controllers are done last, some components will
-       //ask to ignore their associated controller
+        //ensure controllers are done last, some components will
+        //ask to ignore their associated controller
         if (isset($assets_list['\Glpi\Inventory\Asset\Controller'])) {
             $controllers = $assets_list['\Glpi\Inventory\Asset\Controller'];
             unset($assets_list['\Glpi\Inventory\Asset\Controller']);
@@ -786,6 +785,7 @@ abstract class MainAsset extends InventoryAsset
 
         foreach ($assets_list as $assets) {
             foreach ($assets as $asset) {
+                $asset->setEntityID($this->getEntityID());
                 $asset->setExtraData($this->assets);
                 $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
                 $asset->handleLinks();
@@ -794,11 +794,12 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-       //do controllers
+        //do controllers
         foreach ($controllers as $asset) {
+            $asset->setEntityID($this->getEntityID());
             $asset->setExtraData($this->assets);
             $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
-           //do not handle ignored controllers
+            //do not handle ignored controllers
             $asset->setExtraData(['ignored' => $ignored_controllers]);
             $asset->handleLinks();
             $asset->handle();

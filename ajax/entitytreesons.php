@@ -42,6 +42,8 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+/** @global array $CFG_GLPI */
+
 $base_path = $CFG_GLPI['root_doc'] . "/front/central.php";
 if (Session::getCurrentInterface() == 'helpdesk') {
     $base_path = $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php";
@@ -62,7 +64,7 @@ foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
     $default_entity_id = $default_entity['id'];
 
     $entitytree  = $default_entity['is_recursive'] ? getTreeForItem('glpi_entities', $default_entity_id) : [$default_entity['id'] => $default_entity];
-    $adapt_tree = function (&$entities) use (&$adapt_tree, $base_path, $ancestors) {
+    $adapt_tree = static function (&$entities) use (&$adapt_tree, $base_path, $ancestors) {
         foreach ($entities as $entities_id => &$entity) {
             $entity['key']   = $entities_id;
 

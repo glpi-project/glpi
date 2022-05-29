@@ -1005,24 +1005,57 @@ class Html
     public static function progressBar($id, array $options = [])
     {
 
-        $params            = [];
-        $params['create']  = false;
-        $params['message'] = null;
-        $params['percent'] = -1;
-        $params['display'] = true;
+        $params = [
+            'create'    => false,
+            'message'   => null,
+            'percent'   => -1,
+            'display'   => true,
+            'colors'    => null,
+        ];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
-                $params[$key] = $val;
+                if ($key === 'colors' && $val !== null) {
+                    $params['colors'] = array_merge([
+                        'bg' => null,
+                        'fg' => null,
+                        'border' => null,
+                        'text' => null,
+                    ], $val);
+                } else {
+                    $params[$key] = $val;
+                }
             }
         }
 
         $out = '';
         if ($params['create']) {
+            $apply_custom_colors = $params['colors'] !== null;
+            $outer_style = 'height: 16px;';
+            if ($apply_custom_colors) {
+                if ($params['colors']['bg']) {
+                    $outer_style .= 'background-color: ' . $params['colors']['bg'] . ';';
+                }
+                if ($params['colors']['border']) {
+                    $outer_style .= 'border: 1px solid ' . $params['colors']['border'] . ';';
+                }
+            }
+            $inner_style = 'width: 0%;';
+            $inner_class = 'progress-bar';
+            if (!$apply_custom_colors) {
+                $inner_class .= ' progress-bar-striped bg-info';
+            } else {
+                if ($params['colors']['fg']) {
+                    $inner_style .= 'background-color: ' . $params['colors']['fg'] . ';';
+                }
+                if ($params['colors']['text']) {
+                    $inner_style .= 'color: ' . $params['colors']['text'] . ';';
+                }
+            }
             $out = <<<HTML
-            <div class="progress" style="height: 16px" id="{$id}">
-               <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                     style="width: 0%;"
+            <div class="progress" style="$outer_style" id="{$id}">
+               <div class="$inner_class" role="progressbar"
+                     style="$inner_style"
                      aria-valuenow="0"
                      aria-valuemin="0" aria-valuemax="100"
                      id="{$id}_text">
@@ -1627,13 +1660,16 @@ HTML;
                 'content' => [
                     'ticket' => [
                         'links' => [
-                            'add'       => '/front/helpdesk.public.php?create_ticket=1',
                             'search'    => Ticket::getSearchURL(),
                             'lists'     => '',
                         ]
                     ]
                 ]
             ];
+
+            if (Session::haveRight("ticket", CREATE)) {
+                $menu['tickets']['content']['ticket']['links']['add'] = '/front/helpdesk.public.php?create_ticket=1';
+            }
         }
 
         if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
@@ -1766,7 +1802,7 @@ HTML;
         $tpl_vars += self::getPageHeaderTplVars();
 
         $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
-        $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'http://glpi-project.org/help-central';
+        $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'https://glpi-project.org/documentation/';
 
         $tpl_vars['help_url'] = $help_url;
 
@@ -2228,17 +2264,22 @@ HTML;
     {
         global $CFG_GLPI;
 
-        Toolbox::deprecated('openArrowMassives() method is deprecated');
+        //Toolbox::deprecated('openArrowMassives() method is deprecated');
 
         if ($fixed) {
-            echo "<table class='tab_glpi' width='950px'>";
+            echo "<table width='950px'>";
         } else {
-            echo "<table class='tab_glpi' width='80%'>";
+            echo "<table width='80%'>";
+        }
+
+        $arrow = "fas fa-level-down-alt";
+        if (!$ontop) {
+            $arrow = "fas fa-level-up-alt";
         }
 
         echo "<tr>";
         if (!$onright) {
-            echo "<td><i class='fas fa-level-down-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
+            echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
         } else {
             echo "<td class='left' width='80%'></td>";
         }
@@ -2251,7 +2292,7 @@ HTML;
              href='#'>" . __('Uncheck all') . "</a></td>";
 
         if ($onright) {
-            echo "<td><i class='fas fa-level-down-alt fa-lg mx-2'></i>";
+            echo "<td><i class='$arrow fa-lg mx-2'></i>";
         } else {
             echo "<td class='left' width='80%'>";
         }
@@ -2269,7 +2310,7 @@ HTML;
     public static function closeArrowMassives($actions, $confirm = [])
     {
 
-        Toolbox::deprecated('closeArrowMassives() method is deprecated');
+        //Toolbox::deprecated('closeArrowMassives() method is deprecated');
 
         if (count($actions)) {
             foreach ($actions as $name => $label) {
@@ -6175,7 +6216,7 @@ HTML;
      */
     public static function getCopyrightMessage($withVersion = true)
     {
-        $message = "<a href=\"http://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
+        $message = "<a href=\"https://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
         $message .= "GLPI ";
        // if required, add GLPI version (eg not for login page)
         if ($withVersion) {
@@ -6810,7 +6851,7 @@ HTML;
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, true);
             if (isset($args['debug'])) {
-                $msg = 'An error occured during SCSS compilation: ' . $e->getMessage();
+                $msg = 'An error occurred during SCSS compilation: ' . $e->getMessage();
                 $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);
                 $css = <<<CSS
               html::before {

@@ -79,7 +79,7 @@ class Cartridge extends AbstractInventoryAsset
         <TOTAL>1802</TOTAL>
       </PAGECOUNTERS>
     </DEVICE></CONTENT><QUERY>SNMP</QUERY><DEVICEID>foo</DEVICEID></REQUEST>",
-                'expected'  => '{"tonerblack":"71","name":"","serial":"","manufacturers_id":""}'
+                'expected'  => '{"tonerblack":"71"}'
             ]
         ];
     }
@@ -94,7 +94,7 @@ class Cartridge extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $printer = getItemByTypeName('Printer', '_test_printer_all');
-        $asset = new \Glpi\Inventory\Asset\Monitor($printer, $json->content->cartridges);
+        $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
         $asset->setExtraData((array)$json->content);
         $result = $asset->prepare();
         $this->object($result[0])->isEqualTo(json_decode($expected));

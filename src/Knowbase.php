@@ -65,9 +65,6 @@ class Knowbase extends CommonGLPI
         if ($item->getType() == __CLASS__) {
             $tabs[1] = _x('button', 'Search');
             $tabs[2] = _x('button', 'Browse');
-            if (KnowbaseItem::canUpdate()) {
-                $tabs[3] = _x('button', 'Manage');
-            }
 
             return $tabs;
         }
@@ -85,11 +82,7 @@ class Knowbase extends CommonGLPI
                     break;
 
                 case 2:
-                    $item->showBrowseView();
-                    break;
-
-                case 3:
-                    $item->showManageView();
+                    Search::show('KnowbaseItem');
                     break;
             }
         }
@@ -143,9 +136,13 @@ class Knowbase extends CommonGLPI
 
     /**
      * Show the knowbase browse view
+     *
+     * @deprecated 10.1.0
      **/
     public static function showBrowseView()
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         $rand        = mt_rand();
@@ -227,9 +224,12 @@ JAVASCRIPT;
      * @since 9.4
      *
      * @return array
+     *
+     * @deprecated 10.1.0
      */
     public static function getTreeCategoryList()
     {
+        Toolbox::deprecated();
 
         global $DB;
 
@@ -385,9 +385,12 @@ JAVASCRIPT;
 
     /**
      * Show the knowbase Manage view
+     *
+     * @deprecated 10.1.0
      **/
     public static function showManageView()
     {
+        Toolbox::deprecated();
 
         if (isset($_GET["unpublished"])) {
             $_SESSION['kbunpublished'] = $_GET["unpublished"];

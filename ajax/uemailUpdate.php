@@ -65,15 +65,9 @@ if (
         }
     }
 
-    $user_index = 0;
-    if (isset($_POST['_user_index'])) {
-        $user_index = $_POST['_user_index'];
-    }
+    $user_index = $_POST['_user_index'] ?? 0;
 
-    $default_notif = true;
-    if (isset($_POST['use_notification'][$user_index])) {
-        $default_notif = $_POST['use_notification'][$user_index];
-    }
+    $default_notif = $_POST['use_notification'][$user_index] ?? true;
 
     if (
         isset($_POST['alternative_email'][$user_index])

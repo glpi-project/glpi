@@ -4148,7 +4148,6 @@ CREATE TABLE `glpi_mailcollectors` (
   `requester_field` int NOT NULL DEFAULT '0',
   `add_cc_to_observer` tinyint NOT NULL DEFAULT '0',
   `collect_only_unread` tinyint NOT NULL DEFAULT '0',
-  `create_user_from_email` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
@@ -4319,8 +4318,6 @@ CREATE TABLE `glpi_cables` (
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `is_template` tinyint NOT NULL DEFAULT '0',
-  `template_name` varchar(255) DEFAULT NULL,
   `itemtype_endpoint_a` varchar(255) DEFAULT NULL,
   `itemtype_endpoint_b` varchar(255) DEFAULT NULL,
   `items_id_endpoint_a` int unsigned NOT NULL DEFAULT '0',
@@ -4352,7 +4349,6 @@ CREATE TABLE `glpi_cables` (
   KEY `states_id` (`states_id`),
   KEY `complete` (`entities_id`,`name`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `is_template` (`is_template`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `cabletypes_id` (`cabletypes_id`),
   KEY `date_mod` (`date_mod`),
@@ -7055,7 +7051,6 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `next_creation_date` timestamp NULL DEFAULT NULL,
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `end_date` timestamp NULL DEFAULT NULL,
-  `ticket_per_item` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7063,8 +7058,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   KEY `is_active` (`is_active`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `next_creation_date` (`next_creation_date`),
-  KEY `calendars_id` (`calendars_id`),
-  KEY `ticket_per_item` (`ticket_per_item`)
+  KEY `calendars_id` (`calendars_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7624,7 +7618,6 @@ CREATE TABLE `glpi_users` (
   `default_dashboard_mini_ticket` varchar(100) DEFAULT NULL,
   `default_central_tab` tinyint DEFAULT '0',
   `nickname` varchar(255) DEFAULT NULL,
-  `toast_location` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),
@@ -8793,12 +8786,10 @@ CREATE TABLE `glpi_lockedfields` (
   `value` varchar(255) DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `is_global` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`field`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`),
-  KEY `is_global` (`is_global`)
+  KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_unmanageds`;
@@ -9204,30 +9195,6 @@ CREATE TABLE `glpi_snmpcredentials` (
    KEY `name` (`name`),
    KEY `snmpversion` (`snmpversion`),
    KEY `is_deleted` (`is_deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-
-DROP TABLE IF EXISTS `glpi_items_ticketrecurrents`;
-CREATE TABLE `glpi_items_ticketrecurrents` (
-   `id` int unsigned NOT NULL AUTO_INCREMENT,
-   `itemtype` varchar(255) DEFAULT NULL,
-   `items_id` int unsigned NOT NULL DEFAULT '0',
-   `ticketrecurrents_id` int unsigned NOT NULL DEFAULT '0',
-   PRIMARY KEY (`id`),
-   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`ticketrecurrents_id`),
-   KEY `items_id` (`items_id`),
-   KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-DROP TABLE IF EXISTS `glpi_items_lines`;
-CREATE TABLE `glpi_items_lines` (
-   `id` int unsigned NOT NULL AUTO_INCREMENT,
-   `lines_id` int unsigned NOT NULL DEFAULT '0',
-   `itemtype` varchar(100) DEFAULT NULL,
-   `items_id` int unsigned NOT NULL DEFAULT '0',
-   PRIMARY KEY (`id`),
-   UNIQUE KEY `unicity` (`lines_id`,`itemtype`,`items_id`),
-   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

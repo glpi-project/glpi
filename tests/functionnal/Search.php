@@ -855,6 +855,7 @@ class Search extends DbTestCase
             'metacriteria' => [],
             'as_map'       => 0,
             'browse'       => 0,
+            'unpublished'  => 1,
         ]);
 
        // now add a bookmark on Ticket view
@@ -902,6 +903,7 @@ class Search extends DbTestCase
             'savedsearches_id' => $bk_id,
             'as_map'           => 0,
             'browse'           => 0,
+            'unpublished'      => 1,
         ]);
 
        // let's test for Computers
@@ -924,6 +926,7 @@ class Search extends DbTestCase
             'metacriteria' => [],
             'as_map'       => 0,
             'browse'       => 0,
+            'unpublished'  => 1,
         ]);
 
        // now add a bookmark on Computer view
@@ -971,6 +974,7 @@ class Search extends DbTestCase
             'savedsearches_id' => $bk_id,
             'as_map'           => 0,
             'browse'           => 0,
+            'unpublished'      => 1,
         ]);
     }
 
@@ -2135,6 +2139,27 @@ class Search extends DbTestCase
 
        // Check results
         $this->array($names)->isEqualTo($expected);
+    }
+
+    protected function isVirtualFieldProvider(): array
+    {
+        return [
+            ['name', false],
+            ['name_virtual', false],
+            ['_virtual', true],
+            ['_virtual_name', true]
+        ];
+    }
+
+    /**
+     * @param string $field
+     * @param bool $expected
+     * @return void
+     * @dataProvider isVirtualFieldProvider
+     */
+    public function testIsVirtualField(string $field, bool $expected): void
+    {
+        $this->boolean(\Search::isVirtualField($field))->isEqualTo($expected);
     }
 }
 

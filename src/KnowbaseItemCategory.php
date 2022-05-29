@@ -61,4 +61,13 @@ class KnowbaseItemCategory extends CommonTreeDropdown
     {
         return KnowbaseItem::getIcon();
     }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                KnowbaseItem_KnowbaseItemCategory::class,
+            ]
+        );
+    }
 }

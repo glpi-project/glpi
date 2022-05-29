@@ -39,6 +39,8 @@ Html::header_nocache();
 
 Session::checkRight("transfer", READ);
 
+/** @global array $CFG_GLPI */
+
 if (isset($_POST["id"]) && ($_POST["id"] > 0)) {
     $transfer = new Transfer();
     $transfer->showForm(

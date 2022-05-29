@@ -75,6 +75,19 @@
       </label>
    {% endif %}
 
+   {% if may_be_unpublished %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-danger me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show unpublished') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                name="unpublished" value="1" autocomplete="off"
+                onclick="toogle('unpublished','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                {{ data['search']['unpublished'] == 1 ? 'checked' : '' }} />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="fa fa-lg fa-eye-slash"></i>
+         </span>
+      </label>
+   {% endif %}
+
    <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
           data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
           title="{{ __('Toggle search filters') }}">

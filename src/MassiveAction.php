@@ -712,7 +712,7 @@ class MassiveAction
      * @param CommonDBTM        $checkitem   link item to check right              (default NULL)
      * @param int|null          $items_id    Get actions for a single item
      *
-     * @return array of massive actions or false if $item is not valid
+     * @return array|false Array of massive actions or false if $item is not valid
      **/
     public static function getAllMassiveActions($item, $is_deleted = 0, CommonDBTM $checkitem = null, ?int $items_id = null)
     {

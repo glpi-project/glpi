@@ -841,8 +841,8 @@ abstract class API
                         ],
                         'glpi_entities'   => [
                             'ON' => [
-                                'glpi_contracts_items'  => 'entities_id',
-                                'glpi_entities'         => 'id'
+                                'glpi_contracts'    => 'entities_id',
+                                'glpi_entities'     => 'id'
                             ]
                         ]
                     ],
@@ -3150,6 +3150,11 @@ abstract class API
             $actions = $this->getMassiveActionsForItem($item);
         }
 
+        if (count($actions) === 0) {
+            // An error occurred
+            return;
+        }
+
        // Build response array
         $response = [];
         foreach ($actions as $key => $label) {
@@ -3173,7 +3178,16 @@ abstract class API
         bool $is_deleted = false
     ): array {
        // Return massive actions for a given itemtype
-        return MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
+        $actions = MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
+        if ($actions === false) {
+            $this->returnError(
+                "Unable to get massive actions for itemtype '$itemtype'. Please check that it is a valid itemtype.",
+                400,
+                "ERROR_MASSIVEACTION_NOT_FOUND"
+            );
+            return [];
+        }
+        return $actions;
     }
 
     /**
@@ -3185,12 +3199,21 @@ abstract class API
     public function getMassiveActionsForItem(CommonDBTM $item): array
     {
        // Return massive actions for a given item
-        return MassiveAction::getAllMassiveActions(
+        $actions = MassiveAction::getAllMassiveActions(
             $item::getType(),
             $item->isDeleted(),
             $item,
             $item->getID()
         );
+        if ($actions === false) {
+            $this->returnError(
+                "Unable to get massive actions for item of type '{$item::getType()}'. Please check that it is a valid itemtype.",
+                400,
+                "ERROR_MASSIVEACTION_NOT_FOUND"
+            );
+            return [];
+        }
+        return $actions;
     }
 
     /**
@@ -3223,6 +3246,15 @@ abstract class API
         }
 
         $actions = MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
+        if ($actions === false) {
+            $this->returnError(
+                "Unable to get massive actions for itemtype '$itemtype'. Please check that it is a valid itemtype.",
+                400,
+                "ERROR_MASSIVEACTION_NOT_FOUND"
+            );
+            return;
+        }
+
         if (!isset($actions[$action_key])) {
             $this->returnError(
                 "Invalid action key parameter, run 'getMassiveActions' endpoint to see available keys",
@@ -3231,7 +3263,7 @@ abstract class API
             );
         }
 
-       // Get massive action for the given key
+        // Get massive action for the given key
         $ma = new MassiveAction([
             'action'     => $action_key,
             'actions'    => $actions,

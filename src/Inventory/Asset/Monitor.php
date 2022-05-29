@@ -52,7 +52,8 @@ class Monitor extends InventoryAsset
         $mapping = [
             'caption'      => 'name',
             'manufacturer' => 'manufacturers_id',
-            'description'  => 'comment'
+            'description'  => 'comment',
+            'type'         => 'monitortypes_id'
         ];
 
         foreach ($this->data as &$val) {
@@ -61,9 +62,14 @@ class Monitor extends InventoryAsset
                     $val->$dest = $val->$origin;
                 }
             }
+            $val->is_dynamic = 1;
 
             if (!property_exists($val, 'name')) {
                 $val->name = '';
+            }
+
+            if (property_exists($val, 'caption')) {
+                $val->monitormodels_id = $val->caption;
             }
 
             if (property_exists($val, 'comment')) {
@@ -145,7 +151,6 @@ class Monitor extends InventoryAsset
                 'itemtype'     => 'Monitor',
                 'name'         => $val->name,
                 'serial'       => $val->serial ?? '',
-                'is_dynamic'   => 1,
                 'entities_id'  => $entities_id
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
@@ -160,6 +165,7 @@ class Monitor extends InventoryAsset
                     $items_id = $monitor->add(Toolbox::addslashes_deep((array)$val));
                 } else {
                     $items_id = $data['found_inventories'][0];
+                    $monitor->update(Toolbox::addslashes_deep((array)$val + ['id' => $items_id]));
                 }
 
                 $monitors[] = $items_id;

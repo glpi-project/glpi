@@ -4556,8 +4556,8 @@ class CommonDBTM extends CommonGLPI
 
         switch ($field) {
             case '_virtual_datacenter_position':
-                if (method_exists(static::class, 'getDcBreadcrumbSpecificValueToDisplay')) {
-                    return static::getDcBreadcrumbSpecificValueToDisplay($values['id']);
+                if (method_exists(static::class, 'renderDcBreadcrumb')) {
+                    return static::renderDcBreadcrumb($values['id']);
                 }
         }
 

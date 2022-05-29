@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
@@ -282,6 +283,11 @@ class Config extends CommonDBTM
                 false,
                 WARNING
             );
+        }
+
+        // Automatically trim whitespaces around registration key.
+        if (array_key_exists('glpinetwork_registration_key', $input) && !empty($input['glpinetwork_registration_key'])) {
+            $input['glpinetwork_registration_key'] = trim($input['glpinetwork_registration_key']);
         }
 
         $this->setConfigurationValues('core', $input);
@@ -639,8 +645,7 @@ class Config extends CommonDBTM
         Dropdown::showFromArray($dd_params['name'], $item_devices_types, $dd_params);
 
         echo "<input type='hidden' name='_update_devices_in_menu' value='1'>";
-        echo "</td>";
-        echo "</tr>\n";
+        echo "</td></tr>\n";
 
         echo "</table>";
 
@@ -2564,6 +2569,11 @@ HTML;
                 $CFG_GLPI['root_doc'] = parse_url($url_base, PHP_URL_PATH) ?? '';
             }
         }
+
+        // Path for icon of document type (web mode only)
+        if (isset($CFG_GLPI['root_doc'])) {
+            $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
+        }
     }
 
 
@@ -3003,7 +3013,7 @@ HTML;
     /**
      * Load legacy configuration into $CFG_GLPI global variable.
      *
-     * @return boolean True for success, false if an error occured
+     * @return boolean True for success, false if an error occurred
      *
      * @since 10.0.0 Parameter $older_to_latest is not longer used.
      */
@@ -3056,11 +3066,6 @@ HTML;
             $prof->getFromDB($CFG_GLPI['lock_lockprofile_id']);
             $prof->cleanProfile();
             $CFG_GLPI['lock_lockprofile'] = $prof->fields;
-        }
-
-       // Path for icon of document type (web mode only)
-        if (isset($CFG_GLPI['root_doc'])) {
-            $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
         }
 
         if (isset($CFG_GLPI['planning_work_days'])) {

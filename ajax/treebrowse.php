@@ -46,6 +46,7 @@ switch ($_REQUEST['action']) {
             'as_map'             => 0,
             'showmassiveactions' => true,
             'criteria'           => $_REQUEST['criteria'],
+            'unpublished'        => $_REQUEST['unpublished'],
         ];
 
         $itemtype = $_REQUEST['itemtype'];

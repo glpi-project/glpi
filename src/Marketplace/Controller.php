@@ -82,13 +82,32 @@ class Controller extends CommonGLPI
         return self::$api ?? (self::$api = new PluginsApi());
     }
 
+    /**
+     * Get the version information of the plugin
+     *
+     * @param array $plugin plugin data
+     * @param string $version version to check
+     * @return array|null Version information or null if no information about the specified version is available
+     */
+    private static function getPluginVersionInfo(array $plugin, string $version): ?array
+    {
+        $versions = $plugin['versions'] ?? [];
+        foreach ($versions as $v) {
+            if ($v['num'] === $version) {
+                return $v;
+            }
+        }
+        return null;
+    }
 
     /**
      * Download and uncompress plugin archive
      *
+     * @param bool $auto_install Automatically install the plugin after download
+     * @param ?string $version Download a specific version of the plugin
      * @return bool
      */
-    public function downloadPlugin($auto_install = true): bool
+    public function downloadPlugin($auto_install = true, string $version = null): bool
     {
         if (!self::hasWriteAccess()) {
             return false;
@@ -97,7 +116,23 @@ class Controller extends CommonGLPI
         $api      = self::getAPI();
         $plugin   = $api->getPlugin($this->plugin_key, true);
 
-        $url      = $plugin['installation_url'] ?? "";
+        if ($version === null) {
+            $url = $plugin['installation_url'] ?? "";
+        } else {
+            $specific_version = self::getPluginVersionInfo($plugin, $version);
+            $url = null;
+            if ($specific_version !== null) {
+                $url = $specific_version['download_url'] ?? null;
+            }
+            if ($url === null) {
+                Session::addMessageAfterRedirect(
+                    __('Cannot find the specified version of the plugin.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
         $filename = basename(parse_url($url, PHP_URL_PATH));
         $dest     = GLPI_TMP_DIR . '/' . $filename;
 
@@ -376,12 +411,21 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function canBeDownloaded()
+    public function canBeDownloaded(string $version = null)
     {
         $api        = self::getAPI();
         $api_plugin = $api->getPlugin($this->plugin_key);
 
-        return strlen($api_plugin['installation_url'] ?? "") > 0;
+        $url = '';
+        if ($version !== null) {
+            $specific_version = self::getPluginVersionInfo($api_plugin, $version);
+            if ($specific_version !== null) {
+                $url = $specific_version['download_url'] ?? '';
+            }
+        } else {
+            $url = $api_plugin['installation_url'] ?? '';
+        }
+        return strlen($url) > 0;
     }
 
     /**

@@ -39,6 +39,8 @@ if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
     Session::checkLoginUser();
 }
 
+/** @global array $_UGET */
+
 // Manage tabs
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
     $tabs = Toolbox::getAvailablesTabs($_UGET['itemtype'], $_GET['id'] ?? null);

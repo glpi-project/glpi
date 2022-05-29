@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 
 /**
@@ -42,6 +43,9 @@ class Update
 {
     private $args = [];
     private $DB;
+    /**
+     * @var Migration
+     */
     private $migration;
     private $version;
     private $dbversion;
@@ -154,6 +158,31 @@ class Update
         return $currents;
     }
 
+    /**
+     * Verify the database schema integrity.
+     *
+     * @return void
+     */
+    private function checkSchemaIntegrity(): void
+    {
+        global $DB;
+
+        $normalized_nersion = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+
+        $checker = new DatabaseSchemaIntegrityChecker($DB, false, true, true, true, true, true);
+        $differences = $checker->checkCompleteSchema(
+            sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $normalized_nersion),
+            true
+        );
+
+        if (count($differences) > 0) {
+            $this->migration->displayError(
+                __('The database schema is not consistent with the current GLPI version.')
+                . "\n"
+                . __('It is recommended to run the "php bin/console glpi:database:check_schema_integrity" command to see the differences.')
+            );
+        }
+    }
 
     /**
      * Run updates
@@ -306,6 +335,9 @@ class Update
         if (!$glpikey->keyExists() && !$glpikey->generate()) {
             $this->migration->displayWarning(__('Unable to create security key file! You have to run "php bin/console glpi:security:change_key" command to manually create this file.'), true);
         }
+
+        // Check if schema has differences from the expected one but do not block the upgrade
+        $this->checkSchemaIntegrity();
     }
 
     /**
