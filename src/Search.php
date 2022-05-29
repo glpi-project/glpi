@@ -116,7 +116,6 @@ class Search
     /**
      * Separator used to separate values of a same element in CONCAT MySQL function.
      *
-     * Unknown specific use cases.
      * @var string
      * @see LONGSEP
      */
@@ -125,7 +124,6 @@ class Search
     /**
      * Separator used to separate each element in GROUP_CONCAT MySQL function.
      *
-     * Unknown specific use cases.
      * @var string
      * @see SHORTSEP
      */
