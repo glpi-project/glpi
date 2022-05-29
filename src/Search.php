@@ -114,7 +114,7 @@ class Search
     const LBHR = '#LBHR#';
 
     /**
-     * Separator used for GROUP_CONCAT MySQL function.
+     * Separator used to separate values of a same element in CONCAT MySQL function.
      *
      * Unknown specific use cases.
      * @var string
@@ -123,7 +123,7 @@ class Search
     const SHORTSEP = '$#$';
 
     /**
-     * Separator used for GROUP_CONCAT MySQL function.
+     * Separator used to separate each element in GROUP_CONCAT MySQL function.
      *
      * Unknown specific use cases.
      * @var string
@@ -2420,7 +2420,7 @@ class Search
     }
 
     /**
-     * Gets the class to use if the specified itemtyoe extends one of the known reference types.
+     * Gets the class to use if the specified itemtype extends one of the known reference types.
      *
      * @param class-string<CommonDBTM> $itemtype
      *
