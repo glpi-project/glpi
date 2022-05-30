@@ -123,7 +123,7 @@ trait Clonable
             $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
             /** @var CommonDBTM $relation_item */
             foreach ($relation_items as $relation_item) {
-                if (!isset($override_input['name']) && $source->isTemplate()) {
+                if (!isset($override_input['name']) && $source->isTemplate() && isset($relation_item->fields['name'])) {
                     // Force-set name to avoid adding a "(copy)" suffix to the cloned item
                     $override_input['name'] = $relation_item->fields['name'];
                 }
