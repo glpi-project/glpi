@@ -666,6 +666,7 @@ class ReservationItem extends CommonDBChild
                 echo Html::getCheckbox([
                     'name'  => "item[" . $row["id"] . "]",
                     'value' => $row["id"],
+                    'zero_on_empty' => false,
                 ]);
                 echo "</td>";
                 $typename = $item->getTypeName();
