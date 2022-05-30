@@ -4467,9 +4467,7 @@ JAVASCRIPT
         $confirm = ''
     ) {
 
-        if (GLPI_USE_CSRF_CHECK) {
-            $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
-        }
+        $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
         $fields['_glpi_simple_form'] = 1;
         $button                      = $btname;
         if (!is_array($btname)) {

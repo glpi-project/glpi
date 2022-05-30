@@ -149,11 +149,7 @@ if (
 }
 
 // Security : check CSRF token
-if (
-    GLPI_USE_CSRF_CHECK
-    && !isAPI()
-    && isset($_POST) && is_array($_POST) && count($_POST)
-) {
+if (!isAPI() && isset($_POST) && is_array($_POST) && count($_POST)) {
     if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
        // Keep CSRF token as many AJAX requests may be made at the same time.
        // This is due to the fact that read operations are often made using POST method (see #277).

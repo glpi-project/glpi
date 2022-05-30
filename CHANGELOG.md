@@ -22,6 +22,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- Usage of `GLPI_USE_CSRF_CHECK` constant.
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
@@ -29,6 +30,7 @@ The present file will list all changes made to the project; according to the
 - `ajax/knowbase.php` script usage.
 - `Glpi\Event::showList()`
 - `Html::displayAjaxMessageAfterRedirect()`
+- `HookManager::enableCSRF()`
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
@@ -36,6 +38,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::seems_utf8()`
 
 #### Removed
+- Usage of `csrf_compliant` plugins hook.
 
 ## [10.0.1] unreleased
 
