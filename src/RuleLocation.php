@@ -1,0 +1,187 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+class RuleLocation extends Rule
+{
+
+    public static $rightname = 'rule_import'; // TODO set a dedicated right
+    public $can_sort  = true;
+
+    function getTitle()
+    {
+        return __('Location rules');
+    }
+
+
+    public function maxActionsCount()
+    {
+        return 2;
+    }
+
+
+    function getCriterias()
+    {
+        return [
+            'itemtype' => [
+                'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Item type')),
+                'type'            => 'dropdown_inventory_itemtype',
+                'is_global'       => false,
+                'allow_condition' => [
+                    Rule::PATTERN_IS,
+                    Rule::PATTERN_IS_NOT,
+                    Rule::PATTERN_EXISTS,
+                    Rule::PATTERN_DOES_NOT_EXISTS,
+                ],
+            ],
+            'tag' => [
+                'name'            => sprintf('%s > %s', Agent::getTypeName(1), __('Inventory tag')),
+            ],
+            'domain' => [
+                'name'            => Domain::getTypeName(1),
+            ],
+            'subnet' => [
+                'name'            => __("Subnet"),
+            ],
+            'ip' => [
+                'name'            => sprintf('%s > %s', NetworkPort::getTypename(1), __('IP')),
+            ],
+            'name' => [
+                'name'            => __("Name"),
+            ],
+            'serial' => [
+                'name'            => __("Serial number"),
+            ],
+            'oscomment' => [
+                'name'            => sprintf('%s > %s', OperatingSystem::getTypeName(1), __('Comments')),
+            ],
+        ];
+    }
+
+
+    function getActions()
+    {
+        return [
+            'locations_id' => [
+                'name'  => __('Location'),
+                'type'  => 'dropdown',
+                'table' => Location::getTable(),
+                'force_actions' => [
+                    'assign',
+                    'regex_result',
+                ]
+            ]
+        ];
+    }
+
+
+    function checkCriteria(&$criteria, &$input)
+    {
+
+        $res = parent::checkCriteria($criteria, $input);
+
+        if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR])) {
+            $pattern   = $criteria->fields['pattern'];
+            $value = $this->getCriteriaValue(
+                $criteria->fields["criteria"],
+                $criteria->fields["condition"],
+                $input[$criteria->fields["criteria"]]
+            );
+
+            list($subnet, $bits) = explode('/', $pattern);
+            $subnet = ip2long($subnet);
+            $mask = -1 << (32 - $bits);
+            $subnet &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
+
+            if (is_array($value)) {
+                foreach ($value as $ip) {
+                    if (isset($ip) && $ip != '') {
+                        $ip = ip2long($ip);
+                        if (($ip & $mask) == $subnet) {
+                            $res = true;
+                            break 1;
+                        }
+                    }
+                }
+            } else {
+                if (isset($value) && $value != '') {
+                    $ip = ip2long($value);
+                    if (($ip & $mask) == $subnet) {
+                        $res = true;
+                    }
+                }
+            }
+        } else if (in_array($criteria->fields["condition"], [self::PATTERN_NOT_CIDR])) {
+            $pattern   = $criteria->fields['pattern'];
+            $value = $this->getCriteriaValue(
+                $criteria->fields["criteria"],
+                $criteria->fields["condition"],
+                $input[$criteria->fields["criteria"]]
+            );
+
+            list($subnet, $bits) = explode('/', $pattern);
+            $subnet = ip2long($subnet);
+            $mask = -1 << (32 - $bits);
+            $subnet &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
+
+            if (is_array($value)) {
+                $resarray = true;
+                foreach ($value as $ip) {
+                    if (isset($ip) && $ip != '') {
+                        $ip = ip2long($ip);
+                        if (($ip & $mask) == $subnet) {
+                            $resarray = false;
+                        }
+                    }
+                }
+                $res = $resarray;
+            } else {
+                if (isset($value) && $value != '') {
+                    $ip = ip2long($value);
+                    if (($ip & $mask) != $subnet) {
+                        $res = true;
+                    }
+                }
+            }
+        }
+        return $res;
+    }
+
+
+    public static function getIcon()
+    {
+        return Location::getIcon();
+    }
+}

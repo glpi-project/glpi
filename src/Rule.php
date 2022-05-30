@@ -90,6 +90,8 @@ class Rule extends CommonDBTM
     const PATTERN_UNDER           = 11;
     const PATTERN_NOT_UNDER       = 12;
     const PATTERN_IS_EMPTY        = 30; // Global criteria
+    const PATTERN_CIDR            = 333;
+    const PATTERN_NOT_CIDR        = 334;
 
     const AND_MATCHING            = "AND";
     const OR_MATCHING             = "OR";
@@ -2309,6 +2311,8 @@ class Rule extends CommonDBTM
             ($condition == self::PATTERN_EXISTS)
             || ($condition == self::PATTERN_DOES_NOT_EXISTS)
             || ($condition == self::PATTERN_FIND)
+            || ($condition == self::PATTERN_CIDR)
+            || ($condition == self::PATTERN_NOT_CIDR)
         ) {
             return __('Yes');
         } else if (
@@ -2532,7 +2536,9 @@ class Rule extends CommonDBTM
             self::PATTERN_DOES_NOT_EXISTS,
             RuleImportAsset::PATTERN_ENTITY_RESTRICT,
             RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT,
-            RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE
+            RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE,
+            self::PATTERN_CIDR,
+            self::PATTERN_NOT_CIDR
         ];
         if (in_array($condition, $hiddens)) {
             echo Html::hidden($name, ['value' => 1]);
@@ -3131,8 +3137,14 @@ class Rule extends CommonDBTM
     /**
      * Add more criteria specific to this type of rule
      **/
-    public static function addMoreCriteria()
+    public static function addMoreCriteria($criterion = '')
     {
+        if ($criterion == 'ip' || $criterion == 'subnet') {
+            return [
+                self::PATTERN_CIDR => __('is CIDR'),
+                self::PATTERN_NOT_CIDR => __('is not CIDR')
+            ];
+        }
         return [];
     }
 
