@@ -310,8 +310,8 @@ class ITILTemplate extends DbTestCase
         switch ($itiltype) {
             case 'Ticket':
                 $expected = [
-                    1 => 'Standard interface',
-                    2 => 'Simplified interface'
+                    1 => 'Preview (Standard interface)',
+                    2 => 'Preview (Simplified interface)'
                 ];
                 break;
             default:
