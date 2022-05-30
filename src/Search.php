@@ -103,9 +103,10 @@ class Search
         } else {
             self::showList($itemtype, $params);
         }
+        echo "</div>";
+        echo "</div>";
+
         Plugin::doHook(Hooks::POST_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
-        echo "</div>";
-        echo "</div>";
     }
 
 
