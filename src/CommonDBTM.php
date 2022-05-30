@@ -5561,7 +5561,7 @@ class CommonDBTM extends CommonGLPI
             $params = [
                 'condition' => $condition
             ];
-            $output = $ruleasset->processAllRules($input, [], $params);
+            $output = $ruleasset->processAllRules($input, [], [], $params);
            //If at least one rule has matched
             if (isset($output['_rule_process'])) {
                 foreach ($output as $key => $value) {
