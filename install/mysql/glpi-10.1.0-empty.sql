@@ -4826,6 +4826,7 @@ CREATE TABLE `glpi_notepads` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   `content` longtext,
+  `visible_from_ticket` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `date_mod` (`date_mod`),

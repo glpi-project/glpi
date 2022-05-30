@@ -272,6 +272,35 @@
       </div>
    </div>
 
+   {% if canreadnote %}
+      {% set notes = call('Notepad::getAllForItem', [get_item('Entity', item.fields['entities_id']), 'Ticket']) %}
+      {% set notes_show = headers_states['notes'] is not defined or headers_states['notes'] == "true" ? true : (notes|length > 0) %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="notes-heading" title="{{ __('Notes') }}" data-bs-toggle="tooltip">
+            <button class="accordion-button {{ notes_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#notes" aria-expanded="true" aria-controls="notes">
+               <i class="ti ti-notes me-1"></i>
+               <span class="item-title">
+                  {{ __('Entity notes') }}
+               </span>
+               <span class="badge bg-secondary ms-2">{{ notes|length }}</span>
+            </button>
+         </h2>
+         <div id="notes" class="accordion-collapse collapse {{ notes_show ? "show" : "" }}" aria-labelledby="notes-heading">
+            <div class="accordion-body row m-0 mt-n2">
+               {% if notes|length == 0 %}
+                  <div class="alert alert-info" role="alert">
+                     {{ __('There is no notes on this entity') }}
+                  </div>
+               {% else %}
+                  {% for note in notes %}
+                     <div class="alert alert-info entitynote" role="alert">{{ note['content']|verbatim_value }}</div>
+                  {% endfor %}
+               {% endif %}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
    {% if item_ticket is defined and item_ticket is not null %}
       {% set items_show = headers_states['items'] is not defined or headers_states['items'] == "true" ? true : false %}
       <div class="accordion-item">
