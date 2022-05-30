@@ -178,7 +178,7 @@ class TicketSatisfaction extends CommonDBTM
             $input["date_answered"] = $_SESSION["glpi_currenttime"];
         }
 
-        $inquest_mandatory_comment = Entity::getUsedConfig('inquest_mandatory_comment', $input['entities_id'], 'inquest_mandatory_comment');
+        $inquest_mandatory_comment = Entity::getUsedConfig('inquest_config', $input['entities_id'], 'inquest_mandatory_comment');
         if ($inquest_mandatory_comment && ($input['satisfaction'] >= $inquest_mandatory_comment) && empty($input['comment'])) {
             Session::addMessageAfterRedirect(
                 sprintf(__('Comment is required if score is less than or equal to %d'), $inquest_mandatory_comment),
