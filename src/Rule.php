@@ -3137,14 +3137,8 @@ class Rule extends CommonDBTM
     /**
      * Add more criteria specific to this type of rule
      **/
-    public static function addMoreCriteria($criterion = '')
+    public static function addMoreCriteria()
     {
-        if ($criterion == 'ip' || $criterion == 'subnet') {
-            return [
-                self::PATTERN_CIDR => __('is CIDR'),
-                self::PATTERN_NOT_CIDR => __('is not CIDR')
-            ];
-        }
         return [];
     }
 
