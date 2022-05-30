@@ -123,7 +123,8 @@ class TicketSatisfaction extends CommonDBTM
 
            // Set default satisfaction to 3 if not set
             if (is_null($this->fields["satisfaction"])) {
-                $this->fields["satisfaction"] = 3;
+                $default_rate = Entity::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_default_rate');
+                $this->fields["satisfaction"] = $default_rate;
             }
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Satisfaction with the resolution of the ticket') . "</td>";
@@ -132,7 +133,8 @@ class TicketSatisfaction extends CommonDBTM
 
             echo "<select id='satisfaction_data' name='satisfaction'>";
 
-            for ($i = 0; $i <= 5; $i++) {
+            $max_rate = Entity::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_max_rate');
+            for ($i = 0; $i <= $max_rate; $i++) {
                 echo "<option value='$i' " . (($i == $this->fields["satisfaction"]) ? 'selected' : '') .
                   ">$i</option>";
             }
@@ -142,7 +144,7 @@ class TicketSatisfaction extends CommonDBTM
             echo "$(function() {";
             echo "$('#stars').rateit({value: " . $this->fields["satisfaction"] . ",
                                    min : 0,
-                                   max : 5,
+                                   max : " . $max_rate . ",
                                    step: 1,
                                    backingfld: '#satisfaction_data',
                                    ispreset: true,
@@ -171,8 +173,19 @@ class TicketSatisfaction extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+
         if ($input['satisfaction'] >= 0) {
             $input["date_answered"] = $_SESSION["glpi_currenttime"];
+        }
+
+        $inquest_mandatory_comment = Entity::getUsedConfig('inquest_config', $input['entities_id'], 'inquest_mandatory_comment');
+        if ($inquest_mandatory_comment && ($input['satisfaction'] >= $inquest_mandatory_comment) && empty($input['comment'])) {
+            Session::addMessageAfterRedirect(
+                sprintf(__('Comment is required if score is less than or equal to %d'), $inquest_mandatory_comment),
+                false,
+                ERROR
+            );
+            return false;
         }
 
         return $input;

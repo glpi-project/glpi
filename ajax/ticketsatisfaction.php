@@ -45,15 +45,20 @@ $entity = new Entity();
 
 if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
     if ($entity->getFromDB($_POST['entities_id'])) {
-        $inquest_delay     = $entity->getfield('inquest_delay');
-        $inquest_rate      = $entity->getfield('inquest_rate');
-        $inquest_duration  = $entity->getfield('inquest_duration');
-        $max_closedate     = $entity->getfield('max_closedate');
+        $inquest_delay             = $entity->getfield('inquest_delay');
+        $inquest_rate              = $entity->getfield('inquest_rate');
+        $inquest_duration          = $entity->getfield('inquest_duration');
+        $inquest_max_rate          = $entity->getfield('inquest_max_rate');
+        $inquest_default_rate      = $entity->getfield('inquest_default_rate');
+        $inquest_mandatory_comment = $entity->getfield('inquest_mandatory_comment');
+        $max_closedate             = $entity->getfield('max_closedate');
     } else {
-        $inquest_delay     = -1;
-        $inquest_rate      = -1;
-        $inquest_duration  = -1;
-        $max_closedate     = '';
+        $inquest_delay             = -1;
+        $inquest_rate              = -1;
+        $inquest_default_rate      = 3;
+        $inquest_max_rate          = 5;
+        $inquest_mandatory_comment = 0;
+        $max_closedate             = '';
     }
 
     if ($_POST['inquest_config'] > 0) {
@@ -94,6 +99,46 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
                 'step'  => 1,
                 'toadd' => ['0' => __('Unspecified')],
                 'unit'  => 'day'
+            ]
+        );
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'><td width='50%'>" . __('Max rate') . "</td>";
+        echo "<td>";
+        Dropdown::showNumber(
+            'inquest_max_rate',
+            ['value' => $inquest_max_rate,
+                'min'   => 1,
+                'max'   => 5,
+                'step'  => 1,
+                'unit'  => ''
+            ]
+        );
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'><td width='50%'>" . __('Default rate') . "</td>";
+        echo "<td>";
+        Dropdown::showNumber(
+            'inquest_default_rate',
+            ['value' => $inquest_default_rate,
+                'min'   => 1,
+                'max'   => 5,
+                'step'  => 1,
+                'unit'  => ''
+            ]
+        );
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'><td width='50%'>" . __('Comment required if score is <= to') . "</td>";
+        echo "<td>";
+        Dropdown::showNumber(
+            'inquest_mandatory_comment',
+            ['value' => $inquest_mandatory_comment,
+                'min'   => 1,
+                'max'   => 5,
+                'step'  => 1,
+                'toadd' => ['0' => __('Disabled')],
+                'unit'  => ''
             ]
         );
         echo "</td></tr>";
