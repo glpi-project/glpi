@@ -133,7 +133,7 @@ class TicketSatisfaction extends CommonDBTM
 
             echo "<select id='satisfaction_data' name='satisfaction'>";
 
-            $max_rate = Entity::getUsedConfig('inquest_max_rate', $ticket->fields['entities_id'], 'inquest_max_rate');
+            $max_rate = Entity::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_max_rate');
             for ($i = 0; $i <= $max_rate; $i++) {
                 echo "<option value='$i' " . (($i == $this->fields["satisfaction"]) ? 'selected' : '') .
                   ">$i</option>";
