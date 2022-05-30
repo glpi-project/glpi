@@ -771,7 +771,7 @@ class Profile_User extends CommonDBRelation
         $profiles = [];
 
         $where = ['users_id' => $user_ID];
-        if (count($sqlfilter) > 0) {
+        if (is_array($sqlfilter) && count($sqlfilter) > 0) {
             $where = $where + $sqlfilter;
         }
 
