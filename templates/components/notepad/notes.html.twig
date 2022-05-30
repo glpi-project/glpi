@@ -42,6 +42,6 @@
 {% else %}
     {% for note in notes %}
         {% set id = "note#{ note['id'] }#{ rand }" %}
-        <div class="alert alert-info entitynote" role="alert" id='view{{ id }}'>{{ note['content'] }}</div>
+        <div class="alert alert-info entitynote" role="alert" id='view{{ id }}'>{{ note['content']|verbatim_value }}</div>
     {% endfor %}
 {% endif %}
