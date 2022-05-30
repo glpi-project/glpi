@@ -123,7 +123,7 @@ class TicketSatisfaction extends CommonDBTM
 
            // Set default satisfaction to 3 if not set
             if (is_null($this->fields["satisfaction"])) {
-                $default_rate = Entity::getUsedConfig('inquest_default_rate', $ticket->fields['entities_id'], 'inquest_default_rate');
+                $default_rate = Entity::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_default_rate');
                 $this->fields["satisfaction"] = $default_rate;
             }
             echo "<tr class='tab_bg_2'>";
