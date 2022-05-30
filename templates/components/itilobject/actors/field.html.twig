@@ -149,23 +149,19 @@
 
          // manage ticket information (number of assigned ticket for an actor)
          if (is_selection && itemtype != "Email") {
+            var label = '';
             if ("{{ actortype }}" == "assign") {
-               var existing_element = $(
-                       `<span class="assign_infos ms-1" title="{{ __('Number of tickets already assigned') }}"
-                     data-bs-toggle="tooltip" data-bs-placement="top"
-                     data-id="${items_id}" data-fk="${fk}">
-                  <i class="fas fa-spinner fa-spin"></i>
-               </span>`
-               );
+               label = "{{ __('Number of tickets already assigned') }}";
             } else if ("{{ actortype }}" == "requester") {
-               var existing_element = $(
-                       `<span class="assign_infos ms-1" title="{{ __('Number of tickets as requester') }}"
+               label = "{{ __('Number of tickets as requester') }}";
+            }
+            var existing_element = $(
+               `<span class="assign_infos ms-1" title="${label}"
                      data-bs-toggle="tooltip" data-bs-placement="top"
                      data-id="${items_id}" data-fk="${fk}">
                   <i class="fas fa-spinner fa-spin"></i>
                </span>`
-               );
-            }
+            );
             option_element.append(existing_element);
 
             $.get("{{ path('/ajax/actorinformation.php') }}", {
