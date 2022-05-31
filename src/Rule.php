@@ -2312,8 +2312,6 @@ class Rule extends CommonDBTM
             ($condition == self::PATTERN_EXISTS)
             || ($condition == self::PATTERN_DOES_NOT_EXISTS)
             || ($condition == self::PATTERN_FIND)
-            || ($condition == self::PATTERN_CIDR)
-            || ($condition == self::PATTERN_NOT_CIDR)
         ) {
             return __('Yes');
         } else if (
@@ -2538,8 +2536,6 @@ class Rule extends CommonDBTM
             RuleImportAsset::PATTERN_ENTITY_RESTRICT,
             RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT,
             RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE,
-            self::PATTERN_CIDR,
-            self::PATTERN_NOT_CIDR
         ];
         if (in_array($condition, $hiddens)) {
             echo Html::hidden($name, ['value' => 1]);
