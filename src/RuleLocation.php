@@ -36,7 +36,6 @@
 
 class RuleLocation extends Rule
 {
-
     public static $rightname = 'rule_import'; // TODO set a dedicated right
     public $can_sort  = true;
 
