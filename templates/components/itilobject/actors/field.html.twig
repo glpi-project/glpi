@@ -95,11 +95,19 @@
                } else {
                   icon = `<i class="ti  fa-fw ti-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
                }
-               fk   = "users_id_assign";
+               if ("{{ actortype }}" == "assign") {
+                  fk = "users_id_assign";
+               } else if ("{{ actortype }}" == "requester") {
+                  fk = "users_id_requester";
+               }
                break;
             case "Group":
                icon = `<i class="ti  fa-fw ti-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
-               fk   = "groups_id_assign";
+               if ("{{ actortype }}" == "assign") {
+                  fk = "groups_id_assign";
+               } else if ("{{ actortype }}" == "requester") {
+                  fk = "groups_id_requester";
+               }
                break;
             case "Supplier":
                icon = `<i class="ti fa-fw ti-package mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
@@ -139,27 +147,33 @@
          var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}" data-text="${text}">${indent}${icon}${option_text}${actions}</span>`);
 
          // manage ticket information (number of assigned ticket for an actor)
-         if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
-            var already_assign_element = $(
-               `<span class="assign_infos ms-1" title="{{ __('Number of tickets already assigned') }}"
+         if (is_selection && itemtype != "Email") {
+            var label = '';
+            if ("{{ actortype }}" == "assign") {
+               label = "{{ __('Number of tickets already assigned') }}";
+            } else if ("{{ actortype }}" == "requester") {
+               label = "{{ __('Number of tickets as requester') }}";
+            }
+            var existing_element = $(
+               `<span class="assign_infos ms-1" title="${label}"
                      data-bs-toggle="tooltip" data-bs-placement="top"
                      data-id="${items_id}" data-fk="${fk}">
                   <i class="fas fa-spinner fa-spin"></i>
                </span>`
             );
-            option_element.append(already_assign_element);
+            option_element.append(existing_element);
 
-            $.get("{{ path('/ajax/ticketassigninformation.php') }}", {
+            $.get("{{ path('/ajax/actorinformation.php') }}", {
                [fk]: items_id,
                only_number: true,
-            }).done(function(number) {
+            }).done(function (number) {
                var badge = "";
                if (number.length > 0) {
                   badge = `<span class="badge bg-secondary-lt">
-                     ${number}
-                  </span>`;
+                  ${number}
+               </span>`;
                }
-               already_assign_element.html(badge);
+               existing_element.html(badge);
             });
          }
 
