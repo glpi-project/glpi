@@ -65,31 +65,31 @@ class CommonITILValidationCron extends CommonDBTM
 
         $cron_status = 1;
 
-       // Concrete classes for which approval reminders can be created
-        $targets = [
-            TicketValidation::class,
-            ChangeValidation::class,
-        ];
+        if ($CFG_GLPI["use_notifications"]) {
+            // Concrete classes for which approval reminders can be created
+            $targets = [
+                TicketValidation::class,
+                ChangeValidation::class,
+            ];
 
-        foreach ($targets as $itemtype) {
-            $validation = new $itemtype();
-            foreach (Entity::getEntitiesToNotify('approval_reminder_repeat_interval') as $entity => $repeat) {
-                $iterator = $DB->request([
-                    'FROM'   => $itemtype::getTable(),
-                    'WHERE'  => [
-                        'status'          => CommonITILValidation::WAITING,
-                        'entities_id'     => $entity,
-                        'submission_date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')],
-                        'OR'              => [
-                            ['last_reminder_date' => null],
-                            ['last_reminder_date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
-                        ],
-                    ]
-                ]);
+            foreach ($targets as $itemtype) {
+                $validation = new $itemtype();
+                foreach (Entity::getEntitiesToNotify('approval_reminder_repeat_interval') as $entity => $repeat) {
+                    $iterator = $DB->request([
+                        'FROM'   => $itemtype::getTable(),
+                        'WHERE'  => [
+                            'status'          => CommonITILValidation::WAITING,
+                            'entities_id'     => $entity,
+                            'submission_date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')],
+                            'OR'              => [
+                                ['last_reminder_date' => null],
+                                ['last_reminder_date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                            ],
+                        ]
+                    ]);
 
-                foreach ($iterator as $data) {
-                    $validation->getFromDB($data['id']);
-                    if (!isset($validation->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+                    foreach ($iterator as $data) {
+                        $validation->getFromDB($data['id']);
                         $options = [
                             'validation_id'     => $validation->fields["id"],
                             'validation_status' => $validation->fields["status"]
