@@ -55,11 +55,26 @@
 </table>
 
 {% set grid_items = [
-   ticket_summary,
-   '<div class="card">' ~ survey_list ~ '</div>',
-   '<div class="card">' ~ reminder_list ~ '</div>',
-   '<div class="card">' ~ rss_feed ~ '</div>',
+   ticket_summary
 ] %}
+
+{% if survey_list|length %}
+   {% set grid_items = grid_items|merge([
+      '<div class="card">' ~ survey_list ~ '</div>'
+   ]) %}
+{% endif %}
+
+{% if reminder_list|length %}
+   {% set grid_items = grid_items|merge([
+      '<div class="card">' ~ reminder_list ~ '</div>'
+   ]) %}
+{% endif %}
+
+{% if rss_feed|length %}
+   {% set grid_items = grid_items|merge([
+      '<div class="card">' ~ rss_feed ~ '</div>'
+   ]) %}
+{% endif %}
 
 {% if kb_popular|length %}
    {% set grid_items = grid_items|merge([
