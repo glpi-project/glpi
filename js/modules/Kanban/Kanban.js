@@ -33,6 +33,7 @@
 
 import SearchInput from "../SearchTokenizer/SearchInput.js";
 
+/* global escapeMarkupText */
 /* global sortable */
 /* global glpi_toast_error */
 
@@ -2447,7 +2448,7 @@ class GLPIKanbanRights {
                     l.append(`
                      <div class="member-details">
                         ${member_item}
-                        ${l.attr('data-name') || `${member_itemtype} (${member_items_id})`}
+                        ${escapeMarkupText(l.attr('data-name')) || `${member_itemtype} (${member_items_id})`}
                      </div>
                      <button type="button" name="delete" class="btn btn-ghost-danger">
                         <i class="ti ti-x" title="${__('Delete')}"></i>
