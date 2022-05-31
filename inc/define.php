@@ -399,8 +399,10 @@ $CFG_GLPI["systeminformations_types"]     = ['AuthLDAP', 'DBConnection', 'MailCo
     'Plugin'
 ];
 
-$CFG_GLPI["rulecollections_types"]        = ['RuleImportAssetCollection',
+$CFG_GLPI["rulecollections_types"]        = [
+    'RuleImportAssetCollection',
     'RuleImportEntityCollection',
+    'RuleLocationCollection',
     'RuleMailCollectorCollection',
     'RuleRightCollection',
     'RuleSoftwareCategoryCollection',

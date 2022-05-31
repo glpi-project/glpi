@@ -43,8 +43,8 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use RefusedEquipment;
 use RuleImportAssetCollection;
-use RuleImportEntity;
 use RuleImportEntityCollection;
+use RuleLocationCollection;
 use RuleMatchedLog;
 use Toolbox;
 use Transfer;
@@ -527,6 +527,14 @@ abstract class MainAsset extends InventoryAsset
                         $this->ruleentity_data[$action_key] = $dataEntity[$action_key];
                     }
                 }
+
+                $ruleLocation = new RuleLocationCollection();
+                $ruleLocation->getCollectionPart();
+                $dataLocation = $ruleLocation->processAllRules($input, []);
+
+                if (isset($dataLocation['locations_id']) && $dataLocation['locations_id'] != -1) {
+                    $this->rulelocation_data['locations_id'] = $dataLocation['locations_id'];
+                }
             }
 
             //call rules on current collected data to find item
@@ -612,6 +620,10 @@ abstract class MainAsset extends InventoryAsset
 
         // append data from RuleImportEntity
         foreach ($this->ruleentity_data as $attribute => $value) {
+            $val->{$attribute} = $value;
+        }
+        // append data from RuleLocation
+        foreach ($this->rulelocation_data as $attribute => $value) {
             $val->{$attribute} = $value;
         }
 

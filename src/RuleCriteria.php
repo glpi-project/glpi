@@ -520,6 +520,35 @@ class RuleCriteria extends CommonDBChild
             case Rule::PATTERN_IS_EMPTY:
                // Global criteria will be evaluated later
                 return true;
+
+            case Rule::PATTERN_CIDR:
+            case Rule::PATTERN_NOT_CIDR:
+                $exploded = explode('/', $pattern);
+                $subnet   = ip2long($exploded[0]);
+                $bits     = $exploded[1] ?? null;
+                $mask     = -1 << (32 - $bits);
+                $subnet  &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
+
+                if (is_array($field)) {
+                    foreach ($field as $ip) {
+                        if (isset($ip) && $ip != '') {
+                            $ip = ip2long($ip);
+                            if (($ip & $mask) == $subnet) {
+                                return ($condition == Rule::PATTERN_CIDR) ? true : false;
+                            }
+                        }
+                    }
+                } else {
+                    if (isset($field) && $field != '') {
+                        $ip = ip2long($field);
+                        if (
+                            $condition == Rule::PATTERN_CIDR && ($ip & $mask) == $subnet
+                            || $condition == Rule::PATTERN_NOT_CIDR && ($ip & $mask) != $subnet
+                        ) {
+                            return true;
+                        }
+                    }
+                }
         }
         return false;
     }
@@ -553,8 +582,8 @@ class RuleCriteria extends CommonDBChild
      **/
     public static function getConditions($itemtype, $criterion = '')
     {
-
-        $criteria =  [Rule::PATTERN_IS              => __('is'),
+        $criteria =  [
+            Rule::PATTERN_IS              => __('is'),
             Rule::PATTERN_IS_NOT          => __('is not'),
             Rule::PATTERN_CONTAIN         => __('contains'),
             Rule::PATTERN_NOT_CONTAIN     => __('does not contain'),
@@ -565,6 +594,13 @@ class RuleCriteria extends CommonDBChild
             Rule::PATTERN_EXISTS          => __('exists'),
             Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist')
         ];
+
+        if (in_array($criterion, ['ip', 'subnet'])) {
+            $criteria = $criteria + [
+                Rule::PATTERN_CIDR     => __('is CIDR'),
+                Rule::PATTERN_NOT_CIDR => __('is not CIDR')
+            ];
+        }
 
         $extra_criteria = call_user_func([$itemtype, 'addMoreCriteria'], $criterion);
 

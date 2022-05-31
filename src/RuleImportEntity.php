@@ -42,9 +42,6 @@ class RuleImportEntity extends Rule
     public static $rightname = 'rule_import';
     public $can_sort  = true;
 
-    const PATTERN_CIDR     = 333;
-    const PATTERN_NOT_CIDR = 334;
-
     public function getTitle()
     {
         return __('Rules for assigning an item to an entity');
@@ -193,101 +190,6 @@ class RuleImportEntity extends Rule
             return $name;
         }
         return false;
-    }
-
-    /**
-     * Add more criteria
-     *
-     * @param string $criterion
-     * @return array
-     */
-    public static function addMoreCriteria($criterion = '')
-    {
-        if ($criterion == 'ip' || $criterion == 'subnet') {
-            return [
-                self::PATTERN_CIDR => __('is CIDR'),
-                self::PATTERN_NOT_CIDR => __('is not CIDR')
-            ];
-        }
-        return [];
-    }
-
-
-    /**
-     * Check the criteria
-     *
-     * @param object $criteria
-     * @param array $input
-     * @return boolean
-     */
-    public function checkCriteria(&$criteria, &$input)
-    {
-
-        $res = parent::checkCriteria($criteria, $input);
-
-        if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR, self::PATTERN_NOT_CIDR])) {
-            $pattern   = $criteria->fields['pattern'];
-            $exploded = explode('/', $pattern);
-            $subnet = ip2long($exploded[0]);
-            $bits = $exploded[1] ?? null;
-            $mask = -1 << (32 - $bits);
-            $subnet &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
-
-            if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR])) {
-                $value = $this->getCriteriaValue(
-                    $criteria->fields["criteria"],
-                    $criteria->fields["condition"],
-                    $input[$criteria->fields["criteria"]]
-                );
-
-                if (is_array($value)) {
-                    foreach ($value as $ip) {
-                        if (isset($ip) && $ip != '') {
-                             $ip = ip2long($ip);
-                            if (($ip & $mask) == $subnet) {
-                                $res = true;
-                                break 1;
-                            }
-                        }
-                    }
-                } else {
-                    if (isset($value) && $value != '') {
-                        $ip = ip2long($value);
-                        if (($ip & $mask) == $subnet) {
-                            $res = true;
-                        }
-                    }
-                }
-            } else if (in_array($criteria->fields["condition"], [self::PATTERN_NOT_CIDR])) {
-                $value = $this->getCriteriaValue(
-                    $criteria->fields["criteria"],
-                    $criteria->fields["condition"],
-                    $input[$criteria->fields["criteria"]]
-                );
-
-                if (is_array($value)) {
-                    $resarray = true;
-                    foreach ($value as $ip) {
-                        if (isset($ip) && $ip != '') {
-                            $ip = ip2long($ip);
-                            if (($ip & $mask) == $subnet) {
-                                $resarray = false;
-                            }
-                        }
-                    }
-                    $res = $resarray;
-                } else {
-                    if (isset($value) && $value != '') {
-                        $ip = ip2long($value);
-                        if (($ip & $mask) != $subnet) {
-                            $res = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $res;
     }
 
 
