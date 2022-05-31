@@ -47,11 +47,11 @@
    {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
       {% set entity_id = null %}
    {% else %}
-      {% set entity_id = params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity') %}
+      {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
    {% endif %}
 
    {% if is_multi_entities_mode() %}
-      {% set entity_name = get_item_name('Entity', item.fields['entities_id']) %}
+      {% set entity_name = get_item_name('Entity', item.getEntityID()) %}
    {% endif %}
 {% endif %}
 
