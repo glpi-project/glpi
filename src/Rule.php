@@ -222,6 +222,7 @@ class Rule extends CommonDBTM
         if (
             Session::haveRight("rule_ldap", READ)
             || Session::haveRight("rule_import", READ)
+            || Session::haveRight("rule_location", READ)
             || Session::haveRight("rule_ticket", READ)
             || Session::haveRight("rule_softwarecategories", READ)
             || Session::haveRight("rule_mailcollector", READ)
