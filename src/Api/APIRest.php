@@ -137,7 +137,7 @@ class APIRest extends API
         }
 
         // Check API session unless blacklisted (init session, ...)
-        if (!in_array($resource, $this->getRessourcesAllowedWithoutSession())) {
+        if (!$is_inline_doc && !in_array($resource, $this->getRessourcesAllowedWithoutSession())) {
             $this->initEndpoint(true, $resource);
         }
 
