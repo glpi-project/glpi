@@ -933,11 +933,6 @@ class Reminder extends CommonDBVisible implements
                 self::getVisibilityCriteria()
             );
 
-           // Only personal on central so do not keep it
-            if (Session::getCurrentInterface() == 'central') {
-                $criteria['WHERE']['glpi_reminders.users_id'] = ['<>', $users_id];
-            }
-
             if (Session::getCurrentInterface() != 'helpdesk') {
                 $titre = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/reminder.php\">" .
                        _n('Public reminder', 'Public reminders', Session::getPluralNumber()) . "</a>";
