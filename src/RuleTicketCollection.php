@@ -132,9 +132,9 @@ class RuleTicketCollection extends RuleCollection
             foreach (['requester', 'observer', 'assign'] as $actortype) {
                 if (isset($input['_actors'][$actortype]) && count($input['_actors'][$actortype])) {
                     foreach ($input['_actors'][$actortype] as $actor) {
-                        $input_key = "_".
-                                    getForeignKeyFieldForItemType($actor['itemtype']).
-                                    "_".
+                        $input_key = "_" .
+                                    getForeignKeyFieldForItemType($actor['itemtype']) .
+                                    "_" .
                                     $actortype;
 
                         if (!isset($input[$input_key])) {
