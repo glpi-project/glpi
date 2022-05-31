@@ -576,6 +576,49 @@ class Computer extends DbTestCase
         $this->string($computer->fields['name'])->isEqualTo('testCloneWithSpecificName');
     }
 
+    public function testClonedRelationNamesFromTemplate()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        /** @var \Computer $computer */
+        $computer_template = new \Computer();
+        $templates_id = $computer_template->add([
+            'template_name' => __FUNCTION__ . '_template',
+            'is_template' => 1
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+
+        // Add a network port to the template
+        $networkPort = new \NetworkPort();
+        $networkports_id = $networkPort->add([
+            'name' => __FUNCTION__,
+            'itemtype' => 'Computer',
+            'items_id' => $templates_id,
+            'instantiation_type' => 'NetworkPortEthernet',
+            'logical_number' => 0,
+            'items_devicenetworkcards_id' => 0,
+            '_create_children' => true
+        ]);
+        $this->integer($networkports_id)->isGreaterThan(0);
+
+        // Create computer from template
+        $computer = new \Computer();
+        $computers_id = $computer->add([
+            'name' => __FUNCTION__,
+            'id' => $templates_id
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        // Get network port from computer
+        $this->boolean($networkPort->getFromDBByCrit([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+        ]))->isTrue();
+        // Network port name should not have a "copy" suffix
+        $this->string($networkPort->fields['name'])->isEqualTo(__FUNCTION__);
+    }
+
     public function testCloneWithAutoName()
     {
         /** @var \Computer $computer */
