@@ -269,7 +269,7 @@ class Conf extends CommonGLPI
     {
         global $CFG_GLPI;
 
-        $config = \Config::getConfigurationValues('Inventory');
+        $config = \Config::getConfigurationValues('inventory');
         $canedit = \Config::canUpdate();
 
         if ($canedit) {
@@ -743,7 +743,7 @@ class Conf extends CommonGLPI
     public function __get($name)
     {
         if (!count($this->currents)) {
-            $config = \Config::getConfigurationValues('Inventory');
+            $config = \Config::getConfigurationValues('inventory');
             $this->currents = $config;
         }
         if (in_array($name, array_keys(self::$defaults))) {
