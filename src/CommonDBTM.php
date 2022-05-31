@@ -5538,7 +5538,7 @@ class CommonDBTM extends CommonGLPI
             return;
         }
 
-       //Only process itemtype that are assets
+        // Only process itemtype that are assets
         if (in_array($this->getType(), $CFG_GLPI['asset_types'])) {
             $ruleasset          = new RuleAssetCollection();
             $input              = $this->input;
@@ -5559,22 +5559,23 @@ class CommonDBTM extends CommonGLPI
                 $input['_default_groups_id_of_user'] = $user->fields['groups_id'];
             }
 
-           //If _auto is not defined : it's a manual process : set it's value to 0
+            // If _auto is not defined : it's a manual process : set it's value to 0
             if (!isset($this->input['_auto'])) {
                 $input['_auto'] = 0;
             }
-           //Set the condition (add or update)
-            $params = [
+
+            // Set the condition (add or update)
+            $output = $ruleasset->processAllRules($input, [], [], [
                 'condition' => $condition
-            ];
-            $output = $ruleasset->processAllRules($input, [], $params);
-           //If at least one rule has matched
+            ]);
+
+            // If at least one rule has matched
             if (isset($output['_rule_process'])) {
                 foreach ($output as $key => $value) {
                     if ($key == '_rule_process' || $key == '_no_rule_matches') {
                         continue;
                     }
-                   //Add the rule output to the input array
+                    // Add the rule output to the input array
                     $this->input[$key] = $value;
                 }
             }

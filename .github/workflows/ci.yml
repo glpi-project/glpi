@@ -103,11 +103,11 @@ jobs:
       matrix:
         include:
           # test higher PHP version with higher MariaDB and MySQL versions
-          - {php-version: "8.1", db-image: "mariadb:10.7", always: true}
+          - {php-version: "8.1", db-image: "mariadb:10.8", always: true}
           - {php-version: "8.1", db-image: "mysql:8.0", always: true}
           # test other PHP versions
-          - {php-version: "8.0", db-image: "mariadb:10.7", always: false}
-          - {php-version: "7.4", db-image: "mariadb:10.7", always: false}
+          - {php-version: "8.0", db-image: "mariadb:10.8", always: false}
+          - {php-version: "7.4", db-image: "mariadb:10.8", always: false}
           # test other DB servers/versions
           - {php-version: "8.1", db-image: "mariadb:10.2", always: false}
           - {php-version: "8.1", db-image: "mysql:5.7", always: false}

@@ -30,7 +30,7 @@ Check GLPI features by asking for a free personal demonstration on **[glpi-netwo
 
 ![license](https://img.shields.io/github/license/glpi-project/glpi.svg)
 
-It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consult the file called [COPYING](https://raw.githubusercontent.com/glpi-project/glpi/main/COPYING.txt) for more details.
+It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consult the file called [LICENSE](https://raw.githubusercontent.com/glpi-project/glpi/main/LICENSE) for more details.
 
 ## Some screenshots
 

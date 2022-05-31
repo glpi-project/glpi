@@ -47,11 +47,11 @@
    {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
       {% set entity_id = null %}
    {% else %}
-      {% set entity_id = params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity') %}
+      {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
    {% endif %}
 
    {% if is_multi_entities_mode() %}
-      {% set entity_name = get_item_name('Entity', item.fields['entities_id']) %}
+      {% set entity_name = get_item_name('Entity', item.getEntityID()) %}
    {% endif %}
 {% endif %}
 
@@ -84,7 +84,7 @@
       {% endif %}
 
       {% if no_header is not defined or no_header == false %}
-         <div class="card-header main-header d-flex flex-wrap mx-n2 mt-n2">
+         <div class="card-header main-header d-flex flex-wrap mx-n2 mt-n2 align-items-stretch">
             <h3 class="card-title d-flex align-items-center ps-4">
                {% set icon = item.getIcon() %}
                {% if icon|length > 0 %}
@@ -111,13 +111,13 @@
             {% set single_actions_ms_auto = true %}
             {% if item.isEntityAssign() and is_multi_entities_mode() and item is not instanceof('Entity') %}
                {% set single_actions_ms_auto = false %}
-               <span class="badge entity-name mx-1 px-2 py-3 ms-auto" title="{{ entity_name }}">
+               <span class="badge entity-name mx-1 px-2 ms-auto align-items-center" title="{{ entity_name }}">
                   <i class="ti ti-stack me-2"></i>
                   {{ entity_name }}
                </span>
 
                {% if item.maybeRecursive() %}
-                  <span class="badge is_recursive-toggle mx-1 px-2 py-3">
+                  <span class="badge is_recursive-toggle mx-1 px-2 align-items-center">
                      <label class="form-check d-flex align-items-center mb-0">
                         {% set disabled = canedit == false %}
                         {% set comment  = __('Change visibility in child entities.') %}

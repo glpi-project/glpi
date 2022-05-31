@@ -5046,7 +5046,7 @@ abstract class CommonITILObject extends CommonDBTM
             $toupdate[] = [
                 'value_fieldname' => 'value',
                 'to_update'       => "countassign_$rand",
-                'url'             => $CFG_GLPI["root_doc"] . "/ajax/ticketassigninformation.php",
+                'url'             => $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
                 'moreparams'      => ['users_id_assign' => '__VALUE__']
             ];
             $params['toupdate'] = $toupdate;
@@ -5101,7 +5101,7 @@ abstract class CommonITILObject extends CommonDBTM
                 echo "$(function() {";
                 Ajax::updateItemJsCode(
                     "countassign_$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/ticketassigninformation.php",
+                    $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
                     ['users_id_assign' => '__VALUE__'],
                     "dropdown__users_id_" . $typename . $rand
                 );

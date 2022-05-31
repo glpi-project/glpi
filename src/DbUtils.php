@@ -1708,7 +1708,7 @@ final class DbUtils
         }
 
         $matches = [];
-        if (mb_ereg('^<[^#]*(#{1,10})[^#]*>$', $objectName, $matches) === false) {
+        if (preg_match('/^<[^#]*(#{1,10})[^#]*>$/', $objectName, $matches) !== 1) {
             return $base_name;
         }
 

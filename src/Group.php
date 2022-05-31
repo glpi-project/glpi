@@ -434,7 +434,7 @@ class Group extends CommonTreeDropdown
                 }
                 return;
         }
-        parent::processMassiveActionsForOneItemtype($ma, $baseitem, $ids);
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
 

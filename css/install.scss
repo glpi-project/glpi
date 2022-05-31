@@ -140,11 +140,14 @@ h3 {
     color: #000;
 }
 
-#license {
-    color: rgb(32, 32, 32);
-    text-align: left;
-    width: 520px;
-    margin: 20px auto;
+.license-container {
+    width: 575px;
+
+    textarea {
+        color: rgb(32, 32, 32);
+        margin: 20px auto;
+        white-space: pre-line;
+    }
 }
 
 .alert:not(.alert-important) {

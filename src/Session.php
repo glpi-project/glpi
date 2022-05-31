@@ -1592,7 +1592,7 @@ class Session
      *
      * @return boolean
      */
-    public static function canImpersonate($user_id)
+    public static function canImpersonate($user_id, ?string &$message = null)
     {
         global $DB;
 
@@ -1600,18 +1600,21 @@ class Session
             $user_id <= 0 || self::getLoginUserID() == $user_id
             || (self::isImpersonateActive() && self::getImpersonatorId() == $user_id)
         ) {
+            $message = __("You can't impersonate yourself.");
             return false; // Cannot impersonate invalid user, self, or already impersonated user
         }
 
         // Cannot impersonate inactive user
         $user = new User();
         if (!$user->getFromDB($user_id) || !$user->getField('is_active')) {
+            $message = __("The user is not active.");
             return false;
         }
 
         // Cannot impersonate user with no profile
         $other_user_profiles = Profile_User::getUserProfiles($user_id);
         if (count($other_user_profiles) === 0) {
+            $message = __("The user doesn't have any profile.");
             return false;
         }
 
@@ -1620,25 +1623,29 @@ class Session
         }
 
         // Check if user can impersonate lower-privileged users (or same level)
-        if (self::haveRight('user', User::IMPERSONATE)) {
-            // Get all less-privileged (or equivalent) profiles than current one
-            $criteria = Profile::getUnderActiveProfileRestrictCriteria();
-            $iterator = $DB->request([
-                'SELECT' => ['id'],
-                'FROM'   => Profile::getTable(),
-                'WHERE'  => $criteria
-            ]);
-            $profiles = [];
-            foreach ($iterator as $data) {
-                $profiles[] = $data['id'];
-            }
-            // Check if all profiles of the user are less-privileged than current one
-            if (count($other_user_profiles) === count(array_intersect($profiles, array_keys($other_user_profiles)))) {
-                return true;
-            }
+        if (!self::haveRight('user', User::IMPERSONATE)) {
+            $message = __("You do not have the right to impersonate users.");
+            return false;
         }
 
-        return false;
+        // Get all less-privileged (or equivalent) profiles than current one
+        $criteria = Profile::getUnderActiveProfileRestrictCriteria();
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Profile::getTable(),
+            'WHERE'  => $criteria
+        ]);
+        $profiles = [];
+        foreach ($iterator as $data) {
+            $profiles[] = $data['id'];
+        }
+        // Check if all profiles of the user are less-privileged than current one
+        if (count($other_user_profiles) !== count(array_intersect($profiles, array_keys($other_user_profiles)))) {
+            $message = __("User has more rights than you. You can't impersonate him.");
+            return false;
+        }
+
+        return true;
     }
 
     /**
