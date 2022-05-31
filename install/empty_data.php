@@ -2250,6 +2250,7 @@ $empty_data_builder = new class
                 'display_users_initials' => 1,
                 'contracts_strategy_default' => 0,
                 'transfers_strategy' => 0,
+                'approval_reminder_repeat_interval' => 0,
             ],
         ];
 
