@@ -1197,6 +1197,22 @@ class DbUtils extends DbTestCase
                 'expected'     => '_test_pc01',
                 'deprecated'   => true,
             ], [
+            // not existing on entity, with multibyte strings
+                'name'         => '<自動名稱測試_##>',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 0,
+                'expected'     => '自動名稱測試_01'
+            ], [
+            // not existing on entity, with multibyte strings
+                'name'         => '<自動名稱—####—測試>',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 0,
+                'expected'     => '自動名稱—0001—測試'
+            ], [
             //existing on entity
                 'name'         => '&lt;_test_pc##&gt;',
                 'field'       => 'name',
