@@ -541,8 +541,10 @@ class RuleCriteria extends CommonDBChild
                 } else {
                     if (isset($field) && $field != '') {
                         $ip = ip2long($field);
-                        if ($condition == Rule::PATTERN_CIDR && ($ip & $mask) == $subnet
-                            || $condition == Rule::PATTERN_NOT_CIDR && ($ip & $mask) != $subnet) {
+                        if (
+                            $condition == Rule::PATTERN_CIDR && ($ip & $mask) == $subnet
+                            || $condition == Rule::PATTERN_NOT_CIDR && ($ip & $mask) != $subnet
+                        ) {
                             return true;
                         }
                     }

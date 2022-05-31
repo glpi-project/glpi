@@ -40,7 +40,7 @@ class RuleLocation extends Rule
     public static $rightname = 'rule_import'; // TODO set a dedicated right
     public $can_sort  = true;
 
-    function getTitle()
+    public function getTitle()
     {
         return __('Location rules');
     }
@@ -52,7 +52,7 @@ class RuleLocation extends Rule
     }
 
 
-    function getCriterias()
+    public function getCriterias()
     {
         return [
             'itemtype' => [
@@ -91,7 +91,7 @@ class RuleLocation extends Rule
     }
 
 
-    function getActions()
+    public function getActions()
     {
         return [
             'locations_id' => [

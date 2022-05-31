@@ -40,7 +40,7 @@ class RuleLocationCollection extends RuleCollection
     public $stop_on_first_match = true;
     public static $rightname    = 'rule_import'; // TODO set a dedicated right
 
-    function getTitle()
+    public function getTitle()
     {
         return __("Location rules");
     }
