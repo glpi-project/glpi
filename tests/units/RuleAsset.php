@@ -63,10 +63,10 @@ class RuleAsset extends DbTestCase
 
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
-       // prepare rule
-        $this->createRuleComment(\RuleAsset::ONUPDATE);
+        // prepare rule
+        $this->createRuleComment(\RuleAsset::ONADD);
 
-       // test create ticket (trigger on title)
+        // test create ticket (trigger on title)
         $computer = new \Computer();
         $computers_id = $computer->add($computer_input = [
             'name'        => "computer",
@@ -98,7 +98,7 @@ class RuleAsset extends DbTestCase
         ]);
         $this->boolean((bool)$monitor->getFromDB($monitors_id))->isTrue();
 
-       //Rule only apply to computers
+        //Rule only apply to computers
         $this->string((string)$monitor->getField('comment'))->isEqualTo('');
         $this->integer((int)$monitor->getField('users_id'))->isEqualTo(0);
 
@@ -112,7 +112,7 @@ class RuleAsset extends DbTestCase
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
 
-       //User rule should apply (extract @domain from the name)
+        //User rule should apply (extract @domain from the name)
         $this->integer((int)$computer->getField('users_id'))->isEqualTo(4);
         $this->string((string)$computer->getField('comment'))->isEqualTo('comment1');
 
@@ -126,7 +126,7 @@ class RuleAsset extends DbTestCase
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
 
-       //User rule should apply (extract the first user from the list)
+        //User rule should apply (extract the first user from the list)
         $this->integer((int)$computer->getField('users_id'))->isEqualTo(4);
 
         $computers_id = $computer->add($computer_input = [
@@ -139,7 +139,7 @@ class RuleAsset extends DbTestCase
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
 
-       //User rule should apply (extract the first user from the list)
+        //User rule should apply (extract the first user from the list)
         $this->integer((int)$computer->getField('users_id'))->isEqualTo(4);
 
         $computers_id = $computer->add($computer_input = [
@@ -152,8 +152,8 @@ class RuleAsset extends DbTestCase
         $this->integer((int)$computers_id)->isGreaterThan(0);
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
 
-       //User rule should apply (extract @domain from the name) but should not
-       //find any user, so users_id is set to 0
+        //User rule should apply (extract @domain from the name) but should not
+        //find any user, so users_id is set to 0
         $this->integer((int)$computer->getField('users_id'))->isEqualTo(0);
     }
 
@@ -166,7 +166,7 @@ class RuleAsset extends DbTestCase
 
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
-       // prepare rule
+        // prepare rule
         $this->createRuleComment(\RuleAsset::ONUPDATE);
         $this->createRuleLocation(\RuleAsset::ONUPDATE);
 
@@ -174,7 +174,6 @@ class RuleAsset extends DbTestCase
             $item     = new $itemtype();
             $item_input = [
                 'name'        => "$itemtype 1",
-                '_auto'       => 1,
                 'entities_id' => $root_ent_id,
                 'is_dynamic'  => 1,
                 'comment'     => 'mycomment'
@@ -183,6 +182,15 @@ class RuleAsset extends DbTestCase
                 $item_input['softwares_id'] = 1;
             }
             $items_id = $item->add($item_input);
+
+            // Trigger update
+            $update = $item->update([
+                'id'    => $item->getID(),
+                'name'  => 'updated name',
+                '_auto' => 1,
+            ]);
+            $this->boolean($update)->isTrue();
+
             $this->integer((int)$items_id)->isGreaterThan(0);
             $this->boolean((bool)$item->getFromDB($items_id))->isTrue();
             if ($itemtype == 'Computer') {
