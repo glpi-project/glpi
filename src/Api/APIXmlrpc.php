@@ -82,7 +82,7 @@ class APIXmlrpc extends API
         $code = 200;
 
         // Do not unlock the php session for ressources that may handle it
-        if (in_array($resource, $this->getRessourcesAllowedWithoutSession())) {
+        if (in_array($resource, $this->getRessourcesWithSessionWrite())) {
             $this->session_write = true;
         }
 
