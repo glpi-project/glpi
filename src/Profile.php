@@ -1805,6 +1805,10 @@ class Profile extends CommonDBTM
                 'label'     => __('Rules for assigning a computer to an entity'),
                 'field'     => 'rule_import'
             ],
+            ['itemtype'  => 'RuleLocation',
+                'label'     => __('Rules for assigning a computer to a location'),
+                'field'     => 'rule_location'
+            ],
             ['itemtype'  => 'RuleMailCollector',
                 'label'     => __('Rules for assigning a ticket created through a mails receiver'),
                 'field'     => 'rule_mailcollector'

@@ -57,6 +57,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `Glpi\Api\Api::initEndpoint()` visibility changed to `protected`.
 
 #### Deprecated
 

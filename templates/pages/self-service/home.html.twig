@@ -54,30 +54,21 @@
    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
 </table>
 
+{% set optional_grid_item_keys = [
+   'survey_list', 'reminder_list', 'rss_feed', 'kb_popular', 'kb_recent', 'kb_lastupdate'
+] %}
 {% set grid_items = [
-   ticket_summary,
-   '<div class="card">' ~ survey_list ~ '</div>',
-   '<div class="card">' ~ reminder_list ~ '</div>',
-   '<div class="card">' ~ rss_feed ~ '</div>',
+   ticket_summary
 ] %}
 
-{% if kb_popular|length %}
-   {% set grid_items = grid_items|merge([
-      '<div class="card">' ~ kb_popular ~ '</div>'
-   ]) %}
-{% endif %}
-
-{% if kb_recent|length %}
-   {% set grid_items = grid_items|merge([
-      '<div class="card">' ~ kb_recent ~ '</div>'
-   ]) %}
-{% endif %}
-
-{% if kb_lastupdate|length %}
-   {% set grid_items = grid_items|merge([
-      '<div class="card">' ~ kb_lastupdate ~ '</div>'
-   ]) %}
-{% endif %}
+{% for optional_grid_item_key in optional_grid_item_keys %}
+   {% set item_content = _context[optional_grid_item_key] %}
+   {% if item_content is not empty %}
+      {% set grid_items = grid_items|merge([
+         '<div class="card">' ~ item_content ~ '</div>'
+      ]) %}
+   {% endif %}
+{% endfor %}
 
 {{ include('components/masonry_grid.html.twig', {
    'grid_items': grid_items,

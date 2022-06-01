@@ -331,8 +331,6 @@ abstract class API
      */
     protected function killSession()
     {
-
-        $this->initEndpoint(false, __FUNCTION__);
         Session::destroy();
         return true;
     }
@@ -379,9 +377,6 @@ abstract class API
      */
     protected function changeActiveEntities($params = [])
     {
-
-        $this->initEndpoint();
-
         if (!isset($params['entities_id'])) {
             $entities_id = 'all';
         } else {
@@ -412,9 +407,6 @@ abstract class API
      */
     protected function getMyEntities($params = [])
     {
-
-        $this->initEndpoint();
-
         if (!isset($params['is_recursive'])) {
             $params['is_recursive'] = false;
         }
@@ -457,9 +449,6 @@ abstract class API
      */
     protected function getActiveEntities()
     {
-
-        $this->initEndpoint();
-
         $actives_entities = [];
         foreach (array_values($_SESSION['glpiactiveentities']) as $active_entity) {
             $actives_entities[] = ['id' => $active_entity];
@@ -486,9 +475,6 @@ abstract class API
      */
     protected function changeActiveProfile($params = [])
     {
-
-        $this->initEndpoint();
-
         if (!isset($params['profiles_id'])) {
             $this->returnError();
         }
@@ -512,9 +498,6 @@ abstract class API
      */
     protected function getMyProfiles()
     {
-
-        $this->initEndpoint();
-
         $myprofiles = [];
         foreach ($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
            // append if of the profile into values
@@ -539,8 +522,6 @@ abstract class API
      */
     protected function getActiveProfile()
     {
-
-        $this->initEndpoint();
         return ["active_profile" => $_SESSION['glpiactiveprofile']];
     }
 
@@ -554,8 +535,6 @@ abstract class API
      */
     protected function getFullSession()
     {
-
-        $this->initEndpoint();
         return ['session' => $_SESSION];
     }
 
@@ -568,8 +547,6 @@ abstract class API
      */
     protected function getGlpiConfig()
     {
-        $this->initEndpoint();
-
         return ['cfg_glpi' => Config::getSafeConfig()];
     }
 
@@ -604,7 +581,6 @@ abstract class API
     {
         global $CFG_GLPI, $DB;
 
-        $this->initEndpoint();
         $itemtype = $this->handleDepreciation($itemtype);
 
        // default params
@@ -1098,7 +1074,6 @@ abstract class API
     {
         global $DB;
 
-        $this->initEndpoint();
         $itemtype = $this->handleDepreciation($itemtype);
 
        // default params
@@ -1406,8 +1381,6 @@ abstract class API
         $params = [],
         bool $check_depreciation = true
     ) {
-        $this->initEndpoint();
-
         if ($check_depreciation) {
             $itemtype = $this->handleDepreciation($itemtype);
         }
@@ -1569,7 +1542,6 @@ abstract class API
     {
         global $DEBUG_SQL;
 
-        $this->initEndpoint();
         $itemtype = $this->handleDepreciation($itemtype);
 
        // check rights
@@ -1813,7 +1785,6 @@ abstract class API
      */
     protected function createItems($itemtype, $params = [])
     {
-        $this->initEndpoint();
         $itemtype = $this->handleDepreciation($itemtype);
 
         $input    = isset($params['input']) ? $params["input"] : null;
@@ -1937,7 +1908,6 @@ abstract class API
      */
     protected function updateItems($itemtype, $params = [])
     {
-        $this->initEndpoint();
         $itemtype = $this->handleDepreciation($itemtype);
 
         $input    = isset($params['input']) ? $params["input"] : null;
@@ -2052,8 +2022,6 @@ abstract class API
      */
     protected function deleteItems($itemtype, $params = [])
     {
-
-        $this->initEndpoint();
         $itemtype = $this->handleDepreciation($itemtype);
 
         $default  = ['force_purge' => false,
@@ -2217,7 +2185,7 @@ abstract class API
      *
      * @return void
      */
-    private function initEndpoint($unlock_session = true, $endpoint = "")
+    protected function initEndpoint($unlock_session = true, $endpoint = "")
     {
 
         if ($endpoint === "") {
@@ -3060,9 +3028,7 @@ abstract class API
      */
     protected function userPicture($user_id)
     {
-        $this->initEndpoint();
-
-       // Try to load target user
+        // Try to load target user
         $user = new User();
         if (!$user->getFromDB($user_id)) {
             $this->returnError("Bad request: user with id '$user_id' not found");
@@ -3177,7 +3143,7 @@ abstract class API
         string $itemtype,
         bool $is_deleted = false
     ): array {
-       // Return massive actions for a given itemtype
+        // Return massive actions for a given itemtype
         $actions = MassiveAction::getAllMassiveActions($itemtype, $is_deleted);
         if ($actions === false) {
             $this->returnError(
@@ -3365,5 +3331,33 @@ abstract class API
         }
 
         $this->returnResponse($results, $code);
+    }
+
+    /**
+     * List of API ressources for which a valid session isn't required
+     *
+     * @return array
+     */
+    protected function getRessourcesAllowedWithoutSession(): array
+    {
+        return [
+            "initSession",
+            "lostPassword",
+        ];
+    }
+
+    /**
+     * List of API ressources that may write php session data
+     *
+     * @return array
+     */
+    protected function getRessourcesWithSessionWrite(): array
+    {
+        return [
+            "initSession",
+            "killSession",
+            "changeActiveEntities",
+            "changeActiveProfile",
+        ];
     }
 }

@@ -71,10 +71,10 @@
          this_obj.html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
             .load('{{ path('/ajax/central.php') }}', params, function(response, status, xhr) {
                if (status === 'error' || !response) {
-                  this_obj.closest('.grid-item').remove();
+                   window.msnry.remove(this_obj.closest('.grid-item'));
                }
 
-               $(document).trigger('masonry_grid:layout');
+               window.msnry.layout();
             });
       });
    });

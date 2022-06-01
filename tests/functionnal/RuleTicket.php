@@ -2627,4 +2627,140 @@ class RuleTicket extends DbTestCase
         ]);
         $this->boolean($result)->isTrue();
     }
+
+    public function testNewActors()
+    {
+        $this->login();
+
+        $tech_id   = getItemByTypeName('User', "tech", true);
+        $groups_id = getItemByTypeName('Group', '_test_group_1', true);
+
+        $supplier = new \Supplier();
+        $suppliers_id = $supplier->add([
+            'name'        => 'Supplier 1',
+            'entities_id' => 0,
+        ]);
+
+        $this->dump($suppliers_id);
+
+        $location = new \Location();
+        $locations_id = $location->add([
+            'name' => 'Location 1',
+        ]);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        // Create rule
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => 'testNewActors',
+            'match'        => 'OR',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+        //create criteria to check
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => '_users_id_requester',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $tech_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => '_users_id_observer',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $tech_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => '_users_id_assign',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $tech_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => '_groups_id_requester',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $groups_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => '_groups_id_observer',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $groups_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => '_groups_id_assign',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $groups_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => '_suppliers_id_assign',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $suppliers_id,
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+        //create action to add group as group requester
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => $locations_id,
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+
+        // test all common actors
+        foreach (['User', 'Group'] as $actoritemtype) {
+            $items_id = ($actoritemtype == "User") ? $tech_id : $groups_id;
+            foreach (['requester', 'observer', 'assign'] as $actortype) {
+                $ticket = new \Ticket();
+                $tickets_id = $ticket->add([
+                    'name'    => 'test actors',
+                    'content' => 'test actors',
+                    '_actors' => [
+                        $actortype => [
+                            [
+                                'itemtype' => $actoritemtype,
+                                'items_id' => $items_id,
+                            ]
+                        ]
+                    ],
+                ]);
+                $ticket->getFromDB($tickets_id);
+                $this->integer($ticket->fields['locations_id'])->isEqualTo($locations_id);
+            }
+        }
+
+        // test also suppliers for assign
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'    => 'test actors supplier',
+            'content' => 'test actors supplier',
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype' => 'Supplier',
+                        'items_id' => $suppliers_id,
+                    ]
+                ]
+            ],
+        ]);
+        $ticket->getFromDB($tickets_id);
+        $this->integer($ticket->fields['locations_id'])->isEqualTo($locations_id);
+    }
 }

@@ -90,6 +90,8 @@ class Rule extends CommonDBTM
     const PATTERN_UNDER           = 11;
     const PATTERN_NOT_UNDER       = 12;
     const PATTERN_IS_EMPTY        = 30; // Global criteria
+    const PATTERN_CIDR            = 333;
+    const PATTERN_NOT_CIDR        = 334;
 
     const AND_MATCHING            = "AND";
     const OR_MATCHING             = "OR";
@@ -220,6 +222,7 @@ class Rule extends CommonDBTM
         if (
             Session::haveRight("rule_ldap", READ)
             || Session::haveRight("rule_import", READ)
+            || Session::haveRight("rule_location", READ)
             || Session::haveRight("rule_ticket", READ)
             || Session::haveRight("rule_softwarecategories", READ)
             || Session::haveRight("rule_mailcollector", READ)
@@ -2532,7 +2535,7 @@ class Rule extends CommonDBTM
             self::PATTERN_DOES_NOT_EXISTS,
             RuleImportAsset::PATTERN_ENTITY_RESTRICT,
             RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT,
-            RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE
+            RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE,
         ];
         if (in_array($condition, $hiddens)) {
             echo Html::hidden($name, ['value' => 1]);

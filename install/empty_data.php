@@ -5052,6 +5052,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'rule_location',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'rule_ldap',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -5321,6 +5325,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'rule_import',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'rule_location',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
@@ -5616,6 +5624,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'rule_location',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'rule_ldap',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -5906,6 +5918,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_import',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'rule_location',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
@@ -6204,6 +6220,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'rule_location',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'rule_ldap',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -6486,6 +6506,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_import',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'rule_location',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
@@ -6773,6 +6797,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'rule_import',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'rule_location',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
@@ -7152,6 +7180,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_import',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'rule_location',
                 'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
