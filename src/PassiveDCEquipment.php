@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
 use Glpi\Socket;
 
 /**
@@ -40,6 +41,7 @@ use Glpi\Socket;
  **/
 class PassiveDCEquipment extends CommonDBTM
 {
+    use Clonable;
     use Glpi\Features\DCBreadcrumb;
 
    // From CommonDBTM
@@ -215,5 +217,14 @@ class PassiveDCEquipment extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-layout-navbar";
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Contract_Item::class,
+            Document_Item::class,
+            Infocom::class,
+        ];
     }
 }
