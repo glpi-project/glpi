@@ -64,7 +64,7 @@
         "spectrum-colorpicker2": "^2.0.9",
         "spin.js": "^4.1.0",
         "tinymce": "^6.0.2",
-        "tinymce-i18n": "^22.2.11"
+        "tinymce-i18n": "^22.5.2"
     },
     "scripts": {
         "build:pack": "webpack --config webpack.config.js",

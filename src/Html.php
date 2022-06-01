@@ -3793,13 +3793,13 @@ JS;
         Html::requireJs('tinymce');
 
         $language = $_SESSION['glpilanguage'];
-        if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs5/$language.js")) {
+        if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
             $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
-            if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs5/$language.js")) {
+            if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
                 $language = "en_GB";
             }
         }
-        $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs5/' . $language . '.js';
+        $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs6/' . $language . '.js';
 
        // Apply all GLPI styles to editor content
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror'))
