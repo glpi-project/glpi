@@ -294,6 +294,7 @@ HTML;
         $fs_label         = __("Toggle fullscreen");
         $clone_label      = __("Clone this dashboard");
         $edit_label       = __("Toggle edit mode");
+        $filter_label     = __("Toggle filter mode");
         $add_filter_lbl   = __("Add filter");
         $add_dash_label   = __("Add a new dashboard");
         $save_label       = _x('button', "Save");
@@ -340,6 +341,8 @@ HTML;
             }
             if ($can_edit) {
                 $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+            } else {
+                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-edit fs-toggle filter-dashboard' title='$filter_label'></i>";
             }
 
             if (!$mini) {

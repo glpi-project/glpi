@@ -46,6 +46,7 @@ var Dashboard = {
     all_cards: [],
     all_widgets: [],
     edit_mode: false,
+    filter_mode: false,
     embed: false,
     ajax_cards: false,
     context: "core",
@@ -183,6 +184,13 @@ var Dashboard = {
             var activate = !$(this).hasClass('active');
 
             Dashboard.setEditMode(activate);
+        });
+
+        // filter mode toggle
+        $("#dashboard-"+options.rand+" .toolbar .filter-dashboard").on('click', function() {
+            var activate = !$(this).hasClass('active');
+
+            Dashboard.setFilterMode(activate);
         });
 
         // fullscreen mode toggle
@@ -836,7 +844,27 @@ var Dashboard = {
         var edit_ctrl = $(Dashboard.elem_id+" .toolbar .edit-dashboard");
         edit_ctrl.toggleClass('active', activate);
         Dashboard.element.toggleClass('edit-mode', activate);
+        Dashboard.element.toggleClass('filter-mode', activate);
         Dashboard.grid.setStatic(!activate);
+
+        // set filters as sortable (draggable) or not
+        sortable('.filters', activate ? 'enable' : 'disable');
+
+        if (!Dashboard.edit_mode) {
+            // save markdown textareas set as dirty
+            var dirty_textareas = $(".grid-stack-item.dirty");
+            if (dirty_textareas.length > 0) {
+                Dashboard.saveDashboard(true);
+            }
+        }
+    },
+
+    setFilterMode: function(activate) {
+        Dashboard.edit_mode = typeof activate == "undefined" ? true : activate;
+
+        var edit_ctrl = $(Dashboard.elem_id+" .toolbar .filter-dashboard");
+        edit_ctrl.toggleClass('active', activate);
+        Dashboard.element.toggleClass('filter-mode', activate);
 
         // set filters as sortable (draggable) or not
         sortable('.filters', activate ? 'enable' : 'disable');
