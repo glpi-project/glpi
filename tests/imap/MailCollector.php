@@ -696,6 +696,7 @@ class MailCollector extends DbTestCase
                     '26 Illegal char in body',
                     '28 Multiple attachments no extension',
                     '30 - &#60;GLPI&#62; Special &#38; chars',
+                    '31 - HTML message without body',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -722,25 +723,19 @@ Best regards,
 PLAINTEXT,
          // HTML on multi-part email
             'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
-<html>
-<body>
 <p>This message have reply to header, requester should be get from this header.</p>
-</body>
-</html>
 HTML,
             'Mono-part HTML message' => <<<HTML
-<html>
-<body>
 <p>This HTML message does not use <strong>"multipart/alternative"</strong> format.</p>
-</body>
-</html>
 HTML,
             '26 Illegal char in body' => <<<PLAINTEXT
 这是很坏的Minus C Blabla
 PLAINTEXT,
             '28 Multiple attachments no extension' => <<<HTML
-
-<HTML><BODY><div>&nbsp;</div><div>Test</div><div>&nbsp;</div></BODY></HTML>
+<div>&nbsp;</div><div>Test</div><div>&nbsp;</div>
+HTML,
+            '31 - HTML message without body' => <<<HTML
+This HTML message does not have a <i>body</i> tag.
 HTML,
         ];
 
