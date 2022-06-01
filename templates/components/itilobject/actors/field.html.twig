@@ -215,11 +215,12 @@
             datatype: 'json',
             type: 'POST',
             data: function (params) {
+               var is_new_item = {{ item.isNewItem() ? "true" : "false" }};
                return {
                   action: 'getActors',
                   actortype: actorytype,
                   users_right: '{{ users_right ?? 'all' }}',
-                  entity_restrict: (actors.requester.length == 0) ? -1 : {{ entities_id }},
+                  entity_restrict: (actors.requester.length == 0 && is_new_item) ? -1 : {{ entities_id }},
                   searchText: params.term,
                   _idor_token: '{{ idor_token() }}',
                   itiltemplate_class: '{{ itiltemplate.getType() }}',
