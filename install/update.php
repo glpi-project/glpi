@@ -154,15 +154,17 @@ function showSecurityKeyCheckForm()
     echo '<form action="update.php" method="post">';
     echo '<input type="hidden" name="continuer" value="1" />';
     echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
-    echo '<div class="center">';
+    echo '<div class="text-center">';
     echo '<h3>' . __('Missing security key file') . '</h3>';
-    echo '<p>';
-    echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/ko_min.png" />';
+    echo '<div class="d-flex alert alert-warning">';
+    echo '<i class="fa fa-3x fa-exclamation-triangle text-warning"></i>';
+    echo '<p class="text-start">';
     echo sprintf(
         __('The key file "%s" used to encrypt/decrypt sensitive data is missing. You should retrieve it from your previous installation or encrypted data will be unreadable.'),
         $update->getExpectedSecurityKeyFilePath()
     );
     echo '</p>';
+    echo '</div>';
     echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __('Ignore warning') . '" />';
     echo '&nbsp;&nbsp;';
     echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __('Try again') . '" />';
