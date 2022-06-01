@@ -58,7 +58,10 @@ if (!$DB->fieldExists("glpi_entities", "registration_number")) {
 /** /Create registration_number field */
 
 /** Replace -1 value for entities_id field */
-$DB->updateOrDie('glpi_entities', ['entities_id' => '0'], ['id' => '0']); // Replace -1 value for root entity to be able to change type to unsigned
+// Replace -1 value for root entity to be able to change type to unsigned.
+// Use max int signed value of mysql to be fairly certain not to be blocked because of the uniqueness key.
+$DB->updateOrDie('glpi_entities', ['entities_id' => pow(2, 31) - 1], ['id' => '0']);
+
 $migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int {$default_key_sign} DEFAULT '0'");
 $migration->migrationOneTable('glpi_entities'); // Ensure 'entities_id' is nullable.
 $DB->updateOrDie('glpi_entities', ['entities_id' => 'NULL'], ['id' => '0']);
