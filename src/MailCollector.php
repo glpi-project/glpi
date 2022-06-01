@@ -1739,7 +1739,14 @@ class MailCollector extends CommonDBTM
             if ($content_type->getType() == 'text/html') {
                 $this->body_is_html = true;
                 $content = $this->getDecodedContent($part);
-               //do not check for text part if we found html one.
+
+                // Keep only HTML body content
+                $body_matches = [];
+                if (preg_match('/<body>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
+                    $content = $body_matches['body'];
+                }
+
+                // do not check for text part if we found html one.
                 break;
             }
             if ($content_type->getType() == 'text/plain' && $content === null) {
