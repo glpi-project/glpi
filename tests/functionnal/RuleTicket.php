@@ -2628,7 +2628,8 @@ class RuleTicket extends DbTestCase
         $this->boolean($result)->isTrue();
     }
 
-    public function testNewActors() {
+    public function testNewActors()
+    {
         $this->login();
 
         $tech_id   = getItemByTypeName('User', "tech", true);
