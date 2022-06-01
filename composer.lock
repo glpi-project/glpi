@@ -4211,16 +4211,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.4.8",
+            "version": "v5.4.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "3c061a76bff6d6ea427d85e12ad1bb8ed8cd43e8"
+                "reference": "985e6a9703ef5ce32ba617c9c7d97873bb7b2a99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/3c061a76bff6d6ea427d85e12ad1bb8ed8cd43e8",
-                "reference": "3c061a76bff6d6ea427d85e12ad1bb8ed8cd43e8",
+                "url": "https://api.github.com/repos/symfony/string/zipball/985e6a9703ef5ce32ba617c9c7d97873bb7b2a99",
+                "reference": "985e6a9703ef5ce32ba617c9c7d97873bb7b2a99",
                 "shasum": ""
             },
             "require": {
@@ -4277,7 +4277,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.4.8"
+                "source": "https://github.com/symfony/string/tree/v5.4.9"
             },
             "funding": [
                 {
@@ -4570,7 +4570,7 @@
         },
         {
             "name": "twig/string-extra",
-            "version": "v3.3.5",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/string-extra.git",
@@ -4626,7 +4626,7 @@
                 "unicode"
             ],
             "support": {
-                "source": "https://github.com/twigphp/string-extra/tree/v3.3.5"
+                "source": "https://github.com/twigphp/string-extra/tree/v3.4.0"
             },
             "funding": [
                 {
