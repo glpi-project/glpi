@@ -8559,6 +8559,10 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function assign(array $input)
     {
+        if (!in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
+            return $input;
+        }
+
         if (
             (
                 (
