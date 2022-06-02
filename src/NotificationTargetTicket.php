@@ -148,6 +148,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'rejectsolution'    => __('Solution rejected'),
             'validation'        => __('Validation request'),
             'validation_answer' => __('Validation request answer'),
+            'validation_reminder' => __('Validation reminder'),
             'closed'            => __('Closing of the ticket'),
             'delete'            => __('Deletion of a ticket'),
             'alertnotclosed'    => __('Not solved tickets'),

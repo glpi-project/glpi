@@ -95,7 +95,7 @@ class CommonITILValidationCron extends CommonDBTM
                             'validation_status' => $validation->fields["status"]
                         ];
                         $item = $validation->getItem();
-                        if (NotificationEvent::raiseEvent('validation', $item, $options)) {
+                        if (NotificationEvent::raiseEvent('validation_reminder', $item, $options)) {
                             $validation->update([
                                 'id'            => $validation->getID(),
                                 'last_reminder_date' => $_SESSION["glpi_currenttime"],

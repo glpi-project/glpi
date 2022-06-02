@@ -2384,7 +2384,9 @@ class Entity extends CommonTreeDropdown
         $default_value = $entity->fields['approval_reminder_repeat_interval'];
         Alert::dropdown(['name'           => 'approval_reminder_repeat_interval',
             'value'          => $default_value,
-            'inherit_parent' => (($ID > 0) ? 1 : 0)
+            'inherit_parent' => ($ID > 0),
+            'show_hours'     => true,
+            'show_days'      => true,
         ]);
         if ($entity->fields['approval_reminder_repeat_interval'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('approval_reminder_repeat_interval', $entity->getField('entities_id'));
