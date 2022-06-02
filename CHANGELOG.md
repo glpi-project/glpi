@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [10.0.1] unreleased
+## [10.0.1] 2022-06-02
 
 ### Added
 
@@ -18,6 +18,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- `plugin_xxx_activate()` and `plugin_xxx_deactivate` hooks support.
 
 #### Changes
 - `Glpi\Api\Api::initEndpoint()` visibility changed to `protected`.
