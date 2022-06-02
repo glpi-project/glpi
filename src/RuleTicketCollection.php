@@ -141,6 +141,10 @@ class RuleTicketCollection extends RuleCollection
                             $input[$input_key] = [];
                         }
 
+                        if (in_array($actor['items_id'], $input[$input_key])) {
+                            continue;
+                        }
+
                         $input[$input_key][] = $actor['items_id'];
                     }
                 }
