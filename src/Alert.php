@@ -114,14 +114,15 @@ class Alert extends CommonDBTM
 
         $times[Entity::CONFIG_NEVER]  = __('Never');
         if ($p['show_hours']) {
-            for ($i = 1; $i <= 24; $i++) {
-                $times[$i] = sprintf(__('%1$s hours'), $i);
+            $times[HOUR_TIMESTAMP] = __('Each hour');
+            for ($i = 2; $i <= 24; $i++) {
+                $times[$i * HOUR_TIMESTAMP] = sprintf(__('Every %1$s hours'), $i);
             }
         }
         $times[DAY_TIMESTAMP]         = __('Each day');
         if ($p['show_days']) {
             for ($i = 2; $i <= 6; $i++) {
-                $times[$i * DAY_TIMESTAMP] = sprintf(__('%1$s days'), $i);
+                $times[$i * DAY_TIMESTAMP] = sprintf(__('Every %1$s days'), $i);
             }
         }
         $times[WEEK_TIMESTAMP]        = __('Each week');
