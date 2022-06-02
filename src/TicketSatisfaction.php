@@ -173,19 +173,24 @@ class TicketSatisfaction extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-
-        if ($input['satisfaction'] >= 0) {
+        if (array_key_exists('satisfaction', $input) && $input['satisfaction'] >= 0) {
             $input["date_answered"] = $_SESSION["glpi_currenttime"];
         }
 
-        $inquest_mandatory_comment = Entity::getUsedConfig('inquest_config', $input['entities_id'], 'inquest_mandatory_comment');
-        if ($inquest_mandatory_comment && ($input['satisfaction'] >= $inquest_mandatory_comment) && empty($input['comment'])) {
-            Session::addMessageAfterRedirect(
-                sprintf(__('Comment is required if score is less than or equal to %d'), $inquest_mandatory_comment),
-                false,
-                ERROR
-            );
-            return false;
+        if (array_key_exists('satisfaction', $input) || array_key_exists('comment', $input)) {
+            $satisfaction = array_key_exists('satisfaction', $input) ? $input['satisfaction'] : $this->fields['satisfaction'];
+            $comment      = array_key_exists('comment', $input) ? $input['comment'] : $this->fields['comment'];
+            $entities_id  = $this->getItemEntity(Ticket::class, $this->fields['tickets_id']);
+
+            $inquest_mandatory_comment = Entity::getUsedConfig('inquest_config', $entities_id, 'inquest_mandatory_comment');
+            if ($inquest_mandatory_comment && ($satisfaction >= $inquest_mandatory_comment) && empty($comment)) {
+                Session::addMessageAfterRedirect(
+                    sprintf(__('Comment is required if score is less than or equal to %d'), $inquest_mandatory_comment),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
         }
 
         return $input;
