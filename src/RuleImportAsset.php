@@ -155,6 +155,9 @@ class RuleImportAsset extends Rule
             'osname' => [
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1)),
             ],
+            'oscomment' => [
+                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1), __('Comments'))
+            ],
             'itemtype' => [
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Item type')),
                 'type'            => 'dropdown_inventory_itemtype',
