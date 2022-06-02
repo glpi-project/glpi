@@ -124,15 +124,23 @@ function __($str, $domain = 'glpi')
 {
     global $TRANSLATE;
 
-    if (is_null($TRANSLATE)) { // before login
-        return $str;
+    $trans = null;
+
+    if ($TRANSLATE !== null) {
+        try {
+            $trans = $TRANSLATE->translate($str, $domain);
+
+            if (is_array($trans)) {
+                // Wrong call when plural defined
+                $trans = $trans[0];
+            }
+        } catch (\Throwable $e) {
+            // Error may happen when overrided translation files does not use same plural rules as GLPI.
+            // Silently fail to not flood error log.
+        }
     }
-    $trans = $TRANSLATE->translate($str, $domain);
-   // Wrong call when plural defined
-    if (is_array($trans)) {
-        return $trans[0];
-    }
-    return  $trans;
+
+    return $trans ?? $str;
 }
 
 
@@ -185,15 +193,18 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
 {
     global $TRANSLATE;
 
-    if (is_null($TRANSLATE)) { // before login
-        if ($nb == 0 || $nb > 1) {
-            return $plural;
-        } else {
-            return $sing;
+    $trans = null;
+
+    if ($TRANSLATE !== null) {
+        try {
+            $trans = $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
+        } catch (\Throwable $e) {
+            // Error may happen when overrided translation files does not use same plural rules as GLPI.
+            // Silently fail to not flood error log.
         }
     }
 
-    return $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
+    return $trans ?? (($nb == 0 || $nb > 1) ? $plural : $sing);
 }
 
 
