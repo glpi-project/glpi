@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
+
 $_GET['donotcheckversion']   = true;
 $dont_check_maintenance_mode = true;
 
@@ -68,7 +70,13 @@ $default_response = json_encode(
 );
 
 // Get messages from translator component
-$messages = $TRANSLATE->getAllMessages($_GET['domain']);
+$messages = null;
+try {
+    $messages = $TRANSLATE->getAllMessages($_GET['domain']);
+} catch (\Throwable $e) {
+    // Error may happen when overrided translation files does not use same plural rules as GLPI.
+    ErrorHandler::getInstance()->handleException($e, true);
+}
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
    // No TextDomain found means that there is no translations for given domain.
    // It is mostly related to plugins that does not provide any translations.
