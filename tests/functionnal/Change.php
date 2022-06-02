@@ -274,4 +274,19 @@ class Change extends DbTestCase
         ]);
         $this->boolean($result)->isTrue();
     }
+
+    public function testInitialStatus()
+    {
+        $this->login();
+        $change = new \Change();
+        $changes_id = $change->add([
+            'name' => "test initial status",
+            'content' => "test initial status",
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
+        ]);
+        $this->integer($changes_id)->isGreaterThan(0);
+        // Even when automatically assigning a user, the initial status should be set to New
+        $this->integer($change->fields['status'])->isIdenticalTo(\CommonITILObject::INCOMING);
+    }
 }
