@@ -34,22 +34,22 @@
  */
 
 /**
- * Update from 10.0.0 to 10.0.1
+ * Update from 10.0.1 to 10.0.2
  *
  * @return bool for success (will die for most error)
  **/
-function update1000to1001()
+function update1001to1002()
 {
     global $DB, $migration;
 
     $updateresult       = true;
     $ADDTODISPLAYPREF   = [];
     $DELFROMDISPLAYPREF = [];
-    $update_dir = __DIR__ . '/update_10.0.0_to_10.0.1/';
+    $update_dir = __DIR__ . '/update_10.0.1_to_10.0.2/';
 
     //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.1'));
-    $migration->setVersion('10.0.1');
+    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.2'));
+    $migration->setVersion('10.0.2');
 
     $update_scripts = scandir($update_dir);
     foreach ($update_scripts as $update_script) {

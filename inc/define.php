@@ -36,7 +36,7 @@
 use Glpi\SocketModel;
 
 // Current version of GLPI
-define('GLPI_VERSION', '10.0.1');
+define('GLPI_VERSION', '10.0.2');
 $schema_file = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, GLPI_VERSION);
 define(
     "GLPI_SCHEMA_VERSION",
