@@ -104,7 +104,7 @@
          {% else %}
 
             <div class="btn-group" role="group">
-               {% if item.canDelete() %}
+               {% if item.canDeleteItem() %}
                   {% if item.isDeleted() %}
                      <button class="btn btn-outline-secondary" type="submit" name="restore" form="itil-form"
                            title="{{ _x('button', 'Restore') }}">
