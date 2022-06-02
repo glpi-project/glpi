@@ -141,7 +141,7 @@ class RuleTicketCollection extends RuleCollection
                             $input[$input_key] = [];
                         }
 
-                        $input[$input_key][] = $actor['items_id'];
+                        $input[$input_key][$actor['items_id']] = $actor['items_id'];
                     }
                 }
             }
