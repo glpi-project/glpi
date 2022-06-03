@@ -4509,4 +4509,69 @@ HTML
         $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
         $this->boolean((bool)$ticket->needReopen())->isFalse();
     }
+
+    protected function prepareInputForUpdateHandleActorChangesProvider()
+    {
+        return [
+            [
+                'input' => [
+                    '_additional_requesters' => [
+                        'users_id' => 1
+                    ],
+                    '_users_id_requester' => 2,
+                    '_additional_observers' => [
+                        'users_id'  => 1
+                    ],
+                    '_users_id_observer'  => 3,
+                    '_users_id_assign'    => 4,
+                    '_additional_groups_assigns' => [1],
+                    '_groups_id_assign'      => [2],
+                    '_suppliers_id_assign'      => [4],
+                ],
+                'changes' => [
+                    '_additional_requesters' => [
+                        'users_id' => ['1', '2'],
+                    ],
+                    '_additional_observers' => [
+                        'users_id' => ['1', '3'],
+                    ],
+                    '_additional_assigns' => [
+                        'users_id' => ['4'],
+                    ],
+                    '_additional_groups_assigns' => [
+                        '1', '2'
+                    ],
+                    '_additional_suppliers_assigns' => [
+                        '4'
+                    ],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider prepareInputForUpdateHandleActorChangesProvider
+     */
+    public function testPrepareInputForUpdateHandleActorChanges($input, $changes)
+    {
+        $this->login();
+        $ticket = new \Ticket();
+        $ticket->fields = [
+            'id' => 45645, //Random
+            'name'  => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => \CommonITILObject::ASSIGNED,
+            'users_id_recipient' => getItemByTypeName('User', TU_USER, true),
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'itilcategories_id' => getItemByTypeName('ITILCategory', '_test_category_1', true),
+        ];
+        $input = array_merge($ticket->fields, $input);
+        $result = $ticket->prepareInputForUpdate($input);
+
+        $this->array($result['_additional_requesters'])->isEqualTo($changes['_additional_requesters']);
+        $this->array($result['_additional_observers'])->isEqualTo($changes['_additional_observers']);
+        $this->array($result['_additional_assigns'])->isEqualTo($changes['_additional_assigns']);
+        $this->array($result['_additional_groups_assigns'])->isEqualTo($changes['_additional_groups_assigns']);
+        $this->array($result['_additional_suppliers_assigns'])->isEqualTo($changes['_additional_suppliers_assigns']);
+    }
 }

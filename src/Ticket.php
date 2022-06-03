@@ -1255,16 +1255,38 @@ class Ticket extends CommonITILObject
         $actortypes = ['user','group','supplier'];
         foreach ($usertypes as $t) {
             foreach ($actortypes as $a) {
-                if (isset($input['_' . $a . 's_id_' . $t])) {
+                $k = '_' . $a . 's_id_' . $t;
+                if (isset($input[$k])) {
                     switch ($a) {
                         case 'user':
-                             $additionalfield           = '_additional_' . $t . 's';
-                             $input[$additionalfield][] = ['users_id' => $input['_' . $a . 's_id_' . $t]];
+                            $additionalfield           = '_additional_' . $t . 's';
+                            if (!isset($input[$additionalfield])) {
+                                $input[$additionalfield] = [];
+                            }
+                            if (!isset($input[$additionalfield]['users_id'])) {
+                                $input[$additionalfield]['users_id'] = [];
+                            }
+                            if (!is_array($input[$k])) {
+                                $input[$k] = [$input[$k]];
+                            }
+                            if (!is_array($input[$additionalfield]['users_id'])) {
+                                $input[$additionalfield]['users_id'] = [$input[$additionalfield]['users_id']];
+                            }
+                            $input[$additionalfield]['users_id'] = array_merge($input[$additionalfield]['users_id'] ?? [], $input[$k] ?? []);
                             break;
 
                         default:
                             $additionalfield           = '_additional_' . $a . 's_' . $t . 's';
-                            $input[$additionalfield][] = $input['_' . $a . 's_id_' . $t];
+                            if (!isset($input[$additionalfield])) {
+                                $input[$additionalfield] = [];
+                            }
+                            if (!is_array($input[$k])) {
+                                $input[$k] = [$input[$k]];
+                            }
+                            if (!is_array($input[$additionalfield])) {
+                                $input[$additionalfield] = [$input[$additionalfield]];
+                            }
+                            $input[$additionalfield] = array_merge($input[$additionalfield] ?? [], $input[$k] ?? []);
                             break;
                     }
                 }
