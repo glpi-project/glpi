@@ -267,10 +267,8 @@ JAVASCRIPT;
         User::dropdown([
             'name'          => 'users_id_guests[]',
             'right'         => 'all',
-            'values'        => $this->fields['users_id_guests'],
-            'specific_tags' => [
-                'multiple' => true
-            ],
+            'value'         => $this->fields['users_id_guests'],
+            'multiple'      => true,
         ]);
         echo "<div style='font-style: italic'>" .
             __("Each guest will have a read-only copy of this event") .
