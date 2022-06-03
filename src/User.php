@@ -5036,11 +5036,6 @@ HTML;
         $myuser = new self();
         $myuser->getFromDB($users_id);
 
-       //User is already considered as delete from ldap
-        if ($myuser->fields['is_deleted_ldap'] == 1) {
-            return;
-        }
-
         switch ($CFG_GLPI['user_deleted_ldap']) {
            //DO nothing
             default:
