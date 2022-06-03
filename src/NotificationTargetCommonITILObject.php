@@ -862,7 +862,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             );
         }
 
-        if (($event == 'validation') || ($event == 'validation_answer')) {
+        if (($event == 'validation') || ($event == 'validation_answer') || ($event == 'validation_reminder')) {
             $this->addTarget(Notification::VALIDATION_REQUESTER, __('Approval requester'));
             $this->addTarget(Notification::VALIDATION_APPROVER, __('Approver'));
         }
