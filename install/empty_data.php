@@ -7717,6 +7717,31 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'database',
                 'rights' => READ,
             ],
+            [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'recurrentchange',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'recurrentchange',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'recurrentchange',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'recurrentchange',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'recurrentchange',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
         ];
 
 
