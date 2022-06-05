@@ -523,7 +523,7 @@ class GLPIKanbanRights {
             $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
             let filter_input = $(`<input name='filter' class='form-control ms-1' type='text' placeholder="${__('Search or filter results')}" autocomplete="off"/>`).appendTo(toolbar);
             if (self.rights.canModifyView()) {
-                let add_column = "<buttom rome='button' class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
+                let add_column = "<button class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
                 toolbar.append(add_column);
             }
 
@@ -1842,7 +1842,7 @@ class GLPIKanbanRights {
             if (self.rights.canCreateColumn()) {
                 add_form += `
                <hr>${__('Or add a new status')}
-               <button role='button' class='btn btn-primary kanban-create-column d-block'>${__('Create status')}</button>
+               <button class='btn btn-primary kanban-create-column d-block'>${__('Create status')}</button>
             `;
             }
             add_form += "</form></div>";
