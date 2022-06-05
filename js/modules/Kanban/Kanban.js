@@ -963,13 +963,20 @@ class GLPIKanbanRights {
                     itemtype: form.prop('id').split('_')[2],
                     action: 'add_item'
                 };
+                const itemtype = form.attr('data-itemtype');
+                const column_el_id = form.closest('.kanban-column').attr('id');
 
                 $.ajax({
                     method: 'POST',
                     url: (self.ajax_root + "kanban.php"),
                     data: data
                 }).done(function() {
-                    self.refresh();
+                    // Close the form
+                    form.remove();
+                    self.refresh(undefined, undefined, () => {
+                        // Re-open form
+                        self.showAddItemForm($(`#${column_el_id}`), itemtype);
+                    });
                 });
             });
 
