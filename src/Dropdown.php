@@ -2671,8 +2671,18 @@ JAVASCRIPT;
             $toadd = [];
         }
 
-        if (isset($post['condition']) && ($post['condition'] != '')) {
-            $where = array_merge($where, $post['condition']);
+        $ljoin = [];
+
+        if (isset($post['condition']) && !empty($post['condition'])) {
+            if (isset($post['condition']['LEFT JOIN'])) {
+                $ljoin = $post['condition']['LEFT JOIN'];
+                unset($post['condition']['LEFT JOIN']);
+            }
+            if (isset($post['condition']['WHERE'])) {
+                $where = array_merge($where, $post['condition']['WHERE']);
+            } else {
+                $where = array_merge($where, $post['condition']);
+            }
         }
 
         $one_item = -1;
@@ -2775,7 +2785,6 @@ JAVASCRIPT;
             }
 
             $addselect = [];
-            $ljoin = [];
             if (Session::haveTranslations($post['itemtype'], 'completename')) {
                 $addselect[] = "namet.value AS transcompletename";
                 $ljoin['glpi_dropdowntranslations AS namet'] = [
@@ -3117,7 +3126,7 @@ JAVASCRIPT;
                 $where[] = ['OR' => $orwhere];
             }
             $addselect = [];
-            $ljoin = [];
+
             if (Session::haveTranslations($post['itemtype'], $field)) {
                 $addselect[] = "namet.value AS transname";
                 $ljoin['glpi_dropdowntranslations AS namet'] = [
