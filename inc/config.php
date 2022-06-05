@@ -187,14 +187,11 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
             exit();
         }
 
-        if (defined('SKIP_UPDATES')) {
-            // Show warning for the main request
-            if (!Toolbox::isAjax()) {
-                echo "<div class='banner-need-update'>";
-                echo __("You are bypassing a needed update");
-                echo "</div>";
-            }
-        } else {
+        // Show warning for the main request
+        if (defined('SKIP_UPDATES') && !defined('BYPASSING_UPDATES') && !Toolbox::isAjax()) {
+            define('BYPASSING_UPDATES', true);
+        }
+        if (!defined('SKIP_UPDATES')) {
             Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
             echo "<div class='container-fluid mb-4'>";
             echo "<div class='row justify-content-evenly'>";
