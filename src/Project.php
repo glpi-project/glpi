@@ -2397,7 +2397,23 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             if ($ID <= 0) {
                 $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
                     'type'   => 'raw',
-                    'value'  => Project::dropdown(['display' => false, 'width' => '90%'])
+                    'value'  => Project::dropdown([
+                        'display' => false,
+                        'width' => '90%',
+                        'condition' => [
+                            'LEFT JOIN' => [
+                                ProjectState::getTable() => [
+                                    'ON' => [
+                                        ProjectState::getTable() => 'id',
+                                        self::getTable() => 'projectstates_id'
+                                    ]
+                                ]
+                            ],
+                            'WHERE' => [
+                                'is_finished'   => false
+                            ]
+                        ]
+                    ])
                 ];
             }
         }
