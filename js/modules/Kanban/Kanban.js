@@ -1707,14 +1707,14 @@ class GLPIKanbanRights {
 
             const uniqueID = Math.floor(Math.random() * 999999);
             const formID = "form_add_" + itemtype + "_" + uniqueID;
-            let add_form = "<form id='" + formID + "' class='kanban-add-form card kanban-form no-track'>";
-            let form_header = "<div class='kanban-item-header'>";
+            let add_form = `<form id="${formID}" class="kanban-add-form card kanban-form no-track" data-itemtype="${itemtype}">`;
+            let form_header = "<div class='kanban-item-header d-flex justify-content-between'>";
             form_header += `
             <span class='kanban-item-title'>
                <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
                ${self.supported_itemtypes[itemtype]['name']}
             </span>`;
-            form_header += "<i class='ti ti-x' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
+            form_header += `<i class="ti ti-x cursor-pointer" title="${__('Close')}" onclick="$(this).parent().parent().remove()"></i></div>`;
             add_form += form_header;
 
             add_form += "<div class='kanban-item-content'>";
