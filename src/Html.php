@@ -2001,7 +2001,7 @@ HTML;
         string $option = "",
         bool $add_id = true
     ) {
-        global $HEADER_LOADED;
+        global $HEADER_LOADED, $CFG_GLPI;
 
         // Print a nice HTML-head for help page
         if ($HEADER_LOADED) {
