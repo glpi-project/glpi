@@ -36,6 +36,7 @@
 namespace Glpi\CalDAV\Traits;
 
 use EmptyIterator;
+use Glpi\Security\PermissionManager;
 use Group;
 use Iterator;
 use Planning;
@@ -123,8 +124,10 @@ trait CalDAVPrincipalsTrait
         /** @var \DBmysql $DB */
         global $DB;
 
+        // Check if user has permission in any of their profiles
+        $can_read_all = PermissionManager::haveRight(-1, Planning::$rightname, Planning::READALL);
         if (
-            !Session::haveRight(Planning::$rightname, Planning::READALL)
+            !$can_read_all
             && empty($_SESSION['glpigroups'])
         ) {
            // User cannot read planning of everyone and has no groups.
@@ -142,7 +145,7 @@ trait CalDAVPrincipalsTrait
         $groups_criteria['is_task'] = 1;
 
        // Limit to users groups if user cannot read planning of everyone
-        if (!Session::haveRight(Planning::$rightname, Planning::READALL)) {
+        if (!$can_read_all) {
             $groups_criteria['id'] = $_SESSION['glpigroups'];
         }
 
@@ -164,12 +167,15 @@ trait CalDAVPrincipalsTrait
     protected function getVisibleUsersIterator(): Iterator
     {
 
-        if (!Session::haveRightsOr(Planning::$rightname, [Planning::READALL, Planning::READGROUP])) {
+        // Check if user has permission in any of their profiles
+        $can_read_all = PermissionManager::haveRight(-1, Planning::$rightname, Planning::READALL);
+        $can_read_group = PermissionManager::haveRight(-1, Planning::$rightname, Planning::READGROUP);
+        if (!($can_read_all || $can_read_group)) {
            // Can see only personnal planning
             $rights = 'id';
         } else if (
-            Session::haveRight(Planning::$rightname, Planning::READGROUP)
-            && !Session::haveRight(Planning::$rightname, Planning::READALL)
+            $can_read_group
+            && !$can_read_all
         ) {
            // Can see only planning from users sharing same groups
             $rights = 'groups';

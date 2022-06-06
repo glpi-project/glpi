@@ -39,6 +39,7 @@ use CommonDBTM;
 use Glpi\CalDAV\Backend\Principal;
 use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
+use Glpi\Security\PermissionManager;
 use PlanningExternalEvent;
 use Sabre\CalDAV\Calendar;
 use Sabre\CalDAV\CalendarObject;
@@ -84,7 +85,9 @@ class Acl extends Plugin
             'protected' => true,
         ];
 
-        if ($node instanceof Calendar && Session::haveRight(PlanningExternalEvent::$rightname, UPDATE)) {
+        // Check if user has permission in any of their profiles
+        $can_update = PermissionManager::haveRight(-1, PlanningExternalEvent::$rightname, UPDATE);
+        if ($node instanceof Calendar && $can_update) {
            // If user can update external events, then he is able to write on calendar to create new events.
             $acl[] = [
                 'principal' => '{DAV:}authenticated',
