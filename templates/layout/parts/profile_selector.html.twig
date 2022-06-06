@@ -60,7 +60,7 @@
 {% if current_entity != current_entity_short %}
    {% set current_entity_short = '... > ' ~ current_entity_short %}
 {% endif %}
-{% if session('glpi_multientitiesmode') == 0 %}
+{% if not is_multi_entities_mode() %}
    <span class="dropdown-item dropdown-item-text" title="{{ current_entity }}">
       <i class="fa-fw ti ti-stack"></i>
       {{ current_entity_short|u.truncate(35, '...') }}
