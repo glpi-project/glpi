@@ -272,7 +272,7 @@ class Printer extends NetworkEquipment
 
            // Delete printers links in DB
             foreach ($db_printers as $idtmp => $data) {
-                $link_item->delete(['id' => $idtmp], 1);
+                $link_item->delete(['id' => $idtmp], true);
             }
         }
 

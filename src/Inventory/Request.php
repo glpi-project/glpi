@@ -312,8 +312,9 @@ class Request extends AbstractRequest
         ];
 
         //For the moment it's the Agent who informs us about the active tasks
-        if (property_exists($this->inventory->getRawData(), 'enabled-tasks')) {
-            foreach ($this->inventory->getRawData()->{'enabled-tasks'} as $task) {
+        $raw_data = $this->inventory->getRawData();
+        if ($raw_data !== null && property_exists($raw_data, 'enabled-tasks')) {
+            foreach ($raw_data->{'enabled-tasks'} as $task) {
                 $handle = $this->handleTask($task);
                 if (is_array($handle) && count($handle)) {
                     // Insert related task information under tasks list property

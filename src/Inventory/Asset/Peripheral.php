@@ -235,7 +235,7 @@ class Peripheral extends InventoryAsset
            // Delete peripherals links in DB
             foreach ($db_peripherals as $keydb => $data) {
                 if ($data['is_dynamic']) {
-                    $computer_Item->delete(['id' => $keydb], 1);
+                    $computer_Item->delete(['id' => $keydb], true);
                 }
             }
         }

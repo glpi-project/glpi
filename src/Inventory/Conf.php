@@ -176,6 +176,7 @@ class Conf extends CommonGLPI
            //nay, not an archive neither
             Session::addMessageAfterRedirect(
                 __('No file to import!'),
+                false,
                 ERROR
             );
             return $inventory_request;
@@ -276,6 +277,7 @@ class Conf extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
+            /** @var self $item */
             switch ($tabnum) {
                 case 1:
                     $item->showConfigForm();
@@ -292,7 +294,7 @@ class Conf extends CommonGLPI
     /**
      * Print the config form for display
      *
-     * @return void
+     * @return true (Always true)
      **/
     public function showConfigForm()
     {
@@ -419,7 +421,7 @@ class Conf extends CommonGLPI
             echo "<td colspan='2'>";
             echo sprintf(
                 "<a href='%s'>%s</a>",
-                $rules->getSearchURL(),
+                $rules::getSearchURL(),
                 $collection->getTitle()
             );
             echo "</td>";
