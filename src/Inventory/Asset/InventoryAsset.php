@@ -68,7 +68,7 @@ abstract class InventoryAsset
     protected $links_handled = false;
     /** @var boolean */
     protected $with_history = true;
-    /** @var InventoryAsset */
+    /** @var MainAsset */
     protected $main_asset;
     /** @var string */
     protected $request_query;
