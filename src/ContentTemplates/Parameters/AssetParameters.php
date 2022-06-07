@@ -61,7 +61,7 @@ class AssetParameters extends AbstractParameters
     protected function getTargetClasses(): array
     {
         global $CFG_GLPI;
-        return $CFG_GLPI["asset_types"];
+        return $CFG_GLPI["ticket_types"];
     }
 
     public function getAvailableParameters(): array
@@ -77,16 +77,19 @@ class AssetParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $asset): array
     {
+       global $CFG_GLPI;
 
        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($asset->fields);
 
-        $values = [
-            'id'       => $fields['id'],
-            'name'     => $fields['name'],
-            'itemtype' => $asset->getType(),
-            'serial'   => $fields['serial'],
-        ];
+        if (in_array($asset->getType(), $CFG_GLPI["asset_types"])) {
+           $values = [
+              'id'       => $fields['id'],
+              'name'     => $fields['name'],
+              'itemtype' => $asset->getType(),
+              'serial'   => $fields['serial'],
+           ];
+        }
 
        // Add asset's entity
         if ($entity = Entity::getById($fields['entities_id'])) {
