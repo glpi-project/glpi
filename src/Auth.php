@@ -799,9 +799,9 @@ class Auth extends CommonGLPI
                             $ldap_method["deref_option"],
                             $ldap_method["tls_certfile"],
                             $ldap_method["tls_keyfile"],
-                            $ldap_method["tls_version"],
                             $ldap_method["use_bind"],
-                            $ldap_method["timeout"]
+                            $ldap_method["timeout"],
+                            $ldap_method["tls_version"]
                         );
 
                         if ($ds) {

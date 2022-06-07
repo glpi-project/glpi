@@ -1612,9 +1612,9 @@ class AuthLDAP extends CommonDBTM
             $config_ldap->fields['deref_option'],
             $config_ldap->fields['tls_certfile'],
             $config_ldap->fields['tls_keyfile'],
-            $config_ldap->fields['tls_version'],
             $config_ldap->fields['use_bind'],
-            $config_ldap->fields['timeout']
+            $config_ldap->fields['timeout'],
+            $config_ldap->fields['tls_version']
         );
         if ($ds) {
             return true;
@@ -2924,9 +2924,9 @@ class AuthLDAP extends CommonDBTM
             $this->fields['deref_option'],
             $this->fields['tls_certfile'],
             $this->fields['tls_keyfile'],
-            $this->fields['tls_version'],
             $this->fields['use_bind'],
-            $this->fields['timeout']
+            $this->fields['timeout'],
+            $this->fields['tls_version']
         );
     }
 
@@ -2942,8 +2942,8 @@ class AuthLDAP extends CommonDBTM
      * @param integer $deref_options deref options used
      * @param string  $tls_certfile  TLS CERT file name within config directory (default '')
      * @param string  $tls_keyfile   TLS KEY file name within config directory (default '')
-     * @param string  $tls_version   TLS VERSION (default '')
      * @param boolean $use_bind      do we need to do an ldap_bind? (true by default)
+     * @param string  $tls_version   TLS VERSION (default '')
      *
      * @return resource|false|\LDAP\Connection link to the LDAP server : false if connection failed
      */
@@ -2956,9 +2956,9 @@ class AuthLDAP extends CommonDBTM
         $deref_options = 0,
         $tls_certfile = "",
         $tls_keyfile = "",
-        $tls_version = "",
         $use_bind = true,
-        $timeout = 0
+        $timeout = 0,
+        $tls_version = ""
     ) {
 
         $ds = @ldap_connect($host, intval($port));
@@ -3028,9 +3028,9 @@ class AuthLDAP extends CommonDBTM
             $ldap_method['deref_option'],
             $ldap_method['tls_certfile'] ?? '',
             $ldap_method['tls_keyfile'] ?? '',
-            $ldap_method['tls_version'] ?? '',
             $ldap_method['use_bind'],
-            $ldap_method['timeout']
+            $ldap_method['timeout'],
+            $ldap_method['tls_version'] ?? ''
         );
 
        // Test with login and password of the user if exists
@@ -3047,9 +3047,9 @@ class AuthLDAP extends CommonDBTM
                 $ldap_method['deref_option'],
                 $ldap_method['tls_certfile'] ?? '',
                 $ldap_method['tls_keyfile'] ?? '',
-                $ldap_method['tls_version'] ?? '',
                 $ldap_method['use_bind'],
-                $ldap_method['timeout']
+                $ldap_method['timeout'],
+                $ldap_method['tls_version'] ?? ''
             );
         }
 
@@ -3068,9 +3068,9 @@ class AuthLDAP extends CommonDBTM
                     $ldap_method['deref_option'],
                     $ldap_method['tls_certfile'] ?? '',
                     $ldap_method['tls_keyfile'] ?? '',
-                    $ldap_method['tls_version'] ?? '',
                     $ldap_method['use_bind'],
-                    $ldap_method['timeout']
+                    $ldap_method['timeout'],
+                    $ldap_method['tls_version'] ?? ''
                 );
 
                // Test with login and password of the user
@@ -3087,9 +3087,9 @@ class AuthLDAP extends CommonDBTM
                          $ldap_method['deref_option'],
                          $ldap_method['tls_certfile'] ?? '',
                          $ldap_method['tls_keyfile'] ?? '',
-                         $ldap_method['tls_version'] ?? '',
                          $ldap_method['use_bind'],
-                         $ldap_method['timeout']
+                         $ldap_method['timeout'],
+                         $ldap_method['tls_version'] ?? ''
                      );
                 }
                 if ($ds) {
@@ -3950,9 +3950,9 @@ class AuthLDAP extends CommonDBTM
                 $authldap->getField('deref_option'),
                 $authldap->getField('tls_certfile'),
                 $authldap->getField('tls_keyfile'),
-                $authldap->getField('tls_version'),
                 $authldap->getField('use_bind'),
-                $authldap->getField('timeout')
+                $authldap->getField('timeout'),
+                $authldap->getField('tls_version')
             )
         ) {
             self::showLdapUsers();
