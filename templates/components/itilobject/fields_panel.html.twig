@@ -417,7 +417,7 @@
                <i class="ti ti-link me-1"></i>
                {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
                {% set nb_linked_tickets = linked_tickets|length %}
-               {% if item.isNewItem() and params['_link']['tickets_id_2']|length > 0 %}
+               {% if item.isNewItem() and params['_link']['tickets_id_2'] > 0 %}
                   {% set nb_linked_tickets = 1 %}
                {% endif %}
                <span class="item-title">
