@@ -93,6 +93,12 @@ class Rule extends CommonDBTM
     const PATTERN_CIDR            = 333;
     const PATTERN_NOT_CIDR        = 334;
 
+    // Specific to date and datetime
+    const PATTERN_DATE_IS_BEFORE    = 31;
+    const PATTERN_DATE_IS_AFTER     = 32;
+    const PATTERN_DATE_IS_EQUAL     = 33;
+    const PATTERN_DATE_IS_NOT_EQUAL = 34;
+
     const AND_MATCHING            = "AND";
     const OR_MATCHING             = "OR";
 
@@ -1016,7 +1022,6 @@ class Rule extends CommonDBTM
      **/
     public function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0)
     {
-
         if ($ID == "") {
             return $this->getEmpty();
         }
@@ -1683,7 +1688,6 @@ class Rule extends CommonDBTM
      **/
     public function checkCriteria(&$criteria, &$input)
     {
-
         $partial_regex_result = [];
        // Undefine criteria field : set to blank
         if (!isset($input[$criteria->fields["criteria"]])) {
@@ -1708,11 +1712,7 @@ class Rule extends CommonDBTM
            //If the value is, in fact, an array of values
            // Negative condition : Need to match all condition (never be)
             if (
-                in_array($criteria->fields["condition"], [self::PATTERN_IS_NOT,
-                    self::PATTERN_NOT_CONTAIN,
-                    self::REGEX_NOT_MATCH,
-                    self::PATTERN_DOES_NOT_EXISTS
-                ])
+                in_array($criteria->fields["condition"], self::getNegativesConditions())
             ) {
                 $res = true;
                 foreach ($input[$criteria->fields["criteria"]] as $tmp) {
@@ -2314,10 +2314,8 @@ class Rule extends CommonDBTM
             || ($condition == self::PATTERN_FIND)
         ) {
             return __('Yes');
-        } else if (
-            in_array($condition, [self::PATTERN_IS, self::PATTERN_IS_NOT,
-                self::PATTERN_NOT_UNDER, self::PATTERN_UNDER
-            ])
+        } elseif (
+            in_array($condition, self::getConditionsWithComplexValues())
         ) {
             $crit = $this->getCriteria($ID);
 
@@ -2326,6 +2324,20 @@ class Rule extends CommonDBTM
                     case "yesonly":
                     case "yesno":
                         return Dropdown::getYesNo($pattern);
+
+                    case "date":
+                        $dates = Html::getGenericDateTimeSearchItems([]);
+                        return $dates[$pattern] ?? Html::convDate(
+                            Html::computeGenericDateTimeSearch($pattern, true)
+                        );
+
+                    case "datetime":
+                        $dates = Html::getGenericDateTimeSearchItems([
+                            'with_time'   => true,
+                        ]);
+                        return $dates[$pattern] ?? Html::convDateTime(
+                            Html::computeGenericDateTimeSearch($pattern)
+                        );
 
                     case "dropdown":
                         $addentity = Dropdown::getDropdownName($crit["table"], $pattern);
@@ -2424,10 +2436,7 @@ class Rule extends CommonDBTM
 
         if (
             isset($crit['type'])
-            && ($test
-              || in_array($condition, [self::PATTERN_IS, self::PATTERN_IS_NOT,
-                  self::PATTERN_NOT_UNDER, self::PATTERN_UNDER
-              ]))
+            && ($test || in_array($condition, self::getConditionsWithComplexValues()))
         ) {
             $tested = true;
             switch ($crit['type']) {
@@ -2438,6 +2447,18 @@ class Rule extends CommonDBTM
 
                 case "yesno":
                     Dropdown::showYesNo($name, $value);
+                    $display = true;
+                    break;
+
+                case "date":
+                    Html::showGenericDateTimeSearch($name, $value);
+                    $display = true;
+                    break;
+
+                case "datetime":
+                    Html::showGenericDateTimeSearch($name, $value, [
+                        'with_time' => true,
+                    ]);
                     $display = true;
                     break;
 
@@ -2633,12 +2654,13 @@ class Rule extends CommonDBTM
      **/
     public function getCriteriaValue($ID, $condition, $value)
     {
+        $conditions = array_merge([
+            self::PATTERN_DOES_NOT_EXISTS,
+            self::PATTERN_EXISTS
+        ], self::getConditionsWithComplexValues());
 
         if (
-            !in_array($condition, [self::PATTERN_DOES_NOT_EXISTS, self::PATTERN_EXISTS,
-                self::PATTERN_IS, self::PATTERN_IS_NOT,
-                self::PATTERN_NOT_UNDER, self::PATTERN_UNDER
-            ])
+            !in_array($condition, $conditions)
         ) {
             $crit = $this->getCriteria($ID);
             if (isset($crit['type'])) {
@@ -2674,6 +2696,7 @@ class Rule extends CommonDBTM
                 }
             }
         }
+
         return $value;
     }
 
@@ -3482,5 +3505,41 @@ class Rule extends CommonDBTM
         $input = Toolbox::addslashes_deep($input);
 
         return $input;
+    }
+
+    /**
+     * Get all "negatives" condition (is not, does not contains, ...)
+     *
+     * @return array
+     */
+    public static function getNegativesConditions(): array
+    {
+        return [
+            self::PATTERN_IS_NOT,
+            self::PATTERN_NOT_CONTAIN,
+            self::REGEX_NOT_MATCH,
+            self::PATTERN_DOES_NOT_EXISTS,
+            self::PATTERN_DATE_IS_NOT_EQUAL,
+        ];
+    }
+
+    /**
+     * Get all condition that may not be displayed as a simple text
+     * For example, a dropdown value or a date
+     *
+     * @return array
+     */
+    public static function getConditionsWithComplexValues(): array
+    {
+        return [
+            self::PATTERN_IS,
+            self::PATTERN_IS_NOT,
+            self::PATTERN_NOT_UNDER,
+            self::PATTERN_UNDER,
+            self::PATTERN_DATE_IS_BEFORE,
+            self::PATTERN_DATE_IS_AFTER,
+            self::PATTERN_DATE_IS_EQUAL,
+            self::PATTERN_DATE_IS_NOT_EQUAL,
+        ];
     }
 }

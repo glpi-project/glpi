@@ -379,7 +379,6 @@ class RuleCriteria extends CommonDBChild
         $condition = $criterion->fields['condition'];
         $pattern   = $criterion->fields['pattern'];
         $criteria  = $criterion->fields['criteria'];
-
        //If pattern is wildcard, don't check the rule and return true
        //or if the condition is "already present in GLPI" : will be processed later
         if (
@@ -549,6 +548,47 @@ class RuleCriteria extends CommonDBChild
                         }
                     }
                 }
+                break;
+
+            case Rule::PATTERN_DATE_IS_NOT_EQUAL:
+                $target_date = Html::computeGenericDateTimeSearch($pattern);
+
+                if (
+                    $target_date != $pattern
+                    && !str_contains("MINUTE", $pattern)
+                    && !str_contains("HOUR", $pattern)
+                ) {
+                    // We are using a dynamic date with a precision of at least
+                    // one day (e.g. 2 days ago).
+                    // In this case we must compare using date instead of datetime
+                    $field = substr($field, 0, 10);
+                    $target_date = substr($field, 0, 10);
+                }
+
+                return $field != $target_date;
+
+            case Rule::PATTERN_DATE_IS_EQUAL:
+                $target_date = Html::computeGenericDateTimeSearch($pattern);
+
+                if (
+                    $target_date != $pattern
+                    && !str_contains("MINUTE", $pattern)
+                    && !str_contains("HOUR", $pattern)
+                ) {
+                    // We are using a dynamic date with a precision of at least
+                    // one day (e.g. 2 days ago).
+                    // In this case we must compare using date instead of datetime
+                    $field = substr($field, 0, 10);
+                    $target_date = substr($target_date, 0, 10);
+                }
+
+                return $field == $target_date;
+
+            case Rule::PATTERN_DATE_IS_BEFORE:
+                return $field < Html::computeGenericDateTimeSearch($pattern);
+
+            case Rule::PATTERN_DATE_IS_AFTER:
+                return $field > Html::computeGenericDateTimeSearch($pattern);
         }
         return false;
     }
@@ -582,17 +622,22 @@ class RuleCriteria extends CommonDBChild
      **/
     public static function getConditions($itemtype, $criterion = '')
     {
+
         $criteria =  [
-            Rule::PATTERN_IS              => __('is'),
-            Rule::PATTERN_IS_NOT          => __('is not'),
-            Rule::PATTERN_CONTAIN         => __('contains'),
-            Rule::PATTERN_NOT_CONTAIN     => __('does not contain'),
-            Rule::PATTERN_BEGIN           => __('starting with'),
-            Rule::PATTERN_END             => __('finished by'),
-            Rule::REGEX_MATCH             => __('regular expression matches'),
-            Rule::REGEX_NOT_MATCH         => __('regular expression does not match'),
-            Rule::PATTERN_EXISTS          => __('exists'),
-            Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist')
+            Rule::PATTERN_IS                => __('is'),
+            Rule::PATTERN_IS_NOT            => __('is not'),
+            Rule::PATTERN_CONTAIN           => __('contains'),
+            Rule::PATTERN_NOT_CONTAIN       => __('does not contain'),
+            Rule::PATTERN_BEGIN             => __('starting with'),
+            Rule::PATTERN_END               => __('finished by'),
+            Rule::REGEX_MATCH               => __('regular expression matches'),
+            Rule::REGEX_NOT_MATCH           => __('regular expression does not match'),
+            Rule::PATTERN_EXISTS            => __('exists'),
+            Rule::PATTERN_DOES_NOT_EXISTS   => __('does not exist'),
+            Rule::PATTERN_DATE_IS_BEFORE    => __('before'),
+            Rule::PATTERN_DATE_IS_AFTER     => __('after'),
+            Rule::PATTERN_DATE_IS_EQUAL     => __('is'),
+            Rule::PATTERN_DATE_IS_NOT_EQUAL => __('is not'),
         ];
 
         if (in_array($criterion, ['ip', 'subnet'])) {
