@@ -624,9 +624,12 @@ class AuthLDAP extends CommonDBTM
         echo "</td>";
         echo "</tr>";
 
-        echo "<tr class='tab_bg_1'><td><label for='timeout'>" . __('Timeout') . "</label></td>";
-        echo "<td colspan='3'>";
-
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('TLS Version') . "</td><td>";
+        Dropdown::showFromArray('tls_version', ['1.0', '1.1', '1.2', '1.3'], ['value' => $this->fields["tls_version"]]);
+        echo "</td>";
+        echo "<td><label for='timeout'>" . __('Timeout') . "</label></td>";
+        echo "<td>";
         Dropdown::showNumber('timeout', ['value'  => $this->fields["timeout"],
             'min'    => 1,
             'max'    => 30,
@@ -1609,6 +1612,7 @@ class AuthLDAP extends CommonDBTM
             $config_ldap->fields['deref_option'],
             $config_ldap->fields['tls_certfile'],
             $config_ldap->fields['tls_keyfile'],
+            $config_ldap->fields['tls_version'],
             $config_ldap->fields['use_bind'],
             $config_ldap->fields['timeout']
         );
@@ -2920,6 +2924,7 @@ class AuthLDAP extends CommonDBTM
             $this->fields['deref_option'],
             $this->fields['tls_certfile'],
             $this->fields['tls_keyfile'],
+            $this->fields['tls_version'],
             $this->fields['use_bind'],
             $this->fields['timeout']
         );
@@ -2937,6 +2942,7 @@ class AuthLDAP extends CommonDBTM
      * @param integer $deref_options deref options used
      * @param string  $tls_certfile  TLS CERT file name within config directory (default '')
      * @param string  $tls_keyfile   TLS KEY file name within config directory (default '')
+     * @param string  $tls_version   TLS VERSION (default '')
      * @param boolean $use_bind      do we need to do an ldap_bind? (true by default)
      *
      * @return resource|false|\LDAP\Connection link to the LDAP server : false if connection failed
@@ -2950,6 +2956,7 @@ class AuthLDAP extends CommonDBTM
         $deref_options = 0,
         $tls_certfile = "",
         $tls_keyfile = "",
+        $tls_version = "",
         $use_bind = true,
         $timeout = 0
     ) {
@@ -2967,6 +2974,10 @@ class AuthLDAP extends CommonDBTM
 
             if (!empty($tls_keyfile) && file_exists($tls_keyfile)) {
                 @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
+            }
+
+            if (!empty($tls_version)) {
+                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, "NORMAL:!VERS-TLS1." . $tls_version);
             }
 
             if ($use_tls) {
@@ -3017,6 +3028,7 @@ class AuthLDAP extends CommonDBTM
             $ldap_method['deref_option'],
             $ldap_method['tls_certfile'] ?? '',
             $ldap_method['tls_keyfile'] ?? '',
+            $ldap_method['tls_version'] ?? '',
             $ldap_method['use_bind'],
             $ldap_method['timeout']
         );
@@ -3035,6 +3047,7 @@ class AuthLDAP extends CommonDBTM
                 $ldap_method['deref_option'],
                 $ldap_method['tls_certfile'] ?? '',
                 $ldap_method['tls_keyfile'] ?? '',
+                $ldap_method['tls_version'] ?? '',
                 $ldap_method['use_bind'],
                 $ldap_method['timeout']
             );
@@ -3055,6 +3068,7 @@ class AuthLDAP extends CommonDBTM
                     $ldap_method['deref_option'],
                     $ldap_method['tls_certfile'] ?? '',
                     $ldap_method['tls_keyfile'] ?? '',
+                    $ldap_method['tls_version'] ?? '',
                     $ldap_method['use_bind'],
                     $ldap_method['timeout']
                 );
@@ -3073,6 +3087,7 @@ class AuthLDAP extends CommonDBTM
                          $ldap_method['deref_option'],
                          $ldap_method['tls_certfile'] ?? '',
                          $ldap_method['tls_keyfile'] ?? '',
+                         $ldap_method['tls_version'] ?? '',
                          $ldap_method['use_bind'],
                          $ldap_method['timeout']
                      );
@@ -3935,6 +3950,7 @@ class AuthLDAP extends CommonDBTM
                 $authldap->getField('deref_option'),
                 $authldap->getField('tls_certfile'),
                 $authldap->getField('tls_keyfile'),
+                $authldap->getField('tls_version'),
                 $authldap->getField('use_bind'),
                 $authldap->getField('timeout')
             )
