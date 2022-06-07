@@ -3934,8 +3934,8 @@ JAVASCRIPT;
 
        // Get default values from posted values on reload form
         if (!$ticket_template) {
-            if (isset($_POST)) {
-                $options = $_POST;
+            if (isset($_REQUEST)) {
+                $options = $_REQUEST;
             }
         }
 
@@ -3990,6 +3990,50 @@ JAVASCRIPT;
 
         // override current fields in options with template fields and return the array of these predefined fields
         $predefined_fields = $this->setPredefinedFields($tt, $options, $default_values);
+
+        // Override defaut values from followup if needed
+        if (isset($options['_promoted_fup_id']) && (!isset($options['_skip_promoted_fields']) || !$options['_skip_promoted_fields'])) {
+            $fup = new ITILFollowup();
+            if ($fup->getFromDB($options['_promoted_fup_id'])) {
+                $options['content'] = $fup->getField('content');
+                $options['_users_id_requester'] = $fup->fields['users_id'];
+                $options['_link'] = [
+                    'link'         => Ticket_Ticket::SON_OF,
+                    'tickets_id_2' => $fup->fields['items_id']
+                ];
+
+                // Set entity from parent
+                $parent_itemtype = $fup->getField('itemtype');
+                $parent = new $parent_itemtype();
+                if ($parent->getFromDB($fup->getField('items_id'))) {
+                    $options['entities_id'] = $parent->getField('entities_id');
+                }
+            }
+           //Allow overriding the default values
+            $options['_skip_promoted_fields'] = true;
+        }
+        // Override defaut values from task if needed
+        if (isset($options['_promoted_task_id']) && !$options['_skip_promoted_fields']) {
+            $tickettask = new TicketTask();
+            if ($tickettask->getFromDB($options['_promoted_task_id'])) {
+                $options['content'] = $tickettask->getField('content');
+                $options['_users_id_requester'] = $tickettask->fields['users_id'];
+                $options['_users_id_assign'] = $tickettask->fields['users_id_tech'];
+                $options['_groups_id_assign'] = $tickettask->fields['groups_id_tech'];
+                $options['_link'] = [
+                    'link'         => Ticket_Ticket::SON_OF,
+                    'tickets_id_2' => $tickettask->fields['tickets_id']
+                ];
+
+                // Set entity from parent
+                $parent = new Ticket();
+                if ($parent->getFromDB($tickettask->getField('tickets_id'))) {
+                    $options['entities_id'] = $parent->getField('entities_id');
+                }
+            }
+            //Allow overriding the default values
+            $options['_skip_promoted_fields'] = true;
+        }
 
         $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 
