@@ -130,7 +130,7 @@ class Camera extends Device
 
         $format = new \ImageFormat();
         foreach ($val as $fmt) {
-            if (empty($val)) {
+            if (empty($fmt)) {
                 continue;
             }
             if (!$format->getFromDBByCrit(['name' => addslashes($fmt)])) {
