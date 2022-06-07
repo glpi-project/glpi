@@ -118,5 +118,5 @@ if (isset($_POST["add"])) {
     Html::back();
 } else {
     $menus = ["management", "softwarelicense"];
-    SoftwareLicense::displayFullPageForItem($_REQUEST['id'], $menus);
+    SoftwareLicense::displayFullPageForItem($_REQUEST['id'], $menus, $_REQUEST);
 }

@@ -523,7 +523,7 @@ class GLPIKanbanRights {
             $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
             let filter_input = $(`<input name='filter' class='form-control ms-1' type='text' placeholder="${__('Search or filter results')}" autocomplete="off"/>`).appendTo(toolbar);
             if (self.rights.canModifyView()) {
-                let add_column = "<buttom rome='button' class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
+                let add_column = "<button class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
                 toolbar.append(add_column);
             }
 
@@ -963,13 +963,20 @@ class GLPIKanbanRights {
                     itemtype: form.prop('id').split('_')[2],
                     action: 'add_item'
                 };
+                const itemtype = form.attr('data-itemtype');
+                const column_el_id = form.closest('.kanban-column').attr('id');
 
                 $.ajax({
                     method: 'POST',
                     url: (self.ajax_root + "kanban.php"),
                     data: data
                 }).done(function() {
-                    self.refresh();
+                    // Close the form
+                    form.remove();
+                    self.refresh(undefined, undefined, () => {
+                        // Re-open form
+                        self.showAddItemForm($(`#${column_el_id}`), itemtype);
+                    });
                 });
             });
 
@@ -1700,14 +1707,14 @@ class GLPIKanbanRights {
 
             const uniqueID = Math.floor(Math.random() * 999999);
             const formID = "form_add_" + itemtype + "_" + uniqueID;
-            let add_form = "<form id='" + formID + "' class='kanban-add-form card kanban-form no-track'>";
-            let form_header = "<div class='kanban-item-header'>";
+            let add_form = `<form id="${formID}" class="kanban-add-form card kanban-form no-track" data-itemtype="${itemtype}">`;
+            let form_header = "<div class='kanban-item-header d-flex justify-content-between'>";
             form_header += `
             <span class='kanban-item-title'>
                <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
                ${self.supported_itemtypes[itemtype]['name']}
             </span>`;
-            form_header += "<i class='ti ti-x' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
+            form_header += `<i class="ti ti-x cursor-pointer" title="${__('Close')}" onclick="$(this).parent().parent().remove()"></i></div>`;
             add_form += form_header;
 
             add_form += "<div class='kanban-item-content'>";
@@ -1842,7 +1849,7 @@ class GLPIKanbanRights {
             if (self.rights.canCreateColumn()) {
                 add_form += `
                <hr>${__('Or add a new status')}
-               <button role='button' class='btn btn-primary kanban-create-column d-block'>${__('Create status')}</button>
+               <button class='btn btn-primary kanban-create-column d-block'>${__('Create status')}</button>
             `;
             }
             add_form += "</form></div>";

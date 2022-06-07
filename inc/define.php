@@ -86,6 +86,7 @@ $CFG_GLPI['languages'] = [
     'en_GB'  => ['English',                   'en_GB.mo',    'en-GB', 'en', 'english',              2],
     'en_US'  => ['English (US)',              'en_US.mo',    'en-GB', 'en', 'english',              2],
     'es_AR'  => ['Español (Argentina)',       'es_AR.mo',    'es',    'es', 'spanish',              2],
+    'es_EC'  => ['Español (Ecuador)',         'es_EC.mo',    'es',    'es', 'spanish',              2],
     'es_CO'  => ['Español (Colombia)',        'es_CO.mo',    'es',    'es', 'spanish',              2],
     'es_ES'  => ['Español (España)',          'es_ES.mo',    'es',    'es', 'spanish',              2],
     'es_419' => ['Español (América Latina)',  'es_419.mo',   'es',    'es', 'spanish',              2],

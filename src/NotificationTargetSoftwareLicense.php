@@ -67,6 +67,10 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
                 $options['additionnaloption']['usertype'],
                 "SoftwareLicense_" . $id
             );
+            $tmp['##license.entity##'] = Dropdown::getDropdownName(
+                'glpi_entities',
+                $license['entities_id']
+            );
             $this->data['licenses'][] = $tmp;
         }
 

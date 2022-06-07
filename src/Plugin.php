@@ -860,6 +860,11 @@ class Plugin extends CommonDBTM
 
             $function = 'plugin_' . $this->fields['directory'] . '_check_config';
             if (!function_exists($function) || $function()) {
+                $activate_function = 'plugin_' . $this->fields['directory'] . '_activate';
+                if (function_exists($activate_function)) {
+                    $activate_function();
+                }
+
                 $this->update(['id'    => $ID,
                     'state' => self::ACTIVATED
                 ]);
@@ -924,6 +929,11 @@ class Plugin extends CommonDBTM
     {
 
         if ($this->getFromDB($ID)) {
+            $deactivate_function = 'plugin_' . $this->fields['directory'] . '_deactivate';
+            if (function_exists($deactivate_function)) {
+                $deactivate_function();
+            }
+
             $this->update([
                 'id'    => $ID,
                 'state' => self::NOTACTIVATED

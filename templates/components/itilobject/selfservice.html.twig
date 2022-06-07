@@ -244,6 +244,8 @@
             </div>
         </div>
 
+      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+
         <div class="card-footer text-center">
             <input type="hidden" name="entities_id" value="{{ params['entities_id'] }}" />
             <button type="submit" class="btn btn-primary" name="add">
@@ -252,8 +254,6 @@
             </button>
         </div>
     </div>
-
-   {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 
    {{ include('components/itilobject/mainform_close.html.twig') }}
 </div>

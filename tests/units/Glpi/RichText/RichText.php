@@ -317,6 +317,14 @@ HTML,
 </div>
 HTML,
         ];
+
+        // Deprecated html attibutes should not be transformed into styles
+        // see #11580
+        yield [
+            'content'                => '<table width=0 align="left" cellspacing=10 style="width: 100%;"><tr><td>Test</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table width="0" align="left" cellspacing="10" style="width: 100%;"><tr><td>Test</td></tr></table>',
+        ];
     }
 
     /**

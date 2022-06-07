@@ -1660,11 +1660,6 @@ class CommonDBTM extends CommonGLPI
                             $this->addMessageOnUpdateAction();
                             Plugin::doHook(Hooks::ITEM_UPDATE, $this);
 
-                            // As update have suceed, clean the old input value
-                            if (isset($this->input['_update'])) {
-                                $this->clearSavedInput();
-                            }
-
                             //Fill forward_entity_to array with itemtypes coming from plugins
                             if (isset(self::$plugins_forward_entity[$this->getType()])) {
                                 foreach (self::$plugins_forward_entity[$this->getType()] as $itemtype) {
@@ -1693,6 +1688,12 @@ class CommonDBTM extends CommonGLPI
                         }
                     }
                 }
+
+                // As update have suceed, clean the old input value
+                if (isset($this->input['_update'])) {
+                    $this->clearSavedInput();
+                }
+
                 $this->post_updateItem($history);
                 if ($this instanceof CacheableListInterface) {
                     $this->invalidateListCache();
