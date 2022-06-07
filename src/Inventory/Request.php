@@ -128,33 +128,24 @@ class Request extends AbstractRequest
         switch ($task) {
             case self::INVENT_TASK:
                 return $this->handleInventoryTask($params);
-                break;
             case self::NETDISCOVERY_TASK:
                 return $this->handleNetDiscoveryTask($params);
-                break;
             case self::NETINV_TASK:
                 return $this->handleNetInventoryTask($params);
-                break;
             case self::ESX_TASK:
                 return $this->handleESXTask($params);
-                break;
             case self::COLLECT_TASK:
                 return $this->handleCollectTask($params);
-                break;
             case self::DEPLOY_TASK:
                 return $this->handleDeployTask($params);
-                break;
             case self::WOL_TASK:
                 return $this->handleWakeOnLanTask($params);
-                break;
             case self::REMOTEINV_TASK:
                 return $this->handleRemoteInventoryTask($params);
-                break;
             default:
                 $this->addError("Task '$task' is not supported.", 400);
                 return [];
         }
-        return [];
     }
 
 
