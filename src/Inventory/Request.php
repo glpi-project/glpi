@@ -242,7 +242,7 @@ class Request extends AbstractRequest
     {
         $this->network_inventory_mode = Hooks::NETWORK_DISCOVERY;
         $this->is_discovery = true;
-        return $this->network($data);
+        $this->network($data);
     }
 
 
@@ -256,7 +256,7 @@ class Request extends AbstractRequest
     public function networkInventory($data)
     {
         $this->network_inventory_mode = Hooks::NETWORK_INVENTORY;
-        return $this->network($data);
+        $this->network($data);
     }
 
     /**

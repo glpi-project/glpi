@@ -711,7 +711,7 @@ abstract class MainAsset extends InventoryAsset
                 }
             }
 
-            if (property_exists($val, 'ap_port')) {
+            if (property_exists($val, 'ap_port') && method_exists($this, 'setManagementPorts')) {
                 $this->setManagementPorts(['management' => $val->ap_port]);
                 unset($val->ap_port);
             }
