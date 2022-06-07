@@ -77,18 +77,18 @@ class AssetParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $asset): array
     {
-       global $CFG_GLPI;
+        global $CFG_GLPI;
 
        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($asset->fields);
 
         if (in_array($asset->getType(), $CFG_GLPI["asset_types"])) {
-           $values = [
-              'id'       => $fields['id'],
-              'name'     => $fields['name'],
-              'itemtype' => $asset->getType(),
-              'serial'   => $fields['serial'],
-           ];
+            $values = [
+                'id'       => $fields['id'],
+                'name'     => $fields['name'],
+                'itemtype' => $asset->getType(),
+                'serial'   => $fields['serial'],
+            ];
         }
 
        // Add asset's entity
