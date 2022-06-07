@@ -77,7 +77,6 @@ class AssetParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $asset): array
     {
-        global $CFG_GLPI;
 
        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($asset->fields);
