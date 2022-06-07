@@ -43,7 +43,7 @@
                <div>
                   <input class="form-check-input" type="checkbox" id="checkall_{{ rand }}"
                         value="" aria-label="{{ __('Check all as') }}"
-                        onclick="checkAsCheckboxes('checkall_{{ rand }}', '{{ searchform_id }}');" />
+                        onclick="checkAsCheckboxes(this, '{{ searchform_id }}');" />
                </div>
             </th>
             {% endif %}

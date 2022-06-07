@@ -2310,7 +2310,7 @@ HTML;
         $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input'
                       title='" . __s('Check all as') . "'
                       name='_checkall_$rand' id='checkall_$rand'
-                      onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id')) {return true;}\">";
+                      onclick= \"if ( checkAsCheckboxes(this, '$container_id')) {return true;}\">";
 
        // permit to shift select checkboxes
         $out .= Html::scriptBlock("\$(function() {\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();});");

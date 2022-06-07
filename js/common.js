@@ -155,9 +155,9 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * @param    reference_id    DOM element
  * @param    container_id    DOM element
 **/
-function checkAsCheckboxes(reference_id, container_id) {
+function checkAsCheckboxes(reference, container_id) {
     $('#' + container_id + ' input[type="checkbox"]:enabled')
-        .prop('checked', $('#' + reference_id).is(':checked'));
+        .prop('checked', $(reference).is(':checked'));
 
     return true;
 }
