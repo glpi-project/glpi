@@ -187,10 +187,6 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
             exit();
         }
 
-        // Show warning for the main request
-        if (defined('SKIP_UPDATES') && !defined('BYPASSING_UPDATES') && !Toolbox::isAjax()) {
-            define('BYPASSING_UPDATES', true);
-        }
         if (!defined('SKIP_UPDATES')) {
             Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
             echo "<div class='container-fluid mb-4'>";
