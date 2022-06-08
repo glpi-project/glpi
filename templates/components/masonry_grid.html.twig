@@ -48,17 +48,17 @@
 
 <script type="text/javascript">
 $(function() {
-   var msnry = new Masonry('#grid_{{ rand }}', {
+   window.msnry = new Masonry('#grid_{{ rand }}', {
       "percentPosition": true,
       "horizontalOrder": true,
    });
 
    $('#grid_{{ rand }}').on("layout:refresh", function() {
-      msnry.layout();
+       window.msnry.layout();
    });
 
    $(document).on('masonry_grid:layout', function() {
-       msnry.layout();
+       window.msnry.layout();
    })
 });
 </script>
