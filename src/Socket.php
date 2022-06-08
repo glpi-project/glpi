@@ -565,7 +565,7 @@ class Socket extends CommonDBChild
         if ($parent) {
             $changes[0] = '0';
             $changes[1] = '';
-            $changes[2] = addslashes($this->getNameID());
+            $changes[2] = addslashes($this->getNameID(['forceid' => true]));
             Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
         }
 
