@@ -161,6 +161,10 @@ class Software extends InventoryAsset
                     $val->version = $res_rule["version"];
                 }
 
+                if (isset($res_rule["softwarecategories_id"])) {
+                    $val->softwarecategories_id = $res_rule["softwarecategories_id"];
+                }
+
                 //If the manufacturer has been modified or set by the rules engine
                 if (isset($res_rule["manufacturer"])) {
                     $val->manufacturers_id = Dropdown::import(
