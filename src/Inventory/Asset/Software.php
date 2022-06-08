@@ -186,6 +186,8 @@ class Software extends InventoryAsset
                 $val->is_template_item = 0;
                 $val->is_deleted_item = 0;
                 $val->operatingsystems_id = 0;
+                $val->entities_id = 0;
+                $val->is_recursive = 0;
 
                 //String with the manufacturer
                 $comp_key = $this->getSimpleCompareKey($val);
@@ -219,8 +221,11 @@ class Software extends InventoryAsset
     {
         global $DB;
 
+        $mainasset_entities_id = 0;
         // get entity of the parent asset
-        $mainasset_entities_id = $this->main_asset->getEntityID();
+        if (isset($this->main_asset)) {
+            $mainasset_entities_id = $this->main_asset->getEntityID();
+        }
 
         // find configuration for main asset entity in which entity we must create the software
         $strategy = Entity::getUsedConfig(
