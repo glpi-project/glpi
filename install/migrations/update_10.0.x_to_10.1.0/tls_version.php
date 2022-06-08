@@ -34,5 +34,5 @@
  */
 
 if (!$DB->fieldExists('glpi_authldaps', 'tls_version', false)) {
-    $migration->addField('glpi_authldaps', 'tls_version', 'tinyint DEFAULT NULL', ['after' => 'timeout']);
+    $migration->addField('glpi_authldaps', 'tls_version', 'varchar(10) DEFAULT NULL', ['after' => 'timeout']);
 }

@@ -119,7 +119,7 @@ CREATE TABLE `glpi_authldaps` (
   `tls_keyfile` text,
   `use_bind` tinyint NOT NULL DEFAULT '1',
   `timeout` int NOT NULL DEFAULT '10',
-  `tls_version` tinyint DEFAULT NULL,
+  `tls_version` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),

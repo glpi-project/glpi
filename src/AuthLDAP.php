@@ -115,6 +115,18 @@ class AuthLDAP extends CommonDBTM
      */
     const RESTORED_USER_ENABLE  = 3;
 
+    /**
+     * List of TLS versions
+     * @var array
+     * @since 10.1.0
+     */
+    const TLS_VERSIONS = [
+        '1.0' => '1.0',
+        '1.1' => '1.1',
+        '1.2' => '1.2',
+        '1.3' => '1.3'
+    ];
+
    // From CommonDBTM
     public $dohistory = true;
 
@@ -626,7 +638,7 @@ class AuthLDAP extends CommonDBTM
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('TLS Version') . "</td><td>";
-        Dropdown::showFromArray('tls_version', ['1.0', '1.1', '1.2', '1.3'], ['value' => $this->fields["tls_version"]]);
+        Dropdown::showFromArray('tls_version', array_merge(['' => Dropdown::EMPTY_VALUE], self::TLS_VERSIONS), ['value' => $this->fields["tls_version"]]);
         echo "</td>";
         echo "<td><label for='timeout'>" . __('Timeout') . "</label></td>";
         echo "<td>";
@@ -2977,7 +2989,11 @@ class AuthLDAP extends CommonDBTM
             }
 
             if (!empty($tls_version)) {
-                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, "NORMAL:!VERS-TLS1." . $tls_version);
+                $cipher_suite = 'NORMAL';
+                foreach (self::TLS_VERSIONS as $tls_version_key => $tls_version_value) {
+                    $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
+                }
+                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
             }
 
             if ($use_tls) {
