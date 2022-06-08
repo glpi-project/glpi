@@ -2050,7 +2050,7 @@ class GLPIKanbanRights {
                 });
             } else {
                 $(`
-               <li class="position-relative" style="width: 250px">
+               <li class="position-relative mx-auto mt-2" style="width: 250px">
                   ${__('This column cannot support showing cards due to how many cards would be shown. You can still drag cards into this column.')}
                </li>
             `).appendTo(column_body);
