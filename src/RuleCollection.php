@@ -633,7 +633,7 @@ JAVASCRIPT;
         echo "<div class='spaced center'>";
 
         if ($plugin = isPluginItemType($this->getType())) {
-            $url = $CFG_GLPI["root_doc"] . "/plugins/" . strtolower($plugin['plugin']);
+            $url = Plugin::getWebDir($plugin['plugin']);
         } else {
             $url = $CFG_GLPI["root_doc"];
         }
