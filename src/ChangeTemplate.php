@@ -63,6 +63,7 @@ class ChangeTemplate extends ITILTemplate
     {
         $change = new Change();
         return [
+            $change->getSearchOptionIDByField('field', 'time_to_resolve', 'glpi_changes') => 'time_to_resolve',
             $change->getSearchOptionIDByField('field', 'impactcontent', 'glpi_changes')      => 'impactcontent',
             $change->getSearchOptionIDByField('field', 'controlistcontent', 'glpi_changes')  => 'controlistcontent',
             $change->getSearchOptionIDByField('field', 'rolloutplancontent', 'glpi_changes') => 'rolloutplancontent',
