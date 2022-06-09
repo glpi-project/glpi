@@ -11,7 +11,8 @@
         "nodisplay": false,
         "available_searchtypes": [
             "contains",
-            "notcontains"
+            "notcontains",
+            "empty"
         ],
         "uid": "Computer_SoftwareVersion.id"
     },
@@ -41,7 +42,8 @@
             "contains",
             "notcontains",
             "equals",
-            "notequals"
+            "notequals",
+            "empty"
         ],
         "uid": "Computer_SoftwareVersion.SoftwareVersion.name"
     }
