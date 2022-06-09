@@ -32,6 +32,11 @@
  #}
 
 <body class="horizontal-layout">
+   {% if constant('SKIP_UPDATES') is defined and call('Update::isDbUpToDate') == false %}
+      <div class="banner-need-update">
+         {{ __("You are bypassing a needed update") }}
+      </div>
+   {% endif %}
    <div class="page">
 
       <header class="navbar d-print-none sticky-lg-top shadow-sm topbar">
