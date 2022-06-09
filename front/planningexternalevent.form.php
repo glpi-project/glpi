@@ -69,7 +69,6 @@ if (isset($_POST["add"])) {
     $extevent->deleteInstance((int) $_POST["id"], $_POST['day']);
     $extevent->redirectToList();
 } else if (isset($_POST["save_instance"])) {
-    $extevent->check($_POST["id"], PURGE);
     $input = $_POST;
     unset($input['id']);
     unset($input['rrule']);
