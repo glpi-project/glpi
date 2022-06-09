@@ -94,7 +94,7 @@ class TicketParameters extends CommonITILObjectParameters
     protected function defineValues(CommonDBTM $ticket): array
     {
         /** @var Ticket $ticket  */
-
+        global $CFG_GLPI;
        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($ticket->fields);
 
@@ -148,6 +148,9 @@ class TicketParameters extends CommonITILObjectParameters
         $items_ticket = Item_Ticket::getItemsAssociatedTo($ticket::getType(), $fields['id']);
         foreach ($items_ticket as $item_ticket) {
             $itemtype = $item_ticket->fields['itemtype'];
+            if (!in_array($itemtype, $CFG_GLPI["asset_types"])) {
+                continue;
+            }
             if (!class_exists($itemtype)) {
                 trigger_error(sprintf('No class found for type %s', $itemtype), E_USER_WARNING);
                 // May happen if the itemtype belongs to a plugin and this plugin is inactive
