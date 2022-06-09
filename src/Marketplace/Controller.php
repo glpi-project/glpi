@@ -57,9 +57,42 @@ class Controller extends CommonGLPI
     public static $rightname = 'config';
     public static $api       = null;
 
+    /**
+     * Prompt to replace the classic plugins page with the Marketplace
+     * @var int
+     */
     const MP_REPLACE_ASK   = 1;
+    /**
+     * Replace the classic plugins page with the Marketplace
+     * @var int
+     */
     const MP_REPLACE_YES   = 2;
+    /**
+     * Do not replace the classic plugins page with the Marketplace
+     * @var int
+     */
     const MP_REPLACE_NEVER = 3;
+
+    /**
+     * Disable all access to the Marketplace.
+     * @var int
+     */
+    const MP_MODE_DISABLED = 0;
+    /**
+     * Allow access to the Marketplace via the CLI only.
+     * @var int
+     */
+    const MP_MODE_CLI_ONLY = 1;
+    /**
+     * Allow access to the Marketplace via the web interface only.
+     * @var int
+     */
+    const MP_MODE_WEB_ONLY = 2;
+    /**
+     * Allow access to the Marketplace via both the CLI and the web interface.
+     * @var int
+     */
+    const MP_MODE_FULL     = 3;
 
     public function __construct(string $plugin_key = "")
     {
@@ -70,6 +103,24 @@ class Controller extends CommonGLPI
     public static function getTypeName($nb = 0)
     {
         return __('Marketplace');
+    }
+
+    /**
+     * Check if the Marketplace can be used via the CLI.
+     * @return bool
+     */
+    public static function isCLIAllowed(): bool
+    {
+        return (GLPI_MARKETPLACE_ENABLE & self::MP_MODE_CLI_ONLY) === self::MP_MODE_CLI_ONLY;
+    }
+
+    /**
+     * Check if the Marketplace can be used via the web interface.
+     * @return bool
+     */
+    public static function isWebAllowed(): bool
+    {
+        return (GLPI_MARKETPLACE_ENABLE & self::MP_MODE_WEB_ONLY) === self::MP_MODE_WEB_ONLY;
     }
 
     /**
