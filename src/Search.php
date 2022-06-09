@@ -2154,6 +2154,10 @@ class Search
                                 );
                                 break;
 
+                            case "empty":
+                                $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('is empty'));
+                                break;
+
                             default:
                                 $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $valuename);
                                 break;
@@ -2298,6 +2302,10 @@ class Search
                                      $gdname2
                                  )
                              );
+                            break;
+
+                        case "empty":
+                             $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2, __('is empty'));
                             break;
 
                         default:
@@ -3413,6 +3421,10 @@ JAVASCRIPT;
                         );
                     }
                 }
+                break;
+            case 'empty':
+                echo "<input type='hidden' name='$inputname' value='null'>";
+                $display = true;
                 break;
         }
 
@@ -4670,6 +4682,14 @@ JAVASCRIPT;
                     $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
                 }
                 break;
+
+            case "empty":
+                if ($nott) {
+                    $SEARCH = " IS NOT NULL";
+                } else {
+                    $SEARCH = " IS NULL";
+                }
+                break;
         }
 
        //Check in current item if a specific where is defined
@@ -4737,7 +4757,7 @@ JAVASCRIPT;
                     $name2 = 'firstname';
                 }
 
-                if (in_array($searchtype, ['equals', 'notequals'])) {
+                if (in_array($searchtype, ['equals', 'notequals', 'empty'])) {
                     return " $link (`$table`.`id`" . $SEARCH .
                                (($val == 0) ? " OR `$table`.`id` IS" .
                                    (($searchtype == "notequals") ? " NOT" : "") . " NULL" : '') . ') ';
@@ -5032,7 +5052,7 @@ JAVASCRIPT;
                     break;
 
                 case "itemlink":
-                    if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder'])) {
+                    if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty'])) {
                         return " $link (`$table`.`id`" . $SEARCH . ') ';
                     }
                     break;
@@ -5082,7 +5102,7 @@ JAVASCRIPT;
                                                          $add_minus)
                                                $delay_unit)";
                     }
-                    if (in_array($searchtype, ['equals', 'notequals'])) {
+                    if (in_array($searchtype, ['equals', 'notequals', 'empty'])) {
                         return " $link ($date_computation " . $SEARCH . ') ';
                     }
                     $search  = ["/\&lt;/","/\&gt;/"];
@@ -5190,6 +5210,10 @@ JAVASCRIPT;
                             return " $link ($tocompute = $numeric_val) ";
                         }
                         return " $link ($tocompute <> $numeric_val) ";
+                    }
+
+                    if ($searchtype === 'empty') {
+                        return " $link ($tocompute " . $SEARCH . ') ';
                     }
                     break;
             }
@@ -8137,6 +8161,7 @@ HTML;
         $actions   = [
             'contains'    => __('contains'),
             'notcontains' => __('not contains'),
+            'empty'       => __('is empty'),
             'searchopt'   => []
         ];
 
@@ -8146,8 +8171,10 @@ HTML;
            // Force search type
             if (isset($actions['searchopt']['searchtype'])) {
                // Reset search option
-                $actions              = [];
-                $actions['searchopt'] = $searchopt[$field_num];
+                $actions = [
+                    'empty'       => __('is empty'),
+                    'searchopt'   => $searchopt[$field_num]
+                ];
                 if (!is_array($actions['searchopt']['searchtype'])) {
                     $actions['searchopt']['searchtype'] = [$actions['searchopt']['searchtype']];
                 }
@@ -8200,6 +8227,7 @@ HTML;
                             'notcontains' => __('not contains'),
                             'equals'      => __('is'),
                             'notequals'   => __('is not'),
+                            'empty'       => __('is empty'),
                             'searchopt'   => $searchopt[$field_num]
                         ];
                         // No is / isnot if no limits defined
@@ -8224,18 +8252,21 @@ HTML;
                             'notequals'   => __('is not'),
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
+                            'empty'       => __('is empty'),
                             'searchopt'   => $searchopt[$field_num]
                         ];
 
                     case 'right':
                         return ['equals'    => __('is'),
                             'notequals' => __('is not'),
+                            'empty'     => __('is empty'),
                             'searchopt' => $searchopt[$field_num]
                         ];
 
                     case 'itemtypename':
                         return ['equals'    => __('is'),
                             'notequals' => __('is not'),
+                            'empty'     => __('is empty'),
                             'searchopt' => $searchopt[$field_num]
                         ];
 
@@ -8249,6 +8280,7 @@ HTML;
                             'morethan'    => __('after'),
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
+                            'empty'       => __('is empty'),
                             'searchopt'   => $searchopt[$field_num]
                         ];
                 }
@@ -8265,6 +8297,7 @@ HTML;
                 case 'id':
                     return ['equals'    => __('is'),
                         'notequals' => __('is not'),
+                        'empty'     => __('is empty'),
                         'searchopt' => $searchopt[$field_num]
                     ];
 
@@ -8275,6 +8308,7 @@ HTML;
                         'notcontains' => __('not contains'),
                         'equals'      => __('is'),
                         'notequals'   => __('is not'),
+                        'empty'       => __('is empty'),
                         'searchopt'   => $searchopt[$field_num]
                     ];
 

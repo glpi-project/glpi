@@ -830,6 +830,38 @@ class Search extends DbTestCase
          ->exists();
     }
 
+    public function testEmptyOrNot()
+    {
+       //tickets created since one week
+        $search_params = [
+            'is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [
+                0 => [
+                    'searchtype' => 'empty',
+                    'value'      => 'null'
+                ]
+            ]
+        ];
+
+        // title, ID, status, opening date, description, entity
+        $fields = ['1', '2', '12', '15', '21', '80'];
+
+        foreach($fields as $field) {
+            $search_params['criteria'][0]['link'] = 'AND';
+            $search_params['criteria'][0]['field'] = $field;
+            $data = $this->doSearch('Ticket', $search_params);
+
+            $this->integer($data['data']['totalcount'])->isIdenticalTo(0);
+
+            //negate previous search
+            $search_params['criteria'][0]['link'] = 'AND NOT';
+            $data = $this->doSearch('Ticket', $search_params);
+
+            $this->integer($data['data']['totalcount'])->isGreaterThan(1);
+        }
+    }
+
     public function testManageParams()
     {
        // let's use TU_USER
