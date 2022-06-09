@@ -38,6 +38,7 @@ namespace Glpi\Inventory;
 use Agent;
 use CommonDBTM;
 use Glpi\Inventory\Asset\InventoryAsset;
+use Glpi\Inventory\Asset\MainAsset;
 use Lockedfield;
 use RefusedEquipment;
 use Session;
@@ -78,7 +79,7 @@ class Inventory
     private $inventory_content;
     /** @var integer */
     private $inventory_format;
-    /** @var InventoryAsset */
+    /** @var MainAsset */
     private $mainasset;
     /** @var string */
     private $request_query;
@@ -712,10 +713,10 @@ class Inventory
     /**
      * Add bench value
      *
-     * @param string  $asset Asset
-     * @param string  $type Either prepare or handle
-     * @param integer $start Start time
-     * @param string  $extra Extra value to be used as label
+     * @param string        $asset Asset
+     * @param string        $type Either prepare or handle
+     * @param float|integer $start Start time
+     * @param string        $extra Extra value to be used as label
      *
      * @return void
      */
@@ -870,6 +871,7 @@ class Inventory
         $existing_types = glob(GLPI_INVENTORY_DIR . '/*', GLOB_ONLYDIR);
 
         foreach ($existing_types as $existing_type) {
+            /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
            //$invnetoryfiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('path/to/folder'));
             $inventory_files = new \RegexIterator(

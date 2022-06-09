@@ -135,7 +135,7 @@ class Drive extends Device
     /**
      * Get harddrives data
      *
-     * @return HardDrive
+     * @return HardDrive[]
      */
     public function getPreparedHarddrives(): array
     {

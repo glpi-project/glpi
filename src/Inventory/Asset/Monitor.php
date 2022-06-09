@@ -213,7 +213,7 @@ class Monitor extends InventoryAsset
            // Delete monitors links in DB
             if (!$this->main_asset || !$this->main_asset->isPartial()) {
                 foreach ($db_monitors as $idtmp => $monits_id) {
-                    $computer_Item->delete(['id' => $idtmp], 1);
+                    $computer_Item->delete(['id' => $idtmp], true);
                 }
             }
 

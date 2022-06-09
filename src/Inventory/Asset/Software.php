@@ -50,12 +50,19 @@ class Software extends InventoryAsset
 {
     const SEPARATOR = '$$$$';
 
+    /** @var array */
     private $softwares = [];
+    /** @var array */
     private $versions = [];
+    /** @var array */
     private $current_versions = [];
+    /** @var array */
     private $added_versions   = [];
+    /** @var array */
     private $updated_versions = [];
+    /** @var array */
     private $deleted_versions = [];
+    /** @var integer */
     private $entities_id_software;
 
     /** @var array */

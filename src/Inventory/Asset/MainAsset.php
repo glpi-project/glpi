@@ -46,6 +46,7 @@ use RuleImportAssetCollection;
 use RuleImportEntityCollection;
 use RuleLocationCollection;
 use RuleMatchedLog;
+use stdClass;
 use Toolbox;
 use Transfer;
 
@@ -323,7 +324,7 @@ abstract class MainAsset extends InventoryAsset
                 $cnt++;
             }
             if (empty($val->contact)) {
-                $val->contact = $user_temp;
+                $val->contact = $user_temp ?? '';
             }
         }
     }
@@ -711,7 +712,7 @@ abstract class MainAsset extends InventoryAsset
                 }
             }
 
-            if (property_exists($val, 'ap_port')) {
+            if (property_exists($val, 'ap_port') && method_exists($this, 'setManagementPorts')) {
                 $this->setManagementPorts(['management' => $val->ap_port]);
                 unset($val->ap_port);
             }

@@ -159,7 +159,8 @@ class Printer extends NetworkEquipment
     public function handle()
     {
         if ($this->item->getType() != GPrinter::getType()) {
-            return $this->handleConnectedPrinter();
+            $this->handleConnectedPrinter();
+            return;
         }
 
         parent::handle();
@@ -271,7 +272,7 @@ class Printer extends NetworkEquipment
 
            // Delete printers links in DB
             foreach ($db_printers as $idtmp => $data) {
-                $link_item->delete(['id' => $idtmp], 1);
+                $link_item->delete(['id' => $idtmp], true);
             }
         }
 

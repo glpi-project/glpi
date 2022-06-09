@@ -59,6 +59,35 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 /**
  * Inventory configuration
+ * @property int $import_software
+ * @property int $import_volume
+ * @property int $import_antivirus
+ * @property int $import_registry
+ * @property int $import_process
+ * @property int $import_vm
+ * @property int $import_monitor_on_partial_sn
+ * @property int $component_processor
+ * @property int $component_memory
+ * @property int $component_harddrive
+ * @property int $component_networkcard
+ * @property int $component_graphiccard
+ * @property int $component_soundcard
+ * @property int $component_drive
+ * @property int $component_networkdrive
+ * @property int $component_networkcardvirtual
+ * @property int $component_control
+ * @property int $component_battery
+ * @property int $component_simcard
+ * @property int $states_id_default
+ * @property int $location
+ * @property int $group
+ * @property int $vm_type
+ * @property int $vm_components
+ * @property int $vm_as_computer
+ * @property int $component_removablemedia
+ * @property int $component_powersupply
+ * @property int $inventory_frequency
+ *
  */
 class Conf extends CommonGLPI
 {
@@ -147,6 +176,7 @@ class Conf extends CommonGLPI
            //nay, not an archive neither
             Session::addMessageAfterRedirect(
                 __('No file to import!'),
+                false,
                 ERROR
             );
             return $inventory_request;
@@ -247,6 +277,7 @@ class Conf extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
+            /** @var self $item */
             switch ($tabnum) {
                 case 1:
                     $item->showConfigForm();
@@ -263,7 +294,7 @@ class Conf extends CommonGLPI
     /**
      * Print the config form for display
      *
-     * @return void
+     * @return true (Always true)
      **/
     public function showConfigForm()
     {
@@ -390,7 +421,7 @@ class Conf extends CommonGLPI
             echo "<td colspan='2'>";
             echo sprintf(
                 "<a href='%s'>%s</a>",
-                $rules->getSearchURL(),
+                $rules::getSearchURL(),
                 $collection->getTitle()
             );
             echo "</td>";

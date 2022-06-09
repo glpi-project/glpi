@@ -232,7 +232,7 @@ class NetworkEquipment extends MainAsset
         } else {
             $data = $this->data;
         }
-        parent::handleLinks($data);
+        return parent::handleLinks();
     }
 
     protected function portCreated(\stdClass $port, int $netports_id)

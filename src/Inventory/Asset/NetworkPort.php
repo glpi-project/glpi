@@ -280,6 +280,7 @@ class NetworkPort extends InventoryAsset
         }
 
         $found_macs = [];
+        //FIXME Static analysis says this property is always an empty array. I don't see it get set even within the rule(s)
         foreach ($this->connection_ports as $ids) {
             $found_macs += $ids;
         }
@@ -289,6 +290,7 @@ class NetworkPort extends InventoryAsset
         }
 
        // Try detect phone + computer on this port
+        //FIXME Static analysis says this property is always an empty array. I don't see it get set even within the rule(s)
         if (isset($this->connection_ports['Phone']) && count($found_macs) == 2) {
             trigger_error('Phone/Computer MAC linked', E_USER_WARNING);
             return;
@@ -300,6 +302,7 @@ class NetworkPort extends InventoryAsset
             }
             $this->handleHub($found_macs, $netports_id);
         } else { // One mac on port
+            //FIXME Static analysis says this property is always an empty array. I don't see it get set even within the rule(s)
             if (count($this->connection_ports)) {
                 $connections_id = current(current($this->connection_ports));
                 $this->addPortsWiring($netports_id, $connections_id);
