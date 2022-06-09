@@ -847,7 +847,7 @@ class Search extends DbTestCase
         // title, ID, status, opening date, description, entity
         $fields = ['1', '2', '12', '15', '21', '80'];
 
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             $search_params['criteria'][0]['link'] = 'AND';
             $search_params['criteria'][0]['field'] = $field;
             $data = $this->doSearch('Ticket', $search_params);
