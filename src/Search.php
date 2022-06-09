@@ -3351,7 +3351,7 @@ JAVASCRIPT;
 
                         case "glpi_users.name":
                             $options2['right']            = (isset($searchopt['right']) ? $searchopt['right'] : 'all');
-                            $options2['inactive_deleted'] = 1;
+                            $options2['inactive_deleted'] = $searchopt['inactive_deleted'] ?? 1;
                             $searchopt['toadd'] = [
                                 [
                                     'id'    => 'myself',
