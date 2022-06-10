@@ -342,4 +342,96 @@ class Software extends AbstractInventoryAsset
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($item_versions))->isIdenticalTo(1);
     }
+
+
+    public function testSoftwareEntity()
+    {
+        $this->login();
+        $entity = new \Entity();
+        $entity_1_id = $entity->add([
+            'name' => '_test_entity_1',
+            'entities_id' => 0,
+            'entities_id_software' => \Entity::CONFIG_PARENT,
+            'tag' => 'testtag_1',
+        ]);
+        $entity_2_id = $entity->add([
+            'name' => '_test_entity_2',
+            'entities_id' => $entity_1_id,
+            'entities_id_software' => \Entity::CONFIG_NEVER,
+            'tag' => 'testtag_2',
+        ]);
+
+        $rule         = new \RuleImportEntity();
+        $rulecriteria = new \RuleCriteria();
+        $ruleaction   = new \RuleAction();
+
+        $rules_id = $rule->add([
+            'is_active'    => 1,
+            'name'         => '_test_affect_entity_by_tag',
+            'match'        => 'AND',
+            'sub_type'     => \RuleImportEntity::class,
+            'is_recursive' => 1,
+            'ranking'      => 1,
+        ]);
+        $this->integer((int) $rules_id)->isGreaterThan(0);
+
+        $this->integer((int) $rulecriteria->add([
+            'rules_id'    => $rules_id,
+            'criteria'  => "tag",
+            'pattern'   => "/(.*)/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ]))->isGreaterThan(0);
+
+        $this->integer((int) $ruleaction->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'regex_result',
+            'field'       => '_affect_entity_by_tag',
+            'value'       => 'testtag_2',
+        ]))->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>x86_64</ARCH>
+      <COMMENTS></COMMENTS>
+      <FILESIZE>67382735</FILESIZE>
+      <FROM>rpm</FROM>
+      <INSTALLDATE>03/10/2021</INSTALLDATE>
+      <NAME>test_software</NAME>
+      <PUBLISHER>Publisher</PUBLISHER>
+      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <VERSION>1.1</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc_test_entity</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ssnexample</SSN>
+    </BIOS>
+    <VERSIONCLIENT>test-agent</VERSIONCLIENT>
+    <ACCOUNTINFO>
+      <KEYNAME>TAG</KEYNAME>
+      <KEYVALUE>testtag_2</KEYVALUE>
+    </ACCOUNTINFO>
+  </CONTENT>
+  <DEVICEID>pc_test_entity</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $found_computers = $computer->find(['name' => "pc_test_entity"]);
+        $this->integer(count($found_computers))->isIdenticalTo(1);
+        $first_computer = array_pop($found_computers);
+        $this->integer($first_computer['entities_id'])->isIdenticalTo($entity_2_id);
+
+        $soft = new \Software();
+        $softs = $soft->find(['name' => "test_software"]);
+        $this->integer(count($softs))->isIdenticalTo(1);
+        $first_soft = array_pop($softs);
+        $this->integer($first_soft['entities_id'])->isIdenticalTo($entity_2_id);
+        $this->integer($first_soft['is_recursive'])->isIdenticalTo(0);
+    }
 }
