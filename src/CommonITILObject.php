@@ -6929,7 +6929,7 @@ abstract class CommonITILObject extends CommonDBTM
                 if (is_callable($hook_itemtypes)) {
                     $hook_itemtypes = $hook_itemtypes(['item' => $this]);
                 }
-                $itemtypes = array_merge($itemtypes, $hook_itemtypes);
+                $itemtypes = array_merge($itemtypes, $hook_itemtypes ?? []);
             }
         }
 
