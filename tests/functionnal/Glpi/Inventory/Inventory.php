@@ -485,7 +485,7 @@ class Inventory extends InventoryTestCase
                     'is_dynamic' => 1,
                     'entities_id' => 0,
                     'is_recursive' => 0,
-                    'serial' => null,
+                    'serial' => 'xyz',
                     'busID' => null,
                     'otherserial' => null,
                     'locations_id' => 0,
