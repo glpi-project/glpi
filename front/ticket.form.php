@@ -259,14 +259,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     Ticket::displayFullPageForItem($_GET["id"], $menus, $options);
 } else {
     if (Session::getCurrentInterface() != 'central') {
-        $append_params = ['create_ticket' => 1];
-        if (isset($_REQUEST['_promoted_fup_id'])) {
-            $append_params['_promoted_fup_id'] = $_REQUEST['_promoted_fup_id'];
-        }
-        if (isset($_REQUEST['_promoted_task_id'])) {
-            $append_params['_promoted_task_id'] = $_REQUEST['_promoted_task_id'];
-        }
-        Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?" . Toolbox::append_params($append_params));
+        Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1");
         die;
     }
 

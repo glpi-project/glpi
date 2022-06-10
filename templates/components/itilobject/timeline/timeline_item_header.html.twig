@@ -73,7 +73,7 @@
             </li>
          {% endset %}
          {% set actions = actions|merge({promoted_btn}) %}
-      {% elseif item.getType() is same as 'Ticket' and item.canCreate() and (entry['type'] is same as 'ITILFollowup' or entry['type'] is same as 'TicketTask')  %}
+      {% elseif get_current_interface() == 'central' and item.getType() is same as 'Ticket' and item.canCreate() and (entry['type'] is same as 'ITILFollowup' or entry['type'] is same as 'TicketTask')  %}
          {% set promote_url = '?_promoted_fup_id=' ~ entry_i['id'] %}
          {% if entry['type'] is same as 'TicketTask' %}
             {% set promote_url = '?_promoted_task_id=' ~ entry_i['id'] %}
