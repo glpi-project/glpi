@@ -252,11 +252,12 @@ class ITILTemplate extends DbTestCase
                     13 => 'Associated elements',
                     -2 => 'Approval request',
                     142 => 'Documents',
+                    18 => 'Time to resolve',
                     60 => 'Analysis impact',
                     61 => 'Control list',
                     62 => 'Deployment plan',
                     63 => 'Backup plan',
-                    67 => 'Checklist'
+                    67 => 'Checklist',
                 ]
             ], [
                 'Problem',
