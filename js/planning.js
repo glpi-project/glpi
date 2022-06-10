@@ -57,6 +57,7 @@ var GLPIPlanning  = {
             resources: [],
             now: null,
             can_create: false,
+            can_delete: false,
             rand: '',
             header: {
                 left:   'prev,next,today',
@@ -273,10 +274,14 @@ var GLPIPlanning  = {
                     $('.planning-context-menu').remove();
 
                     // create new one
-                    var context = $('<ul class="planning-context-menu" data-event-id=""> \
-                  <li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li> \
-                  <li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li> \
-               </ul>');
+                    var context = $('<ul class="planning-context-menu" data-event-id=""></ul>');
+                    if (options.can_create) {
+                        context.append('<li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li>');
+                    }
+                    if (options.can_delete) {
+                        context.append('<li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li>');
+                    }
+                    console.log(options);
 
                     // add it to body and place it correctly
                     $('body').append(context);
