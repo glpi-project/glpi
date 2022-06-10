@@ -364,7 +364,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                     sprintf(
                         __('Unable to find target item for %s #%s.'),
                         'PluginDatabasesDatabase',
-                        $database_data['plugin_domains_domains_id']
+                        $database_data['plugin_databases_databases_id']
                     ),
                     $progress_bar,
                     true // Do not block migration as this error is probably resulting in presence of obsolete data in DB
@@ -395,7 +395,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                     sprintf(
                         __('Unable to find target item for %s #%s.'),
                         'PluginDatabasesDatabase',
-                        $database_data['plugin_domains_domains_id']
+                        $database_data['plugin_databases_databases_id']
                     ),
                     $progress_bar,
                     true // Do not block migration as this error is probably resulting in presence of obsolete data in DB
@@ -472,7 +472,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                     sprintf(
                         __('Unable to find target item for %s #%s.'),
                         'PluginDatabasesDatabaseType',
-                        $instance_data['plugin_domains_domains_id']
+                        $instance_data['plugin_databases_databasetypes_id']
                     ),
                     $progress_bar,
                     true // Do not block migration as this error is probably resulting in presence of obsolete data in DB
@@ -492,28 +492,56 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                 );
             }
 
+            $databaseinstance_data = [
+                'entities_id'                   => $instance_data['entities_id'],
+                'is_recursive'                  => $instance_data['is_recursive'],
+                'name'                          => $instance_data['name'],
+                'is_deleted'                    => $instance_data['is_deleted'],
+                'is_active'                     => 1,
+                'databaseinstancetypes_id'      => $mapped_type !== null ? $mapped_type->getID() : 0,
+                'databaseinstancecategories_id' => $mapped_category !== null ? $mapped_category->getID() : 0,
+                'comment'                       => $instance_data['comment'],
+                'locations_id'                  => $instance_data['locations_id'],
+                'manufacturers_id'              => $instance_data['manufacturers_id'],
+                'users_id_tech'                 => $instance_data['users_id'],
+                'groups_id_tech'                => $instance_data['groups_id'],
+                'date_mod'                      => $instance_data['date_mod'],
+                'is_helpdesk_visible'           => $instance_data['is_helpdesk_visible'],
+                'states_id'                     => 0,
+                'is_dynamic'                    => 0,
+            ];
+
+            //try to load related item from 'glpi_plugin_databases_databases_items'
+            $related_item_iterator = $this->db->request([
+                'FROM'  => 'glpi_plugin_databases_databases_items',
+                'WHERE' => [
+                    'plugin_databases_databases_id' => $instance_data['id'],
+                    'itemtype' => 'Computer'
+                ],
+            ]);
+
+            if ($related_item_iterator->count() === 1) {
+                if ($row = $related_item_iterator->current()) {
+                    $databaseinstance_data['itemtype'] = $row['itemtype'];
+                    $databaseinstance_data['items_id'] = $row['items_id'];
+                }
+            } else if ($related_item_iterator->count() > 1) {
+                $this->handleImportError(
+                    sprintf(
+                        __('More than one Computer linked to %s #%s.'),
+                        'PluginDatabasesDatabaseInstance',
+                        $instance_data['id']
+                    ),
+                    $progress_bar,
+                    true // Do not block migration as this error is probably resulting in presence of obsolete data in DB
+                );
+            }
+
             $instance = $this->storeItem(
                 DatabaseInstance::class,
                 $core_instance_id,
                 Toolbox::addslashes_deep(
-                    [
-                        'entities_id'                   => $instance_data['entities_id'],
-                        'is_recursive'                  => $instance_data['is_recursive'],
-                        'name'                          => $instance_data['name'],
-                        'is_deleted'                    => $instance_data['is_deleted'],
-                        'is_active'                     => 1,
-                        'databaseinstancetypes_id'      => $mapped_type !== null ? $mapped_type->getID() : 0,
-                        'databaseinstancecategories_id' => $mapped_category !== null ? $mapped_category->getID() : 0,
-                        'comment'                       => $instance_data['comment'],
-                        'locations_id'                  => $instance_data['locations_id'],
-                        'manufacturers_id'              => $instance_data['manufacturers_id'],
-                        'users_id_tech'                 => $instance_data['users_id'],
-                        'groups_id_tech'                => $instance_data['groups_id'],
-                        'date_mod'                      => $instance_data['date_mod'],
-                        'is_helpdesk_visible'           => $instance_data['is_helpdesk_visible'],
-                        'states_id'                     => 0,
-                        'is_dynamic'                    => 0,
-                    ]
+                    $databaseinstance_data
                 )
             );
 
