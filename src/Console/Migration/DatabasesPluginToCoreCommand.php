@@ -514,16 +514,18 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             //try to load related item from 'glpi_plugin_databases_databases_items'
             $related_item_iterator = $this->db->request([
                 'FROM'  => 'glpi_plugin_databases_databases_items',
-                'WHERE' => ['plugin_databases_databases_id' => $instance_data['id'],
-                            'itemtype' => 'Computer'],
+                'WHERE' => [
+                    'plugin_databases_databases_id' => $instance_data['id'],
+                    'itemtype' => 'Computer'
+                ],
             ]);
 
-            if ($related_item_iterator->count() === 1 ){
-                if($row = $related_item_iterator->current()) {
+            if ($related_item_iterator->count() === 1) {
+                if ($row = $related_item_iterator->current()) {
                     $databaseinstance_data['itemtype'] = $row['itemtype'];
                     $databaseinstance_data['items_id'] = $row['items_id'];
                 }
-            }else if ($related_item_iterator->count() > 1) {
+            } else if ($related_item_iterator->count() > 1) {
                 $this->handleImportError(
                     sprintf(
                         __('More than one Computer linked to %s #%s.'),
