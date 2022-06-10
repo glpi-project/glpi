@@ -72,9 +72,6 @@
          {% set nametype = __('Created from the template %s')|format(template_name) %}
       {% elseif withtemplate == 1 %}
          <input type="hidden" name="is_template" value="1" />
-         <input type="text" class="form-control ms-4 mb-2" placeholder="{{ __('Template name') }}"
-                name="template_name" id="textfield_template_name{{ rand }}"
-                value="{{ template_name }}" />
       {% elseif item.isNewItem() %}
          {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
       {% else %}
@@ -85,6 +82,11 @@
 
       {% if no_header is not defined or no_header == false %}
          <div class="card-header main-header d-flex flex-wrap mx-n2 mt-n2 align-items-stretch">
+            {% if withtemplate == 1 %}
+               <input type="text" class="form-control ms-4 mb-2" placeholder="{{ __('Template name') }}"
+                  name="template_name" id="textfield_template_name{{ rand }}"
+                  value="{{ template_name }}" />
+            {% endif %}
             <h3 class="card-title d-flex align-items-center ps-4">
                {% set icon = item.getIcon() %}
                {% if icon|length > 0 %}
