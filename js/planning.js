@@ -274,103 +274,105 @@ var GLPIPlanning  = {
                     $('.planning-context-menu').remove();
 
                     // create new one
-                    var context = $('<ul class="planning-context-menu" data-event-id=""></ul>');
+                    var actions = '';
                     if (options.can_create) {
-                        context.append('<li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li>');
+                        actions += '<li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li>';
                     }
                     if (options.can_delete) {
-                        context.append('<li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li>');
+                        actions += '<li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li>';
                     }
-                    console.log(options);
+                    if (actions != '') {
+                        var context = $('<ul class="planning-context-menu" data-event-id="">'+actions+'</ul>');
 
-                    // add it to body and place it correctly
-                    $('body').append(context);
-                    context.css({
-                        left: offset.left + element.outerWidth() / 4,
-                        top: offset.top
-                    });
-
-                    // get properties of event for context menu actions
-                    var extprops  = event.extendedProps;
-                    var resource = {};
-                    var actor    = {};
-
-                    if (typeof event.getresources === "function") {
-                        resource = event.getresources();
-                    }
-
-                    // manage resource changes
-                    if (resource.length === 1) {
-                        actor = {
-                            itemtype: resource[0].extendedProps.itemtype || null,
-                            items_id: resource[0].extendedProps.items_id || null,
-                        };
-                    }
-
-                    // context menu actions
-                    // 1- clone event
-                    $('.planning-context-menu .clone-event').click(function() {
-                        $.ajax({
-                            url:  CFG_GLPI.root_doc+"/ajax/planning.php",
-                            type: 'POST',
-                            data: {
-                                action: 'clone_event',
-                                event: {
-                                    old_itemtype: extprops.itemtype,
-                                    old_items_id: extprops.items_id,
-                                    actor:        actor,
-                                    start:        event.start.toISOString(),
-                                    end:          event.end.toISOString(),
-                                }
-                            },
-                            success: function() {
-                                GLPIPlanning.refresh();
-                            }
+                        // add it to body and place it correctly
+                        $('body').append(context);
+                        context.css({
+                            left: offset.left + element.outerWidth() / 4,
+                            top: offset.top
                         });
-                    });
-                    // 2- delete event (manage serie/instance specific events)
-                    $('.planning-context-menu .delete-event').click(function() {
-                        var ajaxDeleteEvent = function(instance) {
-                            instance = instance || false;
+
+                        // get properties of event for context menu actions
+                        var extprops  = event.extendedProps;
+                        var resource = {};
+                        var actor    = {};
+
+                        if (typeof event.getresources === "function") {
+                            resource = event.getresources();
+                        }
+
+                        // manage resource changes
+                        if (resource.length === 1) {
+                            actor = {
+                                itemtype: resource[0].extendedProps.itemtype || null,
+                                items_id: resource[0].extendedProps.items_id || null,
+                            };
+                        }
+
+                        // context menu actions
+                        // 1- clone event
+                        $('.planning-context-menu .clone-event').on('click', function() {
                             $.ajax({
                                 url:  CFG_GLPI.root_doc+"/ajax/planning.php",
                                 type: 'POST',
                                 data: {
-                                    action: 'delete_event',
+                                    action: 'clone_event',
                                     event: {
-                                        itemtype: extprops.itemtype,
-                                        items_id: extprops.items_id,
-                                        day: event.start.toISOString().substring(0, 10),
-                                        instance: instance ? 1 : 0,
+                                        old_itemtype: extprops.itemtype,
+                                        old_items_id: extprops.items_id,
+                                        actor:        actor,
+                                        start:        event.start.toISOString(),
+                                        end:          event.end.toISOString(),
                                     }
                                 },
                                 success: function() {
                                     GLPIPlanning.refresh();
                                 }
                             });
-                        };
+                        });
+                        // 2- delete event (manage serie/instance specific events)
+                        $('.planning-context-menu .delete-event').on('click', function() {
+                            var ajaxDeleteEvent = function(instance) {
+                                instance = instance || false;
+                                $.ajax({
+                                    url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                                    type: 'POST',
+                                    data: {
+                                        action: 'delete_event',
+                                        event: {
+                                            itemtype: extprops.itemtype,
+                                            items_id: extprops.items_id,
+                                            day: event.start.toISOString().substring(0, 10),
+                                            instance: instance ? 1 : 0,
+                                        }
+                                    },
+                                    success: function() {
+                                        GLPIPlanning.refresh();
+                                    }
+                                });
+                            };
 
-                        if (!("is_recurrent" in extprops) || !extprops.is_recurrent) {
-                            ajaxDeleteEvent();
-                        } else {
-                            glpi_html_dialog({
-                                title: __("Make a choice"),
-                                body: __("Delete the whole serie of the recurrent event") + "<br>" +
-                              __("or just add an exception by deleting this instance?"),
-                                buttons: [{
-                                    label: __("Serie"),
-                                    click:  function() {
-                                        ajaxDeleteEvent(false);
-                                    }
-                                }, {
-                                    label: _n("Instance", "Instances", 1),
-                                    click:  function() {
-                                        ajaxDeleteEvent(true);
-                                    }
-                                }]
-                            });
-                        }
-                    });
+                            if (!("is_recurrent" in extprops) || !extprops.is_recurrent) {
+                                ajaxDeleteEvent();
+                            } else {
+                                glpi_html_dialog({
+                                    title: __("Make a choice"),
+                                    body: __("Delete the whole serie of the recurrent event") + "<br>" +
+                                __("or just add an exception by deleting this instance?"),
+                                    buttons: [{
+                                        label: __("Serie"),
+                                        click:  function() {
+                                            ajaxDeleteEvent(false);
+                                        }
+                                    }, {
+                                        label: _n("Instance", "Instances", 1),
+                                        click:  function() {
+                                            ajaxDeleteEvent(true);
+                                        }
+                                    }]
+                                });
+                            }
+                        });
+                    }
                 });
 
             },
