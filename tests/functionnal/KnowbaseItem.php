@@ -215,7 +215,8 @@ HTML
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
         $this->boolean($instance->isNewItem())->isFalse();
-        $expected = 'a href=\"/front/document.send.php?docid=';
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['answer'])->contains($expected);
 
        // Test uploads for item update
@@ -241,8 +242,9 @@ HTML
             ],
         ]);
         $this->boolean($success)->isTrue();
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
        // Ensure there is an anchor to the uploaded document
-        $expected = 'a href=\"/front/document.send.php?docid=';
+        $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['answer'])->contains($expected);
     }
 

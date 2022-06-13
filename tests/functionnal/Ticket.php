@@ -3104,7 +3104,8 @@ HTML
         ];
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
-        $expected = 'a href=\"/front/document.send.php?docid=';
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
 
        // Test uploads for item update
@@ -3128,7 +3129,8 @@ HTML
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
-        $expected = 'a href=\"/front/document.send.php?docid=';
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
+        $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
     }
 
