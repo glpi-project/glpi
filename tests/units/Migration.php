@@ -860,7 +860,7 @@ class Migration extends \GLPITestCase
                 ->message
                 ->contains('Table "glpi_someoldtypes" does not exists.');
             }
-        )->isEqualTo('Rename "SomeOldType" itemtype to "NewName"');
+        )->isEqualTo('Renaming "SomeOldType" itemtype to "NewName"...');
     }
 
     /**
@@ -884,7 +884,7 @@ class Migration extends \GLPITestCase
                 ->message
                 ->contains('Table "glpi_someoldtypes" cannot be renamed as table "glpi_newnames" already exists.');
             }
-        )->isEqualTo('Rename "SomeOldType" itemtype to "NewName"');
+        )->isEqualTo('Renaming "SomeOldType" itemtype to "NewName"...');
     }
 
     /**
@@ -917,7 +917,7 @@ class Migration extends \GLPITestCase
                 ->message
                 ->contains('Field "someoldtypes_id" cannot be renamed in table "glpi_item_with_fkey" as "newnames_id" is field already exists.');
             }
-        )->isEqualTo('Rename "SomeOldType" itemtype to "NewName"');
+        )->isEqualTo('Renaming "SomeOldType" itemtype to "NewName"...');
     }
 
     /**
@@ -973,10 +973,10 @@ class Migration extends \GLPITestCase
             implode(
                 '',
                 [
-                    'Rename "SomeOldType" itemtype to "NewName"',
-                    'Rename "glpi_someoldtypes" table to "glpi_newnames"',
-                    'Rename "someoldtypes_id" foreign keys to "newnames_id" in all tables',
-                    'Rename "SomeOldType" itemtype to "NewName" in all tables',
+                    'Renaming "SomeOldType" itemtype to "NewName"...',
+                    'Renaming "glpi_someoldtypes" table to "glpi_newnames"...',
+                    'Renaming "someoldtypes_id" foreign keys to "newnames_id" in all tables...',
+                    'Renaming "SomeOldType" itemtype to "NewName" in all tables...',
                     'Change of the database layout - glpi_oneitem_with_fkey',
                     'Change of the database layout - glpi_anotheritem_with_fkey',
                     'Task completed.',
@@ -1007,8 +1007,8 @@ class Migration extends \GLPITestCase
             implode(
                 '',
                 [
-                    'Rename "SomeOldType" itemtype to "NewName"',
-                    'Rename "SomeOldType" itemtype to "NewName" in all tables',
+                    'Renaming "SomeOldType" itemtype to "NewName"...',
+                    'Renaming "SomeOldType" itemtype to "NewName" in all tables...',
                     'Task completed.',
                 ]
             )
