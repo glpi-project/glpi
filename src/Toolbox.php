@@ -2632,7 +2632,7 @@ class Toolbox
 
                          // 2 - Replace img with tag in id attribute by the image
                         $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
-                        preg_match_all($regex, Sanitizer::unsanitize($content_text), $matches);
+                        preg_match_all($regex, Sanitizer::decodeHtmlSpecialChars($content_text), $matches);
                         foreach ($matches[0] as $match_img) {
                             //retrieve dimensions
                             $width = $height = null;
@@ -2666,7 +2666,7 @@ class Toolbox
                             $content_text = str_replace(
                                 $match_img,
                                 $new_image,
-                                Sanitizer::unsanitize($content_text)
+                                Sanitizer::decodeHtmlSpecialChars($content_text)
                             );
                             $content_text = Sanitizer::encodeHtmlSpecialChars($content_text);
                         }
