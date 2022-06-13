@@ -36,6 +36,7 @@
 namespace test\units;
 
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/knowbaseitem.class.php */
 
@@ -193,8 +194,11 @@ class KnowbaseItem extends DbTestCase
         $instance = new \KnowbaseItem();
         $input = [
             'name'     => 'Test to remove',
-            'answer'   => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
-                        . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+            'answer'   => Sanitizer::sanitize(<<<HTML
+<p>Test with a ' (add)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML
+            ),
             '_answer' => [
                 $filename,
             ],
@@ -211,7 +215,7 @@ class KnowbaseItem extends DbTestCase
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
         $this->boolean($instance->isNewItem())->isFalse();
-        $expected = 'a href="/front/document.send.php?docid=';
+        $expected = 'a href=\"/front/document.send.php?docid=';
         $this->string($instance->fields['answer'])->contains($expected);
 
        // Test uploads for item update
@@ -221,8 +225,11 @@ class KnowbaseItem extends DbTestCase
         file_put_contents($tmpFilename, base64_decode($base64Image));
         $success = $instance->update([
             'id'       => $instance->getID(),
-            'answer'   => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1ffff.33333333"'
-                        . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
+            'answer'   => Sanitizer::sanitize(<<<HTML
+<p>Test with a ' (update)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1ffff.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML
+            ),
             '_answer' => [
                 $filename,
             ],
@@ -235,7 +242,7 @@ class KnowbaseItem extends DbTestCase
         ]);
         $this->boolean($success)->isTrue();
        // Ensure there is an anchor to the uploaded document
-        $expected = 'a href="/front/document.send.php?docid=';
+        $expected = 'a href=\"/front/document.send.php?docid=';
         $this->string($instance->fields['answer'])->contains($expected);
     }
 

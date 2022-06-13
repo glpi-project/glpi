@@ -371,7 +371,7 @@ HTML
 
         $instance->add($input);
         $this->boolean($instance->isNewItem())->isFalse();
-        $expected = 'a href="/front/document.send.php?docid=';
+        $expected = 'a href=\"/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
 
        // Test uploads for item update
@@ -396,7 +396,7 @@ HTML
             ]
         ]);
         $this->boolean($success)->isTrue();
-        $expected = 'a href="/front/document.send.php?docid=';
+        $expected = 'a href=\"/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
     }
 
