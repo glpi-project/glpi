@@ -2641,7 +2641,6 @@ class Toolbox
 
                          // 2 - Replace img with tag in id attribute by the image
                         $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
-
                         preg_match_all($regex, $content_text, $matches);
                         foreach ($matches[0] as $match_img) {
                             //retrieve dimensions

@@ -699,7 +699,6 @@ class Toolbox extends DbTestCase
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, $doc_data)
         )->isEqualTo($expected_result);
-
     }
 
     /**
