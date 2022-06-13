@@ -6922,12 +6922,18 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS])) {
-            foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS] as $plugin => $hook_itemtypes) {
+            /**
+             * @var string $plugin
+             * @var array|callable $hook_callable
+             */
+            foreach ($PLUGIN_HOOKS[Hooks::TIMELINE_ANSWER_ACTIONS] as $plugin => $hook_callable) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                if (is_callable($hook_itemtypes)) {
-                    $hook_itemtypes = $hook_itemtypes(['item' => $this]);
+                if (is_callable($hook_callable)) {
+                    $hook_itemtypes = $hook_callable(['item' => $this]);
+                } else {
+                    $hook_itemtypes = $hook_callable;
                 }
                 if (is_array($hook_itemtypes)) {
                     $itemtypes = array_merge($itemtypes, $hook_itemtypes);
