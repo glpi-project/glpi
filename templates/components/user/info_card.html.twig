@@ -45,7 +45,11 @@
       </div>
       <div class="col-auto ms-2">
          <h4 class="card-title mb-1">
-            {{ user['user_name'] }}
+            {% if user['id'] %}
+               <a href="{{ 'User'|itemtype_form_path(user['id']) }}">{{ user['user_name'] }}</a>
+            {% else %}
+               {{ user['user_name'] }}
+            {% endif %}
          </h4>
 
          <div class="text-muted">
