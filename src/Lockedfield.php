@@ -306,7 +306,8 @@ class Lockedfield extends CommonDBTM
             'locations_id',
             'networks_id',
             'manufacturers_id',
-            'uuid'
+            'uuid',
+            'entities_id'
         ];
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
 
