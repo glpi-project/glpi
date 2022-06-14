@@ -260,13 +260,14 @@ class Dropdown
         );
 
         // Add icon
+        $add_item_icon = "";
         if (
             ($item instanceof CommonDropdown)
             && $item->canCreate()
             && !isset($_REQUEST['_in_modal'])
             && $params['addicon']
         ) {
-            $add_item_icon = '<div class="btn btn-outline-secondary"
+            $add_item_icon .= '<div class="btn btn-outline-secondary"
                            title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= "<span data-bs-toggle='tooltip'>
