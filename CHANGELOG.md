@@ -58,6 +58,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
 - `Glpi\Features\DCBreadcrumb::isRackPart()`
+- `Glpi\Socket::showForLocation()`
 - `Html::displayAjaxMessageAfterRedirect()`
 - `HookManager::enableCSRF()`
 - `Knowbase::getTreeCategoryList()`
