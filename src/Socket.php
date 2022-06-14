@@ -173,9 +173,7 @@ class Socket extends CommonDBChild
                     refreshNetworkPortDropdown(itemtype, items_id, 'show_networkport_field');
                 });
             ");
-
         }
-
     }
 
     /**
@@ -692,12 +690,12 @@ class Socket extends CommonDBChild
             echo "<tr class='tab_bg_2'>";
             echo "<td class='tab_bg_2 center'>";
             echo "<td>\n";
-            echo "<input type='submit' name='add_several' value=\"" .__('New socket for this item...') . "\" class='btn btn-primary'>\n";
+            echo "<input type='submit' name='add_several' value=\"" . __('New socket for this item...') . "\" class='btn btn-primary'>\n";
             echo "</td>";
             echo "<td>\n";
             echo __('Add several sockets');
             echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
-           echo "</tr></table></div>\n";
+            echo "</tr></table></div>\n";
             Html::closeForm();
             echo "</div>";
         }
