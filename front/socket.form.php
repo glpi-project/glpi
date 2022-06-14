@@ -51,7 +51,7 @@ if (!isset($_GET["itemtype"])) {
 }
 
 $socket = new Socket();
-if (isset($_POST["add"])) {
+if (isset($_POST["add"]) && !isset($_POST["execute_multi"])) {
     $socket->check(-1, CREATE, $_POST);
 
     if ($socket->add($_POST)) {
@@ -101,6 +101,7 @@ if (isset($_POST["add"])) {
 
     for ($i = $_POST["_from"]; $i <= $_POST["_to"]; $i++) {
         $_POST["name"] = $_POST["_before"] . $i . $_POST["_after"];
+        $_POST["position"] =  $i;
         $socket->add($_POST);
     }
     Event::log(
@@ -150,6 +151,10 @@ if (isset($_POST["add"])) {
 
     if (isset($itemtype)) {
         $options['itemtype'] = $itemtype;
+    }
+
+    if (isset($_GET["several"])) {
+        $options['several'] = $_GET["several"];
     }
 
    // Add a socket from item : format data

@@ -143,34 +143,39 @@ class Socket extends CommonDBChild
         }
         echo "</span>";
 
-        echo "<span id='show_networkport_field'>";
-        NetworkPort::dropdown(['name'                => 'networkports_id',
-            'value'               => $networkports_id,
-            'display_emptychoice' => true,
-            'condition'           => ['items_id' => $items_id,
-                'itemtype' => $itemtype
-            ],
-            'comments' => false
-        ]);
-        echo "</span>";
 
-       //Listener to update breacrumb / socket
-        echo Html::scriptBlock("
-         //listener to remove socket selector and breadcrumb
-         $(document).on('change', '#dropdown_itemtype" . $rand_itemtype . "', function(e) {
-            $('#show_front_asset_breadcrumb').empty();
-            $('#show_front_sockets_field').empty();
-         });
+        //Do not display NetworkPort field if several mode
+        if (!isset($options['several'])) {
+            echo "<span id='show_networkport_field'>";
+            NetworkPort::dropdown(['name'                => 'networkports_id',
+                'value'               => $networkports_id,
+                'display_emptychoice' => true,
+                'condition'           => ['items_id' => $items_id,
+                    'itemtype' => $itemtype
+                ],
+                'comments' => false
+            ]);
+            echo "</span>";
 
-         //listener to refresh socket selector and breadcrumb
-         $(document).on('change', '#dropdown_items_id" . $rand_items_id . "', function(e) {
-            var items_id = $('#dropdown_items_id" . $rand_items_id . "').find(':selected').val();
-            var itemtype = $('#dropdown_itemtype" . $rand_itemtype . "').find(':selected').val();
-            refreshAssetBreadcrumb(itemtype, items_id, 'show_asset_breadcrumb');
-            refreshNetworkPortDropdown(itemtype, items_id, 'show_networkport_field');
+           //Listener to update breacrumb / socket
+            echo Html::scriptBlock("
+                //listener to remove socket selector and breadcrumb
+                $(document).on('change', '#dropdown_itemtype" . $rand_itemtype . "', function(e) {
+                    $('#show_front_asset_breadcrumb').empty();
+                    $('#show_front_sockets_field').empty();
+                });
 
-         });
-      ");
+                //listener to refresh socket selector and breadcrumb
+                $(document).on('change', '#dropdown_items_id" . $rand_items_id . "', function(e) {
+                    var items_id = $('#dropdown_items_id" . $rand_items_id . "').find(':selected').val();
+                    var itemtype = $('#dropdown_itemtype" . $rand_itemtype . "').find(':selected').val();
+                    refreshAssetBreadcrumb(itemtype, items_id, 'show_asset_breadcrumb');
+                    refreshNetworkPortDropdown(itemtype, items_id, 'show_networkport_field');
+                });
+            ");
+
+        }
+
     }
 
     /**
@@ -680,15 +685,20 @@ class Socket extends CommonDBChild
        // Link to open a new socket
         if ($item->getID() && self::canCreate()) {
             echo "<div class='firstbloc'>";
-            Html::showSimpleForm(
-                Socket::getFormURL(),
-                '_add_fromitem',
-                __('New socket for this item...'),
-                [
-                    '_from_itemtype' => $item->getType(),
-                    '_from_items_id' => $item->getID(),
-                ]
-            );
+            echo "\n<form method='get' action='" . Socket::getFormURL() . "'>\n";
+            echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>\n";
+            echo "<input type='hidden' name='itemtype' value='" . $item->getType() . "'>\n";
+            echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='tab_bg_2 center'>";
+            echo "<td>\n";
+            echo "<input type='submit' name='add_several' value=\"" .__('New socket for this item...') . "\" class='btn btn-primary'>\n";
+            echo "</td>";
+            echo "<td>\n";
+            echo __('Add several sockets');
+            echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
+           echo "</tr></table></div>\n";
+            Html::closeForm();
             echo "</div>";
         }
 

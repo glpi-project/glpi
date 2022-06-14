@@ -41,13 +41,17 @@
 
    {{ fields.nullField() }}
 
-   {{ fields.numberField(
-      'position',
-      item.fields['position'],
-      __('Position'),
-      field_options
-   ) }}
-
+   {# Do not display position if several mode, value is compute on add #}
+   {% if params['several'] is not defined %}
+      {{ fields.numberField(
+         'position',
+         item.fields['position'],
+         __('Position'),
+         field_options
+      ) }}
+   {% else %}
+    {{ fields.nullField() }}
+   {% endif %}
 
    {% set wiring_side %}
       {% do call('Glpi\\Socket::dropdownWiringSide', [
@@ -76,5 +80,42 @@
       networkports,
       _n('Network port', 'Network ports', get_plural_number()),
    ) }}
+
+   {% if params['several'] is defined %}
+
+      {{ fields.dropdownNumberField(
+         '_from',
+         1,
+         __('From'),
+         {
+            'min': 1
+         }
+      ) }}
+
+      {{ fields.dropdownNumberField(
+         '_to',
+         1,
+         __('To'),
+         {
+            'min': 1
+         }
+      ) }}
+
+		{{ fields.textField(
+         '_before',
+         '',
+         __('Prefix'),
+         {}
+      ) }}
+
+		{{ fields.textField(
+         '_after',
+         '',
+         __('Suffix'),
+         {}
+      ) }}
+
+		<input type="hidden" name="execute_multi" value="1">
+   {% endif %}
 
 {% endblock %}
