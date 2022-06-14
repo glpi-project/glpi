@@ -331,7 +331,7 @@ $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmwar
 
 
 $CFG_GLPI["socket_types"]                  = ['Computer','NetworkEquipment',
-    'Peripheral','Phone','Printer', 'PassiveDCEquipment'
+    'Peripheral','Phone','Printer', 'PassiveDCEquipment', 'Location'
 ];
 
 $CFG_GLPI['itemdevices'] = [];
