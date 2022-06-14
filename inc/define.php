@@ -592,7 +592,10 @@ $CFG_GLPI['javascript'] = [
     ],
     'admin'        => ['clipboard', 'sortable'],
     'preference'   => ['clipboard'],
-    'self-service' => array_merge(['tinymce'], $reservations_libs)
+    'self-service' => array_merge(['tinymce'], $reservations_libs),
+    'tickets'      => [
+        'ticket' => ['tinymce']
+    ]
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)
