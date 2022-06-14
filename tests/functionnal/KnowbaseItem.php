@@ -409,7 +409,7 @@ class KnowbaseItem extends DbTestCase
             'comment' => __FUNCTION__ . '_1',
             'entities_id' => $root_entity,
             'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
+            '_categories' => [],
         ]);
         $this->integer($kb_cat_id1)->isGreaterThan(0);
 
@@ -418,7 +418,7 @@ class KnowbaseItem extends DbTestCase
             'comment' => __FUNCTION__ . '_2',
             'entities_id' => $root_entity,
             'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
+            '_categories' => [],
         ]);
         $this->integer($kb_cat_id2)->isGreaterThan(0);
 
@@ -427,7 +427,7 @@ class KnowbaseItem extends DbTestCase
         $kbitems_id1 = $kbitem->add([
             'name' => __FUNCTION__ . '_1',
             'answer' => __FUNCTION__ . '_1',
-            'knowbaseitemcategories_id' => $kb_cat_id1,
+            '_categories' => [$kb_cat_id1],
         ]);
         $this->integer($kbitems_id1)->isGreaterThan(0);
 
@@ -445,7 +445,7 @@ class KnowbaseItem extends DbTestCase
         $kbitems_id2 = $kbitem->add([
             'name' => __FUNCTION__ . '_2',
             'answer' => __FUNCTION__ . '_2',
-            'knowbaseitemcategories_id' => [$kb_cat_id1, $kb_cat_id2],
+            '_categories' => [$kb_cat_id1, $kb_cat_id2],
         ]);
         $this->integer($kbitems_id2)->isGreaterThan(0);
 
