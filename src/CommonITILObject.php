@@ -362,7 +362,11 @@ abstract class CommonITILObject extends CommonDBTM
         $options['_saved'] = $this->restoreInput();
 
         // Restore saved values and override $this->fields
-        $this->restoreSavedValues($options['_saved']);
+        $saved_exclusions = [];
+        if (!$ID) {
+            $saved_exclusions = ['status'];
+        }
+        $this->restoreSavedValues($options['_saved'], $saved_exclusions);
 
         // Set default options
         if (!$ID) {
@@ -3759,7 +3763,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         switch ($p['showtype']) {
             case 'allowed':
-                $tab = static::getAllowedStatusArray($p['value']);
+                $tab = static::getAllowedStatusArray($p['value_calculation'] ?? $p['value']);
                 break;
 
             case 'search':

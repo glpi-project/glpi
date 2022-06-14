@@ -1173,17 +1173,19 @@ class CommonDBTM extends CommonGLPI
      * @since 9.5.5
      *
      * @param array $saved Array of values saved in session
+     * @param array $exclusions Array of value keys to skip adding to the fields array.
+     *                          This does not prevent them from being added to the input array.
      *
      * @return array Array of values
      **/
-    protected function restoreSavedValues(array $saved = [])
+    protected function restoreSavedValues(array $saved = [], array $exclusions = [])
     {
         if (count($saved)) {
            //restore saved values as input (to manage uploaded img)
             $this->input = $saved;
 
             foreach ($saved as $name => $value) {
-                if (isset($this->fields[$name])) {
+                if (!in_array($name, $exclusions, true) && isset($this->fields[$name])) {
                     $this->fields[$name] = $saved[$name];
                 }
             }
