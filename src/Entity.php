@@ -823,7 +823,7 @@ class Entity extends CommonTreeDropdown
             'id'                 => '70',
             'table'              => $this->getTable(),
             'field'              => 'registration_number',
-            'name'               => __('Administrative number'),
+            'name'               => __('Administrative Number'),
             'datatype'           => 'string',
             'autocomplete'       => true
         ];
