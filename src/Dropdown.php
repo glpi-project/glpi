@@ -344,7 +344,7 @@ class Dropdown
                 $icons .= '</div>';
             }
 
-            if ($params['display_dc_position'] && in_array($item->getType(),$CFG_GLPI['rackable_types']) ) {
+            if ($params['display_dc_position'] && in_array($item->getType(), $CFG_GLPI['rackable_types'])) {
                 if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
                     $icons .= "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
                     $icons .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";

@@ -174,7 +174,6 @@ class Socket extends CommonDBChild
              });
           ");
         }
-
     }
 
     /**
