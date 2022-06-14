@@ -209,7 +209,9 @@
                            'full_width': true,
                            'icon_label': true,
                            'entity': item.fields['entities_id'],
-                           'is_active': 1,
+                           'condition': {
+                              'is_active': 1,
+                           },
                            'rand': rand,
                         }
                      ) }}
