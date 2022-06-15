@@ -502,7 +502,7 @@ var Dashboard = {
 
         // Force color to hex format
         if (form_data.color.startsWith('rgb')) {
-            const rgb = form_data.color.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+            const rgb = form_data.color.match(/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*/i);
             form_data.color = (rgb && rgb.length === 4) ? "#" +
                 ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
                 ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
