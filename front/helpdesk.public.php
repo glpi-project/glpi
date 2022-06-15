@@ -93,7 +93,7 @@ if (
 Session::checkValidSessionId();
 
 if (isset($_GET['create_ticket'])) {
-    Html::helpHeader(__('New ticket'));
+    Html::helpHeader(__('New ticket'), "create_ticket");
     $ticket = new Ticket();
     $ticket->showFormHelpdesk(Session::getLoginUserID());
 } else {
