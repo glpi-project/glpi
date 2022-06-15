@@ -500,6 +500,14 @@ var Dashboard = {
 
         var edit_item = "old_id" in form_data && form_data.old_id.length > 0;
 
+        // Force color to hex format
+        if (form_data.color.startsWith('rgb')) {
+            const rgb = form_data.color.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+            form_data.color = (rgb && rgb.length === 4) ? "#" +
+                ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+                ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+                ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+        }
         // prepare options
         form_data.card_options.color        = form_data.color || null;
         form_data.card_options.widgettype   = form_data.widgettype || null;
