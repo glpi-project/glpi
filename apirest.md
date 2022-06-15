@@ -734,7 +734,7 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/User/2/Log'
 
 < 200 OK
-< Content-Range: 0-549200
+< Content-Range: 0-49/200
 < Accept-Range: 990
 < [
    {
