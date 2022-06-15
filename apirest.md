@@ -603,7 +603,7 @@ Note: To download a document see [Download a document file](#download-a-document
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show relation of item in a links attribute. Optional.
   * *only_id* (default: false): keep only id keys in returned data. Optional.
-  * *range* (default: 0-50):  a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200. Optional.
+  * *range* (default: 0-49):  a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-199. Optional.
   * *sort* (default 1): name of the field to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
   * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
@@ -629,7 +629,7 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/Computer/?expand_dropdowns=true'
 
 < 206 OK
-< Content-Range: 0-50/200
+< Content-Range: 0-49/200
 < Accept-Range: 990
 < [
    {
@@ -712,7 +712,7 @@ $ curl -X GET \
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show item's relations in a links attribute. Optional.
   * *only_id* (default: false): keep only id keys in returned data. Optional.
-  * *range* (default: 0-50): a string with a couple of number for start and end of pagination separated by a '-' char. Ex: 150-200. Optional.
+  * *range* (default: 0-49): a string with a couple of number for start and end of pagination separated by a '-' char. Ex: 150-199. Optional.
   * *sort* (default 1): id of the "searchoption" to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
   * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "id". Optional.
@@ -734,7 +734,7 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/User/2/Log'
 
 < 200 OK
-< Content-Range: 0-50/200
+< Content-Range: 0-49/200
 < Accept-Range: 990
 < [
    {
@@ -811,7 +811,7 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getMultipleItems?items\[0\]\[itemtype\]\=User&items\[0\]\[items_id\]\=2&items\[1\]\[itemtype\]\=Entity&items\[1\]\[items_id\]\=0'
 
 < 200 OK
-< Content-Range: 0-50/200
+< Content-Range: 0-49/200
 < Accept-Range: 990
 < [{
    "id": 2,
@@ -982,7 +982,7 @@ $ curl -X GET \
 
   * *sort* (default 1): id of the searchoption to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
-  * *range* (default 0-50): a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200.
+  * *range* (default 0-49): a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-199.
                              Optional.
   * *forcedisplay*: array of columns to display (default empty = use display preferences and searched criteria).
                      Some columns will be always presents (1: id, 2: name, 80: Entity).
