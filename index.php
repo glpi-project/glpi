@@ -127,7 +127,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     // redirect to ticket
     if (isset($_GET["redirect"])) {
         Toolbox::manageRedirect($_GET["redirect"]);
-        echo '<input type="hidden" name="redirect" value="'.Html::entities_deep($_GET['redirect']).'"/>';
     }
 
     TemplateRenderer::getInstance()->display('pages/login.html.twig', [
