@@ -1259,12 +1259,12 @@ class Ticket extends CommonITILObject
                     switch ($a) {
                         case 'user':
                              $additionalfield           = '_additional_' . $t . 's';
-                             $input[$additionalfield][] = ['users_id' => $input['_' . $a . 's_id_' . $t]];
+                             $input[$additionalfield] = ['users_id' => $input['_' . $a . 's_id_' . $t]];
                             break;
 
                         default:
                             $additionalfield           = '_additional_' . $a . 's_' . $t . 's';
-                            $input[$additionalfield][] = $input['_' . $a . 's_id_' . $t];
+                            $input[$additionalfield] = $input['_' . $a . 's_id_' . $t];
                             break;
                     }
                 }
