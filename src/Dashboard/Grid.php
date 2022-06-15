@@ -945,10 +945,10 @@ HTML;
             // call provider to retrieve data
             if (isset($card['provider'])) {
                 $provider_args = ($card['args'] ?? []) + [
-                        'params' => [
-                            'label' => $card['label'] ?? ""
-                        ]
-                    ];
+                    'params' => [
+                        'label' => $card['label'] ?? ""
+                    ]
+                ];
                 if (isset($card_options['args']['apply_filters'])) {
                     $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
                 }
