@@ -2600,6 +2600,15 @@ class Toolbox
         if (count($doc_data)) {
             $base_path = $CFG_GLPI['root_doc'];
 
+            $was_html_encoded = Sanitizer::isHtmlEncoded($content_text);
+            $was_escaped      = Sanitizer::isDbEscaped($content_text);
+            if ($was_html_encoded) {
+                $content_text = Sanitizer::decodeHtmlSpecialChars($content_text);
+            }
+            if ($was_escaped) {
+                $content_text = Sanitizer::dbUnescape($content_text);
+            }
+
             foreach ($doc_data as $id => $image) {
                 if (isset($image['tag'])) {
                    // Add only image files : try to detect mime type
@@ -2626,13 +2635,13 @@ class Toolbox
                       // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
                             '/' . Document::getImageTag($image['tag']) . '/',
-                            Sanitizer::encodeHtmlSpecialChars($img),
+                            $img,
                             $content_text
                         );
 
                          // 2 - Replace img with tag in id attribute by the image
                         $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
-                        preg_match_all($regex, Sanitizer::unsanitize($content_text), $matches);
+                        preg_match_all($regex, $content_text, $matches);
                         foreach ($matches[0] as $match_img) {
                             //retrieve dimensions
                             $width = $height = null;
@@ -2666,9 +2675,9 @@ class Toolbox
                             $content_text = str_replace(
                                 $match_img,
                                 $new_image,
-                                Sanitizer::unsanitize($content_text)
+                                $content_text
                             );
-                            $content_text = Sanitizer::encodeHtmlSpecialChars($content_text);
+                            $content_text = $content_text;
                         }
 
                         // If the tag is from another ticket : link document to ticket
@@ -2695,6 +2704,13 @@ class Toolbox
                         );
                     }
                 }
+            }
+
+            if ($was_html_encoded) {
+                $content_text = Sanitizer::encodeHtmlSpecialChars($content_text);
+            }
+            if ($was_escaped) {
+                $content_text = Sanitizer::dbEscape($content_text);
             }
         }
 
