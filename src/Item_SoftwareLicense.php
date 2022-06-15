@@ -711,12 +711,14 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".userfirstname")
                 );
             }
-            if ($DB->fieldExists($itemtable, 'entities_id')) {
-                $query['SELECT'][] = 'glpi_entities.completename AS entity';
-                $query['LEFT JOIN']['glpi_entities'] = [
+            $entity_fkey  = Entity::getForeignKeyField();
+            $entity_table = Entity::getTable();
+            if ($DB->fieldExists($itemtable, $entity_fkey)) {
+                $query['SELECT'][] = sprintf('%s.completename AS entity', $entity_table);
+                $query['LEFT JOIN'][$entity_table] = [
                     'FKEY'   => [
-                        $itemtable     => 'entities_id',
-                        'glpi_users'   => 'id'
+                        $itemtable    => $entity_fkey,
+                        $entity_table => 'id'
                     ]
                 ];
                 $query['WHERE'] += getEntitiesRestrictCriteria($itemtable, '', '', true);
@@ -725,12 +727,14 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName('entity')
                 );
             }
-            if ($DB->fieldExists($itemtable, 'locations_id')) {
-                $query['SELECT'][] = 'glpi_locations.completename AS location';
-                $query['LEFT JOIN']['glpi_locations'] = [
+            $location_fkey  = Location::getForeignKeyField();
+            $location_table = Location::getTable();
+            if ($DB->fieldExists($itemtable, $location_fkey)) {
+                $query['SELECT'][] = sprintf('%s.completename AS location', $location_table);
+                $query['LEFT JOIN'][$location_table] = [
                     'FKEY'   => [
-                        $itemtable     => 'locations_id',
-                        'glpi_users'   => 'id'
+                        $itemtable      => $location_fkey,
+                        $location_table => 'id'
                     ]
                 ];
             } else {
@@ -738,12 +742,14 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName('location')
                 );
             }
-            if ($DB->fieldExists($itemtable, 'states_id')) {
-                $query['SELECT'][] = 'glpi_states.name AS state';
-                $query['LEFT JOIN']['glpi_states'] = [
+            $state_fkey  = State::getForeignKeyField();
+            $state_table = State::getTable();
+            if ($DB->fieldExists($itemtable, $state_fkey)) {
+                $query['SELECT'][] = sprintf('%s.name AS state', $state_table);
+                $query['LEFT JOIN'][$state_table] = [
                     'FKEY'   => [
-                        $itemtable     => 'states_id',
-                        'glpi_users'   => 'id'
+                        $itemtable   => $state_fkey,
+                        $state_table => 'id'
                     ]
                 ];
             } else {
@@ -751,12 +757,14 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName('state')
                 );
             }
-            if ($DB->fieldExists($itemtable, 'groups_id')) {
-                $query['SELECT'][] = 'glpi_groups.name AS groupe';
-                $query['LEFT JOIN']['glpi_groups'] = [
+            $group_fkey  = State::getForeignKeyField();
+            $group_table = State::getTable();
+            if ($DB->fieldExists($itemtable, $group_fkey)) {
+                $query['SELECT'][] = sprintf('%s.name AS groupe', $group_table);
+                $query['LEFT JOIN'][$group_table] = [
                     'FKEY'   => [
-                        $itemtable     => 'groups_id',
-                        'glpi_users'   => 'id'
+                        $itemtable    => $group_fkey,
+                        $group_table  => 'id'
                     ]
                 ];
             } else {
