@@ -34,10 +34,6 @@
 {% extends 'layout/page_card_notlogged.html.twig' %}
 
 {% block content_block %}
-   {% if redirect %}
-   {{ call('Toolbox::manageRedirect', [redirect]) }}
-   {% endif %}
-
    <form action="{{ path('front/login.php') }}" method="post" autocomplete="off"  data-submit-once>
       <input type="hidden" name="noAUTO" value="{{ noAuto }}" />
       <input type="hidden" name="redirect" value="{{ redirect }}" />
