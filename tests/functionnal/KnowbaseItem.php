@@ -414,14 +414,11 @@ class KnowbaseItem extends DbTestCase
         ]);
 
         // Create KB item with category
-        $kb_item = null;
-        $this->when(function () use ($category, &$kb_item) {
-            $kb_item = $this->createItem(\KnowbaseItem::class, [
-                'name' => __FUNCTION__ . '_1',
-                'answer' => __FUNCTION__ . '_1',
-                'knowbaseitemcategories_id' => $category->getID(),
-            ], ['knowbaseitemcategories_id']);
-        })->error()->withType(E_USER_DEPRECATED)->exists();
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name' => __FUNCTION__ . '_1',
+            'answer' => __FUNCTION__ . '_1',
+            'knowbaseitemcategories_id' => $category->getID(),
+        ], ['knowbaseitemcategories_id']);
 
         // Get categories linked to our kb_item
         $linked_categories = (new \KnowbaseItem_KnowbaseItemCategory())->find([
