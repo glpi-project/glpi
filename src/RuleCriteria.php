@@ -551,22 +551,6 @@ class RuleCriteria extends CommonDBChild
                 break;
 
             case Rule::PATTERN_DATE_IS_NOT_EQUAL:
-                $target_date = Html::computeGenericDateTimeSearch($pattern);
-
-                if (
-                    $target_date != $pattern
-                    && !str_contains("MINUTE", $pattern)
-                    && !str_contains("HOUR", $pattern)
-                ) {
-                    // We are using a dynamic date with a precision of at least
-                    // one day (e.g. 2 days ago).
-                    // In this case we must compare using date instead of datetime
-                    $field = substr($field, 0, 10);
-                    $target_date = substr($field, 0, 10);
-                }
-
-                return $field != $target_date;
-
             case Rule::PATTERN_DATE_IS_EQUAL:
                 $target_date = Html::computeGenericDateTimeSearch($pattern);
 
@@ -582,7 +566,9 @@ class RuleCriteria extends CommonDBChild
                     $target_date = substr($target_date, 0, 10);
                 }
 
-                return $field == $target_date;
+                return $condition == Rule::PATTERN_DATE_IS_EQUAL
+                    ? $field == $target_date
+                    : $field != $target_date;
 
             case Rule::PATTERN_DATE_IS_BEFORE:
                 return $field < Html::computeGenericDateTimeSearch($pattern);
