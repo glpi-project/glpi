@@ -399,6 +399,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $kb_item_item->add($params);
         }
 
+        // Support old "knowbaseitemcategories_id" input
+        // Delete this code after 10.1 release
+        if (isset($this->input['knowbaseitemcategories_id'])) {
+            Toolbox::deprecated("knowbaseitemcategories_id is depreacted, please use _categories");
+            $categories = $this->input['knowbaseitemcategories_id'];
+            $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
+            unset($this->input['knowbaseitemcategories_id']);
+        }
+
         // Handle categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, "_categories");
     }
@@ -745,6 +754,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 'force_update'  => true,
             ]
         );
+
+        // Support old "knowbaseitemcategories_id" input
+        // Delete this code after 10.1 release
+        if (isset($this->input['knowbaseitemcategories_id'])) {
+            Toolbox::deprecated("knowbaseitemcategories_id is depreacted, please use _categories");
+            $categories = $this->input['knowbaseitemcategories_id'];
+            $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
+            unset($this->input['knowbaseitemcategories_id']);
+        }
 
         // Update categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');

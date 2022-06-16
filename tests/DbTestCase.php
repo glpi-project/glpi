@@ -202,19 +202,20 @@ class DbTestCase extends \GLPITestCase
      *
      * @param string $itemtype
      * @param array $input
+     * @param array $skip_fields Fields that wont be checked after creation
      *
      * @return CommonDBTM
      */
-    protected function createItem($itemtype, $input): CommonDBTM
+    protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
         $input = Sanitizer::sanitize($input);
         $id = $item->add($input);
         $this->integer($id)->isGreaterThan(0);
 
-       // Remove special fields
-        $input = array_filter($input, function ($key) {
-            return strpos($key, '_') !== 0;
+        // Remove special fields
+        $input = array_filter($input, function ($key) use ($skip_fields) {
+            return !in_array($key, $skip_fields) && strpos($key, '_') !== 0;
         }, ARRAY_FILTER_USE_KEY);
 
         $this->checkInput($item, $id, $input);

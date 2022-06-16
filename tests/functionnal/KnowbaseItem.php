@@ -397,6 +397,45 @@ class KnowbaseItem extends DbTestCase
         $this->string($answer)->contains('<a href="#title-1c">');
     }
 
+    /**
+     * To be deleted after 10.1 release
+     */
+    public function testCreateWithCategoriesDeprecated()
+    {
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a KB category
+        $category = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => __FUNCTION__ . '_1',
+            'comment' => __FUNCTION__ . '_1',
+            'entities_id' => $root_entity,
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+
+        // Create KB item with category
+        $kb_item = null;
+        $this->when(function () use ($category, &$kb_item) {
+            $kb_item = $this->createItem(\KnowbaseItem::class, [
+                'name' => __FUNCTION__ . '_1',
+                'answer' => __FUNCTION__ . '_1',
+                'knowbaseitemcategories_id' => $category->getID(),
+            ], ['knowbaseitemcategories_id']);
+        })->error()->withType(E_USER_DEPRECATED)->exists();
+
+        // Get categories linked to our kb_item
+        $linked_categories = (new \KnowbaseItem_KnowbaseItemCategory())->find([
+            'knowbaseitems_id' => $kb_item->getID(),
+        ]);
+
+        // We expect one category
+        $this->array($linked_categories)->hasSize(1);
+
+        // Check category id
+        $data = array_pop($linked_categories);
+        $this->integer($data['knowbaseitemcategories_id'])->isEqualTo($category->getID());
+    }
+
     public function testCreateWithCategories()
     {
         global $DB;
@@ -409,7 +448,7 @@ class KnowbaseItem extends DbTestCase
             'comment' => __FUNCTION__ . '_1',
             'entities_id' => $root_entity,
             'is_recursive' => 1,
-            '_categories' => [],
+            'knowbaseitemcategories_id' => 0,
         ]);
         $this->integer($kb_cat_id1)->isGreaterThan(0);
 
@@ -418,7 +457,7 @@ class KnowbaseItem extends DbTestCase
             'comment' => __FUNCTION__ . '_2',
             'entities_id' => $root_entity,
             'is_recursive' => 1,
-            '_categories' => [],
+            'knowbaseitemcategories_id' => 0,
         ]);
         $this->integer($kb_cat_id2)->isGreaterThan(0);
 
