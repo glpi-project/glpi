@@ -258,6 +258,25 @@ class Dropdown
             $params['url'],
             $p
         );
+
+        // Add icon
+        $add_item_icon = "";
+        if (
+            ($item instanceof CommonDropdown)
+            && $item->canCreate()
+            && !isset($_REQUEST['_in_modal'])
+            && $params['addicon']
+        ) {
+            $add_item_icon .= '<div class="btn btn-outline-secondary"
+                           title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
+            $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
+            $add_item_icon .= "<span data-bs-toggle='tooltip'>
+              <i class='fa-fw ti ti-plus'></i>
+              <span class='sr-only'>" . __s('Add') . "</span>
+                </span>";
+            $add_item_icon .= '</div>';
+        }
+
        // Display comment
         $icons = "";
         if ($params['comments']) {
@@ -316,14 +335,7 @@ class Dropdown
                 && !isset($_REQUEST['_in_modal'])
                 && $params['addicon']
             ) {
-                  $icons .= '<div class="btn btn-outline-secondary"
-                               title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
-                  $icons .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
-                  $icons .= "<span data-bs-toggle='tooltip'>
-                  <i class='fa-fw ti ti-plus'></i>
-                  <span class='sr-only'>" . __s('Add') . "</span>
-               </span>";
-                  $icons .= '</div>';
+                  $icons .= $add_item_icon;
             }
 
            // Supplier Links
@@ -377,6 +389,11 @@ class Dropdown
                 $icons .= "</span>";
                 $icons .= '</div>';
             }
+        }
+
+        // Trick to get the "+" button to work with dropdowns that support multiple values
+        if (strlen($icons) == 0 && strlen($add_item_icon) > 0) {
+            $icons .= $add_item_icon;
         }
 
         if (strlen($icons) > 0) {

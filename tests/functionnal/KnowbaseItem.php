@@ -406,6 +406,42 @@ HTML
         $this->string($answer)->contains('<a href="#title-1c">');
     }
 
+    /**
+     * To be deleted after 10.1 release
+     */
+    public function testCreateWithCategoriesDeprecated()
+    {
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a KB category
+        $category = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => __FUNCTION__ . '_1',
+            'comment' => __FUNCTION__ . '_1',
+            'entities_id' => $root_entity,
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+
+        // Create KB item with category
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name' => __FUNCTION__ . '_1',
+            'answer' => __FUNCTION__ . '_1',
+            'knowbaseitemcategories_id' => $category->getID(),
+        ], ['knowbaseitemcategories_id']);
+
+        // Get categories linked to our kb_item
+        $linked_categories = (new \KnowbaseItem_KnowbaseItemCategory())->find([
+            'knowbaseitems_id' => $kb_item->getID(),
+        ]);
+
+        // We expect one category
+        $this->array($linked_categories)->hasSize(1);
+
+        // Check category id
+        $data = array_pop($linked_categories);
+        $this->integer($data['knowbaseitemcategories_id'])->isEqualTo($category->getID());
+    }
+
     public function testCreateWithCategories()
     {
         global $DB;
@@ -436,7 +472,7 @@ HTML
         $kbitems_id1 = $kbitem->add([
             'name' => __FUNCTION__ . '_1',
             'answer' => __FUNCTION__ . '_1',
-            'knowbaseitemcategories_id' => $kb_cat_id1,
+            '_categories' => [$kb_cat_id1],
         ]);
         $this->integer($kbitems_id1)->isGreaterThan(0);
 
@@ -454,7 +490,7 @@ HTML
         $kbitems_id2 = $kbitem->add([
             'name' => __FUNCTION__ . '_2',
             'answer' => __FUNCTION__ . '_2',
-            'knowbaseitemcategories_id' => [$kb_cat_id1, $kb_cat_id2],
+            '_categories' => [$kb_cat_id1, $kb_cat_id2],
         ]);
         $this->integer($kbitems_id2)->isGreaterThan(0);
 

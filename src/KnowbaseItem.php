@@ -242,7 +242,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $this->addStandardTab(__CLASS__, $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_KnowbaseItemCategory', $ong, $options);
         $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
@@ -399,17 +398,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $kb_item_item->add($params);
         }
 
-        // Handle categories
+        // Support old "knowbaseitemcategories_id" input
+        // FIXME Deprecate it in GLPI 10.1
         if (isset($this->input['knowbaseitemcategories_id'])) {
-            $kb_cats = is_array($this->input['knowbaseitemcategories_id']) ? $this->input['knowbaseitemcategories_id'] : [$this->input['knowbaseitemcategories_id']];
-            foreach ($kb_cats as $kb_cat) {
-                $kb_cat_item = new KnowbaseItem_KnowbaseItemCategory();
-                $kb_cat_item->add([
-                    'knowbaseitems_id' => $this->getID(),
-                    'knowbaseitemcategories_id' => $kb_cat,
-                ]);
-            }
+            $categories = $this->input['knowbaseitemcategories_id'];
+            $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
+            unset($this->input['knowbaseitemcategories_id']);
         }
+
+        // Handle categories
+        $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, "_categories");
     }
 
 
@@ -430,6 +428,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
        // Profile / entities
         $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
+
+        // Load categories
+        $this->load1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
     }
 
 
@@ -751,6 +752,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 'force_update'  => true,
             ]
         );
+
+        // Support old "knowbaseitemcategories_id" input
+        // FIXME Deprecate it in GLPI 10.1
+        if (isset($this->input['knowbaseitemcategories_id'])) {
+            $categories = $this->input['knowbaseitemcategories_id'];
+            $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
+            unset($this->input['knowbaseitemcategories_id']);
+        }
+
+        // Update categories
+        $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
     }
 
 
@@ -829,17 +841,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $options['formoptions'] = "data-track-changes=true";
         $this->showFormHeader($options);
         echo "<tr class='tab_bg_1'>";
-        if ($this->isNewItem()) {
-            echo "<td>" . KnowbaseItemCategory::getTypeName(Session::getPluralNumber()) . "</td>";
-            echo "<td>";
-            KnowbaseItemCategory::dropdown([
-                'value' => [],
-                'multiple' => true,
-            ]);
-            echo "</td>";
-        } else {
-            echo "<td colspan=2></td>";
-        }
+        echo "<td>" . KnowbaseItemCategory::getTypeName(Session::getPluralNumber()) . "</td>";
+        echo "<td>";
+        // See CommonDBTM::update1NTableData, hidden input needed to handle empty values
+        echo  Html::input("__categories_defined", ["type" => "hidden", "value" => 1]);
+        KnowbaseItemCategory::dropdown([
+            'name'     => "_categories[]",
+            'value'    => $this->fields['_categories'] ?? [],
+            'multiple' => true,
+            'width'    => "100%",
+        ]);
+        echo "</td>";
+
         echo "<td>";
         echo "<input type='hidden' name='users_id' value=\"" . Session::getLoginUserID() . "\">";
         if ($this->fields["date_creation"]) {
