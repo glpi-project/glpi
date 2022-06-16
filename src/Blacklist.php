@@ -363,6 +363,7 @@ class Blacklist extends CommonDropdown
             '/0+/',
             '/1+/',
             '/\d\.\d(\.\d)?/',
+            '/(0|1)+/',
             '0123456789',
             '12345',
             '123456',

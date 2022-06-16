@@ -46,7 +46,7 @@ class Blacklist extends DbTestCase
         $defaults = \Blacklist::getDefaults();
 
         $expecteds = [
-            \Blacklist::SERIAL => 35,
+            \Blacklist::SERIAL => 36,
             \Blacklist::UUID => 5,
             \Blacklist::MAC => 19,
             \Blacklist::MODEL => 7,
@@ -83,6 +83,9 @@ class Blacklist extends DbTestCase
                 'expected' => ['name' => 'My name']
             ], [
                 'input'    => ['name' => 'My name', 'serial' => '1.0.0'],
+                'expected' => ['name' => 'My name']
+            ], [
+                'input'    => ['name' => 'My name', 'serial' => '0000001000000'],
                 'expected' => ['name' => 'My name']
             ]
         ];
