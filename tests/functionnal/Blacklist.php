@@ -87,6 +87,9 @@ class Blacklist extends DbTestCase
             ], [
                 'input'    => ['name' => 'My name', 'serial' => '0000001000000'],
                 'expected' => ['name' => 'My name']
+            ], [
+                'input'    => ['name' => 'My name', 'serial' => 'XYZ01'],
+                'expected' => ['name' => 'My name', 'serial' => 'XYZ01']
             ]
         ];
     }
