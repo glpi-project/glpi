@@ -5565,6 +5565,11 @@ class CommonDBTM extends CommonGLPI
                 $input['_auto'] = 0;
             }
 
+            // Add last_inventory_update
+            if (!isset($this->input['last_inventory_update']) && isset($this->fields['last_inventory_update'])) {
+                $input['last_inventory_update'] = $this->fields['last_inventory_update'];
+            }
+
             // Set the condition (add or update)
             $output = $ruleasset->processAllRules($input, [], [], [
                 'condition' => $condition

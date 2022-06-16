@@ -148,6 +148,16 @@ class RuleAsset extends Rule
         $criterias['_groups_id_of_user']['linkfield']    = '_groups_id_of_user';
         $criterias['_groups_id_of_user']['type']         = 'dropdown';
 
+        $criterias['last_inventory_update']['name']            = __('Last inventory update');
+        $criterias['last_inventory_update']['type']            = 'datetime';
+        $criterias['last_inventory_update']['table']           = '';
+        $criterias['last_inventory_update']['allow_condition'] = [
+            Rule::PATTERN_DATE_IS_BEFORE,
+            Rule::PATTERN_DATE_IS_AFTER,
+            Rule::PATTERN_DATE_IS_EQUAL,
+            Rule::PATTERN_DATE_IS_NOT_EQUAL,
+        ];
+
         return $criterias;
     }
 

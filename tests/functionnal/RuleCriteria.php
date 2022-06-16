@@ -808,10 +808,10 @@ class RuleCriteria extends DbTestCase
     public function testGetConditions()
     {
         $conditions = \RuleCriteria::getConditions('RuleDictionnarySoftware');
-        $this->array($conditions)->hasSize(10);
+        $this->array($conditions)->hasSize(14);
 
         $conditions = \RuleCriteria::getConditions('RuleTicket', 'locations_id');
-        $this->array($conditions)->hasSize(12);
+        $this->array($conditions)->hasSize(16);
     }
 
     public function testGetConditionByID()
