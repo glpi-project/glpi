@@ -305,12 +305,13 @@ table {
     }
 }
 
-.qtip-bootstrap, .popover .popover-body {
+.qtip-bootstrap,
+.popover .popover-body {
     background-color: $color-contrast-light;
     color: $dark;
 }
 
-.popover .popover-arrow:after {
+.popover .popover-arrow::after {
     border-top-color: $color-contrast-light;
 }
 
