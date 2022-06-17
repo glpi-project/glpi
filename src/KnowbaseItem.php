@@ -625,7 +625,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $where['OR'] = [
                 'glpi_knowbaseitems.users_id'       => Session::getLoginUserID(),
                 'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
-                'glpi_knowbaseitems.is_faq'         => 1,
             ];
         } else if ($is_public_faq_context) {
             $where = [
