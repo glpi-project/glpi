@@ -497,8 +497,9 @@ class Peripheral extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
         $this->integer(count($peripherals))->isIdenticalTo(1);
 
+        //set to global management
         $this->boolean($peripheral->getFromDB(current($peripherals)['items_id']));
-        $this->boolean($peripheral->update(['id' => $peripheral->fields['id'], 'is_global' => 1]));
+        $this->boolean($peripheral->update(['id' => $peripheral->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
 
         //same peripheral, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>

@@ -378,8 +378,9 @@ class Monitor extends AbstractInventoryAsset
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
+        //set to global management
         $this->boolean($monitor->getFromDB(current($monitors)['items_id']));
-        $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => 1]));
+        $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
 
         //same monitor, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>

@@ -369,8 +369,9 @@ class Printer extends AbstractInventoryAsset
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
+        //set to global management
         $this->boolean($printer->getFromDB(current($printers)['items_id']));
-        $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => 1]));
+        $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
 
         //same printer, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
