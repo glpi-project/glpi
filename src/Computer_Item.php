@@ -91,6 +91,8 @@ class Computer_Item extends CommonDBRelation
         $confname = strtolower($item->gettype()) . 's_management_restrict';
         if (\Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANGEMENT) {
             $is_global = true;
+        } else if (\Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {
+            $is_global = false;
         } else {
             $is_global = $item->getField('is_global') == 1;
         }
