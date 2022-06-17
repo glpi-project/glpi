@@ -369,8 +369,8 @@ abstract class InventoryAsset
             if (isset($citem->fields['id'])) {
                 $citem->delete(['id' => $citem->fields['id']], true);
             }
-            $citem->add($input);
         }
+        $citem->add($input);
     }
 
     protected function setNew(): self

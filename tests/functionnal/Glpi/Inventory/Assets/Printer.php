@@ -225,39 +225,39 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory with one printer
+        //computer inventory with one printer
         $inventory = $this->doInventory($xml_source, true);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
-       //we have 1 printer
+        //we have 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //we have 1 printer items linked to the computer
+        //we have 1 printer items linked to the computer
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //printer present in the inventory source is dynamic
+        //printer present in the inventory source is dynamic
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //same inventory again
+        //same inventory again
         $inventory = $this->doInventory($xml_source, true);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
-       //we still have only 1 printer
+        //we still have only 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //we still have only 1 printer items linked to the computer
+        //we still have only 1 printer items linked to the computer
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //same printer, but on another computer
+        //same printer, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -285,44 +285,44 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory with one printer
+        //computer inventory with one printer
         $inventory = $this->doInventory($xml_source_2, true);
 
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
 
-       //we still have only 1 printer
+        //we still have only 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //no longer linked on first computer inventoried
+        //no longer linked on first computer inventoried
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
         $this->integer(count($printers))->isIdenticalTo(0);
 
-       //but now linked on last inventoried computer
+        //but now linked on last inventoried computer
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_2_id]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //printer is still dynamic
+        //printer is still dynamic
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //replay first computer inventory, printer is back \o/
+        //replay first computer inventory, printer is back \o/
         $inventory = $this->doInventory($xml_source, true);
 
-       //we still have only 1 printer
+        //we still have only 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //linked again on first computer inventoried
+        //linked again on first computer inventoried
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //no longer linked on last inventoried computer
+        //no longer linked on last inventoried computer
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_2_id]);
         $this->integer(count($printers))->isIdenticalTo(0);
 
-       //printer is still dynamic
+        //printer is still dynamic
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($printers))->isIdenticalTo(1);
     }
@@ -359,20 +359,20 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory with one printer
+        //computer inventory with one printer
         $inventory = $this->doInventory($xml_source, true);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
-       //we have 1 printer items linked to the computer
+        //we have 1 printer items linked to the computer
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
         $this->boolean($printer->getFromDB(current($printers)['items_id']));
         $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => 1]));
 
-       //same printer, but on another computer
+        //same printer, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -400,23 +400,23 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory with one printer
+        //computer inventory with one printer
         $inventory = $this->doInventory($xml_source_2, true);
 
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
 
-       //we still have only 1 printer
+        //we still have only 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //still linked on first computer inventoried
+        //still linked on first computer inventoried
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
         $this->integer(count($printers))->isIdenticalTo(1);
 
-       //not linked on last inventoried computer
+        //also linked on last inventoried computer
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_2_id]);
-        $this->integer(count($printers))->isIdenticalTo(0);
+        $this->integer(count($printers))->isIdenticalTo(1);
     }
 
     public function testPrinterIgnoreImport()
