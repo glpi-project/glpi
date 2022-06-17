@@ -582,7 +582,7 @@ class Peripheral extends AbstractInventoryAsset
 
         //per default, configuration allows peripheral import. change that.
         $this->login();
-        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => 1]);
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => \COnfig::GLOBAL_MANGEMENT]);
         $this->logout();
 
         //computer inventory with one peripheral
@@ -590,7 +590,7 @@ class Peripheral extends AbstractInventoryAsset
 
         //restore default configuration
         $this->login();
-        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => 2]);
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
         $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Validity Sensors, Inc.']])->current();
@@ -639,7 +639,7 @@ class Peripheral extends AbstractInventoryAsset
 
         //per default, configuration allows peripheral import. change that.
         $this->login();
-        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => 1]);
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => \Config::GLOBAL_MANGEMENT]);
         $this->logout();
 
         //computer inventory with one peripheral
@@ -647,7 +647,7 @@ class Peripheral extends AbstractInventoryAsset
 
         //restore default configuration
         $this->login();
-        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => 2]);
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
         $computers_2_id = $inventory->getItem()->fields['id'];

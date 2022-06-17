@@ -50,6 +50,10 @@ class Config extends CommonDBTM
     const DELETE_ALL = -1;
     const KEEP_ALL = 0;
 
+    public const UNIT_MANAGEMENT = 0;
+    public const GLOBAL_MANGEMENT = 1;
+    public const NO_MANAGEMENT = 2;
+
    // From CommonGLPI
     protected $displaylist         = false;
 
@@ -2442,11 +2446,10 @@ HTML;
      **/
     public static function dropdownGlobalManagement($name, $value, $rand = null)
     {
-
         $choices = [
-            __('Yes - Restrict to unit management'),
-            __('Yes - Restrict to global management'),
-            __('No'),
+            self::UNIT_MANAGEMENT => __('Yes - Restrict to unit management'),
+            self::GLOBAL_MANAGEMENT => __('Yes - Restrict to global management'),
+            self::NO_MANAGEMENT => __('No'),
         ];
         Dropdown::showFromArray($name, $choices, ['value' => $value, 'rand' => $rand]);
     }

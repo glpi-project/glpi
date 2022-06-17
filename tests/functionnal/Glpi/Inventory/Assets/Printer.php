@@ -453,7 +453,7 @@ class Printer extends AbstractInventoryAsset
 
         //per default, configuration allows printer import. change that.
         $this->login();
-        \Config::setConfigurationValues('core', ['printers_management_restrict' => 1]);
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::GLOBAL_MANGEMENT]);
         $this->logout();
 
         //computer inventory with one printer
@@ -461,7 +461,7 @@ class Printer extends AbstractInventoryAsset
 
         //restore default configuration
         $this->login();
-        \Config::setConfigurationValues('core', ['printers_management_restrict' => 2]);
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
         $computers_id = $inventory->getItem()->fields['id'];
@@ -504,7 +504,7 @@ class Printer extends AbstractInventoryAsset
 
         //per default, configuration allows printer import. change that.
         $this->login();
-        \Config::setConfigurationValues('core', ['printers_management_restrict' => 1]);
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::GLOBAL_MANGEMENT]);
         $this->logout();
 
         //computer inventory with one printer
@@ -512,7 +512,7 @@ class Printer extends AbstractInventoryAsset
 
         //restore default configuration
         $this->login();
-        \Config::setConfigurationValues('core', ['printers_management_restrict' => 2]);
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
         $computers_2_id = $inventory->getItem()->fields['id'];

@@ -461,7 +461,7 @@ class Monitor extends AbstractInventoryAsset
 
         //per default, configuration allows monitor import. change that.
         $this->login();
-        \Config::setConfigurationValues('core', ['monitors_management_restrict' => 1]);
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::GLOBAL_MANGEMENT]);
         $this->logout();
 
         //computer inventory with one monitor
@@ -469,7 +469,7 @@ class Monitor extends AbstractInventoryAsset
 
         //restore default configuration
         $this->login();
-        \Config::setConfigurationValues('core', ['monitors_management_restrict' => 2]);
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
         $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
@@ -517,7 +517,7 @@ class Monitor extends AbstractInventoryAsset
 
         //per default, configuration allows monitor import. change that.
         $this->login();
-        \Config::setConfigurationValues('core', ['monitors_management_restrict' => 1]);
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::GLOBAL_MANGEMENT]);
         $this->logout();
 
         //computer inventory with one monitor
@@ -525,7 +525,7 @@ class Monitor extends AbstractInventoryAsset
 
         //restore default configuration
         $this->login();
-        \Config::setConfigurationValues('core', ['monitors_management_restrict' => 2]);
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
         $computers_2_id = $inventory->getItem()->fields['id'];
