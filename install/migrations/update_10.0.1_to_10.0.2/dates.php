@@ -54,19 +54,39 @@ $columns_iterator = $DB->request(
         'WHERE'  => [
             'table_schema' => $DB->dbdefault,
             'data_type'    => ['timestamp', 'datetime', 'date'],
-        ]
+        ],
+        'ORDER'  => ['TABLE_NAME', 'COLUMN_NAME'],
     ]
 );
 
 foreach ($columns_iterator as $column) {
     $nullable = 'YES' === $column['IS_NULLABLE'];
-    $min_value = $column['DATA_TYPE'] === 'date' ? '1000-01-01' : '1970-01-01 00:00:01';
+    $min_value = null;
+    switch ($column['DATA_TYPE']) {
+        case 'date':
+            $min_value = '1000-01-01';
+            break;
+        case 'datetime':
+            $min_value = '1970-01-01 00:00:01';
+            break;
+        case 'timestamp':
+            // Min value has is "1970-01-01 00:00:01" in UTC, so if we try to use this value in a timezone with a positive offset
+            // following error will be trigerred: "Incorrect datetime value: '1970-01-01 00:00:01' for column ..."
+            $min_value = new \QueryExpression(
+                sprintf(
+                    'CONVERT_TZ(%s, %s, (SELECT @@SESSION.time_zone))',
+                    $DB->quoteValue('1970-01-01 00:00:01'),
+                    $DB->quoteValue('+00:00'),
+                )
+            );
+            break;
+    }
 
     $migration->addPostQuery(
         $DB->buildUpdate(
             $column['TABLE_NAME'],
             [
-                $column['COLUMN_NAME'] => $nullable ? null : $min_value
+                $column['COLUMN_NAME'] => $nullable ? null : $min_value,
             ],
             [
                 ['NOT' => [$column['COLUMN_NAME'] => null]],
