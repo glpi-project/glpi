@@ -362,11 +362,7 @@ abstract class CommonITILObject extends CommonDBTM
         $options['_saved'] = $this->restoreInput();
 
         // Restore saved values and override $this->fields
-        $saved_exclusions = [];
-        if (!$ID) {
-            $saved_exclusions = ['status'];
-        }
-        $this->restoreSavedValues($options['_saved'], $saved_exclusions);
+        $this->restoreSavedValues($options['_saved']);
 
         // Set default options
         if (!$ID) {
