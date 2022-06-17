@@ -459,7 +459,7 @@ class Monitor extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        //per default, configuration allows peripheral import. change that.
+        //per default, configuration allows monitor import. change that.
         $this->login();
         \Config::setConfigurationValues('core', ['monitors_management_restrict' => 1]);
         $this->logout();
@@ -515,7 +515,7 @@ class Monitor extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        //per default, configuration allows peripheral import. change that.
+        //per default, configuration allows monitor import. change that.
         $this->login();
         \Config::setConfigurationValues('core', ['monitors_management_restrict' => 1]);
         $this->logout();

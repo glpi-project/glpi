@@ -451,7 +451,7 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        //per default, configuration allows peripheral import. change that.
+        //per default, configuration allows printer import. change that.
         $this->login();
         \Config::setConfigurationValues('core', ['printers_management_restrict' => 1]);
         $this->logout();
@@ -502,7 +502,7 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        //per default, configuration allows peripheral import. change that.
+        //per default, configuration allows printer import. change that.
         $this->login();
         \Config::setConfigurationValues('core', ['printers_management_restrict' => 1]);
         $this->logout();
