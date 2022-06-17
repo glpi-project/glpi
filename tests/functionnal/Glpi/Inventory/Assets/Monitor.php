@@ -429,4 +429,76 @@ class Monitor extends AbstractInventoryAsset
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
         $this->integer(count($monitors))->isIdenticalTo(1);
     }
+
+    public function testInventoryImportOrNot()
+    {
+        $monitor = new \Monitor();
+        $item_monitor = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows monitor import. change that.
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
+                'import_monitor' => 0
+            ])
+        )->isTrue();
+        $this->logout();
+
+        //computer inventory with one printer
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        $this->boolean(
+            $conf->saveConf([
+                'import_monitor' => 1
+            ])
+        )->isTrue();
+        $this->logOut();
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //no monitor linked to the computer
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(0);
+
+        //inventory again
+        $this->doInventory($xml_source, true);
+
+        //we now have 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //we have 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor present in the inventory source is dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+    }
 }

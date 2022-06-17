@@ -613,4 +613,81 @@ class Printer extends AbstractInventoryAsset
         $this->boolean($printer->getFromDB($printer2['items_id']))->isTrue();
         $this->string($printer->fields['name'])->isIdenticalTo('HP Color LaserJet Pro MFP M476 PCL 6');
     }
+
+    public function testInventoryImportOrNot()
+    {
+        $printer = new \Printer();
+        $item_printer = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows printer import. change that.
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
+                'import_printer' => 0
+            ])
+        )->isTrue();
+        $this->logout();
+
+        //computer inventory with one printer
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        $this->boolean(
+            $conf->saveConf([
+                'import_printer' => 1
+            ])
+        )->isTrue();
+        $this->logOut();
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //no printer linked to the computer
+        $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($printers))->isIdenticalTo(0);
+
+        //inventory again
+        $this->doInventory($xml_source, true);
+
+        //we now have 1 printer
+        $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //we have 1 printer items linked to the computer
+        $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //printer present in the inventory source is dynamic
+        $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+    }
 }

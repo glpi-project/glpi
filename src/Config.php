@@ -2444,8 +2444,8 @@ HTML;
     {
 
         $choices = [
-            __('Yes - Restrict to unit management for manual add'),
-            __('Yes - Restrict to global management for manual add'),
+            __('Yes - Restrict to unit management'),
+            __('Yes - Restrict to global management'),
             __('No'),
         ];
         Dropdown::showFromArray($name, $choices, ['value' => $value, 'rand' => $rand]);

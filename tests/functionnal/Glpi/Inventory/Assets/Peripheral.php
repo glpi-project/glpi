@@ -549,4 +549,77 @@ class Peripheral extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
         $this->integer(count($peripherals))->isIdenticalTo(1);
     }
+
+    public function testInventoryImportOrNot()
+    {
+        $peripheral = new \Peripheral();
+        $item_peripheral = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <USBDEVICES>
+      <CAPTION>VFS451 Fingerprint Reader</CAPTION>
+      <MANUFACTURER>Validity Sensors, Inc.</MANUFACTURER>
+      <NAME>VFS451 Fingerprint Reader</NAME>
+      <PRODUCTID>0007</PRODUCTID>
+      <SERIAL>00B0FE47AC85</SERIAL>
+      <VENDORID>138A</VENDORID>
+    </USBDEVICES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows peripheral import. change that.
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
+                'import_peripheral' => 0
+            ])
+        )->isTrue();
+        $this->logout();
+
+        //computer inventory with one peripheral
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        $this->boolean(
+            $conf->saveConf([
+                'import_peripheral' => 1
+            ])
+        )->isTrue();
+        $this->logOut();
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //no peripheral linked to the computer
+        $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($peripherals))->isIdenticalTo(0);
+
+        //inventory again
+        $this->doInventory($xml_source, true);
+
+        //we now have 1 peripheral
+        $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+
+        //we have 1 peripheral items linked to the computer
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+
+        //peripheral present in the inventory source is dynamic
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+    }
 }
