@@ -86,9 +86,18 @@ class Computer_Item extends CommonDBRelation
         global $CFG_GLPI;
 
         $item = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
+
+        $is_global = false;
+        $confname = strtolower($item->gettype()) . 's_management_restrict';
+        if (\Config::getConfigurationValue('core', $confname) == 1) {
+            $is_global = true;
+        } else {
+            $is_global = $item->getField('is_global') == 1;
+        }
+
         if (
             !($item instanceof CommonDBTM)
-            || (($item->getField('is_global') == 0)
+            || (!$is_global
               && ($this->countForItem($item) > 0))
         ) {
             return false;

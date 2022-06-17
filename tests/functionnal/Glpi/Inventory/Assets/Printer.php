@@ -419,6 +419,118 @@ class Printer extends AbstractInventoryAsset
         $this->integer(count($printers))->isIdenticalTo(1);
     }
 
+    public function testInventoryConfNoMove()
+    {
+        $printer = new \Printer();
+        $item_printer = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows peripheral import. change that.
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => 1]);
+        $this->logout();
+
+        //computer inventory with one printer
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => 2]);
+        $this->logOut();
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we have 1 printer items linked to the computer
+        $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        $this->boolean($printer->getFromDB(current($printers)['items_id']));
+        $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => 1]));
+
+        //same printer, but on another computer
+        $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows peripheral import. change that.
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => 1]);
+        $this->logout();
+
+        //computer inventory with one printer
+        $inventory = $this->doInventory($xml_source_2, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => 2]);
+        $this->logOut();
+
+        $computers_2_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_2_id)->isGreaterThan(0);
+
+        //we still have only 1 printer
+        $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //still linked on first computer inventoried
+        $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //also linked on last inventoried computer
+        $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_2_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+    }
+
     public function testPrinterIgnoreImport()
     {
         $printer = new \Printer();

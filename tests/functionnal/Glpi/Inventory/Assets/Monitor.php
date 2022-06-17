@@ -430,6 +430,127 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(count($monitors))->isIdenticalTo(1);
     }
 
+    public function testInventoryConfNoMove()
+    {
+        global $DB;
+
+        $monitor = new \Monitor();
+        $item_monitor = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows peripheral import. change that.
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => 1]);
+        $this->logout();
+
+        //computer inventory with one monitor
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => 2]);
+        $this->logOut();
+
+        $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
+        $this->array($cmanuf);
+        $manufacturers_id = $cmanuf['id'];
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we have 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //we have 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor present in the inventory source is dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //same monitor, but on another computer
+        $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows peripheral import. change that.
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => 1]);
+        $this->logout();
+
+        //computer inventory with one monitor
+        $inventory = $this->doInventory($xml_source_2, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => 2]);
+        $this->logOut();
+
+        $computers_2_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_2_id)->isGreaterThan(0);
+
+        //we still have only 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //still linked on first computer inventoried
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //also linked on last inventoried computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor is still dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+    }
+
     public function testInventoryImportOrNot()
     {
         $monitor = new \Monitor();

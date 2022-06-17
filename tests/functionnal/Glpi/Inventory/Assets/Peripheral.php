@@ -550,6 +550,129 @@ class Peripheral extends AbstractInventoryAsset
         $this->integer(count($peripherals))->isIdenticalTo(1);
     }
 
+    public function testInventoryConfNoMove()
+    {
+        global $DB;
+
+        $peripheral = new \Peripheral();
+        $item_peripheral = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <USBDEVICES>
+      <CAPTION>VFS451 Fingerprint Reader</CAPTION>
+      <MANUFACTURER>Validity Sensors, Inc.</MANUFACTURER>
+      <NAME>VFS451 Fingerprint Reader</NAME>
+      <PRODUCTID>0007</PRODUCTID>
+      <SERIAL>00B0FE47AC85</SERIAL>
+      <VENDORID>138A</VENDORID>
+    </USBDEVICES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows peripheral import. change that.
+        $this->login();
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => 1]);
+        $this->logout();
+
+        //computer inventory with one peripheral
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => 2]);
+        $this->logOut();
+
+        $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Validity Sensors, Inc.']])->current();
+        $this->array($cmanuf);
+        $manufacturers_id = $cmanuf['id'];
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we have 1 peripheral
+        $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+        $this->integer(current($peripherals)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //we have 1 peripheral items linked to the computer
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+
+        //peripheral present in the inventory source is dynamic
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+
+        //same peripheral, but on another computer
+        $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <USBDEVICES>
+      <CAPTION>VFS451 Fingerprint Reader</CAPTION>
+      <MANUFACTURER>Validity Sensors, Inc.</MANUFACTURER>
+      <NAME>VFS451 Fingerprint Reader</NAME>
+      <PRODUCTID>0007</PRODUCTID>
+      <SERIAL>00B0FE47AC85</SERIAL>
+      <VENDORID>138A</VENDORID>
+    </USBDEVICES>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows peripheral import. change that.
+        $this->login();
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => 1]);
+        $this->logout();
+
+        //computer inventory with one peripheral
+        $inventory = $this->doInventory($xml_source_2, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => 2]);
+        $this->logOut();
+
+        $computers_2_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_2_id)->isGreaterThan(0);
+
+        //we still have only 1 peripheral
+        $peripherals = $peripheral->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+        $this->integer(current($peripherals)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //still linked on first computer inventoried
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+
+        //also linked on last inventoried computer
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+
+        //peripheral is still dynamic
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $this->integer(count($peripherals))->isIdenticalTo(1);
+    }
+
     public function testInventoryImportOrNot()
     {
         $peripheral = new \Peripheral();
