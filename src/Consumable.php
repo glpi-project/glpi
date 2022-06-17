@@ -364,7 +364,7 @@ class Consumable extends CommonDBChild
         global $DB;
 
         $it = $DB->request([
-            'COUNT'  => 'stock_target',
+            'SELECT'  => ['stock_target'],
             'FROM'   => ConsumableItem::getTable(),
             'WHERE'  => [
                 'id'  => $tID
@@ -387,14 +387,14 @@ class Consumable extends CommonDBChild
         global $DB;
 
         $it = $DB->request([
-            'COUNT'  => 'alarm_threshold',
+            'SELECT'  => ['alarm_threshold'],
             'FROM'   => ConsumableItem::getTable(),
             'WHERE'  => [
                 'id'  => $tID
             ]
         ]);
         if ($it->count()) {
-            return $it->current()['stock_target'];
+            return $it->current()['alarm_threshold'];
         }
         return 0;
     }

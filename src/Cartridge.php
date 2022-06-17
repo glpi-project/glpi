@@ -652,7 +652,7 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $it = $DB->request([
-            'COUNT'  => 'stock_target',
+            'SELECT'  => ['stock_target'],
             'FROM'   => CartridgeItem::getTable(),
             'WHERE'  => [
                 'id'  => $tID
@@ -675,14 +675,14 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $it = $DB->request([
-            'COUNT'  => 'alarm_threshold',
+            'SELECT'  => ['alarm_threshold'],
             'FROM'   => CartridgeItem::getTable(),
             'WHERE'  => [
                 'id'  => $tID
             ]
         ]);
         if ($it->count()) {
-            return $it->current()['stock_target'];
+            return $it->current()['alarm_threshold'];
         }
         return 0;
     }
