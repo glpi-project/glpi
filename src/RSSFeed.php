@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\Sanitizer;
 
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
@@ -908,6 +909,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         global $CFG_GLPI;
 
+        if (Sanitizer::isHtmlEncoded($url)) {
+            $url = Sanitizer::decodeHtmlSpecialChars($url);
+        }
         $feed = new SimplePie();
         $feed->set_cache_location(GLPI_RSS_DIR);
         $feed->set_cache_duration($cache_duration);
