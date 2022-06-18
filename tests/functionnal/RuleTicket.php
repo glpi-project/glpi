@@ -2440,11 +2440,36 @@ class RuleTicket extends DbTestCase
             ])
         )->isFalse();
 
+        $user2 = new \User();
+        $user_id2 = $user2->add($user_input2 = [
+            "name" => "user2",
+        ]);
+        $this->checkInput($user2, $user_id2, $user_input2);
+
         // Test updating ticket
-        $this->boolean($ticket->update(['id' => $tickets_id, 'content' => 'test2']))->isTrue();
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'content' => 'test2',
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype' => 'User',
+                        'items_id' => $user_id2,
+                    ]
+                ]
+            ]
+        ]))->isTrue();
         $result = $ticketUser->getFromDBByCrit([
             'tickets_id'    => $tickets_id,
             'users_id'      => $user_id,
+            'type'          => \CommonITILActor::REQUESTER
+        ]);
+        $this->boolean($result)->isTrue();
+
+        // Ensure existing user is still there
+        $result = $ticketUser->getFromDBByCrit([
+            'tickets_id'    => $tickets_id,
+            'users_id'      => $user_id2,
             'type'          => \CommonITILActor::REQUESTER
         ]);
         $this->boolean($result)->isTrue();
@@ -2524,11 +2549,37 @@ class RuleTicket extends DbTestCase
             ])
         )->isFalse();
 
+        $group2 = new \Group();
+        $group_id2 = $group2->add($group_input2 = [
+            "name" => "group2",
+            "is_requester" => true
+        ]);
+        $this->checkInput($group2, $group_id2, $group_input2);
+
         // Test updating ticket
-        $this->boolean($ticket->update(['id' => $tickets_id, 'content' => 'test2']))->isTrue();
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'content' => 'test2',
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype' => 'Group',
+                        'items_id' => $group_id2,
+                    ]
+                ]
+            ]
+        ]))->isTrue();
         $result = $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
             'groups_id'          => $group_id1,
+            'type'               => \CommonITILActor::REQUESTER
+        ]);
+        $this->boolean($result)->isTrue();
+
+        // Ensure existing group is still there
+        $result = $ticketGroup->getFromDBByCrit([
+            'tickets_id'         => $tickets_id,
+            'groups_id'          => $group_id2,
             'type'               => \CommonITILActor::REQUESTER
         ]);
         $this->boolean($result)->isTrue();
