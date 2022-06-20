@@ -3258,7 +3258,7 @@ class Dropdown
                     } else if ($item instanceof CommonDCModelDropdown) {
                         $outputval = sprintf(__('%1$s - %2$s'), $data[$field], $data['product_number']);
                     } else {
-                        $outputval = $data[$field];
+                        $outputval = $data[$field] ?? "";
                     }
 
                     $ID         = $data['id'];
