@@ -123,6 +123,10 @@ class RuleImportEntity extends Rule
                 'field' => 'name',
                 'name' => __('Serial number')
             ],
+            'itemtype' => [
+                'field' => 'itemtype',
+                'name' => __('Itemtype')
+            ],
             'oscomment' => [
                 'field' => 'name',
                 'name' => sprintf('%s > %s', OperatingSystem::getTypeName(1), __('Comments'))
@@ -144,7 +148,7 @@ class RuleImportEntity extends Rule
      **/
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        global $PLUGIN_HOOKS;
+        global $PLUGIN_HOOKS, $CFG_GLPI;
 
         if ($criteria['field'] == '_source') {
             $tab = ['GLPI' => __('GLPI')];
@@ -155,6 +159,11 @@ class RuleImportEntity extends Rule
                 $tab[$plug] = Plugin::getInfo($plug, 'name');
             }
             Dropdown::showFromArray($name, $tab);
+            return true;
+        }
+
+        if ($criteria['field'] == 'itemtype') {
+            Dropdown::showItemTypes($name, $CFG_GLPI['asset_types'], ['value' => $value]);
             return true;
         }
 
