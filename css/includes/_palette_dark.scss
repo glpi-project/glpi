@@ -166,9 +166,14 @@ body .modal-header {
     }
 }
 
-.qtip-bootstrap {
+.qtip-bootstrap,
+.popover .popover-body {
     background-color: $dark-mode-lighten !important;
     color: var(--light) !important;
+}
+
+.popover .popover-arrow::after {
+    border-top-color: $dark-mode-lighten !important;
 }
 
 .toast {
