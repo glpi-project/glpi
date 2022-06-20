@@ -1742,7 +1742,7 @@ class MailCollector extends CommonDBTM
 
                 // Keep only HTML body content
                 $body_matches = [];
-                if (preg_match('/<body>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
+                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
                     $content = $body_matches['body'];
                 }
 
