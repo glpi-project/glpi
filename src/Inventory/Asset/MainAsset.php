@@ -396,7 +396,7 @@ abstract class MainAsset extends InventoryAsset
 
         //form discovery mode try to get related agent TAG by it's deviceid
         $agent = new Agent();
-        if (!isset($input['tag'])) {
+        if (!isset($input['tag']) && $this->is_discovery === true ) {
             if ($agent->getFromDBByCrit(['deviceid' => $this->getAgent()->fields['deviceid']])) {
                 $input['tag'] = $agent->fields['tag'];
             }
