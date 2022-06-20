@@ -7718,9 +7718,24 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ,
             ],
             [
-                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'recurrentchange',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'recurrentchange',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'recurrentchange',
                 'rights' => READ,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'recurrentchange',
+                'rights' => ALLSTANDARDRIGHT,
             ],
             [
                 'profiles_id' => self::PROFILE_HOTLINER,
@@ -7733,14 +7748,14 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ,
             ],
             [
-                'profiles_id' => self::PROFILE_ADMIN,
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'recurrentchange',
                 'rights' => READ,
             ],
             [
-                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'recurrentchange',
-                'rights' => ALLSTANDARDRIGHT,
+                'rights' => READ,
             ],
         ];
 
