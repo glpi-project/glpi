@@ -160,9 +160,9 @@
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }}
-         {{ options.min is defined ? 'min=' ~ options.min : '' }}
-         {{ options.max is defined ? 'max=' ~ options.max : '' }}
-         {{ options.step is defined ? 'step=' ~ options.step : '' }} />
+         {% if options.min is defined %}min="{{ options.min }}"{% endif %}
+         {% if options.max is defined %}max="{{ options.max }}"{% endif %}
+         {% if options.step is defined %}step="{{ options.step }}"{% endif %} />
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
