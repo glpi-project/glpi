@@ -254,6 +254,6 @@ class Peripheral extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return true;
+        return $conf->import_peripheral == 1;
     }
 }

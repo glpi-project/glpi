@@ -159,7 +159,9 @@ class Printer extends NetworkEquipment
     public function handle()
     {
         if ($this->item->getType() != GPrinter::getType()) {
-            $this->handleConnectedPrinter();
+            if ($this->conf->import_printer == 1) {
+                $this->handleConnectedPrinter();
+            }
             return;
         }
 

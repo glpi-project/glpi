@@ -365,7 +365,8 @@ abstract class InventoryAsset
         $item = new $itemtype();
         $item->getFromDb($input['items_id']);
 
-        if (!($item->fields['is_global'] ?? false)) {
+        //check for global management type configuration
+        if (!$item->isGlobal()) {
             if (isset($citem->fields['id'])) {
                 $citem->delete(['id' => $citem->fields['id']], true);
             }

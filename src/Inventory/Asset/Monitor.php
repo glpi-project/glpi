@@ -232,6 +232,6 @@ class Monitor extends InventoryAsset
     public function checkConf(Conf $conf): bool
     {
         $this->import_monitor_on_partial_sn = $conf->import_monitor_on_partial_sn;
-        return true;
+        return $conf->import_monitor == 1;
     }
 }
