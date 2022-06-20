@@ -366,15 +366,7 @@ abstract class InventoryAsset
         $item->getFromDb($input['items_id']);
 
         //check for global management type configuration
-        $is_global = false;
-        $confname = strtolower($input['itemtype']) . 's_management_restrict';
-        if (\Config::getConfigurationValue('core', $confname) == 1) {
-            $is_global = true;
-        } else {
-            $is_global = $item->fields['is_global'] ?? false;
-        }
-
-        if (!$is_global) {
+        if (!$item->isGlobal()) {
             if (isset($citem->fields['id'])) {
                 $citem->delete(['id' => $citem->fields['id']], true);
             }

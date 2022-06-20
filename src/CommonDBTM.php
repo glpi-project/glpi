@@ -6418,4 +6418,22 @@ class CommonDBTM extends CommonGLPI
             $alert->deleteByCriteria($input, 1);
         }
     }
+
+    public function isGlobal(): bool
+    {
+        if (!$this->isField('is_global')) {
+            return false;
+        }
+
+        $confname = strtolower($this->gettype()) . 's_management_restrict';
+        if (\Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANGEMENT) {
+            $is_global = true;
+        } else if (\Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {
+            $is_global = false;
+        } else {
+            $is_global = ($this->fields['is_global'] ?? false) == 1;
+        }
+
+        return $is_global;
+    }
 }

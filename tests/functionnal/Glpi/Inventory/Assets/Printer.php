@@ -420,7 +420,7 @@ class Printer extends AbstractInventoryAsset
         $this->integer(count($printers))->isIdenticalTo(1);
     }
 
-    public function testInventoryConfNoMove()
+    public function testInventoryGlobalManagement()
     {
         $printer = new \Printer();
         $item_printer = new \Computer_Item();
@@ -452,7 +452,7 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        //per default, configuration allows printer import. change that.
+        //change default configuration to global management
         $this->login();
         \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::GLOBAL_MANGEMENT]);
         $this->logout();
@@ -503,7 +503,7 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        //per default, configuration allows printer import. change that.
+        //change default configuration to global management
         $this->login();
         \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::GLOBAL_MANGEMENT]);
         $this->logout();
@@ -529,6 +529,176 @@ class Printer extends AbstractInventoryAsset
 
         //also linked on last inventoried computer
         $printers = $item_printer->find(['itemtype' => 'printer', 'computers_id' => $computers_2_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+    }
+
+    public function testInventoryUnitManagement()
+    {
+        global $DB;
+
+        $printer = new \Printer();
+        $item_printer = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //change default configuration to unit management
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::UNIT_MANAGEMENT]);
+        $this->logout();
+
+        //computer inventory with one printer
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
+        $this->logOut();
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we have 1 printer
+        $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //we have 1 printer items linked to the computer
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //printer present in the inventory source is dynamic
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //same inventory again
+        $inventory = $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we still have only 1 printer
+        $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //we still have only 1 printer items linked to the computer
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //set to global management
+        $this->boolean($printer->getFromDB(current($printers)['items_id']));
+        $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
+
+        //same printer, but on another computer
+        $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PRINTERS>
+      <DRIVER>HP Color LaserJet Pro MFP M476 PCL 6</DRIVER>
+      <NAME>HP Color LaserJet Pro MFP M476 PCL 6</NAME>
+      <NETWORK>0</NETWORK>
+      <PORT>10.253.6.117</PORT>
+      <PRINTPROCESSOR>hpcpp155</PRINTPROCESSOR>
+      <RESOLUTION>600x600</RESOLUTION>
+      <SHARED>0</SHARED>
+      <SHARENAME>HP Color LaserJet Pro MFP M476 PCL 6  (1)</SHARENAME>
+      <STATUS>Unknown</STATUS>
+      <SERIAL>abcdef</SERIAL>
+    </PRINTERS>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //change default configuration to unit management
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::UNIT_MANAGEMENT]);
+        $this->logout();
+
+        //computer inventory with one printer
+        $inventory = $this->doInventory($xml_source_2, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
+        $this->logOut();
+
+        $computers_2_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_2_id)->isGreaterThan(0);
+
+        //we still have only 1 printer
+        $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //no longer linked on first computer inventoried
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_id]);
+        $this->integer(count($printers))->isIdenticalTo(0);
+
+        //but now linked on last inventoried computer
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_2_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //printer is still dynamic
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //change default configuration to unit management
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::UNIT_MANAGEMENT]);
+        $this->logout();
+
+        //replay first computer inventory, printer is back \o/
+        $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
+        $this->logOut();
+
+        //we still have only 1 printer
+        $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //linked again on first computer inventoried
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_id]);
+        $this->integer(count($printers))->isIdenticalTo(1);
+
+        //no longer linked on last inventoried computer
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_2_id]);
+        $this->integer(count($printers))->isIdenticalTo(0);
+
+        //printer is still dynamic
+        $printers = $item_printer->find(['itemtype' => 'Printer', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($printers))->isIdenticalTo(1);
     }
 

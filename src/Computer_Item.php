@@ -87,19 +87,9 @@ class Computer_Item extends CommonDBRelation
 
         $item = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
 
-        $is_global = false;
-        $confname = strtolower($item->gettype()) . 's_management_restrict';
-        if (\Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANGEMENT) {
-            $is_global = true;
-        } else if (\Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {
-            $is_global = false;
-        } else {
-            $is_global = $item->getField('is_global') == 1;
-        }
-
         if (
             !($item instanceof CommonDBTM)
-            || (!$is_global
+            || (!$item->isGlobal()
               && ($this->countForItem($item) > 0))
         ) {
             return false;
