@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Agent;
 use Auth;
 use CommonDBTM;
 use Dropdown;
@@ -391,6 +392,14 @@ abstract class MainAsset extends InventoryAsset
 
         if (isset($this->getAgent()->fields['tag'])) {
             $input['tag'] = $this->getAgent()->fields['tag'];
+        }
+
+        //form discovery mode try to get related agent TAG by it's deviceid
+        $agent = new Agent();
+        if (!isset($input['tag'])) {
+            if ($agent->getFromDBByCrit(['deviceid' => $this->getAgent()->fields['deviceid']])) {
+                $input['tag'] = $agent->fields['tag'];
+            }
         }
 
         $models_id = $this->getModelsFieldName();
