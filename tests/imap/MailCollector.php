@@ -697,6 +697,7 @@ class MailCollector extends DbTestCase
                     '28 Multiple attachments no extension',
                     '30 - &#60;GLPI&#62; Special &#38; chars',
                     '31 - HTML message without body',
+                    '32 - HTML message with attributes on body tag',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -736,6 +737,9 @@ PLAINTEXT,
 HTML,
             '31 - HTML message without body' => <<<HTML
 This HTML message does not have a <i>body</i> tag.
+HTML,
+            '32 - HTML message with attributes on body tag' => <<<HTML
+This HTML message has an attribut on its <i>body</i> tag.
 HTML,
         ];
 
