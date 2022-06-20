@@ -83,5 +83,6 @@ if (!$DB->tableExists($recurrent_change_table)) {
 }
 
 $migration->addRight('recurrentchange', ALLSTANDARDRIGHT, [
-    'change' => UPDATE
+    'change' => UPDATE,
+    'ticketrecurrent' => UPDATE,
 ]);
