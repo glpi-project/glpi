@@ -590,8 +590,10 @@ abstract class CommonITILObject extends CommonDBTM
     public function getEntitiesForRequesters(array $params = [])
     {
         $requesters = [];
-        if ($params["_users_id_requester"]) {
-            $requesters = [$params["_users_id_requester"]];
+        if (array_key_exists('_users_id_requester', $params) && !empty($params["_users_id_requester"])) {
+            $requesters = !is_array($params["_users_id_requester"])
+                ? [$params["_users_id_requester"]]
+                : $params["_users_id_requester"];
         }
         if (isset($params['_actors']['requester'])) {
             foreach ($params['_actors']['requester'] as $actor) {
@@ -1463,6 +1465,7 @@ abstract class CommonITILObject extends CommonDBTM
         $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
         if (isset($input['_itil_requester'])) {
+            // FIXME Deprecate this input key in GLPI 10.1.
             if (isset($input['_itil_requester']['_type'])) {
                 $input['_itil_requester'] = [
                     'type'                            => CommonITILActor::REQUESTER,
@@ -1533,6 +1536,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($input['_itil_observer'])) {
+            // FIXME Deprecate this input key in GLPI 10.1.
             if (isset($input['_itil_observer']['_type'])) {
                 $input['_itil_observer'] = [
                     'type'                            => CommonITILActor::OBSERVER,
@@ -1602,6 +1606,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($input['_itil_assign'])) {
+            // FIXME Deprecate this input key in GLPI 10.1.
             if (isset($input['_itil_assign']['_type'])) {
                 $input['_itil_assign'] = [
                     'type'                            => CommonITILActor::ASSIGN,
@@ -9256,7 +9261,13 @@ abstract class CommonITILObject extends CommonDBTM
                             continue;
                         }
 
-                        $input[$input_key][] = $actor['items_id'];
+                        $value_key = sprintf('_actors_%s', $actor['items_id']);
+
+                        $input[$input_key][$value_key] = $actor['items_id'];
+                        $input[sprintf('%s_notif', $input_key)][$value_key] = [
+                            'use_notification'  => $actor['use_notification'],
+                            'alternative_email' => $actor['alternative_email'],
+                        ];
                     }
                 }
             }
