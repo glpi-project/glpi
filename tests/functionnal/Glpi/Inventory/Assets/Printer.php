@@ -371,7 +371,7 @@ class Printer extends AbstractInventoryAsset
 
         //set to global management
         $this->boolean($printer->getFromDB(current($printers)['items_id']));
-        $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
+        $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same printer, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -454,7 +454,7 @@ class Printer extends AbstractInventoryAsset
 
         //change default configuration to global management
         $this->login();
-        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::GLOBAL_MANGEMENT]);
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::GLOBAL_MANAGEMENT]);
         $this->logout();
 
         //computer inventory with one printer
@@ -505,7 +505,7 @@ class Printer extends AbstractInventoryAsset
 
         //change default configuration to global management
         $this->login();
-        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::GLOBAL_MANGEMENT]);
+        \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::GLOBAL_MANAGEMENT]);
         $this->logout();
 
         //computer inventory with one printer
@@ -610,7 +610,7 @@ class Printer extends AbstractInventoryAsset
 
         //set to global management
         $this->boolean($printer->getFromDB(current($printers)['items_id']));
-        $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
+        $this->boolean($printer->update(['id' => $printer->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same printer, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>

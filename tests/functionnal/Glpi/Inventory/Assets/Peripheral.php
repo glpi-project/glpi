@@ -499,7 +499,7 @@ class Peripheral extends AbstractInventoryAsset
 
         //set to global management
         $this->boolean($peripheral->getFromDB(current($peripherals)['items_id']));
-        $this->boolean($peripheral->update(['id' => $peripheral->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
+        $this->boolean($peripheral->update(['id' => $peripheral->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same peripheral, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -583,7 +583,7 @@ class Peripheral extends AbstractInventoryAsset
 
         //change default configuration to global management
         $this->login();
-        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => \Config::GLOBAL_MANGEMENT]);
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => \Config::GLOBAL_MANAGEMENT]);
         $this->logout();
 
         //computer inventory with one peripheral
@@ -640,7 +640,7 @@ class Peripheral extends AbstractInventoryAsset
 
         //change default configuration to global management
         $this->login();
-        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => \Config::GLOBAL_MANGEMENT]);
+        \Config::setConfigurationValues('core', ['peripherals_management_restrict' => \Config::GLOBAL_MANAGEMENT]);
         $this->logout();
 
         //computer inventory with one peripheral
@@ -753,7 +753,7 @@ class Peripheral extends AbstractInventoryAsset
 
         //set to global management
         $this->boolean($peripheral->getFromDB(current($peripherals)['items_id']));
-        $this->boolean($peripheral->update(['id' => $peripheral->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
+        $this->boolean($peripheral->update(['id' => $peripheral->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same peripheral, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>

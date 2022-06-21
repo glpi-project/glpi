@@ -6426,7 +6426,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         $confname = strtolower($this->gettype()) . 's_management_restrict';
-        if (\Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANGEMENT) {
+        if (\Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANAGEMENT) {
             $is_global = true;
         } else if (\Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {
             $is_global = false;
