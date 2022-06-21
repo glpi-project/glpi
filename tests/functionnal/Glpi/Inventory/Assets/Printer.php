@@ -195,6 +195,8 @@ class Printer extends AbstractInventoryAsset
 
     public function testInventoryMove()
     {
+        global $DB;
+
         $printer = new \Printer();
         $item_printer = new \Computer_Item();
 
@@ -228,6 +230,18 @@ class Printer extends AbstractInventoryAsset
         //computer inventory with one printer
         $inventory = $this->doInventory($xml_source, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
@@ -245,6 +259,18 @@ class Printer extends AbstractInventoryAsset
 
         //same inventory again
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
@@ -288,6 +314,18 @@ class Printer extends AbstractInventoryAsset
         //computer inventory with one printer
         $inventory = $this->doInventory($xml_source_2, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
 
@@ -310,6 +348,18 @@ class Printer extends AbstractInventoryAsset
         //replay first computer inventory, printer is back \o/
         $inventory = $this->doInventory($xml_source, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         //we still have only 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($printers))->isIdenticalTo(1);
@@ -329,6 +379,8 @@ class Printer extends AbstractInventoryAsset
 
     public function testInventoryNoMove()
     {
+        global $DB;
+
         $printer = new \Printer();
         $item_printer = new \Computer_Item();
 
@@ -361,6 +413,18 @@ class Printer extends AbstractInventoryAsset
 
         //computer inventory with one printer
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
@@ -404,6 +468,18 @@ class Printer extends AbstractInventoryAsset
         //computer inventory with one printer
         $inventory = $this->doInventory($xml_source_2, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
 
@@ -422,6 +498,8 @@ class Printer extends AbstractInventoryAsset
 
     public function testInventoryGlobalManagement()
     {
+        global $DB;
+
         $printer = new \Printer();
         $item_printer = new \Computer_Item();
 
@@ -464,6 +542,18 @@ class Printer extends AbstractInventoryAsset
         $this->login();
         \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
@@ -515,6 +605,18 @@ class Printer extends AbstractInventoryAsset
         $this->login();
         \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
@@ -579,6 +681,18 @@ class Printer extends AbstractInventoryAsset
         \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
@@ -596,6 +710,18 @@ class Printer extends AbstractInventoryAsset
 
         //same inventory again
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
@@ -653,6 +779,18 @@ class Printer extends AbstractInventoryAsset
         \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
 
@@ -685,6 +823,22 @@ class Printer extends AbstractInventoryAsset
         \Config::setConfigurationValues('core', ['printers_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(1);
+        $log = $logs->current();
+        $this->string($log['itemtype'])->isIdenticalTo('Printer');
+        $this->string($log['itemtype_link'])->isIdenticalTo('Computer');
+        $this->string($log['new_value'])->isIdenticalTo('pc002 (' . $computers_id . ')');
+
         //we still have only 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($printers))->isIdenticalTo(1);
@@ -704,6 +858,7 @@ class Printer extends AbstractInventoryAsset
 
     public function testPrinterIgnoreImport()
     {
+        global $DB;
         $printer = new \Printer();
 
        // Add dictionary rule for ignore import for printer "HP Deskjet 2540"
@@ -775,6 +930,18 @@ class Printer extends AbstractInventoryAsset
        //computer inventory with two printers, "HP Deskjet 2540" ignored by rules
         $inventory = $this->doInventory($xml_source, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $item_printer = new \Computer_Item();
         $printers = $item_printer->find(['computers_id' => $inventory->getItem()->fields['id'], 'itemtype' => 'Printer']);
         $this->integer(count($printers))->isIdenticalTo(1);
@@ -785,6 +952,8 @@ class Printer extends AbstractInventoryAsset
 
     public function testPrinterRenamedImport()
     {
+        global $DB;
+
         $computer = new \Computer();
         $printer = new \Printer();
 
@@ -880,6 +1049,24 @@ class Printer extends AbstractInventoryAsset
        //computer inventory with two printers, "HP Deskjet 2540" renamed by rules
         $inventory = $this->doInventory($xml_source, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => [
+                    'itemtype' => [
+                        \Config::class,
+                        'RuleAction',
+                        'RuleDictionnaryPrinter'
+                    ]
+                ]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computer->getFromDBByCrit(['serial' => 'ggheb7ne7']);
 
         $item_printer = new \Computer_Item();
@@ -899,6 +1086,8 @@ class Printer extends AbstractInventoryAsset
 
     public function testInventoryImportOrNot()
     {
+        global $DB;
+
         $printer = new \Printer();
         $item_printer = new \Computer_Item();
 
@@ -951,6 +1140,18 @@ class Printer extends AbstractInventoryAsset
         )->isTrue();
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
@@ -960,6 +1161,18 @@ class Printer extends AbstractInventoryAsset
 
         //inventory again
         $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //we now have 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
