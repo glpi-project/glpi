@@ -321,37 +321,38 @@ if (typeof tinyMCE != 'undefined') {
                 stopEvent(event);
 
                 //extract base64 data
-                var base64 = extractSrcFromImgTag(event.content);
-
-                //transform to blob and insert into editor
-                if (base64.length) {
+                $('<div></div>').append(event.content).find('img').each(function() {
+                    var base64 = $(this).attr('src');
+                    //transform to blob and insert into editor
                     var file = dataURItoBlob(base64);
 
                     insertImageInTinyMCE(editor, file);
-                }
+                });
 
             } else if (isImageBlobFromPaste(event.content)) {
                 stopEvent(event);
 
-                var src = extractSrcFromImgTag(event.content);
+                $('<div></div>').append(event.content).find('img').each(function() {
+                    var src = $(this).attr('src');
 
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', src, true);
-                xhr.responseType = 'blob';
-                xhr.onload = function() {
-                    if (this.status !== 200) {
-                        console.error("paste error");
-                        return;
-                    }
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', src, true);
+                    xhr.responseType = 'blob';
+                    xhr.onload = function() {
+                        if (this.status !== 200) {
+                            console.error("paste error");
+                            return;
+                        }
 
-                    var file = this.response;
-                    if (/^image\/.+/.test(file.type)) {
-                        var ext = file.type.replace('image/', '');
-                        file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + ext;
-                        insertImageInTinyMCE(editor, file);
-                    }
-                };
-                xhr.send();
+                        var file = this.response;
+                        if (/^image\/.+/.test(file.type)) {
+                            var ext = file.type.replace('image/', '');
+                            file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + ext;
+                            insertImageInTinyMCE(editor, file);
+                        }
+                    };
+                    xhr.send();
+                });
             }
 
             // event was stopped, we have to manually remove 'draghover' class
