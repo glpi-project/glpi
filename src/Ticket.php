@@ -992,6 +992,8 @@ class Ticket extends CommonITILObject
     {
         global $DB;
 
+        $input = $this->transformActorsInput($input);
+
        // Get ticket : need for comparison
         $this->getFromDB($input['id']);
 

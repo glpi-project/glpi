@@ -187,6 +187,16 @@ class Change extends CommonITILObject
     }
 
 
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->transformActorsInput($input);
+
+        $input = parent::prepareInputForUpdate($input);
+
+        return $input;
+    }
+
+
     public function pre_deleteItem()
     {
         global $CFG_GLPI;

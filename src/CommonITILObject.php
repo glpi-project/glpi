@@ -2234,6 +2234,8 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
 
+        $input = $this->transformActorsInput($input);
+
        // save value before clean;
         $title = ltrim($input['name']);
 
@@ -9213,5 +9215,54 @@ abstract class CommonITILObject extends CommonDBTM
             $this->getID(),
             $this->getHeaderName()
         );
+    }
+
+    /**
+     * Transfer "_actors" input (introduced in 10.0.0) into historical input keys.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    protected function transformActorsInput(array $input): array
+    {
+        if (
+            array_key_exists('_actors', $input)
+            && is_array($input['_actors'])
+            && count($input['_actors'])
+        ) {
+            foreach (['requester', 'observer', 'assign'] as $actortype) {
+                if (
+                    array_key_exists($actortype, $input['_actors'])
+                    && is_array($input['_actors'][$actortype])
+                    && count($input['_actors'][$actortype])
+                ) {
+                    foreach ($input['_actors'][$actortype] as $actor) {
+                        $input_key = sprintf(
+                            '_%s_%s',
+                            getForeignKeyFieldForItemType($actor['itemtype']),
+                            $actortype
+                        );
+
+                        if (!array_key_exists($input_key, $input)) {
+                            // Create missing input key.
+                            $input[$input_key] = [];
+                        } elseif (!is_array($input[$input_key])) {
+                            // Transform key into array, as we will append values.
+                            $input[$input_key] = !empty($input[$input_key]) ? [$input[$input_key]] : [];
+                        }
+
+                        if (in_array($actor['items_id'], $input[$input_key])) {
+                            continue;
+                        }
+
+                        $input[$input_key][] = $actor['items_id'];
+                    }
+                }
+            }
+            unset($input['_actors']);
+        }
+
+        return $input;
     }
 }
