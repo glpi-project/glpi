@@ -35,6 +35,8 @@
 
 var insertIntoEditor = []; // contains flags that indicate if uploaded file (image) should be added to editor contents
 
+var uploaded_images = []; // Mapping between random identifier and image filename
+
 function uploadFile(file, editor) {
     insertIntoEditor[file.name] = isImage(file);
 
@@ -69,10 +71,31 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                         var tag_data = tags[index];
 
                         var editor = null;
-                        if (editor_id && Object.prototype.hasOwnProperty.call(insertIntoEditor, file.name) && insertIntoEditor[file.name]) {
+                        if (editor_id) {
                             editor = tinyMCE.get(editor_id);
-                            insertImgFromFile(editor, file, tag_data.tag);
-                            input_name = editor.targetElm.name; // attach uploaded image to rich text field
+                            const uploaded_image = uploaded_images.find(
+                                function (entry) {
+                                    return entry.filename === file.name;
+                                }
+                            );
+                            const matching_image = uploaded_image !== undefined
+                                ? editor.dom.select('img[data-upload_id="' + uploaded_image.upload_id + '"]')
+                                : [];
+                            if (matching_image.length > 0) {
+                                editor.dom.setAttribs(
+                                    matching_image,
+                                    {
+                                        id: tag_data.tag.replace(/#/g, ''),
+                                        // Ensure URL is a blob, to not pollute DOM with base64 data URL
+                                        src: URL.createObjectURL(file),
+                                    }
+                                );
+                            } else if(Object.prototype.hasOwnProperty.call(insertIntoEditor, file.name) && insertIntoEditor[file.name]) {
+                                // Legacy behaviour
+                                // FIXME deprecate this in GLPI 10.1.
+                                insertImgFromFile(editor, file, tag_data.tag);
+                                input_name = editor.targetElm.name; // attach uploaded image to rich text field
+                            }
                         }
 
                         displayUploadedFile(files_data[index], tag_data, editor, input_name, container);
@@ -167,8 +190,6 @@ var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
 
     if (typeof editor !== "undefined"
        && typeof editor.dom !== "undefined") {
-        editor.setContent(editor.getContent().replace('<p>'+tagToRemove+'</p>', ''));
-
         var regex = new RegExp('#', 'g');
         editor.dom.remove(tagToRemove.replace(regex, ''));
     }
@@ -182,6 +203,8 @@ var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
  * @param  {string}   tag
  */
 var insertImgFromFile = function(editor, fileImg, tag) {
+    // FIXME deprecate this in GLPI 10.1.
+
     var urlCreator = window.URL || window.webkitURL;
     var imageUrl   = urlCreator.createObjectURL(fileImg);
     var regex      = new RegExp('#', 'g');
@@ -239,6 +262,8 @@ var insertImgFromFile = function(editor, fileImg, tag) {
  * @return     {Blob}    { description_of_the_return_value }
  */
 var dataURItoBlob = function(dataURI) {
+    // FIXME deprecate this in GLPI 10.1.
+
     // convert base64/URLEncoded data component to raw binary data held in a string
     var byteString;
     if (dataURI.split(',')[0].indexOf('base64') >= 0) {
@@ -270,6 +295,8 @@ var dataURItoBlob = function(dataURI) {
 * @return     String mimeType   return mimeType of data
 */
 var isImageFromPaste = function(content) {
+    // FIXME deprecate this in GLPI 10.1.
+
     return content.match(new RegExp('<img.*data:image/')) !== null;
 };
 
@@ -280,6 +307,8 @@ var isImageFromPaste = function(content) {
 * @return     String mimeType   return mimeType of data
 */
 var isImageBlobFromPaste = function(content) {
+    // FIXME deprecate this in GLPI 10.1.
+
     return content.match(new RegExp('<img.*src=[\'"]blob:')) !== null;
 };
 
@@ -290,6 +319,8 @@ var isImageBlobFromPaste = function(content) {
 * @return {string}  Source of image or empty string.
 */
 var extractSrcFromImgTag = function(content) {
+    // FIXME deprecate this in GLPI 10.1.
+
     var foundImage = $('<div></div>').append(content).find('img');
     if (foundImage.length > 0) {
         return foundImage.attr('src');
@@ -304,6 +335,8 @@ var extractSrcFromImgTag = function(content) {
  * @param  {Blob}   image  The image to insert
  */
 var insertImageInTinyMCE = function(editor, image) {
+    // FIXME deprecate this in GLPI 10.1.
+
     //make ajax call for upload doc
     uploadFile(image, editor);
 };
@@ -316,46 +349,40 @@ var insertImageInTinyMCE = function(editor, image) {
 if (typeof tinyMCE != 'undefined') {
     tinyMCE.PluginManager.add('glpi_upload_doc', function(editor) {
         editor.on('PastePreProcess', function(event) {
-            //Check if data is an image
-            if (isImageFromPaste(event.content)) {
-                stopEvent(event);
-
-                //extract base64 data
-                var base64 = extractSrcFromImgTag(event.content);
-
-                //transform to blob and insert into editor
-                if (base64.length) {
-                    var file = dataURItoBlob(base64);
-
-                    insertImageInTinyMCE(editor, file);
+            // Trigger upload process for each pasted image
+            var fragment = $('<div></div>');
+            fragment.append(event.content);
+            fragment.find('img').each(function() {
+                const image = $(this);
+                const src = image.attr('src');
+                if (src.match(new RegExp('^(data|blob):')) !== null) {
+                    const upload_id = Math.random().toString();
+                    image.attr('data-upload_id', upload_id);
+                    fetch(src).then(
+                        function (response) {
+                            return response.blob();
+                        }
+                    ).then(
+                        function (file) {
+                            if (/^image\/.+/.test(file.type) === false) {
+                                return; //only process images
+                            }
+                            const ext = file.type.replace('image/', '');
+                            file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + ext;
+                            uploaded_images.push(
+                                {
+                                    upload_id: upload_id,
+                                    filename:  file.name
+                                }
+                            );
+                            uploadFile(file, editor);
+                        }
+                    );
                 }
+            });
 
-            } else if (isImageBlobFromPaste(event.content)) {
-                stopEvent(event);
-
-                var src = extractSrcFromImgTag(event.content);
-
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', src, true);
-                xhr.responseType = 'blob';
-                xhr.onload = function() {
-                    if (this.status !== 200) {
-                        console.error("paste error");
-                        return;
-                    }
-
-                    var file = this.response;
-                    if (/^image\/.+/.test(file.type)) {
-                        var ext = file.type.replace('image/', '');
-                        file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + ext;
-                        insertImageInTinyMCE(editor, file);
-                    }
-                };
-                xhr.send();
-            }
-
-            // event was stopped, we have to manually remove 'draghover' class
-            $('.draghoverable').removeClass('draghover');
+            // Update HTML to paste to include "data-upload_id" attributes on images.
+            event.content = fragment.html();
         });
     });
 }
