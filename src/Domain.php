@@ -170,8 +170,8 @@ class Domain extends CommonDBTM
         $tab[] = [
             'id'                 => '5',
             'table'              => $this->getTable(),
-            'field'              => 'date_creation',
-            'name'               => __('Creation date'),
+            'field'              => 'date_domaincreation',
+            'name'               => __('Registration date'),
             'datatype'           => 'date'
         ];
 
@@ -221,6 +221,15 @@ class Domain extends CommonDBTM
             'massiveaction'      => false,
             'name'               => __('Last update'),
             'datatype'           => 'datetime'
+        ];
+
+        $tab[] = [
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
