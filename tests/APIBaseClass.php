@@ -376,7 +376,7 @@ abstract class APIBaseClass extends atoum
          ->array['available_searchtypes'];
 
         $this->array($data[1]['available_searchtypes'])
-         ->isIdenticalTo(['contains', 'notcontains', 'equals', 'notequals']);
+         ->isIdenticalTo(['contains', 'notcontains', 'equals', 'notequals', 'empty']);
     }
 
     /**

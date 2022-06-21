@@ -830,6 +830,144 @@ class Search extends DbTestCase
          ->exists();
     }
 
+    public function testEmptyOrNot()
+    {
+        $fname = __FUNCTION__;
+
+        // Create 1 computer with data not empty
+        $computer = new \Computer();
+        $computer_id = $computer->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+            'users_id' => 2,
+            'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
+            'comment' => 'This is a test comment',
+            'last_inventory_update' => date('Y-m-d H:i:00'),
+        ]);
+        $this->integer($computer_id)->isGreaterThan(0);
+
+        $cvm = new \ComputerVirtualMachine();
+        $cvm_id = $cvm->add([
+            'computers_id' => $computer_id,
+            'name'         => $fname,
+            'vcpu'         => 1,
+        ]);
+        $this->integer($cvm_id)->isGreaterThan(0);
+
+        // Create 2 computers with empty data
+        $computer_id = $computer->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($computer_id)->isGreaterThan(0);
+        $cvm_id = $cvm->add([
+            'computers_id' => $computer_id,
+            'name'         => $fname,
+        ]);
+        $this->integer($cvm_id)->isGreaterThan(0);
+
+        $computer_id = $computer->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($computer_id)->isGreaterThan(0);
+
+        // Create 1 monitor with data not empty
+        $monitor = new \Monitor();
+        $monitor_id = $monitor->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+            'size' => 54.4,
+        ]);
+        $this->integer($monitor_id)->isGreaterThan(0);
+
+        // Create 2 monitors with empty data
+        $monitor = new \Monitor();
+        $monitor_id = $monitor->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($monitor_id)->isGreaterThan(0);
+
+        $monitor = new \Monitor();
+        $monitor_id = $monitor->add([
+            'name' => $fname,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->integer($monitor_id)->isGreaterThan(0);
+
+        $expected_counters = [
+            [
+                'field'    => 70, //user (itemlink)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 47, //uuid (varchar)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 16, //comment (text)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 9, //last inventory date (timestamp)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 164, //VCPU (integer)
+                'itemtype' => 'Computer',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+            [
+                'field'    => 11, //Size (decimal)
+                'itemtype' => 'Monitor',
+                'empty'    => 2,
+                'notempty' => 1,
+            ],
+        ];
+
+        foreach ($expected_counters as $expected) {
+            $search_params = [
+                'is_deleted'   => 0,
+                'start'        => 0,
+                'criteria'     => [
+                    0 => [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => $fname
+                    ],
+                    1 => [
+                        'field'      => $expected['field'],
+                        'searchtype' => 'empty',
+                        'value'      => 'null'
+                    ]
+                ]
+            ];
+            $data = $this->doSearch($expected['itemtype'], $search_params);
+            $this->integer($data['data']['totalcount'])->isIdenticalTo($expected['empty']);
+
+            //negate previous search
+            $search_params['criteria'][1]['link'] = 'AND NOT';
+            $data = $this->doSearch($expected['itemtype'], $search_params);
+            $this->integer($data['data']['totalcount'])->isIdenticalTo($expected['notempty']);
+        }
+    }
+
     public function testManageParams()
     {
        // let's use TU_USER

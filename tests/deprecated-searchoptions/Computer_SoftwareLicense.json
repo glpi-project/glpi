@@ -11,7 +11,8 @@
         "nodisplay": false,
         "available_searchtypes": [
             "contains",
-            "notcontains"
+            "notcontains",
+            "empty"
         ],
         "uid": "Computer_SoftwareLicense.id"
     },
@@ -27,6 +28,7 @@
             "notcontains",
             "equals",
             "notequals",
+            "empty",
             "under",
             "notunder"
         ],
