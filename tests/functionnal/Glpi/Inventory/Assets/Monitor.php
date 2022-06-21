@@ -209,6 +209,18 @@ class Monitor extends AbstractInventoryAsset
         //computer inventory with one monitor
         $inventory = $this->doInventory($xml_source, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
         $this->array($cmanuf);
         $manufacturers_id = $cmanuf['id'];
@@ -231,6 +243,18 @@ class Monitor extends AbstractInventoryAsset
 
         //same inventory again
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
@@ -270,6 +294,18 @@ class Monitor extends AbstractInventoryAsset
         //computer inventory with one monitor
         $inventory = $this->doInventory($xml_source_2, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
 
@@ -292,6 +328,18 @@ class Monitor extends AbstractInventoryAsset
 
         //replay first computer inventory, monitor is back \o/
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //we still have only 1 monitor
         $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
@@ -343,6 +391,18 @@ class Monitor extends AbstractInventoryAsset
         //computer inventory with one monitor
         $inventory = $this->doInventory($xml_source, true);
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
         $this->array($cmanuf);
         $manufacturers_id = $cmanuf['id'];
@@ -365,6 +425,18 @@ class Monitor extends AbstractInventoryAsset
 
         //same inventory again
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
@@ -407,6 +479,18 @@ class Monitor extends AbstractInventoryAsset
 
         //computer inventory with one monitor
         $inventory = $this->doInventory($xml_source_2, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
@@ -473,6 +557,18 @@ class Monitor extends AbstractInventoryAsset
         \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
         $this->array($cmanuf);
         $manufacturers_id = $cmanuf['id'];
@@ -528,6 +624,18 @@ class Monitor extends AbstractInventoryAsset
         $this->login();
         \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
@@ -594,6 +702,18 @@ class Monitor extends AbstractInventoryAsset
         \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
         $this->array($cmanuf);
         $manufacturers_id = $cmanuf['id'];
@@ -616,6 +736,18 @@ class Monitor extends AbstractInventoryAsset
 
         //same inventory again
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
@@ -669,6 +801,18 @@ class Monitor extends AbstractInventoryAsset
         \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
 
@@ -702,6 +846,18 @@ class Monitor extends AbstractInventoryAsset
         \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         //we still have only 1 monitor
         $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($monitors))->isIdenticalTo(1);
@@ -722,6 +878,8 @@ class Monitor extends AbstractInventoryAsset
 
     public function testInventoryImportOrNot()
     {
+        global $DB;
+
         $monitor = new \Monitor();
         $item_monitor = new \Computer_Item();
 
@@ -769,6 +927,18 @@ class Monitor extends AbstractInventoryAsset
         )->isTrue();
         $this->logOut();
 
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
@@ -778,6 +948,18 @@ class Monitor extends AbstractInventoryAsset
 
         //inventory again
         $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //we now have 1 monitor
         $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
