@@ -51,7 +51,7 @@ class Config extends CommonDBTM
     const KEEP_ALL = 0;
 
     public const UNIT_MANAGEMENT = 0;
-    public const GLOBAL_MANGEMENT = 1;
+    public const GLOBAL_MANAGEMENT = 1;
     public const NO_MANAGEMENT = 2;
 
    // From CommonGLPI

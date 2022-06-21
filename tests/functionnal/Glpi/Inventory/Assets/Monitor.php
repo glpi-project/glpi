@@ -380,7 +380,7 @@ class Monitor extends AbstractInventoryAsset
 
         //set to global management
         $this->boolean($monitor->getFromDB(current($monitors)['items_id']));
-        $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
+        $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same monitor, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -462,7 +462,7 @@ class Monitor extends AbstractInventoryAsset
 
         //change default configuration to global management
         $this->login();
-        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::GLOBAL_MANGEMENT]);
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::GLOBAL_MANAGEMENT]);
         $this->logout();
 
         //computer inventory with one monitor
@@ -518,7 +518,7 @@ class Monitor extends AbstractInventoryAsset
 
         //change default configuration to global management
         $this->login();
-        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::GLOBAL_MANGEMENT]);
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::GLOBAL_MANAGEMENT]);
         $this->logout();
 
         //computer inventory with one monitor
@@ -631,7 +631,7 @@ class Monitor extends AbstractInventoryAsset
 
         //set to global management
         $this->boolean($monitor->getFromDB(current($monitors)['items_id']));
-        $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANGEMENT]));
+        $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same monitor, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
