@@ -260,7 +260,9 @@ class Request extends AbstractRequest
     public function network($data)
     {
         $this->inventory = new Inventory();
-        $this->inventory->setData($data, $this->getMode());
+        $this->inventory
+            ->setDiscovery($this->isDiscovery())
+            ->setData($data, $this->getMode());
 
         $response = [];
         $hook_params = [
