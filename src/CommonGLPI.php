@@ -1013,21 +1013,39 @@ class CommonGLPI implements CommonGLPIInterface
             // First set of header pagination actions, displayed on the left side of the page
             echo "<div>";
 
-            if ($first >= 0) {
-                echo "<a href='$cleantarget?id=$first$extraparamhtml'
-                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"" . __s('First') . "\"
-                     data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                     <i class='fa-lg ti ti-chevrons-left'></i>
-                  </a>";
+            if (!$glpilisttitle) {
+                $glpilisttitle = __s('List');
             }
+            $list = "<a href='$glpilisturl' title=\"$glpilisttitle\"
+                  class='btn btn-sm btn-icon btn-ghost-secondary'
+                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                  <i class='far fa-lg fa-list-alt'></i>
+               </a>";
+            $list_shown = false;
 
+            if ($first < 0) {
+                // Show list icon before the placeholder space for the first pagination button
+                echo $list;
+                $list_shown = true;
+            }
+            echo "<a href='$cleantarget?id=$first$extraparamhtml'
+                 class='btn btn-sm btn-icon btn-ghost-secondary " . ($first >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('First') . "\"
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                 <i class='fa-lg ti ti-chevrons-left'></i>
+              </a>";
+
+            if (!$list_shown && $prev < 0) {
+                // Show list icon before the placeholder space for the "prev" pagination button
+                echo $list;
+                $list_shown = true;
+            }
+            echo "<a href='$cleantarget?id=$prev$extraparamhtml'
+                 id='previouspage'
+                 class='btn btn-sm btn-icon btn-ghost-secondary " . ($prev >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('Previous') . "\"
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                 <i class='fa-lg ti ti-chevron-left'></i>
+              </a>";
             if ($prev >= 0) {
-                echo "<a href='$cleantarget?id=$prev$extraparamhtml'
-                     id='previouspage'
-                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"" . __s('Previous') . "\"
-                     data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                     <i class='fa-lg ti ti-chevron-left'></i>
-                  </a>";
                 $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -1038,14 +1056,10 @@ class CommonGLPI implements CommonGLPIInterface
                 echo Html::scriptBlock($js);
             }
 
-            if (!$glpilisttitle) {
-                $glpilisttitle = __s('List');
+            // If both first and prev buttons shown, the list should be added now
+            if (!$list_shown) {
+                echo $list;
             }
-            echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
-                  class='btn btn-sm btn-icon btn-ghost-secondary'
-                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                  <i class='far fa-lg fa-list-alt'></i>
-               </a>";
 
             echo "</div>";
 
@@ -1058,23 +1072,28 @@ class CommonGLPI implements CommonGLPIInterface
                     'forceid' => $this instanceof CommonITILObject
                 ]);
                 echo "</h3>";
+            } else {
+                echo TemplateRenderer::getInstance()->render('components/form/header_content.html.twig', [
+                    'item'          => $this,
+                    'params'        => $options,
+                    'in_navheader'  => true,
+                    'header_toolbar' => $this->getFormHeaderToolbar(),
+                ]);
             }
 
             // Second set of header pagination actions, displayed on the right side of the page
             echo "<div>";
 
-            if ($current !== false) {
-                echo "<span class='m-1 ms-3'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
-            }
+            echo "<span class='m-1 ms-3 " . ($current !== false ? '' : 'bs-invisible') . "'>" . ($current + 1) . "/" . count($glpilistitems ?? []) . "</span>";
 
+            echo "<a href='$cleantarget?id=$next$extraparamhtml'
+                 id='nextpage'
+                 class='btn btn-sm btn-icon btn-ghost-secondary " . ($next >= 0 ? '' : 'bs-invisible') . "'
+                 title=\"" . __s('Next') . "\"
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
+            "<i class='fa-lg ti ti-chevron-right'></i>
+                </a>";
             if ($next >= 0) {
-                echo "<a href='$cleantarget?id=$next$extraparamhtml'
-                     id='nextpage'
-                     class='btn btn-sm btn-icon btn-ghost-secondary'
-                     title=\"" . __s('Next') . "\"
-                     data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-                "<i class='fa-lg ti ti-chevron-right'></i>
-                    </a>";
                 $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -1085,13 +1104,11 @@ class CommonGLPI implements CommonGLPIInterface
                 echo Html::scriptBlock($js);
             }
 
-            if ($last >= 0) {
-                echo "<a href='$cleantarget?id=$last $extraparamhtml'
-                     class='btn btn-sm btn-icon btn-ghost-secondary'
-                     title=\"" . __s('Last') . "\"
-                     data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-                "<i class='fa-lg ti ti-chevrons-right'></i></a>";
-            }
+            echo "<a href='$cleantarget?id=$last $extraparamhtml'
+                 class='btn btn-sm btn-icon btn-ghost-secondary " . ($last >= 0 ? '' : 'bs-invisible') . "'
+                 title=\"" . __s('Last') . "\"
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
+            "<i class='fa-lg ti ti-chevrons-right'></i></a>";
 
             echo "</div>";
 
@@ -1536,5 +1553,14 @@ class CommonGLPI implements CommonGLPIInterface
             $ret .= "</div>"; // .faqadd_block
         }
         return $ret;
+    }
+
+    /**
+     * Get array of extra form header toolbar buttons
+     * @return array Array of HTML elements
+     */
+    protected function getFormHeaderToolbar(): array
+    {
+        return [];
     }
 }

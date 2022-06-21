@@ -483,9 +483,12 @@ class CommonDBTM extends CommonGLPI
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
+        $new_item = static::isNewID($ID);
+        $in_modal = (bool) ($_GET['_in_modal'] ?? false);
         TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
             'item'   => $this,
             'params' => $options,
+            'no_header' => !$new_item && !$in_modal
         ]);
         return true;
     }
