@@ -2397,6 +2397,10 @@ HTML;
                 'name'  => 'symfony/polyfill-php81',
                 'check' => 'array_is_list'
             ],
+            [
+                'name'  => 'symfony/polyfill-php82',
+                'check' => 'Symfony\\Polyfill\\Php82\\SensitiveParameterValue'
+            ],
         ];
         if (Toolbox::canUseCAS()) {
             $deps[] = [
