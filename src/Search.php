@@ -2155,7 +2155,7 @@ class Search
                                 break;
 
                             case "empty":
-                                $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('is empty'));
+                                $titlecontain = sprintf(__('%1$s is empty'), $titlecontain);
                                 break;
 
                             default:
@@ -2305,7 +2305,7 @@ class Search
                             break;
 
                         case "empty":
-                             $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2, __('is empty'));
+                            $titlecontain2 = sprintf(__('%1$s is empty'), $titlecontain2);
                             break;
 
                         default:
@@ -4757,10 +4757,12 @@ JAVASCRIPT;
                     $name2 = 'firstname';
                 }
 
-                if (in_array($searchtype, ['equals', 'notequals', 'empty'])) {
+                if (in_array($searchtype, ['equals', 'notequals'])) {
                     return " $link (`$table`.`id`" . $SEARCH .
                                (($val == 0) ? " OR `$table`.`id` IS" .
                                    (($searchtype == "notequals") ? " NOT" : "") . " NULL" : '') . ') ';
+                } elseif ($searchtype == 'empty') {
+                    return " $link (`$table`.`id` $SEARCH)";
                 }
                 $toadd   = '';
 
@@ -4838,6 +4840,9 @@ JAVASCRIPT;
                             }
                             $groups = array_unique($groups);
                             return " $link (`$table`.`id` NOT IN ('" . implode("','", $groups) . "')) ";
+
+                        case 'empty':
+                            return " $link (`$table`.`id` $SEARCH) ";
                     }
                 }
                 break;
@@ -5213,7 +5218,19 @@ JAVASCRIPT;
                     }
 
                     if ($searchtype === 'empty') {
-                        return " $link ($tocompute " . $SEARCH . ') ';
+                        if ($nott) {
+                            return $link . " ($tocompute " . $SEARCH . " AND $tocompute <> 0) ";
+                        }
+                        return $link . " ($tocompute " . $SEARCH . " OR $tocompute = 0) ";
+                    }
+                    break;
+
+                case 'text':
+                    if ($searchtype === 'empty') {
+                        if ($nott) {
+                            return $link . " ($tocompute " . $SEARCH . " AND $tocompute <> '') ";
+                        }
+                        return $link . " ($tocompute " . $SEARCH . " OR $tocompute = '') ";
                     }
                     break;
             }
