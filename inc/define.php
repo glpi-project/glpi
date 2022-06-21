@@ -184,7 +184,7 @@ $LANG             = [];
 $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'Contract',
     'Infocom', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Supplier','User', 'Certicate',
+    'SoftwareLicense', 'Supplier','User', 'Certificate',
     'Rack', 'Enclosure', 'PDU', 'Cluster', 'Item_DeviceSimcard'
 ];
 
