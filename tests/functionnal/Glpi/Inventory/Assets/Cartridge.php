@@ -134,10 +134,12 @@ class Cartridge extends AbstractInventoryAsset
         $asset->handleLinks();
         $asset->handle();
 
+        $printers_id = $printer->fields['id'];
+
         global $DB;
         $iterator = $DB->request([
             'FROM'   => \Printer_CartridgeInfo::getTable(),
-            'WHERE'  => ['printers_id' => $printer->fields['id']]
+            'WHERE'  => ['printers_id' => $printers_id]
         ]);
         $this->integer(count($iterator))->isIdenticalTo(1);
 
@@ -145,5 +147,14 @@ class Cartridge extends AbstractInventoryAsset
         $this->array($result)
          ->string['property']->isIdenticalTo('tonerblack')
          ->string['value']->isIdenticalTo('71');
+
+        //test Printer_CartridgeInfo removal
+        $this->boolean($printer->delete(['id' => $printers_id], true))->isTrue();
+
+        $iterator = $DB->request([
+            'FROM'   => \Printer_CartridgeInfo::getTable(),
+            'WHERE'  => ['printers_id' => $printers_id]
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(0);
     }
 }
