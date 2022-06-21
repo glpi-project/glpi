@@ -1718,8 +1718,6 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        $this->addAdditionalActors($input);
-
        // set last updater if interactive user
         if (!Session::isCron()) {
             $input['users_id_lastupdater'] = Session::getLoginUserID();
@@ -1798,6 +1796,8 @@ abstract class CommonITILObject extends CommonDBTM
 
        // handle actors changes
         $this->updateActors();
+
+        $this->addAdditionalActors($this->input);
 
         // Send validation requests
         $this->manageValidationAdd($this->input);
@@ -2284,12 +2284,12 @@ abstract class CommonITILObject extends CommonDBTM
             ) {
                 $input["users_id_recipient"] = $uid;
             } else if (
-                isset($input["_users_id_requester"]) && $input["_users_id_requester"]
+                isset($input["_users_id_requester"])
+                && !is_array($input['_users_id_requester'])
+                && !empty($input["_users_id_requester"])
                 && !isset($input["users_id_recipient"])
             ) {
-                if (!is_array($input['_users_id_requester'])) {
-                    $input["users_id_recipient"] = $input["_users_id_requester"];
-                }
+                $input["users_id_recipient"] = $input["_users_id_requester"];
             }
         }
 
@@ -2542,271 +2542,6 @@ abstract class CommonITILObject extends CommonDBTM
 
        // handle actors changes
         $this->updateActors(true);
-
-        $useractors = null;
-       // Add user groups linked to ITIL objects
-        if (!empty($this->userlinkclass)) {
-            $useractors = new $this->userlinkclass();
-        }
-        $groupactors = null;
-        if (!empty($this->grouplinkclass)) {
-            $groupactors = new $this->grouplinkclass();
-        }
-        $supplieractors = null;
-        if (!empty($this->supplierlinkclass)) {
-            $supplieractors = new $this->supplierlinkclass();
-        }
-
-        $common_actor_input = [
-            '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
-            '_from_object'                    => true,
-            '_disablenotif'                   => true,
-        ];
-
-        if (!is_null($useractors)) {
-            $user_input = $common_actor_input + [
-                $useractors->getItilObjectForeignKey() => $this->fields['id'],
-            ];
-
-            if (isset($this->input["_users_id_requester"])) {
-                if (is_array($this->input["_users_id_requester"])) {
-                    $tab_requester = $this->input["_users_id_requester"];
-                } else {
-                    $tab_requester   = [];
-                    $tab_requester[] = $this->input["_users_id_requester"];
-                }
-
-                $requesterToAdd = [];
-                foreach ($tab_requester as $key_requester => $requester) {
-                    if (in_array($requester, $requesterToAdd)) {
-                       // This requester ID is already added;
-                        continue;
-                    }
-
-                    $input2 = [
-                        'users_id' => $requester,
-                        'type'     => CommonITILActor::REQUESTER,
-                    ] + $user_input;
-
-                    if (isset($this->input["_users_id_requester_notif"])) {
-                        foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
-                            if (isset($val[$key_requester])) {
-                                $input2[$key] = $val[$key_requester];
-                            }
-                        }
-                    }
-
-                   //empty actor
-                    if (
-                        $input2['users_id'] == 0
-                        && (!isset($input2['alternative_email'])
-                        || empty($input2['alternative_email']))
-                    ) {
-                        continue;
-                    } else if ($requester != 0) {
-                        $requesterToAdd[] = $requester;
-                    }
-
-                    $useractors->add($input2);
-                }
-            }
-
-            if (isset($this->input["_users_id_observer"])) {
-                if (is_array($this->input["_users_id_observer"])) {
-                    $tab_observer = $this->input["_users_id_observer"];
-                } else {
-                    $tab_observer   = [];
-                    $tab_observer[] = $this->input["_users_id_observer"];
-                }
-
-                $observerToAdd = [];
-                foreach ($tab_observer as $key_observer => $observer) {
-                    if (in_array($observer, $observerToAdd)) {
-                       // This observer ID is already added;
-                        continue;
-                    }
-
-                    $input2 = [
-                        'users_id' => $observer,
-                        'type'     => CommonITILActor::OBSERVER,
-                    ] + $user_input;
-
-                    if (isset($this->input["_users_id_observer_notif"])) {
-                        foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
-                            if (isset($val[$key_observer])) {
-                                $input2[$key] = $val[$key_observer];
-                            }
-                        }
-                    }
-
-                   //empty actor
-                    if (
-                        $input2['users_id'] == 0
-                        && (!isset($input2['alternative_email'])
-                        || empty($input2['alternative_email']))
-                    ) {
-                        continue;
-                    } else if ($observer != 0) {
-                        $observerToAdd[] = $observer;
-                    }
-
-                    $useractors->add($input2);
-                }
-            }
-
-            if (isset($this->input["_users_id_assign"])) {
-                if (is_array($this->input["_users_id_assign"])) {
-                    $tab_assign = $this->input["_users_id_assign"];
-                } else {
-                    $tab_assign   = [];
-                    $tab_assign[] = $this->input["_users_id_assign"];
-                }
-
-                $assignToAdd = [];
-                foreach ($tab_assign as $key_assign => $assign) {
-                    if (in_array($assign, $assignToAdd)) {
-                       // This assigned user ID is already added;
-                        continue;
-                    }
-
-                    $input2 = [
-                        'users_id' => $assign,
-                        'type'     => CommonITILActor::ASSIGN,
-                    ] + $user_input;
-
-                    if (isset($this->input["_users_id_assign_notif"])) {
-                        foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
-                            if (isset($val[$key_assign])) {
-                                $input2[$key] = $val[$key_assign];
-                            }
-                        }
-                    }
-
-                   //empty actor
-                    if (
-                        $input2['users_id'] == 0
-                        && (!isset($input2['alternative_email'])
-                        || empty($input2['alternative_email']))
-                    ) {
-                        continue;
-                    } else if ($assign != 0) {
-                        $assignToAdd[] = $assign;
-                    }
-
-                    $useractors->add($input2);
-                }
-            }
-        }
-
-        if (!is_null($groupactors)) {
-            $group_input = $common_actor_input + [
-                $groupactors->getItilObjectForeignKey() => $this->fields['id'],
-            ];
-
-            if (isset($this->input["_groups_id_requester"])) {
-                $groups_id_requester = $this->input["_groups_id_requester"];
-                if (!is_array($this->input["_groups_id_requester"])) {
-                    $groups_id_requester = [$this->input["_groups_id_requester"]];
-                } else {
-                    $groups_id_requester = $this->input["_groups_id_requester"];
-                }
-                foreach ($groups_id_requester as $groups_id) {
-                    if ($groups_id > 0) {
-                        $groupactors->add(
-                            [
-                                'groups_id' => $groups_id,
-                                'type'      => CommonITILActor::REQUESTER,
-                            ] + $group_input
-                        );
-                    }
-                }
-            }
-
-            if (isset($this->input["_groups_id_assign"])) {
-                if (!is_array($this->input["_groups_id_assign"])) {
-                    $groups_id_assign = [$this->input["_groups_id_assign"]];
-                } else {
-                    $groups_id_assign = $this->input["_groups_id_assign"];
-                }
-                foreach ($groups_id_assign as $groups_id) {
-                    if ($groups_id > 0) {
-                        $groupactors->add(
-                            [
-                                'groups_id' => $groups_id,
-                                'type'      => CommonITILActor::ASSIGN,
-                            ] + $group_input
-                        );
-                    }
-                }
-            }
-
-            if (isset($this->input["_groups_id_observer"])) {
-                if (!is_array($this->input["_groups_id_observer"])) {
-                    $groups_id_observer = [$this->input["_groups_id_observer"]];
-                } else {
-                    $groups_id_observer = $this->input["_groups_id_observer"];
-                }
-                foreach ($groups_id_observer as $groups_id) {
-                    if ($groups_id > 0) {
-                        $groupactors->add(
-                            [
-                                'groups_id' => $groups_id,
-                                'type'      => CommonITILActor::OBSERVER,
-                            ] + $group_input
-                        );
-                    }
-                }
-            }
-        }
-
-        if (!is_null($supplieractors)) {
-            $supplier_input = $common_actor_input + [
-                $supplieractors->getItilObjectForeignKey() => $this->fields['id'],
-            ];
-
-            if (
-                isset($this->input["_suppliers_id_assign"])
-                && ($this->input["_suppliers_id_assign"] > 0)
-            ) {
-                if (is_array($this->input["_suppliers_id_assign"])) {
-                    $tab_assign = $this->input["_suppliers_id_assign"];
-                } else {
-                    $tab_assign   = [];
-                    $tab_assign[] = $this->input["_suppliers_id_assign"];
-                }
-
-                $supplierToAdd = [];
-                foreach ($tab_assign as $key_assign => $assign) {
-                    if (in_array($assign, $supplierToAdd)) {
-                       // This assigned supplier ID is already added;
-                        continue;
-                    }
-                    $input3 = [
-                        'suppliers_id' => $assign,
-                        'type'         => CommonITILActor::ASSIGN,
-                    ] + $supplier_input;
-
-                    if (isset($this->input["_suppliers_id_assign_notif"])) {
-                        foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
-                            $input3[$key] = $val[$key_assign];
-                        }
-                    }
-
-                   //empty supplier
-                    if (
-                        $input3['suppliers_id'] == 0
-                        && (!isset($input3['alternative_email'])
-                        || empty($input3['alternative_email']))
-                    ) {
-                        continue;
-                    } else if ($assign != 0) {
-                        $supplierToAdd[] = $assign;
-                    }
-
-                    $supplieractors->add($input3);
-                }
-            }
-        }
 
        // Additional actors
         $this->addAdditionalActors($this->input, true);
@@ -8345,6 +8080,273 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function updateActors(bool $disable_notifications = false)
     {
+        // TODO Refactor this
+
+        $useractors = null;
+       // Add user groups linked to ITIL objects
+        if (!empty($this->userlinkclass)) {
+            $useractors = new $this->userlinkclass();
+        }
+        $groupactors = null;
+        if (!empty($this->grouplinkclass)) {
+            $groupactors = new $this->grouplinkclass();
+        }
+        $supplieractors = null;
+        if (!empty($this->supplierlinkclass)) {
+            $supplieractors = new $this->supplierlinkclass();
+        }
+
+        $common_actor_input = [
+            '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
+            '_from_object'                    => true,
+            '_disablenotif'                   => true,
+        ];
+
+        if (!is_null($useractors)) {
+            $user_input = $common_actor_input + [
+                $useractors->getItilObjectForeignKey() => $this->fields['id'],
+            ];
+
+            if (isset($this->input["_users_id_requester"])) {
+                if (is_array($this->input["_users_id_requester"])) {
+                    $tab_requester = $this->input["_users_id_requester"];
+                } else {
+                    $tab_requester   = [];
+                    $tab_requester[] = $this->input["_users_id_requester"];
+                }
+
+                $requesterToAdd = [];
+                foreach ($tab_requester as $key_requester => $requester) {
+                    if (in_array($requester, $requesterToAdd)) {
+                       // This requester ID is already added;
+                        continue;
+                    }
+
+                    $input2 = [
+                        'users_id' => $requester,
+                        'type'     => CommonITILActor::REQUESTER,
+                    ] + $user_input;
+
+                    if (isset($this->input["_users_id_requester_notif"])) {
+                        foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
+                            if (isset($val[$key_requester])) {
+                                $input2[$key] = $val[$key_requester];
+                            }
+                        }
+                    }
+
+                   //empty actor
+                    if (
+                        $input2['users_id'] == 0
+                        && (!isset($input2['alternative_email'])
+                        || empty($input2['alternative_email']))
+                    ) {
+                        continue;
+                    } else if ($requester != 0) {
+                        $requesterToAdd[] = $requester;
+                    }
+
+                    $useractors->add($input2);
+                }
+            }
+
+            if (isset($this->input["_users_id_observer"])) {
+                if (is_array($this->input["_users_id_observer"])) {
+                    $tab_observer = $this->input["_users_id_observer"];
+                } else {
+                    $tab_observer   = [];
+                    $tab_observer[] = $this->input["_users_id_observer"];
+                }
+
+                $observerToAdd = [];
+                foreach ($tab_observer as $key_observer => $observer) {
+                    if (in_array($observer, $observerToAdd)) {
+                       // This observer ID is already added;
+                        continue;
+                    }
+
+                    $input2 = [
+                        'users_id' => $observer,
+                        'type'     => CommonITILActor::OBSERVER,
+                    ] + $user_input;
+
+                    if (isset($this->input["_users_id_observer_notif"])) {
+                        foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
+                            if (isset($val[$key_observer])) {
+                                $input2[$key] = $val[$key_observer];
+                            }
+                        }
+                    }
+
+                   //empty actor
+                    if (
+                        $input2['users_id'] == 0
+                        && (!isset($input2['alternative_email'])
+                        || empty($input2['alternative_email']))
+                    ) {
+                        continue;
+                    } else if ($observer != 0) {
+                        $observerToAdd[] = $observer;
+                    }
+
+                    $useractors->add($input2);
+                }
+            }
+
+            if (isset($this->input["_users_id_assign"])) {
+                if (is_array($this->input["_users_id_assign"])) {
+                    $tab_assign = $this->input["_users_id_assign"];
+                } else {
+                    $tab_assign   = [];
+                    $tab_assign[] = $this->input["_users_id_assign"];
+                }
+
+                $assignToAdd = [];
+                foreach ($tab_assign as $key_assign => $assign) {
+                    if (in_array($assign, $assignToAdd)) {
+                       // This assigned user ID is already added;
+                        continue;
+                    }
+
+                    $input2 = [
+                        'users_id' => $assign,
+                        'type'     => CommonITILActor::ASSIGN,
+                    ] + $user_input;
+
+                    if (isset($this->input["_users_id_assign_notif"])) {
+                        foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
+                            if (isset($val[$key_assign])) {
+                                $input2[$key] = $val[$key_assign];
+                            }
+                        }
+                    }
+
+                   //empty actor
+                    if (
+                        $input2['users_id'] == 0
+                        && (!isset($input2['alternative_email'])
+                        || empty($input2['alternative_email']))
+                    ) {
+                        continue;
+                    } else if ($assign != 0) {
+                        $assignToAdd[] = $assign;
+                    }
+
+                    $useractors->add($input2);
+                }
+            }
+        }
+
+        if (!is_null($groupactors)) {
+            $group_input = $common_actor_input + [
+                $groupactors->getItilObjectForeignKey() => $this->fields['id'],
+            ];
+
+            if (isset($this->input["_groups_id_requester"])) {
+                $groups_id_requester = $this->input["_groups_id_requester"];
+                if (!is_array($this->input["_groups_id_requester"])) {
+                    $groups_id_requester = [$this->input["_groups_id_requester"]];
+                } else {
+                    $groups_id_requester = $this->input["_groups_id_requester"];
+                }
+                foreach ($groups_id_requester as $groups_id) {
+                    if ($groups_id > 0) {
+                        $groupactors->add(
+                            [
+                                'groups_id' => $groups_id,
+                                'type'      => CommonITILActor::REQUESTER,
+                            ] + $group_input
+                        );
+                    }
+                }
+            }
+
+            if (isset($this->input["_groups_id_assign"])) {
+                if (!is_array($this->input["_groups_id_assign"])) {
+                    $groups_id_assign = [$this->input["_groups_id_assign"]];
+                } else {
+                    $groups_id_assign = $this->input["_groups_id_assign"];
+                }
+                foreach ($groups_id_assign as $groups_id) {
+                    if ($groups_id > 0) {
+                        $groupactors->add(
+                            [
+                                'groups_id' => $groups_id,
+                                'type'      => CommonITILActor::ASSIGN,
+                            ] + $group_input
+                        );
+                    }
+                }
+            }
+
+            if (isset($this->input["_groups_id_observer"])) {
+                if (!is_array($this->input["_groups_id_observer"])) {
+                    $groups_id_observer = [$this->input["_groups_id_observer"]];
+                } else {
+                    $groups_id_observer = $this->input["_groups_id_observer"];
+                }
+                foreach ($groups_id_observer as $groups_id) {
+                    if ($groups_id > 0) {
+                        $groupactors->add(
+                            [
+                                'groups_id' => $groups_id,
+                                'type'      => CommonITILActor::OBSERVER,
+                            ] + $group_input
+                        );
+                    }
+                }
+            }
+        }
+
+        if (!is_null($supplieractors)) {
+            $supplier_input = $common_actor_input + [
+                $supplieractors->getItilObjectForeignKey() => $this->fields['id'],
+            ];
+
+            if (
+                isset($this->input["_suppliers_id_assign"])
+                && ($this->input["_suppliers_id_assign"] > 0)
+            ) {
+                if (is_array($this->input["_suppliers_id_assign"])) {
+                    $tab_assign = $this->input["_suppliers_id_assign"];
+                } else {
+                    $tab_assign   = [];
+                    $tab_assign[] = $this->input["_suppliers_id_assign"];
+                }
+
+                $supplierToAdd = [];
+                foreach ($tab_assign as $key_assign => $assign) {
+                    if (in_array($assign, $supplierToAdd)) {
+                       // This assigned supplier ID is already added;
+                        continue;
+                    }
+                    $input3 = [
+                        'suppliers_id' => $assign,
+                        'type'         => CommonITILActor::ASSIGN,
+                    ] + $supplier_input;
+
+                    if (isset($this->input["_suppliers_id_assign_notif"])) {
+                        foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
+                            $input3[$key] = $val[$key_assign];
+                        }
+                    }
+
+                   //empty supplier
+                    if (
+                        $input3['suppliers_id'] == 0
+                        && (!isset($input3['alternative_email'])
+                        || empty($input3['alternative_email']))
+                    ) {
+                        continue;
+                    } else if ($assign != 0) {
+                        $supplierToAdd[] = $assign;
+                    }
+
+                    $supplieractors->add($input3);
+                }
+            }
+        }
+
         if (
             !isset($this->input['_actors'])
             || !is_array($this->input['_actors'])
