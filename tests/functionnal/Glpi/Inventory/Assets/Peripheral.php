@@ -232,6 +232,8 @@ class Peripheral extends AbstractInventoryAsset
             $this->variable($p['is_dynamic'])->isEqualTo(0);
         }
 
+        $this->nblogs = countElementsInTable(\Log::getTable());
+
         //computer inventory knows only "Fingerprint" and "Smartcard reader" peripherals
         $this->doInventory($xml_source, true);
 
@@ -245,7 +247,7 @@ class Peripheral extends AbstractInventoryAsset
                 'NOT' => ['itemtype' => \Config::class]
             ]
         ]);
-        $this->integer(count($logs))->isIdenticalTo(13);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //we still have 3 peripherals
         $periphs = $periph->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
@@ -287,6 +289,8 @@ class Peripheral extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
+        $this->nblogs = countElementsInTable(\Log::getTable());
+
         $this->doInventory($xml_source, true);
 
         //check for expected logs
@@ -299,7 +303,7 @@ class Peripheral extends AbstractInventoryAsset
                 'NOT' => ['itemtype' => \Config::class]
             ]
         ]);
-        $this->integer(count($logs))->isIdenticalTo(15);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //we still have 3 peripherals
         $periphs = $periph->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);

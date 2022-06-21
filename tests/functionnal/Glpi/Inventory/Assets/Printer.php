@@ -833,11 +833,7 @@ class Printer extends AbstractInventoryAsset
                 'NOT' => ['itemtype' => \Config::class]
             ]
         ]);
-        $this->integer(count($logs))->isIdenticalTo(1);
-        $log = $logs->current();
-        $this->string($log['itemtype'])->isIdenticalTo('Printer');
-        $this->string($log['itemtype_link'])->isIdenticalTo('Computer');
-        $this->string($log['new_value'])->isIdenticalTo('pc002 (' . $computers_id . ')');
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //we still have only 1 printer
         $printers = $printer->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
