@@ -104,6 +104,7 @@ class Certificate extends DbTestCase
        // Add
         $id = $obj->add([
             'name' => $this->method,
+            'entities_id' => 0
         ]);
         $this->integer($id)->isGreaterThan(0);
 
