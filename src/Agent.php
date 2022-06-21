@@ -144,7 +144,7 @@ class Agent extends CommonDBTM
                 'datatype'      => 'integer',
             ], [
                 'id'               => '15',
-                'table'            =>$this->getTable(),
+                'table'            => $this->getTable(),
                 'field'            => 'items_id',
                 'name'             =>  _n('Item', 'Items', 1),
                 'nosearch'         => true,
