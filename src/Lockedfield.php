@@ -292,6 +292,7 @@ class Lockedfield extends CommonDBTM
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
+            'SELECT' => ['itemtype', 'field'],
             'FROM'   => $this->getTable(),
             'WHERE'  => ['is_global' => 1]
         ]);
