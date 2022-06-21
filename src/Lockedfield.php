@@ -322,6 +322,7 @@ class Lockedfield extends CommonDBTM
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
 
         foreach ($itemtypes as $itemtype) {
+            $search_options = Search::getOptions($itemtype);
             $fields = $std_fields;
             $fields[] = strtolower($itemtype) . 'models_id'; //model relation field
             $fields[] = strtolower($itemtype) . 'types_id'; //type relation field
@@ -333,10 +334,31 @@ class Lockedfield extends CommonDBTM
                         $itemtype,
                         $field
                     );
+
+                    $field_name = $field;
+                    foreach ($search_options as $search_option) {
+                        if (isset($search_option['linkfield']) && $search_option['linkfield'] == $field) {
+                            $field_name = $search_option['name'];
+                            break;
+                        } else if (isset($search_option['field']) && $search_option['field'] == $field) {
+                            $field_name = $search_option['name'];
+                            break;
+                        }
+                    }
+
+                    if ($field_name === $field) {
+                        //name not found :(
+                        $table = getTableNameForForeignKeyField($field);
+                        if ($table !== '' && $table !== 'UNKNOWN') {
+                            $type = getItemTypeForTable($table);
+                            $field_name = $type::getTypeName(1);
+                        }
+                    }
+
                     $dname = sprintf(
                         '%1$s - %2$s',
                         $itemtype::getTypeName(1),
-                        $field
+                        $field_name
                     );
 
                     $lockable[$name] = $dname;
