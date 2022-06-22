@@ -161,10 +161,11 @@ abstract class CommonITILObject extends CommonDBTM
         $actors = [];
 
         $actortypestring = self::getActorFieldNameType($actortype);
-        $entities_id = $params['entities_id'] ?? $_SESSION['glpiactive_entity'];
-        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1);
 
         if ($this->isNewItem()) {
+            $entities_id = $params['entities_id'] ?? $_SESSION['glpiactive_entity'];
+            $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1);
+
             // load default user from preference only at the first load of new ticket form
             // we don't want to trigger it on form reload
             // at first load, the key _skip_default_actor is not present (can only be present after a submit)
