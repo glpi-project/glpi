@@ -7907,12 +7907,12 @@ abstract class CommonITILObject extends CommonDBTM
         ];
 
         foreach ($actor_types as $actor_type) {
+            $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
+
             // List actors from all input keys
             $actors = [];
             foreach ($actor_itemtypes as $actor_itemtype) {
                 $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
-
-                $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
 
                 $actor_id_input_key     = sprintf('_%s_%s', $actor_fkey, $actor_type);
                 $actor_notif_input_key  = sprintf('%s_notif', $actor_id_input_key);
@@ -8859,7 +8859,15 @@ abstract class CommonITILObject extends CommonDBTM
             && is_array($input['_actors'])
             && count($input['_actors'])
         ) {
-            foreach (['requester', 'observer', 'assign'] as $actortype) {
+            foreach (['requester', 'observer', 'assign'] as $actor_type) {
+                $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
+                if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
+                    continue;
+                }
+                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->canUpdateItem()) {
+                    continue;
+                }
+
                 $get_input_key = function (string $actor_itemtype, string $actor_type): string {
                     return sprintf(
                         '_%s_%s',
@@ -8873,16 +8881,16 @@ abstract class CommonITILObject extends CommonDBTM
                 // Also, the fact they are defined indicates that corresponding actors are updated, and so,
                 // if they are empty, it means that existing actors should be deleted.
                 foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
-                    $input[$get_input_key($actor_itemtype, $actortype)] = [];
+                    $input[$get_input_key($actor_itemtype, $actor_type)] = [];
                 }
 
                 if (
-                    array_key_exists($actortype, $input['_actors'])
-                    && is_array($input['_actors'][$actortype])
-                    && count($input['_actors'][$actortype])
+                    array_key_exists($actor_type, $input['_actors'])
+                    && is_array($input['_actors'][$actor_type])
+                    && count($input['_actors'][$actor_type])
                 ) {
-                    foreach ($input['_actors'][$actortype] as $actor) {
-                        $input_key = $get_input_key($actor['itemtype'], $actortype);
+                    foreach ($input['_actors'][$actor_type] as $actor) {
+                        $input_key = $get_input_key($actor['itemtype'], $actor_type);
 
                         if (in_array($actor['items_id'], $input[$input_key])) {
                             continue;
