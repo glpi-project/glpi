@@ -1,0 +1,60 @@
+{% if total_number < 1 %}
+   <div class="alert alert-info">
+      {{ __('No data') }}
+   </div>
+{% else %}
+    {{ include('components/pager.html.twig', {count: filtered_number}) }}
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                {% for colum in columns %}
+                    <th>{{ colum }}</th>
+                {% endfor %}
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                    <tr>
+                        {% for colkey, colum in columns %}
+                            <td>
+                                {% if colkey in entry|keys %}
+
+                                    {% set formatter = formatters[colkey] %}
+
+                                    {% if formatter == "longtext" %}
+                                        <span class="d-inline-block text-truncate badge bg-blue-lt"
+                                            title="{{ entry[colkey] }}"
+                                            data-bs-toggle="tooltip"
+                                            style="max-width: 250px;">
+                                            {{ entry[colkey] }}
+                                        <span>
+                                    {% elseif formatter == "progress" %}
+                                        {{ call("Html::progress", [100, entry[colkey]])|raw }}
+                                    {% elseif formatter == "date" %}
+                                        {{ call("Html::convDate", [entry[colkey]])|raw }}
+                                    {% elseif formatter == "datetime" %}
+                                        {{ call("Html::convDateTime", [entry[colkey]])|raw }}
+                                    {% elseif formatter == "userbadge" %}
+                                        <span class="d-inline-block text-truncate badge bg-blue-lt" style="max-width: 150px;">
+                                            <i class="ti ti-user me-1">
+                                            {{ entry[colkey] }}
+                                        <span>
+                                    {% elseif formatter == "bytesize" %}
+                                        {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
+                                    {% else %}
+                                        {{ entry[colkey] }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
+    <div class="ms-auto d-inline-flex align-items-center d-none d-md-block mb-2">
+        {{ __('Show %s entries')|format(limitdropdown)|raw }}
+    </div>
+{% endif %}
