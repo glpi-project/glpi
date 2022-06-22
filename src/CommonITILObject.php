@@ -1347,7 +1347,9 @@ abstract class CommonITILObject extends CommonDBTM
                // Manage assign and steal right
                 if (static::getType() === Ticket::getType() && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
                     $allowed_fields[] = '_itil_assign';
-                    $allowed_fields[] = '_actors'; // This will be filtered in CommonITILObject::updateActors()
+                    $allowed_fields[] = '_users_id_assign';
+                    $allowed_fields[] = '_groups_id_assign';
+                    $allowed_fields[] = '_suppliers_id_assign';
                 }
 
                // Can only update initial fields if no followup or task already added
