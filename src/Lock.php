@@ -98,8 +98,10 @@ class Lock extends CommonGLPI
                         [
                             'itemtype'  => $itemtype,
                             'items_id'  => $ID
-                        ],
-                        'is_global' => 1
+                        ], [
+                            'itemtype'  => $itemtype,
+                            'is_global' => 1
+                        ]
                     ]
                 ]
             ]);
