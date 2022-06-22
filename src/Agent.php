@@ -143,19 +143,48 @@ class Agent extends CommonDBTM
                 'name'          => _n('Port', 'Ports', 1),
                 'datatype'      => 'integer',
             ], [
-                'id'            => '15',
-                'table'         => $this->getTable(),
-                'field'         => 'name',
-                'datatype'      => 'itemlink',
-                'name'          => _n('Item', 'Items', 1),
-                'joinparams'    => [
-                    'jointype' => 'itemtype_item'
-                ]
-            ]
+                'id'               => '15',
+                'table'            => $this->getTable(),
+                'field'            => 'items_id',
+                'name'             =>  _n('Item', 'Items', 1),
+                'nosearch'         => true,
+                'massiveaction'    => false,
+                'forcegroupby'     => true,
+                'datatype'         => 'specific',
+                'searchtype'       => 'equals',
+                'additionalfields' => ['itemtype'],
+                'joinparams'       => ['jointype' => 'child']
+            ],
+
         ];
 
         return $tab;
     }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'items_id':
+                $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
+                if ($itemtype !== null && class_exists($itemtype)) {
+                    if ($values[$field] > 0) {
+                        $item = new $itemtype();
+                        $item->getFromDB($values[$field]);
+                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                    }
+                } else {
+                    return ' ';
+                }
+                break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
 
     public static function rawSearchOptionsToAdd()
     {
