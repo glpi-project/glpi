@@ -215,11 +215,9 @@ var insertImgFromFile = function(editor, fileImg, tag) {
                     imgHeight = imgHeight * ratio;     // Reset height to match scaled image
                 }
 
-                editor.execCommand(
-                    'mceInsertContent',
-                    false,
-                    "<img width='"+imgWidth+"' height='"+imgHeight+"' id='"+tag.replace(regex,'')+"' src='"+imageUrl+"'>"
-                );
+                var content = editor.getContent();
+                content = content.replace('<img data-file="' + fileImg + '">', "<img width='"+imgWidth+"' height='"+imgHeight+"' id='"+tag.replace(regex,'')+"' src='"+imageUrl+"'>");
+                editor.setContent(content);
 
                 // loading done, remove indicator
                 editor.setProgressState(false);
@@ -305,6 +303,7 @@ var extractSrcFromImgTag = function(content) {
  */
 var insertImageInTinyMCE = function(editor, image) {
     //make ajax call for upload doc
+    editor.execCommand('mceInsertContent', false, '<img data-file="' + image + '">');
     uploadFile(image, editor);
 };
 
