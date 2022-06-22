@@ -316,23 +316,37 @@ var insertImageInTinyMCE = function(editor, image) {
 if (typeof tinyMCE != 'undefined') {
     tinyMCE.PluginManager.add('glpi_upload_doc', function(editor) {
         editor.on('PastePreProcess', function(event) {
+            var content = event.content;
             //Check if data is an image
             if (isImageFromPaste(event.content)) {
                 stopEvent(event);
 
                 //extract base64 data
                 $('<div></div>').append(event.content).find('img').each(function() {
+                    var before = content.split(this.outerHTML)[0];
+                    content = content.split(this.outerHTML)[1];
+                    if (before.length > 0) {
+                        editor.execCommand('mceInsertContent', false, before);
+                    }
                     var base64 = $(this).attr('src');
                     //transform to blob and insert into editor
                     var file = dataURItoBlob(base64);
 
                     insertImageInTinyMCE(editor, file);
                 });
+                if (content.length > 0) {
+                    editor.execCommand('mceInsertContent', false, content);
+                }
 
             } else if (isImageBlobFromPaste(event.content)) {
                 stopEvent(event);
 
                 $('<div></div>').append(event.content).find('img').each(function() {
+                    var before = content.split(this.outerHTML)[0];
+                    content = content.split(this.outerHTML)[1];
+                    if (before.length > 0) {
+                        editor.execCommand('mceInsertContent', false, before);
+                    }
                     var src = $(this).attr('src');
 
                     var xhr = new XMLHttpRequest();
@@ -353,6 +367,9 @@ if (typeof tinyMCE != 'undefined') {
                     };
                     xhr.send();
                 });
+                if (content.length > 0) {
+                    editor.execCommand('mceInsertContent', false, content);
+                }
             }
 
             // event was stopped, we have to manually remove 'draghover' class
