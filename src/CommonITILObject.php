@@ -7951,9 +7951,40 @@ abstract class CommonITILObject extends CommonDBTM
                         ];
                         if (
                             array_key_exists($actor_notif_input_key, $this->input)
-                            && !array_is_list($this->input[$actor_notif_input_key])
+                            && (
+                                array_key_exists('use_notification', $this->input[$actor_notif_input_key])
+                                || array_key_exists('alternative_email', $this->input[$actor_notif_input_key])
+                            )
                         ) {
-                            $actor += $this->input[$actor_notif_input_key];
+                            if (
+                                is_array($this->input[$actor_notif_input_key]['use_notification'])
+                                && array_key_exists(0, $this->input[$actor_notif_input_key]['use_notification'])
+                                && count($this->input[$actor_notif_input_key]['use_notification']) === 0
+                            ) {
+                                // 'single unknown requester' case in tests\units\Ticket::ticketProvider()
+                                // Corresponds to value provided by Ticket::getDefaultValues()
+                                // Seems weird but it expect to pass.
+                                // FIXME Deprecate this case in GLPI 10.1.
+                                $actor['use_notification'] = $this->input[$actor_notif_input_key]['use_notification'][0];
+                            } elseif (!is_array($this->input[$actor_notif_input_key]['use_notification'])) {
+                                // Corresponds to value provided by Change::getDefaultValues()
+                                $actor['use_notification'] = $this->input[$actor_notif_input_key]['use_notification'];
+                            }
+
+                            if (
+                                is_array($this->input[$actor_notif_input_key]['alternative_email'])
+                                && array_key_exists(0, $this->input[$actor_notif_input_key]['alternative_email'])
+                                && count($this->input[$actor_notif_input_key]['alternative_email']) === 0
+                            ) {
+                                // 'single unknown requester' case in tests\units\Ticket::ticketProvider()
+                                // Corresponds to value provided by Ticket::getDefaultValues()
+                                // Seems weird but it expect to pass.
+                                // FIXME Deprecate this case in GLPI 10.1.
+                                $actor['alternative_email'] = $this->input[$actor_notif_input_key]['alternative_email'][0];
+                            } elseif (!is_array($this->input[$actor_notif_input_key]['alternative_email'])) {
+                                // Corresponds to value provided by Change::getDefaultValues()
+                                $actor['alternative_email'] = $this->input[$actor_notif_input_key]['alternative_email'];
+                            }
                         }
                         $actors[$get_unique_key($actor_id)] = $actor;
                     }
@@ -7981,7 +8012,7 @@ abstract class CommonITILObject extends CommonDBTM
                         $unique_key = $get_unique_key($actor_id);
                         if (!array_key_exists($unique_key, $actors)) {
                             $actors[$unique_key] = [
-                                'itemtype' => User::getType(),
+                                'itemtype' => $actor_itemtype,
                                 'items_id' => $actor_id,
                                 'type'     => $actor_type_value,
                             ];
@@ -8855,10 +8886,13 @@ abstract class CommonITILObject extends CommonDBTM
                         $value_key = sprintf('_actors_%s', $actor['items_id']);
 
                         $input[$input_key][$value_key] = $actor['items_id'];
-                        $input[sprintf('%s_notif', $input_key)][$value_key] = [
-                            'use_notification'  => $actor['use_notification'],
-                            'alternative_email' => $actor['alternative_email'],
-                        ];
+
+                        if (array_key_exists('use_notification', $actor)) {
+                            $input[sprintf('%s_notif', $input_key)][$value_key] = [
+                                'use_notification'  => $actor['use_notification'],
+                                'alternative_email' => $actor['alternative_email'] ?? '',
+                            ];
+                        }
                     }
                 }
             }

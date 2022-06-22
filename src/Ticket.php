@@ -1111,6 +1111,8 @@ class Ticket extends CommonITILObject
         $rules               = new RuleTicketCollection($entid);
         $rule                = $rules->getRuleClass();
         $changes             = [];
+        $post_added          = [];
+        $tocleanafterrules   = [];
         $tocleanafterrules   = [];
         $usertypes           = [
             CommonITILActor::ASSIGN    => 'assign',
@@ -1130,10 +1132,61 @@ class Ticket extends CommonITILObject
                     $tocleanafterrules['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
                 }
             }
+
+           //handle existing actors: load all existing actors from ticket
+           //to make sure business rules will receive all information, and not just
+           //what have been entered in the html form.
+           //
+           //ref also this actor into $post_added to avoid the filling of $changes
+           //and triggering businness rules when not needed
+            $users = $this->getUsers($k);
+            if (count($users)) {
+                $field = 'users_id';
+                foreach ($users as $user) {
+                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($user[$field], $input['_' . $field . '_' . $t])) {
+                        if (!isset($input['_' . $field . '_' . $t])) {
+                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
+                        }
+                        $input['_' . $field . '_' . $t][]             = $user[$field];
+                        $tocleanafterrules['_' . $field . '_' . $t][] = $user[$field];
+                    }
+                }
+            }
+
+            $groups = $this->getGroups($k);
+            if (count($groups)) {
+                $field = 'groups_id';
+                foreach ($groups as $group) {
+                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($group[$field], $input['_' . $field . '_' . $t])) {
+                        if (!isset($input['_' . $field . '_' . $t])) {
+                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
+                        }
+                        $input['_' . $field . '_' . $t][]             = $group[$field];
+                        $tocleanafterrules['_' . $field . '_' . $t][] = $group[$field];
+                    }
+                }
+            }
+
+            $suppliers = $this->getSuppliers($k);
+            if (count($suppliers)) {
+                $field = 'suppliers_id';
+                foreach ($suppliers as $supplier) {
+                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($supplier[$field], $input['_' . $field . '_' . $t])) {
+                        if (!isset($input['_' . $field . '_' . $t])) {
+                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
+                        }
+                        $input['_' . $field . '_' . $t][]             = $supplier[$field];
+                        $tocleanafterrules['_' . $field . '_' . $t][] = $supplier[$field];
+                    }
+                }
+            }
         }
 
         foreach ($rule->getCriterias() as $key => $val) {
-            if (array_key_exists($key, $input)) {
+            if (
+                array_key_exists($key, $input)
+                && !array_key_exists($key, $post_added)
+            ) {
                 if (
                     !isset($this->fields[$key])
                     || ($DB->escape($this->fields[$key]) != $input[$key])
@@ -1195,8 +1248,14 @@ class Ticket extends CommonITILObject
         }
 
        // Clean actors fields added for rules
-        foreach ($tocleanafterrules as $key => $val) {
-            if ($input[$key] == $val) {
+        foreach ($tocleanafterrules as $key => $values_to_drop) {
+            $input[$key] = array_filter(
+                $input[$key],
+                function ($value) use ($values_to_drop) {
+                    return !in_array($value, $values_to_drop);
+                }
+            );
+            if (in_array($key, $post_added) && empty($input[$key])) {
                 unset($input[$key]);
             }
         }
