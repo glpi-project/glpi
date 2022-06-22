@@ -7882,10 +7882,6 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function updateActors(bool $disable_notifications = false)
     {
-        $useractors  = class_exists($this->userlinkclass) ? new $this->userlinkclass() : null;
-        $groupactors = class_exists($this->grouplinkclass) ? new $this->grouplinkclass() : null;
-        $supplieractors = class_exists($this->supplierlinkclass) ? new $this->supplierlinkclass() : null;
-
         // Reload actors to be able to categorize users as added/updated/deleted.
         $this->loadActors();
 
@@ -7896,8 +7892,6 @@ abstract class CommonITILObject extends CommonDBTM
         if ($disable_notifications) {
             $common_actor_input['_disablenotif'] = true;
         }
-
-        $actors = [];
 
         $actor_itemtypes = [
             User::class,
@@ -7912,12 +7906,13 @@ abstract class CommonITILObject extends CommonDBTM
 
         foreach ($actor_types as $actor_type) {
             // List actors from all input keys
+            $actors = [];
             foreach ($actor_itemtypes as $actor_itemtype) {
                 $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
 
                 $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
 
-                $actor_id_input_key     = sprintf('%s_%s', $actor_fkey, $actor_type);
+                $actor_id_input_key     = sprintf('_%s_%s', $actor_fkey, $actor_type);
                 $actor_notif_input_key  = sprintf('%s_notif', $actor_id_input_key);
                 $actor_id_add_input_key = $actor_itemtype === User::class
                     ? sprintf('_additional_%ss', $actor_type)
@@ -7926,6 +7921,8 @@ abstract class CommonITILObject extends CommonDBTM
                 $get_unique_key = function (int $actor_id) use ($actor_id_input_key): string {
                     return sprintf('%s_%s', $actor_id_input_key, $actor_id);
                 };
+
+                $should_delete = array_key_exists($actor_id_input_key, $this->input);
 
                 if (array_key_exists($actor_id_input_key, $this->input)) {
                     if (is_array($this->input[$actor_id_input_key])) {
@@ -7969,8 +7966,15 @@ abstract class CommonITILObject extends CommonDBTM
                         } else {
                             $actor_id = $actor;
                         }
-                        if (!is_numeric($actor)) {
-                            // FIXME trigger an error ?
+                        if (!is_numeric($actor_id)) {
+                            trigger_error(
+                                sprintf(
+                                    'Invalid value "%s" found for additional actor in "%s".',
+                                    var_export($actor_id, true),
+                                    $actor_id_add_input_key
+                                ),
+                                E_USER_WARNING
+                            );
                             continue;
                         }
                         $actor_id = (int)$actor_id;
@@ -7979,7 +7983,7 @@ abstract class CommonITILObject extends CommonDBTM
                             $actors[$unique_key] = [
                                 'itemtype' => User::getType(),
                                 'items_id' => $actor_id,
-                                'type'     => CommonITILActor::REQUESTER,
+                                'type'     => $actor_type_value,
                             ];
                         }
                     }
@@ -7996,10 +8000,7 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($actors as $actor) {
                 $found = false;
                 foreach ($existings as $existing) {
-                    if (
-                        $actor['itemtype'] != $existing['itemtype']
-                        && $actor['items_id'] != $existing['items_id']
-                    ) {
+                    if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
                         continue;
                     }
                     $found = true;
@@ -8024,20 +8025,19 @@ abstract class CommonITILObject extends CommonDBTM
             }
 
             // Search for deleted actors
-            foreach ($existings as $existing) {
-                $found = false;
-                foreach ($actors as $actor) {
-                    if (
-                        $actor['itemtype'] != $existing['itemtype']
-                        && $actor['items_id'] != $existing['items_id']
-                    ) {
-                        continue;
+            if ($should_delete) {
+                foreach ($existings as $existing) {
+                    $found = false;
+                    foreach ($actors as $actor) {
+                        if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
+                            continue;
+                        }
+                        $found = true;
+                        break;
                     }
-                    $found = true;
-                    break;
-                }
-                if ($found === false) {
-                    $deleted[] = $existing;
+                    if ($found === false) {
+                        $deleted[] = $existing;
+                    }
                 }
             }
 
@@ -8045,8 +8045,8 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($added as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
                 $actor_obj->add($common_actor_input + $actor + [
-                    $actor_obj::getItilObjectForeignKey() => $this->fields['id'],
-                    $actor_obj::getActorForeignKey()      => $actor['items_id'],
+                    $actor_obj->getItilObjectForeignKey() => $this->fields['id'],
+                    $actor_obj->getActorForeignKey()      => $actor['items_id'],
                 ]);
                 if (
                     $actor['type'] === CommonITILActor::ASSIGN
@@ -8824,25 +8824,29 @@ abstract class CommonITILObject extends CommonDBTM
             && count($input['_actors'])
         ) {
             foreach (['requester', 'observer', 'assign'] as $actortype) {
+                $get_input_key = function (string $actor_itemtype, string $actor_type): string {
+                    return sprintf(
+                        '_%s_%s',
+                        getForeignKeyFieldForItemType($actor_itemtype),
+                        $actor_type
+                    );
+                };
+
+                // Ensure all keys are defined.
+                // As the full actors list is expected to be set in `_actors` key, all keys should be reset.
+                // Also, the fact they are defined indicates that corresponding actors are updated, and so,
+                // if they are empty, it means that existing actors should be deleted.
+                foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
+                    $input[$get_input_key($actor_itemtype, $actortype)] = [];
+                }
+
                 if (
                     array_key_exists($actortype, $input['_actors'])
                     && is_array($input['_actors'][$actortype])
                     && count($input['_actors'][$actortype])
                 ) {
                     foreach ($input['_actors'][$actortype] as $actor) {
-                        $input_key = sprintf(
-                            '_%s_%s',
-                            getForeignKeyFieldForItemType($actor['itemtype']),
-                            $actortype
-                        );
-
-                        if (!array_key_exists($input_key, $input)) {
-                            // Create missing input key.
-                            $input[$input_key] = [];
-                        } elseif (!is_array($input[$input_key])) {
-                            // Transform key into array, as we will append values.
-                            $input[$input_key] = !empty($input[$input_key]) ? [$input[$input_key]] : [];
-                        }
+                        $input_key = $get_input_key($actor['itemtype'], $actortype);
 
                         if (in_array($actor['items_id'], $input[$input_key])) {
                             continue;

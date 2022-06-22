@@ -1121,6 +1121,7 @@ class Ticket extends CommonITILObject
         foreach ($usertypes as $k => $t) {
            //handle new input
             if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
+                // FIXME Deprecate these keys in GLPI 10.1.
                 $field = $input['_itil_' . $t]['_type'] . 's_id';
                 if (
                     isset($input['_itil_' . $t][$field])
@@ -1130,6 +1131,8 @@ class Ticket extends CommonITILObject
                     $tocleanafterrules['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
                 }
             }
+
+            /*
 
            //handle existing actors: load all existing actors from ticket
            //to make sure business rules will receive all information, and not just
@@ -1178,6 +1181,7 @@ class Ticket extends CommonITILObject
                     }
                 }
             }
+            */
         }
 
         foreach ($rule->getCriterias() as $key => $val) {
@@ -1253,25 +1257,24 @@ class Ticket extends CommonITILObject
         }
 
        // Manage fields from auto update or rules : map rule actions to standard additional ones
+       /*
         $usertypes  = ['assign', 'requester', 'observer'];
         $actortypes = ['user','group','supplier'];
         foreach ($usertypes as $t) {
             foreach ($actortypes as $a) {
-                if (isset($input['_' . $a . 's_id_' . $t])) {
-                    switch ($a) {
-                        case 'user':
-                             $additionalfield           = '_additional_' . $t . 's';
-                             $input[$additionalfield][] = ['users_id' => $input['_' . $a . 's_id_' . $t]];
-                            break;
-
-                        default:
-                            $additionalfield           = '_additional_' . $a . 's_' . $t . 's';
-                            $input[$additionalfield][] = $input['_' . $a . 's_id_' . $t];
-                            break;
+                $input_key = '_' . $a . 's_id_' . $t;
+                if (array_key_exists($input_key, $input) && !empty($input[$input_key]) ) {
+                    $additional_key = $a === 'user'
+                        ? sprintf('_additional_%ss', $t)
+                        : sprintf('_additional_%ss_%ss', $a, $t);
+                    $actors_ids = is_array($input[$input_key]) ? $input[$input_key] : [$input[$input_key]];
+                    foreach ($actors_ids as $actor_id) {
+                        $input[$additional_key][] = $actor_id;
                     }
                 }
             }
         }
+        */
 
         if (isset($input['_link'])) {
             $ticket_ticket = new Ticket_Ticket();
