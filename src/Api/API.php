@@ -1080,7 +1080,7 @@ abstract class API
         $default = ['expand_dropdowns' => false,
             'get_hateoas'       => true,
             'only_id'           => false,
-            'range'             => "0-" . ($_SESSION['glpilist_limit']) - 1,
+            'range'             => "0-" . ($_SESSION['glpilist_limit'] - 1),
             'sort'              => "id",
             'order'             => "ASC",
             'searchText'        => null,
