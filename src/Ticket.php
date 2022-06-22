@@ -1111,7 +1111,6 @@ class Ticket extends CommonITILObject
         $rules               = new RuleTicketCollection($entid);
         $rule                = $rules->getRuleClass();
         $changes             = [];
-        $post_added          = [];
         $tocleanafterrules   = [];
         $usertypes           = [
             CommonITILActor::ASSIGN    => 'assign',
@@ -1131,64 +1130,10 @@ class Ticket extends CommonITILObject
                     $tocleanafterrules['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
                 }
             }
-
-            /*
-
-           //handle existing actors: load all existing actors from ticket
-           //to make sure business rules will receive all information, and not just
-           //what have been entered in the html form.
-           //
-           //ref also this actor into $post_added to avoid the filling of $changes
-           //and triggering businness rules when not needed
-            $users = $this->getUsers($k);
-            if (count($users)) {
-                $field = 'users_id';
-                foreach ($users as $user) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($user[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
-                        }
-                        $input['_' . $field . '_' . $t][]             = $user[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $user[$field];
-                    }
-                }
-            }
-
-            $groups = $this->getGroups($k);
-            if (count($groups)) {
-                $field = 'groups_id';
-                foreach ($groups as $group) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($group[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
-                        }
-                        $input['_' . $field . '_' . $t][]             = $group[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $group[$field];
-                    }
-                }
-            }
-
-            $suppliers = $this->getSuppliers($k);
-            if (count($suppliers)) {
-                $field = 'suppliers_id';
-                foreach ($suppliers as $supplier) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($supplier[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
-                        }
-                        $input['_' . $field . '_' . $t][]             = $supplier[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $supplier[$field];
-                    }
-                }
-            }
-            */
         }
 
         foreach ($rule->getCriterias() as $key => $val) {
-            if (
-                array_key_exists($key, $input)
-                && !array_key_exists($key, $post_added)
-            ) {
+            if (array_key_exists($key, $input)) {
                 if (
                     !isset($this->fields[$key])
                     || ($DB->escape($this->fields[$key]) != $input[$key])
@@ -1255,26 +1200,6 @@ class Ticket extends CommonITILObject
                 unset($input[$key]);
             }
         }
-
-       // Manage fields from auto update or rules : map rule actions to standard additional ones
-       /*
-        $usertypes  = ['assign', 'requester', 'observer'];
-        $actortypes = ['user','group','supplier'];
-        foreach ($usertypes as $t) {
-            foreach ($actortypes as $a) {
-                $input_key = '_' . $a . 's_id_' . $t;
-                if (array_key_exists($input_key, $input) && !empty($input[$input_key]) ) {
-                    $additional_key = $a === 'user'
-                        ? sprintf('_additional_%ss', $t)
-                        : sprintf('_additional_%ss_%ss', $a, $t);
-                    $actors_ids = is_array($input[$input_key]) ? $input[$input_key] : [$input[$input_key]];
-                    foreach ($actors_ids as $actor_id) {
-                        $input[$additional_key][] = $actor_id;
-                    }
-                }
-            }
-        }
-        */
 
         if (isset($input['_link'])) {
             $ticket_ticket = new Ticket_Ticket();
