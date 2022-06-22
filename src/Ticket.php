@@ -1113,7 +1113,6 @@ class Ticket extends CommonITILObject
         $changes             = [];
         $post_added          = [];
         $tocleanafterrules   = [];
-        $tocleanafterrules   = [];
         $usertypes           = [
             CommonITILActor::ASSIGN    => 'assign',
             CommonITILActor::REQUESTER => 'requester',
