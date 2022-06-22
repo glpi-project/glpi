@@ -110,7 +110,7 @@ class Lock extends CommonGLPI
                 if (isset($search_option['linkfield'])) {
                     $so_fields[$search_option['linkfield']] = $search_option['name'];
                 } else if (isset($search_option['field'])) {
-                    $so_fields[$search_option['linkfield']] = $search_option['name'];
+                    $so_fields[$search_option['field']] = $search_option['name'];
                 }
             }
 
