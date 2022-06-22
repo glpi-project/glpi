@@ -8038,10 +8038,13 @@ abstract class CommonITILObject extends CommonDBTM
 
                     // check if modifications exists
                     if (
-                        isset($existing['use_notification'])
-                        && (
-                            $actor['use_notification'] != $existing['use_notification']
-                            || $actor['alternative_email'] != $existing['alternative_email']
+                        (
+                            array_key_exists('use_notification', $actor)
+                            && $actor['use_notification'] != $existing['use_notification']
+                        )
+                        || (
+                            array_key_exists('alternative_email', $actor)
+                            && $actor['alternative_email'] != $existing['alternative_email']
                         )
                     ) {
                         $updated[] = $actor + ['id' => $existing['id']];
