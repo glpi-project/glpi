@@ -374,6 +374,14 @@ class NetworkEquipment extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '72',
+            'table'              => 'glpi_autoupdatesystems',
+            'field'              => 'name',
+            'name'               => AutoUpdateSystem::getTypeName(1),
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
             'field'              => 'date_mod',
