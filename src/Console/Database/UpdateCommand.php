@@ -39,6 +39,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 use Migration;
 use Session;
@@ -46,6 +47,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Update;
 
 class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
@@ -73,6 +75,13 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
      */
     const ERROR_INVALID_DATABASE = 3;
 
+    /**
+     * Error code returned when database integrity check failed.
+     *
+     * @var integer
+     */
+    const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
+
     protected $requires_db_up_to_date = false;
 
     protected function configure()
@@ -88,6 +97,13 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             'u',
             InputOption::VALUE_NONE,
             __('Allow update to an unstable version')
+        );
+
+        $this->addOption(
+            'check-db',
+            'c',
+            InputOption::VALUE_NONE,
+            __('Check the database schema integrity before performing the update')
         );
 
         $this->addOption(
@@ -141,11 +157,6 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             return self::ERROR_INVALID_DATABASE;
         }
 
-        global $migration; // Migration scripts are using global migrations
-        $migration = new Migration(GLPI_VERSION);
-        $migration->setOutputHandler($output);
-        $update->setMigration($migration);
-
         $informations = new Table($output);
         $informations->setHeaders(['', __('Current'), _n('Target', 'Targets', 1)]);
         $informations->addRow([__('Database host'), $this->db->dbhost, '']);
@@ -188,6 +199,12 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
         $this->askForConfirmation();
 
+        $this->checkSchemaIntegrity($current_db_version);
+
+        global $migration; // Migration scripts are using global `$migration`
+        $migration = new Migration(GLPI_VERSION);
+        $migration->setOutputHandler($output);
+        $update->setMigration($migration);
         $update->doUpdates($current_version, $force);
         $output->writeln('<info>' . __('Migration done.') . '</info>');
 
@@ -202,5 +219,92 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
     {
 
         return true;
+    }
+
+    /**
+     * Check schema integrity of installed database.
+     *
+     * @param string $installed_version
+     *
+     * @return void
+     */
+    private function checkSchemaIntegrity(string $installed_version): void
+    {
+        if (!$this->input->getOption('check-db')) {
+            $check = false;
+            if (!$this->input->getOption('no-interaction')) {
+                // If option has not been used, but administrator uses the command with interaction mode,
+                // propose him to check for database integrity.
+                $question_helper = $this->getHelper('question');
+                $check = $question_helper->ask(
+                    $this->input,
+                    $this->output,
+                    new ConfirmationQuestion(
+                        __('Do you want to check database schema integrity before performing the update?') . ' [Yes/no]',
+                        true
+                    )
+                );
+                if (!$check) {
+                    $this->output->writeln(
+                        '<comment>' . __('Database schema integrity check skipped.') . '</comment>',
+                        OutputInterface::VERBOSITY_QUIET
+                    );
+                }
+            }
+            if (!$check) {
+                return;
+            }
+        }
+
+        $this->output->writeln('<comment>' . __('Checking database schema integrity...') . '</comment>');
+
+        $current_version   = GLPI_SCHEMA_VERSION;
+        // Normalize versions: remove @sha suffix and stability flags
+        $install_version_normalized = VersionParser::getNormalizedVersion(preg_replace('/@.+$/', '', $installed_version), false);
+        $current_version_normalized = VersionParser::getNormalizedVersion(preg_replace('/@.+$/', '', $current_version), false);
+
+        if (
+            $install_version_normalized === $current_version_normalized
+            && $installed_version !== $current_version
+        ) {
+            $msg = sprintf(
+                __('Database schema integrity check skipped as database was installed using an intermediate unstable version (%s).'),
+                $installed_version
+            );
+            $this->output->writeln('<comment>' . $msg . '</comment>', OutputInterface::VERBOSITY_QUIET);
+            return;
+        }
+
+        $schema_file = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $install_version_normalized);
+        if (!file_exists($schema_file)) {
+            $msg = sprintf(
+                __('Database schema integrity check skipped as version "%s" is not supported by checking process.'),
+                $installed_version
+            );
+            $this->output->writeln('<comment>' . $msg . '</comment>', OutputInterface::VERBOSITY_QUIET);
+            return;
+        }
+
+        $checker = new DatabaseSchemaIntegrityChecker($this->db, false, true, true, true, true, true);
+        try {
+            $differences = $checker->checkCompleteSchema($schema_file, true);
+        } catch (\Throwable $e) {
+            $msg = sprintf(__('Database integrity check failed with error (%s).'), $e->getMessage());
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . $msg . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+        }
+        if (count($differences) > 0) {
+            $msg = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_normalized)
+                . ' '
+                . sprintf(__('Run the "php bin/console %1$s" command to view found differences.'), 'glpi:database:check_schema_integrity');
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . $msg . '</error>',
+                self::ERROR_DATABASE_INTEGRITY_CHECK_FAILED
+            );
+        } else {
+            $this->output->writeln('<info>' . __('Database schema is OK.') . '</info>');
+        }
     }
 }
