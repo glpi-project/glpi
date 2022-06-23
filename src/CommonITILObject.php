@@ -8631,7 +8631,10 @@ abstract class CommonITILObject extends CommonDBTM
 
         $request = [
             'SELECT' => [
-                $itil_table . '.*',
+                $itil_table . '.id',
+                $itil_table . '.name',
+                $itil_table . '.content',
+                $itil_table . '.status',
             ],
             'FROM'   => $itil_table,
             'WHERE'  => $WHERE
@@ -8639,12 +8642,12 @@ abstract class CommonITILObject extends CommonDBTM
 
         $iterator = $DB->request($request);
         foreach ($iterator as $data) {
-           // Create a fake item to get just the actors without loading all other information about items.
+            // Create a fake item to get just the actors without loading all other information about items.
             $temp_item = new static();
             $temp_item->fields['id'] = $data['id'];
             $temp_item->loadActors();
 
-           // Build team member data
+            // Build team member data
             $supported_teamtypes = [
                 'User' => ['id', 'firstname', 'realname'],
                 'Group' => ['id', 'name'],
@@ -8664,15 +8667,15 @@ abstract class CommonITILObject extends CommonDBTM
                     return $e[$itemtype::getForeignKeyField()];
                 }, $members[$itemtype]);
                 if (count($member_ids)) {
-                     $itemtable = $itemtype::getTable();
-                     $all_items = $DB->request([
-                         'SELECT'    => $fields,
-                         'FROM'      => $itemtable,
-                         'WHERE'     => [
-                             "{$itemtable}.id"   => $member_ids
-                         ]
-                     ]);
-                     $all_members[$itemtype] = [];
+                    $itemtable = $itemtype::getTable();
+                    $all_items = $DB->request([
+                        'SELECT'    => $fields,
+                        'FROM'      => $itemtable,
+                        'WHERE'     => [
+                            "{$itemtable}.id"   => $member_ids
+                        ]
+                    ]);
+                    $all_members[$itemtype] = [];
                     foreach ($all_items as $member_data) {
                         if ($itemtype === User::class) {
                             $member_data['name'] = formatUserName(
@@ -8682,7 +8685,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 $member_data['firstname']
                             );
                         }
-                          $team[] = $member_data;
+                        $team[] = $member_data;
                     }
                 }
             }
@@ -8761,10 +8764,23 @@ abstract class CommonITILObject extends CommonDBTM
 
         $columns = [];
         $criteria = [];
-        if (!empty($column_ids)) {
+        if (empty($column_ids)) {
+            return [];
+        }
+        // Never try getting cards in drop-only columns
+        $columns_defined = self::getAllKanbanColumns('status');
+        $statuses_from_db = array_filter($column_ids, static function ($id) use ($columns_defined) {
+            $id = (int) $id;
+            return isset($columns_defined[$id]) && (!isset($columns_defined[$id]['drop_only']) || $columns_defined[$id]['drop_only'] === false);
+        });
+        if (count($statuses_from_db)) {
             $criteria = [
-                'status'   => $column_ids
+                'status' => $statuses_from_db
             ];
+        }
+        if (!isset($criteria['status'])) {
+            // Avoid fetching everything when nothing is needed
+            return [];
         }
         $items      = self::getDataToDisplayOnKanban($ID, $criteria);
 

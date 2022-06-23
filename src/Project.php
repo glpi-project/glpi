@@ -1961,9 +1961,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $project_visibility = self::getVisibilityCriteria();
         $project_visibility['WHERE'] += getEntitiesRestrictCriteria(self::getTable(), '', '', 'auto');
 
+        $required_project_fields = [
+            'id', 'name', 'content', 'plan_start_date', 'plan_end_date', 'real_start_date',
+            'real_end_date', 'percent_done', 'projects_id', 'projectstates_id',
+        ];
         $request = [
             'SELECT' => [
-                'glpi_projects.*',
                 'glpi_projectstates.is_finished'
             ],
             'FROM'   => 'glpi_projects',
@@ -1979,6 +1982,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'is_template' => 0
             ],
         ];
+        foreach ($required_project_fields as $field) {
+            $request['SELECT'][] = 'glpi_projects.' . $field;
+        }
         if ($ID > 0) {
             $request['WHERE']['glpi_projects.projects_id'] = $ID;
             $request['WHERE'] += $criteria;
@@ -1989,9 +1995,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         foreach ($iterator as $data) {
             $projects[$data['id']] = $data;
         }
-        $project_ids = array_map(function ($e) {
+        $project_ids = array_map(static function ($e) {
             return $e['id'];
-        }, array_filter($projects, function ($e) use ($ID) {
+        }, array_filter($projects, static function ($e) use ($ID) {
           // Filter tasks of closed projects in Global view
             return ($ID > 0 || !$e['is_finished']);
         }));
@@ -2005,7 +2011,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'projects_id' => ($ID <= 0 && count($project_ids)) ? $project_ids : $ID,
         ];
         $projecttasks = $projecttask->find($project_task_criteria + $criteria);
-        $projecttask_ids = array_map(function ($e) {
+        $projecttask_ids = array_map(static function ($e) {
             return $e['id'];
         }, $projecttasks);
         $projecttaskteams = count($projecttask_ids) ? $projecttaskteam->find(['projecttasks_id' => $projecttask_ids]) : [];
@@ -2019,9 +2025,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         ];
         $all_members = [];
         foreach ($supported_teamtypes as $itemtype => $fields) {
-            $all_ids = array_map(function ($e) {
+            $all_ids = array_map(static function ($e) {
                 return $e['items_id'];
-            }, array_filter(array_merge($projectteams, $projecttaskteams), function ($e) use ($itemtype) {
+            }, array_filter(array_merge($projectteams, $projecttaskteams), static function ($e) use ($itemtype) {
                 return ($e['itemtype'] === $itemtype);
             }));
             if (count($all_ids)) {
@@ -2059,14 +2065,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $project->fields = $subproject;
             $item['_readonly'] = !Project::canUpdate() || !$project->canUpdateItem();
 
-            $subproject_teams = array_filter($projectteams, function ($e) use ($subproject) {
+            $subproject_teams = array_filter($projectteams, static function ($e) use ($subproject) {
                 return $e['projects_id'] == $subproject['id'];
             });
             foreach ($subproject_teams as $teammember) {
                 switch ($teammember['itemtype']) {
                     case 'Group':
                     case 'Supplier':
-                        $matches = array_filter($all_members[$teammember['itemtype']], function ($e) use ($teammember) {
+                        $matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
                             return ($e['id'] == $teammember['items_id']);
                         });
                         if (count($matches)) {
@@ -2075,7 +2081,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         break;
                     case 'User':
                     case 'Contact':
-                        $contact_matches = array_filter($all_members[$teammember['itemtype']], function ($e) use ($teammember) {
+                        $contact_matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
                             return ($e['id'] == $teammember['items_id']);
                         });
                         if (count($contact_matches)) {
@@ -2107,14 +2113,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $projecttask->fields = $subtask;
             $item['_readonly'] = !ProjectTask::canUpdate() || !$projecttask->canUpdateItem();
 
-            $subtask_teams = array_filter($projecttaskteams, function ($e) use ($subtask) {
+            $subtask_teams = array_filter($projecttaskteams, static function ($e) use ($subtask) {
                 return $e['projecttasks_id'] == $subtask['id'];
             });
             foreach ($subtask_teams as $teammember) {
                 switch ($teammember['itemtype']) {
                     case 'Group':
                     case 'Supplier':
-                        $matches = array_filter($all_members[$teammember['itemtype']], function ($e) use ($teammember) {
+                        $matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
                             return ($e['id'] == $teammember['items_id']);
                         });
                         if (count($matches)) {
@@ -2123,7 +2129,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         break;
                     case 'User':
                     case 'Contact':
-                        $contact_matches = array_filter($all_members[$teammember['itemtype']], function ($e) use ($teammember) {
+                        $contact_matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
                             return ($e['id'] == $teammember['items_id']);
                         });
                         if (count($contact_matches)) {
@@ -2163,6 +2169,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $criteria = [
                 'projectstates_id'   => $column_ids
             ];
+        } else {
+            // Avoid fetching everything when nothing is needed
+            return [];
         }
         $items      = self::getDataToDisplayOnKanban($ID, $criteria);
 
