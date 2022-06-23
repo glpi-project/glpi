@@ -520,6 +520,15 @@ class Blacklist extends CommonDropdown
             unset($value->serial);
         }
 
+        if (
+            !property_exists($value, 'serial')
+            && property_exists($value, 'mserial')
+            && '' != $this->process(self::SERIAL, $value->mserial)
+        ) {
+            $value->serial = $value->mserial;
+        }
+
+
         if (property_exists($value, 'ipaddress') || property_exists($value, 'ip')) {
             $property = property_exists($value, 'ipaddress') ? 'ipaddress' : 'ip';
             $ips = &$value->$property;
