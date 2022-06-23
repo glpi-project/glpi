@@ -374,7 +374,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (property_exists($bios, 'msn')) {
-            $val->mserial = $bios->msn;
+            $val->serial = $bios->msn;
         }
     }
 
