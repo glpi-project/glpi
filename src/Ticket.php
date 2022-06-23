@@ -1248,6 +1248,12 @@ class Ticket extends CommonITILObject
 
        // Clean actors fields added for rules
         foreach ($tocleanafterrules as $key => $values_to_drop) {
+            if (!array_key_exists($key, $input) || !is_array($input[$key])) {
+                // Assign rules may remove input key or replace array by a single value.
+                // In such case, as values were completely redefined by rules, there is no need to filter them.
+                continue;
+            }
+
             $input[$key] = array_filter(
                 $input[$key],
                 function ($value) use ($values_to_drop) {

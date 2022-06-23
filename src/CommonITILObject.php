@@ -7915,21 +7915,19 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($actor_itemtypes as $actor_itemtype) {
                 $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
 
-                $actor_id_input_key     = sprintf('_%s_%s', $actor_fkey, $actor_type);
-                $actor_notif_input_key  = sprintf('%s_notif', $actor_id_input_key);
-                $actor_id_add_input_key = $actor_itemtype === User::class
+                $actors_id_input_key      = sprintf('_%s_%s', $actor_fkey, $actor_type);
+                $actors_notif_input_key   = sprintf('%s_notif', $actors_id_input_key);
+                $actors_id_add_input_key  = $actor_itemtype === User::class
                     ? sprintf('_additional_%ss', $actor_type)
                     : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $actor_type);
 
-                $get_unique_key = function (int $actor_id) use ($actor_id_input_key): string {
-                    return sprintf('%s_%s', $actor_id_input_key, $actor_id);
+                $get_unique_key = function (int $actor_id) use ($actors_id_input_key): string {
+                    return sprintf('%s_%s', $actors_id_input_key, $actor_id);
                 };
 
-                $should_delete = array_key_exists($actor_id_input_key, $this->input);
-
-                if (array_key_exists($actor_id_input_key, $this->input)) {
-                    if (is_array($this->input[$actor_id_input_key])) {
-                        foreach ($this->input[$actor_id_input_key] as $actor_key => $actor_id) {
+                if (array_key_exists($actors_id_input_key, $this->input)) {
+                    if (is_array($this->input[$actors_id_input_key])) {
+                        foreach ($this->input[$actors_id_input_key] as $actor_key => $actor_id) {
                             $actor_id = (int)$actor_id;
                             $actor = [
                                 'itemtype' => $actor_itemtype,
@@ -7937,63 +7935,63 @@ abstract class CommonITILObject extends CommonDBTM
                                 'type'     => $actor_type_value,
                             ];
                             if (
-                                array_key_exists($actor_notif_input_key, $this->input)
-                                && is_array($this->input[$actor_notif_input_key])
-                                && array_key_exists($actor_key, $this->input[$actor_notif_input_key])
+                                array_key_exists($actors_notif_input_key, $this->input)
+                                && is_array($this->input[$actors_notif_input_key])
+                                && array_key_exists($actor_key, $this->input[$actors_notif_input_key])
                             ) {
-                                $actor += $this->input[$actor_notif_input_key][$actor_key];
+                                $actor += $this->input[$actors_notif_input_key][$actor_key];
                             }
                             $actors[$get_unique_key($actor_id)] = $actor;
                         }
                     } else {
-                        $actor_id = (int)$this->input[$actor_id_input_key];
+                        $actor_id = (int)$this->input[$actors_id_input_key];
                         $actor = [
                             'itemtype' => $actor_itemtype,
                             'items_id' => $actor_id,
                             'type'     => $actor_type_value,
                         ];
-                        if (array_key_exists($actor_notif_input_key, $this->input)) {
-                            if (array_key_exists('use_notification', $this->input[$actor_notif_input_key])) {
+                        if (array_key_exists($actors_notif_input_key, $this->input)) {
+                            if (array_key_exists('use_notification', $this->input[$actors_notif_input_key])) {
                                 if (
-                                    is_array($this->input[$actor_notif_input_key]['use_notification'])
-                                    && array_key_exists(0, $this->input[$actor_notif_input_key]['use_notification'])
-                                    && count($this->input[$actor_notif_input_key]['use_notification']) === 0
+                                    is_array($this->input[$actors_notif_input_key]['use_notification'])
+                                    && array_key_exists(0, $this->input[$actors_notif_input_key]['use_notification'])
+                                    && count($this->input[$actors_notif_input_key]['use_notification']) === 0
                                 ) {
                                     // 'single unknown requester' case in tests\units\Ticket::ticketProvider()
                                     // Corresponds to value provided by Ticket::getDefaultValues()
                                     // Seems weird but it expect to pass.
                                     // FIXME Deprecate this case in GLPI 10.1.
-                                    $actor['use_notification'] = $this->input[$actor_notif_input_key]['use_notification'][0];
-                                } elseif (!is_array($this->input[$actor_notif_input_key]['use_notification'])) {
+                                    $actor['use_notification'] = $this->input[$actors_notif_input_key]['use_notification'][0];
+                                } elseif (!is_array($this->input[$actors_notif_input_key]['use_notification'])) {
                                     // Corresponds to value provided by Change::getDefaultValues()
-                                    $actor['use_notification'] = $this->input[$actor_notif_input_key]['use_notification'];
+                                    $actor['use_notification'] = $this->input[$actors_notif_input_key]['use_notification'];
                                 }
                             }
 
-                            if (array_key_exists('alternative_email', $this->input[$actor_notif_input_key])) {
+                            if (array_key_exists('alternative_email', $this->input[$actors_notif_input_key])) {
                                 if (
-                                    is_array($this->input[$actor_notif_input_key]['alternative_email'])
-                                    && array_key_exists(0, $this->input[$actor_notif_input_key]['alternative_email'])
-                                    && count($this->input[$actor_notif_input_key]['alternative_email']) === 0
+                                    is_array($this->input[$actors_notif_input_key]['alternative_email'])
+                                    && array_key_exists(0, $this->input[$actors_notif_input_key]['alternative_email'])
+                                    && count($this->input[$actors_notif_input_key]['alternative_email']) === 0
                                 ) {
                                     // 'single unknown requester' case in tests\units\Ticket::ticketProvider()
                                     // Corresponds to value provided by Ticket::getDefaultValues()
                                     // Seems weird but it expect to pass.
                                     // FIXME Deprecate this case in GLPI 10.1.
-                                    $actor['alternative_email'] = $this->input[$actor_notif_input_key]['alternative_email'][0];
+                                    $actor['alternative_email'] = $this->input[$actors_notif_input_key]['alternative_email'][0];
                                 } elseif (
-                                    !is_array($this->input[$actor_notif_input_key]['alternative_email'])
+                                    !is_array($this->input[$actors_notif_input_key]['alternative_email'])
                                 ) {
                                     // Corresponds to value provided by Change::getDefaultValues()
-                                    $actor['alternative_email'] = $this->input[$actor_notif_input_key]['alternative_email'];
+                                    $actor['alternative_email'] = $this->input[$actors_notif_input_key]['alternative_email'];
                                 }
                             }
                         }
                         $actors[$get_unique_key($actor_id)] = $actor;
                     }
                 }
-                if (array_key_exists($actor_id_add_input_key, $this->input)) {
-                    foreach ($this->input[$actor_id_add_input_key] as $actor) {
+                if (array_key_exists($actors_id_add_input_key, $this->input)) {
+                    foreach ($this->input[$actors_id_add_input_key] as $actor) {
                         $actor_id = null;
                         if (is_array($actor) && array_key_exists($actor_fkey, $actor)) {
                             $actor_id = $actor[$actor_fkey];
@@ -8005,7 +8003,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 sprintf(
                                     'Invalid value "%s" found for additional actor in "%s".',
                                     var_export($actor_id, true),
-                                    $actor_id_add_input_key
+                                    $actors_id_add_input_key
                                 ),
                                 E_USER_WARNING
                             );
@@ -8024,13 +8022,11 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
-            $existings = $this->getActorsForType($actor_type_value);
-
-            $added   = [];
-            $updated = [];
-            $deleted = [];
-
             // Search for added/updated actors
+            $existings = $this->getActorsForType($actor_type_value);
+            $added     = [];
+            $updated   = [];
+
             foreach ($actors as $actor) {
                 $found = false;
                 foreach ($existings as $existing) {
@@ -8061,24 +8057,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
-            // Search for deleted actors
-            if ($should_delete) {
-                foreach ($existings as $existing) {
-                    $found = false;
-                    foreach ($actors as $actor) {
-                        if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
-                            continue;
-                        }
-                        $found = true;
-                        break;
-                    }
-                    if ($found === false) {
-                        $deleted[] = $existing;
-                    }
-                }
-            }
-
-            // Update actors
+            // Add new actors
             foreach ($added as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
                 $actor_obj->add($common_actor_input + $actor + [
@@ -8105,13 +8084,26 @@ abstract class CommonITILObject extends CommonDBTM
                     );
                 }
             }
+            // Update existing actors
             foreach ($updated as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
                 $actor_obj->update($common_actor_input + $actor);
             }
-            foreach ($deleted as $actor) {
-                $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-                $actor_obj->delete(['id' => $actor['id']]);
+        }
+
+        // Process deleted actors
+        foreach ($actor_types as $actor_type) {
+            foreach ($actor_itemtypes as $actor_itemtype) {
+                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
+                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
+
+                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
+                    ? $this->input[$actors_deleted_input_key]
+                    : [];
+                foreach ($deleted as $actor) {
+                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+                    $actor_obj->delete(['id' => $actor['id']]);
+                }
             }
         }
     }
@@ -8855,6 +8847,9 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function transformActorsInput(array $input): array
     {
+        // Reload actors to be able to identify deleted users.
+        $this->loadActors();
+
         if (
             array_key_exists('_actors', $input)
             && is_array($input['_actors'])
@@ -8877,36 +8872,51 @@ abstract class CommonITILObject extends CommonDBTM
                     );
                 };
 
-                // Ensure all keys are defined.
-                // As the full actors list is expected to be set in `_actors` key, all keys should be reset.
-                // Also, the fact they are defined indicates that corresponding actors are updated, and so,
-                // if they are empty, it means that existing actors should be deleted.
+                // Reset all keys, as the full actors list is expected to be set in `_actors` key.
                 foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
-                    $input[$get_input_key($actor_itemtype, $actor_type)] = [];
+                    $input_key = $get_input_key($actor_itemtype, $actor_type);
+                    $input[$input_key] = [];
+                    $input[sprintf('%s_notif', $input_key)] = [];
+                    $input[sprintf('%s_deleted', $input_key)] = [];
                 }
 
-                if (
-                    array_key_exists($actor_type, $input['_actors'])
-                    && is_array($input['_actors'][$actor_type])
-                    && count($input['_actors'][$actor_type])
-                ) {
-                    foreach ($input['_actors'][$actor_type] as $actor) {
-                        $input_key = $get_input_key($actor['itemtype'], $actor_type);
+                $actors = array_key_exists($actor_type, $input['_actors']) && is_array($input['_actors'][$actor_type])
+                    ? $input['_actors'][$actor_type]
+                    : [];
 
-                        if (in_array($actor['items_id'], $input[$input_key])) {
+                $existings = $this->getActorsForType($actor_type_value);
+
+                // Extract actors from new actors list
+                foreach ($actors as $actor) {
+                    $input_key = $get_input_key($actor['itemtype'], $actor_type);
+                    $value_key = sprintf('_actors_%s', $actor['items_id']);
+
+                    if (in_array($actor['items_id'], $input[$input_key])) {
+                        continue;
+                    }
+
+                    $input[$input_key][$value_key] = $actor['items_id'];
+
+                    if (array_key_exists('use_notification', $actor)) {
+                        $input[sprintf('%s_notif', $input_key)][$value_key] = [
+                            'use_notification'  => $actor['use_notification'],
+                            'alternative_email' => $actor['alternative_email'] ?? '',
+                        ];
+                    }
+                }
+
+                // Identify deleted actors
+                foreach ($existings as $existing) {
+                    $found = false;
+                    foreach ($actors as $actor) {
+                        if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
                             continue;
                         }
-
-                        $value_key = sprintf('_actors_%s', $actor['items_id']);
-
-                        $input[$input_key][$value_key] = $actor['items_id'];
-
-                        if (array_key_exists('use_notification', $actor)) {
-                            $input[sprintf('%s_notif', $input_key)][$value_key] = [
-                                'use_notification'  => $actor['use_notification'],
-                                'alternative_email' => $actor['alternative_email'] ?? '',
-                            ];
-                        }
+                        $found = true;
+                        break;
+                    }
+                    if ($found === false) {
+                        $input[sprintf('%s_deleted', $input_key)][] = $existing;
                     }
                 }
             }
