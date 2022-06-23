@@ -172,7 +172,7 @@ class Item_Process extends CommonDBChild
             'virtualmemory',
         ];
 
-        foreach($basic_filters as $filter_key) {
+        foreach ($basic_filters as $filter_key) {
             if (strlen(($filters[$filter_key] ?? ""))) {
                 $sql_filters[$filter_key] = ['LIKE', '%' . $filters[$filter_key] . '%'];
             }
@@ -197,6 +197,4 @@ class Item_Process extends CommonDBChild
     {
         return "ti ti-bolt";
     }
-
 }
-
