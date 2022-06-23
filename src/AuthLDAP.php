@@ -893,7 +893,7 @@ class AuthLDAP extends CommonDBTM
         echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
         echo "<td><input type='text' class='form-control' name='comment_field' value='" . $this->fields["comment_field"] . "'>";
         echo "</td>";
-        echo "<td>" . __('Administrative number') . "</td>";
+        echo "<td>" . _x('user', 'Administrative number') . "</td>";
         echo "<td>";
         echo "<input type='text' class='form-control' name='registration_number_field' value='" .
              $this->fields["registration_number_field"] . "'>";

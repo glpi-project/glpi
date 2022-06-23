@@ -1678,7 +1678,7 @@ class Auth extends CommonGLPI
         echo "</tr>";
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td class='center'>" . __('Administrative number') . "</td>";
+        echo "<td class='center'>" . _x('user', 'Administrative number') . "</td>";
         echo "<td><input type='text' class='form-control' name='registration_number_ssofield' value='" .
                   $CFG_GLPI['registration_number_ssofield'] . "'>";
         echo "</td>";
