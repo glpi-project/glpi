@@ -1610,7 +1610,11 @@ class Dropdown
         if (array_key_exists('default_itemtype', $options)) {
             $out .= "<script type='text/javascript' >\n";
             $out .= "$(function() {";
+            // Keep track of window.glpiUnsavedFormChanges state
+            $out .= "var unsaved = window.glpiUnsavedFormChanges;";
             $out .= Html::jsSetDropdownValue($field_id, $params['default_itemtype']);
+            // Revert window.glpiUnsavedFormChanges state
+            $out .= "window.glpiUnsavedFormChanges = unsaved;";
             $out .= "});</script>\n";
 
             $p_ajax["idtable"] = $params['default_itemtype'];
