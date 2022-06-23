@@ -342,7 +342,7 @@ class Supplier extends CommonDBTM
             'id'                 => '70',
             'table'              => $this->getTable(),
             'field'              => 'registration_number',
-            'name'               => _x('infocom', 'Administrative Number'),
+            'name'               => _x('infocom', 'Administrative number'),
             'datatype'           => 'string',
             'autocomplete'       => true
         ];
