@@ -1,0 +1,14 @@
+tr.filter_row {
+    > th {
+        vertical-align: top;
+    }
+
+    .select2-container {
+        min-width: 125px;
+    }
+
+    > th > input {
+        box-sizing: border-box;
+        min-height: 28px;
+    }
+}

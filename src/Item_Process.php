@@ -82,24 +82,57 @@ class Item_Process extends CommonDBChild
 
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        global $DB;
+
+        $itemtype = $item->getType();
+        $items_id = $item->getField('id');
+
         $start       = intval(($_GET["start"] ?? 0));
         $filters     = $_GET['filters'] ?? [];
         $is_filtered = count($filters) > 0;
-        //$sql_filters = self::convertFiltersValuesToSqlCriteria($filters);
+        $sql_filters = self::convertFiltersValuesToSqlCriteria($filters);
 
-        $raw_processes = self::getItemsAssociatedTo($item::class, $item->getID());
+        $total_number    = countElementsInTable(self::getTable(), ['items_id' => $items_id, 'itemtype' => $itemtype ]);
+        $filtered_number = countElementsInTable(self::getTable(), ['items_id' => $items_id, 'itemtype' => $itemtype ] + $sql_filters);
+
+        $all_data = $DB->request([
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'items_id' => $items_id,
+                'itemtype' => $itemtype
+            ]
+        ]);
+        $all_data = iterator_to_array($all_data);
+        $filtered_data = $DB->request([
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'items_id' => $items_id,
+                'itemtype' => $itemtype
+            ] + $sql_filters,
+            'START' => $start,
+            'LIMIT' => $_SESSION['glpilist_limit'],
+        ]);
+
         $processes = [];
-        foreach ($raw_processes as $process_object) {
-            $process_object->fields['cpuusage'] = floor($process_object->fields['cpuusage'] * 100);
-            $process_object->fields['memusage'] = floor($process_object->fields['memusage'] * 100);
-            $process_object->fields['virtualmemory'] = $process_object->fields['virtualmemory'] * 1024;
-            $processes[$process_object->getID()] = $process_object->fields;
+        foreach ($filtered_data as $process) {
+            $process['cpuusage'] = floor($process['cpuusage'] * 100);
+            $process['memusage'] = floor($process['memusage'] * 100);
+            $process['virtualmemory'] = $process['virtualmemory'] * 1024;
+            $processes[$process['id']] = $process;
         }
+
+        $users = array_unique(array_column($all_data, 'user'));
+        $users = array_combine($users, $users);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
+            'href' => $item::getFormURLWithID($items_id),
+            'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
+            'is_tab' => true,
+            'items_id' => $items_id,
             'filters' => Sanitizer::dbEscapeRecursive($filters),
             'columns' => [
+                'id'            => __("ID"),
                 'cmd'           => __("Command"),
                 'cpuusage'      => __("CPU Usage"),
                 'memusage'      => __("Memory Usage"),
@@ -108,18 +141,55 @@ class Item_Process extends CommonDBChild
                 'user'          => __("User"),
                 'virtualmemory' => __("Virtual memory"),
             ],
+            'columns_values' => [
+                'user' => $users,
+            ],
             'formatters' => [
                 'cmd'           => 'longtext',
                 'cpuusage'      => 'progress',
                 'memusage'      => 'progress',
                 'started'       => 'datetime',
-                'user'          => 'userbadge',
+                'user'          => 'array',
                 'virtualmemory' => 'bytesize',
             ],
             'entries' => $processes,
-            'total_number' => count($processes),
-            'filtered_number' => count($processes),
+            'total_number' => $total_number,
+            'filtered_number' => $filtered_number,
         ]);
+    }
+
+
+    public static function convertFiltersValuesToSqlCriteria(array $filters = []): array
+    {
+        $sql_filters = [];
+
+        $basic_filters = [
+            'id',
+            'cmd',
+            'cpuusage',
+            'memusage',
+            'tty',
+            'virtualmemory',
+        ];
+
+        foreach($basic_filters as $filter_key) {
+            if (strlen(($filters[$filter_key] ?? ""))) {
+                $sql_filters[$filter_key] = ['LIKE', '%' . $filters[$filter_key] . '%'];
+            }
+        }
+
+        if (isset($filters['user']) && !empty($filters['user'])) {
+            $sql_filters['user'] = $filters['user'];
+        }
+
+        if (isset($filters['started']) && !empty($filters['started'])) {
+            $sql_filters[] = [
+                ['started' => ['>=', "{$filters['started']} 00:00:00"]],
+                ['started' => ['<=', "{$filters['started']} 23:59:59"]],
+            ];
+        }
+
+        return $sql_filters;
     }
 
 
