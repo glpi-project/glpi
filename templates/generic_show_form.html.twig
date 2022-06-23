@@ -198,7 +198,7 @@
                         {{ fields.autoNameField(
                            'registration_number',
                            item,
-                           __('Administrative number'),
+                           (item_type starts with 'User' ? _x('user', 'Administrative Number') : _x('infocom', 'Administrative Number')),
                            withtemplate,
                            field_options
                         ) }}

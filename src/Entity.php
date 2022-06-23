@@ -823,7 +823,7 @@ class Entity extends CommonTreeDropdown
             'id'                 => '70',
             'table'              => $this->getTable(),
             'field'              => 'registration_number',
-            'name'               => __('Administrative Number'),
+            'name'               => _x('entity', 'Administrative Number'),
             'datatype'           => 'string',
             'autocomplete'       => true
         ];
@@ -1506,7 +1506,7 @@ class Entity extends CommonTreeDropdown
         echo "<td>";
         echo Html::input('phonenumber', ['value' => $entity->fields['phonenumber']]);
         echo "</td>";
-        echo "<td>" . __('Administrative Number') . "</td>";
+        echo "<td>" . _x('infocom', 'Administrative Number') . "</td>";
         echo "<td>";
         echo Html::input('registration_number', ['value' => $entity->fields['registration_number']]);
         echo "</td></tr>";
