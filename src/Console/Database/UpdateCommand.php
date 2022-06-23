@@ -288,6 +288,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
                     self::ERROR_DATABASE_INTEGRITY_CHECK_FAILED
                 );
             }
+        } else {
+            $this->output->writeln('<info>' . __('Database schema is OK.') . '</info>');
         }
     }
 }
