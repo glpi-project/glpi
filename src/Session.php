@@ -885,8 +885,7 @@ class Session
         if (Session::getCurrentInterface() != "central") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            $user_id = self::getLoginUserID() ?? 'Anonymous';
-            Html::displayRightError("User ID: $user_id The current profile does not use the standard interface");
+            Html::displayRightError("The current profile does not use the standard interface");
         }
     }
 
@@ -903,8 +902,7 @@ class Session
         if (!$CFG_GLPI["use_public_faq"]) {
             self::checkValidSessionId();
             if (!self::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-                $user_id = self::getLoginUserID() ?? 'Anonymous';
-                Html::displayRightError("User ID: $user_id Missing FAQ right");
+                Html::displayRightError("Missing FAQ right");
             }
         }
     }
@@ -921,8 +919,7 @@ class Session
         if (Session::getCurrentInterface() != "helpdesk") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            $user_id = self::getLoginUserID() ?? 'Anonymous';
-            Html::displayRightError("User ID: $user_id The current profile does not use the simplified interface");
+            Html::displayRightError("The current profile does not use the simplified interface");
         }
     }
 
@@ -937,8 +934,7 @@ class Session
         if (!isset($_SESSION["glpiname"])) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            $user_id = self::getLoginUserID() ?? 'Anonymous';
-            Html::displayRightError("User ID: $user_id has no valid session but seems to be logged in");
+            Html::displayRightError("User has no valid session but seems to be logged in");
         }
     }
 
@@ -985,8 +981,7 @@ class Session
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
             $right_name = self::getRightNameForError($right);
-            $user_id = self::getLoginUserID() ?? 'Anonymous';
-            Html::displayRightError("User ID: $user_id is missing the $right ($right_name) right for $module");
+            Html::displayRightError("User is missing the $right ($right_name) right for $module");
         }
     }
 
@@ -1003,8 +998,7 @@ class Session
         self::checkValidSessionId();
         if (!self::haveRightsOr($module, $rights)) {
             self::redirectIfNotLoggedIn();
-            $user_id = self::getLoginUserID() ?? 'Anonymous';
-            $info = "User ID: $user_id is missing all of the following rights: ";
+            $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
                 $right_name = self::getRightNameForError($right);
                 $info .= $right . "($right_name), ";
@@ -1048,8 +1042,7 @@ class Session
         if (!$valid) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            $user_id = self::getLoginUserID() ?? 'Anonymous';
-            $info = "User ID: $user_id is missing all of the following rights: ";
+            $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
                 $right_name = self::getRightNameForError($right);
                 $info .= $right . "($right_name) for module $mod, ";
