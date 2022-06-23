@@ -100,10 +100,10 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         );
 
         $this->addOption(
-            'check-db',
-            'c',
+            '--skip-db-checks',
+            's',
             InputOption::VALUE_NONE,
-            __('Check the database schema integrity before performing the update')
+            __('Do not check database schema integrity before performing the update')
         );
 
         $this->addOption(
@@ -197,9 +197,9 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             }
         }
 
-        $this->askForConfirmation();
-
         $this->checkSchemaIntegrity($current_db_version);
+
+        $this->askForConfirmation();
 
         global $migration; // Migration scripts are using global `$migration`
         $migration = new Migration(GLPI_VERSION);
@@ -230,30 +230,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
      */
     private function checkSchemaIntegrity(string $installed_version): void
     {
-        if (!$this->input->getOption('check-db')) {
-            $check = false;
-            if (!$this->input->getOption('no-interaction')) {
-                // If option has not been used, but administrator uses the command with interaction mode,
-                // propose him to check for database integrity.
-                $question_helper = $this->getHelper('question');
-                $check = $question_helper->ask(
-                    $this->input,
-                    $this->output,
-                    new ConfirmationQuestion(
-                        __('Do you want to check database schema integrity before performing the update?') . ' [Yes/no]',
-                        true
-                    )
-                );
-                if (!$check) {
-                    $this->output->writeln(
-                        '<comment>' . __('Database schema integrity check skipped.') . '</comment>',
-                        OutputInterface::VERBOSITY_QUIET
-                    );
-                }
-            }
-            if (!$check) {
-                return;
-            }
+        if ($this->input->getOption('skip-db-checks')) {
+            return;
         }
 
         $this->output->writeln('<comment>' . __('Checking database schema integrity...') . '</comment>');
@@ -286,25 +264,30 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         }
 
         $checker = new DatabaseSchemaIntegrityChecker($this->db, false, true, true, true, true, true);
+        $error = null;
         try {
             $differences = $checker->checkCompleteSchema($schema_file, true);
         } catch (\Throwable $e) {
-            $msg = sprintf(__('Database integrity check failed with error (%s).'), $e->getMessage());
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . $msg . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
+            $error = sprintf(__('Database integrity check failed with error (%s).'), $e->getMessage());
         }
         if (count($differences) > 0) {
-            $msg = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_normalized)
+            $error = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_normalized)
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to view found differences.'), 'glpi:database:check_schema_integrity');
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . $msg . '</error>',
-                self::ERROR_DATABASE_INTEGRITY_CHECK_FAILED
-            );
-        } else {
-            $this->output->writeln('<info>' . __('Database schema is OK.') . '</info>');
+        }
+
+        if ($error !== null) {
+            if (!$this->input->getOption('no-interaction')) {
+                // On interactive mode, display error only.
+                // User will be asked for confirmation before update execution.
+                $this->output->writeln('<error>' . $error . '</error>', OutputInterface::VERBOSITY_QUIET);
+            } else {
+                // On non-interactive mode, exit with error.
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . $error . '</error>',
+                    self::ERROR_DATABASE_INTEGRITY_CHECK_FAILED
+                );
+            }
         }
     }
 }
