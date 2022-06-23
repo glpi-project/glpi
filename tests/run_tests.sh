@@ -188,7 +188,7 @@ do
       ;;
     "update")
          $APPLICATION_ROOT/.github/actions/init_initialize-0.80-db.sh \
-      && $APPLICATION_ROOT/.github/actions/init_initialize-9.5.3-db.sh \
+      && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
       && docker-compose exec -T app .github/actions/test_update-from-older-version.sh \
       && docker-compose exec -T app .github/actions/test_update-from-9.5.sh \
       || LAST_EXIT_CODE=$?
