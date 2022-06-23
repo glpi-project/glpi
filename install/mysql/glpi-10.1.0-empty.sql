@@ -3787,7 +3787,8 @@ CREATE TABLE `glpi_items_processes` (
   `virtualmemory` int NOT NULL DEFAULT '1',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `item` (`itemtype`,`items_id`)
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
