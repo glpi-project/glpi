@@ -7982,7 +7982,8 @@ abstract class CommonITILObject extends CommonDBTM
                                     // FIXME Deprecate this case in GLPI 10.1.
                                     $actor['alternative_email'] = $this->input[$actor_notif_input_key]['alternative_email'][0];
                                 } elseif (
-                                    !is_array($this->input[$actor_notif_input_key]['alternative_email'])) {
+                                    !is_array($this->input[$actor_notif_input_key]['alternative_email'])
+                                ) {
                                     // Corresponds to value provided by Change::getDefaultValues()
                                     $actor['alternative_email'] = $this->input[$actor_notif_input_key]['alternative_email'];
                                 }
