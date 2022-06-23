@@ -223,7 +223,7 @@
                {{ fields.dropdownField(
                   'Contract',
                   '_contracts_id',
-                  item.fields['_contracts_id'],
+                  params['_contracts_id']|default(0),
                   'Contract'|itemtype_name,
                   field_options|merge({
                      'entity': item.fields['entities_id'],
