@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Auth;
+use Blacklist;
 use CommonDBTM;
 use Dropdown;
 use Glpi\Inventory\Conf;
@@ -492,7 +493,11 @@ abstract class MainAsset extends InventoryAsset
 
     public function handle()
     {
+        $blacklist = new Blacklist();
+
         foreach ($this->data as $key => $data) {
+            $blacklist->processBlackList($data);
+
             $this->current_key = $key;
             $input = $this->prepareAllRulesInput($data);
 
