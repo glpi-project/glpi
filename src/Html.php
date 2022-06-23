@@ -609,8 +609,22 @@ class Html
      *
      * @return void
      **/
-    public static function displayRightError()
+    public static function displayRightError(string $additional_info = '')
     {
+        $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
+        $user_id = Session::getLoginUserID() ?? 'Anonymous';
+        if (empty($additional_info)) {
+            $additional_info = __('No additional information given');
+        }
+        $internal_message = "User ID: $user_id tried to access or perform an action on $requested_url with insufficient rights. Additional information: $additional_info\n";
+        $internal_message .= "\tStack Trace:\n";
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        $trace_string = '';
+        foreach ($backtrace as $frame) {
+            $trace_string .= "\t\t" . $frame['file'] . ':' . $frame['line'] . ' ' . $frame['function'] . '()' . "\n";
+        }
+        $internal_message .= $trace_string;
+        Toolbox::logInFile('access-errors', $internal_message);
         self::displayErrorAndDie(__("You don't have permission to perform this action."));
     }
 
