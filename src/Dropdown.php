@@ -1478,6 +1478,7 @@ class Dropdown
         $params['checkright']          = false;
         $params['toupdate']            = '';
         $params['display']             = true;
+        $params['track_changes']       = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1509,6 +1510,7 @@ class Dropdown
                 'emptylabel'          => $params['emptylabel'],
                 'display'             => $params['display'],
                 'rand'                => $params['rand'],
+                'track_changes'       => $params['track_changes'],
             ]);
         }
         return 0;
@@ -1543,19 +1545,20 @@ class Dropdown
         global $CFG_GLPI;
 
         $params = [];
-        $params['itemtype_name']       = 'itemtype';
-        $params['items_id_name']       = 'items_id';
-        $params['itemtypes']           = '';
-        $params['default_itemtype']    = 0;
-        $params['entity_restrict']     = -1;
-        $params['onlyglobal']          = false;
-        $params['checkright']          = false;
-        $params['showItemSpecificity'] = '';
-        $params['emptylabel']          = self::EMPTY_VALUE;
-        $params['used']                = [];
-        $params['ajax_page']           = $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php";
-        $params['display']             = true;
-        $params['rand']                = mt_rand();
+        $params['itemtype_name']          = 'itemtype';
+        $params['items_id_name']          = 'items_id';
+        $params['itemtypes']              = '';
+        $params['default_itemtype']       = 0;
+        $params['entity_restrict']        = -1;
+        $params['onlyglobal']             = false;
+        $params['checkright']             = false;
+        $params['showItemSpecificity']    = '';
+        $params['emptylabel']             = self::EMPTY_VALUE;
+        $params['used']                   = [];
+        $params['ajax_page']              = $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php";
+        $params['display']                = true;
+        $params['rand']                   = mt_rand();
+        $params['itemtype_track_changes'] = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1564,11 +1567,12 @@ class Dropdown
         }
 
         $select = self::showItemType($params['itemtypes'], [
-            'checkright' => $params['checkright'],
-            'name'       => $params['itemtype_name'],
-            'emptylabel' => $params['emptylabel'],
-            'display'    => $params['display'],
-            'rand'       => $params['rand'],
+            'checkright'    => $params['checkright'],
+            'name'          => $params['itemtype_name'],
+            'emptylabel'    => $params['emptylabel'],
+            'display'       => $params['display'],
+            'rand'          => $params['rand'],
+            'track_changes' => $params['itemtype_track_changes'],
         ]);
 
         $p_ajax = [
@@ -2023,6 +2027,7 @@ class Dropdown
         $param['noselect2']           = false;
         $param['templateResult']      = "templateResult";
         $param['templateSelection']   = "templateSelection";
+        $param['track_changes']       = "true";
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2101,6 +2106,10 @@ class Dropdown
 
             if ($param["required"]) {
                 $output .= " required='required'";
+            }
+
+            if (!$param['track_changes']) {
+                $output .= " data-track-changes=''";
             }
 
             $output .= '>';
