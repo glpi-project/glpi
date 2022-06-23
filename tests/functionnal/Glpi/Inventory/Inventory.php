@@ -1612,7 +1612,7 @@ class Inventory extends InventoryTestCase
             'id' => $computers_id,
             'entities_id' => 0,
             'name' => 'LF014',
-            'serial' => '8C554721F',
+            'serial' => 'G658874H8F510EA',
             'otherserial' => '0000000000',
             'contact' => 'johan',
             'contact_num' => null,
