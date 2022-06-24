@@ -107,6 +107,11 @@
                                             'display': false
                                         }
                                     ])|raw }}
+                                {% elseif formatter starts with "progress" %}
+                                    <input type="range" class="form-range"
+                                        name="filters[{{ colkey }}]"
+                                        value="{{ filters[colkey] ?? 0 }}"
+                                        min="0" max="100" step="1">
                                 {% else %}
                                     <input type="text" class="form-control"
                                         name="filters[{{ colkey }}]"
@@ -133,7 +138,7 @@
                                             style="max-width: 250px;">
                                             {{ entry[colkey] }}
                                         </code>
-                                    {% elseif formatter == "progress" %}
+                                    {% elseif formatter starts with "progress" %}
                                         {{ call("Html::progress", [100, entry[colkey]])|raw }}
                                     {% elseif formatter == "date" %}
                                         {{ call("Html::convDate", [entry[colkey]])|raw }}

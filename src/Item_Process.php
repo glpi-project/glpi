@@ -162,8 +162,8 @@ class Item_Process extends CommonDBChild
             ],
             'formatters' => [
                 'cmd'           => 'longtext',
-                'cpuusage'      => 'progress',
-                'memusage'      => 'progress',
+                'cpuusage'      => 'progressmin',
+                'memusage'      => 'progressmin',
                 'started'       => 'datetime',
                 'user'          => 'array',
                 'virtualmemory' => 'bytesize',
@@ -179,18 +179,22 @@ class Item_Process extends CommonDBChild
     {
         $sql_filters = [];
 
-        $basic_filters = [
+        $like_filters = [
             'id',
             'cmd',
-            'cpuusage',
-            'memusage',
             'tty',
             'virtualmemory',
         ];
-
-        foreach ($basic_filters as $filter_key) {
+        foreach ($like_filters as $filter_key) {
             if (strlen(($filters[$filter_key] ?? ""))) {
                 $sql_filters[$filter_key] = ['LIKE', '%' . $filters[$filter_key] . '%'];
+            }
+        }
+
+        $min_filters = ['cpuusage', 'memusage'];
+        foreach ($min_filters as $filter_key) {
+            if (($filters[$filter_key] ?? 0) > 0) {
+                $sql_filters[$filter_key] = ['>=', $filters[$filter_key]];
             }
         }
 
