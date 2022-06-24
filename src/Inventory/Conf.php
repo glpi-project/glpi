@@ -68,7 +68,7 @@ class Conf extends CommonGLPI
         'import_volume'                  => 1,
         'import_antivirus'               => 1,
         'import_registry'                => 1,
-        'import_process'                 => 1,
+        'import_process'                 => 0,
         'import_vm'                      => 1,
         'import_monitor_on_partial_sn'   => 0,
         'import_process'                 => 1,
