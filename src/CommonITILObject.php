@@ -8854,7 +8854,9 @@ abstract class CommonITILObject extends CommonDBTM
     protected function transformActorsInput(array $input): array
     {
         // Reload actors to be able to identify deleted users.
-        $this->loadActors();
+        if (!$this->isNewItem()) {
+            $this->loadActors();
+        }
 
         if (
             array_key_exists('_actors', $input)
