@@ -7935,7 +7935,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 'items_id' => $actor_id,
                                 'type'     => $actor_type_value,
                             ];
-                            if (array_key_exists($actors_notif_input_key, $this->input)) {
+                            if ($actor_itemtype !== Group::class && array_key_exists($actors_notif_input_key, $this->input)) {
                                 // Expected format
                                 // '_users_id_requester_notif' => [
                                 //     'use_notification'  => [1, 0],
@@ -8060,30 +8060,39 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($actors as $actor) {
                 $found = false;
                 foreach ($existings as $existing) {
-                    if ($actor['items_id'] == 0 && $actor['alternative_email'] == ($existing['alternative_email'] ?? null)) {
+                    if (
+                        $actor['itemtype'] === User::class
+                        && $actor['items_id'] == 0
+                        && $actor['itemtype'] == $existing['itemtype']
+                    ) {
                         // "email" actor found
-                        $found = true;
+                        if ($actor['alternative_email'] == $existing['alternative_email']) {
+                            $found = true;
+                            break;
+                        }
+                        // Do not check for modifications on "email" actors (they should be deleted then re-added on email change)
                         continue;
                     }
 
-                    if (
-                        $actor['items_id'] == 0 // Ignore "email" actors (they should be deleted then readded on email change)
-                        || $actor['itemtype'] != $existing['itemtype']
-                        || $actor['items_id'] != $existing['items_id']
-                    ) {
+                    if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
                         continue;
                     }
                     $found = true;
+
+                    if ($actor['itemtype'] === Group::class) {
+                        // Do not check for modifications on "group" actors (they do not have notification settings to update)
+                        continue;
+                    }
 
                     // check if modifications exists
                     if (
                         (
                             array_key_exists('use_notification', $actor)
-                            && $actor['use_notification'] != ($existing['use_notification'] ?? null)
+                            && $actor['use_notification'] != $existing['use_notification']
                         )
                         || (
                             array_key_exists('alternative_email', $actor)
-                            && $actor['alternative_email'] != ($existing['alternative_email'] ?? null)
+                            && $actor['alternative_email'] != $existing['alternative_email']
                         )
                     ) {
                         $updated[] = $actor + ['id' => $existing['id']];
@@ -8920,10 +8929,12 @@ abstract class CommonITILObject extends CommonDBTM
                     $notif_key = sprintf('%s_notif', $input_key);
 
                     $input[$input_key] = [];
-                    $input[$notif_key] = [
-                        'use_notification'  => [],
-                        'alternative_email' => [],
-                    ];
+                    if ($actor_itemtype !== Group::class) {
+                        $input[$notif_key] = [
+                            'use_notification'  => [],
+                            'alternative_email' => [],
+                        ];
+                    }
                     $input[sprintf('%s_deleted', $input_key)] = [];
                 }
 
@@ -8945,7 +8956,7 @@ abstract class CommonITILObject extends CommonDBTM
 
                     $input[$input_key][$value_key] = $actor['items_id'];
 
-                    if (array_key_exists('use_notification', $actor)) {
+                    if ($actor_itemtype !== Group::class && array_key_exists('use_notification', $actor)) {
                         $input[$notif_key]['use_notification'][$value_key]  = $actor['use_notification'];
                         $input[$notif_key]['alternative_email'][$value_key] = $actor['alternative_email'] ?? '';
                     }
