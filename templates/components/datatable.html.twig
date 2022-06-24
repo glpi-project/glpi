@@ -127,12 +127,12 @@
                                     {% set formatter = formatters[colkey] %}
 
                                     {% if formatter == "longtext" %}
-                                        <span class="d-inline-block text-truncate badge bg-blue-lt"
+                                        <code class="d-inline-block text-truncate user-select-all"
                                             title="{{ entry[colkey] }}"
                                             data-bs-toggle="tooltip"
                                             style="max-width: 250px;">
                                             {{ entry[colkey] }}
-                                        <span>
+                                        </code>
                                     {% elseif formatter == "progress" %}
                                         {{ call("Html::progress", [100, entry[colkey]])|raw }}
                                     {% elseif formatter == "date" %}
