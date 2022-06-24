@@ -42,8 +42,20 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    {% for colum in columns %}
-                        <th>{{ colum }}</th>
+                    {% for colkey, colum in columns %}
+                        {% set sort_icon = '' %}
+                        {% set new_order = "DESC" %}
+                        {% if sort == colkey %}
+                            {% set sort_icon = order == 'ASC' ? 'ti ti-sort-ascending' : (order == 'DESC' ? 'ti ti-sort-descending' : '') %}
+                            {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
+                        {% endif %}
+
+                        {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ additional_params ~ "');" %}
+
+                        <th><a href="{{ sort_href }}">
+                            <i class="{{ sort_icon }}"></i>
+                            <span>{{ colum }}</span>
+                        </a></th>
                     {% endfor %}
 
                     <th>

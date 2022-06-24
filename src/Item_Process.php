@@ -87,13 +87,19 @@ class Item_Process extends CommonDBChild
         $itemtype = $item->getType();
         $items_id = $item->getField('id');
 
-        $start       = intval(($_GET["start"] ?? 0));
+        $start       = intval($_GET["start"] ?? 0);
+        $sort        = $_GET["sort"] ?? "";
+        $order       = strtoupper($_GET["order"] ?? "");
         $filters     = $_GET['filters'] ?? [];
         $is_filtered = count($filters) > 0;
         $sql_filters = self::convertFiltersValuesToSqlCriteria($filters);
 
-        $total_number    = countElementsInTable(self::getTable(), ['items_id' => $items_id, 'itemtype' => $itemtype ]);
-        $filtered_number = countElementsInTable(self::getTable(), ['items_id' => $items_id, 'itemtype' => $itemtype ] + $sql_filters);
+        if (strlen($sort) == 0) {
+            $sort = "id";
+        }
+        if (strlen($order) == 0) {
+            $order = "ASC";
+        }
 
         $all_data = $DB->request([
             'FROM' => self::getTable(),
@@ -110,15 +116,23 @@ class Item_Process extends CommonDBChild
                 'itemtype' => $itemtype
             ] + $sql_filters,
             'START' => $start,
-            'LIMIT' => $_SESSION['glpilist_limit'],
+            'ORDER' => "$sort $order",
         ]);
 
+        $total_number = count($all_data);
+        $filtered_number = count($filtered_data);
+
         $processes = [];
+        $i = 0;
         foreach ($filtered_data as $process) {
-            $process['cpuusage'] = floor($process['cpuusage'] * 100);
-            $process['memusage'] = floor($process['memusage'] * 100);
             $process['virtualmemory'] = $process['virtualmemory'] * 1024;
             $processes[$process['id']] = $process;
+
+            $i++;
+
+            if ($i >= $_SESSION['glpilist_limit']) {
+                break;
+            }
         }
 
         $users = array_unique(array_column($all_data, 'user'));
@@ -126,6 +140,8 @@ class Item_Process extends CommonDBChild
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
+            'sort' => $sort,
+            'order' => $order,
             'href' => $item::getFormURLWithID($items_id),
             'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
             'is_tab' => true,
