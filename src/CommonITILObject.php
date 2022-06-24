@@ -7935,12 +7935,39 @@ abstract class CommonITILObject extends CommonDBTM
                                 'items_id' => $actor_id,
                                 'type'     => $actor_type_value,
                             ];
-                            if (
-                                array_key_exists($actors_notif_input_key, $this->input)
-                                && is_array($this->input[$actors_notif_input_key])
-                                && array_key_exists($actor_key, $this->input[$actors_notif_input_key])
-                            ) {
-                                $actor += $this->input[$actors_notif_input_key][$actor_key];
+                            if (array_key_exists($actors_notif_input_key, $this->input)) {
+                                // Expected format
+                                // '_users_id_requesters_notif' => [
+                                //     'use_notification'  => [1, 0],
+                                //     'alternative_email' => ['user1@example.com', 'user2@example.com'],
+                                // ]
+                                $notification_params = $this->input[$actors_notif_input_key];
+                                $unexpected_format = false;
+                                if (
+                                    !is_array($notification_params)
+                                    || (
+                                        !array_key_exists('use_notification', $notification_params)
+                                        && !array_key_exists('alternative_email', $notification_params)
+                                    )
+                                ) {
+                                    $unexpected_format = true;
+                                    $notification_params = [];
+                                }
+                                foreach ($notification_params as $key => $values) {
+                                    if (!is_array($values)) {
+                                        $unexpected_format = true;
+                                        continue;
+                                    }
+                                    if (is_array($values) && array_key_exists($actor_key, $values)) {
+                                        $actor[$key] = $values[$actor_key];
+                                    }
+                                }
+                                if ($unexpected_format) {
+                                    trigger_error(
+                                        sprintf('Unexpected format found in "%s".', $actors_notif_input_key),
+                                        E_USER_WARNING
+                                    );
+                                }
                             }
                             $actors[$get_unique_key($actor)] = $actor;
                         }
@@ -7952,39 +7979,40 @@ abstract class CommonITILObject extends CommonDBTM
                             'type'     => $actor_type_value,
                         ];
                         if (array_key_exists($actors_notif_input_key, $this->input)) {
-                            if (array_key_exists('use_notification', $this->input[$actors_notif_input_key])) {
-                                if (
-                                    is_array($this->input[$actors_notif_input_key]['use_notification'])
-                                    && array_key_exists(0, $this->input[$actors_notif_input_key]['use_notification'])
-                                    && count($this->input[$actors_notif_input_key]['use_notification']) === 0
-                                ) {
-                                    // 'single unknown requester' case in tests\units\Ticket::ticketProvider()
-                                    // Corresponds to value provided by Ticket::getDefaultValues()
-                                    // Seems weird but it expect to pass.
-                                    // FIXME Deprecate this case in GLPI 10.1.
-                                    $actor['use_notification'] = $this->input[$actors_notif_input_key]['use_notification'][0];
-                                } elseif (!is_array($this->input[$actors_notif_input_key]['use_notification'])) {
-                                    // Corresponds to value provided by Change::getDefaultValues()
-                                    $actor['use_notification'] = $this->input[$actors_notif_input_key]['use_notification'];
-                                }
+                            // Expected formats
+                            //
+                            // Value provided by Change::getDefaultValues()
+                            // '_users_id_requesters_notif' => [
+                            //     'use_notification'  => 1,
+                            //     'alternative_email' => 'user1@example.com',
+                            // ]
+                            //
+                            // OR
+                            //
+                            // Value provided by Ticket::getDefaultValues()
+                            // '_users_id_requesters_notif' => [
+                            //     'use_notification'  => [1, 0],
+                            //     'alternative_email' => ['user1@example.com', 'user2@example.com'],
+                            // ]
+                            $notification_params = $this->input[$actors_notif_input_key];
+                            if (
+                                !is_array($notification_params)
+                                || (
+                                    !array_key_exists('use_notification', $notification_params)
+                                    && !array_key_exists('alternative_email', $notification_params)
+                                )
+                            ) {
+                                trigger_error(
+                                    sprintf('Unexpected format found in "%s".', $actors_notif_input_key),
+                                    E_USER_WARNING
+                                );
+                                $notification_params = [];
                             }
-
-                            if (array_key_exists('alternative_email', $this->input[$actors_notif_input_key])) {
-                                if (
-                                    is_array($this->input[$actors_notif_input_key]['alternative_email'])
-                                    && array_key_exists(0, $this->input[$actors_notif_input_key]['alternative_email'])
-                                    && count($this->input[$actors_notif_input_key]['alternative_email']) === 0
-                                ) {
-                                    // 'single unknown requester' case in tests\units\Ticket::ticketProvider()
-                                    // Corresponds to value provided by Ticket::getDefaultValues()
-                                    // Seems weird but it expect to pass.
-                                    // FIXME Deprecate this case in GLPI 10.1.
-                                    $actor['alternative_email'] = $this->input[$actors_notif_input_key]['alternative_email'][0];
-                                } elseif (
-                                    !is_array($this->input[$actors_notif_input_key]['alternative_email'])
-                                ) {
-                                    // Corresponds to value provided by Change::getDefaultValues()
-                                    $actor['alternative_email'] = $this->input[$actors_notif_input_key]['alternative_email'];
+                            foreach ($notification_params as $key => $values) {
+                                if (is_array($values) && array_key_exists(0, $values)) {
+                                    $actor[$key] = $values[0];
+                                } elseif (!is_array($values)) {
+                                    $actor[$key] = $values;
                                 }
                             }
                         }
@@ -8883,8 +8911,13 @@ abstract class CommonITILObject extends CommonDBTM
                 // Reset all keys, as the full actors list is expected to be set in `_actors` key.
                 foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
                     $input_key = $get_input_key($actor_itemtype, $actor_type);
+                    $notif_key = sprintf('%s_notif', $input_key);
+
                     $input[$input_key] = [];
-                    $input[sprintf('%s_notif', $input_key)] = [];
+                    $input[$notif_key] = [
+                        'use_notification'  => [],
+                        'alternative_email' => [],
+                    ];
                     $input[sprintf('%s_deleted', $input_key)] = [];
                 }
 
@@ -8892,11 +8925,10 @@ abstract class CommonITILObject extends CommonDBTM
                     ? $input['_actors'][$actor_type]
                     : [];
 
-                $existings = $this->getActorsForType($actor_type_value);
-
                 // Extract actors from new actors list
                 foreach ($actors as $actor) {
                     $input_key = $get_input_key($actor['itemtype'], $actor_type);
+                    $notif_key = sprintf('%s_notif', $input_key);
 
                     // Use alternative_email in value key for "email" actors
                     $value_key = sprintf('_actors_%s', ($actor['items_id'] ?: $actor['alternative_email']));
@@ -8908,25 +8940,26 @@ abstract class CommonITILObject extends CommonDBTM
                     $input[$input_key][$value_key] = $actor['items_id'];
 
                     if (array_key_exists('use_notification', $actor)) {
-                        $input[sprintf('%s_notif', $input_key)][$value_key] = [
-                            'use_notification'  => $actor['use_notification'],
-                            'alternative_email' => $actor['alternative_email'] ?? '',
-                        ];
+                        $input[$notif_key]['use_notification'][$value_key]  = $actor['use_notification'];
+                        $input[$notif_key]['alternative_email'][$value_key] = $actor['alternative_email'] ?? '';
                     }
                 }
 
                 // Identify deleted actors
-                foreach ($existings as $existing) {
-                    $found = false;
-                    foreach ($actors as $actor) {
-                        if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
-                            continue;
+                if (!$this->isNewItem()) {
+                    $existings = $this->getActorsForType($actor_type_value);
+                    foreach ($existings as $existing) {
+                        $found = false;
+                        foreach ($actors as $actor) {
+                            if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
+                                continue;
+                            }
+                            $found = true;
+                            break;
                         }
-                        $found = true;
-                        break;
-                    }
-                    if ($found === false) {
-                        $input[sprintf('%s_deleted', $input_key)][] = $existing;
+                        if ($found === false) {
+                            $input[sprintf('%s_deleted', $input_key)][] = $existing;
+                        }
                     }
                 }
             }
