@@ -768,7 +768,7 @@ $empty_data_builder = new class
             ], [
                 'id' => 43,
                 'itemtype' => 'Agent',
-                'name' => 'cronCleanoldagents',
+                'name' => 'Cleanoldagents',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,

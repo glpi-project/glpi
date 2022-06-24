@@ -81,7 +81,7 @@ if (!isset($inventory_config['agents_action'])) {
     }
 }
 
-CronTask::register('Agent', 'cronCleanoldagents', DAY_TIMESTAMP, [
+CronTask::register('Agent', 'Cleanoldagents', DAY_TIMESTAMP, [
     'comment' => 'Clean old agents',
     'state' => CronTask::STATE_WAITING,
     'mode' => CronTask::MODE_EXTERNAL,
