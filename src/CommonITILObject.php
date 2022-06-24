@@ -8060,8 +8060,14 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($actors as $actor) {
                 $found = false;
                 foreach ($existings as $existing) {
+                    if ($actor['items_id'] == 0 && $actor['alternative_email'] == ($existing['alternative_email'] ?? null)) {
+                        // "email" actor found
+                        $found = true;
+                        continue;
+                    }
+
                     if (
-                        $actor['items_id'] == 0 // Ignore "email" actors (they should be deleted then readded on update)
+                        $actor['items_id'] == 0 // Ignore "email" actors (they should be deleted then readded on email change)
                         || $actor['itemtype'] != $existing['itemtype']
                         || $actor['items_id'] != $existing['items_id']
                     ) {
@@ -8073,11 +8079,11 @@ abstract class CommonITILObject extends CommonDBTM
                     if (
                         (
                             array_key_exists('use_notification', $actor)
-                            && $actor['use_notification'] != $existing['use_notification']
+                            && $actor['use_notification'] != ($existing['use_notification'] ?? null)
                         )
                         || (
                             array_key_exists('alternative_email', $actor)
-                            && $actor['alternative_email'] != $existing['alternative_email']
+                            && $actor['alternative_email'] != ($existing['alternative_email'] ?? null)
                         )
                     ) {
                         $updated[] = $actor + ['id' => $existing['id']];
