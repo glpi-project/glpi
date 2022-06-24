@@ -1132,50 +1132,36 @@ class Ticket extends CommonITILObject
                 }
             }
 
-           //handle existing actors: load all existing actors from ticket
-           //to make sure business rules will receive all information, and not just
-           //what have been entered in the html form.
-           //
-           //ref also this actor into $post_added to avoid the filling of $changes
-           //and triggering businness rules when not needed
-            $users = $this->getUsers($k);
-            if (count($users)) {
-                $field = 'users_id';
-                foreach ($users as $user) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($user[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
+            //handle existing actors: load all existing actors from ticket
+            //to make sure business rules will receive all information, and not just
+            //what have been entered in the html form.
+            //
+            //ref also this actor into $post_added to avoid the filling of $changes
+            //and triggering businness rules when not needed
+            $existing_actors = [
+                User::class     => $this->getUsers($k),
+                Group::class    => $this->getGroups($k),
+                Supplier::class => $this->getSuppliers($k),
+            ];
+            foreach ($existing_actors as $actor_itemtype => $actors) {
+                $field = getForeignKeyFieldForItemType($actor_itemtype);
+                $input_key = '_' . $field . '_' . $t;
+                foreach ($actors as $actor) {
+                    if (
+                        !isset($input[$input_key])
+                        || (is_array($input[$input_key]) && !in_array($actor[$field], $input[$input_key]))
+                        || (is_numeric($input[$input_key]) && $actor[$field] !== $input[$input_key])
+                    ) {
+                        if (
+                            !array_key_exists($input_key, $input)
+                            || (!is_array($input[$input_key]) && !is_numeric($input[$input_key]) && empty($input[$input_key]))
+                        ) {
+                            $input[$input_key] = [];
+                        } elseif (!is_array($input[$input_key])) {
+                            $input[$input_key] = [$input[$input_key]];
                         }
-                        $input['_' . $field . '_' . $t][]             = $user[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $user[$field];
-                    }
-                }
-            }
-
-            $groups = $this->getGroups($k);
-            if (count($groups)) {
-                $field = 'groups_id';
-                foreach ($groups as $group) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($group[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
-                        }
-                        $input['_' . $field . '_' . $t][]             = $group[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $group[$field];
-                    }
-                }
-            }
-
-            $suppliers = $this->getSuppliers($k);
-            if (count($suppliers)) {
-                $field = 'suppliers_id';
-                foreach ($suppliers as $supplier) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($supplier[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
-                        }
-                        $input['_' . $field . '_' . $t][]             = $supplier[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $supplier[$field];
+                        $input[$input_key][]             = $actor[$field];
+                        $tocleanafterrules[$input_key][] = $actor[$field];
                     }
                 }
             }
