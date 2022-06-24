@@ -7921,8 +7921,9 @@ abstract class CommonITILObject extends CommonDBTM
                     ? sprintf('_additional_%ss', $actor_type)
                     : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $actor_type);
 
-                $get_unique_key = function (int $actor_id) use ($actors_id_input_key): string {
-                    return sprintf('%s_%s', $actors_id_input_key, $actor_id);
+                $get_unique_key = function (array $actor) use ($actors_id_input_key): string {
+                    // Use alternative_email in value key for "email" actors
+                    return sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email']);
                 };
 
                 if (array_key_exists($actors_id_input_key, $this->input)) {
@@ -7941,7 +7942,7 @@ abstract class CommonITILObject extends CommonDBTM
                             ) {
                                 $actor += $this->input[$actors_notif_input_key][$actor_key];
                             }
-                            $actors[$get_unique_key($actor_id)] = $actor;
+                            $actors[$get_unique_key($actor)] = $actor;
                         }
                     } else {
                         $actor_id = (int)$this->input[$actors_id_input_key];
@@ -7987,7 +7988,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 }
                             }
                         }
-                        $actors[$get_unique_key($actor_id)] = $actor;
+                        $actors[$get_unique_key($actor)] = $actor;
                     }
                 }
                 if (array_key_exists($actors_id_add_input_key, $this->input)) {
@@ -8010,13 +8011,14 @@ abstract class CommonITILObject extends CommonDBTM
                             continue;
                         }
                         $actor_id = (int)$actor_id;
-                        $unique_key = $get_unique_key($actor_id);
+                        $actor = [
+                            'itemtype' => $actor_itemtype,
+                            'items_id' => $actor_id,
+                            'type'     => $actor_type_value,
+                        ];
+                        $unique_key = $get_unique_key($actor);
                         if (!array_key_exists($unique_key, $actors)) {
-                            $actors[$unique_key] = [
-                                'itemtype' => $actor_itemtype,
-                                'items_id' => $actor_id,
-                                'type'     => $actor_type_value,
-                            ];
+                            $actors[$unique_key] = $actor;
                         }
                     }
                 }
@@ -8030,7 +8032,11 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($actors as $actor) {
                 $found = false;
                 foreach ($existings as $existing) {
-                    if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
+                    if (
+                        $actor['items_id'] == 0 // Ignore "email" actors (they should be deleted then readded on update)
+                        || $actor['itemtype'] != $existing['itemtype']
+                        || $actor['items_id'] != $existing['items_id']
+                    ) {
                         continue;
                     }
                     $found = true;
@@ -8889,9 +8895,11 @@ abstract class CommonITILObject extends CommonDBTM
                 // Extract actors from new actors list
                 foreach ($actors as $actor) {
                     $input_key = $get_input_key($actor['itemtype'], $actor_type);
-                    $value_key = sprintf('_actors_%s', $actor['items_id']);
 
-                    if (in_array($actor['items_id'], $input[$input_key])) {
+                    // Use alternative_email in value key for "email" actors
+                    $value_key = sprintf('_actors_%s', ($actor['items_id'] ?: $actor['alternative_email']));
+
+                    if (array_key_exists($value_key, $input[$input_key])) {
                         continue;
                     }
 
