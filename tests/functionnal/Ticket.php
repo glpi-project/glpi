@@ -41,6 +41,10 @@ use CommonITILObject;
 use DbTestCase;
 use Glpi\Team\Team;
 use Glpi\Toolbox\Sanitizer;
+use Group;
+use Group_Ticket;
+use Supplier;
+use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
 use Ticket_User;
 use TicketValidation;
@@ -50,7 +54,7 @@ use User;
 
 class Ticket extends DbTestCase
 {
-    public function actorsProvider()
+    protected function actorsProvider(): iterable
     {
         $default_use_notifications = 1;
 
@@ -60,232 +64,253 @@ class Ticket extends DbTestCase
         $normal_user_id   = getItemByTypeName('User', 'normal', true);
         $postonly_user_id = getItemByTypeName('User', 'post-only', true);
 
-        $get_expected_actor = static function (
-            int $items_id,
-            string $itemtype,
-            int $actor_type_value,
-            ?bool $use_notification = null,
-            string $alternative_email = ''
-        ) use ($default_use_notifications): array {
-            $fkey = getForeignKeyFieldForItemType($itemtype);
-            return [
-                'type'              => $actor_type_value,
-                $fkey               => $items_id,
-                'use_notification'  => $use_notification !== null ? $use_notification : $default_use_notifications,
-                'alternative_email' => $alternative_email,
-            ];
-        };
+        $actor_types = ['requester', 'assign', 'observer'];
 
-        $get_actor_input = static function (
-            int $items_id,
-            string $itemtype,
-            ?bool $use_notification = null,
-            string $alternative_email = ''
-        ) use ($default_use_notifications): array {
-            return [
-                'itemtype'          => $itemtype,
-                'items_id'          => $items_id,
-                'use_notification'  => $use_notification !== null ? $use_notification : $default_use_notifications,
-                'alternative_email' => $alternative_email,
-            ];
-        };
-
-        $actor_types = [
-            'requester' => [
-                'users' => [$normal_user_id, $postonly_user_id],
-            ],
-            'assign'    => [
-                'users' => [$admin_user_id, $tech_user_id],
-            ],
-            'observer'  => [
-                'users' => [$tu_user_id, $tech_user_id, $normal_user_id],
-            ],
-        ];
-
-        foreach ($actor_types as $actor_type => $actors) {
+        foreach ($actor_types as $actor_type) {
             $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
 
-            // single actor
-            foreach ($actors['users'] as $user_id) {
-                $expected = [
-                    'expected_users' => [
-                        $get_expected_actor($user_id, 'User', $actor_type_value),
-                    ],
-                ];
-                // using historical keys
-                yield [
-                    'actors_input'   => [
-                        "_users_id_{$actor_type}" => $user_id,
-                    ],
-                ] + $expected;
-                // using _actors key
-                yield [
-                    'actors_input'   => [
-                        '_actors' => [
-                            $actor_type => [
-                                $get_actor_input($user_id, 'User'),
-                            ],
-                        ],
-                    ],
-                ] + $expected;
-            }
-
-            // single unknown actor
-            $expected = [
-                'expected_users' => [
-                    $get_expected_actor(0, 'User', $actor_type_value, 1, 'unknownuser@localhost.local'),
+            // single user
+            $expected_actors = [
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => $tech_user_id,
+                    'use_notification'  => $default_use_notifications,
+                    'alternative_email' => '',
                 ],
             ];
             // using historical keys
             yield [
                 'actors_input'   => [
-                    "_users_id_{$actor_type}"       => 0,
-                    "_users_id_{$actor_type}_notif" => [
-                        'use_notification'   => 1,
-                        'alternative_email'  => 'unknownuser@localhost.local',
-                    ],
+                    "_users_id_{$actor_type}" => "$tech_user_id",
                 ],
-            ] + $expected;
+                'expected_actors' => $expected_actors,
+            ];
             // using _actors key
             yield [
                 'actors_input'   => [
                     '_actors' => [
                         $actor_type => [
-                            $get_actor_input(0, 'User', 1, 'unknownuser@localhost.local'),
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $tech_user_id,
+                                'use_notification'  => $default_use_notifications,
+                                'alternative_email' => '',
+                            ]
                         ],
                     ],
                 ],
-            ] + $expected;
+                'expected_actors' => $expected_actors,
+            ];
+
+            // single email actor
+            $expected_actors = [
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => 0,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'unknownuser@localhost.local',
+                ],
+            ];
+            // using historical keys
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}"       => '0',
+                    "_users_id_{$actor_type}_notif" => [
+                        'use_notification'   => '1',
+                        'alternative_email'  => 'unknownuser@localhost.local',
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+            // using _actors key
+            yield [
+                'actors_input'   => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser@localhost.local',
+                            ]
+                        ],
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
 
             // multiple actors
-            $expected = [
-                'expected_users' => array_map(
-                    function (int $user_id) use ($actor_type_value, $get_expected_actor) {
-                        return $get_expected_actor($user_id, 'User', $actor_type_value);
-                    },
-                    $actors['users']
-                ),
+            $expected_actors = [
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => $tech_user_id,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'alt-email@localhost.local',
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => $admin_user_id,
+                    'use_notification'  => 0,
+                    'alternative_email' => '',
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => 0,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'unknownuser1@localhost.local',
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => 0,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'unknownuser2@localhost.local',
+                ],
             ];
             // using historical keys
             yield [
                 'actors_input'   => [
-                    "_users_id_{$actor_type}" => $actors['users'],
-                ],
-            ] + $expected;
-            // using _actors key
-            yield [
-                'actors_input'   => [
-                    '_actors' => [
-                        $actor_type => array_map(
-                            function (int $user_id) use ($get_actor_input) {
-                                return $get_actor_input($user_id, 'User');
-                            },
-                            $actors['users']
-                        ),
-                    ],
-                ],
-            ] + $expected;
-
-            // multiple mixed actors
-            $expected = [
-                'expected_users' => array_merge(
-                    array_map(
-                        function (int $user_id) use ($actor_type_value, $get_expected_actor) {
-                            return $get_expected_actor($user_id, 'User', $actor_type_value);
-                        },
-                        $actors['users']
-                    ),
-                    [
-                        $get_expected_actor(0, 'User', $actor_type_value, 1, 'unknownuser1@localhost.local'),
-                        $get_expected_actor(0, 'User', $actor_type_value, 1, 'unknownuser2@localhost.local'),
-                    ]
-                ),
-            ];
-            // using historical keys
-            yield [
-                'actors_input'   => [
-                    "_users_id_{$actor_type}"       => array_merge($actors['users'], [0, 0]),
+                    "_users_id_{$actor_type}"       => ["$tech_user_id", "$admin_user_id", '0', '0'],
                     "_users_id_{$actor_type}_notif" => [
-                        'use_notification'   => array_merge(
-                            array_fill(0, count($actors['users']), $default_use_notifications),
-                            [1, 1]
-                        ),
-                        'alternative_email'  => array_merge(
-                            array_fill(0, count($actors['users']), ''),
-                            ['unknownuser1@localhost.local', 'unknownuser2@localhost.local']
-                        ),
+                        'use_notification'   => ['1', '0', '1', '1'],
+                        'alternative_email'  => ['alt-email@localhost.local', '', 'unknownuser1@localhost.local', 'unknownuser2@localhost.local'],
                     ],
                 ],
-            ] + $expected;
+                'expected_actors' => $expected_actors,
+            ];
             // using _actors key
             yield [
                 'actors_input'   => [
                     '_actors' => [
-                        $actor_type => array_merge(
-                            array_map(
-                                function (int $user_id) use ($get_actor_input) {
-                                    return $get_actor_input($user_id, 'User');
-                                },
-                                $actors['users']
-                            ),
+                        $actor_type => [
                             [
-                                $get_actor_input(0, 'User', 1, 'unknownuser1@localhost.local'),
-                                $get_actor_input(0, 'User', 1, 'unknownuser2@localhost.local')
-                            ]
-                        )
+                                'itemtype'          => User::class,
+                                'items_id'          => $tech_user_id,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'alt-email@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $admin_user_id,
+                                'use_notification'  => 0,
+                                'alternative_email' => '',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser1@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser2@localhost.local',
+                            ],
+                        ],
                     ],
                 ],
-            ] + $expected;
+                'expected_actors' => $expected_actors,
+            ];
         }
 
         // complete mix
+        $expected_actors = [
+            [
+                'type'              => CommonITILActor::REQUESTER,
+                'itemtype'          => User::class,
+                'items_id'          => $postonly_user_id,
+                'use_notification'  => $default_use_notifications,
+                'alternative_email' => '',
+            ],
+            [
+                'type'              => CommonITILActor::OBSERVER,
+                'itemtype'          => User::class,
+                'items_id'          => 0,
+                'use_notification'  => 1,
+                'alternative_email' => 'obs1@localhost.local',
+            ],
+            [
+                'type'              => CommonITILActor::OBSERVER,
+                'itemtype'          => User::class,
+                'items_id'          => 0,
+                'use_notification'  => 1,
+                'alternative_email' => 'obs1@localhost.local',
+            ],
+            [
+                'type'              => CommonITILActor::ASSIGN,
+                'itemtype'          => User::class,
+                'items_id'          => $tech_user_id,
+                'use_notification'  => 1,
+                'alternative_email' => 'alternativeemail@localhost.local',
+            ],
+        ];
+        // using historical keys
         yield [
             'actors_input'   => [
-                '_users_id_requester'       => '3',
+                '_users_id_requester'       => "$postonly_user_id",
                 '_users_id_observer'        => ['0', '0'],
                 '_users_id_observer_notif'  => [
                     'use_notification'   => ['1', '1'],
                     'alternative_email'  => ['obs1@localhost.local', 'obs2@localhost.local'],
                 ],
-                '_users_id_assign'          => ['4'],
+                '_users_id_assign'          => ["$tech_user_id"],
                 '_users_id_assign_notif'    => [
                     'use_notification'   => ['1'],
                     'alternative_email'  => ['alternativeemail@localhost.local'],
                 ],
             ],
-            'expected_users' => [
-                [
-                    'type'               => CommonITILActor::REQUESTER,
-                    'users_id'           => 3,
-                    'use_notification'   => $default_use_notifications,
-                    'alternative_email'  => '',
-                ],
-                [
-                    'type'               => CommonITILActor::OBSERVER,
-                    'users_id'           => 0,
-                    'use_notification'   => 1,
-                    'alternative_email'  => 'obs1@localhost.local',
-                ],
-                [
-                    'type'               => CommonITILActor::OBSERVER,
-                    'users_id'           => 0,
-                    'use_notification'   => 1,
-                    'alternative_email'  => 'obs1@localhost.local',
-                ],
-                [
-                    'type'               => CommonITILActor::ASSIGN,
-                    'users_id'           => 4,
-                    'use_notification'   => 1,
-                    'alternative_email'  => 'alternativeemail@localhost.local',
+            'expected_actors' => $expected_actors,
+        ];
+        // using _actors key
+        yield [
+            'actors_input'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $postonly_user_id,
+                            'use_notification'  => $default_use_notifications,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                    'observer' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'obs1@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'obs2@localhost.local',
+                        ],
+                    ],
+                    'assign' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $tech_user_id,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'alternativeemail@localhost.local',
+                        ],
+                    ],
                 ],
             ],
+            'expected_actors' => $expected_actors,
         ];
     }
 
     /**
      * @dataProvider actorsProvider
      */
-    public function testCreateTicketWithActors(array $actors_input, array $expected_users): void
+    public function testCreateTicketWithActors(array $actors_input, array $expected_actors): void
     {
         $this->login();
 
@@ -299,18 +324,13 @@ class Ticket extends DbTestCase
         );
         $this->integer($ticket_id)->isGreaterThan(0);
 
-        $ticket_user = new Ticket_User();
-        foreach ($expected_users as $actor) {
-            $this->boolean($ticket_user->getFromDBByCrit(['tickets_id' => $ticket_id] + $actor))
-                ->isTrue(sprintf('Actor not found: %s', json_encode($actor)));
-        }
-        $this->integer($ticket_user->countForItem($ticket))->isEqualTo(count($expected_users));
+        $this->checkActors($ticket, $expected_actors);
     }
 
     /**
      * @dataProvider actorsProvider
      */
-    public function testUpdateTicketWithActors(array $actors_input, array $expected_users): void
+    public function testUpdateTicketWithActors(array $actors_input, array $expected_actors): void
     {
         $this->login();
 
@@ -326,12 +346,37 @@ class Ticket extends DbTestCase
 
         $this->boolean($ticket->update(['id' => $ticket_id] + $actors_input))->isTrue();
 
-        $ticket_user = new Ticket_User();
-        foreach ($expected_users as $actor) {
-            $this->boolean($ticket_user->getFromDBByCrit(['tickets_id' => $ticket_id] + $actor))
-                ->isTrue(sprintf('Actor not found: %s', json_encode($actor)));
+        $this->checkActors($ticket, $expected_actors);
+    }
+
+    /**
+     * Check that ticket actors are matching expected actors.
+     *
+     * @param \Ticket $ticket
+     * @param array $expected_actors
+     *
+     * @return void
+     */
+    private function checkActors(\Ticket $ticket, array $expected_actors): void
+    {
+        foreach ([Ticket_User::class, Group_Ticket::class, Supplier_Ticket::class] as $link_class) {
+            $link_obj = new $link_class();
+
+            $expected_actors_for_itemtype = array_filter(
+                $expected_actors,
+                function (array $actor) use ($link_obj) {
+                    return $actor['itemtype'] === getItemtypeForForeignKeyField($link_obj->getActorForeignKey());
+                }
+            );
+
+            foreach ($expected_actors_for_itemtype as $actor) {
+                $actor[$link_obj->getActorForeignKey()] = $actor['items_id'];
+                unset($actor['itemtype'], $actor['items_id']);
+                $this->boolean($link_obj->getFromDBByCrit(['tickets_id' => $ticket->getID()] + $actor))
+                    ->isTrue(sprintf('Actor not found: %s', json_encode($actor)));
+            }
+            $this->integer($link_obj->countForItem($ticket))->isEqualTo(count($expected_actors_for_itemtype));
         }
-        $this->integer($ticket_user->countForItem($ticket))->isEqualTo(count($expected_users));
     }
 
     public function testTasksFromTemplate()
