@@ -707,7 +707,7 @@ class Agent extends CommonDBTM
                     $cron_status = true;
                 }
             } else if (isset($config['agents_status'])) {
-                //change status of agents
+                //change status of agents linked assets
                 foreach ($iterator as $data) {
                     $itemtype = $data['itemtype'];
                     if (is_subclass_of($itemtype, CommonDBTM::class)) {
