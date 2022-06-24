@@ -541,8 +541,6 @@ $CFG_GLPI['line_types'] = $CFG_GLPI['itemdevicesimcard_types'];
 
 $CFG_GLPI['itil_types'] = ['Ticket', 'Change', 'Problem'];
 
-$CFG_GLPI['process_types'] = ['Computer', 'Phone'];
-
 $dashboard_libs = [
     'dashboard', 'gridstack',
     'charts', 'clipboard', 'sortable'

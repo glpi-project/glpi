@@ -65,10 +65,10 @@ class Process extends InventoryAsset
                 }
             }
 
-            /* if ($this->checkConf($this->conf)) {
+            if (!$this->checkConf($this->conf)) {
                 unset($this->data[$key]);
                 continue;
-            } */
+            }
 
             $val->is_dynamic = 1;
         }
