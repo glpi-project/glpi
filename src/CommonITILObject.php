@@ -7929,6 +7929,16 @@ abstract class CommonITILObject extends CommonDBTM
                 if (array_key_exists($actors_id_input_key, $this->input)) {
                     if (is_array($this->input[$actors_id_input_key])) {
                         foreach ($this->input[$actors_id_input_key] as $actor_key => $actor_id) {
+                            if (!is_numeric($actor_id)) {
+                                trigger_error(
+                                    sprintf(
+                                        'Invalid value "%s" found for actor in "%s".',
+                                        $actor_id,
+                                        $actors_id_input_key
+                                    ),
+                                    E_USER_WARNING
+                                );
+                            }
                             $actor_id = (int)$actor_id;
                             $actor = [
                                 'itemtype' => $actor_itemtype,
@@ -7971,7 +7981,7 @@ abstract class CommonITILObject extends CommonDBTM
                             }
                             $actors[$get_unique_key($actor)] = $actor;
                         }
-                    } else {
+                    } elseif (is_numeric($this->input[$actors_id_input_key])) {
                         $actor_id = (int)$this->input[$actors_id_input_key];
                         $actor = [
                             'itemtype' => $actor_itemtype,
@@ -8017,6 +8027,15 @@ abstract class CommonITILObject extends CommonDBTM
                             }
                         }
                         $actors[$get_unique_key($actor)] = $actor;
+                    } elseif ($this->input[$actors_id_input_key] !== '') {
+                        trigger_error(
+                            sprintf(
+                                'Invalid value "%s" found for actor in "%s".',
+                                $this->input[$actors_id_input_key],
+                                $actors_id_input_key
+                            ),
+                            E_USER_WARNING
+                        );
                     }
                 }
                 if (array_key_exists($actors_id_add_input_key, $this->input)) {
