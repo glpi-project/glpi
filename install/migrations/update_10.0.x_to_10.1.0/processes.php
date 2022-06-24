@@ -62,9 +62,3 @@ if (!$DB->tableExists('glpi_items_processes')) {
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
     $DB->queryOrDie($query, "10.0 add table glpi_items_lines");
 }
-
-/* $config = new PluginGlpiinventoryConfig();
-$config->addValues([
-    'import_process' => 1
-], false);
- */
