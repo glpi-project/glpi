@@ -1543,6 +1543,7 @@ class Dropdown
     {
         global $CFG_GLPI;
 
+        $params = [];
         $params['itemtype_name']          = 'itemtype';
         $params['items_id_name']          = 'items_id';
         $params['itemtypes']              = '';
