@@ -56,15 +56,19 @@ class Item_Process extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::canView()) {
-            $nb = 0;
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(
-                    self::getTable(),
-                    [
-                        'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType(),
-                    ]
-                );
+            $nb = countElementsInTable(
+                self::getTable(),
+                [
+                    'items_id'     => $item->getID(),
+                    'itemtype'     => $item->getType(),
+                ]
+            );
+            if ($nb == 0) {
+                return '';
+            }
+
+            if (!$_SESSION['glpishow_count_on_tabs']) {
+                $nb = 0;
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
         }
