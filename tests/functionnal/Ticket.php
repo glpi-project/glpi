@@ -54,109 +54,191 @@ class Ticket extends DbTestCase
     {
         $default_use_notifications = 1;
 
+        $tu_user_id       = getItemByTypeName('User', TU_USER, true);
+        $admin_user_id    = getItemByTypeName('User', 'glpi', true);
+        $tech_user_id     = getItemByTypeName('User', 'tech', true);
+        $normal_user_id   = getItemByTypeName('User', 'normal', true);
+        $postonly_user_id = getItemByTypeName('User', 'post-only', true);
+
+        $get_expected_actor = static function (
+            int $items_id,
+            string $itemtype,
+            int $actor_type_value,
+            ?bool $use_notification = null,
+            string $alternative_email = ''
+        ) use ($default_use_notifications): array {
+            $fkey = getForeignKeyFieldForItemType($itemtype);
+            return [
+                'type'              => $actor_type_value,
+                $fkey               => $items_id,
+                'use_notification'  => $use_notification !== null ? $use_notification : $default_use_notifications,
+                'alternative_email' => $alternative_email,
+            ];
+        };
+
+        $get_actor_input = static function (
+            int $items_id,
+            string $itemtype,
+            ?bool $use_notification = null,
+            string $alternative_email = ''
+        ) use ($default_use_notifications): array {
+            return [
+                'itemtype'          => $itemtype,
+                'items_id'          => $items_id,
+                'use_notification'  => $use_notification !== null ? $use_notification : $default_use_notifications,
+                'alternative_email' => $alternative_email,
+            ];
+        };
+
         $actor_types = [
-            'requester',
-            'assign',
-            'observer',
+            'requester' => [
+                'users' => [$normal_user_id, $postonly_user_id],
+            ],
+            'assign'    => [
+                'users' => [$admin_user_id, $tech_user_id],
+            ],
+            'observer'  => [
+                'users' => [$tu_user_id, $tech_user_id, $normal_user_id],
+            ],
         ];
 
-        foreach ($actor_types as $actor_type) {
+        foreach ($actor_types as $actor_type => $actors) {
             $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
 
-            // single requester
-            yield [
-                'actors_input'   => [
-                    "_users_id_{$actor_type}" => '3',
-                ],
-                'expected_users' => [
-                    [
-                        'type'               => $actor_type_value,
-                        'users_id'           => 3,
-                        'use_notification'   => $default_use_notifications,
-                        'alternative_email'  => '',
+            // single actor
+            foreach ($actors['users'] as $user_id) {
+                $expected = [
+                    'expected_users' => [
+                        $get_expected_actor($user_id, 'User', $actor_type_value),
                     ],
+                ];
+                // using historical keys
+                yield [
+                    'actors_input'   => [
+                        "_users_id_{$actor_type}" => $user_id,
+                    ],
+                ] + $expected;
+                // using _actors key
+                yield [
+                    'actors_input'   => [
+                        '_actors' => [
+                            $actor_type => [
+                                $get_actor_input($user_id, 'User'),
+                            ],
+                        ],
+                    ],
+                ] + $expected;
+            }
+
+            // single unknown actor
+            $expected = [
+                'expected_users' => [
+                    $get_expected_actor(0, 'User', $actor_type_value, 1, 'unknownuser@localhost.local'),
                 ],
             ];
-
-            // single unknown requester
+            // using historical keys
             yield [
                 'actors_input'   => [
-                    "_users_id_{$actor_type}"       => '0',
+                    "_users_id_{$actor_type}"       => 0,
                     "_users_id_{$actor_type}_notif" => [
-                        'use_notification'   => '1',
-                        'alternative_email'  => 'unknownuser@localhost.local',
-                    ],
-                ],
-                'expected_users' => [
-                    [
-                        'type'               => $actor_type_value,
-                        'users_id'           => 0,
                         'use_notification'   => 1,
                         'alternative_email'  => 'unknownuser@localhost.local',
                     ],
                 ],
-            ];
-
-            // multiple requesters
+            ] + $expected;
+            // using _actors key
             yield [
                 'actors_input'   => [
-                    "_users_id_{$actor_type}" => ['3', '5'],
-                ],
-                'expected_users' => [
-                    [
-                        'type'               => $actor_type_value,
-                        'users_id'           => 3,
-                        'use_notification'   => $default_use_notifications,
-                        'alternative_email'  => '',
-                    ],
-                    [
-                        'type'               => $actor_type_value,
-                        'users_id'           => 5,
-                        'use_notification'   => $default_use_notifications,
-                        'alternative_email'  => '',
+                    '_actors' => [
+                        $actor_type => [
+                            $get_actor_input(0, 'User', 1, 'unknownuser@localhost.local'),
+                        ],
                     ],
                 ],
-            ];
+            ] + $expected;
 
-            // multiple mixed requesters
+            // multiple actors
+            $expected = [
+                'expected_users' => array_map(
+                    function (int $user_id) use ($actor_type_value, $get_expected_actor) {
+                        return $get_expected_actor($user_id, 'User', $actor_type_value);
+                    },
+                    $actors['users']
+                ),
+            ];
+            // using historical keys
             yield [
                 'actors_input'   => [
-                    "_users_id_{$actor_type}"       => ['3', '5', '0', '0'],
+                    "_users_id_{$actor_type}" => $actors['users'],
+                ],
+            ] + $expected;
+            // using _actors key
+            yield [
+                'actors_input'   => [
+                    '_actors' => [
+                        $actor_type => array_map(
+                            function (int $user_id) use ($get_actor_input) {
+                                return $get_actor_input($user_id, 'User');
+                            },
+                            $actors['users']
+                        ),
+                    ],
+                ],
+            ] + $expected;
+
+            // multiple mixed actors
+            $expected = [
+                'expected_users' => array_merge(
+                    array_map(
+                        function (int $user_id) use ($actor_type_value, $get_expected_actor) {
+                            return $get_expected_actor($user_id, 'User', $actor_type_value);
+                        },
+                        $actors['users']
+                    ),
+                    [
+                        $get_expected_actor(0, 'User', $actor_type_value, 1, 'unknownuser1@localhost.local'),
+                        $get_expected_actor(0, 'User', $actor_type_value, 1, 'unknownuser2@localhost.local'),
+                    ]
+                ),
+            ];
+            // using historical keys
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}"       => array_merge($actors['users'], [0, 0]),
                     "_users_id_{$actor_type}_notif" => [
-                        'use_notification'   => ['1', '0', '1', '1'],
-                        'alternative_email'  => ['', '', 'unknownuser@localhost.local', 'unknownuser2@localhost.local'],
+                        'use_notification'   => array_merge(
+                            array_fill(0, count($actors['users']), $default_use_notifications),
+                            [1, 1]
+                        ),
+                        'alternative_email'  => array_merge(
+                            array_fill(0, count($actors['users']), ''),
+                            ['unknownuser1@localhost.local', 'unknownuser2@localhost.local']
+                        ),
                     ],
                 ],
-                'expected_users' => [
-                    [
-                        'type'               => $actor_type_value,
-                        'users_id'           => 3,
-                        'use_notification'   => $default_use_notifications,
-                        'alternative_email'  => '',
-                    ],
-                    [
-                        'type'               => $actor_type_value,
-                        'users_id'           => 5,
-                        'use_notification'   => 0,
-                        'alternative_email'  => '',
-                    ],
-                    [
-                        'type'               => $actor_type_value,
-                        'users_id'           => 0,
-                        'use_notification'   => 1,
-                        'alternative_email'  => 'unknownuser@localhost.local',
-                    ],
-                    [
-                        'type'               => $actor_type_value,
-                        'users_id'           => 0,
-                        'use_notification'   => 1,
-                        'alternative_email'  => 'unknownuser2@localhost.local',
+            ] + $expected;
+            // using _actors key
+            yield [
+                'actors_input'   => [
+                    '_actors' => [
+                        $actor_type => array_merge(
+                            array_map(
+                                function (int $user_id) use ($get_actor_input) {
+                                    return $get_actor_input($user_id, 'User');
+                                },
+                                $actors['users']
+                            ),
+                            [
+                                $get_actor_input(0, 'User', 1, 'unknownuser1@localhost.local'),
+                                $get_actor_input(0, 'User', 1, 'unknownuser2@localhost.local')
+                            ]
+                        )
                     ],
                 ],
-            ];
+            ] + $expected;
         }
 
-        // multiple mixed actors
+        // complete mix
         yield [
             'actors_input'   => [
                 '_users_id_requester'       => '3',
@@ -210,8 +292,9 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
             [
-                'name'    => 'ticket title',
-                'content' => 'a description',
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ] + $actors_input
         );
         $this->integer($ticket_id)->isGreaterThan(0);
@@ -234,8 +317,9 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
             [
-                'name'    => 'ticket title',
-                'content' => 'a description',
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ]
         );
         $this->integer($ticket_id)->isGreaterThan(0);
