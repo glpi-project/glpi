@@ -1558,7 +1558,7 @@ class Dropdown
         $params['ajax_page']              = $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php";
         $params['display']                = true;
         $params['rand']                   = mt_rand();
-        $params['itemtype_track_changes'] = true;
+        $params['itemtype_track_changes'] = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
