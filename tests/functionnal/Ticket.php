@@ -58,11 +58,15 @@ class Ticket extends DbTestCase
     {
         $default_use_notifications = 1;
 
-        $tu_user_id       = getItemByTypeName('User', TU_USER, true);
-        $admin_user_id    = getItemByTypeName('User', 'glpi', true);
-        $tech_user_id     = getItemByTypeName('User', 'tech', true);
-        $normal_user_id   = getItemByTypeName('User', 'normal', true);
-        $postonly_user_id = getItemByTypeName('User', 'post-only', true);
+        $admin_user_id    = getItemByTypeName(User::class, 'glpi', true);
+        $tech_user_id     = getItemByTypeName(User::class, 'tech', true);
+        $normal_user_id   = getItemByTypeName(User::class, 'normal', true);
+        $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
+
+        $group_1_id = getItemByTypeName(Group::class, '_test_group_1', true);
+        $group_2_id = getItemByTypeName(Group::class, '_test_group_2', true);
+
+        $supplier_id = getItemByTypeName(Supplier::class, '_suplier01_name', true);
 
         $actor_types = ['requester', 'assign', 'observer'];
 
@@ -141,6 +145,36 @@ class Ticket extends DbTestCase
                 'expected_actors' => $expected_actors,
             ];
 
+            // single group
+            $expected_actors = [
+                [
+                    'type'     => $actor_type_value,
+                    'itemtype' => Group::class,
+                    'items_id' => $group_1_id,
+                ],
+            ];
+            // using historical keys
+            yield [
+                'actors_input'   => [
+                    "_groups_id_{$actor_type}" => "$group_1_id",
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+            // using _actors key
+            yield [
+                'actors_input'   => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype' => Group::class,
+                                'items_id' => $group_1_id,
+                            ]
+                        ],
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+
             // multiple actors
             $expected_actors = [
                 [
@@ -171,6 +205,16 @@ class Ticket extends DbTestCase
                     'use_notification'  => 1,
                     'alternative_email' => 'unknownuser2@localhost.local',
                 ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => Group::class,
+                    'items_id'          => $group_1_id,
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => Group::class,
+                    'items_id'          => $group_2_id,
+                ],
             ];
             // using historical keys
             yield [
@@ -180,6 +224,7 @@ class Ticket extends DbTestCase
                         'use_notification'   => ['1', '0', '1', '1'],
                         'alternative_email'  => ['alt-email@localhost.local', '', 'unknownuser1@localhost.local', 'unknownuser2@localhost.local'],
                     ],
+                    "_groups_id_{$actor_type}"      => ["$group_1_id", "$group_2_id"],
                 ],
                 'expected_actors' => $expected_actors,
             ];
@@ -212,6 +257,14 @@ class Ticket extends DbTestCase
                                 'use_notification'  => 1,
                                 'alternative_email' => 'unknownuser2@localhost.local',
                             ],
+                            [
+                                'itemtype'          => Group::class,
+                                'items_id'          => $group_1_id,
+                            ],
+                            [
+                                'itemtype'          => Group::class,
+                                'items_id'          => $group_2_id,
+                            ],
                         ],
                     ],
                 ],
@@ -231,6 +284,13 @@ class Ticket extends DbTestCase
             [
                 'type'              => CommonITILActor::OBSERVER,
                 'itemtype'          => User::class,
+                'items_id'          => $normal_user_id,
+                'use_notification'  => 0,
+                'alternative_email' => '',
+            ],
+            [
+                'type'              => CommonITILActor::OBSERVER,
+                'itemtype'          => User::class,
                 'items_id'          => 0,
                 'use_notification'  => 1,
                 'alternative_email' => 'obs1@localhost.local',
@@ -243,27 +303,45 @@ class Ticket extends DbTestCase
                 'alternative_email' => 'obs1@localhost.local',
             ],
             [
+                'type'              => CommonITILActor::OBSERVER,
+                'itemtype'          => Group::class,
+                'items_id'          => $group_1_id,
+            ],
+            [
                 'type'              => CommonITILActor::ASSIGN,
                 'itemtype'          => User::class,
                 'items_id'          => $tech_user_id,
                 'use_notification'  => 1,
                 'alternative_email' => 'alternativeemail@localhost.local',
             ],
+            [
+                'type'              => CommonITILActor::ASSIGN,
+                'itemtype'          => Group::class,
+                'items_id'          => $group_2_id,
+            ],
+            [
+                'type'              => CommonITILActor::ASSIGN,
+                'itemtype'          => Supplier::class,
+                'items_id'          => $supplier_id,
+            ],
         ];
         // using historical keys
         yield [
             'actors_input'   => [
-                '_users_id_requester'       => "$postonly_user_id",
-                '_users_id_observer'        => ['0', '0'],
+                '_users_id_requester'       => ["$postonly_user_id"],
+                '_users_id_observer'        => ["$normal_user_id", '0', '0'],
                 '_users_id_observer_notif'  => [
-                    'use_notification'   => ['1', '1'],
-                    'alternative_email'  => ['obs1@localhost.local', 'obs2@localhost.local'],
+                    'use_notification'   => ['0', '1', '1'],
+                    'alternative_email'  => ['', 'obs1@localhost.local', 'obs2@localhost.local'],
                 ],
+                '_groups_id_observer'       => ["$group_1_id"],
                 '_users_id_assign'          => ["$tech_user_id"],
                 '_users_id_assign_notif'    => [
                     'use_notification'   => ['1'],
                     'alternative_email'  => ['alternativeemail@localhost.local'],
                 ],
+                '_groups_id_assign'         => ["$group_2_id"],
+                '_suppliers_id_assign'      => ["$supplier_id"],
             ],
             'expected_actors' => $expected_actors,
         ];
@@ -282,6 +360,12 @@ class Ticket extends DbTestCase
                     'observer' => [
                         [
                             'itemtype'          => User::class,
+                            'items_id'          => $normal_user_id,
+                            'use_notification'  => 0,
+                            'alternative_email' => '',
+                        ],
+                        [
+                            'itemtype'          => User::class,
                             'items_id'          => 0,
                             'use_notification'  => 1,
                             'alternative_email' => 'obs1@localhost.local',
@@ -292,6 +376,10 @@ class Ticket extends DbTestCase
                             'use_notification'  => 1,
                             'alternative_email' => 'obs2@localhost.local',
                         ],
+                        [
+                            'itemtype'          => Group::class,
+                            'items_id'          => $group_1_id,
+                        ],
                     ],
                     'assign' => [
                         [
@@ -299,6 +387,14 @@ class Ticket extends DbTestCase
                             'items_id'          => $tech_user_id,
                             'use_notification'  => 1,
                             'alternative_email' => 'alternativeemail@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => Group::class,
+                            'items_id'          => $group_2_id,
+                        ],
+                        [
+                            'itemtype'          => Supplier::class,
+                            'items_id'          => $supplier_id,
                         ],
                     ],
                 ],
