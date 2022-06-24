@@ -205,6 +205,8 @@ class Ticket extends DbTestCase
      */
     public function testCreateTicketWithActors(array $actors_input, array $expected_users): void
     {
+        $this->login();
+
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
             [
@@ -213,6 +215,32 @@ class Ticket extends DbTestCase
             ] + $actors_input
         );
         $this->integer($ticket_id)->isGreaterThan(0);
+
+        $ticket_user = new Ticket_User();
+        foreach ($expected_users as $actor) {
+            $this->boolean($ticket_user->getFromDBByCrit(['tickets_id' => $ticket_id] + $actor))
+                ->isTrue(sprintf('Actor not found: %s', json_encode($actor)));
+        }
+        $this->integer($ticket_user->countForItem($ticket))->isEqualTo(count($expected_users));
+    }
+
+    /**
+     * @dataProvider actorsProvider
+     */
+    public function testUpdateTicketWithActors(array $actors_input, array $expected_users): void
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'    => 'ticket title',
+                'content' => 'a description',
+            ]
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        $this->boolean($ticket->update(['id' => $ticket_id] + $actors_input))->isTrue();
 
         $ticket_user = new Ticket_User();
         foreach ($expected_users as $actor) {
