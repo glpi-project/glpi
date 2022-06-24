@@ -115,24 +115,21 @@ class Item_Process extends CommonDBChild
                 'items_id' => $items_id,
                 'itemtype' => $itemtype
             ] + $sql_filters,
+            'LIMIT' => $_SESSION['glpilist_limit'],
             'START' => $start,
             'ORDER' => "$sort $order",
         ]);
 
         $total_number = count($all_data);
-        $filtered_number = count($filtered_data);
+        $filtered_number = count(getAllDataFromTable(self::getTable(), [
+            'items_id' => $items_id,
+            'itemtype' => $itemtype
+        ] + $sql_filters));
 
         $processes = [];
-        $i = 0;
         foreach ($filtered_data as $process) {
             $process['virtualmemory'] = $process['virtualmemory'] * 1024;
             $processes[$process['id']] = $process;
-
-            $i++;
-
-            if ($i >= $_SESSION['glpilist_limit']) {
-                break;
-            }
         }
 
         $users = array_unique(array_column($all_data, 'user'));
@@ -143,7 +140,9 @@ class Item_Process extends CommonDBChild
             'sort' => $sort,
             'order' => $order,
             'href' => $item::getFormURLWithID($items_id),
-            'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
+            'additional_params' => $is_filtered ? http_build_query([
+                'filters' => $filters
+            ]) : "",
             'is_tab' => true,
             'items_id' => $items_id,
             'filters' => Sanitizer::dbEscapeRecursive($filters),

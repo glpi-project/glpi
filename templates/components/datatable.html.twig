@@ -36,7 +36,10 @@
       {{ __('No data') }}
    </div>
 {% else %}
-    {{ include('components/pager.html.twig', {count: filtered_number}) }}
+    {{ include('components/pager.html.twig', {
+        'count': filtered_number,
+        'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
+    }) }}
 
     <div class="table-responsive">
         <table class="table table-hover">
@@ -50,7 +53,7 @@
                             {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
                         {% endif %}
 
-                        {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ additional_params ~ "');" %}
+                        {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
 
                         <th><a href="{{ sort_href }}">
                             <i class="{{ sort_icon }}"></i>
