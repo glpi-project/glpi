@@ -2107,7 +2107,7 @@ class Dropdown
                 $output .= " required='required'";
             }
 
-            if (!$param[$param['track_changes']]) {
+            if (!$param['track_changes']) {
                 $output .= " data-track-changes=''";
             }
 
