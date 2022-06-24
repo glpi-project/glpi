@@ -3777,7 +3777,7 @@ CREATE TABLE `glpi_items_processes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) DEFAULT NULL,
   `items_id` int unsigned NOT NULL DEFAULT '0',
-  `cmd` varchar(255) DEFAULT NULL,
+  `cmd` text,
   `cpuusage` float NOT NULL DEFAULT '0',
   `memusage` float NOT NULL DEFAULT '0',
   `pid` int NOT NULL DEFAULT '1',
