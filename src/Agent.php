@@ -667,4 +667,63 @@ class Agent extends CommonDBTM
     {
         return "ti ti-robot";
     }
+
+    /**
+     * Cron task: clean and do other defined actions when agent not have been contacted
+     * the server since xx days
+     *
+     * @global object $DB
+     * @param object $task
+     * @return boolean true if successful, otherwise false
+     */
+    public static function cronCleanoldagents($task = null)
+    {
+        global $DB;
+
+        $config = \Config::getConfigurationValues('inventory');
+
+        $retention_time = $config['agents_old_days'] ?? 0;
+        if ($retention_time <= 0) {
+            return true;
+        }
+
+        $iterator = $DB->request([
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'last_contact' => ['<', new QueryExpression("date_add(now(), interval -" . $retention_time . " day)")]
+            ]
+        ]);
+
+        $cron_status = false;
+        if (count($iterator)) {
+            //agents_action 0=clean 1=change status
+            $action = (int)($config['agents_action'] ?? 0);
+            if ($action === 0) {
+                //delete agents
+                $agent = new self();
+                foreach ($iterator as $data) {
+                    $agent->delete($data);
+                    $task->addVolume(1);
+                    $cron_status = true;
+                }
+            } else if (isset($config['agents_status'])) {
+                //change status of agents
+                foreach ($iterator as $data) {
+                    $itemtype = $data['itemtype'];
+                    if (is_subclass_of($itemtype, CommonDBTM::class)) {
+                        $item = new $itemtype();
+                        if ($item->getFromDB($data['items_id'])) {
+                            $item->update([
+                                'id' => $data['items_id'],
+                                'states_id' => $config['agents_status']
+                            ]);
+                            $task->addVolume(1);
+                            $cron_status = true;
+                        }
+                    }
+                }
+            }
+        }
+        return $cron_status;
+    }
 }
