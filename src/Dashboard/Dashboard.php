@@ -478,10 +478,10 @@ class Dashboard extends \CommonDBTM
 
        // check specific rights
         if (
-            count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities']))
-            || count(array_intersect($rights['profiles_id'], array_keys($_SESSION['glpiprofiles'])))
-            || in_array($_SESSION['glpiID'], $rights['users_id'])
-            || count(array_intersect($rights['groups_id'], $_SESSION['glpigroups']))
+            (isset($_SESSION['glpiactiveentities']) && count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities'])))
+            || (isset($_SESSION['glpiprofiles']) && count(array_intersect($rights['profiles_id'], array_keys($_SESSION['glpiprofiles']))))
+            || (isset($_SESSION['glpiID']) && in_array($_SESSION['glpiID'], $rights['users_id']))
+            || (isset($_SESSION['glpigroups']) && count(array_intersect($rights['groups_id'], $_SESSION['glpigroups'])))
         ) {
             return true;
         }
