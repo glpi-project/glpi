@@ -7937,7 +7937,7 @@ abstract class CommonITILObject extends CommonDBTM
                             ];
                             if (array_key_exists($actors_notif_input_key, $this->input)) {
                                 // Expected format
-                                // '_users_id_requesters_notif' => [
+                                // '_users_id_requester_notif' => [
                                 //     'use_notification'  => [1, 0],
                                 //     'alternative_email' => ['user1@example.com', 'user2@example.com'],
                                 // ]
@@ -7982,7 +7982,7 @@ abstract class CommonITILObject extends CommonDBTM
                             // Expected formats
                             //
                             // Value provided by Change::getDefaultValues()
-                            // '_users_id_requesters_notif' => [
+                            // '_users_id_requester_notif' => [
                             //     'use_notification'  => 1,
                             //     'alternative_email' => 'user1@example.com',
                             // ]
@@ -7990,7 +7990,7 @@ abstract class CommonITILObject extends CommonDBTM
                             // OR
                             //
                             // Value provided by Ticket::getDefaultValues()
-                            // '_users_id_requesters_notif' => [
+                            // '_users_id_requester_notif' => [
                             //     'use_notification'  => [1, 0],
                             //     'alternative_email' => ['user1@example.com', 'user2@example.com'],
                             // ]

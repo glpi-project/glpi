@@ -50,126 +50,176 @@ use User;
 
 class Ticket extends DbTestCase
 {
-    public function ticketProvider()
+    public function actorsProvider()
     {
-        return [
-            'single requester' => [
-                [
-                    '_users_id_requester' => '3'
+        $default_use_notifications = 1;
+
+        $actor_types = [
+            'requester',
+            'assign',
+            'observer',
+        ];
+
+        foreach ($actor_types as $actor_type) {
+            $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
+
+            // single requester
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}" => '3',
                 ],
-            ],
-            'single unknown requester' => [
-                [
-                    '_users_id_requester'         => '0',
-                    '_users_id_requester_notif'   => [
-                        'use_notification'   => ['1'],
-                        'alternative_email'  => ['unknownuser@localhost.local']
+                'expected_users' => [
+                    [
+                        'type'               => $actor_type_value,
+                        'users_id'           => 3,
+                        'use_notification'   => $default_use_notifications,
+                        'alternative_email'  => '',
                     ],
                 ],
-            ],
-            'multiple requesters' => [
-                [
-                    '_users_id_requester' => ['3', '5'],
-                ],
-            ],
-            'multiple mixed requesters' => [
-                [
-                    '_users_id_requester'         => ['3', '5', '0'],
-                    '_users_id_requester_notif'   => [
-                        'use_notification'   => ['1', '0', '1'],
-                        'alternative_email'  => ['','', 'unknownuser@localhost.local']
+            ];
+
+            // single unknown requester
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}"       => '0',
+                    "_users_id_{$actor_type}_notif" => [
+                        'use_notification'   => '1',
+                        'alternative_email'  => 'unknownuser@localhost.local',
                     ],
                 ],
-            ],
-            'single observer' => [
-                [
-                    '_users_id_observer' => '3'
+                'expected_users' => [
+                    [
+                        'type'               => $actor_type_value,
+                        'users_id'           => 0,
+                        'use_notification'   => 1,
+                        'alternative_email'  => 'unknownuser@localhost.local',
+                    ],
+                ],
+            ];
+
+            // multiple requesters
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}" => ['3', '5'],
+                ],
+                'expected_users' => [
+                    [
+                        'type'               => $actor_type_value,
+                        'users_id'           => 3,
+                        'use_notification'   => $default_use_notifications,
+                        'alternative_email'  => '',
+                    ],
+                    [
+                        'type'               => $actor_type_value,
+                        'users_id'           => 5,
+                        'use_notification'   => $default_use_notifications,
+                        'alternative_email'  => '',
+                    ],
+                ],
+            ];
+
+            // multiple mixed requesters
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}"       => ['3', '5', '0', '0'],
+                    "_users_id_{$actor_type}_notif" => [
+                        'use_notification'   => ['1', '0', '1', '1'],
+                        'alternative_email'  => ['', '', 'unknownuser@localhost.local', 'unknownuser2@localhost.local'],
+                    ],
+                ],
+                'expected_users' => [
+                    [
+                        'type'               => $actor_type_value,
+                        'users_id'           => 3,
+                        'use_notification'   => $default_use_notifications,
+                        'alternative_email'  => '',
+                    ],
+                    [
+                        'type'               => $actor_type_value,
+                        'users_id'           => 5,
+                        'use_notification'   => 0,
+                        'alternative_email'  => '',
+                    ],
+                    [
+                        'type'               => $actor_type_value,
+                        'users_id'           => 0,
+                        'use_notification'   => 1,
+                        'alternative_email'  => 'unknownuser@localhost.local',
+                    ],
+                    [
+                        'type'               => $actor_type_value,
+                        'users_id'           => 0,
+                        'use_notification'   => 1,
+                        'alternative_email'  => 'unknownuser2@localhost.local',
+                    ],
+                ],
+            ];
+        }
+
+        // multiple mixed actors
+        yield [
+            'actors_input'   => [
+                '_users_id_requester'       => '3',
+                '_users_id_observer'        => ['0', '0'],
+                '_users_id_observer_notif'  => [
+                    'use_notification'   => ['1', '1'],
+                    'alternative_email'  => ['obs1@localhost.local', 'obs2@localhost.local'],
+                ],
+                '_users_id_assign'          => ['4'],
+                '_users_id_assign_notif'    => [
+                    'use_notification'   => ['1'],
+                    'alternative_email'  => ['alternativeemail@localhost.local'],
                 ],
             ],
-            'multiple observers' => [
+            'expected_users' => [
                 [
-                    '_users_id_observer' => ['3', '5'],
+                    'type'               => CommonITILActor::REQUESTER,
+                    'users_id'           => 3,
+                    'use_notification'   => $default_use_notifications,
+                    'alternative_email'  => '',
                 ],
-            ],
-            'single assign' => [
                 [
-                    '_users_id_assign' => '3'
+                    'type'               => CommonITILActor::OBSERVER,
+                    'users_id'           => 0,
+                    'use_notification'   => 1,
+                    'alternative_email'  => 'obs1@localhost.local',
                 ],
-            ],
-            'multiple assigns' => [
                 [
-                    '_users_id_assign' => ['3', '5'],
+                    'type'               => CommonITILActor::OBSERVER,
+                    'users_id'           => 0,
+                    'use_notification'   => 1,
+                    'alternative_email'  => 'obs1@localhost.local',
+                ],
+                [
+                    'type'               => CommonITILActor::ASSIGN,
+                    'users_id'           => 4,
+                    'use_notification'   => 1,
+                    'alternative_email'  => 'alternativeemail@localhost.local',
                 ],
             ],
         ];
     }
 
     /**
-     * @dataProvider ticketProvider
+     * @dataProvider actorsProvider
      */
-    public function testCreateTicketWithActors($ticketActors)
+    public function testCreateTicketWithActors(array $actors_input, array $expected_users): void
     {
         $ticket = new \Ticket();
-        $this->integer((int)$ticket->add([
-            'name'    => 'ticket title',
-            'content' => 'a description',
-        ] + $ticketActors))->isGreaterThan(0);
+        $ticket_id = $ticket->add(
+            [
+                'name'    => 'ticket title',
+                'content' => 'a description',
+            ] + $actors_input
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
 
-        $this->boolean($ticket->isNewItem())->isFalse();
-        $ticketId = $ticket->getID();
-
-        foreach ($ticketActors as $actorType => $actorsList) {
-           // Convert single actor (scalar value) to array
-            if (!is_array($actorsList)) {
-                $actorsList = [$actorsList];
-            }
-
-           // Check all actors are assigned to the ticket
-            foreach ($actorsList as $index => $actor) {
-                $notify = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
-                      ? $actorList['_users_id_requester_notif']['use_notification'][$index]
-                      : 1;
-                $alternateEmail = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
-                              ? $actorList['_users_id_requester_notif']['alternative_email'][$index]
-                              : '';
-                switch ($actorType) {
-                    case '_users_id_requester':
-                       //$this->testTicketUser($ticket, $actor, \CommonITILActor::REQUESTER, $notify, $alternateEmail);
-                        break;
-                    case '_users_id_observer':
-                        $this->testTicketUser($ticket, $actor, \CommonITILActor::OBSERVER, $notify, $alternateEmail);
-                        break;
-                    case '_users_id_assign':
-                        $this->testTicketUser($ticket, $actor, \CommonITILActor::ASSIGN, $notify, $alternateEmail);
-                        break;
-                }
-            }
+        $ticket_user = new Ticket_User();
+        foreach ($expected_users as $actor) {
+            $this->boolean($ticket_user->getFromDBByCrit(['tickets_id' => $ticket_id] + $actor))
+                ->isTrue(sprintf('Actor not found: %s', json_encode($actor)));
         }
-    }
-
-    protected function testTicketUser(\Ticket $ticket, $actor, $role, $notify, $alternateEmail)
-    {
-        if ($actor > 0) {
-            $user = new \User();
-            $this->boolean($user->getFromDB($actor))->isTrue();
-            $this->boolean($user->isNewItem())->isFalse();
-
-            $ticketUser = new \Ticket_User();
-            $this->boolean($ticketUser->getFromDBForItems($ticket, $user))->isTrue();
-        } else {
-            $ticketId = $ticket->getID();
-            $ticketUser = new \Ticket_User();
-            $this->boolean(
-                $ticketUser->getFromDBByCrit([
-                    'tickets_id'         => $ticketId,
-                    'users_id'           => 0,
-                    'alternative_email'  => $alternateEmail
-                ])
-            )->isTrue();
-        }
-        $this->boolean($ticketUser->isNewItem())->isFalse();
-        $this->variable($ticketUser->getField('type'))->isEqualTo($role);
-        $this->variable($ticketUser->getField('use_notification'))->isEqualTo($notify);
+        $this->integer($ticket_user->countForItem($ticket))->isEqualTo(count($expected_users));
     }
 
     public function testTasksFromTemplate()
