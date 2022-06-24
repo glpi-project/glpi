@@ -1510,6 +1510,7 @@ class Dropdown
                 'emptylabel'          => $params['emptylabel'],
                 'display'             => $params['display'],
                 'rand'                => $params['rand'],
+                'track_changes'       => $params['track_changes'],
             ]);
         }
         return 0;
