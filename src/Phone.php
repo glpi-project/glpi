@@ -98,6 +98,7 @@ class Phone extends CommonDBTM
         $this->addImpactTab($ong, $options);
         $this->addStandardTab('Item_OperatingSystem', $ong, $options);
         $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
+        $this->addStandardTab('Item_Process', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
         $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
@@ -143,6 +144,8 @@ class Phone extends CommonDBTM
             [
                 Computer_Item::class,
                 Item_Project::class,
+                Item_SoftwareVersion::class,
+                Item_Process::class,
             ]
         );
 

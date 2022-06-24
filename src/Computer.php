@@ -310,6 +310,7 @@ class Computer extends CommonDBTM
                 Computer_Item::class,
                 Item_SoftwareLicense::class,
                 Item_SoftwareVersion::class,
+                Item_Process::class,
                 ComputerAntivirus::class,
                 ComputerVirtualMachine::class,
                 Item_Disk::class,
