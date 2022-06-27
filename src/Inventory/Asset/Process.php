@@ -42,7 +42,7 @@ use Toolbox;
 
 class Process extends InventoryAsset
 {
-    /** @var @var Conf */
+    /** @var Conf */
     private $conf;
 
     public function prepare(): array
