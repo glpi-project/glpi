@@ -68,6 +68,22 @@ class Agent extends DbTestCase
             ->then
                ->integer($this->testedInstance->handleAgent($metadata))
                ->isGreaterThan(0);
+
+        // This should also work when inventory type is different than agent linked item type
+        $metadata['itemtype'] = 'Printer';
+
+        $this
+         ->given($this->newTestedInstance)
+            ->then
+               ->integer($this->testedInstance->handleAgent($metadata))
+               ->isGreaterThan(0);
+
+        // In the case the agent is used to submit another item type, we still
+        // need to have access to agent tag but no item should be linked
+        $tag = $this->testedInstance->fields['tag'];
+        $items_id = $this->testedInstance->fields['items_id'];
+        $this->string($tag)->isIdenticalTo('000005');
+        $this->integer($items_id)->isIdenticalTo(0);
     }
 
     public function testAgentFeaturesFromItem()
