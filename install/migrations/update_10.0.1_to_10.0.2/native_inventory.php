@@ -38,49 +38,6 @@
  * @var Migration $migration
  */
 
-$inventory_config = getAllDataFromTable('glpi_configs', ['context' => 'inventory']);
-
-if (!isset($inventory_config['agents_action'])) {
-    $migrated = false;
-
-    if ($DB->tableExists('glpi_plugin_glpiinventory_configs')) {
-        $iterator = $DB->request([
-            'SELECT' => ['type', 'value'],
-            'FROM' => 'glpi_plugin_glpiinventory_configs',
-            'WHERE' => ['type' => 'agents_action']
-        ]);
-        if ($iterator->count() > 0) {
-            $migrated = true;
-            $migration->addConfig(
-                ['agents_action' => $iterator->current()['value']],
-                'inventory'
-            );
-        }
-    }
-
-    if (!$migrated && $DB->tableExists('glpi_plugin_fusioninventory_configs')) {
-        $iterator = $DB->request([
-            'SELECT' => ['type', 'value'],
-            'FROM' => 'glpi_plugin_fusioninventory_configs',
-            'WHERE' => ['type' => 'agents_action']
-        ]);
-        if ($iterator->count() > 0) {
-            $migrated = true;
-            $migration->addConfig(
-                ['agents_action' => $iterator->current()['value']],
-                'inventory'
-            );
-        }
-    }
-
-    if (!$migrated) {
-        $migration->addConfig(
-            ['agents_action' => 0],
-            'inventory'
-        );
-    }
-}
-
 CronTask::register('Agent', 'Cleanoldagents', DAY_TIMESTAMP, [
     'comment' => 'Clean old agents',
     'state' => CronTask::STATE_WAITING,

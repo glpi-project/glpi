@@ -36,6 +36,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Conf;
 use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
@@ -684,7 +685,7 @@ class Agent extends CommonDBTM
 
         $config = \Config::getConfigurationValues('inventory');
 
-        $retention_time = $config['agents_old_days'] ?? 0;
+        $retention_time = $config['stale_agents_delay'] ?? 0;
         if ($retention_time <= 0) {
             return true;
         }
@@ -698,9 +699,8 @@ class Agent extends CommonDBTM
 
         $cron_status = false;
         if (count($iterator)) {
-            //agents_action 0=clean 1=change status
-            $action = (int)($config['agents_action'] ?? 0);
-            if ($action === 0) {
+            $action = (int)($config['stale_agents_action'] ?? Conf::STALE_AGENT_ACTION_CLEAN);
+            if ($action === Conf::STALE_AGENT_ACTION_CLEAN) {
                 //delete agents
                 $agent = new self();
                 foreach ($iterator as $data) {
@@ -708,7 +708,7 @@ class Agent extends CommonDBTM
                     $task->addVolume(1);
                     $cron_status = true;
                 }
-            } else if (isset($config['agents_status'])) {
+            } else if ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['stale_agents_status'])) {
                 //change status of agents linked assets
                 foreach ($iterator as $data) {
                     $itemtype = $data['itemtype'];

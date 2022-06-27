@@ -132,13 +132,14 @@ class Conf extends CommonGLPI
         'import_monitor'                 => 1,
         'import_printer'                 => 1,
         'import_peripheral'              => 1,
-        'agents_action'                  => 0,
-        'agents_old_days'                => 0,
+        'stale_agents_delay'             => 0,
+        'stale_agents_action'            => 0,
+        'stale_agents_status'            => 0,
     ];
 
-    public const AGENT_ACTION_CLEAN = 0;
+    public const STALE_AGENT_ACTION_CLEAN = 0;
 
-    public const AGENT_ACTION_STATUS = 1;
+    public const STALE_AGENT_ACTION_STATUS = 1;
 
     /**
      * Display form for import the XML
@@ -271,20 +272,16 @@ class Conf extends CommonGLPI
     }
 
     /**
-     * Get the action for agent action
+     * Get possible actions for stale agents
      *
-     * @param integer $action
      * @return string
      */
-    public static function getActions($action)
+    public static function getStaleAgentActions(): array
     {
-        switch ($action) {
-            case self::AGENT_ACTION_STATUS:
-                return __('Change the status');
-
-            case self::AGENT_ACTION_CLEAN:
-                return __('Clean agents');
-        }
+        return [
+            self::STALE_AGENT_ACTION_CLEAN  => __('Clean agents'),
+            self::STALE_AGENT_ACTION_STATUS => __('Change the status'),
+        ];
     }
 
     public function defineTabs($options = [])
@@ -798,27 +795,33 @@ class Conf extends CommonGLPI
         echo "<tr class='tab_bg_1'>";
         echo "<th colspan=4 >" . __('Agent cleanup') . "</th></tr>";
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Update agents not have contacted server since (in days)') . "</td>";
+        echo "<td>" . __('Update agents who have not contacted the server for (in days)') . "</td>";
         echo "<td width='20%'>";
-        Dropdown::showNumber("agents_old_days", [
-            'value' => $config['agents_old_days'] ?? 0,
-            'min'   => 1,
-            'max'   => 1000,
-            'toadd' => ['0' => __('Disabled')]
-        ]);
+        Dropdown::showNumber(
+            'stale_agents_delay',
+            [
+                'value' => $config['stale_agents_delay'] ?? 0,
+                'min'   => 1,
+                'max'   => 1000,
+                'toadd' => ['0' => __('Disabled')]
+            ]
+        );
         echo "</td>";
         echo "<td>" . __('Action') . "</td>";
         echo "<td width='20%'>";
         //action
         $rand = Dropdown::showFromArray(
-            'agents_action',
-            [self::getActions(self::AGENT_ACTION_CLEAN), self::getActions(self::AGENT_ACTION_STATUS)],
-            ['value' => $config['agents_action'] ?? self::AGENT_ACTION_CLEAN, 'on_change' => 'changestatus();']
+            'stale_agents_action',
+            self::getStaleAgentActions(),
+            [
+                'value' => $config['stale_agents_action'] ?? self::STALE_AGENT_ACTION_CLEAN,
+                'on_change' => 'changestatus();',
+            ]
         );
         //if action == action_status => show blocation else hide blocaction
         echo Html::scriptBlock("
          function changestatus() {
-            if ($('#dropdown_agents_action$rand').val() != 0) {
+            if ($('#dropdown_stale_agents_action$rand').val() != 0) {
                $('#blocaction1').show();
                $('#blocaction2').show();
             } else {
@@ -835,15 +838,18 @@ class Conf extends CommonGLPI
         echo "<tr class='tab_bg_1'><td colspan=2></td>";
         echo "<td>";
         echo "<span id='blocaction1' style='display:none'>";
-        echo __('Change the status', 'glpiinventory');
+        echo __('Change the status');
         echo "</span>";
         echo "</td>";
         echo "<td width='20%'>";
         echo "<span id='blocaction2' style='display:none'>";
-        State::dropdown(['name'   => 'agents_status',
-            'value'  => $config['agents_status'] ?? -1,
-            'entity' => $_SESSION['glpiactive_entity']
-        ]);
+        State::dropdown(
+            [
+                'name'   => 'stale_agents_status',
+                'value'  => $config['stale_agents_status'] ?? -1,
+                'entity' => $_SESSION['glpiactive_entity']
+            ]
+        );
         echo "</span>";
         echo "</td>";
         echo "</tr>";
