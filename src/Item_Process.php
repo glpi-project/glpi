@@ -99,7 +99,7 @@ class Item_Process extends CommonDBChild
         $sql_filters = self::convertFiltersValuesToSqlCriteria($filters);
 
         if (strlen($sort) == 0) {
-            $sort = "id";
+            $sort = "pid";
         }
         if (strlen($order) == 0) {
             $order = "ASC";
@@ -151,7 +151,7 @@ class Item_Process extends CommonDBChild
             'items_id' => $items_id,
             'filters' => Sanitizer::dbEscapeRecursive($filters),
             'columns' => [
-                'id'            => __("ID"),
+                'pid'           => __("PID"),
                 'cmd'           => __("Command"),
                 'cpuusage'      => __("CPU Usage"),
                 'memusage'      => __("Memory Usage"),
