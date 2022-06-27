@@ -8998,11 +8998,24 @@ abstract class CommonITILObject extends CommonDBTM
                     foreach ($existings as $existing) {
                         $found = false;
                         foreach ($actors as $actor) {
-                            if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
-                                continue;
+                            if (
+                                (
+                                    // "email" actor match
+                                    $actor['itemtype'] === User::class
+                                    && $actor['items_id'] == 0
+                                    && $actor['itemtype'] == $existing['itemtype']
+                                    && $actor['alternative_email'] == $existing['alternative_email']
+                                )
+                                || (
+                                    // other actor match
+                                    $actor['items_id'] != 0
+                                    && $actor['itemtype'] == $existing['itemtype']
+                                    && $actor['items_id'] == $existing['items_id']
+                                )
+                            ) {
+                                $found = true;
+                                break;
                             }
-                            $found = true;
-                            break;
                         }
                         if ($found === false) {
                             $input[sprintf('%s_deleted', $input_key)][] = $existing;
