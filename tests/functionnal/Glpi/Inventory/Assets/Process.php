@@ -94,6 +94,13 @@ class Process extends AbstractInventoryAsset
      */
     public function testPrepare($xml, $expected)
     {
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf([
+            'import_process' => 1,
+        ]))->isTrue();
+        $this->logout();
+
         $converter = new \Glpi\Inventory\Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
@@ -102,10 +109,6 @@ class Process extends AbstractInventoryAsset
         $asset = new \Glpi\Inventory\Asset\Process($computer, $json->content->processes);
         $asset->setExtraData((array)$json->content);
 
-        $conf = new \Glpi\Inventory\Conf();
-        $conf->saveConf([
-            'import_process' => 1,
-        ]);
         $this->boolean($asset->checkConf($conf))->isTrue();
 
         $result = $asset->prepare();
@@ -114,6 +117,13 @@ class Process extends AbstractInventoryAsset
 
     public function testHandle()
     {
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf([
+            'import_process' => 1,
+        ]))->isTrue();
+        $this->logout();
+
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
        //first, check there are no process linked to this computer
@@ -132,10 +142,6 @@ class Process extends AbstractInventoryAsset
         $asset = new \Glpi\Inventory\Asset\Process($computer, $json->content->processes);
         $asset->setExtraData((array)$json->content);
 
-        $conf = new \Glpi\Inventory\Conf();
-        $conf->saveConf([
-            'import_process' => 1,
-        ]);
         $this->boolean($asset->checkConf($conf))->isTrue();
 
         $result = $asset->prepare();
