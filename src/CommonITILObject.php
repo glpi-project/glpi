@@ -8084,10 +8084,7 @@ abstract class CommonITILObject extends CommonDBTM
                         || $actor['itemtype'] !== User::class
                     )
                 ) {
-                    trigger_error(
-                        sprintf('Invalid actor parameters (%s).', json_encode($actor)),
-                        E_USER_WARNING
-                    );
+                    // Empty values, probably provided by static::getDefaultValues()
                     continue;
                 }
 
