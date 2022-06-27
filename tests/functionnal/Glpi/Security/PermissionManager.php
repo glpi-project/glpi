@@ -37,7 +37,6 @@ use DbTestCase;
 
 class PermissionManager extends DbTestCase
 {
-
     public function testHaveRight()
     {
         $test_users_id = getItemByTypeName('User', TU_USER, true);
