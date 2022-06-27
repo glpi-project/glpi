@@ -329,7 +329,8 @@ class Agent extends CommonDBTM
             $input['tag'] = $metadata['tag'];
         }
 
-        if ($deviceid === 'foo' || !in_array($metadata['itemtype'], $CFG_GLPI['agent_types'])) {
+        $has_expected_agent_type = in_array($metadata['itemtype'], $CFG_GLPI['agent_types']);
+        if ($deviceid === 'foo' || (!$has_expected_agent_type && !$aid)) {
             $input += [
                 'items_id' => 0,
                 'id' => 0
@@ -342,6 +343,10 @@ class Agent extends CommonDBTM
         if ($aid) {
             $input['id'] = $aid;
             $this->update($input);
+            // Don't keep linked item unless having expected agent type
+            if (!$has_expected_agent_type) {
+                $this->fields['items_id'] = 0;
+            }
         } else {
             $input['items_id'] = 0;
             $aid = $this->add($input);
