@@ -7923,7 +7923,7 @@ abstract class CommonITILObject extends CommonDBTM
 
                 $get_unique_key = function (array $actor) use ($actors_id_input_key): string {
                     // Use alternative_email in value key for "email" actors
-                    return sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email']);
+                    return sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email'] ?? '');
                 };
 
                 if (array_key_exists($actors_id_input_key, $this->input)) {
@@ -8077,6 +8077,20 @@ abstract class CommonITILObject extends CommonDBTM
             $updated   = [];
 
             foreach ($actors as $actor) {
+                if (
+                    $actor['items_id'] === 0
+                    && (
+                        ($actor['itemtype'] === User::class && empty($actor['alternative_email'] ?? ''))
+                        || $actor['itemtype'] !== User::class
+                    )
+                ) {
+                    trigger_error(
+                        sprintf('Invalid actor parameters (%s).', json_encode($actor)),
+                        E_USER_WARNING
+                    );
+                    continue;
+                }
+
                 $found = false;
                 foreach ($existings as $existing) {
                     if (
@@ -8967,7 +8981,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $notif_key = sprintf('%s_notif', $input_key);
 
                     // Use alternative_email in value key for "email" actors
-                    $value_key = sprintf('_actors_%s', ($actor['items_id'] ?: $actor['alternative_email']));
+                    $value_key = sprintf('_actors_%s', $actor['items_id'] ?: $actor['alternative_email'] ?? '');
 
                     if (array_key_exists($value_key, $input[$input_key])) {
                         continue;
