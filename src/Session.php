@@ -885,7 +885,7 @@ class Session
         if (Session::getCurrentInterface() != "central") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            Html::displayRightError("The current profile does not use the standard interface");
         }
     }
 
@@ -902,7 +902,7 @@ class Session
         if (!$CFG_GLPI["use_public_faq"]) {
             self::checkValidSessionId();
             if (!self::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-                Html::displayRightError();
+                Html::displayRightError("Missing FAQ right");
             }
         }
     }
@@ -919,7 +919,7 @@ class Session
         if (Session::getCurrentInterface() != "helpdesk") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            Html::displayRightError("The current profile does not use the simplified interface");
         }
     }
 
@@ -934,10 +934,37 @@ class Session
         if (!isset($_SESSION["glpiname"])) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            Html::displayRightError("User has no valid session but seems to be logged in");
         }
     }
 
+    /**
+     * Get the name of the right.
+     *
+     * This only works for well-known rights.
+     * @param int $right The right
+     * @return string The right name
+     * @internal No backwards compatibility promise. Use in core only.
+     */
+    public static function getRightNameForError(int $right): string
+    {
+        // Well known rights
+        $rights = [
+            READ => 'READ',
+            UPDATE => 'UPDATE',
+            CREATE => 'CREATE',
+            DELETE => 'DELETE',
+            PURGE => 'PURGE',
+            ALLSTANDARDRIGHT => 'ALLSTANDARDRIGHT',
+            READNOTE => 'READNOTE',
+            UPDATENOTE => 'UPDATENOTE',
+            UNLOCK => 'UNLOCK',
+        ];
+        if (in_array($right, $rights, true)) {
+            return $rights[$right];
+        }
+        return "unknown right name";
+    }
 
     /**
      * Check if I have the right $right to module $module (conpare to session variable)
@@ -953,7 +980,8 @@ class Session
         if (!self::haveRight($module, $right)) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            $right_name = self::getRightNameForError($right);
+            Html::displayRightError("User is missing the $right ($right_name) right for $module");
         }
     }
 
@@ -970,7 +998,14 @@ class Session
         self::checkValidSessionId();
         if (!self::haveRightsOr($module, $rights)) {
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            $info = "User is missing all of the following rights: ";
+            foreach ($rights as $right) {
+                $right_name = self::getRightNameForError($right);
+                $info .= $right . "($right_name), ";
+            }
+            $info = substr($info, 0, -2);
+            $info .= " for $module";
+            Html::displayRightError($info);
         }
     }
 
@@ -1007,7 +1042,13 @@ class Session
         if (!$valid) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            $info = "User is missing all of the following rights: ";
+            foreach ($modules as $mod => $right) {
+                $right_name = self::getRightNameForError($right);
+                $info .= $right . "($right_name) for module $mod, ";
+            }
+            $info = substr($info, 0, -2);
+            Html::displayRightError($info);
         }
     }
 
@@ -1429,7 +1470,10 @@ class Session
             GLPI_USE_CSRF_CHECK
             && (!Session::validateCSRF($data))
         ) {
-           // Output JSON if requested by client
+            $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
+            $user_id = self::getLoginUserID() ?? 'Anonymous';
+            Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url");
+            // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
                 die(json_encode(["message" => __("The action you have requested is not allowed.")]));

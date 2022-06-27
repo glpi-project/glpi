@@ -2933,7 +2933,10 @@ class CommonDBTM extends CommonGLPI
             if (!$this->can($ID, $right, $input)) {
                // Gestion timeout session
                 Session::redirectIfNotLoggedIn();
-                Html::displayRightError();
+                $right_name = Session::getRightNameForError($right);
+                $itemtype = static::getType();
+                $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
+                Html::displayRightError($info);
             }
         }
     }
@@ -2978,7 +2981,10 @@ class CommonDBTM extends CommonGLPI
         if (!$this->canGlobal($right)) {
            // Gestion timeout session
             Session::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            $right_name = Session::getRightNameForError($right);
+            $itemtype = static::getType();
+            $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
+            Html::displayRightError($info);
         }
     }
 
