@@ -113,7 +113,7 @@ class Process extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no volume linked to this computer
+       //first, check there are no process linked to this computer
         $ipr = new \Item_Process();
         $this->boolean($ipr->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A process is already linked to computer!');
