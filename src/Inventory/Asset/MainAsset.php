@@ -652,13 +652,7 @@ abstract class MainAsset extends InventoryAsset
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
             $this->setNew();
         } else {
-            //reload the updated item anyway
             $this->item->getFromDB($items_id);
-            if ($this->is_discovery === true) {
-                //do not update from network discoveries
-                //prevents discoveries to remove all ports, IPs and so on found with network inventory
-                return;
-            }
         }
 
         if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
@@ -699,6 +693,12 @@ abstract class MainAsset extends InventoryAsset
             $_SESSION['glpiactiveentities']        = [$entities_id];
             $_SESSION['glpiactiveentities_string'] = $entities_id;
             $_SESSION['glpiactive_entity']         = $entities_id;
+        }
+
+        if ($this->is_discovery === true) {
+            //do not update from network discoveries
+            //prevents discoveries to remove all ports, IPs and so on found with network inventory
+            return;
         }
 
         //Ports are handled a different way on network equipments
