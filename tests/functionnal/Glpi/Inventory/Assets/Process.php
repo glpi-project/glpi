@@ -103,6 +103,9 @@ class Process extends AbstractInventoryAsset
         $asset->setExtraData((array)$json->content);
 
         $conf = new \Glpi\Inventory\Conf();
+        $conf->saveConf([
+            'import_process' => 1,
+        ]);
         $this->boolean($asset->checkConf($conf))->isTrue();
 
         $result = $asset->prepare();
@@ -130,6 +133,9 @@ class Process extends AbstractInventoryAsset
         $asset->setExtraData((array)$json->content);
 
         $conf = new \Glpi\Inventory\Conf();
+        $conf->saveConf([
+            'import_process' => 1,
+        ]);
         $this->boolean($asset->checkConf($conf))->isTrue();
 
         $result = $asset->prepare();
