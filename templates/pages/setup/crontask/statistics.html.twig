@@ -33,66 +33,64 @@
 
 <div class="d-flex justify-content-center">
    <div class="col-sm-8 col-md-6 col-xlg-4 col-12 mx-2 mw-50">
-      <table class="table table-striped">
-         <thead>
-            <tr><th colspan="2">{{ __('Statistics') }}</th></tr>
-         </thead>
-         <tbody>
-            <tr>
-               <td>{{ __('Run count') }}</td>
-               <td class="text-end">
-                  {{ _n('%s start', '%s starts', stats.runs.starts)|format(stats.runs.starts) }}
-                  <br>
-                  {{ _n('%s stop', '%s stops', stats.runs.stops)|format(stats.runs.stops) }}
-                  <br>
-                  {{ _n('%s error', '%s errors', stats.runs.errors)|format(stats.runs.errors) }}
-               </td>
-            </tr>
-            {% if stats.runs.stops > 0 %}
-               <tr>
-                  <td>{{ __('Start date') }}</td>
-                  <td class="text-end">{{ stats.datemin|formatted_datetime }}</td>
-               </tr>
-               <tr>
-                  <td>{{ __('Minimal time') }}</td>
-                  <td class="text-end">{{ _n('%s second', '%s seconds', stats.elapsedmin)|format(stats.elapsedmin) }}</td>
-               </tr>
-               <tr>
-                  <td>{{ __('Maximal time') }}</td>
-                  <td class="text-end">{{ _n('%s second', '%s seconds', stats.elapsedmax)|format(stats.elapsedmax) }}</td>
-               </tr>
-               <tr>
-                  <td>{{ __('Average time') }}</td>
-                  <td class="text-end fw-bold">{{ _n('%s second', '%s seconds', stats.elapsedavg)|format(stats.elapsedavg) }}</td>
-               </tr>
-               <tr>
-                  <td>{{ __('Total duration') }}</td>
-                  <td class="text-end">{{ _n('%s second', '%s seconds', stats.elapsedtot)|format(stats.elapsedtot) }}</td>
-               </tr>
-               {% if stats.voltot > 0 %}
-                  <tr>
-                     <td>{{ __('Minimal count') }}</td>
-                     <td class="text-end">{{ _n('%s item', '%s items', stats.volmin)|format(stats.volmin) }}</td>
-                  </tr>
-                  <tr>
-                     <td>{{ __('Maximal count') }}</td>
-                     <td class="text-end">{{ _n('%s item', '%s items', stats.volmax)|format(stats.volmax) }}</td>
-                  </tr>
-                  <tr>
-                     <td>{{ __('Average count') }}</td>
-                     <td class="text-end fw-bold">{{ _n('%s item', '%s items', stats.volavg)|format(stats.volavg) }}</td>
-                  </tr>
-                  <tr>
-                     <td>{{ __('Total count') }}</td>
-                     <td class="text-end">{{ _n('%s item', '%s items', stats.voltot)|format(stats.voltot) }}</td>
-                  </tr>
-                  <tr>
-                     <td>{{ __('Average speed') }}</td>
-                     <td class="text-end">{{ __('%s items/sec')|format(stats.speedavg) }}</td>
-                  </tr>
-               {% endif %}
+      <div class="row">
+         <h1>{{ __('Statistics') }}</h1>
+      </div>
+      <div class="list-group divide-y">
+         <div class="row list-group-item d-flex">
+            <div class="col">{{ __('Run count') }}</div>
+            <div class="col text-end">
+               <ul class="list-unstyled">
+                  <li>{{ _n('%s start', '%s starts', stats.runs.starts)|format(stats.runs.starts) }}</li>
+                  <li>{{ _n('%s stop', '%s stops', stats.runs.stops)|format(stats.runs.stops) }}</li>
+                  <li>{{ _n('%s error', '%s errors', stats.runs.errors)|format(stats.runs.errors) }}</li>
+               </ul>
+            </div>
+         </div>
+         {% if stats.runs.stops > 0 %}
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Start date') }}</div>
+               <div class="col text-end">{{ stats.datemin|formatted_datetime }}</div>
+            </div>
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Minimal time') }}</div>
+               <div class="col text-end">{{ _n('%s second', '%s seconds', stats.elapsedmin)|format(stats.elapsedmin) }}</div>
+            </div>
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Maximal time') }}</div>
+               <div class="col text-end">{{ _n('%s second', '%s seconds', stats.elapsedmax)|format(stats.elapsedmax) }}</div>
+            </div>
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Average time') }}</div>
+               <div class="col text-end fw-bold">{{ _n('%s second', '%s seconds', stats.elapsedavg)|format(stats.elapsedavg) }}</div>
+            </div>
+            <div class="row list-group-item d-flex">
+               <div class="col">{{ __('Total duration') }}</div>
+               <div class="col text-end">{{ _n('%s second', '%s seconds', stats.elapsedtot)|format(stats.elapsedtot) }}</div>
+            </div>
+            {% if stats.voltot > 0 %}
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Minimal count') }}</div>
+                  <div class="col text-end">{{ _n('%s item', '%s items', stats.volmin)|format(stats.volmin) }}</div>
+               </div>
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Maximal count') }}</div>
+                  <div class="col text-end">{{ _n('%s item', '%s items', stats.volmax)|format(stats.volmax) }}</div>
+               </div>
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Average count') }}</div>
+                  <div class="col text-end fw-bold">{{ _n('%s item', '%s items', stats.volavg)|format(stats.volavg) }}</div>
+               </div>
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Total count') }}</div>
+                  <div class="col text-end">{{ _n('%s item', '%s items', stats.voltot)|format(stats.voltot) }}</div>
+               </div>
+               <div class="row list-group-item d-flex">
+                  <div class="col">{{ __('Average speed') }}</div>
+                  <div class="col text-end">{{ __('%s items/sec')|format(stats.speedavg) }}</div>
+               </div>
             {% endif %}
-         </tbody>
-      </table>
+         {% endif %}
+      </div>
    </div>
 </div>
