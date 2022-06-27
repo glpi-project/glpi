@@ -164,7 +164,7 @@ class Item_Process extends CommonDBChild
                 'user' => $users,
             ],
             'formatters' => [
-                'cmd'           => 'longtext',
+                'cmd'           => 'maintext',
                 'cpuusage'      => 'progressmin',
                 'memusage'      => 'progressmin',
                 'started'       => 'datetime',
