@@ -708,7 +708,7 @@ class Agent extends CommonDBTM
                     $task->addVolume(1);
                     $cron_status = true;
                 }
-            } else if ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['agents_status'])) {
+            } else if ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['stale_agents_status'])) {
                 //change status of agents linked assets
                 foreach ($iterator as $data) {
                     $itemtype = $data['itemtype'];
