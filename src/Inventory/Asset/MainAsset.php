@@ -652,12 +652,13 @@ abstract class MainAsset extends InventoryAsset
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
             $this->setNew();
         } else {
+            //reload the updated item anyway
+            $this->item->getFromDB($items_id);
             if ($this->is_discovery === true) {
                 //do not update from network discoveries
                 //prevents discoveries to remove all ports, IPs and so on found with network inventory
                 return;
             }
-            $this->item->getFromDB($items_id);
         }
 
         if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
