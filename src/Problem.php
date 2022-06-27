@@ -320,6 +320,16 @@ class Problem extends CommonITILObject
     }
 
 
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->transformActorsInput($input);
+
+        $input = parent::prepareInputForUpdate($input);
+
+        return $input;
+    }
+
+
     public function post_addItem()
     {
         global $CFG_GLPI, $DB;

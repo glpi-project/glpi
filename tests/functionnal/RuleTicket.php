@@ -327,37 +327,33 @@ class RuleTicket extends DbTestCase
             ['tickets_id' => $tickets_id, 'type' => \CommonITILActor::ASSIGN]
         ))->isEqualTo(1);
 
-       // Remove assign self as default tech from session
-        $default_tech = $_SESSION['glpiset_default_tech'];
-        $_SESSION['glpiset_default_tech'] = false;
-
        // Check ticket that trigger rule on update
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
-            'name'    => 'some ticket',
-            'content' => 'test'
+            'name'             => 'some ticket',
+            'content'          => 'test',
+            '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
         ]);
+        unset($ticket_input['_users_id_assign']);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::INCOMING);
+        $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::ASSIGNED);
         $this->integer(countElementsInTable(
             \Ticket_User::getTable(),
             ['tickets_id' => $tickets_id, 'type' => \CommonITILActor::ASSIGN]
-        ))->isEqualTo(0);
+        ))->isEqualTo(1); // Assigned to TU_USER
 
         $this->boolean($ticket->update([
-            'id'      => $tickets_id,
-            'name'    => 'assign to tech (on update)',
-            'content' => 'test'
+            'id'               => $tickets_id,
+            'name'             => 'assign to tech (on update)',
+            'content'          => 'test',
+            '_users_id_assign' => getItemByTypeName('User', 'glpi', true), // rule should erase this value
         ]))->isTrue();
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
         $this->integer((int)$ticket->getField('status'))->isEqualTo(\Ticket::INCOMING);
         $this->integer(countElementsInTable(
             \Ticket_User::getTable(),
             ['tickets_id' => $tickets_id, 'type' => \CommonITILActor::ASSIGN]
-        ))->isEqualTo(1);
-
-       // Restore assign self as default tech in session
-        $_SESSION['glpiset_default_tech'] = $default_tech;
+        ))->isEqualTo(2); // Assigned to TU_USER + tech
     }
 
     public function testITILCategoryAssignFromRule()
@@ -2640,8 +2636,7 @@ class RuleTicket extends DbTestCase
             'name'        => 'Supplier 1',
             'entities_id' => 0,
         ]);
-
-        $this->dump($suppliers_id);
+        $this->integer($suppliers_id)->isGreaterThan(0);
 
         $location = new \Location();
         $locations_id = $location->add([

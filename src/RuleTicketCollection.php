@@ -127,30 +127,6 @@ class RuleTicketCollection extends RuleCollection
             }
         }
 
-        // append _actors values to awaited indexes by rule engine
-        if (isset($input['_actors']) && count($input['_actors'])) {
-            foreach (['requester', 'observer', 'assign'] as $actortype) {
-                if (isset($input['_actors'][$actortype]) && count($input['_actors'][$actortype])) {
-                    foreach ($input['_actors'][$actortype] as $actor) {
-                        $input_key = "_" .
-                                    getForeignKeyFieldForItemType($actor['itemtype']) .
-                                    "_" .
-                                    $actortype;
-
-                        if (!isset($input[$input_key])) {
-                            $input[$input_key] = [];
-                        }
-
-                        if (in_array($actor['items_id'], $input[$input_key])) {
-                            continue;
-                        }
-
-                        $input[$input_key][] = $actor['items_id'];
-                    }
-                }
-            }
-        }
-
         if (isset($input['itilcategories_id'])) {
             $input['itilcategories_id_cn'] = $input['itilcategories_id'];
         }

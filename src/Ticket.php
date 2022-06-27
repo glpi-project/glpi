@@ -992,6 +992,8 @@ class Ticket extends CommonITILObject
     {
         global $DB;
 
+        $input = $this->transformActorsInput($input);
+
        // Get ticket : need for comparison
         $this->getFromDB($input['id']);
 
@@ -1119,6 +1121,7 @@ class Ticket extends CommonITILObject
         foreach ($usertypes as $k => $t) {
            //handle new input
             if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
+                // FIXME Deprecate these keys in GLPI 10.1.
                 $field = $input['_itil_' . $t]['_type'] . 's_id';
                 if (
                     isset($input['_itil_' . $t][$field])
@@ -1129,50 +1132,36 @@ class Ticket extends CommonITILObject
                 }
             }
 
-           //handle existing actors: load all existing actors from ticket
-           //to make sure business rules will receive all information, and not just
-           //what have been entered in the html form.
-           //
-           //ref also this actor into $post_added to avoid the filling of $changes
-           //and triggering businness rules when not needed
-            $users = $this->getUsers($k);
-            if (count($users)) {
-                $field = 'users_id';
-                foreach ($users as $user) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($user[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
+            //handle existing actors: load all existing actors from ticket
+            //to make sure business rules will receive all information, and not just
+            //what have been entered in the html form.
+            //
+            //ref also this actor into $post_added to avoid the filling of $changes
+            //and triggering businness rules when not needed
+            $existing_actors = [
+                User::class     => $this->getUsers($k),
+                Group::class    => $this->getGroups($k),
+                Supplier::class => $this->getSuppliers($k),
+            ];
+            foreach ($existing_actors as $actor_itemtype => $actors) {
+                $field = getForeignKeyFieldForItemType($actor_itemtype);
+                $input_key = '_' . $field . '_' . $t;
+                foreach ($actors as $actor) {
+                    if (
+                        !isset($input[$input_key])
+                        || (is_array($input[$input_key]) && !in_array($actor[$field], $input[$input_key]))
+                        || (is_numeric($input[$input_key]) && $actor[$field] !== $input[$input_key])
+                    ) {
+                        if (
+                            !array_key_exists($input_key, $input)
+                            || (!is_array($input[$input_key]) && !is_numeric($input[$input_key]) && empty($input[$input_key]))
+                        ) {
+                            $input[$input_key] = [];
+                        } elseif (!is_array($input[$input_key])) {
+                            $input[$input_key] = [$input[$input_key]];
                         }
-                        $input['_' . $field . '_' . $t][]             = $user[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $user[$field];
-                    }
-                }
-            }
-
-            $groups = $this->getGroups($k);
-            if (count($groups)) {
-                $field = 'groups_id';
-                foreach ($groups as $group) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($group[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
-                        }
-                        $input['_' . $field . '_' . $t][]             = $group[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $group[$field];
-                    }
-                }
-            }
-
-            $suppliers = $this->getSuppliers($k);
-            if (count($suppliers)) {
-                $field = 'suppliers_id';
-                foreach ($suppliers as $supplier) {
-                    if (!isset($input['_' . $field . '_' . $t]) || !in_array($supplier[$field], $input['_' . $field . '_' . $t])) {
-                        if (!isset($input['_' . $field . '_' . $t])) {
-                            $post_added['_' . $field . '_' . $t] = '_' . $field . '_' . $t;
-                        }
-                        $input['_' . $field . '_' . $t][]             = $supplier[$field];
-                        $tocleanafterrules['_' . $field . '_' . $t][] = $supplier[$field];
+                        $input[$input_key][]             = $actor[$field];
+                        $tocleanafterrules[$input_key][] = $actor[$field];
                     }
                 }
             }
@@ -1244,30 +1233,21 @@ class Ticket extends CommonITILObject
         }
 
        // Clean actors fields added for rules
-        foreach ($tocleanafterrules as $key => $val) {
-            if ($input[$key] == $val) {
-                unset($input[$key]);
+        foreach ($tocleanafterrules as $key => $values_to_drop) {
+            if (!array_key_exists($key, $input) || !is_array($input[$key])) {
+                // Assign rules may remove input key or replace array by a single value.
+                // In such case, as values were completely redefined by rules, there is no need to filter them.
+                continue;
             }
-        }
 
-       // Manage fields from auto update or rules : map rule actions to standard additional ones
-        $usertypes  = ['assign', 'requester', 'observer'];
-        $actortypes = ['user','group','supplier'];
-        foreach ($usertypes as $t) {
-            foreach ($actortypes as $a) {
-                if (isset($input['_' . $a . 's_id_' . $t])) {
-                    switch ($a) {
-                        case 'user':
-                             $additionalfield           = '_additional_' . $t . 's';
-                             $input[$additionalfield][] = ['users_id' => $input['_' . $a . 's_id_' . $t]];
-                            break;
-
-                        default:
-                            $additionalfield           = '_additional_' . $a . 's_' . $t . 's';
-                            $input[$additionalfield][] = $input['_' . $a . 's_id_' . $t];
-                            break;
-                    }
+            $input[$key] = array_filter(
+                $input[$key],
+                function ($value) use ($values_to_drop) {
+                    return !in_array($value, $values_to_drop);
                 }
+            );
+            if (in_array($key, $post_added) && empty($input[$key])) {
+                unset($input[$key]);
             }
         }
 

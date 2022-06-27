@@ -347,8 +347,9 @@ abstract class CommonITILActor extends CommonDBRelation
     {
 
         // don't duplicate actors (search for existing before adding)
+        // actors with $fk_field=0 are "email" actors
         $fk_field = $this->getActorForeignKey();
-        if (isset($input[$fk_field])) {
+        if (isset($input[$fk_field]) && $input[$fk_field] > 0) {
             $current_type    = $input['type'] ?? 0;
             $actor_id        = $input[$fk_field];
             $existing_actors = $this->getActors($input[static::getItilObjectForeignKey()] ?? 0);
