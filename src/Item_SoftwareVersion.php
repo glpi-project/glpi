@@ -1135,7 +1135,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end .= "<th>" . SoftwareCategory::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Valid license') . "</th>";
             $header_end .= "<th>
-                <button class='btn btn-sm show_log_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
+                <button class='btn btn-sm show_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
                     <i class='fas fa-filter'></i>
                     <span class='d-none d-xl-block'>" . __('Filter') . "</span>
                 </button></th>";
@@ -1143,7 +1143,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo $header_begin . $header_top . $header_end;
 
             if ($is_filtered) {
-                echo "<tr class='log_history_filter_row'>
+                echo "<tr class='filter_row'>
                     <td>
                         <input type='hidden' name='filters[active]' value='1'>
                     </td>

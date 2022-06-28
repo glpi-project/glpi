@@ -559,7 +559,6 @@ class Inventory
                 case 'volume_groups': //not used
                 case 'logical_volumes': //not used
                 case 'ports': //not used
-                case 'processes': //not used
                 case 'slots': //not used
                 case 'versionclient': //not used
                 case 'versionprovider': //not provided see doInventory
@@ -630,6 +629,9 @@ class Inventory
                     break;
                 case 'virtualmachines':
                     $assettype = '\Glpi\Inventory\Asset\VirtualMachine';
+                    break;
+                case 'processes':
+                    $assettype = '\Glpi\Inventory\Asset\Process';
                     break;
                 case 'sensors':
                     $assettype = '\Glpi\Inventory\Asset\Sensor';

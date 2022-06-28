@@ -66,6 +66,7 @@ class Computer extends CommonDBTM
             Item_Devices::class,
             Infocom::class,
             Item_Disk::class,
+            Item_Process::class,
             Item_SoftwareVersion::class,
             Item_SoftwareLicense::class,
             Contract_Item::class,
@@ -107,6 +108,7 @@ class Computer extends CommonDBTM
          ->addStandardTab('Item_Line', $ong, $options)
          ->addStandardTab('Item_Disk', $ong, $options)
          ->addStandardTab('Item_SoftwareVersion', $ong, $options)
+         ->addStandardTab('Item_Process', $ong, $options)
          ->addStandardTab('Computer_Item', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab(Socket::class, $ong, $options)
@@ -308,6 +310,7 @@ class Computer extends CommonDBTM
                 Computer_Item::class,
                 Item_SoftwareLicense::class,
                 Item_SoftwareVersion::class,
+                Item_Process::class,
                 ComputerAntivirus::class,
                 ComputerVirtualMachine::class,
                 Item_Disk::class,

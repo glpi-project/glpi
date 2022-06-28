@@ -68,7 +68,7 @@ class Conf extends CommonGLPI
         'import_volume'                  => 1,
         'import_antivirus'               => 1,
         'import_registry'                => 1,
-        'import_process'                 => 1,
+        'import_process'                 => 0,
         'import_vm'                      => 1,
         'import_monitor_on_partial_sn'   => 0,
         'component_processor'            => 1,
@@ -309,6 +309,21 @@ class Conf extends CommonGLPI
             'name'      => 'import_software',
             'id'        => 'import_software',
             'checked'   => $config['import_software']
+        ]);
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>";
+        echo "<label for='import_process'>";
+        echo \Item_Process::getTypeName(Session::getPluralNumber());
+        echo "</label>";
+        echo "</td>";
+        echo "<td width='360'>";
+        Html::showCheckbox([
+            'name'      => 'import_process',
+            'id'        => 'import_process',
+            'checked'   => $config['import_process']
         ]);
         echo "</td>";
         echo "</tr>";
