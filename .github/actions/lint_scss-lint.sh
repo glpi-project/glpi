@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 echo "Check for coding standards violations"
 node_modules/.bin/stylelint --color css

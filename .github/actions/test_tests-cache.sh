@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 TMP_CACHE_DIR=$(mktemp -d -t glpi-cache-test-XXXXXXXXXX)
 

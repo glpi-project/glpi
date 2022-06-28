@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 ROOT_DIR=$(readlink -f "$(dirname $0)/../..")
 

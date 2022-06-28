@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 LOG_FILE="./tests/files/_log/migration.log"
 mkdir -p $(dirname "$LOG_FILE")

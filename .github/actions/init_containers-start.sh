@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 echo "Init app container home"
 mkdir -p $APP_CONTAINER_HOME
