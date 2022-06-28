@@ -1471,10 +1471,14 @@ class DBmysql {
 
       $structure = str_replace(
          [
+            " COLLATE utf8mb3_unicode_ci",
             " COLLATE utf8_unicode_ci",
+            " CHARACTER SET utf8mb3",
             " CHARACTER SET utf8",
             ', ',
          ], [
+            '',
+            '',
             '',
             '',
             ',',
