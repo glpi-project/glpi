@@ -265,6 +265,47 @@ class DisplayPreference extends CommonDBTM
         );
     }
 
+    /**
+     * Get the fixed columns for a given itemtype
+     * A fixed columns is :
+     * - Always displayed before the normal columns
+     * - Can't be moved
+     * - Must not be shown in the search option dropdown (can't be added to the list)
+     */
+    protected function getFixedColumns(string $itemtype): array
+    {
+        global $CFG_GLPI;
+
+        $fixed_columns = [];
+
+        // Get item for itemtype
+        $item = null;
+        if ($itemtype != AllAssets::getType()) {
+            $item = getItemForItemtype($itemtype);
+        }
+
+        // ID is fixed for CommonITILObjects
+        if ($item instanceof CommonITILObject) {
+            $fixed_columns[] = 2;
+        }
+
+        // Name is always fixed
+        $fixed_columns[] = 1;
+
+        // Entity may be fixed
+        if (
+            Session::isMultiEntitiesMode()
+            && (
+                isset($CFG_GLPI["union_search_type"][$itemtype])
+                || ($item && $item->maybeRecursive())
+                || count($_SESSION["glpiactiveentities"]) > 1
+            )
+        ) {
+            $fixed_columns[] = 80;
+        }
+
+        return $fixed_columns;
+    }
 
     /**
      * Print the search config form
@@ -276,22 +317,17 @@ class DisplayPreference extends CommonDBTM
      **/
     public function showFormPerso($target, $itemtype)
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $searchopt = Search::getCleanedOptions($itemtype);
         if (!is_array($searchopt)) {
             return false;
         }
 
-        $item = null;
-        if ($itemtype != AllAssets::getType()) {
-            $item = getItemForItemtype($itemtype);
-        }
-
         $IDuser = Session::getLoginUserID();
 
         echo "<div id='tabsbody' class='m-n2'>";
-       // Defined items
+        // Defined items
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
@@ -301,6 +337,9 @@ class DisplayPreference extends CommonDBTM
             'ORDER'  => 'rank'
         ]);
         $numrows = count($iterator);
+
+        // Get fixed columns
+        $fixed_columns = $this->getFixedColumns($itemtype);
 
         if ($numrows == 0) {
             Session::checkRight(self::$rightname, self::PERSONAL);
@@ -332,12 +371,12 @@ class DisplayPreference extends CommonDBTM
             foreach ($searchopt as $key => $val) {
                 if (!is_array($val)) {
                     $group = $val;
-                } else if (count($val) === 1) {
+                } elseif (count($val) === 1) {
                     $group = $val['name'];
-                } else if (
-                    $key != 1
-                       && !in_array($key, $already_added)
-                       && (!isset($val['nodisplay']) || !$val['nodisplay'])
+                } elseif (
+                    !in_array($key, $fixed_columns)
+                    && !in_array($key, $already_added)
+                    && (!isset($val['nodisplay']) || !$val['nodisplay'])
                 ) {
                     $values[$group][$key] = $val["name"];
                 }
@@ -349,22 +388,15 @@ class DisplayPreference extends CommonDBTM
             Html::closeForm();
             echo "</td></tr>\n";
 
-           // print first element
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . $searchopt[1]["name"] . "</td>";
-            echo "<td colspan='3'>&nbsp;</td>";
-            echo "</tr>";
+            foreach ($fixed_columns as $searchoption_index) {
+                if (!isset($searchopt[$searchoption_index])) {
+                    // Missing search option; do nothing
+                    continue;
+                }
 
-           // print entity
-            if (
-                Session::isMultiEntitiesMode()
-                && (isset($CFG_GLPI["union_search_type"][$itemtype])
-                 || ($item && $item->maybeRecursive())
-                 || (count($_SESSION["glpiactiveentities"]) > 1))
-                && isset($searchopt[80])
-            ) {
+                // Print fixed column
                 echo "<tr class='tab_bg_2'>";
-                echo "<td>" . $searchopt[80]["name"] . "</td>";
+                echo "<td>" . $searchopt[$searchoption_index]["name"] . "</td>";
                 echo "<td colspan='3'>&nbsp;</td>";
                 echo "</tr>";
             }
@@ -372,7 +404,7 @@ class DisplayPreference extends CommonDBTM
             $i = 0;
             if ($numrows) {
                 foreach ($iterator as $data) {
-                    if (($data["num"] != 1) && isset($searchopt[$data["num"]])) {
+                    if ((!in_array($data["num"], $fixed_columns)) && isset($searchopt[$data["num"]])) {
                         echo "<tr>";
                         echo "<td>";
                         echo $searchopt[$data["num"]]["name"] . "</td>";
@@ -431,7 +463,6 @@ class DisplayPreference extends CommonDBTM
         echo "</div>";
     }
 
-
     /**
      * Print the search config form
      *
@@ -442,7 +473,7 @@ class DisplayPreference extends CommonDBTM
      **/
     public function showFormGlobal($target, $itemtype)
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $searchopt = Search::getCleanedOptions($itemtype);
         if (!is_array($searchopt)) {
@@ -450,15 +481,10 @@ class DisplayPreference extends CommonDBTM
         }
         $IDuser = 0;
 
-        $item = null;
-        if ($itemtype != AllAssets::getType()) {
-            $item = getItemForItemtype($itemtype);
-        }
-
         $global_write = Session::haveRight(self::$rightname, self::GENERAL);
 
         echo "<div id='tabsbody' class='m-n2'>";
-       // Defined items
+        // Defined items
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
@@ -471,6 +497,9 @@ class DisplayPreference extends CommonDBTM
 
         echo "<table class='table table-striped card-table'>";
 
+        // Get fixed columns
+        $fixed_columns = $this->getFixedColumns($itemtype);
+
         if ($global_write) {
             $already_added = self::getForTypeUser($itemtype, $IDuser);
             echo "<tr><td colspan='4'>";
@@ -482,12 +511,12 @@ class DisplayPreference extends CommonDBTM
             foreach ($searchopt as $key => $val) {
                 if (!is_array($val)) {
                     $group = $val;
-                } else if (count($val) === 1) {
+                } elseif (count($val) === 1) {
                     $group = $val['name'];
-                } else if (
-                    $key != 1
-                       && !in_array($key, $already_added)
-                       && (!isset($val['nodisplay']) || !$val['nodisplay'])
+                } elseif (
+                    !in_array($key, $fixed_columns)
+                    && !in_array($key, $already_added)
+                    && (!isset($val['nodisplay']) || !$val['nodisplay'])
                 ) {
                     $values[$group][$key] = $val["name"];
                 }
@@ -500,26 +529,21 @@ class DisplayPreference extends CommonDBTM
             echo "</td></tr>";
         }
 
-       // print first element
-        echo "<tr>";
-        echo "<td>" . $searchopt[1]["name"];
+        foreach ($fixed_columns as $searchoption_index) {
+            if (!isset($searchopt[$searchoption_index])) {
+                // Missing search option; do nothing
+                continue;
+            }
 
-        if ($global_write) {
-            echo "</td><td colspan='3'>&nbsp;";
-        }
-        echo "</td></tr>";
+            // Print fixed column
+            echo "<tr class='tab_bg_2'>";
+            echo "<td>" . $searchopt[$searchoption_index]["name"] . "</td>";
 
-       // print entity
-        if (
-            Session::isMultiEntitiesMode()
-            && (isset($CFG_GLPI["union_search_type"][$itemtype])
-              || ($item && $item->maybeRecursive())
-              || (count($_SESSION["glpiactiveentities"]) > 1))
-            && isset($searchopt[80])
-        ) {
-            echo "<tr>";
-            echo "<td>" . $searchopt[80]["name"] . "</td>";
-            echo "<td colspan='3'>&nbsp;</td>";
+            // Some extra table cells are only shown if the user can edit the data
+            if ($global_write) {
+                echo "<td colspan='3'>&nbsp;</td>";
+            }
+
             echo "</tr>";
         }
 
@@ -528,7 +552,7 @@ class DisplayPreference extends CommonDBTM
         if ($numrows) {
             foreach ($iterator as $data) {
                 if (
-                    ($data["num"] != 1)
+                    (!in_array($data["num"], $fixed_columns))
                     && isset($searchopt[$data["num"]])
                 ) {
                     echo "<tr><td>";
