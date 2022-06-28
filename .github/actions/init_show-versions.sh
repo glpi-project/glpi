@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -u -x -o pipefail
+set -e -u -o pipefail
 
 docker-compose exec -T app php --version
 docker-compose exec -T app php -r 'echo(sprintf("PHP extensions: %s\n", implode(", ", get_loaded_extensions())));'

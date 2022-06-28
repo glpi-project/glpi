@@ -33,7 +33,7 @@
 # ---------------------------------------------------------------------
 #
 
-set -e -u -x -o pipefail
+set -e -u -o pipefail
 
 WORKING_DIR=$(readlink -f "$(dirname $0)")
 
@@ -52,6 +52,9 @@ TESTS_SUITES=(
 )
 
 # Extract named options
+ALL=false
+HELP=false
+BUILD=false
 while [[ $# -gt 0 ]]; do
   if [[ $1 == "--"* ]]; then
     ## Remove -- prefix, replace - by _ and uppercase all
@@ -138,6 +141,10 @@ if [[ ! -x "$(command -v docker)" || ! -x "$(command -v docker-compose)" ]]; the
 fi
 
 # Import variables from .env file this file exists
+APP_CONTAINER_HOME=""
+DB_IMAGE=""
+PHP_IMAGE=""
+UPDATE_FILES_ACL=false
 if [[ -f "$WORKING_DIR/.env" ]]; then
   source $WORKING_DIR/.env
 fi
@@ -161,6 +168,7 @@ export APPLICATION_ROOT
 export APP_CONTAINER_HOME
 export DB_IMAGE
 export PHP_IMAGE
+export UPDATE_FILES_ACL
 cd $WORKING_DIR # Ensure docker-compose will look for .env in current directory
 $APPLICATION_ROOT/.github/actions/init_containers-start.sh
 $APPLICATION_ROOT/.github/actions/init_show-versions.sh
@@ -169,10 +177,10 @@ $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 [[ -z "$BUILD" ]] || docker-compose exec -T app .github/actions/init_build.sh
 
 # Run tests
+LAST_EXIT_CODE=0
 for TEST_SUITE in "${TESTS_TO_RUN[@]}";
 do
   echo -e "\n\e[1;30;43m Running \"$TEST_SUITE\" test suite \e[0m"
-  LAST_EXIT_CODE=0
   case $TEST_SUITE in
     "lint")
       # Misc lint (licence headers and locales) is not executed here as their output is not configurable yet
