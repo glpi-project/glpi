@@ -2600,10 +2600,11 @@ class AuthLDAP extends CommonDBTM
 
                                     foreach ($iterator as $group) {
                                          $dn = $group['ldap_value'];
-                                         preg_match ('/(,dc=.*$)/',$dn,$dc);
-                                         $dn_prefix = substr($dn,0,strlen($dn)-strlen($dc[1]));
+                                         preg_match('/(,dc=.*$)/', $dn, $dc);
+                                         $dn_prefix = substr($dn,0,strlen($dn) - strlen($dc[1]));
                                          $groups[$dn_prefix . strtolower($dc[1])] = ["cn"          => $dn,
-                                                                "search_type" => "users"];
+                                             "search_type" => "users"
+                                         ];
                                     }
                                 }
                             } else {
@@ -2611,12 +2612,13 @@ class AuthLDAP extends CommonDBTM
                                     $ligne_extra = 0; $ligne_extra < $infos[$ligne][$extra_attribute]["count"];
                                     $ligne_extra++
                                 ) {
-                                    $dn= $infos[$ligne][$extra_attribute][$ligne_extra];
-                                    preg_match ('/(,dc=.*$)/',$dn,$dc);
-                                    $dn_prefix = substr($dn,0,strlen($dn)-strlen($dc[1]));
+                                    $dn = $infos[$ligne][$extra_attribute][$ligne_extra];
+                                    preg_match('/(,dc=.*$)/', $dn, $dc);
+                                    $dn_prefix = substr($dn, 0, strlen($dn) - strlen($dc[1]));
                                     $groups[$dn_prefix . strtolower($dc[1])]
-                                       = ["cn"   => self::getGroupCNByDn($ldap_connection,$dn),
-                                               "search_type" => "users"];
+                                       = ["cn"   => self::getGroupCNByDn($ldap_connection, $dn),
+                                           "search_type" => "users"
+                                    ];
                                 }
                             }
                         }
