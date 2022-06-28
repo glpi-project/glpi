@@ -93,6 +93,7 @@ include_once __DIR__ . '/DbTestCase.php';
 include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/FrontBaseClass.php';
+include_once __DIR__ . '/HLAPITestCase.php';
 include_once __DIR__ . '/InventoryTestCase.php';
 include_once __DIR__ . '/functionnal/CommonITILRecurrent.php';
 include_once __DIR__ . '/functionnal/Glpi/ContentTemplates/Parameters/AbstractParameters.php';

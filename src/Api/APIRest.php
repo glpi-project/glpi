@@ -96,7 +96,9 @@ class APIRest extends API
         //parse http request and find parts
         $this->request_uri  = $_SERVER['REQUEST_URI'];
         $this->verb         = $_SERVER['REQUEST_METHOD'];
-        $path_info          = (isset($_SERVER['PATH_INFO'])) ? str_replace("api/", "", trim($_SERVER['PATH_INFO'], '/')) : '';
+        $path_info          = (isset($_SERVER['PATH_INFO'])) ? str_replace("api/", "", $_SERVER['PATH_INFO']) : '';
+        $path_info          = str_replace('v1/', '', $path_info);
+        $path_info          = trim($path_info, '/');
         $this->url_elements = explode('/', $path_info);
 
         // retrieve requested resource
