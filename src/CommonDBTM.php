@@ -1183,6 +1183,13 @@ class CommonDBTM extends CommonGLPI
             $this->input = $saved;
 
             foreach ($saved as $name => $value) {
+                if (
+                    $this instanceof CommonITILObject
+                    && $name === 'status'
+                    && !CommonITILObject::isAllowedStatus($this->fields[$name], $value)
+                ) {
+                    continue;
+                }
                 if (isset($this->fields[$name])) {
                     $this->fields[$name] = $saved[$name];
                 }
