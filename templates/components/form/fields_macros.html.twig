@@ -430,9 +430,9 @@
          {% set url = options['url'] ?? null %}
          {% set options = options|filter((v, k) => k != 'url' and k != 'clearable') %}
          {% if url is not empty %}
-            <a href="{{ url }}" {{ call('Html::parseAttributes', [link_options]) }}>
+            <a href="{{ url }}" {{ call('Html::parseAttributes', [link_options])|raw }}>
          {% endif %}
-               <img src="{{ value|verbatim_value }}" {{ call('Html::parseAttributes', [options]) }} />
+               <img src="{{ value|verbatim_value }}" {{ call('Html::parseAttributes', [options])|raw }} />
          {% if url is not empty %}
             </a>
          {% endif %}

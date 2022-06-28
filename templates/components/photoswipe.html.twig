@@ -135,7 +135,7 @@
                      'full_width': true,
                      'mb': '',
                      'clearable': clearable,
-                     'class': 'pswp-trigger',
+                     'class': 'cursor-pointer pswp-trigger',
                      'alt': img['title']|default(''),
                      'itemprop': 'thumbnail'
                   },
@@ -158,7 +158,7 @@
       $(".pswp-img{{ rand }}").on('click', 'figure .pswp-trigger', function(event) {
          event.preventDefault();
          const options = {
-            index: $(this).index(),
+            index: $(this).closest('figure').index(),
             bgOpacity: 0.7,
             showHideOpacity: true,
             shareButtons: [
