@@ -807,7 +807,7 @@ class Conf extends CommonGLPI
             ]
         );
         echo "</td>";
-        echo "<td>" . __('Action') . "</td>";
+        echo "<td>" . _n('Action', 'Actions', 1) . "</td>";
         echo "<td width='20%'>";
         //action
         $rand = Dropdown::showFromArray(
