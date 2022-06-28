@@ -44,6 +44,7 @@ $inventory_request->handleHeaders();
 
 $handle = true;
 if (isset($_GET['refused'])) {
+    Session::checkRight("config", READ);
     $refused = new RefusedEquipment();
     if ($refused->getFromDB($_GET['refused']) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
         $contents = file_get_contents($inventory_file);
