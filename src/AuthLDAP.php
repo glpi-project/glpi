@@ -2603,8 +2603,7 @@ class AuthLDAP extends CommonDBTM
                                         preg_match ('/(,dc=.*$)/',$dn,$dc);
                                         $dn_prefix = substr($dn,0,strlen($dn)-strlen($dc[1]));
                                         $groups[$dn_prefix . strtolower($dc[1])] = ["cn"          => $dn,
-                                                               "search_type" => "users"]
-                                         ];
+                                                               "search_type" => "users"];
                                     }
                                 }
                             } else {
