@@ -6542,7 +6542,7 @@ abstract class CommonITILObject extends CommonDBTM
             'with_validations'  => true,
             'expose_private'    => false,
             'bypass_rights'     => false,
-            'sort_by_date_desc' => false,
+            'sort_by_date_desc' => $_SESSION['glpitimeline_order'] == CommonITILObject::TIMELINE_ORDER_REVERSE,
             'is_self_service'   => false,
         ];
 
