@@ -245,6 +245,47 @@ class Toolbox extends DbTestCase
          ->isIdenticalTo($expected);
     }
 
+
+    protected function isJSONProvider()
+    {
+        return [
+            [
+                '{"validJson":true}',
+                true
+            ], [
+                '{"invalidJson":true',
+                false
+            ], [
+                '"valid"',
+                true
+            ], [
+                'null',
+                true
+            ], [
+                1000,
+                true
+            ], [
+                [1, 2, 3],
+                false
+            ], [
+                (object) ['json' => true],
+                false
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider isJsonProvider
+     */
+    public function testIsJSON($json, $expected)
+    {
+        $this
+         ->variable(\Toolbox::isJSON($json, true))
+         ->isIdenticalTo($expected);
+    }
+
+
+
     public function testInvalidJsonDecode()
     {
         $invalid = '"Monitor":"6","Computer":"35"';
