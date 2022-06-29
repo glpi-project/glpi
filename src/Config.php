@@ -3740,11 +3740,26 @@ HTML;
         }
 
         if (array_key_exists('value', $this->oldvalues)) {
+            $newvalue = (string)$this->fields['value'];
+            $oldvalue = (string)$this->oldvalues['value'];
+
+            if ($newvalue === $oldvalue) {
+                return;
+            }
+
+            // avoid inserting truncated json in logs
+            if (strlen($newvalue) > 255 && Toolbox::isJSON($newvalue)) {
+                $newvalue = "{...}";
+            }
+            if (strlen($oldvalue) > 255 && Toolbox::isJSON($oldvalue)) {
+                $oldvalue = "{...}";
+            }
+
             $this->logConfigChange(
                 $this->fields['context'],
                 $this->fields['name'],
-                (string)$this->fields['value'],
-                (string)$this->oldvalues['value']
+                $newvalue,
+                $oldvalue
             );
         }
     }

@@ -2770,6 +2770,66 @@ class Toolbox
         return $json;
     }
 
+
+    /**
+     * **Fast** JSON detection of a given var
+     * From https://stackoverflow.com/a/45241792
+     *
+     * @param mixed the var to test
+     *
+     * @return bool
+     */
+    public static function isJSON($json): bool
+    {
+        // Numeric strings are always valid JSON.
+        if (is_numeric($json)) {
+            return true;
+        }
+
+        // A non-string value can never be a JSON string.
+        if (!is_string($json)) {
+            return false;
+        }
+
+        // Any non-numeric JSON string must be longer than 2 characters.
+        if (strlen($json) < 2) {
+            return false;
+        }
+
+        // "null" is valid JSON string.
+        if ('null' === $json) {
+            return true;
+        }
+
+        // "true" and "false" are valid JSON strings.
+        if ('true' === $json) {
+            return true;
+        }
+        if ('false' === $json) {
+            return false;
+        }
+
+        // Any other JSON string has to be wrapped in {}, [] or "".
+        if ('{' != $json[0] && '[' != $json[0] && '"' != $json[0]) {
+            return false;
+        }
+
+        // Verify that the trailing character matches the first character.
+        $last_char = $json[strlen($json) - 1];
+        if ('{' == $json[0] && '}' != $last_char) {
+            return false;
+        }
+        if ('[' == $json[0] && ']' != $last_char) {
+            return false;
+        }
+        if ('"' == $json[0] && '"' != $last_char) {
+            return false;
+        }
+
+        // See if the string contents are valid JSON.
+        return null !== json_decode($json);
+    }
+
     /**
      * Checks if a string starts with another one
      *
