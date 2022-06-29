@@ -135,7 +135,7 @@
                            {% set disabled = true %}
                         {% endif %}
 
-                        <input type="hidden" name="is_recursive" value="0" />
+                        {% if canedit %}<input type="hidden" name="is_recursive" value="0" />{% endif %}
                         <input class="form-check-input" type="checkbox" name="is_recursive" value="1"
                               {% if item.isRecursive() %}checked="checked"{% endif %}
                               {% if disabled %}disabled="disabled"{% endif %} />
