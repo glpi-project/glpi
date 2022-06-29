@@ -2418,7 +2418,11 @@ class AuthLDAP extends CommonDBTM
                       //depending on the type of search when groups are imported
                       //the DN may be in two separate fields
                     if (isset($group["ldap_group_dn"]) && !empty($group["ldap_group_dn"])) {
-                        $glpi_groups[$group["ldap_group_dn"]] = 1;
+                        $dn = $group['ldap_group_dn'];
+                        preg_match('/(,dc=.*$)/', $dn, $dc);
+                        $dn_prefix = substr($dn, 0, strlen($dn) - strlen($dc[1]));
+                        $normalizedDn = $dn_prefix . strtolower($dc[1]);
+                        $glpi_groups[$normalizedDn] = 1;
                     } else if (isset($group["ldap_value"]) && !empty($group["ldap_value"])) {
                         $glpi_groups[$group["ldap_value"]] = 1;
                     }
