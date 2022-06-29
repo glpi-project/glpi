@@ -4296,24 +4296,17 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'notificationtemplates_id' => '6',
                 'language' => '',
                 'subject' => '##ticket.action## ##ticket.entity##',
-                'content_text' => '##lang.ticket.authors##
-##lang.ticket.title##
-##lang.ticket.priority##
-##lang.ticket.status##
-##lang.ticket.attribution##
-##lang.ticket.creationdate##
-##lang.ticket.content##
-
-##FOREACHtickets####ticket.authors##
-##ticket.title##
-##ticket.priority##
-##ticket.status##
-##IFticket.assigntousers####ticket.assigntousers##
+                'content_text' => '##FOREACHtickets##
+##lang.ticket.authors##: ##ticket.authors##
+##lang.ticket.title##: ##ticket.title##
+##lang.ticket.priority##: ##ticket.priority##
+##lang.ticket.status##: ##ticket.status##
+##lang.ticket.attribution##: ##IFticket.assigntousers####ticket.assigntousers##
 ##ENDIFticket.assigntousers####IFticket.assigntogroups##
 ##ticket.assigntogroups## ##ENDIFticket.assigntogroups####IFticket.assigntosupplier##
 ##ticket.assigntosupplier## ##ENDIFticket.assigntosupplier##
-##ticket.creationdate##
-##ticket.content## ##ENDFOREACHtickets##',
+##lang.ticket.creationdate##: ##ticket.creationdate##
+##lang.ticket.content##: ##ticket.content## ##ENDFOREACHtickets##',
                 'content_html' => '&lt;table class="tab_cadre" border="1" cellspacing="2" cellpadding="3"&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
