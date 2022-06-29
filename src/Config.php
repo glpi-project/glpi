@@ -1098,8 +1098,10 @@ class Config extends CommonDBTM
                 if ($isurgency[$urgency] && $isimpact[$impact]) {
                     $bgcolor = $_SESSION["glpipriority_$pri"];
                     echo "<td class='center' bgcolor='$bgcolor'>";
-                    Ticket::dropdownPriority(['value' => $pri,
-                        'name'  => "_matrix_${urgency}_${impact}"
+                    Ticket::dropdownPriority([
+                        'value' => $pri,
+                        'name'  => "_matrix_${urgency}_${impact}",
+                        'enable_filtering' => false,
                     ]);
                     echo "</td>";
                 } else {
