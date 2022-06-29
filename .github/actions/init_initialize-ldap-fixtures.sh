@@ -1,8 +1,8 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 ROOT_DIR=$(readlink -f "$(dirname $0)/../..")
 
-echo "Initialize LDAP fixtures"
 for f in `ls $ROOT_DIR/tests/LDAP/ldif/*.ldif`; do
   # Delete all LDAP entries (in reverse ordre compared to creation)
   # but ignore errors as these entries may not exists.

@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 # Stable versions contains only 3 groups of digits separated by a dot,
 # i.e. no "dev", "alpha", "beta, "rc", ... keyword.
@@ -11,8 +12,9 @@ if [[ "$PHP_VERSION" =~ $STABLE_REGEX ]]; then
 fi
 
 # Install dependencies
+COMPOSER_ADD_OPTS=""
 if ! [[ "$PHP_VERSION" =~ $STABLE_REGEX ]]; then
-  COMPOSER_ADD_OPTS=--ignore-platform-reqs;
+  COMPOSER_ADD_OPTS="--ignore-platform-reqs";
 fi
 bin/console dependencies install --composer-options="$COMPOSER_ADD_OPTS --prefer-dist --no-progress"
 
