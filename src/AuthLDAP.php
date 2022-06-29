@@ -2601,7 +2601,7 @@ class AuthLDAP extends CommonDBTM
                                     foreach ($iterator as $group) {
                                          $dn = $group['ldap_value'];
                                          preg_match('/(,dc=.*$)/', $dn, $dc);
-                                         $dn_prefix = substr($dn,0,strlen($dn) - strlen($dc[1]));
+                                         $dn_prefix = substr($dn, 0, strlen($dn) - strlen($dc[1]));
                                          $groups[$dn_prefix . strtolower($dc[1])] = ["cn"          => $dn,
                                              "search_type" => "users"
                                          ];
@@ -2618,7 +2618,7 @@ class AuthLDAP extends CommonDBTM
                                     $groups[$dn_prefix . strtolower($dc[1])]
                                        = ["cn"   => self::getGroupCNByDn($ldap_connection, $dn),
                                            "search_type" => "users"
-                                    ];
+                                       ];
                                 }
                             }
                         }
