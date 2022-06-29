@@ -2730,7 +2730,11 @@ abstract class CommonITILObject extends CommonDBTM
                         if ($p['withmajor'] && $priority == 6) {
                             continue;
                         }
-                        unset($values[$priority]);
+
+                        // don't unset current value (to avoid selecting major priority on existing item)
+                        if ($priority != $p['value']) {
+                            unset($values[$priority]);
+                        }
                     }
                 }
             }
