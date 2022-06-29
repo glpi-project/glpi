@@ -342,10 +342,16 @@ class Agent extends CommonDBTM
         $input = Toolbox::addslashes_deep($input);
         if ($aid) {
             $input['id'] = $aid;
+            // We should not update itemtype in db if not an expected one
+            if (!$has_expected_agent_type) {
+                unset($input['itemtype']);
+            }
             $this->update($input);
             // Don't keep linked item unless having expected agent type
             if (!$has_expected_agent_type) {
                 $this->fields['items_id'] = 0;
+                // But always keep itemtype for class instantiation
+                $this->fields['itemtype'] = $metadata['itemtype'];
             }
         } else {
             $input['items_id'] = 0;
