@@ -57,7 +57,7 @@ class Lockedfield extends DbTestCase
         $this->boolean($lockedfield->isHandled($computer))->isTrue();
         $this->array($lockedfield->getLocks($computer->getType(), $cid))->isEmpty();
 
-       //update computer manually, to add a locked field
+        //update computer manually, to add a locked field
         $this->boolean(
             (bool)$computer->update(['id' => $cid, 'otherserial' => 'AZERTY'])
         )->isTrue();
@@ -65,7 +65,7 @@ class Lockedfield extends DbTestCase
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
 
-       //ensure new dynamic update does not override otherserial again
+        //ensure new dynamic update does not override otherserial again
         $this->boolean(
             (bool)$computer->update([
                 'id' => $cid,
@@ -78,7 +78,7 @@ class Lockedfield extends DbTestCase
         $this->variable($computer->fields['otherserial'])->isEqualTo('AZERTY');
         $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
 
-       //ensure new dynamic update do not set new lock on regular update
+        //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
             (bool)$computer->update([
                 'id' => $cid,
@@ -91,7 +91,7 @@ class Lockedfield extends DbTestCase
         $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
         $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
 
-       //ensure regular update do work on locked field
+        //ensure regular update do work on locked field
         $this->boolean(
             (bool)$computer->update(['id' => $cid, 'otherserial' => 'QWERTY'])
         )->isTrue();

@@ -91,7 +91,7 @@ abstract class MainAsset extends InventoryAsset
         $namespaced = explode('\\', static::class);
         $this->itemtype = array_pop($namespaced);
         $this->item = $item;
-       //store raw data for reference
+        //store raw data for reference
         $this->raw_data = $data;
     }
 
@@ -124,7 +124,7 @@ abstract class MainAsset extends InventoryAsset
 
             $val = new \stdClass();
 
-           //set update system
+            //set update system
             $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
             $val->last_inventory_update = $_SESSION["glpi_currenttime"];
 
@@ -186,7 +186,7 @@ abstract class MainAsset extends InventoryAsset
             $val->$key = $property;
         }
 
-       // * Type of the asset
+        // * Type of the asset
         if (isset($hardware)) {
             $types_id = $this->getTypesFieldName();
             if (
@@ -195,7 +195,7 @@ abstract class MainAsset extends InventoryAsset
                 && $hardware->vmsystem != 'Physical'
             ) {
                 $val->$types_id = $hardware->vmsystem;
-               // HACK FOR BSDJail, remove serial and UUID (because it's of host, not container)
+                // HACK FOR BSDJail, remove serial and UUID (because it's of host, not container)
                 if ($hardware->vmsystem == 'BSDJail') {
                     if (property_exists($val, 'serial')) {
                         $val->serial = '';
@@ -264,7 +264,7 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-       // * USERS
+        // * USERS
         $cnt = 0;
         if (isset($this->extra_data['users'])) {
             if (count($this->extra_data['users']) > 0) {
@@ -367,7 +367,7 @@ abstract class MainAsset extends InventoryAsset
 
         if (property_exists($bios, 'ssn')) {
             $val->serial = trim($bios->ssn);
-           // HP patch for serial begin with 'S'
+            // HP patch for serial begin with 'S'
             if (
                 property_exists($val, 'manufacturers_id')
                 && strstr($val->manufacturers_id, "ewlett")
@@ -449,7 +449,7 @@ abstract class MainAsset extends InventoryAsset
                     }
                 }
 
-               // Case of virtualmachines
+                // Case of virtualmachines
                 if (
                     !isset($input['mac'])
                      && !isset($input['ip'])
@@ -473,7 +473,7 @@ abstract class MainAsset extends InventoryAsset
 
         $input['itemtype'] = $this->item->getType();
 
-       // * entity rules
+        // * entity rules
         $input['entities_id'] = $this->entities_id;
 
         return $input;
