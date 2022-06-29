@@ -268,6 +268,14 @@ class Config extends DbTestCase
         $this->boolean(\Config::getLibraryDir(''))->isFalse();
         $this->boolean(\Config::getLibraryDir('abcde'))->isFalse();
 
+        $expected = realpath(__DIR__ . '/../../vendor/symfony/console');
+        if (is_dir($expected)) { // skip when system library is used
+            $this->string(\Config::getLibraryDir('Symfony\Component\Console\Application'))->isIdenticalTo($expected);
+
+            $mailer = new \Symfony\Component\Console\Application();
+            $this->string(\Config::getLibraryDir($mailer))->isIdenticalTo($expected);
+        }
+
         $expected = realpath(__DIR__ . '/../');
         $this->string(\Config::getLibraryDir('getItemByTypeName'))->isIdenticalTo($expected);
     }
