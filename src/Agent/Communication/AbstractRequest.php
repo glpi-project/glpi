@@ -152,7 +152,7 @@ abstract class AbstractRequest
     private function guessMode($contents): void
     {
         // In the case handleContentType() didn't set mode, just check $contents first char
-        if ($contents[0] === '{') {
+        if (\Toolbox::isJSON($contents)) {
             $this->setMode(self::JSON_MODE);
         } else {
             //defaults to XML; whose validity is checked later.
