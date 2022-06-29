@@ -4296,15 +4296,24 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'notificationtemplates_id' => '6',
                 'language' => '',
                 'subject' => '##ticket.action## ##ticket.entity##',
-                'content_text' => '##lang.ticket.entity## : ##ticket.entity##
+                'content_text' => '##lang.ticket.authors##
+##lang.ticket.title##
+##lang.ticket.priority##
+##lang.ticket.status##
+##lang.ticket.attribution##
+##lang.ticket.creationdate##
+##lang.ticket.content##
 
-##FOREACHtickets##
-
-##lang.ticket.title## : ##ticket.title##
- ##lang.ticket.status## : ##ticket.status##
-
- ##ticket.url##
- ##ENDFOREACHtickets##',
+##FOREACHtickets####ticket.authors##
+##ticket.title##
+##ticket.priority##
+##ticket.status##
+##IFticket.assigntousers####ticket.assigntousers##
+##ENDIFticket.assigntousers####IFticket.assigntogroups##
+##ticket.assigntogroups## ##ENDIFticket.assigntogroups####IFticket.assigntosupplier##
+##ticket.assigntosupplier## ##ENDIFticket.assigntosupplier##
+##ticket.creationdate##
+##ticket.content## ##ENDFOREACHtickets##',
                 'content_html' => '&lt;table class="tab_cadre" border="1" cellspacing="2" cellpadding="3"&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
@@ -4316,17 +4325,15 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 &lt;td style="text-align: left;" width="auto" bgcolor="#cccccc"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##lang.ticket.creationdate##&lt;/span&gt;&lt;/td&gt;
 &lt;td style="text-align: left;" width="auto" bgcolor="#cccccc"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##lang.ticket.content##&lt;/span&gt;&lt;/td&gt;
 &lt;/tr&gt;
-##FOREACHtickets##
 &lt;tr&gt;
-&lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##ticket.authors##&lt;/span&gt;&lt;/td&gt;
+&lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##FOREACHtickets####ticket.authors##&lt;/span&gt;&lt;/td&gt;
 &lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;&lt;a href="##ticket.url##"&gt;##ticket.title##&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
 &lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##ticket.priority##&lt;/span&gt;&lt;/td&gt;
 &lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##ticket.status##&lt;/span&gt;&lt;/td&gt;
 &lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##IFticket.assigntousers####ticket.assigntousers##&lt;br /&gt;##ENDIFticket.assigntousers####IFticket.assigntogroups##&lt;br /&gt;##ticket.assigntogroups## ##ENDIFticket.assigntogroups####IFticket.assigntosupplier##&lt;br /&gt;##ticket.assigntosupplier## ##ENDIFticket.assigntosupplier##&lt;/span&gt;&lt;/td&gt;
 &lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##ticket.creationdate##&lt;/span&gt;&lt;/td&gt;
-&lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##ticket.content##&lt;/span&gt;&lt;/td&gt;
+&lt;td width="auto"&gt;&lt;span style="font-size: 11px; text-align: left;"&gt;##ticket.content##&lt;/span&gt;##ENDFOREACHtickets##&lt;/td&gt;
 &lt;/tr&gt;
-##ENDFOREACHtickets##
 &lt;/tbody&gt;
 &lt;/table&gt;',
             ], [
