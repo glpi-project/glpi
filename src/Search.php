@@ -3032,6 +3032,8 @@ JAVASCRIPT;
         }
         echo "</div>";
         echo "</div>";
+        echo "</div>";
+        echo "</div>";
     }
 
     /**
