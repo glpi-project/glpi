@@ -33,16 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
+
 $migration->addPostQuery(
     $DB->buildUpdate(
         Config::getTable(),
         [
-            'value' => MAIL_SMTPS
+            'value' => 2, // MAIL_SMTPS
         ],
         [
             'context' => 'core',
             'name' => 'smtp_mode',
-            'value' => 3 // old MAIL_SMTP+SSLTLS
+            'value' => 3, // old MAIL_SMTP+SSLTLS
         ]
     )
 );
