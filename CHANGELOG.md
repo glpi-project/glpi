@@ -39,6 +39,7 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
+- Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
 - Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
