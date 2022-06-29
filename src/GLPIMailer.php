@@ -60,7 +60,7 @@ class GLPIMailer
     {
         global $CFG_GLPI;
 
-        $this->transport = Transport::fromDsn($this->buildDsn());
+        $this->transport = Transport::fromDsn($this->buildDsn(true));
 
         if (method_exists($this->transport, 'getStream')) {
             $stream = $this->transport->getStream();
@@ -72,7 +72,7 @@ class GLPIMailer
             ->from($CFG_GLPI['smtp_sender'] ?? 'glpi@localhost');
     }
 
-    public function buildDsn(): string
+    final public function buildDsn(bool $with_password): string
     {
         global $CFG_GLPI;
 
@@ -85,7 +85,7 @@ class GLPIMailer
                 ($CFG_GLPI['smtp_username'] != '' ? sprintf(
                     '%s:%s@',
                     $CFG_GLPI['smtp_username'],
-                    (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd'])
+                    $with_password ? (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']) : '********'
                 ) : ''),
                 $CFG_GLPI['smtp_host'],
                 $CFG_GLPI['smtp_port']
