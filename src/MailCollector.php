@@ -1954,6 +1954,8 @@ class MailCollector extends CommonDBTM
                 break;
 
             case MAIL_SMTPS:
+            case MAIL_SMTPSSL:
+            case MAIL_SMTPTLS:
                 $msg .= 'SMTPS';
                 break;
         }

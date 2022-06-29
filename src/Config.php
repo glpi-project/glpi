@@ -178,6 +178,10 @@ class Config extends CommonDBTM
             $input['allow_search_global'] = 0;
         }
 
+        if (array_key_exists('smtp_mode', $input) && $input['smtp_mode'] === MAIL_SMTPTLS) {
+            $input['smtp_mode'] = MAIL_SMTPS;
+            Toolbox::deprecated('Usage of "MAIL_SMTPTLS" SMTP mode is deprecated. Switch to "MAIL_SMTPS" mode.');
+        }
         if (isset($input["smtp_passwd"]) && empty($input["smtp_passwd"])) {
             unset($input["smtp_passwd"]);
         }
