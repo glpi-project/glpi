@@ -474,7 +474,7 @@ class RuleImportAsset extends Rule
         ) {
             $itemtypeselected[] = $input['itemtype'];
         } else {
-            foreach ($CFG_GLPI["state_types"] as $itemtype) {
+            foreach ($CFG_GLPI["asset_types"] as $itemtype) {
                 if (
                     class_exists($itemtype)
                     && $itemtype != 'SoftwareLicense'
