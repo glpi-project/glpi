@@ -42,6 +42,7 @@ use CommonDBTM;
 use Dropdown;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
+use Lockedfield;
 use RefusedEquipment;
 use RuleImportAssetCollection;
 use RuleImportEntityCollection;
@@ -141,6 +142,14 @@ abstract class MainAsset extends InventoryAsset
                 $this->postPrepare($val);
             }
 
+            //locked fields
+            $lockedfield = new Lockedfield();
+            $locks = $lockedfield->getLocks($this->item->getType(), 0);
+            foreach ($locks as $lock) {
+                if (property_exists($val, $lock)) {
+                    unset($val->$lock);
+                }
+            }
             $this->data[] = $val;
         }
 

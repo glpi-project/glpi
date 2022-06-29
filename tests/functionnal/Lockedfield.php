@@ -189,7 +189,6 @@ class Lockedfield extends DbTestCase
         $this->boolean($lockedfield->isHandled($computer))->isTrue();
         $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
 
-
         //ensure new dynamic update does not override otherserial again
         $this->boolean(
             (bool)$computer->update([
@@ -222,5 +221,85 @@ class Lockedfield extends DbTestCase
         )->isTrue();
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['otherserial'])->isEqualTo('QWERTY');
+    }
+
+    public function testNoRelation()
+    {
+        global $DB;
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>glpixps</NAME>
+      <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+    </HARDWARE>
+    <BIOS>
+      <MSN>640HP72</MSN>
+      <SSN>000</SSN>
+      <SMANUFACTURER>Da Manuf</SMANUFACTURER>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>";
+
+        $existing_manufacturers = countElementsInTable(\Manufacturer::getTable());
+        $lockedfield = new \Lockedfield();
+
+        //add a global lock on manufacturers_id field
+        $this->integer(
+            $lockedfield->add([
+                'item' => 'Computer - manufacturers_id'
+            ])
+        )->isGreaterThan(0);
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check matchedlogs
+        $criteria = [
+            'FROM' => \RuleMatchedLog::getTable(),
+            'LEFT JOIN' => [
+                \Rule::getTable() => [
+                    'ON' => [
+                        \RuleMatchedLog::getTable() => 'rules_id',
+                        \Rule::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => []
+        ];
+        $iterator = $DB->request($criteria);
+        $this->string($iterator->current()['name'])->isIdenticalTo('Computer import (by serial + uuid)');
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['manufacturers_id'])->isEqualTo(0);
+
+        //ensure no new manufacturer has been added
+        $this->integer(countElementsInTable(\Manufacturer::getTable()))->isIdenticalTo($existing_manufacturers);
     }
 }
