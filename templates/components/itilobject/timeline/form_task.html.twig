@@ -196,6 +196,21 @@
                         }
                      ) }}
 
+                     {% set task_date_lbl %}
+                        <i class="fas fa-calendar fa-fw me-1"
+                           title="{{ __('Date') }}"></i>
+                     {% endset %}
+                     {{ fields.datetimeField(
+                        'date',
+                        subitem.fields['date'],
+                        task_date_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'rand': rand,
+                        }
+                     ) }}
+
                      {# Category #}
                      {% set task_category_lbl %}
                         <i class="fas fa-tag fa-fw me-1" title="{{ _n('Category', 'Categories', 1) }}"></i>
