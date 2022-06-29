@@ -117,12 +117,8 @@ class GLPIMailer
         return $this->email;
     }
 
-    public function send(Email $email = null): bool
+    public function send(): bool
     {
-        if ($email !== null) {
-            $this->email = $email;
-        }
-
         try {
             $this->email->ensureValidity();
             $this->mailer->send($this->email);

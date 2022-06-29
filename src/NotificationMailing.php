@@ -109,7 +109,7 @@ class NotificationMailing implements NotificationInterface
         $mail->subject("[GLPI] " . __('Mail test'));
         $mail->text($text);
 
-        if (!$mmail->send($mail)) {
+        if (!$mmail->send()) {
             Session::addMessageAfterRedirect(
                 __('Failed to send test email to administrator'),
                 false,
