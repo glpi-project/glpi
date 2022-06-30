@@ -64,6 +64,9 @@
 
 <form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
    <input type="hidden" name="entities_id" value="{{ entity_id }}" />
+   {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
+      <input type="hidden" name="_in_modal" value="1"/>
+   {% endif %}
 {% endif %}
    <div id="mainformtable">
       {% set template_name = item.fields['template_name']|verbatim_value %}
