@@ -55,7 +55,7 @@ class GLPIMailer
 
     /**
      * Email instance.
-     * @var TransportInterface
+     * @var Email
      */
     private Email $email;
 
