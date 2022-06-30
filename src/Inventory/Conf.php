@@ -133,12 +133,21 @@ class Conf extends CommonGLPI
         'import_printer'                 => 1,
         'import_peripheral'              => 1,
         'stale_agents_delay'             => 0,
-        'stale_agents_action'            => 0,
+        'stale_agents_clean'             => 1,
         'stale_agents_status'            => 0,
+        'stale_agents_uninstall'         => 0,
     ];
 
+    /**
+     * @var int
+     * @deprecated 10.1.0 No effect
+     */
     public const STALE_AGENT_ACTION_CLEAN = 0;
 
+    /**
+     * @var int
+     * @deprecated 10.1.0 No effect
+     */
     public const STALE_AGENT_ACTION_STATUS = 1;
 
     /**
@@ -274,7 +283,8 @@ class Conf extends CommonGLPI
     /**
      * Get possible actions for stale agents
      *
-     * @return string
+     * @return array
+     * @deprecated 10.1.0 No effect
      */
     public static function getStaleAgentActions(): array
     {
@@ -822,51 +832,40 @@ class Conf extends CommonGLPI
             ]
         );
         echo "</td>";
-        echo "<td>" . _n('Action', 'Actions', 1) . "</td>";
+        echo "<td>" . __('Clean agent') . "</td>";
         echo "<td width='20%'>";
         //action
-        $rand = Dropdown::showFromArray(
-            'stale_agents_action',
-            self::getStaleAgentActions(),
-            [
-                'value' => $config['stale_agents_action'] ?? self::STALE_AGENT_ACTION_CLEAN,
-                'on_change' => 'changestatus();',
-            ]
-        );
-        //if action == action_status => show blocation else hide blocaction
-        echo Html::scriptBlock("
-         function changestatus() {
-            if ($('#dropdown_stale_agents_action$rand').val() != 0) {
-               $('#blocaction1').show();
-               $('#blocaction2').show();
-            } else {
-               $('#blocaction1').hide();
-               $('#blocaction2').hide();
-            }
-         }
-         changestatus();
-
-      ");
+        Dropdown::showYesNo('stale_agents_clean', $config['stale_agents_clean'] ?? 0);
         echo "</td>";
         echo "</tr>";
         //blocaction with status
-        echo "<tr class='tab_bg_1'><td colspan=2></td>";
+        echo "<tr class='tab_bg_1'>";
         echo "<td>";
-        echo "<span id='blocaction1' style='display:none'>";
         echo __('Change the status');
-        echo "</span>";
         echo "</td>";
         echo "<td width='20%'>";
-        echo "<span id='blocaction2' style='display:none'>";
         State::dropdown(
             [
                 'name'   => 'stale_agents_status',
                 'value'  => $config['stale_agents_status'] ?? -1,
-                'entity' => $_SESSION['glpiactive_entity']
+                'entity' => $_SESSION['glpiactive_entity'],
+                'toadd'  => [-1 => __('No change')]
             ]
         );
-        echo "</span>";
         echo "</td>";
+        if (\Plugin::isPluginActive('uninstall') && \PluginUninstallModel::canView()) {
+            echo "<td>" . __('Apply uninstall profile') . "</td>";
+            echo "<td width='20%'>";
+            \PluginUninstallModel::dropdown([
+                'name'   => 'stale_agents_uninstall',
+                'value'  => $config['stale_agents_uninstall'] ?? 0,
+                'entity' => $_SESSION['glpiactive_entity'],
+                'condition' => [
+                    'types_id' => \PluginUninstallModel::TYPE_MODEL_UNINSTALL
+                ]
+            ]);
+            echo "</td>";
+        }
         echo "</tr>";
 
         if ($canedit) {

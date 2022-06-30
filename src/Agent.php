@@ -682,12 +682,79 @@ class Agent extends CommonDBTM
     }
 
     /**
+     * Clean and do other defined actions on an agent or related item
+     * @param Agent $agent The agent to clean
+     * @param array $config Array containing the agent clean config
+     * @return bool True if successful
+     */
+    private static function cleanAgent(Agent $agent, array $config): bool
+    {
+        // Actions that will need the associated item
+        static $item_actions = ['change_status', 'apply_uninstall_profile'];
+        // Actions to apply to the agent or item
+        $actions_to_apply = [];
+        if (isset($config['stale_agents_status']) && $config['stale_agents_status']) {
+            $actions_to_apply[] = 'change_status';
+        }
+        if (isset($config['stale_agents_uninstall']) && $config['stale_agents_uninstall']) {
+            $actions_to_apply[] = 'apply_uninstall_profile';
+        }
+        if  (isset($config['stale_agents_clean']) && $config['stale_agents_clean']) {
+            $actions_to_apply[] = 'clean';
+        }
+        $item = null;
+
+        // If an action to apply needs the item
+        if (count(array_intersect($actions_to_apply, $item_actions)) > 0) {
+            $orphan = false;
+            try {
+                $item = new $agent->fields['itemtype'];
+                if ($item instanceof CommonDBTM) {
+                    if (!$item->getFromDB($agent->fields['items_id'])) {
+                        $orphan = true;
+                    }
+                } else {
+                    $orphan = true;
+                }
+            } catch (\Exception $e) {
+                $orphan = true;
+            }
+            if ($orphan) {
+                $item = null;
+            }
+        }
+
+        // Run all actions, with the clean action running last
+        if ($item !== null && in_array('change_status', $actions_to_apply, true)) {
+            $result = $item->update([
+                'id' => $item->fields['id'],
+                'states_id' => $config['agents_status']
+            ]);
+            if (!$result) {
+                return false;
+            }
+        }
+        if ($item !== null && in_array('apply_uninstall_profile', $actions_to_apply, true)) {
+            \PluginUninstallUninstall::uninstall(get_class($item), $config['stale_agents_status'], [
+                get_class($item) => [$item->fields['id'] => true]
+            ], '');
+        }
+        if (in_array('clean', $actions_to_apply, true)) {
+            $result = $agent->delete(['id' => $agent->fields['id']]);
+            if (!$result) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Cron task: clean and do other defined actions when agent not have been contacted
      * the server since xx days
      *
      * @global object $DB
      * @param object $task
-     * @return boolean true if successful, otherwise false
+     * @return boolean true if at least partially successful, otherwise false
      * @copyright 2010-2022 by the FusionInventory Development Team.
      */
     public static function cronCleanoldagents($task = null)
@@ -702,6 +769,7 @@ class Agent extends CommonDBTM
         }
 
         $iterator = $DB->request([
+            'SELECT' => ['id'],
             'FROM' => self::getTable(),
             'WHERE' => [
                 'last_contact' => ['<', new QueryExpression("date_add(now(), interval -" . $retention_time . " day)")]
@@ -710,30 +778,13 @@ class Agent extends CommonDBTM
 
         $cron_status = false;
         if (count($iterator)) {
-            $action = (int)($config['stale_agents_action'] ?? Conf::STALE_AGENT_ACTION_CLEAN);
-            if ($action === Conf::STALE_AGENT_ACTION_CLEAN) {
-                //delete agents
-                $agent = new self();
-                foreach ($iterator as $data) {
-                    $agent->delete($data);
+            $agent = new self();
+            foreach ($iterator as $data) {
+                $agent->getFromDB($data['id']);
+                $result = self::cleanAgent($agent, $config);
+                if ($result) {
                     $task->addVolume(1);
                     $cron_status = true;
-                }
-            } else if ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['stale_agents_status'])) {
-                //change status of agents linked assets
-                foreach ($iterator as $data) {
-                    $itemtype = $data['itemtype'];
-                    if (is_subclass_of($itemtype, CommonDBTM::class)) {
-                        $item = new $itemtype();
-                        if ($item->getFromDB($data['items_id'])) {
-                            $item->update([
-                                'id' => $data['items_id'],
-                                'states_id' => $config['agents_status']
-                            ]);
-                            $task->addVolume(1);
-                            $cron_status = true;
-                        }
-                    }
                 }
             }
         }
