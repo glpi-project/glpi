@@ -39,6 +39,7 @@ use Egulias\EmailValidator\Validation\RFCValidation;
 use Glpi\Application\ErrorHandler;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
 /** GLPI Mailer class
@@ -237,5 +238,218 @@ class GLPIMailer
         $text = preg_replace('/\n/', "\r\n", $text);
 
         return $text;
+    }
+
+
+    public function __get(string $property)
+    {
+        $value = null;
+        $deprecation = true;
+        switch ($property) {
+            case 'Subject':
+                $value = $this->email->getSubject() ?? '';
+                break;
+            case 'Body':
+                $value = $this->email->getHtmlBody() ?? $this->email->getTextBody() ?? '';
+                break;
+            case 'AltBody':
+                $value = $this->email->getTextBody() ?? '';
+                break;
+            case 'MessageID':
+                $value = $this->email->getHeaders()->get('Message-Id')->getBodyAsString() ?? '';
+                break;
+            case 'From':
+                $value = $this->email->getHeaders()->get('From')->getAddresses()[0]->getAddress() ?? '';
+                break;
+            case 'FromName':
+                $value = $this->email->getHeaders()->get('From')->getAddresses()[0]->getName() ?? '';
+                break;
+            case 'Sender':
+                $value = $this->email->getHeaders()->get('Sender')->getBodyAsString() ?? '';
+                break;
+            case 'MessageDate':
+                $value = $this->email->getHeaders()->get('Date')->getBodyAsString() ?? '';
+                break;
+            case 'ErrorInfo':
+                $value = $this->error ?? '';
+                break;
+            default:
+                trigger_error(
+                    sprintf('Undefined property %s::$%s', __CLASS__, $property),
+                    E_USER_WARNING
+                );
+                $deprecation = false;
+                break;
+        }
+
+        if ($deprecation) {
+            Toolbox::deprecated();
+        }
+
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        $deprecation = true;
+        switch ($property) {
+            case 'Subject':
+                $this->email->subject((string)$value);
+                break;
+            case 'Body':
+                $this->email->html((string)$value);
+                break;
+            case 'AltBody':
+                $this->email->text((string)$value);
+                break;
+            case 'MessageID':
+                $this->email->getHeaders()->remove('Message-Id');
+                $this->email->getHeaders()->addHeader('Message-Id', preg_replace('/^<(.*)>$/', '$1', (string)$value));
+                break;
+            case 'From':
+                $this->email->from((string)$value);
+                break;
+            case 'FromName':
+                $header = $this->email->getHeaders()->get('From');
+                if ($header === null || count($header->getAddresses()) === 0) {
+                    trigger_error(
+                        sprintf('Unable to define "FromName" property when "From" property is not defined.'),
+                        E_USER_WARNING
+                    );
+                } else {
+                    $this->email->from(new Address($header->getAddresses()[0]->getAddress(), (string)$value));
+                }
+                break;
+            case 'Sender':
+                $this->email->sender((string)$value);
+                break;
+            case 'MessageDate':
+                $this->email->date(new DateTime((string) $value));
+                break;
+            case 'ErrorInfo':
+                $this->error = (string)$value;
+                break;
+            default:
+                trigger_error(
+                    sprintf('Undefined property %s::$%s', __CLASS__, $property),
+                    E_USER_WARNING
+                );
+                $deprecation = false;
+                break;
+        }
+
+        if ($deprecation) {
+            Toolbox::deprecated(sprintf('Usage of property %s::$%s is deprecated', __CLASS__, $property));
+        }
+    }
+
+    public function __call(string $method, array $arguments)
+    {
+        $lcmethod = strtolower($method); // PHP methods are not case sensitive
+
+        switch ($lcmethod) {
+            case 'addcustomheader':
+                // public function addCustomHeader($name, $value = null)
+                $name  = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
+                $value = array_key_exists(1, $arguments) && is_string($arguments[1]) ? $arguments[1] : null;
+                if (null === $value && strpos($name, ':') !== false) {
+                    list($name, $value) = explode(':', $name, 2);
+                }
+                if ($name !== null && $value !== null) {
+                    $this->email->getHeaders()->addTextHeader($name, $value);
+                }
+                break;
+            case 'addembeddedimage':
+                // public function addEmbeddedImage($path, $cid, $name = '', $encoding = self::ENCODING_BASE64, $type = '', $disposition = 'inline')
+                $path = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
+                $name = array_key_exists(2, $arguments) && is_string($arguments[2]) ? $arguments[2] : null;
+                if ($path !== null) {
+                    $this->email->embedFromPath($path, $name);
+                }
+                break;
+            case 'addattachment':
+                // public function addAttachment($path, $name = '', $encoding = self::ENCODING_BASE64, $type = '', $disposition = 'attachment')
+                $path = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
+                $name = array_key_exists(1, $arguments) && is_string($arguments[1]) ? $arguments[1] : null;
+                if ($path !== null) {
+                    $this->email->attachFromPath($path, $name);
+                }
+                break;
+            case 'addaddress':
+            case 'addcc':
+            case 'addbcc':
+            case 'addreplyto':
+            case 'setfrom':
+                // public function addAddress($address, $name = '')
+                // public function addCC($address, $name = '')
+                // public function addBCC($address, $name = '')
+                // public function addReplyTo($address, $name = '')
+                // public function setFrom($address, $name = '', $auto = true)
+                $address = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
+                $name    = array_key_exists(1, $arguments) && is_string($arguments[1]) ? $arguments[1] : null;
+                if ($address !== null) {
+                    $address_obj = new Address($address, $name);
+                    switch ($lcmethod) {
+                        case 'addaddress':
+                            $this->email->addTo($address_obj);
+                            break;
+                        case 'addcc':
+                            $this->email->addCc($address_obj);
+                            break;
+                        case 'addbcc':
+                            $this->email->addBcc($address_obj);
+                            break;
+                        case 'addreplyto':
+                            $this->email->addReplyTo($address_obj);
+                            break;
+                        case 'setfrom':
+                            $this->email->from($address_obj);
+                            break;
+                    }
+                }
+                break;
+            case 'clearaddresses':
+                // public function clearAddresses()
+                $this->email->getHeaders()->remove('To');
+                break;
+            case 'clearccs':
+                // public function clearCCs()
+                $this->email->getHeaders()->remove('Cc');
+                break;
+            case 'clearbccs':
+                // public function clearBCCs()
+                $this->email->getHeaders()->remove('Bcc');
+                break;
+            case 'clearreplytos':
+                // public function clearReplyTos()
+                $this->email->getHeaders()->remove('Reply-To');
+                break;
+            case 'ishtml':
+                // public function isHTML($isHtml = true)
+                // Do nothing as any automatic handling would be hazardous
+                break;
+            default:
+                // Trigger fatal error to block execution.
+                // As we cannot know which return value type is expected, it is safer to to ensure
+                // that caller will not continue execution using a void return value.
+                trigger_error(
+                    sprintf('Call to undefined method %s::%s()', __CLASS__, $method),
+                    E_USER_ERROR
+                );
+                break;
+        }
+
+        Toolbox::deprecated(sprintf('Usage of method %s::%s() is deprecated', __CLASS__, $method));
+    }
+
+    public static function __callstatic(string $method, array $arguments)
+    {
+        // Trigger fatal error to block execution.
+        // As we cannot know which return value type is expected, it is safer to to ensure
+        // that caller will not continue execution using a void return value.
+        trigger_error(
+            sprintf('Call to undefined method %s::%s()', __CLASS__, $method),
+            E_USER_ERROR
+        );
     }
 }

@@ -37,6 +37,8 @@ The present file will list all changes made to the project; according to the
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
+- `GLPIMailer` mailer class does not extends anymore `PHPMailer\PHPMailer\PHPMailer`.
+  We added a compatibility layer to handle main usages found in plugins, but we cannot ensure compatibility with all properties and methods that were inherited from `PHPMailer\PHPMailer\PHPMailer`.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
