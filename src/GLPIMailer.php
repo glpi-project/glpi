@@ -61,9 +61,15 @@ class GLPIMailer
 
     /**
      * Errors that may have occured during email sending.
-     * @var array
+     * @var string|null
      */
     private ?string $error;
+
+    /**
+     * Header line to add on debug log.
+     * @var string|null
+     */
+    private ?string $debug_header_line;
 
     public function __construct()
     {
@@ -147,13 +153,23 @@ class GLPIMailer
     }
 
     /**
-     * Send email.
+     * Define debug header line.
      *
-     * @param string $debug_header  Custom header line to add in debug log.
+     * @param string|null $debug_header_line
+     *
+     * @return void
+     */
+    public function setDebugHeaderLine(?string $debug_header_line): void
+    {
+        $this->debug_header_line = $debug_header_line;
+    }
+
+    /**
+     * Send email.
      *
      * @return bool
      */
-    public function send(?string $debug_header = null)
+    public function send()
     {
         $text_body = $this->email->getTextBody();
         if (is_string($text_body)) {
@@ -184,7 +200,7 @@ class GLPIMailer
         if ($debug !== null && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             Toolbox::logInFile(
                 'mail-debug',
-                ('# ' . ($debug_header ?? __('Sending email...')) . "\n") . $debug
+                ('# ' . ($this->debug_header_line ?? __('Sending email...')) . "\n") . $debug
             );
         }
 
