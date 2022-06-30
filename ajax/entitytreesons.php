@@ -52,7 +52,7 @@ if (Session::getCurrentInterface() == 'helpdesk') {
 $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
 $ckey    = 'entity_selector';
-$subckey = sha1($_SESSION['glpiactiveentities_string']);
+$subckey = sha1($_SESSION['glpiactiveentities_string'] . json_encode($_SESSION['glpiactiveprofile']['entities']));
 $all_entitiestree = $GLPI_CACHE->get($ckey, []);
 if (array_key_exists($subckey, $all_entitiestree)) {
     echo json_encode($all_entitiestree[$subckey]);
@@ -76,7 +76,7 @@ foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
                 $entity['expanded'] = 'true';
             }
 
-            if ($entities_id == $_SESSION['glpiactive_entity_name']) {
+            if ($entities_id == $_SESSION['glpiactive_entity']) {
                 $entity['selected'] = 'true';
             }
 
