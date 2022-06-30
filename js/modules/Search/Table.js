@@ -60,6 +60,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
         const target_column = $(target);
         const all_colums = this.getElement().find('thead th');
         const sort_order = target_column.attr('data-sort-order');
+        const nb_col_sorted = $('[data-sort-num]').length;
 
         if (!multisort && (sort_order === null || sort_order === 'nosort')) {
             // Remove all sorts and set this new column as the primary sort
@@ -70,7 +71,17 @@ window.GLPI.Search.Table = class Table extends GenericView {
             });
         }
 
-        const new_order = sort_order === 'ASC' ? 'DESC' : (sort_order === 'DESC' ? 'nosort' : 'ASC');
+        const new_order = sort_order === 'ASC'
+            ? 'DESC'
+            : (
+                sort_order === 'DESC'
+                    ? (
+                        nb_col_sorted > 1
+                            ? 'nosort'
+                            : 'ASC'
+                    )
+                    : 'ASC'
+            );
         target_column.attr('data-sort-order', new_order);
 
         let sort_num = target_column.attr('data-sort-num');
