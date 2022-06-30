@@ -68,8 +68,10 @@ class GLPIMailer
         }
         $this->mailer = new Mailer($this->transport);
 
-        $this->email = (new Email())
-            ->from($CFG_GLPI['smtp_sender'] ?? 'glpi@localhost');
+        $this->email = new Email();
+        if (!empty($CFG_GLPI['smtp_sender'])) {
+            $this->email->sender($CFG_GLPI['smtp_sender']);
+        }
     }
 
     final public function buildDsn(bool $with_password): string
