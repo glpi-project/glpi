@@ -36,6 +36,7 @@
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MessageIDValidation;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use Glpi\Application\ErrorHandler;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Email;
@@ -144,6 +145,9 @@ class GLPIMailer
             $debug = $e->getDebug();
         } catch (\LogicException $e) {
             $this->errors[] = $e->getMessage();
+        } catch (\Throwable $e) {
+            $this->errors[] = $e->getMessage();
+            ErrorHandler::getInstance()->handleException($e, true);
         }
 
         if ($debug !== null && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
