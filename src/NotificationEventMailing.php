@@ -240,7 +240,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                             'mail'
                         );
                         $mail->embedFromPath($image_path, $doc->fields['filename']);
-                        $inline_docs[$document_id] = $doc->fields['tag'];
+                        $inline_docs[$document_id] = $doc->fields['filename'];
                     } else {
                         // Attach only documents that are not inlined images
                         $documents_to_attach[] = $document_id;
@@ -278,7 +278,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                                     $height
                                 );
                                 $mail->embedFromPath($image_path, $doc->fields['filename']);
-                                $inline_docs[$docID] = $doc->fields['tag'];
+                                $inline_docs[$docID] = $doc->fields['filename'];
                             }
                         }
                     }
@@ -286,14 +286,17 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
                 // replace img[src] by cid:tag in html content
                 // replace a[href] by absolute URL
-                foreach ($inline_docs as $docID => $tag) {
+                foreach ($inline_docs as $docID => $filename) {
                     $current->fields['body_html'] = preg_replace(
                         [
                             '/src=["\'][^"\']*document\.send\.php\?docid=' . $docID . '(&[^"\']+)?["\']/',
                             '/href=["\'][^"\']*document\.send\.php\?docid=' . $docID . '(&[^"\']+)?["\']/',
                         ],
                         [
-                            'src="cid:' . $tag . '"',
+                            // 'cid' must be identical as second arg used in `embedFromPath` method
+                            // Symfony/Mime will then replace it by an auto-generated value
+                            // see Symfony\Mime\Email::prepareParts()
+                            'src="cid:' . $filename . '"',
                             'href="' . $CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID . '$1"',
                         ],
                         $current->fields['body_html']
