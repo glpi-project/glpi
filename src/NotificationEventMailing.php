@@ -219,7 +219,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             }
 
             if (!$is_html) {
-                $mail->text(GLPIMailer::handleLineBreaks($current->fields['body_text']));
+                $mail->text($current->fields['body_text']);
                 $documents_to_attach = $documents_ids; // Attach all documents
             } else {
                 $inline_docs = [];
@@ -303,9 +303,9 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                     );
                 }
 
-                $mail->text(GLPIMailer::handleLineBreaks($current->fields['body_text']));
+                $mail->text($current->fields['body_text']);
                 if ($is_html) {
-                    $mail->html(GLPIMailer::handleLineBreaks($current->fields['body_html']));
+                    $mail->html($current->fields['body_html']);
                 }
             }
 

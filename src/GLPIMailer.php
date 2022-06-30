@@ -121,6 +121,15 @@ class GLPIMailer
 
     public function send()
     {
+        $text_body = $this->email->getTextBody();
+        if (is_string($text_body)) {
+            $this->email->text($this->normalizeLineBreaks($text_body));
+        }
+        $html_body = $this->email->getHtmlBody();
+        if (is_string($html_body)) {
+            $this->email->html($this->normalizeLineBreaks($html_body));
+        }
+
         try {
             $this->email->ensureValidity();
             $this->mailer->send($this->email);
@@ -146,8 +155,21 @@ class GLPIMailer
         return $this->errors;
     }
 
-    public static function handleLineBreaks($text): string
+    /**
+     * Normalize line-breaks to CRLF.
+     * According to RFC2045, this is the expected line-break format in message bodies.
+     *
+     * @param string $text
+     * @return string
+     */
+    private function normalizeLineBreaks(string $text): string
     {
-        return preg_replace('/\r\n|\r/m', "\n", $text);
+        // 1. Convert all line breaks to "\n"
+        // 2. Convert all line breaks to CRLF
+        // Using 2 steps is mandatory to not convert "\r\n" to "\r\r\n".
+        $text = preg_replace('/\r\n|\r/', "\n", $text);
+        $text = preg_replace('/\n/', "\r\n", $text);
+
+        return $text;
     }
 }
