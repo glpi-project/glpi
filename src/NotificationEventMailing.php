@@ -331,7 +331,13 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
             $messageerror = __('Error in sending the email');
 
-            if (!$mmail->send()) {
+            $debug_header = sprintf(
+                'Sending email for notification %d (%s)...',
+                $current->fields['id'],
+                $CFG_GLPI['url_base'] . $current->getFormURLWithID($current->fields['id'], false)
+            );
+
+            if (!$mmail->send($debug_header)) {
                 Session::addMessageAfterRedirect($messageerror . "<br/>" . implode("<br/>", $mmail->getErrors()), true, ERROR);
 
                 $retries = $CFG_GLPI['smtp_max_retries'] - $current->fields['sent_try'];

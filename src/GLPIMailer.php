@@ -36,9 +36,8 @@
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\MessageIDValidation;
 use Egulias\EmailValidator\Validation\RFCValidation;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Transport;
-use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Email;
 
 /** GLPI Mailer class
@@ -47,8 +46,7 @@ use Symfony\Component\Mime\Email;
  **/
 class GLPIMailer
 {
-    protected Transport\TransportInterface $transport;
-    protected Mailer $mailer;
+    protected TransportInterface $transport;
     protected Email $email;
     private array $errors;
 
@@ -66,7 +64,6 @@ class GLPIMailer
             $stream = $this->transport->getStream();
             $stream->setTimeout(10);
         }
-        $this->mailer = new Mailer($this->transport);
 
         $this->email = new Email();
         if (!empty($CFG_GLPI['smtp_sender'])) {
@@ -119,7 +116,7 @@ class GLPIMailer
         return $this->email;
     }
 
-    public function send()
+    public function send(?string $debug_header = null)
     {
         $text_body = $this->email->getTextBody();
         if (is_string($text_body)) {
@@ -130,14 +127,30 @@ class GLPIMailer
             $this->email->html($this->normalizeLineBreaks($html_body));
         }
 
+        $debug = null;
         try {
             $this->email->ensureValidity();
-            $this->mailer->send($this->email);
+            $sent_message = $this->transport->send($this->email);
+            $debug = $sent_message->getDebug();
+
+            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+                $debug = '# ' . (!empty($debug_header) ? $debug_header : 'Sending email...') . "\n";
+                $debug .= $sent_message->getDebug();
+                Toolbox::logInFile('mail-debug', $debug);
+            }
             return true;
-        } catch (LogicException $e) {
+        } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
             $this->errors[] = $e->getMessage();
-        } catch (TransportExceptionInterface $e) {
+            $debug = $e->getDebug();
+        } catch (\LogicException $e) {
             $this->errors[] = $e->getMessage();
+        }
+
+        if ($debug !== null && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            Toolbox::logInFile(
+                'mail-debug',
+                ('# ' . ($debug_header ?? 'Sending email...') . "\n") . $debug
+            );
         }
 
         if (count($this->errors)) {
