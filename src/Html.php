@@ -2519,10 +2519,12 @@ HTML;
             $options['specific_tags']['data-glpicore-ma-tags'] = 'common';
         }
 
-       // encode quotes and brackets to prevent maformed name attribute
-        $id = htmlspecialchars($id, ENT_QUOTES);
-        $id = str_replace(['[', ']'], ['&amp;#91;', '&amp;#93;'], $id);
-        $options['name']          = "item[$itemtype][" . $id . "]";
+        if (empty($options['name'])) {
+            // encode quotes and brackets to prevent maformed name attribute
+            $id = htmlspecialchars($id, ENT_QUOTES);
+            $id = str_replace(['[', ']'], ['&amp;#91;', '&amp;#93;'], $id);
+            $options['name'] = "item[$itemtype][" . $id . "]";
+        }
 
         $options['zero_on_empty'] = false;
 
@@ -2710,7 +2712,7 @@ HTML;
                         $js_modal_fields .= '#' . $p['container'] . ' ';
                     }
                     $js_modal_fields .= "[data-glpicore-ma-tags~=" . $p['tag_to_send'] . "]').each(function( index ) {
-                  fields[$(this).attr('name')] = $(this).attr('value');
+                  fields[$(this).attr('name')] = $(this).val();
                   if (($(this).attr('type') == 'checkbox') && (!$(this).is(':checked'))) {
                      fields[$(this).attr('name')] = 0;
                   }

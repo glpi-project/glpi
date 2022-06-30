@@ -2298,13 +2298,13 @@ class AuthLDAP extends CommonDBTM
                               $dn_index,
                               ['massive_tags'  => 'select_item_child_entities',
                                   'name'          => "ldap_import_recursive[$dn_index]",
-                                  'specific_tags' => ['data-glpicore-ma-tags' => 'entities_id']
+                                  'specific_tags' => ['data-glpicore-ma-tags' => 'common']
                               ]
                           );
                             echo "</td>";
                     } else {
                         echo Html::hidden("ldap_import_recursive[$dn_index]", ['value'                 => 0,
-                            'data-glpicore-ma-tags' => 'entities_id'
+                            'data-glpicore-ma-tags' => 'common'
                         ]);
                     }
                     echo "</tr>";
