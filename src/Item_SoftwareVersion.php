@@ -1224,6 +1224,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</tfoot>";
             echo "</table>";
             echo "</div>";
+            Html::printAjaxPager('', $start, $number);
             if ($canedit) {
                 $massiveactionparams['ontop'] = false;
                 Html::showMassiveActions($massiveactionparams);
