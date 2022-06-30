@@ -323,9 +323,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             $mail->to(new Address($recipient, $current->fields['recipientname']));
 
             if (!empty($current->fields['messageid'])) {
-                //FIXME: howto with Swift? -- not sure about that addIdHeader
-                $mail->getHeaders()->addIdHeader('messageid', $current->fields['messageid']);
-                //$mmail->MessageID = "<" . $current->fields['messageid'] . ">";
+                $mail->getHeaders()->addHeader('Message-Id', $current->fields['messageid']);
             }
 
             $messageerror = __('Error in sending the email');
