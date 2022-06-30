@@ -47,14 +47,24 @@ use Symfony\Component\Mime\Email;
  **/
 class GLPIMailer
 {
-    protected TransportInterface $transport;
-    protected Email $email;
-    private array $errors;
+    /**
+     * Transport instance.
+     * @var TransportInterface
+     */
+    private TransportInterface $transport;
 
     /**
-     * Constructor
-     *
-     **/
+     * Email instance.
+     * @var TransportInterface
+     */
+    private Email $email;
+
+    /**
+     * Errors that may have occured during email sending.
+     * @var array
+     */
+    private ?string $error;
+
     public function __construct()
     {
         global $CFG_GLPI;
@@ -72,7 +82,14 @@ class GLPIMailer
         }
     }
 
-    final public function buildDsn(bool $with_password): string
+    /**
+     * Return DSN string built using SMTP configuration.
+     *
+     * @param bool $with_clear_password   Indicates whether the password should be present as clear text or redacted.
+     *
+     * @return string
+     */
+    final public function buildDsn(bool $with_clear_password): string
     {
         global $CFG_GLPI;
 
@@ -85,7 +102,7 @@ class GLPIMailer
                 ($CFG_GLPI['smtp_username'] != '' ? sprintf(
                     '%s:%s@',
                     $CFG_GLPI['smtp_username'],
-                    $with_password ? (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']) : '********'
+                    $with_clear_password ? (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']) : '********'
                 ) : ''),
                 $CFG_GLPI['smtp_host'],
                 $CFG_GLPI['smtp_port']
@@ -99,6 +116,13 @@ class GLPIMailer
         return $dsn;
     }
 
+    /**
+     * Check validity of an email address.
+     *
+     * @param string $address
+     *
+     * @return bool
+     */
     public static function validateAddress($address)
     {
         if (empty($address)) {
@@ -112,11 +136,23 @@ class GLPIMailer
         );
     }
 
+    /**
+     * Get email instance.
+     *
+     * @return Email
+     */
     public function getEmail(): Email
     {
         return $this->email;
     }
 
+    /**
+     * Send email.
+     *
+     * @param string $debug_header  Custom header line to add in debug log.
+     *
+     * @return bool
+     */
     public function send(?string $debug_header = null)
     {
         $text_body = $this->email->getTextBody();
@@ -130,46 +166,43 @@ class GLPIMailer
 
         $debug = null;
         try {
+            $this->error = null;
             $this->email->ensureValidity();
             $sent_message = $this->transport->send($this->email);
             $debug = $sent_message->getDebug();
-
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                $debug = '# ' . (!empty($debug_header) ? $debug_header : 'Sending email...') . "\n";
-                $debug .= $sent_message->getDebug();
-                Toolbox::logInFile('mail-debug', $debug);
-            }
             return true;
         } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
-            $this->errors[] = $e->getMessage();
+            $this->error = $e->getMessage();
             $debug = $e->getDebug();
         } catch (\LogicException $e) {
-            $this->errors[] = $e->getMessage();
+            $this->error = $e->getMessage();
         } catch (\Throwable $e) {
-            $this->errors[] = $e->getMessage();
+            $this->error = $e->getMessage();
             ErrorHandler::getInstance()->handleException($e, true);
         }
 
         if ($debug !== null && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             Toolbox::logInFile(
                 'mail-debug',
-                ('# ' . ($debug_header ?? 'Sending email...') . "\n") . $debug
+                ('# ' . ($debug_header ?? __('Sending email...')) . "\n") . $debug
             );
         }
 
-        if (count($this->errors)) {
-            Toolbox::logInFile(
-                'mail-errors',
-                implode("\  n", $this->errors)
-            );
+        if ($this->error !== null) {
+            Toolbox::logInFile('mail-error', $this->error . "\n");
         }
 
         return false;
     }
 
-    public function getErrors()
+    /**
+     * Get message related to sending error.
+     *
+     * @return string|null
+     */
+    public function getError(): ?string
     {
-        return $this->errors;
+        return $this->error;
     }
 
     /**

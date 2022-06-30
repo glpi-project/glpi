@@ -332,26 +332,26 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             $messageerror = __('Error in sending the email');
 
             $debug_header = sprintf(
-                'Sending email for notification %d (%s)...',
+                __('Sending email for notification %d (%s)...'),
                 $current->fields['id'],
                 $CFG_GLPI['url_base'] . $current->getFormURLWithID($current->fields['id'], false)
             );
 
             if (!$mmail->send($debug_header)) {
-                Session::addMessageAfterRedirect($messageerror . "<br/>" . implode("<br/>", $mmail->getErrors()), true, ERROR);
+                Session::addMessageAfterRedirect($messageerror . "<br/>" . $mmail->getError(), true, ERROR);
 
                 $retries = $CFG_GLPI['smtp_max_retries'] - $current->fields['sent_try'];
                 Toolbox::logInFile(
                     "mail-error",
                     sprintf(
-                        __('%1$s. Message: %2$s, Error: %3$s'),
+                        __('%1$s. Message: %2$s, Error: %3$s') . "\n",
                         sprintf(
                             __('Warning: an email was undeliverable to %s with %d retries remaining'),
                             $current->fields['recipient'],
                             $retries
                         ),
                         $current->fields['name'],
-                        implode("\n", $mmail->getErrors()) . "\n"
+                        $mmail->getError()
                     )
                 );
 
