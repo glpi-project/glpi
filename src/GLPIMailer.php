@@ -101,7 +101,7 @@ class GLPIMailer
         return $dsn;
     }
 
-    public static function validateAddress($address, $patternselect = "pcre8")
+    public static function validateAddress($address)
     {
         if (empty($address)) {
             return false;

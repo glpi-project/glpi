@@ -67,7 +67,7 @@ class NotificationMailing implements NotificationInterface
     {
        //drop sanitize...
         $address = Toolbox::stripslashes_deep($address);
-        $isValid = GLPIMailer::ValidateAddress($address);
+        $isValid = GLPIMailer::validateAddress($address);
 
         $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
         if ($checkdns) {
