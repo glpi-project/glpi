@@ -317,9 +317,9 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                 $recipient = GLPI_FORCE_MAIL;
                 //add original email address to message body
                 $text = sprintf(__('Original email address was %1$s'), $current->getField('recipient'));
-                $mail->text($mail->getHtmlBody() . "\n$text");
+                $mail->text($mail->getTextBody() . "\n" . $text);
                 if ($is_html) {
-                    $mail->html($mail->getHtmlBody() . "<br/>$text");
+                    $mail->html($mail->getHtmlBody() . "<br/>" . $text);
                 }
             }
 
