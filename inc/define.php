@@ -248,12 +248,12 @@ $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEqui
 
 $CFG_GLPI["linkuser_types"]               = ['Computer', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard'
+    'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard', 'Line'
 ];
 
 $CFG_GLPI["linkgroup_types"]              = ['Computer', 'Consumable', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard'
+    'SoftwareLicense', 'Certificate', 'Appliance', 'Item_DeviceSimcard', 'Line'
 ];
 
 $CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
