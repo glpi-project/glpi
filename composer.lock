@@ -245,16 +245,16 @@
         },
         {
             "name": "donatj/phpuseragentparser",
-            "version": "v1.6.0",
+            "version": "v1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/donatj/PhpUserAgent.git",
-                "reference": "c84fd3c205097843aab93290f2a5744b4159e815"
+                "reference": "264cf23eda626c223d21535584c33794be0ea338"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/c84fd3c205097843aab93290f2a5744b4159e815",
-                "reference": "c84fd3c205097843aab93290f2a5744b4159e815",
+                "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/264cf23eda626c223d21535584c33794be0ea338",
+                "reference": "264cf23eda626c223d21535584c33794be0ea338",
                 "shasum": ""
             },
             "require": {
@@ -298,7 +298,7 @@
             ],
             "support": {
                 "issues": "https://github.com/donatj/PhpUserAgent/issues",
-                "source": "https://github.com/donatj/PhpUserAgent/tree/v1.6.0"
+                "source": "https://github.com/donatj/PhpUserAgent/tree/v1.6.1"
             },
             "funding": [
                 {
@@ -310,7 +310,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-04-20T03:05:31+00:00"
+            "time": "2022-06-08T16:36:31+00:00"
         },
         {
             "name": "egulias/email-validator",
