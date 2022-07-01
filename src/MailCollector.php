@@ -1953,17 +1953,15 @@ class MailCollector extends CommonDBTM
                 $msg .= 'SMTP';
                 break;
 
+            case MAIL_SMTPS:
             case MAIL_SMTPSSL:
-                $msg .= 'SMTP+SSL';
-                break;
-
             case MAIL_SMTPTLS:
-                $msg .= 'SMTP+TLS';
+                $msg .= 'SMTPS';
                 break;
         }
         if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
-            $msg .= " (" . (empty($CFG_GLPI['smtp_username']) ? 'anonymous' : $CFG_GLPI['smtp_username']) .
-                    "@" . $CFG_GLPI['smtp_host'] . ")";
+            $mailer = new GLPIMailer();
+            $msg .= sprintf('(%s)', $mailer->buildDsn(false));
         }
         echo wordwrap($msg . "\n", $width, "\n\t\t");
         echo "\n</pre></td></tr>";
@@ -1994,14 +1992,18 @@ class MailCollector extends CommonDBTM
         global $CFG_GLPI;
 
         $mmail = new GLPIMailer();
-        $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
-        $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
-        $mmail->AddAddress($to);
-       // Normalized header, no translation
-        $mmail->Subject  = 'Re: ' . $subject;
-        $mmail->Body     = __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
-                         "\n-- \n" . $CFG_GLPI["mailing_signature"];
-        $mmail->Send();
+        $mail = $mmail->getEmail();
+        $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-replied');
+        $mail->from(new \Symfony\Component\Mime\Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
+        $mail->to($to);
+        // Normalized header, no translation
+        $mail->subject('Re: ' . $subject);
+        $mail->text(
+            __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
+             "\n-- \n" . $CFG_GLPI["mailing_signature"]
+        );
+        $mmail->setDebugHeaderLine(__('Sending refused email automatic response...'));
+        $mmail->send();
     }
 
 

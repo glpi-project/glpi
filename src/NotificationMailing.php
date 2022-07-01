@@ -34,6 +34,7 @@
  */
 
 use Glpi\Toolbox\Sanitizer;
+use Symfony\Component\Mime\Address;
 
 /**
  *  NotificationMailing class implements the NotificationInterface
@@ -66,7 +67,7 @@ class NotificationMailing implements NotificationInterface
     {
        //drop sanitize...
         $address = Toolbox::stripslashes_deep($address);
-        $isValid = GLPIMailer::ValidateAddress($address);
+        $isValid = GLPIMailer::validateAddress($address);
 
         $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
         if ($checkdns) {
@@ -88,26 +89,29 @@ class NotificationMailing implements NotificationInterface
         global $CFG_GLPI;
 
         $mmail = new GLPIMailer();
+        $mail = $mmail->getEmail();
 
-        $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
-       // For exchange
-        $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
-        $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"], false);
+        $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-generated');
+        // For exchange
+        $mail->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, NDR, RN, NRN');
+        $mail->from(new Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
 
         $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
-           //force recipient to configured email address
+            //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
-           //add original email addess to message body
+            //add original email address to message body
             $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
         }
 
-        $mmail->AddAddress($recipient, $CFG_GLPI["admin_email_name"]);
-        $mmail->Subject = "[GLPI] " . __('Mail test');
-        $mmail->Body    = $text;
+        $mail->to(new Address($recipient, $CFG_GLPI['admin_email_name']));
+        $mail->subject("[GLPI] " . __('Mail test'));
+        $mail->text($text);
 
-        if (!$mmail->Send()) {
+        $mmail->setDebugHeaderLine(__('Sending test email to administrator...'));
+
+        if (!$mmail->send()) {
             Session::addMessageAfterRedirect(
                 __('Failed to send test email to administrator'),
                 false,

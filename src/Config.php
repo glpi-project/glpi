@@ -40,7 +40,6 @@ use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
-use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  *  Config class
@@ -179,6 +178,10 @@ class Config extends CommonDBTM
             $input['allow_search_global'] = 0;
         }
 
+        if (array_key_exists('smtp_mode', $input) && $input['smtp_mode'] === MAIL_SMTPTLS) {
+            $input['smtp_mode'] = MAIL_SMTPS;
+            Toolbox::deprecated('Usage of "MAIL_SMTPTLS" SMTP mode is deprecated. Switch to "MAIL_SMTPS" mode.');
+        }
         if (isset($input["smtp_passwd"]) && empty($input["smtp_passwd"])) {
             unset($input["smtp_passwd"]);
         }
@@ -2258,7 +2261,6 @@ HTML;
      */
     public static function getLibraries($all = false)
     {
-        $pm = new PHPMailer();
         $sp = new SimplePie();
 
        // use same name that in composer.json
@@ -2266,9 +2268,8 @@ HTML;
             'version' => hl_version() ,
             'check'   => 'hl_version'
         ],
-            [ 'name'    => 'phpmailer/phpmailer',
-                'version' => $pm::VERSION,
-                'check'   => 'PHPMailer\\PHPMailer\\PHPMailer'
+            [ 'name'    => 'symfony/mailer',
+                'check'   => 'Symfony/Mailer'
             ],
             [ 'name'    => 'simplepie/simplepie',
                 'version' => SIMPLEPIE_VERSION,
@@ -2402,6 +2403,14 @@ HTML;
             [
                 'name'  => 'symfony/polyfill-php81',
                 'check' => 'array_is_list'
+            ],
+            [
+                'name' => 'egulias/email-validator',
+                'check' => 'Egulias\\EmailValidator\\EmailValidator'
+            ],
+            [
+                'name'    => 'symfony/mime',
+                'check'   => 'Symfony\\Mime\\Message'
             ],
         ];
         if (Toolbox::canUseCAS()) {

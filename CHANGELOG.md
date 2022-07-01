@@ -32,13 +32,17 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
 - `users_id_validate` field in `CommonITILValidation` will now have a `0` value when approval target is a group, until a group member answer to the approval request.
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
+- `GLPIMailer` mailer class does not extends anymore `PHPMailer\PHPMailer\PHPMailer`.
+  We added a compatibility layer to handle main usages found in plugins, but we cannot ensure compatibility with all properties and methods that were inherited from `PHPMailer\PHPMailer\PHPMailer`.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
+- Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
 - Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
