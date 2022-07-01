@@ -482,7 +482,7 @@ abstract class AbstractRequest
 
             switch ($this->mode) {
                 case self::XML_MODE:
-                    $data = $this->response->saveXML();
+                    $data = trim($this->response->saveXML());
                     break;
                 case self::JSON_MODE:
                     $data = json_encode($this->response);
