@@ -43,7 +43,7 @@ if (isset($_GET["redirect"])) {
 Session::checkFaqAccess();
 
 if (Session::getLoginUserID()) {
-    Html::helpHeader(__('FAQ'));
+    Html::helpHeader(__('FAQ'), 'faq');
 } else {
     $_SESSION["glpilanguage"] = $_SESSION['glpilanguage'] ?? $CFG_GLPI['language'];
    // Anonymous FAQ

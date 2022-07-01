@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
             "lockedfield",
             4,
             "inventory",
-            sprintf(__('%1$s adds the item %2$s-%3$s:%4$s'), $_SESSION["glpiname"], $_POST['itemtype'], $_POST['items_id'], $_POST["field"])
+            sprintf(__('%1$s adds global lock on %2$s'), $_SESSION["glpiname"], $_POST["item"])
         );
 
         if ($_SESSION['glpibackcreated']) {

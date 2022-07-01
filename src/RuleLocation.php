@@ -94,7 +94,7 @@ class RuleLocation extends Rule
     {
         return [
             'locations_id' => [
-                'name'  => __('Location'),
+                'name'  => _n('Location', 'Locations', 1),
                 'type'  => 'dropdown',
                 'table' => Location::getTable(),
                 'force_actions' => [

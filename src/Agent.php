@@ -9,6 +9,7 @@
  *
  * @copyright 2015-2022 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +36,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Conf;
 use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
@@ -143,19 +145,48 @@ class Agent extends CommonDBTM
                 'name'          => _n('Port', 'Ports', 1),
                 'datatype'      => 'integer',
             ], [
-                'id'            => '15',
-                'table'         => $this->getTable(),
-                'field'         => 'name',
-                'datatype'      => 'itemlink',
-                'name'          => _n('Item', 'Items', 1),
-                'joinparams'    => [
-                    'jointype' => 'itemtype_item'
-                ]
-            ]
+                'id'               => '15',
+                'table'            => $this->getTable(),
+                'field'            => 'items_id',
+                'name'             =>  _n('Item', 'Items', 1),
+                'nosearch'         => true,
+                'massiveaction'    => false,
+                'forcegroupby'     => true,
+                'datatype'         => 'specific',
+                'searchtype'       => 'equals',
+                'additionalfields' => ['itemtype'],
+                'joinparams'       => ['jointype' => 'child']
+            ],
+
         ];
 
         return $tab;
     }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'items_id':
+                $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
+                if ($itemtype !== null && class_exists($itemtype)) {
+                    if ($values[$field] > 0) {
+                        $item = new $itemtype();
+                        $item->getFromDB($values[$field]);
+                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                    }
+                } else {
+                    return ' ';
+                }
+                break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
 
     public static function rawSearchOptionsToAdd()
     {
@@ -298,7 +329,8 @@ class Agent extends CommonDBTM
             $input['tag'] = $metadata['tag'];
         }
 
-        if ($deviceid === 'foo' || !in_array($metadata['itemtype'], $CFG_GLPI['agent_types'])) {
+        $has_expected_agent_type = in_array($metadata['itemtype'], $CFG_GLPI['agent_types']);
+        if ($deviceid === 'foo' || (!$has_expected_agent_type && !$aid)) {
             $input += [
                 'items_id' => 0,
                 'id' => 0
@@ -310,7 +342,17 @@ class Agent extends CommonDBTM
         $input = Toolbox::addslashes_deep($input);
         if ($aid) {
             $input['id'] = $aid;
+            // We should not update itemtype in db if not an expected one
+            if (!$has_expected_agent_type) {
+                unset($input['itemtype']);
+            }
             $this->update($input);
+            // Don't keep linked item unless having expected agent type
+            if (!$has_expected_agent_type) {
+                $this->fields['items_id'] = 0;
+                // But always keep itemtype for class instantiation
+                $this->fields['itemtype'] = $metadata['itemtype'];
+            }
         } else {
             $input['items_id'] = 0;
             $aid = $this->add($input);
@@ -637,5 +679,64 @@ class Agent extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-robot";
+    }
+
+    /**
+     * Cron task: clean and do other defined actions when agent not have been contacted
+     * the server since xx days
+     *
+     * @global object $DB
+     * @param object $task
+     * @return boolean true if successful, otherwise false
+     * @copyright 2010-2022 by the FusionInventory Development Team.
+     */
+    public static function cronCleanoldagents($task = null)
+    {
+        global $DB;
+
+        $config = \Config::getConfigurationValues('inventory');
+
+        $retention_time = $config['stale_agents_delay'] ?? 0;
+        if ($retention_time <= 0) {
+            return true;
+        }
+
+        $iterator = $DB->request([
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'last_contact' => ['<', new QueryExpression("date_add(now(), interval -" . $retention_time . " day)")]
+            ]
+        ]);
+
+        $cron_status = false;
+        if (count($iterator)) {
+            $action = (int)($config['stale_agents_action'] ?? Conf::STALE_AGENT_ACTION_CLEAN);
+            if ($action === Conf::STALE_AGENT_ACTION_CLEAN) {
+                //delete agents
+                $agent = new self();
+                foreach ($iterator as $data) {
+                    $agent->delete($data);
+                    $task->addVolume(1);
+                    $cron_status = true;
+                }
+            } else if ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['stale_agents_status'])) {
+                //change status of agents linked assets
+                foreach ($iterator as $data) {
+                    $itemtype = $data['itemtype'];
+                    if (is_subclass_of($itemtype, CommonDBTM::class)) {
+                        $item = new $itemtype();
+                        if ($item->getFromDB($data['items_id'])) {
+                            $item->update([
+                                'id' => $data['items_id'],
+                                'states_id' => $config['agents_status']
+                            ]);
+                            $task->addVolume(1);
+                            $cron_status = true;
+                        }
+                    }
+                }
+            }
+        }
+        return $cron_status;
     }
 }

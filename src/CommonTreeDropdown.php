@@ -376,7 +376,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $changes = [
                 0,
                 '',
-                addslashes($this->getNameID()),
+                addslashes($this->getNameID(['forceid' => true])),
             ];
             Log::history(
                 $parent,
@@ -407,11 +407,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 $this->cleanParentsSons($oldParentID);
                 if ($history) {
                     if ($parent->getFromDB($oldParentID)) {
-                        $oldParentNameID = $parent->getNameID();
+                        $oldParentNameID = $parent->getNameID(['forceid' => true]);
                     }
                     $changes = [
                         '0',
-                        addslashes($this->getNameID()),
+                        addslashes($this->getNameID(['forceid' => true])),
                         '',
                     ];
                     Log::history(
@@ -429,12 +429,12 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 $this->addSonInParents();
                 if ($history) {
                     if ($parent->getFromDB($newParentID)) {
-                        $newParentNameID = $parent->getNameID();
+                        $newParentNameID = $parent->getNameID(['forceid' => true]);
                     }
                     $changes = [
                         '0',
                         '',
-                        addslashes($this->getNameID()),
+                        addslashes($this->getNameID(['forceid' => true])),
                     ];
                     Log::history(
                         $newParentID,
@@ -472,7 +472,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         if ($parent && $this->dohistory) {
             $changes = [
                 '0',
-                addslashes($this->getNameID()),
+                addslashes($this->getNameID(['forceid' => true])),
                 '',
             ];
             Log::history(

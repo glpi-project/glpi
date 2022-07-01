@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Auth;
+use Blacklist;
 use CommonDBTM;
 use Dropdown;
 use Glpi\Inventory\Conf;
@@ -46,6 +47,7 @@ use RuleImportAssetCollection;
 use RuleImportEntityCollection;
 use RuleLocationCollection;
 use RuleMatchedLog;
+use stdClass;
 use Toolbox;
 use Transfer;
 
@@ -323,7 +325,7 @@ abstract class MainAsset extends InventoryAsset
                 $cnt++;
             }
             if (empty($val->contact)) {
-                $val->contact = $user_temp;
+                $val->contact = $user_temp ?? '';
             }
         }
     }
@@ -491,7 +493,11 @@ abstract class MainAsset extends InventoryAsset
 
     public function handle()
     {
+        $blacklist = new Blacklist();
+
         foreach ($this->data as $key => $data) {
+            $blacklist->processBlackList($data);
+
             $this->current_key = $key;
             $input = $this->prepareAllRulesInput($data);
 
@@ -646,11 +652,6 @@ abstract class MainAsset extends InventoryAsset
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
             $this->setNew();
         } else {
-            if ($this->is_discovery === true) {
-                //do not update from network discoveries
-                //prevents discoveries to remove all ports, IPs and so on found with network inventory
-                return;
-            }
             $this->item->getFromDB($items_id);
         }
 
@@ -694,6 +695,12 @@ abstract class MainAsset extends InventoryAsset
             $_SESSION['glpiactive_entity']         = $entities_id;
         }
 
+        if ($this->is_discovery === true) {
+            //do not update from network discoveries
+            //prevents discoveries to remove all ports, IPs and so on found with network inventory
+            return;
+        }
+
         //Ports are handled a different way on network equipments
         if ($this->item->getType() != 'NetworkEquipment') {
             $this->handlePorts();
@@ -711,7 +718,7 @@ abstract class MainAsset extends InventoryAsset
                 }
             }
 
-            if (property_exists($val, 'ap_port')) {
+            if (property_exists($val, 'ap_port') && method_exists($this, 'setManagementPorts')) {
                 $this->setManagementPorts(['management' => $val->ap_port]);
                 unset($val->ap_port);
             }

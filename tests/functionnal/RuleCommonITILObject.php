@@ -374,37 +374,33 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // The next part only applies to tickets
         if ($itil::getType() === 'Ticket') {
-            // Remove assign self as default tech from session
-            $default_tech = $_SESSION['glpiset_default_tech'];
-            $_SESSION['glpiset_default_tech'] = false;
-
             // Check ITIL Object that trigger rule on update
             $itil = $this->getITILObjectInstance();
             $itil_id = $itil->add($itil_input = [
-                'name' => 'some ITIL Object',
-                'content' => 'test'
+                'name'              => 'some ITIL Object',
+                'content'           => 'test',
+                '_users_id_assign'  => getItemByTypeName('User', TU_USER, true),
             ]);
+            unset($itil_input['_users_id_assign']);
             $this->checkInput($itil, $itil_id, $itil_input);
-            $this->integer((int)$itil->getField('status'))->isEqualTo(\CommonITILObject::INCOMING);
+            $this->integer((int)$itil->getField('status'))->isEqualTo(\Ticket::ASSIGNED);
             $this->integer(countElementsInTable(
                 $itil_user_table,
                 [$itil_fk => $itil_id, 'type' => \CommonITILActor::ASSIGN]
-            ))->isEqualTo(0);
+            ))->isEqualTo(1); // Assigned to TU_USER
 
             $this->boolean($itil->update([
-                'id' => $itil_id,
-                'name' => 'assign to tech (on update)',
-                'content' => 'test'
+                'id'                => $itil_id,
+                'name'              => 'assign to tech (on update)',
+                'content'           => 'test',
+                '_users_id_assign'  => getItemByTypeName('User', 'glpi', true), // rule should erase this value
             ]))->isTrue();
             $this->boolean($itil->getFromDB($itil_id))->isTrue();
             $this->integer((int)$itil->getField('status'))->isEqualTo(\CommonITILObject::INCOMING);
             $this->integer(countElementsInTable(
                 $itil_user_table,
                 [$itil_fk => $itil_id, 'type' => \CommonITILActor::ASSIGN]
-            ))->isEqualTo(1);
-
-            // Restore assign self as default tech in session
-            $_SESSION['glpiset_default_tech'] = $default_tech;
+            ))->isEqualTo(2); // Assigned to TU_USER + tech
         }
     }
 

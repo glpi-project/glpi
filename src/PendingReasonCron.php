@@ -107,7 +107,9 @@ class PendingReasonCron extends CommonDBTM
             }
 
             if ($item->fields['status'] != CommonITILObject::WAITING) {
-                trigger_error("Status is not pending", E_USER_WARNING);
+                $pending_item->delete([
+                    'id' => $pending_item->fields['id'],
+                ]);
                 continue;
             }
 
@@ -122,8 +124,15 @@ class PendingReasonCron extends CommonDBTM
                     continue;
                 }
 
-               // Load followup template
-                $fup_template = ITILFollowupTemplate::getById($pending_reason->fields['itilfollowuptemplates_id']);
+                $template_id = $pending_reason->fields['itilfollowuptemplates_id'];
+
+                // No template defined; can't bump
+                if (!$template_id) {
+                    continue;
+                }
+
+                // Load followup template
+                $fup_template = ITILFollowupTemplate::getById($template_id);
                 if (!$fup_template) {
                     trigger_error("Failed to load ITILFollowupTemplate::{$pending_reason->fields['itilfollowuptemplates_id']}", E_USER_WARNING);
                     continue;

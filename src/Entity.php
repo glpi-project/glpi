@@ -373,8 +373,8 @@ class Entity extends CommonTreeDropdown
         foreach ($input as $field => $value) {
             $strategy_field = str_replace('_id', '_strategy', $field);
             if (preg_match('/_id(_.+)?/', $field) === 1 && $DB->fieldExists($this->getTable(), $strategy_field)) {
-                if ($value > 0) {
-                    // Value is positive -> set strategy to 0 (prevent inheritance).
+                if ($value > 0 || ($value == 0 && preg_match('/^entities_id(_\w+)?/', $field) === 1)) {
+                    // Value contains a valid id -> set strategy to 0 (prevent inheritance).
                     $input[$strategy_field] = 0;
                 } elseif ($value < 0) {
                     // Value is negative -> move it into strategy field.
@@ -855,7 +855,7 @@ class Entity extends CommonTreeDropdown
             'id'                 => '70',
             'table'              => $this->getTable(),
             'field'              => 'registration_number',
-            'name'               => __('Administrative number'),
+            'name'               => _x('infocom', 'Administrative number'),
             'datatype'           => 'string',
             'autocomplete'       => true
         ];
@@ -1575,7 +1575,7 @@ class Entity extends CommonTreeDropdown
         echo "<td>";
         echo Html::input('phonenumber', ['value' => $entity->fields['phonenumber']]);
         echo "</td>";
-        echo "<td>" . __('Administrative Number') . "</td>";
+        echo "<td>" . _x('infocom', 'Administrative number') . "</td>";
         echo "<td>";
         echo Html::input('registration_number', ['value' => $entity->fields['registration_number']]);
         echo "</td></tr>";
@@ -1936,7 +1936,10 @@ class Entity extends CommonTreeDropdown
         ]);
 
         if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
-            $inherited_value = self::getUsedConfig('entities_strategy_software', $entity->fields['entities_id'], 'entities_id_software');
+            $inherited_strategy = self::getUsedConfig('entities_strategy_software', $entity->fields['entities_id']);
+            $inherited_value    = $inherited_strategy === 0
+                ? self::getUsedConfig('entities_strategy_software', $entity->fields['entities_id'], 'entities_id_software')
+                : $inherited_strategy;
             self::inheritedValue(self::getSpecificValueToDisplay('entities_id_software', $inherited_value));
         }
         echo "</td><td colspan='2'></td></tr>";

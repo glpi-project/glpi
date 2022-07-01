@@ -51,14 +51,15 @@
 {% endif %}
 
 {% if not is_actor_hidden %}
-   <select class="form-select" multiple="true" id="actor_{{ rand }}"
+   <select class="form-select" multiple="true" id="actor_{{ rand }}" data-actor-type="{{ actortype }}"
         {{ required ? 'required' : '' }}>
    {% for actor in actors %}
+      {% set unique_id = "user_opt_" ~ actortype ~ actor.itemtype ~ actor.items_id %}
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
             data-alternative-email="{{ actor['alternative_email'] }}"
-            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}">
+            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}" data-glpi-popover-source="content{{ unique_id }}">
          {{ actor['title']|verbatim_value }}
       </option>
    {% endfor %}
@@ -141,7 +142,24 @@
          // prepare html for option element
          var text = (is_selection && itemtype == "Group") ? title : text;
          var option_text    = `<span class="actor_text">${text}</span>`;
-         var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}" data-text="${text}">${indent}${icon}${option_text}${actions}</span>`);
+         var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}">${indent}${icon}${option_text}${actions}</span>`);
+
+          if (is_selection && itemtype == "User") {
+              const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;
+              $.ajax({
+                  url: '{{ path('/ajax/comments.php') }}',
+                  type: 'POST',
+                  data: {
+                      'itemtype': 'User',
+                      'value': items_id,
+                  }
+              }).then((result) => {
+                  if (result) {
+                      actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                      option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+                  }
+              });
+          }
 
          // manage ticket information (number of assigned ticket for an actor)
          if (is_selection && itemtype != "Email") {
@@ -179,7 +197,8 @@
 
       var select2_width = "{{ not disable_assign_to_me ? 'calc(100% - 30px)' : '100%' }}";
 
-      $("#actor_{{ rand }}").select2({
+      const actor_select = $("#actor_{{ rand }}");
+      actor_select.select2({
          tags: true,
          width: select2_width,
          tokenSeparators: [',', ' '],
@@ -232,7 +251,27 @@
                };
             },
          }
+      }).on('select2:open', () => {
+          // Close popovers
+          $('.popover').popover('hide');
       });
+
+       actor_select.parent().popover({
+           selector: '[data-glpi-popover-source]',
+           container: actor_select.parent(),
+           html: true,
+           sanitize: false,
+           trigger: 'hover',
+           delay: {
+               hide: 1500
+           },
+           template: '<' + 'div class="popover shadow" role="tooltip"><' + 'div class="popover-arrow"><' + '/div><' + 'h3 class="popover-header"><' + '/h3><' + 'div class="popover-body"><' + '/div><' + '/div>',
+           content: function() {
+               // Close other popovers
+               $('.popover').popover('hide');
+               return $('#' + $(this).attr('data-glpi-popover-source')).html();
+           }
+       });
 
       // manage actors change
       var updateActors{{ rand }} = function() {

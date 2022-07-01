@@ -68,6 +68,22 @@ class Agent extends DbTestCase
             ->then
                ->integer($this->testedInstance->handleAgent($metadata))
                ->isGreaterThan(0);
+
+        // This should also work when inventory type is different than agent linked item type
+        $metadata['itemtype'] = 'Printer';
+
+        $this
+         ->given($this->newTestedInstance)
+            ->then
+               ->integer($this->testedInstance->handleAgent($metadata))
+               ->isGreaterThan(0);
+
+        // In the case the agent is used to submit another item type, we still
+        // need to have access to agent tag but no item should be linked
+        $tag = $this->testedInstance->fields['tag'];
+        $items_id = $this->testedInstance->fields['items_id'];
+        $this->string($tag)->isIdenticalTo('000005');
+        $this->integer($items_id)->isIdenticalTo(0);
     }
 
     public function testAgentFeaturesFromItem()
@@ -202,6 +218,7 @@ class Agent extends DbTestCase
             ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
             ->string['version']->isIdenticalTo('2.5.2-1.fc31')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
         $old_agents_id = $agent['id'];
 
@@ -246,5 +263,62 @@ class Agent extends DbTestCase
         //check old agent has been dropped
         $agent = new \Agent();
         $this->boolean($agent->getFromDB($old_agents_id))->isFalse('Old Agent still exists!');
+    }
+
+    public function testTagFromXML()
+    {
+        //run an inventory
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>glpixps</NAME>
+      <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+    </HARDWARE>
+    <BIOS>
+      <MSN>640HP72</MSN>
+      <SSN>000</SSN>
+    </BIOS>
+    <ACCOUNTINFO>
+      <KEYNAME>TAG</KEYNAME>
+      <KEYVALUE>000005</KEYVALUE>
+    </ACCOUNTINFO>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>";
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(5)
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory')
+            ->string['tag']->isIdenticalTo('000005');
+
+        global $DB;
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
     }
 }

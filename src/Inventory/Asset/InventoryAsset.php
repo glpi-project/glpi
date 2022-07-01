@@ -60,6 +60,8 @@ abstract class InventoryAsset
     protected $agent;
     /** @var integer */
     protected $entities_id = 0;
+    /** @var integer */
+    protected $is_recursive = 0;
     /** @var array */
     protected $ruleentity_data = [];
     /** @var array */
@@ -68,7 +70,7 @@ abstract class InventoryAsset
     protected $links_handled = false;
     /** @var boolean */
     protected $with_history = true;
-    /** @var InventoryAsset */
+    /** @var MainAsset */
     protected $main_asset;
     /** @var string */
     protected $request_query;
@@ -363,12 +365,13 @@ abstract class InventoryAsset
         $item = new $itemtype();
         $item->getFromDb($input['items_id']);
 
-        if (!($item->fields['is_global'] ?? false)) {
+        //check for global management type configuration
+        if (!$item->isGlobal()) {
             if (isset($citem->fields['id'])) {
                 $citem->delete(['id' => $citem->fields['id']], true);
             }
-            $citem->add($input);
         }
+        $citem->add($input, [], false);
     }
 
     protected function setNew(): self

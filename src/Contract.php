@@ -407,6 +407,8 @@ class Contract extends CommonDBTM
             $prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$prefix . 'add']    = _x('button', 'Add an item');
             $actions[$prefix . 'remove'] = _x('button', 'Remove an item');
+            $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
+               = _x('button', 'Add a supplier');
         }
 
         return $actions;

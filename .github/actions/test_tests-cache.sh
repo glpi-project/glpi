@@ -1,9 +1,9 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 TMP_CACHE_DIR=$(mktemp -d -t glpi-cache-test-XXXXXXXXXX)
 
 for CONFIG in {"--use-default","--dsn=memcached://memcached","--dsn=redis://redis"}; do
-  echo "Test cache using following config: $CONFIG"
   php bin/console cache:configure \
     --config-dir=./tests/config --ansi --no-interaction \
     $CONFIG

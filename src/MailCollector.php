@@ -789,7 +789,7 @@ class MailCollector extends CommonDBTM
 
                         if (!$tkt['_blacklisted']) {
                               global $DB;
-                              $rejinput['from']              = $requester;
+                              $rejinput['from']              = $requester ?? '';
                               $rejinput['to']                = $headers['to'];
                               $rejinput['users_id']          = $tkt['_users_id_requester'];
                               $rejinput['subject']           = Sanitizer::sanitize($this->cleanSubject($headers['subject']));
@@ -1769,7 +1769,7 @@ class MailCollector extends CommonDBTM
 
                 // Keep only HTML body content
                 $body_matches = [];
-                if (preg_match('/<body>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
+                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
                     $content = $body_matches['body'];
                 }
 

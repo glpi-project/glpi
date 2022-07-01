@@ -150,7 +150,7 @@
 </div>
 
 {% set openfollowup = (_get['_openfollowup'] ?? false) %}
-{% set timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+{% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
 <script type="text/javascript">
 $(function() {
@@ -167,20 +167,16 @@ $(function() {
    });
 
    var scrollToTimelineStart = function() {
-      // small delay to be sure all content is loaded
-      // otherwise, height of answer html may not be taken in account by document height
-      setTimeout(() => {
-         // scroll body to ensure we are at bottom (useful for responsive display)
-         $('html, body').animate({
-            scrollTop: {{ timeline_reversed ? "-" : "" }}$(document).height()
-         }, 0, function(){
+        // scroll body to ensure we are at bottom (useful for responsive display)
+        $('html, body').animate({
+        scrollTop: {{ is_timeline_reversed ? "-" : "" }}$(document).height()
+        }, 0, function(){
             // scroll timeline with animation
             var timeline = $("#itil-object-container .itil-left-side");
             timeline.animate({
-               scrollTop: {{ timeline_reversed ? "-" : "" }}timeline.prop('scrollHeight')
+                scrollTop: {{ is_timeline_reversed ? "-" : "" }}timeline.prop('scrollHeight')
             }, 'slow');
-         });
-      }, 200);
+        });
    };
 
    {% if openfollowup %}

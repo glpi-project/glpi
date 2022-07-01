@@ -485,7 +485,7 @@ class Inventory extends InventoryTestCase
                     'is_dynamic' => 1,
                     'entities_id' => 0,
                     'is_recursive' => 0,
-                    'serial' => null,
+                    'serial' => 'xyz',
                     'busID' => null,
                     'otherserial' => null,
                     'locations_id' => 0,
@@ -1105,6 +1105,7 @@ class Inventory extends InventoryTestCase
             ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
             ->string['version']->isIdenticalTo('2.5.2-1.fc31')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         //check created computer
@@ -1180,6 +1181,7 @@ class Inventory extends InventoryTestCase
             ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
             ->string['version']->isIdenticalTo('2.3.19')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         //check matchedlogs
@@ -1603,6 +1605,7 @@ class Inventory extends InventoryTestCase
             ->string['version']->isIdenticalTo('2.3.20')
             ->string['itemtype']->isIdenticalTo('Computer')
             ->integer['items_id']->isIdenticalTo($computers_id)
+            ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         $computer = new \Computer();
@@ -1752,7 +1755,7 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4375);
+        $this->integer(count($logs))->isIdenticalTo(4374);
 
         $expected_types_count = [
             0 => 3, //Agent version, disks usage
@@ -1761,7 +1764,7 @@ class Inventory extends InventoryTestCase
             \Log::HISTORY_ADD_SUBITEM => 3243,//network port/name, ip address, VMs, Software
             \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, softwares updates
             \Log::HISTORY_DELETE_SUBITEM => 99,//networkport and networkname, Software?
-            \Log::HISTORY_CREATE_ITEM => 197, //virtual machines, os, manufacturer, net ports, net names, ...
+            \Log::HISTORY_CREATE_ITEM => 196, //virtual machines, os, manufacturer, net ports, net names, ...
             \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
         ];
 
@@ -4059,6 +4062,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005')
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         $computers_id = $agent['items_id'];
@@ -4229,6 +4233,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005')
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         $computers_id = $agent['items_id'];

@@ -179,6 +179,8 @@ class Monitor extends AbstractInventoryAsset
 
     public function testInventoryMove()
     {
+        global $DB;
+
         $monitor = new \Monitor();
         $item_monitor = new \Computer_Item();
 
@@ -204,39 +206,69 @@ class Monitor extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory with one monitor
+        //computer inventory with one monitor
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
+        $this->array($cmanuf);
+        $manufacturers_id = $cmanuf['id'];
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
-       //we have 1 monitor
+        //we have 1 monitor
         $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
-       //we have 1 monitor items linked to the computer
+        //we have 1 monitor items linked to the computer
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
-       //monitor present in the inventory source is dynamic
+        //monitor present in the inventory source is dynamic
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
-       //same inventory again
+        //same inventory again
         $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
-       //we still have only 1 monitor
+        //we still have only 1 monitor
         $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
-       //we still have only 1 monitor items linked to the computer
+        //we still have only 1 monitor items linked to the computer
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
-       //same monitor, but on another computer
+        //same monitor, but on another computer
         $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -259,44 +291,685 @@ class Monitor extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory with one monitor
+        //computer inventory with one monitor
         $inventory = $this->doInventory($xml_source_2, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         $computers_2_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_2_id)->isGreaterThan(0);
 
-       //we still have only 1 monitor
+        //we still have only 1 monitor
         $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
-       //no longer linked on first computer inventoried
+        //no longer linked on first computer inventoried
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
         $this->integer(count($monitors))->isIdenticalTo(0);
 
-       //but now linked on last inventoried computer
+        //but now linked on last inventoried computer
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
-       //monitor is still dynamic
+        //monitor is still dynamic
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
-       //replay first computer inventory, monitor is back \o/
+        //replay first computer inventory, monitor is back \o/
         $inventory = $this->doInventory($xml_source, true);
 
-       //we still have only 1 monitor
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        //we still have only 1 monitor
         $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
-       //linked again on first computer inventoried
+        //linked again on first computer inventoried
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
-       //no longer linked on last inventoried computer
+        //no longer linked on last inventoried computer
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
         $this->integer(count($monitors))->isIdenticalTo(0);
 
-       //monitor is still dynamic
+        //monitor is still dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+    }
+
+    public function testInventoryNoMove()
+    {
+        global $DB;
+
+        $monitor = new \Monitor();
+        $item_monitor = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //computer inventory with one monitor
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
+        $this->array($cmanuf);
+        $manufacturers_id = $cmanuf['id'];
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we have 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //we have 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor present in the inventory source is dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //same inventory again
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we still have only 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //we still have only 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //set to global management
+        $this->boolean($monitor->getFromDB(current($monitors)['items_id']));
+        $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
+
+        //same monitor, but on another computer
+        $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //computer inventory with one monitor
+        $inventory = $this->doInventory($xml_source_2, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $computers_2_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_2_id)->isGreaterThan(0);
+
+        //we still have only 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //still linked on first computer inventoried
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //also linked on last inventoried computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor is still dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+    }
+
+    public function testInventoryGlobalManagement()
+    {
+        global $DB;
+
+        $monitor = new \Monitor();
+        $item_monitor = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //change default configuration to global management
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::GLOBAL_MANAGEMENT]);
+        $this->logout();
+
+        //computer inventory with one monitor
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
+        $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
+        $this->array($cmanuf);
+        $manufacturers_id = $cmanuf['id'];
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we have 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //we have 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor present in the inventory source is dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //same monitor, but on another computer
+        $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //change default configuration to global management
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::GLOBAL_MANAGEMENT]);
+        $this->logout();
+
+        //computer inventory with one monitor
+        $inventory = $this->doInventory($xml_source_2, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
+        $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $computers_2_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_2_id)->isGreaterThan(0);
+
+        //we still have only 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //still linked on first computer inventoried
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //also linked on last inventoried computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor is still dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+    }
+
+    public function testInventoryUnitManagement()
+    {
+        global $DB;
+
+        $monitor = new \Monitor();
+        $item_monitor = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //change default configuration to unit management
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::UNIT_MANAGEMENT]);
+        $this->logout();
+
+        //computer inventory with one monitor
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
+        $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $cmanuf = $DB->request(['FROM' => \Manufacturer::getTable(), 'WHERE' => ['name' => 'Sharp Corporation']])->current();
+        $this->array($cmanuf);
+        $manufacturers_id = $cmanuf['id'];
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we have 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //we have 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor present in the inventory source is dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //same inventory again
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //we still have only 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //we still have only 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //set to global management
+        $this->boolean($monitor->getFromDB(current($monitors)['items_id']));
+        $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
+
+        //same monitor, but on another computer
+        $xml_source_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc003</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne8</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc003</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //change default configuration to unit management
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::UNIT_MANAGEMENT]);
+        $this->logout();
+
+        //computer inventory with one monitor
+        $inventory = $this->doInventory($xml_source_2, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
+        $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $computers_2_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_2_id)->isGreaterThan(0);
+
+        //we still have only 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //no longer linked on first computer inventoried
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(0);
+
+        //but now linked on last inventoried computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor is still dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //change default configuration to unit management
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::UNIT_MANAGEMENT]);
+        $this->logout();
+
+        //replay first computer inventory, monitor is back \o/
+        $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        \Config::setConfigurationValues('core', ['monitors_management_restrict' => \Config::NO_MANAGEMENT]);
+        $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        //we still have only 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+        $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //linked again on first computer inventoried
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //no longer linked on last inventoried computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $this->integer(count($monitors))->isIdenticalTo(0);
+
+        //monitor is still dynamic
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+    }
+
+    public function testInventoryImportOrNot()
+    {
+        global $DB;
+
+        $monitor = new \Monitor();
+        $item_monitor = new \Computer_Item();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <MONITORS>
+      <BASE64>AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=</BASE64>
+      <CAPTION>DJCP6</CAPTION>
+      <DESCRIPTION>32/2015</DESCRIPTION>
+      <MANUFACTURER>Sharp Corporation</MANUFACTURER>
+      <SERIAL>AFGHHDR0</SERIAL>
+    </MONITORS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //per default, configuration allows monitor import. change that.
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
+                'import_monitor' => 0
+            ])
+        )->isTrue();
+        $this->logout();
+
+        //computer inventory with one printer
+        $inventory = $this->doInventory($xml_source, true);
+
+        //restore default configuration
+        $this->login();
+        $this->boolean(
+            $conf->saveConf([
+                'import_monitor' => 1
+            ])
+        )->isTrue();
+        $this->logOut();
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //no monitor linked to the computer
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(0);
+
+        //inventory again
+        $this->doInventory($xml_source, true);
+
+        //check for expected logs
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'NOT' => ['itemtype' => \Config::class]
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        //we now have 1 monitor
+        $monitors = $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //we have 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->integer(count($monitors))->isIdenticalTo(1);
+
+        //monitor present in the inventory source is dynamic
         $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($monitors))->isIdenticalTo(1);
     }

@@ -152,12 +152,13 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * Check all checkboxes inside the given element as the same state as a reference one (toggle this one before)
  * the given element is usaly a table or a div containing the table or tables
  *
- * @param    reference_id    DOM element
- * @param    container_id    DOM element
+ * @param {HTMLElement} reference
+ * @param {string} container_id
 **/
-function checkAsCheckboxes(reference_id, container_id) {
+function checkAsCheckboxes(reference, container_id) {
+    reference = typeof(reference) === 'string' ? document.getElementById(reference) : reference;
     $('#' + container_id + ' input[type="checkbox"]:enabled')
-        .prop('checked', $('#' + reference_id).is(':checked'));
+        .prop('checked', $(reference).is(':checked'));
 
     return true;
 }

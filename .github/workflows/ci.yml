@@ -164,10 +164,10 @@ jobs:
         run: |
           .github/actions/init_initialize-0.80-db.sh
           docker-compose exec -T app .github/actions/test_update-from-older-version.sh
-      - name: "Update DB tests (from 9.5.3, using utf8mb4)"
+      - name: "Update DB tests (from 9.5, using utf8mb4)"
         if: env.skip != 'true'
         run: |
-          .github/actions/init_initialize-9.5.3-db.sh
+          .github/actions/init_initialize-9.5-db.sh
           docker-compose exec -T app .github/actions/test_update-from-9.5.sh
       - name: "Unit tests"
         if: env.skip != 'true'

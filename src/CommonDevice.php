@@ -472,6 +472,9 @@ abstract class CommonDevice extends CommonDropdown
     {
         global $DB;
 
+        $with_history = $input['with_history'] ?? true;
+        unset($input['with_history']);
+
         if (!isset($input['designation']) || empty($input['designation'])) {
             return 0;
         }
@@ -506,7 +509,7 @@ abstract class CommonDevice extends CommonDropdown
             return $line['id'];
         }
 
-        return $this->add($input);
+        return $this->add($input, [], $with_history);
     }
 
 

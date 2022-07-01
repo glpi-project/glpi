@@ -86,9 +86,10 @@ class Computer_Item extends CommonDBRelation
         global $CFG_GLPI;
 
         $item = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
+
         if (
             !($item instanceof CommonDBTM)
-            || (($item->getField('is_global') == 0)
+            || (!$item->isGlobal()
               && ($this->countForItem($item) > 0))
         ) {
             return false;
@@ -103,7 +104,7 @@ class Computer_Item extends CommonDBRelation
             return false;
         }
 
-        if (!$item->getField('is_global')) {
+        if (!$item->isGlobal()) {
            // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
             $updates = [];
 

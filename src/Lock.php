@@ -94,24 +94,32 @@ class Lock extends CommonGLPI
             $locked_iterator = $DB->request([
                 'FROM'   => $lockedfield->getTable(),
                 'WHERE'  => [
-                    'itemtype'  => $itemtype,
-                    'items_id'  => $ID
+                    'OR' => [
+                        [
+                            'itemtype'  => $itemtype,
+                            'items_id'  => $ID
+                        ], [
+                            'itemtype'  => $itemtype,
+                            'is_global' => 1
+                        ]
+                    ]
                 ]
             ]);
 
             //get fields labels
-            $so = $item->rawSearchOptions();
-            $so_fields = [];
-            foreach ($so as $sof) {
-                if (isset($sof['table'])) {
-                    $so_fields[$sof['field']] = $sof['name'];
+            $search_options = Search::getOptions($itemtype);
+            foreach ($search_options as $search_option) {
+                if (isset($search_option['linkfield'])) {
+                    $so_fields[$search_option['linkfield']] = $search_option['name'];
+                } else if (isset($search_option['field'])) {
+                    $so_fields[$search_option['field']] = $search_option['name'];
                 }
             }
 
             foreach ($locked_iterator as $row) {
                 echo "<tr class='tab_bg_1'>";
                 echo "<td class='center' width='10'>";
-                if ($lockedfield->can($row['id'], UPDATE) || $lockedfield->can($row['id'], PURGE)) {
+                if ($row['is_global'] == 0 && ($lockedfield->can($row['id'], UPDATE) || $lockedfield->can($row['id'], PURGE))) {
                     $header = true;
                     echo Html::getMassiveActionCheckBox(Lockedfield::class, $row['id'], ['massive_tags' => 'select_' . $lockedfield::getType()]);
                 }
@@ -125,6 +133,10 @@ class Lock extends CommonGLPI
                     if ($object != 'UNKNOWN') {
                         $field_label = $object::getTypeName(1);
                     }
+                }
+
+                if ($row['is_global']) {
+                    $field_label .= ' (' . __('Global') . ')';
                 }
                 echo "<td class='left' width='95%'>" . $field_label . "</td>";
                 echo "</tr>\n";

@@ -164,7 +164,7 @@
                      {% endif %}
 
                      {% if item.isField('date_domaincreation') %}
-                        {{ fields.datetimeField('date_domaincreation', item.fields['date_domaincreation'], __('Creation date')) }}
+                        {{ fields.datetimeField('date_domaincreation', item.fields['date_domaincreation'], __('Registration date')) }}
                      {% endif %}
 
                      {% set type_itemtype = item.getTypeClass() %}
@@ -195,7 +195,7 @@
                         {{ fields.autoNameField(
                            'registration_number',
                            item,
-                           __('Administrative number'),
+                           (item_type starts with 'User' ? _x('user', 'Administrative number') : _x('infocom', 'Administrative number')),
                            withtemplate,
                            field_options
                         ) }}

@@ -407,7 +407,7 @@ class Contact extends CommonDBTM
             'id'                 => '70',
             'table'              => $this->getTable(),
             'field'              => 'registration_number',
-            'name'               => __('Administrative number'),
+            'name'               => _x('infocom', 'Administrative number'),
             'datatype'           => 'string',
             'autocomplete'       => true
         ];

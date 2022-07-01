@@ -52,7 +52,8 @@ class Controller extends Device
         $mapping = [
             'name'          => 'designation',
             'manufacturer'  => 'manufacturers_id',
-            'type'          => 'interfacetypes_id'
+            'type'          => 'interfacetypes_id',
+            'model'         => 'devicecontrolmodels_id'
         ];
         $pcivendor = new \PCIVendor();
 

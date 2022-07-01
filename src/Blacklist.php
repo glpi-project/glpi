@@ -360,9 +360,10 @@ class Blacklist extends CommonDropdown
             'SYS-9876543210',
             'SN-12345',
             'SN-1234567890',
-            '1111111111',
-            '1111111',
-            '1',
+            '/^0+$/',
+            '/^1+$/',
+            '/\d\.\d(\.\d)?/',
+            '/^(0|1)+$/',
             '0123456789',
             '12345',
             '123456',
@@ -372,10 +373,6 @@ class Blacklist extends CommonDropdown
             '1234567890',
             '123456789000',
             '12345678901234567',
-            '0000000000',
-            '000000000',
-            '00000000',
-            '0000000',
             'NNNNNNN',
             'xxxxxxxxxxx',
             'EVAL',
@@ -388,7 +385,6 @@ class Blacklist extends CommonDropdown
             'Unknow',
             'System Serial Number',
             'MB-1234567890',
-            '0',
             'empty',
             'Not Specified',
             'OEM_Serial',
@@ -522,6 +518,14 @@ class Blacklist extends CommonDropdown
             && '' == $this->process(self::SERIAL, $value->serial)
         ) {
             unset($value->serial);
+        }
+
+        if (
+            !property_exists($value, 'serial')
+            && property_exists($value, 'mserial')
+            && '' != $this->process(self::SERIAL, $value->mserial)
+        ) {
+            $value->serial = $value->mserial;
         }
 
         if (property_exists($value, 'ipaddress') || property_exists($value, 'ip')) {

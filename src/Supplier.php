@@ -136,6 +136,8 @@ class Supplier extends CommonDBTM
         if ($isadmin) {
             $actions['Contact_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                = _x('button', 'Add a contact');
+            $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
+               = _x('button', 'Add a contract');
         }
         return $actions;
     }
@@ -342,7 +344,7 @@ class Supplier extends CommonDBTM
             'id'                 => '70',
             'table'              => $this->getTable(),
             'field'              => 'registration_number',
-            'name'               => __('Administrative number'),
+            'name'               => _x('infocom', 'Administrative number'),
             'datatype'           => 'string',
             'autocomplete'       => true
         ];

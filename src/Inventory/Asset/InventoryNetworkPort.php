@@ -483,7 +483,7 @@ trait InventoryNetworkPort
                 unset($db_ports[$keydb]);
                 unset($this->networks[$key]);
                 unset($this->ports[$key]);
-                if (method_exists($this, 'getManagementPorts')) {
+                if (method_exists($this, 'getManagementPorts') && method_exists($this, 'setManagementPorts')) {
                     $managements = $this->getManagementPorts();
                     unset($managements[$key]);
                     $this->setManagementPorts($managements);

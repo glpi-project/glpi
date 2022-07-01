@@ -1,21 +1,20 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
-echo "Init app container home"
 mkdir -p $APP_CONTAINER_HOME
 
-echo "Pull and start containers"
 docker-compose pull --quiet
 docker-compose up --no-start
 docker-compose start
 
 if [[ "$UPDATE_FILES_ACL" = true ]]; then
-  echo "Change files rights to give write access to app container user"
+  # Change files rights to give write access to app container user
   sudo apt-get install --assume-yes --no-install-recommends --quiet acl
   setfacl --recursive --modify u:1000:rwx $APPLICATION_ROOT
   setfacl --recursive --modify u:1000:rwx $APP_CONTAINER_HOME
 fi
 
-echo "Check services health"
+# Check services health
 for CONTAINER_ID in `docker-compose ps -a -q`; do
   CONTAINER_NAME=`/usr/bin/docker inspect --format='{{print .Name}}{{if .Config.Image}} ({{print .Config.Image}}){{end}}' $CONTAINER_ID`
   HEALTHY=false

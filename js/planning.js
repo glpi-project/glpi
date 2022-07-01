@@ -57,6 +57,7 @@ var GLPIPlanning  = {
             resources: [],
             now: null,
             can_create: false,
+            can_delete: false,
             rand: '',
             header: {
                 left:   'prev,next,today',
@@ -273,10 +274,17 @@ var GLPIPlanning  = {
                     $('.planning-context-menu').remove();
 
                     // create new one
-                    var context = $('<ul class="planning-context-menu" data-event-id=""> \
-                  <li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li> \
-                  <li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li> \
-               </ul>');
+                    var actions = '';
+                    if (options.can_create) {
+                        actions += '<li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li>';
+                    }
+                    if (options.can_delete) {
+                        actions += '<li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li>';
+                    }
+                    if (actions == '') {
+                        return;
+                    }
+                    var context = $('<ul class="planning-context-menu" data-event-id="">'+actions+'</ul>');
 
                     // add it to body and place it correctly
                     $('body').append(context);
@@ -304,7 +312,7 @@ var GLPIPlanning  = {
 
                     // context menu actions
                     // 1- clone event
-                    $('.planning-context-menu .clone-event').click(function() {
+                    $('.planning-context-menu .clone-event').on('click', function() {
                         $.ajax({
                             url:  CFG_GLPI.root_doc+"/ajax/planning.php",
                             type: 'POST',
@@ -324,7 +332,7 @@ var GLPIPlanning  = {
                         });
                     });
                     // 2- delete event (manage serie/instance specific events)
-                    $('.planning-context-menu .delete-event').click(function() {
+                    $('.planning-context-menu .delete-event').on('click', function() {
                         var ajaxDeleteEvent = function(instance) {
                             instance = instance || false;
                             $.ajax({
@@ -351,7 +359,7 @@ var GLPIPlanning  = {
                             glpi_html_dialog({
                                 title: __("Make a choice"),
                                 body: __("Delete the whole serie of the recurrent event") + "<br>" +
-                              __("or just add an exception by deleting this instance?"),
+                            __("or just add an exception by deleting this instance?"),
                                 buttons: [{
                                     label: __("Serie"),
                                     click:  function() {

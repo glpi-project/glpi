@@ -258,6 +258,25 @@ class Dropdown
             $params['url'],
             $p
         );
+
+        // Add icon
+        $add_item_icon = "";
+        if (
+            ($item instanceof CommonDropdown)
+            && $item->canCreate()
+            && !isset($_REQUEST['_in_modal'])
+            && $params['addicon']
+        ) {
+            $add_item_icon .= '<div class="btn btn-outline-secondary"
+                           title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
+            $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
+            $add_item_icon .= "<span data-bs-toggle='tooltip'>
+              <i class='fa-fw ti ti-plus'></i>
+              <span class='sr-only'>" . __s('Add') . "</span>
+                </span>";
+            $add_item_icon .= '</div>';
+        }
+
        // Display comment
         $icons = "";
         if ($params['comments']) {
@@ -316,14 +335,7 @@ class Dropdown
                 && !isset($_REQUEST['_in_modal'])
                 && $params['addicon']
             ) {
-                  $icons .= '<div class="btn btn-outline-secondary"
-                               title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
-                  $icons .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
-                  $icons .= "<span data-bs-toggle='tooltip'>
-                  <i class='fa-fw ti ti-plus'></i>
-                  <span class='sr-only'>" . __s('Add') . "</span>
-               </span>";
-                  $icons .= '</div>';
+                  $icons .= $add_item_icon;
             }
 
            // Supplier Links
@@ -379,8 +391,13 @@ class Dropdown
             }
         }
 
+        // Trick to get the "+" button to work with dropdowns that support multiple values
+        if (strlen($icons) == 0 && strlen($add_item_icon) > 0) {
+            $icons .= $add_item_icon;
+        }
+
         if (strlen($icons) > 0) {
-            $output = "<div class='btn-group btn-group-sm " . ($params['width'] == "100%" ? "w-100" : "") . "' role='group'>{$output} {$icons}</div>";
+            $output = "<div class='btn-group btn-group-sm " . ($params['width'] == "100%" ? "w-150" : "") . "' role='group'>{$output} {$icons}</div>";
         }
 
         $output .= Ajax::commonDropdownUpdateItem($params, false);
@@ -1461,6 +1478,7 @@ class Dropdown
         $params['checkright']          = false;
         $params['toupdate']            = '';
         $params['display']             = true;
+        $params['track_changes']       = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1492,6 +1510,7 @@ class Dropdown
                 'emptylabel'          => $params['emptylabel'],
                 'display'             => $params['display'],
                 'rand'                => $params['rand'],
+                'track_changes'       => $params['track_changes'],
             ]);
         }
         return 0;
@@ -1526,20 +1545,21 @@ class Dropdown
         global $CFG_GLPI;
 
         $params = [
-            'itemtype_name'         => 'itemtype',
-            'items_id_name'         => 'items_id',
-            'itemtypes'             => '',
-            'default_itemtype'      => 0,
-            'default_items_id'      => -1,
-            'entity_restrict'       => -1,
-            'onlyglobal'            => false,
-            'checkright'            => false,
-            'showItemSpecificity'   => '',
-            'emptylabel'            => self::EMPTY_VALUE,
-            'used'                  => [],
-            'ajax_page'             => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
-            'display'               => true,
-            'rand'                  => mt_rand(),
+            'itemtype_name'             => 'itemtype',
+            'items_id_name'             => 'items_id',
+            'itemtypes'                 => '',
+            'default_itemtype'          => 0,
+            'default_items_id'          => -1,
+            'entity_restrict'           => -1,
+            'onlyglobal'                => false,
+            'checkright'                => false,
+            'showItemSpecificity'       => '',
+            'emptylabel'                => self::EMPTY_VALUE,
+            'used'                      => [],
+            'ajax_page'                 => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+            'display'                   => true,
+            'rand'                      => mt_rand(),
+            'itemtype_track_changes'    => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -1549,11 +1569,12 @@ class Dropdown
         }
 
         $select = self::showItemType($params['itemtypes'], [
-            'checkright' => $params['checkright'],
-            'name'       => $params['itemtype_name'],
-            'emptylabel' => $params['emptylabel'],
-            'display'    => $params['display'],
-            'rand'       => $params['rand']
+            'checkright'    => $params['checkright'],
+            'name'          => $params['itemtype_name'],
+            'emptylabel'    => $params['emptylabel'],
+            'display'       => $params['display'],
+            'rand'          => $params['rand'],
+            'track_changes' => $params['itemtype_track_changes'],
         ]);
 
         $p_ajax = [
@@ -2017,6 +2038,7 @@ class Dropdown
         $param['noselect2']           = false;
         $param['templateResult']      = "templateResult";
         $param['templateSelection']   = "templateSelection";
+        $param['track_changes']       = "true";
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2095,6 +2117,10 @@ class Dropdown
 
             if ($param["required"]) {
                 $output .= " required='required'";
+            }
+
+            if (!$param['track_changes']) {
+                $output .= " data-track-changes=''";
             }
 
             $output .= '>';
@@ -3261,7 +3287,7 @@ class Dropdown
                     } else if ($item instanceof CommonDCModelDropdown) {
                         $outputval = sprintf(__('%1$s - %2$s'), $data[$field], $data['product_number']);
                     } else {
-                        $outputval = $data[$field];
+                        $outputval = $data[$field] ?? "";
                     }
 
                     $ID         = $data['id'];

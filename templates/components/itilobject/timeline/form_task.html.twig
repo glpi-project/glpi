@@ -196,6 +196,21 @@
                         }
                      ) }}
 
+                     {% set task_date_lbl %}
+                        <i class="fas fa-calendar fa-fw me-1"
+                           title="{{ _n('Date', 'Dates', 1) }}"></i>
+                     {% endset %}
+                     {{ fields.datetimeField(
+                        'date',
+                        subitem.fields['date'],
+                        task_date_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'rand': rand,
+                        }
+                     ) }}
+
                      {# Category #}
                      {% set task_category_lbl %}
                         <i class="fas fa-tag fa-fw me-1" title="{{ _n('Category', 'Categories', 1) }}"></i>
@@ -209,7 +224,9 @@
                            'full_width': true,
                            'icon_label': true,
                            'entity': item.fields['entities_id'],
-                           'is_active': 1,
+                           'condition': {
+                              'is_active': 1,
+                           },
                            'rand': rand,
                         }
                      ) }}
@@ -338,7 +355,10 @@
                               rand_user: {{ random() }},
                               rand_group: {{ random() }},
                               itemtype: "{{ subitem.type }}",
-                              items_id: {{ subitem.fields['id']|default(-1) }}
+                              items_id: {{ subitem.fields['id']|default(-1) }},
+                              parent_itemtype: "{{ item.type }}",
+                              parent_items_id: {{ item.fields['id'] }},
+                              parent_fk_field: "{{ item.getForeignKeyField() }}",
                            });
                         }
                      </script>

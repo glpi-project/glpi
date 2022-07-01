@@ -128,33 +128,24 @@ class Request extends AbstractRequest
         switch ($task) {
             case self::INVENT_TASK:
                 return $this->handleInventoryTask($params);
-                break;
             case self::NETDISCOVERY_TASK:
                 return $this->handleNetDiscoveryTask($params);
-                break;
             case self::NETINV_TASK:
                 return $this->handleNetInventoryTask($params);
-                break;
             case self::ESX_TASK:
                 return $this->handleESXTask($params);
-                break;
             case self::COLLECT_TASK:
                 return $this->handleCollectTask($params);
-                break;
             case self::DEPLOY_TASK:
                 return $this->handleDeployTask($params);
-                break;
             case self::WOL_TASK:
                 return $this->handleWakeOnLanTask($params);
-                break;
             case self::REMOTEINV_TASK:
                 return $this->handleRemoteInventoryTask($params);
-                break;
             default:
                 $this->addError("Task '$task' is not supported.", 400);
                 return [];
         }
-        return [];
     }
 
 
@@ -242,7 +233,7 @@ class Request extends AbstractRequest
     {
         $this->network_inventory_mode = Hooks::NETWORK_DISCOVERY;
         $this->is_discovery = true;
-        return $this->network($data);
+        $this->network($data);
     }
 
 
@@ -256,7 +247,7 @@ class Request extends AbstractRequest
     public function networkInventory($data)
     {
         $this->network_inventory_mode = Hooks::NETWORK_INVENTORY;
-        return $this->network($data);
+        $this->network($data);
     }
 
     /**
@@ -269,7 +260,9 @@ class Request extends AbstractRequest
     public function network($data)
     {
         $this->inventory = new Inventory();
-        $this->inventory->setData($data, $this->getMode());
+        $this->inventory
+            ->setDiscovery($this->isDiscovery())
+            ->setData($data, $this->getMode());
 
         $response = [];
         $hook_params = [
@@ -321,8 +314,9 @@ class Request extends AbstractRequest
         ];
 
         //For the moment it's the Agent who informs us about the active tasks
-        if (property_exists($this->inventory->getRawData(), 'enabled-tasks')) {
-            foreach ($this->inventory->getRawData()->{'enabled-tasks'} as $task) {
+        $raw_data = $this->inventory->getRawData();
+        if ($raw_data !== null && property_exists($raw_data, 'enabled-tasks')) {
+            foreach ($raw_data->{'enabled-tasks'} as $task) {
                 $handle = $this->handleTask($task);
                 if (is_array($handle) && count($handle)) {
                     // Insert related task information under tasks list property

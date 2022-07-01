@@ -661,6 +661,7 @@ class Planning extends CommonGLPI
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
+                'can_delete'   => PlanningExternalEvent::canDelete(),
             ];
         } else {
            // short view (on Central page)
@@ -1553,6 +1554,9 @@ class Planning extends CommonGLPI
         echo "<tr class='tab_bg_2'><td>" . __('Period') . "&nbsp;";
 
         if (isset($params["rand_user"])) {
+            $_POST['parent_itemtype'] = $params["parent_itemtype"] ?? '';
+            $_POST['parent_items_id'] = $params["parent_items_id"] ?? '';
+            $_POST['parent_fk_field'] = $params["parent_fk_field"] ?? '';
             echo "<span id='user_available" . $params["rand_user"] . "'>";
             include_once(GLPI_ROOT . '/ajax/planningcheck.php');
             echo "</span>";

@@ -163,10 +163,10 @@ class Peripheral extends InventoryAsset
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
                     $val->entities_id = $this->entities_id;
-                    $items_id = $peripheral->add(Toolbox::addslashes_deep((array)$val));
+                    $items_id = $peripheral->add(Toolbox::addslashes_deep((array)$val), [], false);
                 } else {
                     $items_id = $data['found_inventories'][0];
-                    $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + (array)$val));
+                    $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + (array)$val), false);
                 }
 
                 $peripherals[] = $items_id;
@@ -224,7 +224,7 @@ class Peripheral extends InventoryAsset
                     if ($peripherals_id == $data['id']) {
                         unset($peripherals[$key]);
                         unset($db_peripherals[$keydb]);
-                        $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1]);
+                        $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1], false);
                         break;
                     }
                 }
@@ -235,7 +235,7 @@ class Peripheral extends InventoryAsset
            // Delete peripherals links in DB
             foreach ($db_peripherals as $keydb => $data) {
                 if ($data['is_dynamic']) {
-                    $computer_Item->delete(['id' => $keydb], 1);
+                    $computer_Item->delete(['id' => $keydb], true);
                 }
             }
         }
@@ -254,6 +254,6 @@ class Peripheral extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return true;
+        return $conf->import_peripheral == 1;
     }
 }

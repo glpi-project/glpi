@@ -749,10 +749,7 @@ JAVASCRIPT;
             || !Session::haveAccessToEntity($entities_id)
         ) {
             echo "<input type='hidden' name='users_id' value='" . $uid . "'>";
-            echo Dropdown::getDropdownName(
-                User::getTable(),
-                $uid
-            );
+            echo getUserName($uid);
         } else {
             User::dropdown([
                 'value'        => $uid,

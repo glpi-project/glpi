@@ -1057,7 +1057,7 @@ abstract class API
      * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optionnal
      * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
      * - 'only_id'          (default: false): keep only id in fields list. Optionnal
-     * - 'range'            (default: 0-50): limit the list to start-end attributes
+     * - 'range'            (default: 0-49): limit the list to start-end attributes
      * - 'sort'             (default: id): sort by the field.
      * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
      * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
@@ -1076,11 +1076,11 @@ abstract class API
 
         $itemtype = $this->handleDepreciation($itemtype);
 
-       // default params
+        // default params
         $default = ['expand_dropdowns' => false,
             'get_hateoas'       => true,
             'only_id'           => false,
-            'range'             => "0-" . $_SESSION['glpilist_limit'],
+            'range'             => "0-" . ($_SESSION['glpilist_limit'] - 1),
             'sort'              => "id",
             'order'             => "ASC",
             'searchText'        => null,
@@ -1099,21 +1099,17 @@ abstract class API
         $item->getEmpty();
         $table = getTableForItemType($itemtype);
 
-       // transform range parameter in start and limit variables
-        if (isset($params['range']) > 0) {
-            if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
-                $range = explode("-", $params['range']);
-                $params['start']      = $range[0];
-                $params['list_limit'] = $range[1] - $range[0] + 1;
-                $params['range']      = $range;
-            } else {
-                $this->returnError("range must be in format : [start-end] with integers");
-            }
+        // transform range parameter in start and limit variables
+        if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
+            $range = explode("-", $params['range']);
+            $params['start']      = $range[0];
+            $params['list_limit'] = $range[1] - $range[0] + 1;
+            $params['range']      = $range;
         } else {
-            $params['range'] = [0, $_SESSION['glpilist_limit']];
+            $this->returnError("range must be in format : [start-end] with integers");
         }
 
-       // check parameters
+        // check parameters
         if (
             isset($params['order'])
             && !in_array(strtoupper($params['order']), ['DESC', 'ASC'])
@@ -1529,7 +1525,7 @@ abstract class API
      *            - value : value to search.
      *    - 'sort' :  id of searchoption to sort by (default 1). Optionnal.
      *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optionnal.
-     *    - 'range' : a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-200. (default 0-50)
+     *    - 'range' : a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-199. (default 0-49)
      *                Optionnal.
      *    - 'forcedisplay': array of columns to display (default empty = empty use display pref and search criterias).
      *                      Some columns will be always presents (1-id, 2-name, 80-Entity).
@@ -1627,7 +1623,7 @@ abstract class API
         }
 
        // transform range parameter in start and limit variables
-        if (isset($params['range']) > 0) {
+        if (isset($params['range'])) {
             if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
                 $range = explode("-", $params['range']);
                 $params['start']      = $range[0];
@@ -1637,7 +1633,7 @@ abstract class API
                 $this->returnError("range must be in format : [start-end] with integers");
             }
         } else {
-            $params['range'] = [0, $_SESSION['glpilist_limit']];
+            $params['range'] = [0, $_SESSION['glpilist_limit'] - 1];
         }
 
        // force reset

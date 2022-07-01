@@ -34,7 +34,7 @@
  */
 
 /**
- * Update from 9.5.x to 10.0.0
+ * Update from 10.0.0 to 10.0.1
  *
  * @return bool for success (will die for most error)
  **/

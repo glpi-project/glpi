@@ -266,6 +266,7 @@ class Printer extends CommonDBTM
                 Certificate_Item::class,
                 Computer_Item::class,
                 Item_Project::class,
+                Printer_CartridgeInfo::class
             ]
         );
 
@@ -431,6 +432,14 @@ class Printer extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '72',
+            'table'              => 'glpi_autoupdatesystems',
+            'field'              => 'name',
+            'name'               => AutoUpdateSystem::getTypeName(1),
             'datatype'           => 'dropdown'
         ];
 

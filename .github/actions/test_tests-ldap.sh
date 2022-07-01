@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 ATOUM_ADDITIONNAL_OPTIONS=""
 if [[ "$CODE_COVERAGE" = true ]]; then

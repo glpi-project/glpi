@@ -291,6 +291,17 @@ class Lockedfield extends CommonDBTM
     {
         global $CFG_GLPI, $DB;
 
+        $iterator = $DB->request([
+            'SELECT' => ['itemtype', 'field'],
+            'FROM'   => $this->getTable(),
+            'WHERE'  => ['is_global' => 1]
+        ]);
+
+        $lockeds = [];
+        foreach ($iterator as $row) {
+            $lockeds[$row['itemtype']][$row['field']] = true;
+        }
+
         $lockable = [];
         $std_fields = [
             'name',
@@ -306,26 +317,49 @@ class Lockedfield extends CommonDBTM
             'locations_id',
             'networks_id',
             'manufacturers_id',
-            'uuid'
+            'uuid',
+            'entities_id'
         ];
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
 
         foreach ($itemtypes as $itemtype) {
+            $search_options = Search::getOptions($itemtype);
             $fields = $std_fields;
             $fields[] = strtolower($itemtype) . 'models_id'; //model relation field
             $fields[] = strtolower($itemtype) . 'types_id'; //type relation field
 
             foreach ($fields as $field) {
-                if ($DB->fieldExists($itemtype::getTable(), $field)) {
+                if ($DB->fieldExists($itemtype::getTable(), $field) && !isset($lockeds[$itemtype][$field])) {
                     $name = sprintf(
                         '%1$s - %2$s',
                         $itemtype,
                         $field
                     );
+
+                    $field_name = $field;
+                    foreach ($search_options as $search_option) {
+                        if (isset($search_option['linkfield']) && $search_option['linkfield'] == $field) {
+                            $field_name = $search_option['name'];
+                            break;
+                        } else if (isset($search_option['field']) && $search_option['field'] == $field) {
+                            $field_name = $search_option['name'];
+                            break;
+                        }
+                    }
+
+                    if ($field_name === $field) {
+                        //name not found :(
+                        $table = getTableNameForForeignKeyField($field);
+                        if ($table !== '' && $table !== 'UNKNOWN') {
+                            $type = getItemTypeForTable($table);
+                            $field_name = $type::getTypeName(1);
+                        }
+                    }
+
                     $dname = sprintf(
                         '%1$s - %2$s',
                         $itemtype::getTypeName(1),
-                        $field
+                        $field_name
                     );
 
                     $lockable[$name] = $dname;

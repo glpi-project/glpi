@@ -160,9 +160,9 @@
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }}
-         {{ options.min is defined ? 'min=' ~ options.min : '' }}
-         {{ options.max is defined ? 'max=' ~ options.max : '' }}
-         {{ options.step is defined ? 'step=' ~ options.step : '' }} />
+         {% if options.min is defined %}min="{{ options.min }}"{% endif %}
+         {% if options.max is defined %}max="{{ options.max }}"{% endif %}
+         {% if options.step is defined %}step="{{ options.step }}"{% endif %} />
    {% endset %}
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
@@ -369,6 +369,13 @@
             showInput: true,
             preferredFormat: "hex",
             type: "text",
+            change: function(color) {
+                if (color.getAlpha() !== 1) {
+                    let hex = color.toHexString();
+                    hex += ("0" + Math.round(parseFloat(color.getAlpha()) * 255).toString(16)).slice(-2);
+                    this.value = hex;
+                }
+            }
         });
       });
       </script>
@@ -423,9 +430,9 @@
          {% set url = options['url'] ?? null %}
          {% set options = options|filter((v, k) => k != 'url' and k != 'clearable') %}
          {% if url is not empty %}
-            <a href="{{ url }}" {{ call('Html::parseAttributes', [link_options]) }}>
+            <a href="{{ url }}" {{ call('Html::parseAttributes', [link_options])|raw }}>
          {% endif %}
-               <img src="{{ value|verbatim_value }}" {{ call('Html::parseAttributes', [options]) }} />
+               <img src="{{ value|verbatim_value }}" {{ call('Html::parseAttributes', [options])|raw }} />
          {% if url is not empty %}
             </a>
          {% endif %}

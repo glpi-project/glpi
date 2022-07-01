@@ -245,6 +245,47 @@ class Toolbox extends DbTestCase
          ->isIdenticalTo($expected);
     }
 
+
+    protected function isJSONProvider()
+    {
+        return [
+            [
+                '{"validJson":true}',
+                true
+            ], [
+                '{"invalidJson":true',
+                false
+            ], [
+                '"valid"',
+                true
+            ], [
+                'null',
+                true
+            ], [
+                1000,
+                true
+            ], [
+                [1, 2, 3],
+                false
+            ], [
+                (object) ['json' => true],
+                false
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider isJsonProvider
+     */
+    public function testIsJSON($json, $expected)
+    {
+        $this
+         ->variable(\Toolbox::isJSON($json, true))
+         ->isIdenticalTo($expected);
+    }
+
+
+
     public function testInvalidJsonDecode()
     {
         $invalid = '"Monitor":"6","Computer":"35"';
@@ -550,10 +591,17 @@ class Toolbox extends DbTestCase
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
         $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
 
-       // Processed data is expected to be escaped
-        $content_text = \Toolbox::addslashes_deep($content_text);
-        $expected_result = Sanitizer::encodeHtmlSpecialChars($expected_result);
+        // Processed data is expected to be sanitized, and expected result should remain sanitized
+        $this->string(
+            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id => ['tag' => $img_tag]])
+        )->isEqualTo(Sanitizer::sanitize($expected_result));
 
+        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
+        $this->string(
+            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id => ['tag' => $img_tag]])
+        )->isEqualTo(\Toolbox::addslashes_deep($expected_result));
+
+        // Processed data may also be not sanitized, and expected result should not be sanitized
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
         )->isEqualTo($expected_result);
@@ -607,10 +655,6 @@ class Toolbox extends DbTestCase
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
         $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
-
-       // Processed data is expected to be escaped
-        $content_text = \Toolbox::addslashes_deep($content_text);
-        $expected_result = Sanitizer::encodeHtmlSpecialChars($expected_result);
 
        // Save old config
         global $CFG_GLPI;
@@ -682,10 +726,17 @@ class Toolbox extends DbTestCase
             $expected_result .= '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $doc['tag'] . '" width="10" src="' . $expected_url . '" /></a>';
         }
 
-       // Processed data is expected to be escaped
-        $content_text = \Toolbox::addslashes_deep($content_text);
-        $expected_result = Sanitizer::encodeHtmlSpecialChars($expected_result);
+        // Processed data is expected to be sanitized, and expected result should remain sanitized
+        $this->string(
+            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, $doc_data)
+        )->isEqualTo(Sanitizer::sanitize($expected_result));
 
+        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
+        $this->string(
+            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, $doc_data)
+        )->isEqualTo(\Toolbox::addslashes_deep($expected_result));
+
+        // Processed data may also be not sanitized, and expected result should not be sanitized
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, $doc_data)
         )->isEqualTo($expected_result);
@@ -727,15 +778,27 @@ class Toolbox extends DbTestCase
         $expected_url_2    = '/front/document.send.php?docid=' . $doc_id_2 . '&tickets_id=' . $item->fields['id'];
         $expected_result_2 = '<a href="' . $expected_url_2 . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url_2 . '" /></a>';
 
-       // Processed data is expected to be escaped
-        $content_text = \Toolbox::addslashes_deep($content_text);
-        $expected_result_1 = Sanitizer::encodeHtmlSpecialChars($expected_result_1);
-        $expected_result_2 = Sanitizer::encodeHtmlSpecialChars($expected_result_2);
 
+        // Processed data is expected to be sanitized, and expected result should remain sanitized
+        $this->string(
+            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id_1 => ['tag' => $img_tag]])
+        )->isEqualTo(Sanitizer::sanitize($expected_result_1));
+        $this->string(
+            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id_2 => ['tag' => $img_tag]])
+        )->isEqualTo(Sanitizer::sanitize($expected_result_2));
+
+        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
+        $this->string(
+            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id_1 => ['tag' => $img_tag]])
+        )->isEqualTo(\Toolbox::addslashes_deep($expected_result_1));
+        $this->string(
+            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id_2 => ['tag' => $img_tag]])
+        )->isEqualTo(\Toolbox::addslashes_deep($expected_result_2));
+
+        // Processed data may also be not sanitized, and expected result should not be sanitized
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, [$doc_id_1 => ['tag' => $img_tag]])
         )->isEqualTo($expected_result_1);
-
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, [$doc_id_2 => ['tag' => $img_tag]])
         )->isEqualTo($expected_result_2);
@@ -768,10 +831,17 @@ class Toolbox extends DbTestCase
         $expected_result  = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
         $expected_result .= $expected_result;
 
-       // Processed data is expected to be escaped
-        $content_text = \Toolbox::addslashes_deep($content_text);
-        $expected_result = Sanitizer::encodeHtmlSpecialChars($expected_result);
+        // Processed data is expected to be sanitized, and expected result should remain sanitized
+        $this->string(
+            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id => ['tag' => $img_tag]])
+        )->isEqualTo(Sanitizer::sanitize($expected_result));
 
+        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
+        $this->string(
+            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id => ['tag' => $img_tag]])
+        )->isEqualTo(\Toolbox::addslashes_deep($expected_result));
+
+        // Processed data may also be not sanitized, and expected result should not be sanitized
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
         )->isEqualTo($expected_result);

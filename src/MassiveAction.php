@@ -472,7 +472,6 @@ class MassiveAction
     public function __set(string $property, $value)
     {
         // TODO Deprecate access to variables in GLPI 10.1.
-        $value = null;
         switch ($property) {
             case 'display_progress_bars':
                 $this->$property = $value;
@@ -928,7 +927,7 @@ class MassiveAction
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         switch ($ma->getAction()) {
             case 'update':
@@ -1201,12 +1200,14 @@ class MassiveAction
                             $search['condition'][] = 'is_problem';
                             break;
                         case 'Ticket':
-                            $search['condition'][] = [
-                                'OR' => [
-                                    'is_incident',
-                                    'is_request'
-                                ]
-                            ];
+                            if ($DB->fieldExists($search['table'], 'is_incident') || $DB->fieldExists($search['table'], 'is_request')) {
+                                $search['condition'][] = [
+                                    'OR' => [
+                                        'is_incident',
+                                        'is_request'
+                                    ]
+                                ];
+                            }
                             break;
                     }
                     if (isset($ma->POST['additionalvalues'])) {

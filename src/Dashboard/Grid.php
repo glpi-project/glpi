@@ -893,103 +893,118 @@ HTML;
          <i class='fas fa-exclamation-triangle'></i>" .
          __('empty card!') . "
       </div>";
-        $cards = $this->getAllDasboardCards();
-        if (!isset($cards[$card_id])) {
-            return $notfound_html;
-        }
-        $card  = $cards[$card_id];
+        $render_error_html = "<div class='empty-card card-error '>
+         <i class='fas fa-exclamation-triangle'></i>" .
+         __('Error rendering card!') .
+            "</br>" .
+            $card_id .
+            "</div>";
 
-       // allows plugins to control uniqueness of its cards in cache system
-        if (isset($card['custom_hash'])) {
-            $card_options['custom_hash'] = $card['custom_hash'];
-        }
-
-       // manage cache
-        $options_footprint = sha1(serialize($card_options) .
-         ($_SESSION['glpiactiveentities_string'] ?? "") .
-         ($_SESSION['glpilanguage']));
-
-        $use_cache = !$force
-         && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
-         && (!isset($card['cache']) || $card['cache'] == true);
-        $cache_key    = "dashboard_card_{$dashboard}_{$options_footprint}";
-        $cache_age    = 40;
-
-        if ($use_cache) {
-           // browser cache
-            if (GLPI_AJAX_DASHBOARD) {
-                header_remove('Pragma');
-                header('Cache-Control: public');
-                header('Cache-Control: max-age=' . $cache_age);
-                header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
-            }
-
-            // server cache
-            $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
-            if (isset($dashboard_cards[$gridstack_id])) {
-                return (string) $dashboard_cards[$gridstack_id];
-            }
-        }
-
-        $html  = "";
         $start = microtime(true);
-
-       // call provider to retrieve data
-        if (isset($card['provider'])) {
-            $provider_args = ($card['args'] ?? []) + [
-                'params' => [
-                    'label' => $card['label'] ?? ""
-                ]
-            ];
-            if (isset($card_options['args']['apply_filters'])) {
-                $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
+        try {
+            $cards = $this->getAllDasboardCards();
+            if (!isset($cards[$card_id])) {
+                return $notfound_html;
             }
-            $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
-        }
-        $widget_args = array_merge($widget_args ?? [], $card_options['args'] ?? []);
+            $card = $cards[$card_id];
 
-       // call widget function to construct html
-        $all_widgets = Widget::getAllTypes();
-        $widgettype  = $card_options['args']['widgettype'] ?? "";
-        $widgetfct   = $all_widgets[$widgettype]['function'] ?? "";
-        if (strlen($widgetfct)) {
-           // clean urls in embed mode
-            if (isset($card_options['embed']) && $card_options['embed']) {
-                unset($widget_args['url']);
+            // allows plugins to control uniqueness of its cards in cache system
+            if (isset($card['custom_hash'])) {
+                $card_options['custom_hash'] = $card['custom_hash'];
+            }
 
-                if (isset($widget_args['data'])) {
-                    $unset_url = function (&$array) use (&$unset_url) {
-                        unset($array['url']);
-                        foreach ($array as &$value) {
-                            if (is_array($value)) {
-                                $unset_url($value, 'url');
-                            }
-                        }
-                    };
-                    $unset_url($widget_args['data']);
+            // manage cache
+            $options_footprint = sha1(serialize($card_options) .
+                ($_SESSION['glpiactiveentities_string'] ?? "") .
+                ($_SESSION['glpilanguage']));
+
+            $use_cache = !$force
+                && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
+                && (!isset($card['cache']) || $card['cache'] == true);
+            $cache_key = "dashboard_card_{$dashboard}_{$options_footprint}";
+            $cache_age = 40;
+
+            if ($use_cache) {
+                // browser cache
+                if (GLPI_AJAX_DASHBOARD) {
+                    header_remove('Pragma');
+                    header('Cache-Control: public');
+                    header('Cache-Control: max-age=' . $cache_age);
+                    header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
+                }
+
+                // server cache
+                $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
+                if (isset($dashboard_cards[$gridstack_id])) {
+                    return (string)$dashboard_cards[$gridstack_id];
                 }
             }
 
-            if (isset($card['filters'])) {
-                $widget_args['filters'] = $card['filters'];
+            $html = "";
+
+            // call provider to retrieve data
+            if (isset($card['provider'])) {
+                $provider_args = ($card['args'] ?? []) + [
+                    'params' => [
+                        'label' => $card['label'] ?? ""
+                    ]
+                ];
+                if (isset($card_options['args']['apply_filters'])) {
+                    $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
+                }
+                $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
+            }
+            $widget_args = array_merge($widget_args ?? [], $card_options['args'] ?? []);
+
+            // call widget function to construct html
+            $all_widgets = Widget::getAllTypes();
+            $widgettype = $card_options['args']['widgettype'] ?? "";
+            $widgetfct = $all_widgets[$widgettype]['function'] ?? "";
+            if (strlen($widgetfct)) {
+                // clean urls in embed mode
+                if (isset($card_options['embed']) && $card_options['embed']) {
+                    unset($widget_args['url']);
+
+                    if (isset($widget_args['data'])) {
+                        $unset_url = function (&$array) use (&$unset_url) {
+                            unset($array['url']);
+                            foreach ($array as &$value) {
+                                if (is_array($value)) {
+                                    $unset_url($value, 'url');
+                                }
+                            }
+                        };
+                        $unset_url($widget_args['data']);
+                    }
+                }
+
+                if (isset($card['filters'])) {
+                    $widget_args['filters'] = $card['filters'];
+                }
+
+                // call widget function
+                $html = call_user_func($widgetfct, $widget_args);
             }
 
-           // call widget function
-            $html = call_user_func($widgetfct, $widget_args);
-        }
+            // display a warning for empty card
+            if (strlen($html) === 0) {
+                return $notfound_html;
+            }
 
-       // display a warning for empty card
-        if (strlen($html) === 0) {
-            return $notfound_html;
-        }
+            $execution_time = round(microtime(true) - $start, 3);
 
-        $execution_time = round(microtime(true) - $start, 3);
-
-       // store server cache
-        if (strlen($dashboard)) {
-            $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
-            $dashboard_cards[$gridstack_id] = $html;
-            $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT" . $cache_age . "S"));
+            // store server cache
+            if (strlen($dashboard)) {
+                $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
+                $dashboard_cards[$gridstack_id] = $html;
+                $GLPI_CACHE->set($cache_key, $dashboard_cards, new \DateInterval("PT" . $cache_age . "S"));
+            }
+        } catch (\Exception $e) {
+            $html = $render_error_html;
+            $execution_time = round(microtime(true) - $start, 3);
+            // Log the error message without exiting
+            global $GLPI;
+            $GLPI->getErrorHandler()->handleException($e, true);
         }
 
         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {

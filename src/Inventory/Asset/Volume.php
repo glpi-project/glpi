@@ -42,7 +42,7 @@ use Toolbox;
 
 class Volume extends InventoryAsset
 {
-    /** @var @var Conf */
+    /** @var Conf */
     private $conf;
 
     public function prepare(): array
@@ -175,7 +175,7 @@ class Volume extends InventoryAsset
             foreach ($db_itemdisk as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
-                    $itemDisk->delete(['id' => $dbid], 1);
+                    $itemDisk->delete(['id' => $dbid], true);
                 }
             }
         }

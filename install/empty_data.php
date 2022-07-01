@@ -181,10 +181,10 @@ $empty_data_builder = new class
             'helpdesk_doc_url' => '',
             'central_doc_url' => '',
             'documentcategories_id_forticket' => '0',
-            'monitors_management_restrict' => '2',
-            'phones_management_restrict' => '2',
-            'peripherals_management_restrict' => '2',
-            'printers_management_restrict' => '2',
+            'monitors_management_restrict' => Config::NO_MANAGEMENT,
+            'phones_management_restrict' => Config::NO_MANAGEMENT,
+            'peripherals_management_restrict' => Config::NO_MANAGEMENT,
+            'printers_management_restrict' => Config::NO_MANAGEMENT,
             'use_log_in_files' => '1',
             'time_offset' => '0',
             'is_contact_autoupdate' => '1',
@@ -769,6 +769,16 @@ $empty_data_builder = new class
                 'logs_lifetime' => 60,
             ], [
                 'id' => 43,
+                'itemtype' => 'Agent',
+                'name' => 'Cleanoldagents',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+            ], [
+                'id' => 44,
                 'itemtype' => 'Change',
                 'name' => 'createinquest',
                 'frequency' => 86400,
@@ -1823,7 +1833,7 @@ $empty_data_builder = new class
         $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
         $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
         $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
-        $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6];
+        $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6, 15];
         $ADDTODISPLAYPREF['Database'] = [2, 3, 6, 9, 10];
         $ADDTODISPLAYPREF[Socket::class] = [5, 6, 9, 8, 7];
         $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
@@ -7862,6 +7872,46 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'rule_change',
+                'rights' => READ,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'recurrentchange',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'recurrentchange',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'recurrentchange',
+                'rights' => READ,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'recurrentchange',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'recurrentchange',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'recurrentchange',
+                'rights' => READ,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'recurrentchange',
+                'rights' => READ,
+            ],
+            [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'recurrentchange',
                 'rights' => READ,
             ],
         ];

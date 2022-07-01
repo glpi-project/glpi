@@ -1097,7 +1097,7 @@ class NotificationTarget extends CommonDBChild
     {
         if (!empty($this->target_object)) {
             foreach ($this->target_object as $val) {
-                if ($val->fields['groups_id_tech'] > 0) {
+                if (isset($val->fields['groups_id_tech']) && $val->fields['groups_id_tech'] > 0) {
                     $this->addForGroup(0, $val->fields['groups_id_tech']);
                 }
             }

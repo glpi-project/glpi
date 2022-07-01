@@ -15,7 +15,7 @@ jobs:
     runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
     steps:
       - name: "Cancel outdated workflow runs"
-        uses: "styfle/cancel-workflow-action@0.9.1"
+        uses: "styfle/cancel-workflow-action@0.10.0"
         with:
           all_but_latest: true
           workflow_id: ${{ github.event.workflow.id }}

@@ -36,6 +36,11 @@
 {% set is_vertical = user_pref('page_layout') == 'vertical' %}
 
 <body class="{{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }}">
+   {% if constant('SKIP_UPDATES') is defined and call('Update::isDbUpToDate') == false %}
+      <div class="banner-need-update">
+         {{ __("You are bypassing a needed update") }}
+      </div>
+   {% endif %}
    {{ include('layout/parts/impersonate_banner.html.twig') }}
    {{ include('components/messages_after_redirect_toasts.html.twig', {'display_container': true}) }}
 

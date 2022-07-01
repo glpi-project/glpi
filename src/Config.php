@@ -49,6 +49,10 @@ class Config extends CommonDBTM
     const DELETE_ALL = -1;
     const KEEP_ALL = 0;
 
+    public const UNIT_MANAGEMENT = 0;
+    public const GLOBAL_MANAGEMENT = 1;
+    public const NO_MANAGEMENT = 2;
+
    // From CommonGLPI
     protected $displaylist         = false;
 
@@ -1097,8 +1101,10 @@ class Config extends CommonDBTM
                 if ($isurgency[$urgency] && $isimpact[$impact]) {
                     $bgcolor = $_SESSION["glpipriority_$pri"];
                     echo "<td class='center' bgcolor='$bgcolor'>";
-                    Ticket::dropdownPriority(['value' => $pri,
-                        'name'  => "_matrix_${urgency}_${impact}"
+                    Ticket::dropdownPriority([
+                        'value' => $pri,
+                        'name'  => "_matrix_${urgency}_${impact}",
+                        'enable_filtering' => false,
                     ]);
                     echo "</td>";
                 } else {
@@ -2463,11 +2469,10 @@ HTML;
      **/
     public static function dropdownGlobalManagement($name, $value, $rand = null)
     {
-
         $choices = [
-            __('Yes - Restrict to unit management for manual add'),
-            __('Yes - Restrict to global management for manual add'),
-            __('No'),
+            self::UNIT_MANAGEMENT => __('Yes - Restrict to unit management'),
+            self::GLOBAL_MANAGEMENT => __('Yes - Restrict to global management'),
+            self::NO_MANAGEMENT => __('No'),
         ];
         Dropdown::showFromArray($name, $choices, ['value' => $value, 'rand' => $rand]);
     }
@@ -3768,11 +3773,26 @@ HTML;
         }
 
         if (array_key_exists('value', $this->oldvalues)) {
+            $newvalue = (string)$this->fields['value'];
+            $oldvalue = (string)$this->oldvalues['value'];
+
+            if ($newvalue === $oldvalue) {
+                return;
+            }
+
+            // avoid inserting truncated json in logs
+            if (strlen($newvalue) > 255 && Toolbox::isJSON($newvalue)) {
+                $newvalue = "{...}";
+            }
+            if (strlen($oldvalue) > 255 && Toolbox::isJSON($oldvalue)) {
+                $oldvalue = "{...}";
+            }
+
             $this->logConfigChange(
                 $this->fields['context'],
                 $this->fields['name'],
-                (string)$this->fields['value'],
-                (string)$this->oldvalues['value']
+                $newvalue,
+                $oldvalue
             );
         }
     }

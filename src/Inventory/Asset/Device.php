@@ -47,7 +47,7 @@ abstract class Device extends InventoryAsset
      *
      * @param CommonDBTM $item    Item instance
      * @param array      $data    Data part
-     * @param string     $idclass Item device class
+     * @param string     $id_class Item device class
      */
     public function __construct(CommonDBTM $item, array $data = null, $id_class)
     {
@@ -112,7 +112,7 @@ abstract class Device extends InventoryAsset
                 }
 
                 //create device or get existing device ID
-                $device_id = $device->import(\Toolbox::addslashes_deep((array)$val));
+                $device_id = $device->import(\Toolbox::addslashes_deep((array)$val) + ['with_history' => false]);
 
                 //remove all existing instances
                 if (!isset($deleted_items[$device_id])) {

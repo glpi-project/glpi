@@ -41,6 +41,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Glpi\Toolbox\VersionParser;
+use Plugin;
 
 class CheckSchemaIntegrityCommand extends AbstractCommand
 {
@@ -129,6 +130,13 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             InputOption::VALUE_NONE,
             __('Check tokens related to migration from signed to unsigned integers in primary/foreign keys.')
         );
+
+        $this->addOption(
+            'plugin',
+            'p',
+            InputOption::VALUE_REQUIRED,
+            __('Plugin to check. If option is not used, checks will be done on GLPI core database tables.')
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -160,12 +168,33 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             );
         }
 
-        $schema_file = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $install_version_normalized);
-        if (!file_exists($schema_file)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version) . '</error>',
-                self::ERROR_UNABLE_TO_READ_EMPTYSQL
-            );
+        if (!$input->getOption('plugin')) {
+            // Check tables of core
+            $schema_file = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $install_version_normalized);
+            if (!file_exists($schema_file)) {
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version) . '</error>',
+                    self::ERROR_UNABLE_TO_READ_EMPTYSQL
+                );
+            }
+            $context = 'core';
+        } else {
+            // check tables of a plugin
+            $plugin_key = $input->getOption('plugin');
+            if (!Plugin::isPluginActive($plugin_key)) {
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . sprintf(__('The plugin "%s" is not found or not activated.'), $plugin_key) . '</error>',
+                    self::ERROR_UNABLE_TO_READ_EMPTYSQL
+                );
+            }
+            $function_name = sprintf('plugin_%s_getSchemaPath', $plugin_key);
+            if (!function_exists($function_name) || ($schema_file = $function_name()) === null) {
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . sprintf(__('The plugin "%s" does not provide a SQL schema file.'), $plugin_key) . '</error>',
+                    self::ERROR_UNABLE_TO_READ_EMPTYSQL
+                );
+            }
+            $context = 'plugin:' . $plugin_key;
         }
 
         $checker = new DatabaseSchemaIntegrityChecker(
@@ -179,7 +208,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         );
 
         try {
-            $differences = $checker->checkCompleteSchema($schema_file, true);
+            $differences = $checker->checkCompleteSchema($schema_file, true, $context);
         } catch (\Throwable $e) {
             $output->writeln(
                 '<error>' . $e->getMessage() . '</error>',

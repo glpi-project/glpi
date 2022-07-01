@@ -411,8 +411,7 @@ class RuleTicket extends RuleCommonITILObject
             'name'        => 'Supplier 1',
             'entities_id' => 0,
         ]);
-
-        $this->dump($suppliers_id);
+        $this->integer($suppliers_id)->isGreaterThan(0);
 
         $location = new \Location();
         $locations_id = $location->add([

@@ -344,15 +344,17 @@ class DatabaseInstance extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'            => '5',
-            'table'         =>  DatabaseInstance::getTable(),
-            'field'         => 'items_id',
-            'name'               => _n('Associated item', 'Associated items', 2),
-            'nosearch'           => true,
-            'massiveaction' => false,
-            'forcegroupby'  =>  true,
-            'additionalfields'   => ['itemtype'],
-            'joinparams'    => ['jointype' => 'child']
+            'id'               => '5',
+            'table'            => DatabaseInstance::getTable(),
+            'field'            => 'items_id',
+            'name'             => _n('Associated item', 'Associated items', 2),
+            'nosearch'         => true,
+            'massiveaction'    => false,
+            'forcegroupby'     => true,
+            'datatype'         => 'specific',
+            'searchtype'       => 'equals',
+            'additionalfields' => ['itemtype'],
+            'joinparams'       => ['jointype' => 'child']
         ];
 
         $tab[] = [
@@ -439,6 +441,31 @@ class DatabaseInstance extends CommonDBTM
 
         return $tab;
     }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'items_id':
+                $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
+                if ($itemtype !== null && class_exists($itemtype)) {
+                    if ($values[$field] > 0) {
+                        $item = new $itemtype();
+                        $item->getFromDB($values[$field]);
+                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                    }
+                } else {
+                    return ' ';
+                }
+                break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
 
     /**
      * Get item types that can be linked to a database

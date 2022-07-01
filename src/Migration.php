@@ -1352,7 +1352,7 @@ class Migration
             return;
         }
 
-        $this->displayTitle(sprintf('Rename "%s" itemtype to "%s"', $old_itemtype, $new_itemtype));
+        $this->displayMessage(sprintf(__('Renaming "%s" itemtype to "%s"...'), $old_itemtype, $new_itemtype));
 
         if ($update_structure) {
             $old_table = getTableForItemType($old_itemtype);
@@ -1414,12 +1414,12 @@ class Migration
             }
 
            //1. Rename itemtype table
-            $this->displayMessage(sprintf('Rename "%s" table to "%s"', $old_table, $new_table));
+            $this->displayMessage(sprintf(__('Renaming "%s" table to "%s"...'), $old_table, $new_table));
             $this->renameTable($old_table, $new_table);
 
            //2. Rename foreign key fields
             $this->displayMessage(
-                sprintf('Rename "%s" foreign keys to "%s" in all tables', $old_fkey, $new_fkey)
+                sprintf(__('Renaming "%s" foreign keys to "%s" in all tables...'), $old_fkey, $new_fkey)
             );
             foreach ($fkey_column_array as $fkey_column) {
                 $fkey_table   = $fkey_column['TABLE_NAME'];
@@ -1442,7 +1442,7 @@ class Migration
 
        //3. Update "itemtype" values in all tables
         $this->displayMessage(
-            sprintf('Rename "%s" itemtype to "%s" in all tables', $old_itemtype, $new_itemtype)
+            sprintf(__('Renaming "%s" itemtype to "%s" in all tables...'), $old_itemtype, $new_itemtype)
         );
         $itemtype_column_iterator = $DB->request(
             [
