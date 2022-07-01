@@ -84,6 +84,42 @@ function update956to957()
     );
     /** /Replace -1 values for glpi_networkportaliases.networkports_id_alias field */
 
+    /** Fix unicity in glpi_items_operatingsystems table */
+    // Some items have linked to both '0' and '-1' `operatingsystems_id`
+    // In this case, updating '-1' to '0' will fail due to unicity key.
+    // First, find item that contains duplicated data
+    $data = $DB->request([
+        'SELECT' => [
+            'MAX' => 'id as valid_entry_id',
+            'items_id',
+            'itemtype',
+            'operatingsystemarchitectures_id',
+        ],
+        'FROM' => 'glpi_items_operatingsystems',
+        'WHERE' => [
+            'operatingsystems_id' => [-1, 0]
+        ],
+        'GROUPBY' => [
+            'items_id',
+            'itemtype',
+            'operatingsystemarchitectures_id',
+        ],
+        'HAVING' => [new QueryExpression("COUNT(*) > 1")]
+    ]);
+
+    // Keep only the latest value for each items with duplicated data
+    foreach ($data as $row) {
+        $delete = $DB->buildDelete('glpi_items_operatingsystems', [
+            'operatingsystems_id' => [-1, 0],
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'operatingsystemarchitectures_id' => $row['operatingsystemarchitectures_id'],
+            'id' => ['!=', $row['valid_entry_id']],
+        ]);
+        $migration->addPostQuery($delete);
+    }
+    /** /Fix unicity in glpi_items_operatingsystems table */
+
     /** Replace -1 values for glpi_items_operatingsystems table foreign key fields */
     foreach (['operatingsystems_id', 'operatingsystemversions_id', 'operatingsystemservicepacks_id'] as $item_os_fkey) {
         $migration->addPostQuery(
