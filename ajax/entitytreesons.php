@@ -98,7 +98,7 @@ if (!array_key_exists($subckey, $all_entitiestree)) {
 /* scans the tree to select the active entity */
 $entitiestree = [];
 $entitytree = $all_entitiestree[$subckey];
-$adapt_tree = static function (&$entities) use (&$adapt_tree, $ancestors) {
+$select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
     foreach ($entities as &$entity) {
         if (isset($ancestors[$entity['key']])) {
             $entity['expanded'] = 'true';
@@ -107,12 +107,12 @@ $adapt_tree = static function (&$entities) use (&$adapt_tree, $ancestors) {
             $entity['selected'] = 'true';
         }
         if (isset($entity['children'])) {
-            $adapt_tree($entity['children']);
+            $select_tree($entity['children']);
         }
     }
     return $entities;
 };
-$adapt_tree($entitytree);
+$select_tree($entitytree);
 $entitiestree = array_merge($entitiestree, $entitytree);
 
 echo json_encode($entitiestree);
