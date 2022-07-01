@@ -2121,7 +2121,7 @@ class Ticket extends CommonITILObject
             if (isset($this->fields["status"]) && ($this->fields["status"] == self::CLOSED)) {
                 $type = "closed";
             }
-           NotificationEvent::raiseEvent($type, $this);
+            NotificationEvent::raiseEvent($type, $this);
         }
     }
 
