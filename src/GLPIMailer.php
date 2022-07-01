@@ -34,7 +34,6 @@
  */
 
 use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\MessageIDValidation;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Glpi\Application\ErrorHandler;
 use Symfony\Component\Mailer\Transport;
@@ -137,10 +136,7 @@ class GLPIMailer
         }
 
         $validator = new EmailValidator();
-        return $validator->isValid(
-            $address,
-            class_exists(MessageIDValidation::class) ? new MessageIDValidation() : new RFCValidation()
-        );
+        return $validator->isValid($address, new RFCValidation());
     }
 
     /**
