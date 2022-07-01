@@ -1105,6 +1105,7 @@ class Inventory extends InventoryTestCase
             ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
             ->string['version']->isIdenticalTo('2.5.2-1.fc31')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         //check created computer
@@ -1180,6 +1181,7 @@ class Inventory extends InventoryTestCase
             ->string['name']->isIdenticalTo('LF014-2017-02-20-12-19-56')
             ->string['version']->isIdenticalTo('2.3.19')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         //check matchedlogs
@@ -1603,6 +1605,7 @@ class Inventory extends InventoryTestCase
             ->string['version']->isIdenticalTo('2.3.20')
             ->string['itemtype']->isIdenticalTo('Computer')
             ->integer['items_id']->isIdenticalTo($computers_id)
+            ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         $computer = new \Computer();
@@ -4059,6 +4062,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005')
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         $computers_id = $agent['items_id'];
@@ -4229,6 +4233,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005')
          ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
 
         $computers_id = $agent['items_id'];
