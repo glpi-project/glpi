@@ -131,7 +131,7 @@ class Inventory extends \GLPITestCase
         );
         $this->integer($res->getStatusCode())->isIdenticalTo(200);
         $this->string((string)$res->getBody())
-         ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>\n");
+         ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>");
         $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
 
        //check agent in database
