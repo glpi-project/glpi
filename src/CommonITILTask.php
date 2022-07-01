@@ -548,7 +548,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $input["users_id"] = $uid;
         }
 
-        if (!isset($input["date"])) {
+        if (!isset($input["date"]) || empty($input["date"])) {
             $input["date"] = $_SESSION["glpi_currenttime"];
         }
         if (!isset($input["is_private"])) {
