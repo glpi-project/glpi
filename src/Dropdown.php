@@ -397,7 +397,7 @@ class Dropdown
         }
 
         if (strlen($icons) > 0) {
-            $output = "<div class='btn-group btn-group-sm " . ($params['width'] == "100%" ? "w-100" : "") . "' role='group'>{$output} {$icons}</div>";
+            $output = "<div class='btn-group btn-group-sm " . ($params['width'] == "100%" ? "w-150" : "") . "' role='group'>{$output} {$icons}</div>";
         }
 
         $output .= Ajax::commonDropdownUpdateItem($params, false);
