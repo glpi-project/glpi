@@ -2553,7 +2553,7 @@ class Search
 
         echo "<a id='more-criteria$rand_criteria' role='button'
             class='normalcriteria fold-search list-group-item p-2 border-0'
-            style='display: none;'>...</a>";
+            style='display: none;'></a>";
 
         echo "</div>"; // .list
 
@@ -3030,6 +3030,8 @@ JAVASCRIPT;
             $params['itemtype'] = $metacriteria['itemtype'];
             self::displayCriteria($params);
         }
+        echo "</div>";
+        echo "</div>";
         echo "</div>";
         echo "</div>";
     }
