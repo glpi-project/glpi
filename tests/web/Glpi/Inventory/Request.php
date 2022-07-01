@@ -125,6 +125,22 @@ class Request extends \GLPITestCase
                 );
             }
         )->hasCode(400)->message->contains('{"status":"error","message":"JSON not well formed!","expiration":24}');
+
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13'
+                        ],
+                        'body'   => '{ bad content'
+                    ]
+                );
+            }
+        )->hasCode(400)->message->contains('<REPLY><ERROR>XML not well formed!</ERROR></REPLY>');
+
         $this->exception(
             function () {
                 $res = $this->http_client->request(
@@ -139,7 +155,7 @@ class Request extends \GLPITestCase
                     ]
                 );
             }
-        )->hasCode(400)->message->contains(gzcompress('{"status":"error","message":"JSON not well formed!","expiration":24}'));
+        )->hasCode(400)->message->contains(gzcompress('<REPLY><ERROR>XML not well formed!</ERROR></REPLY>'));
     }
 
     public function testPrologRequest()
