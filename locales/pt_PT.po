@@ -22,6 +22,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2022
 # Pedro B., 2022
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2022
+# Pedro Vieira <pedro.vieira.11@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -8003,7 +8004,7 @@ msgstr "Dicionário a usar. Os valores possíveis são: %s"
 #: src/DBConnection.php:701 src/DBConnection.php:705
 #: src/NotificationTargetDBConnection.php:81
 msgid "Difference between main and replica"
-msgstr ""
+msgstr "Diferença entre a principal e réplica"
 
 #: src/Config.php:1672
 msgid "Digit"
@@ -13211,11 +13212,11 @@ msgstr "Campo de utilizador"
 
 #: templates/pages/login.html.twig
 msgid "Login source"
-msgstr ""
+msgstr "Forma de autenticação"
 
 #: templates/pages/login.html.twig
 msgid "Login to your account"
-msgstr ""
+msgstr "Efetue login na sua conta"
 
 #: src/Auth.php:615
 msgid "Login with external token disabled"
@@ -13568,7 +13569,7 @@ msgstr "Loja"
 
 #: src/Html.php:2736
 msgid "Massive actions"
-msgstr ""
+msgstr "Operações em massa"
 
 #: src/WifiNetwork.php:73
 msgid "Master"
@@ -13599,7 +13600,7 @@ msgstr "Máximo"
 
 #: src/DBConnection.php:618
 msgid "Max delay between main and replica (minutes)"
-msgstr ""
+msgstr "Máximo delay permitido entre a BD principal e a réplica (minutos)"
 
 #: src/Impact.php:385 src/Impact.php:1097
 msgid "Max depth"
@@ -13740,7 +13741,7 @@ msgstr "Uso de memória: %s."
 
 #: src/NotificationTargetCommonITILObject.php:813
 msgid "Mentionned user"
-msgstr ""
+msgstr "Utilizado mencionado"
 
 #: src/Software.php:980
 msgid "Merge"
@@ -13810,7 +13811,7 @@ msgstr "Mensagens"
 
 #: src/RefusedEquipment.php:135
 msgid "Method"
-msgstr ""
+msgstr "Método"
 
 #: src/Api/API.php:2664
 msgid "Method Not Allowed"
@@ -13842,12 +13843,12 @@ msgstr "Migrar plugin Racks para as tabelas nucleares do GLPI"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:59
 msgid "Migrate primary/foreign keys to unsigned integers"
-msgstr ""
+msgstr "Migrar chave priária/estrangeira para unsigned integers"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:202
 #, php-format
 msgid "Migrating column \"%s.%s\"..."
-msgstr ""
+msgstr "A migrar coluna \"%s.%s\"..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:302
 #, php-format
@@ -13889,6 +13890,7 @@ msgstr "Migração concluída."
 msgid ""
 "Migration of column \"%s.%s\" cannot be done as it contains negative values."
 msgstr ""
+"Migração da coluna \"%s.%s\" não pode ser feita pois contém valores negativos."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:104
 #, php-format
@@ -13896,6 +13898,8 @@ msgid ""
 "Migration of column \"%s.%s\" cannot be done as it is referenced in "
 "CONSTRAINT \"%s\" of table \"%s.%s\"."
 msgstr ""
+"Migração da coluna \"%s.%s\" não pode ser feita pois está a ser referenciada "
+"na CONSTRAINT \"%s\" da tabela \"%s.%s\"."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:127
 #, php-format
@@ -13903,11 +13907,13 @@ msgid ""
 "Migration of column \"%s.%s\" cannot be done as its default value is "
 "negative."
 msgstr ""
+"Migração da coluna \"%s.%s\" não pode ser feita porque o seu valor pré-definido é "
+"um valor negativo."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:221
 #, php-format
 msgid "Migration of column \"%s.%s\" failed with message \"(%s) %s\"."
-msgstr ""
+msgstr "Migração da coluna \"%s.%s\" falhou com a seguinte mensagem \"(%s) %s\"."
 
 #: src/Console/Migration/MyIsamToInnoDbCommand.php:101
 #, php-format
@@ -13970,7 +13976,7 @@ msgstr ""
 
 #: src/Ticket.php:2865
 msgid "Missing mandatory field in input"
-msgstr ""
+msgstr "Faltam preencher campos obrigatórios"
 
 #: src/IPNetwork.php:332
 msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
@@ -13982,7 +13988,7 @@ msgstr "Falta ficheiro de chave de segurança"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:80
 msgid "Mobile"
-msgstr ""
+msgstr "Telemóvel"
 
 #: src/LineOperator.php:55 src/LineOperator.php:75
 msgid "Mobile Country Code"
@@ -14063,7 +14069,7 @@ msgstr "Modelo %s (%s) não encontrado."
 
 #: src/Entity.php:1881
 msgid "Model for automatic entity transfer on inventories"
-msgstr ""
+msgstr "Modelo para transferência automática de entidades no inventário"
 
 #: src/Search.php:6839 src/ReservationItem.php:404
 msgid "Modify the comment"
@@ -14071,7 +14077,7 @@ msgstr "Modificar o comentário"
 
 #: src/RuleMatchedLog.php:243 src/RuleMatchedLog.php:323
 msgid "Module"
-msgstr ""
+msgstr "Módulo"
 
 #: src/Toolbox.php:2126 src/Features/PlanningEvent.php:794 src/Config.php:1028
 msgid "Monday"
@@ -14093,9 +14099,9 @@ msgstr[1] "Modelos de monitores"
 #: src/Rule.php:390 src/MonitorType.php:41
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tipos de monitor"
+msgstr[1] "Tipos de monitor"
+msgstr[2] "Tipos de monitor"
 
 #: src/NotificationTargetCrontask.php:43 src/NotificationTargetCrontask.php:83
 #: src/CronTask.php:2078
@@ -14105,9 +14111,9 @@ msgstr "Monitorizar acções automáticas"
 #: src/LevelAgreement.php:256
 msgid "Month"
 msgid_plural "Months"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Meses"
+msgstr[1] "Meses"
+msgstr[2] "Meses"
 
 #: src/Reservation.php:805
 msgctxt "periodicity"
@@ -18926,7 +18932,7 @@ msgstr "Regras para importar e ligar computadores"
 
 #: src/RuleImportAssetCollection.php:77
 msgid "Rules for import and link equipments"
-msgstr ""
+msgstr "Regras para importar e ligar equipamentos"
 
 #: src/RuleCollection.php:369
 msgid "Rules list"
@@ -18984,7 +18990,7 @@ msgstr "Período de execução"
 #: src/User.php:2494 src/User.php:2985 src/Config.php:1416
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to activate it."
-msgstr ""
+msgstr "Execute o comando \"php bin/console %1$s\" para sua ativação."
 
 #: src/Console/Database/EnableTimezonesCommand.php:94
 #: src/Console/Migration/DynamicRowFormatCommand.php:89
@@ -18995,12 +19001,12 @@ msgstr ""
 #: src/Central.php:517
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to migrate them."
-msgstr ""
+msgstr "Execute o comando \"php bin/console %1$s\" para efetuar a migração."
 
 #: src/Console/Database/UpdateCommand.php:276
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to view found differences."
-msgstr ""
+msgstr "Execute o comando \"php bin/console %1$s\" para ver as diferenças encontradas."
 
 #: src/CronTask.php:862 src/CronTask.php:1470
 msgid "Running"
@@ -19026,7 +19032,7 @@ msgstr ""
 
 #: src/System/Requirement/SeLinux.php:45
 msgid "SELinux configuration"
-msgstr ""
+msgstr "Configuração SELinux"
 
 #: src/System/Requirement/SeLinux.php:147
 msgid "SELinux configuration is OK."
@@ -19119,7 +19125,7 @@ msgstr "Servidor SQL (MariaDB ou MySQL)"
 #: src/DBConnection.php:655
 #, php-format
 msgid "SQL server: %1$s, difference between main and replica: %2$s"
-msgstr ""
+msgstr "Servidor SQL: %1$s, diferente entre o princiapl e a réplica: %2$s"
 
 #: src/DBConnection.php:651
 #, php-format
@@ -19224,7 +19230,7 @@ msgstr "Guardar e adicionar à base do conhecimento"
 
 #: src/SavedSearch.php:502
 msgid "Save as a new search"
-msgstr ""
+msgstr "Guardar como nova pesquisa"
 
 #: src/SavedSearch.php:923 js/modules/Search/GenericView.js:95
 msgid "Save current search"
@@ -19232,7 +19238,7 @@ msgstr "Guardar pesquisa atual"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
-msgstr ""
+msgstr "Guardar nova password"
 
 #: js/dashboard.js:410
 msgid "Saved"
@@ -19261,7 +19267,7 @@ msgstr "A gravar ficheiro de configuração..."
 
 #: src/PrinterLog.php:187
 msgid "Scans"
-msgstr ""
+msgstr "Digitalizações"
 
 #: src/CronTask.php:865 src/CronTask.php:890
 msgid "Scheduled"
@@ -19287,7 +19293,7 @@ msgstr "Alerta de pesquisa para \"%1$s\" (%2$s)"
 
 #: src/Console/Marketplace/SearchCommand.php:55
 msgid "Search GLPI marketplace"
-msgstr ""
+msgstr "Procurar em GLPI marketplace"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 msgid "Search a solution"
@@ -19488,16 +19494,16 @@ msgstr "Selecionar Tudo"
 
 #: src/Unmanaged.php:234
 msgid "Select an itemtype: "
-msgstr ""
+msgstr "Selecione um tipo de item: "
 
 #: templates/anonymous_helpdesk.html.twig
 msgid "Select an urgency level"
-msgstr "Seleccione o nível de urgência"
+msgstr "Selecione o nível de urgência"
 
 #: templates/components/search/controls.html.twig src/NetworkPort.php:762
 #: src/NetworkPort.php:763 src/NetworkPort.php:771
 msgid "Select default items to show"
-msgstr "Seleccione itens por omissão para visualizar"
+msgstr "Selecione itens por omissão para visualizar"
 
 #: src/Stat.php:1729
 msgid "Select statistics to be displayed"
@@ -19538,7 +19544,7 @@ msgstr "Activar/desactivar todos"
 
 #: src/Ticket.php:2821
 msgid "Selected Problem can't be loaded"
-msgstr ""
+msgstr "Problema selecionado não pode ser carregado"
 
 #: src/Html.php:2696
 msgid "Selection too large, massive action disabled."
@@ -19615,6 +19621,7 @@ msgstr "Envie um pedido de aprovação"
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
+"Enviar follow-ups automáticos em tickets pendentes e resolvê-los se necessário"
 
 #: src/Entity.php:2309
 msgid "Send certificates alarms before"
@@ -19672,7 +19679,7 @@ msgstr[1] "Sensores"
 
 #: src/DeviceCamera.php:91 src/DeviceCamera.php:151
 msgid "Sensor size"
-msgstr ""
+msgstr "Tamanho do sensor"
 
 #: src/DeviceSensorType.php:43
 msgid "Sensor type"
@@ -19772,11 +19779,11 @@ msgstr[1] "Service Packs"
 
 #: src/System/Requirement/SessionsConfiguration.php:45
 msgid "Sessions configuration"
-msgstr ""
+msgstr "Configuração de Sessões"
 
 #: src/System/Requirement/SessionsConfiguration.php:78
 msgid "Sessions configuration is OK."
-msgstr ""
+msgstr "A configuração das Sessões está OK."
 
 #: src/Console/Config/SetCommand.php:62
 msgid "Set configuration value"
@@ -19819,7 +19826,7 @@ msgstr "Definir a rede usando notação endereço/máscara"
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
 msgid "Set the status to pending"
-msgstr ""
+msgstr "Alterar estado para pendente"
 
 #: src/Preference.php:42 src/Impact.php:373 src/Impact.php:1060
 #: src/Impact.php:1119 src/Config.php:2608
@@ -20790,11 +20797,11 @@ msgstr[1] "Destinos"
 
 #: src/RuleImportAsset.php:94
 msgid "Target entity for the asset"
-msgstr ""
+msgstr "Entidade destino para o ativo"
 
 #: src/RuleImportComputer.php:79
 msgid "Target entity for the computer"
-msgstr "Entidade alvo para o computador"
+msgstr "Entidade destino para o computador"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: templates/components/itilobject/timeline/timeline.html.twig
@@ -20870,7 +20877,7 @@ msgstr ""
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "Team"
-msgstr ""
+msgstr "Equipa"
 
 #: src/NotificationTargetProject.php:753 src/NotificationTargetProject.php:758
 #: src/NotificationTargetProject.php:798
@@ -21002,7 +21009,7 @@ msgstr "Configuração de modelos"
 
 #: templates/maintenance.html.twig
 msgid "Temporarily down for maintenance"
-msgstr ""
+msgstr "Temporariamente em baixo para manutenção"
 
 #: src/Document.php:1255
 msgid "Temporary directory doesn't exist"
@@ -21171,22 +21178,23 @@ msgstr ""
 #: src/System/Requirement/ExtensionConstant.php:69
 #, php-format
 msgid "The constant %s is present."
-msgstr ""
+msgstr "A constante %s existe."
 
 #: src/CommonITILObject.php:8648 src/Project.php:2456
 msgctxt "filters"
 msgid "The content of the item"
-msgstr ""
+msgstr "O conteúdo do item"
 
 #: src/Update.php:178
 msgid "The database schema is not consistent with the current GLPI version."
-msgstr ""
+msgstr "O schema da base de dados não está consistente com a atual versão do GLPI."
 
 #: src/Console/Database/UpdateCommand.php:274
 #, php-format
 msgid ""
 "The database schema is not consistent with the installed GLPI version (%s)."
 msgstr ""
+"O schema da base de dados não está consistente com a verão instalada do GLPI (%s)."
 
 #: src/Document.php:1458
 #, php-format
@@ -21298,12 +21306,12 @@ msgstr "A pdu será"
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:193
 #, php-format
 msgid "The plugin \"%s\" does not provide a SQL schema file."
-msgstr ""
+msgstr "O plugin \"%s\" não inclui um ficheiro com o schema SQL."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:186
 #, php-format
 msgid "The plugin \"%s\" is not found or not activated."
-msgstr ""
+msgstr "O plugin \"%s\" não foi encontrado ou não está ativado."
 
 #: src/Marketplace/View.php:729
 msgid "The plugin has an available update but its directory is not writable."
@@ -21316,11 +21324,13 @@ msgid ""
 "The plugin has an available update but its local directory contains source "
 "versioning."
 msgstr ""
+"O plugin tem uma atualização disponível, mas a sua pasta local contém versões "
+"de origem."
 
 #: src/Console/Marketplace/DownloadCommand.php:56
 #: src/Console/Marketplace/InfoCommand.php:54
 msgid "The plugin key"
-msgstr ""
+msgstr "A chave do plugin"
 
 #: src/GLPINetwork.php:246
 msgid "The registration key is invalid."
@@ -21339,10 +21349,12 @@ msgid ""
 "The regular expression you entered is invalid. Please check it and try "
 "again."
 msgstr ""
+"A expressão regular introduzida é inválida. Verifique-a e tente "
+"novamente por favor."
 
 #: src/NotificationTargetDBConnection.php:95
 msgid "The replica database is desynchronized. The difference is of:"
-msgstr ""
+msgstr "A base de dados réplica não está sincronizada. A diferença é de:"
 
 #: src/Reservation.php:307
 msgid "The required item is already reserved for this timeframe"
