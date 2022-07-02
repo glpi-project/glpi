@@ -3816,8 +3816,8 @@ JS;
         $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs6/' . $language . '.js';
 
        // Apply all GLPI styles to editor content
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror'))
-         . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css'));
+        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss(('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror') . '.scss', ['force_no_version' => true]))
+         . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -5462,13 +5462,15 @@ HTML;
             $options['media'] = 'all';
         }
 
-        $version = GLPI_VERSION;
-        if (isset($options['version'])) {
-            $version = $options['version'];
-            unset($options['version']);
-        }
+        if (!isset($options['force_no_version']) || !$options['force_no_version']) {
+            $version = GLPI_VERSION;
+            if (isset($options['version'])) {
+                $version = $options['version'];
+                unset($options['version']);
+            }
 
-        $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
+            $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
+        }
 
         return sprintf(
             '<link rel="stylesheet" type="text/css" href="%s" %s>',
