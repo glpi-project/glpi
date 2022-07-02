@@ -3863,7 +3863,7 @@ msgstr "Solicitar validação"
 #: src/Dashboard/Grid.php:1234 src/AllAssets.php:45
 msgid "Asset"
 msgid_plural "Assets"
-msgstr[0] "Ativos"
+msgstr[0] "Ativo"
 msgstr[1] "Ativos"
 msgstr[2] "Ativos"
 
@@ -4837,7 +4837,7 @@ msgid "By entity"
 msgstr "Por entidade"
 
 #: src/Stat.php:1706 front/report.networking.php:71
-msgid "By hardware"
+msgid "By hardware""
 msgstr "Por hardware"
 
 #: src/Stat.php:1704
@@ -4905,13 +4905,13 @@ msgstr "Delimitador CSV"
 #: src/Cable.php:49
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Cabo"
+msgstr[1] "Cabos"
+msgstr[2] "Cabos"
 
 #: src/Dropdown.php:1153 src/Profile.php:1169
 msgid "Cable management"
-msgstr ""
+msgstr "Gestão de cabos"
 
 #: src/CableStrand.php:43 src/CableStrand.php:49 src/Cable.php:147
 msgid "Cable strand"
@@ -5143,8 +5143,9 @@ msgstr "Legenda"
 #: src/Cartridge.php:99 src/Printer.php:541
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] "Cartuchos"
+msgstr[0] "Cartucho"
 msgstr[1] "Cartuchos"
+msgstr[2] "Cartuchos"
 
 #: src/Printer_CartridgeInfo.php:44
 msgctxt "Cartridge inventoried information"
@@ -5154,14 +5155,16 @@ msgstr ""
 #: src/CartridgeItem.php:57 src/Cartridge.php:1099 src/Cartridge.php:1257
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] "Modelos de cartuchos"
+msgstr[0] "Modelo de cartucho"
 msgstr[1] "Modelos de cartuchos"
+msgstr[2] "Modelos de cartuchos"
 
 #: src/CartridgeItemType.php:41 src/Cartridge.php:1100
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] "Tipos de cartucho"
+msgstr[0] "Tipo de cartucho"
 msgstr[1] "Tipos de cartucho"
+msgstr[2] "Tipos de cartucho"
 
 #: src/NotificationTargetCartridgeItem.php:45
 msgid "Cartridges alarm"
@@ -5290,8 +5293,9 @@ msgstr ""
 #: src/Profile.php:1477 src/Profile.php:1491 src/Profile.php:2933
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] "Alterações"
+msgstr[0] "Alteração"
 msgstr[1] "Alterações"
+msgstr[2] "Alterações"
 
 #: src/AuthLDAP.php:3662 src/AuthLDAP.php:3694
 msgctxt "button"
@@ -10480,8 +10484,9 @@ msgstr "Grelha"
 #: src/Group.php:50
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] "Grupos"
+msgstr[0] "Grupo"
 msgstr[1] "Grupos"
+msgstr[2] "Grupos"
 
 #: src/AuthLDAP.php:2255 src/Group.php:466 src/Group.php:608
 msgid "Group DN"
@@ -12747,8 +12752,9 @@ msgstr "Nível"
 #: src/SoftwareLicense.php:64 src/Item_SoftwareLicense.php:89
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] "Licenças"
+msgstr[0] "Licença"
 msgstr[1] "Licenças"
+msgstr[2] "Licenças"
 
 #: src/SoftwareLicense.php:765
 #, php-format
@@ -12758,8 +12764,9 @@ msgstr "Licença %1$s expirada em %2$s"
 #: src/SoftwareLicenseType.php:43
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] "Tipos de licença"
+msgstr[0] "Tipo de licença"
 msgstr[1] "Tipos de licença"
+msgstr[2] "Tipos de licença"
 
 #: src/Profile.php:1599 src/Profile.php:2923
 msgid "Life cycle of changes"
@@ -13212,7 +13219,7 @@ msgstr "Campo de utilizador"
 
 #: templates/pages/login.html.twig
 msgid "Login source"
-msgstr "Forma de autenticação"
+msgstr "Método de autenticação"
 
 #: templates/pages/login.html.twig
 msgid "Login to your account"
@@ -14087,14 +14094,16 @@ msgstr "Segunda-feira"
 #: src/Profile.php:1016 src/Profile.php:2188
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] "Monitores"
+msgstr[0] "Monitor"
 msgstr[1] "Monitores"
+msgstr[2] "Monitores"
 
 #: src/Rule.php:318 src/MonitorModel.php:41
 msgid "Monitor model"
 msgid_plural "Monitor models"
-msgstr[0] "Modelos de monitores"
+msgstr[0] "Modelo de monitor"
 msgstr[1] "Modelos de monitores"
+msgstr[2] "Modelos de monitores"
 
 #: src/Rule.php:390 src/MonitorType.php:41
 msgid "Monitor type"
@@ -14416,8 +14425,9 @@ msgstr[1] "Modelos de placa de rede"
 #: src/NetworkEquipment.php:79
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] "Dispositivos de rede"
+msgstr[0] "Dispositivo de rede"
 msgstr[1] "Dispositivos de rede"
+msgstr[2] "Dispositivos de rede"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery threads"
@@ -16671,8 +16681,9 @@ msgstr "Personalização"
 #: src/Transfer.php:4023
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] "Telefones"
+msgstr[0] "Telefone"
 msgstr[1] "Telefones"
+msgstr[2] "Telefones"
 
 #: src/AuthLDAP.php:918 src/AuthLDAP.php:1109 src/AuthLDAP.php:3757
 msgctxt "ldap"
@@ -17297,8 +17308,9 @@ msgstr "Páginas impressas"
 #: src/Profile.php:2230 src/Cartridge.php:1251 src/Printer.php:78
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] "Impressoras"
+msgstr[0] "Impressora"
 msgstr[1] "Impressoras"
+msgstr[2] "Impressoras"
 
 #: src/Cartridge.php:821 src/Cartridge.php:1105 src/Cartridge.php:1285
 msgid "Printer counter"
@@ -17307,7 +17319,8 @@ msgstr "Contador da impressora"
 #: src/PrinterModel.php:44 src/Rule.php:330 src/CartridgeItem.php:352
 msgid "Printer model"
 msgid_plural "Printer models"
-msgstr[0] "Modelos de impressoras"
+msgstr[0] "Modelo de impressora"
+msgstr[1] "Modelos de impressoras"
 msgstr[1] "Modelos de impressoras"
 
 #: src/Rule.php:402 src/PrinterType.php:41
@@ -17374,8 +17387,9 @@ msgstr "Tarefas privadas por defeito"
 #: src/Problem.php:74
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] "Problemas"
+msgstr[0] "Problema"
 msgstr[1] "Problemas"
+msgstr[2] "Problemas"
 
 #: src/Item_Problem.php:53
 msgid "Problem item"
@@ -17391,8 +17405,9 @@ msgstr "Problema solucionado"
 #: src/ProblemTask.php:43
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] "Tarefas do problema"
+msgstr[0] "Tarefa do problema"
 msgstr[1] "Tarefas do problema"
+msgstr[2] "Tarefas do problema"
 
 #: src/CommonITILTask.php:1650
 msgid "Problem tasks to do"
@@ -17504,8 +17519,9 @@ msgstr "Número de produto"
 #: src/RuleRight.php:346 src/RuleRightCollection.php:160 src/Profile.php:129
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] "Perfis"
+msgstr[0] "Perfil"
 msgstr[1] "Perfis"
+msgstr[2] "Perfis"
 
 #: src/Config.php:478
 msgid "Profile to be used when locking items"
@@ -18170,8 +18186,9 @@ msgstr "Lembre-me"
 #: src/Reminder.php:71
 msgid "Reminder"
 msgid_plural "Reminders"
-msgstr[0] "Notas"
+msgstr[0] "Nota"
 msgstr[1] "Notas"
+msgstr[2] "Notas"
 
 #: src/Planning.php:1612 src/Reminder.php:757
 msgctxt "Planning"
@@ -18406,8 +18423,9 @@ msgstr ""
 #: src/Report.php:49 src/Profile.php:1253 src/Profile.php:2422
 msgid "Report"
 msgid_plural "Reports"
-msgstr[0] "Relatórios"
+msgstr[0] "Relatório"
 msgstr[1] "Relatórios"
+msgstr[2] "Relatórios"
 
 #: src/NotificationTargetTicket.php:691 src/NotificationTargetTicket.php:696
 #: src/Ticket.php:3687 src/Ticket.php:3707
@@ -18596,8 +18614,9 @@ msgstr[1] "Itens reserváveis"
 #: src/Profile.php:956 src/Profile.php:2408
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] "Reservas"
+msgstr[0] "Reserva"
 msgstr[1] "Reservas"
+msgstr[2] "Reservas"
 
 #: front/reservation.form.php:162
 #, php-format
@@ -18861,6 +18880,7 @@ msgid "Rule"
 msgid_plural "Rules"
 msgstr[0] "Regras"
 msgstr[1] "Regras"
+msgstr[2] "Regras"
 
 #: src/RuleMatchedLog.php:224 src/RuleMatchedLog.php:300
 msgid "Rule import logs"
@@ -20585,8 +20605,9 @@ msgstr "Domingos e feriados"
 #: src/Profile.php:1117
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] "Fornecedores"
+msgstr[0] "Fornecedor"
 msgstr[1] "Fornecedores"
+msgstr[2] "Fornecedores"
 
 #: src/NotificationTargetCommonITILObject.php:1718
 msgid "Supplier ID"
@@ -20599,7 +20620,7 @@ msgstr "Fornecedor de equipa de projecto"
 
 #: src/DeviceCamera.php:96 src/DeviceCamera.php:159
 msgid "Support"
-msgstr ""
+msgstr "Suporte"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Support hours"
