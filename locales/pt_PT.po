@@ -3863,9 +3863,9 @@ msgstr "Solicitar validação"
 #: src/Dashboard/Grid.php:1234 src/AllAssets.php:45
 msgid "Asset"
 msgid_plural "Assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Ativos"
+msgstr[1] "Ativos"
+msgstr[2] "Ativos"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
@@ -3873,11 +3873,11 @@ msgstr "Ciclo de vida do activo"
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:176
 msgid "Assets"
-msgstr "Activos"
+msgstr "Ativos"
 
 #: front/dashboard_assets.php:52
 msgid "Assets Dashboard"
-msgstr "Painel de Activos"
+msgstr "Painel de Ativos"
 
 #. TRANS: short for : Assign a ticket
 #: templates/components/itilobject/service_levels.html.twig
@@ -4339,15 +4339,15 @@ msgstr "Acompanhamento automático"
 
 #: src/PendingReason.php:153
 msgid "Automatic follow-up disabled"
-msgstr ""
+msgstr "Acompanhamento automática desativado"
 
 #: src/PendingReason.php:60 src/PendingReason.php:93
 msgid "Automatic follow-up frequency"
-msgstr ""
+msgstr "Frequência de acompanhamento automático"
 
 #: src/PendingReasonCron.php:196
 msgid "Automatic followups / resolution"
-msgstr ""
+msgstr "Acompanhamento / resolução automática"
 
 #: src/Item_Devices.php:642 src/NetworkPort.php:605 src/Computer_Item.php:405
 #: src/Computer_Item.php:574 src/ComputerAntivirus.php:364
@@ -4384,7 +4384,7 @@ msgstr "Solução automática"
 
 #: src/PendingReason.php:210
 msgid "Automatic resolution disabled"
-msgstr ""
+msgstr "Resolução automática desativada"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
@@ -4788,7 +4788,7 @@ msgstr[2] "Crítica de negócios"
 
 #: src/RuleAsset.php:49 src/RuleAssetCollection.php:45 src/Profile.php:1826
 msgid "Business rules for assets"
-msgstr "Regras de negócio para os activos"
+msgstr "Regras de negócio para os ativos"
 
 #: src/RuleTicket.php:956 src/RuleAsset.php:207
 msgid "Business rules for ticket (entity parent)"
@@ -9992,11 +9992,11 @@ msgstr ""
 
 #: src/PendingReason.php:112
 msgid "Follow-up template"
-msgstr ""
+msgstr "Modelo de acompanhamento"
 
 #: src/PendingReason.php:72 src/PendingReason.php:102
 msgid "Follow-ups before automatic resolution"
-msgstr ""
+msgstr "Acompanhamentos antes de uma resolução automática"
 
 #: src/Item_Rack.php:299
 msgid "Following elements are out of rack bounds"
@@ -14176,7 +14176,7 @@ msgstr "Mover para baixo"
 
 #: src/User.php:861
 msgid "Moving temporary file failed."
-msgstr ""
+msgstr "Falha ao mover o ficheiro temporário."
 
 #: src/NetworkPortEthernet.php:261
 msgid "Multimode fiber"
@@ -14376,7 +14376,7 @@ msgstr "Nome para usar no campo De nos e-mails enviados."
 
 #: src/Config.php:1428
 msgid "Natural order (old items on top, recent on bottom)"
-msgstr ""
+msgstr "Ordem natural (mais antigos no início, recentes no fim)"
 
 #: templates/generic_show_form.html.twig src/Computer.php:517
 #: src/Network.php:41 src/NetworkEquipment.php:442 src/Profile.php:1024
@@ -14429,7 +14429,7 @@ msgstr ""
 
 #: src/Inventory/Conf.php:726
 msgid "Network drives"
-msgstr ""
+msgstr "Unidades de rede"
 
 #: src/NetworkPortFiberchannel.php:380
 msgid "Network fiber socket"
@@ -14451,7 +14451,7 @@ msgstr ""
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network inventory timeout"
-msgstr ""
+msgstr "Timeout para inventário de rede"
 
 #: src/NetworkName.php:67
 msgid "Network name"
@@ -14478,7 +14478,7 @@ msgstr "Nenhuma porta de rede disponível…"
 
 #: src/NetworkPortMetrics.php:56
 msgid "Network port metrics"
-msgstr ""
+msgstr "Métricas de porta de rede"
 
 #: src/NetworkPortMigration.php:51
 msgid "Network port migration"
@@ -14487,9 +14487,9 @@ msgstr "Migração porta de rede"
 #: src/NetworkPortType.php:45
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tipos de porta de rede"
+msgstr[1] "Tipos de porta de rede"
+msgstr[2] "Tipos de porta de rede"
 
 #: src/NetworkPort.php:727
 msgid "Network port type to be added"
@@ -14529,7 +14529,7 @@ msgstr ""
 
 #: src/Socket.php:943
 msgid "NetworkPort"
-msgstr ""
+msgstr "Porta de rede"
 
 #: src/NetworkPort.php:1389 src/Dropdown.php:1140
 msgid "Networking"
@@ -14740,7 +14740,7 @@ msgstr "Seguinte (seta direita)"
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
 msgid "Next automatic follow-up scheduled on %s"
-msgstr ""
+msgstr "Próximo acompanhamento automatico agendado para %s"
 
 #: src/CommonITILRecurrent.php:350
 #, php-format
@@ -15635,7 +15635,7 @@ msgstr ""
 #: src/Monitor.php:491
 msgctxt "quantity"
 msgid "Number of monitors"
-msgstr ""
+msgstr "Número de monitores"
 
 #: src/CartridgeItem.php:284
 msgid "Number of new cartridges"
@@ -15665,12 +15665,12 @@ msgstr ""
 #: src/Phone.php:499
 msgctxt "quantity"
 msgid "Number of phones"
-msgstr ""
+msgstr "Número de telefones"
 
 #: src/Printer.php:682
 msgctxt "quantity"
 msgid "Number of printers"
-msgstr ""
+msgstr "Número de impressoras"
 
 #: src/NotificationTargetTicket.php:662 src/Search.php:7863
 #: src/NotificationTargetProject.php:693 src/NotificationTargetChange.php:273
@@ -17322,7 +17322,7 @@ msgstr "Dicionário de impressoras"
 
 #: src/PrinterLog.php:191
 msgid "Prints"
-msgstr ""
+msgstr "Impressões"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:73
@@ -19621,7 +19621,7 @@ msgstr "Envie um pedido de aprovação"
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
-"Enviar follow-ups automáticos em tickets pendentes e resolvê-los se necessário"
+"Enviar acompanhamentos automáticos em tickets pendentes e resolvê-los se necessário"
 
 #: src/Entity.php:2309
 msgid "Send certificates alarms before"
