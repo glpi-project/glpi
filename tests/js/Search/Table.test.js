@@ -147,6 +147,7 @@ describe('Search Table', () => {
     const table_el = real_table.getElement();
     const restore_initial_sort_state = () => {
         table_el.find('th').attr('data-sort-order', 'nosort');
+        table_el.find('th').attr('data-sort-num', null);
         table_el.find('th').eq(0).attr('data-sort-order', 'ASC');
         table_el.find('th').eq(0).attr('data-sort-num', 0);
     };
@@ -229,6 +230,22 @@ describe('Search Table', () => {
         expect(state['order'].length).toBe(1);
         expect(state['sort'][0]).toBe('2');
         expect(state['order'][0]).toBe('ASC');
+
+        // Restore sort
+        restore_initial_sort_state();
+        verify_initial_sort_state();
+
+        // Cycle the sort order of the only selected column and ensure that is only goes through ASC and DESC and not no sort.
+        const sorted = $('th[data-sort-num="0"]');
+        expect(sorted.length).toBe(1);
+        sorted.click();
+        expect(sorted.attr('data-sort-order')).toBe('DESC');
+        sorted.click();
+        expect(sorted.attr('data-sort-order')).toBe('ASC');
+        sorted.click();
+        expect(sorted.attr('data-sort-order')).toBe('DESC');
+        sorted.click();
+        expect(sorted.attr('data-sort-order')).toBe('ASC');
 
         // Restore sort
         restore_initial_sort_state();
