@@ -174,7 +174,7 @@ $APPLICATION_ROOT/.github/actions/init_containers-start.sh
 $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 
 # Install dependencies if required
-[[ -z "$BUILD" ]] || docker-compose exec -T app .github/actions/init_build.sh
+[[ "$BUILD" = false ]] || docker-compose exec -T app .github/actions/init_build.sh
 
 # Run tests
 LAST_EXIT_CODE=0

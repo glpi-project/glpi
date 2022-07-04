@@ -270,6 +270,9 @@ class Toolbox extends DbTestCase
             ], [
                 (object) ['json' => true],
                 false
+            ], [
+                '{ bad content',
+                false
             ]
         ];
     }
