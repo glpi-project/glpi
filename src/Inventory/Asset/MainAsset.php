@@ -142,14 +142,6 @@ abstract class MainAsset extends InventoryAsset
                 $this->postPrepare($val);
             }
 
-            //locked fields
-            $lockedfield = new Lockedfield();
-            $locks = $lockedfield->getLocks($this->item->getType(), 0);
-            foreach ($locks as $lock) {
-                if (property_exists($val, $lock)) {
-                    unset($val->$lock);
-                }
-            }
             $this->data[] = $val;
         }
 
@@ -505,6 +497,15 @@ abstract class MainAsset extends InventoryAsset
         $blacklist = new Blacklist();
 
         foreach ($this->data as $key => $data) {
+            //locked fields
+            $lockedfield = new Lockedfield();
+            $locks = $lockedfield->getLocks($this->item->getType(), 0);
+            foreach ($locks as $lock) {
+                if (property_exists($data, $lock)) {
+                    unset($data->$lock);
+                }
+            }
+
             $blacklist->processBlackList($data);
 
             $this->current_key = $key;

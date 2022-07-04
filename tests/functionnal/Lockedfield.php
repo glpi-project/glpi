@@ -302,4 +302,80 @@ class Lockedfield extends DbTestCase
         //ensure no new manufacturer has been added
         $this->integer(countElementsInTable(\Manufacturer::getTable()))->isIdenticalTo($existing_manufacturers);
     }
+
+    public function testNoLocation()
+    {
+        global $DB;
+
+        $xml = "<?xml version=\"1.0\"?>
+<REQUEST><CONTENT><DEVICE>
+      <INFO>
+        <COMMENTS>Brother NC-6800h, Firmware Ver.1.01  (08.12.12),MID 84UB03</COMMENTS>
+        <ID>1907</ID>
+        <IPS>
+          <IP>10.75.230.125</IP>
+        </IPS>
+        <LOCATION>Greffe Charron</LOCATION>
+        <MAC>00:1b:a9:12:11:f2</MAC>
+        <MANUFACTURER>Brother</MANUFACTURER>
+        <MEMORY>32</MEMORY>
+        <MODEL>Brother HL-5350DN series</MODEL>
+        <NAME>CE75I09008</NAME>
+        <RAM>32</RAM>
+        <SERIAL>D9J230159</SERIAL>
+        <TYPE>PRINTER</TYPE>
+        <UPTIME>14 days, 22:48:33.30</UPTIME>
+      </INFO>
+    </DEVICE>
+  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
+";
+
+        $existing_locations = countElementsInTable(\Location::getTable());
+        $lockedfield = new \Lockedfield();
+
+        //add a global lock on locations_id field
+        $this->integer(
+            $lockedfield->add([
+                'item' => 'Printer - locations_id'
+            ])
+        )->isGreaterThan(0);
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check matchedlogs
+        $criteria = [
+            'FROM' => \RuleMatchedLog::getTable(),
+            'LEFT JOIN' => [
+                \Rule::getTable() => [
+                    'ON' => [
+                        \RuleMatchedLog::getTable() => 'rules_id',
+                        \Rule::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => []
+        ];
+        $iterator = $DB->request($criteria);
+        $this->string($iterator->current()['name'])->isIdenticalTo('Printer import (by serial)');
+
+        $printers_id = $inventory->getItem()->fields['id'];
+        $this->integer($printers_id)->isGreaterThan(0);
+
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+        $this->integer($printer->fields['locations_id'])->isEqualTo(0);
+
+        //ensure no new manufacturer has been added
+        $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
+    }
 }
