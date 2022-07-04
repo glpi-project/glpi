@@ -695,7 +695,7 @@ abstract class MainAsset extends InventoryAsset
             $_SESSION['glpiactive_entity']         = $entities_id;
         }
 
-        if ($this->is_discovery === true) {
+        if ($this->is_discovery === true && !$this->isNew()) {
             //do not update from network discoveries
             //prevents discoveries to remove all ports, IPs and so on found with network inventory
             return;
