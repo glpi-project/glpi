@@ -269,7 +269,11 @@ final class DbUtils
             $itemtype = null;
             if (class_exists($base_itemtype)) {
                 $class_file = (new ReflectionClass($base_itemtype))->getFileName();
-                $is_glpi_class = $class_file !== false && str_starts_with(realpath($class_file), realpath(GLPI_ROOT));
+                $is_glpi_class = $class_file !== false && (
+                    str_starts_with(realpath($class_file), realpath(GLPI_ROOT))
+                    || str_starts_with(realpath($class_file), realpath(GLPI_MARKETPLACE_DIR))
+                    || str_starts_with(realpath($class_file), realpath(GLPI_PLUGIN_DOC_DIR))
+                );
                 if ($is_glpi_class) {
                     $itemtype = $base_itemtype;
                 }
