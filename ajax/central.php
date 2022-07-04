@@ -74,7 +74,7 @@ switch ($_REQUEST['widget']) {
         break;
     case 'central_list':
         if (method_exists($itemtype, 'showCentralList')) {
-            if (is_subclass_of($itemtype, CommonITILObject::class)) {
+            if (is_subclass_of($itemtype, CommonITILObject::class) || is_subclass_of($itemtype, CommonITILTask::class)) {
                 $showgrouptickets = isset($params['showgrouptickets']) ? ($params['showgrouptickets'] !== 'false') : false;
                 $itemtype::showCentralList($params['start'], $params['status'] ?? 'process', $showgrouptickets);
             }
