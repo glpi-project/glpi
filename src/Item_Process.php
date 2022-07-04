@@ -157,7 +157,7 @@ class Item_Process extends CommonDBChild
                 'memusage'      => __("Memory Usage"),
                 'started'       => __("Started at"),
                 'tty'           => __("TTY"),
-                'user'          => __("User"),
+                'user'          => _n("User", "Users", 1),
                 'virtualmemory' => __("Virtual memory"),
             ],
             'columns_values' => [

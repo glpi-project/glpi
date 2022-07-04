@@ -445,7 +445,7 @@ class Event extends CommonDBTM
             'id'            => '156',
             'table'         => self::getTable(),
             'field'         => 'items_id',
-            'name'          => __('Item'),
+            'name'          => _n('Item', 'Items', 1),
             'datatype'      => 'specific',
             'nosearch'      => true,
             'massiveaction' => false,
@@ -456,7 +456,7 @@ class Event extends CommonDBTM
             'id'            => '157',
             'table'         => self::getTable(),
             'field'         => 'date',
-            'name'          => __('Date'),
+            'name'          => _n('Date', 'Dates', 1),
             'datatype'      => 'datetime',
             'massiveaction' => false,
         ];

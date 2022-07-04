@@ -728,7 +728,7 @@ abstract class RuleCommonITILObject extends Rule
         $actions['groups_id_validate_any']['name']                      = sprintf(
             __('%1$s - %2$s'),
             __('Send an approval request'),
-            __('Group')
+            Group::getTypeName(1)
         );
         $actions['groups_id_validate_any']['type']                      = 'dropdown_groups_validate';
         $actions['groups_id_validate_any']['force_actions']             = ['add_validation'];

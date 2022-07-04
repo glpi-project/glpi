@@ -4056,7 +4056,7 @@ abstract class CommonITILObject extends CommonDBTM
             'id'                 => '401',
             'table'              => $this->getTemplateClass()::getTable(),
             'field'              => 'name',
-            'name'               => __('Template'),
+            'name'               => _n('Template', 'Templates', 1),
             'massiveaction'      => false,
             'searchtype'         => ['equals', 'notequals'],
             'datatype'           => 'dropdown',
