@@ -139,7 +139,7 @@ class Request extends \GLPITestCase
                     ]
                 );
             }
-        )->hasCode(400)->message->contains('<ERROR>XML not well formed!</ERROR>');
+        )->hasCode(400)->message->contains('{"status":"error","message":"JSON not well formed!","expiration":24}');
 
         $this->exception(
             function () {
