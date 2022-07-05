@@ -337,9 +337,16 @@ class GLPINetwork extends CommonGLPI
             $error_message
         );
 
-        $offers = $error_message === null ? json_decode($response) : null;
+        $valid_json = false;
+        $offers = null;
+        if ($error_message === null) {
+            if (\Toolbox::isJSON($response)) {
+                $valid_json = true;
+                $offers = json_decode($response);
+            }
+        }
 
-        if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE || !is_array($offers)) {
+        if ($error_message !== null || !$valid_json || !is_array($offers)) {
             trigger_error(
                 sprintf(
                     "Unable to fetch offers information.\nError message:%s\nResponse:\n%s",
