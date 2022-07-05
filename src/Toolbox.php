@@ -2797,6 +2797,7 @@ class Toolbox
             return false;
         }
 
+        $json = trim($json);
         // Any non-numeric JSON string must be longer than 2 characters.
         if (strlen($json) < 2) {
             return false;
