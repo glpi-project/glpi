@@ -449,7 +449,8 @@ class NotificationTarget extends CommonDBChild
 
         $type   = "";
         $action = "";
-        $target = self::getInstanceByType(stripslashes($input['itemtype']));
+        $itemtype = \Glpi\Toolbox\Sanitizer::unsanitize($input['itemtype']);
+        $target = self::getInstanceByType($itemtype);
 
         if (!isset($input['notifications_id'])) {
             return;
