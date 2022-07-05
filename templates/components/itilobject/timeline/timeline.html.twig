@@ -104,9 +104,9 @@
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
          <div class="row">
             <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
-               {% if entry_i['state'] is constant('Planning::TODO') %}
+               {% if entry_i['state'] is constant('Planning::TODO') and can_edit_i %}
                   <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
-               {% elseif entry_i['state'] is constant('Planning::DONE') %}
+               {% elseif entry_i['state'] is constant('Planning::DONE') and can_edit_i %}
                   <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
                {% endif %}
             </div>
