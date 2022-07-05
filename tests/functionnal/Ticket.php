@@ -270,6 +270,47 @@ class Ticket extends DbTestCase
                 ],
                 'expected_actors' => $expected_actors,
             ];
+            // using mix between historical keys and _actors key
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}"       => ["$tech_user_id"],
+                    "_users_id_{$actor_type}_notif" => [
+                        'use_notification'   => ['1'],
+                        'alternative_email'  => ['alt-email@localhost.local'],
+                    ],
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $admin_user_id,
+                                'use_notification'  => 0,
+                                'alternative_email' => '',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser1@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser2@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => Group::class,
+                                'items_id'          => $group_1_id,
+                            ],
+                            [
+                                'itemtype'          => Group::class,
+                                'items_id'          => $group_2_id,
+                            ],
+                        ],
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
         }
 
         // complete mix
@@ -278,6 +319,13 @@ class Ticket extends DbTestCase
                 'type'              => CommonITILActor::REQUESTER,
                 'itemtype'          => User::class,
                 'items_id'          => $postonly_user_id,
+                'use_notification'  => $default_use_notifications,
+                'alternative_email' => '',
+            ],
+            [
+                'type'              => CommonITILActor::REQUESTER,
+                'itemtype'          => User::class,
+                'items_id'          => $normal_user_id,
                 'use_notification'  => $default_use_notifications,
                 'alternative_email' => '',
             ],
@@ -328,7 +376,7 @@ class Ticket extends DbTestCase
         // using historical keys
         yield [
             'actors_input'   => [
-                '_users_id_requester'       => ["$postonly_user_id"],
+                '_users_id_requester'       => ["$postonly_user_id", "$normal_user_id"],
                 '_users_id_observer'        => ["$normal_user_id", '0', '0'],
                 '_users_id_observer_notif'  => [
                     'use_notification'   => ['0', '1', '1'],
@@ -356,6 +404,12 @@ class Ticket extends DbTestCase
                             'use_notification'  => $default_use_notifications,
                             'alternative_email' => '',
                         ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $normal_user_id,
+                            'use_notification'  => $default_use_notifications,
+                            'alternative_email' => '',
+                        ],
                     ],
                     'observer' => [
                         [
@@ -375,6 +429,63 @@ class Ticket extends DbTestCase
                             'items_id'          => 0,
                             'use_notification'  => 1,
                             'alternative_email' => 'obs2@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => Group::class,
+                            'items_id'          => $group_1_id,
+                        ],
+                    ],
+                    'assign' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $tech_user_id,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'alternativeemail@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => Group::class,
+                            'items_id'          => $group_2_id,
+                        ],
+                        [
+                            'itemtype'          => Supplier::class,
+                            'items_id'          => $supplier_id,
+                        ],
+                    ],
+                ],
+            ],
+            'expected_actors' => $expected_actors,
+        ];
+        // using mix between historical keys and _actors key
+        yield [
+            'actors_input'   => [
+                '_users_id_requester'        => ["$postonly_user_id", "$normal_user_id"],
+                '_users_id_observer'        => ['0'],
+                '_users_id_observer_notif'  => [
+                    'use_notification'   => ['1'],
+                    'alternative_email'  => ['obs2@localhost.local'],
+                ],
+                '_actors' => [
+                    'requester' => [
+                        // Duplicates actor defined in "_users_id_requester", should not be a problem
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $postonly_user_id,
+                            'use_notification'  => $default_use_notifications,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                    'observer' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $normal_user_id,
+                            'use_notification'  => 0,
+                            'alternative_email' => '',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'obs1@localhost.local',
                         ],
                         [
                             'itemtype'          => Group::class,
