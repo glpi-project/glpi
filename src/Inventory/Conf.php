@@ -52,6 +52,7 @@ use DeviceSoundCard;
 use Dropdown;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use Monitor;
@@ -340,7 +341,7 @@ class Conf extends CommonGLPI
      **/
     public function showConfigForm()
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $config = \Config::getConfigurationValues('inventory');
         $canedit = \Config::canUpdate();
@@ -853,20 +854,41 @@ class Conf extends CommonGLPI
             ]
         );
         echo "</td>";
-        if (\Plugin::isPluginActive('uninstall') && \PluginUninstallModel::canView()) {
-            echo "<td>" . __('Apply uninstall profile') . "</td>";
-            echo "<td width='20%'>";
-            \PluginUninstallModel::dropdown([
-                'name'   => 'stale_agents_uninstall',
-                'value'  => $config['stale_agents_uninstall'] ?? 0,
-                'entity' => $_SESSION['glpiactive_entity'],
-                'condition' => [
-                    'types_id' => \PluginUninstallModel::TYPE_MODEL_UNINSTALL
-                ]
-            ]);
-            echo "</td>";
+
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG];
+        $odd = true;
+        $in_row = true;
+        /**
+         * @var string $plugin
+         * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+         */
+        foreach ($plugin_actions as $plugin => $actions) {
+            if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
+                foreach ($actions as $action) {
+                    if (!$odd) {
+                        echo "<tr class='tab_bg_1'>";
+                    }
+                    $field = $action['render_callback']($config);
+                    if (!empty($field)) {
+                        echo "<td>";
+                        echo $action['label'];
+                        echo "</td>";
+                        echo "<td width='20%'>";
+                        echo $field;
+                        echo "</td>";
+
+                        if ($odd) {
+                            echo "</tr>";
+                            $in_row = false;
+                        }
+                        $odd = !$odd;
+                    }
+                }
+            }
         }
-        echo "</tr>";
+        if ($in_row) {
+            echo "</tr>";
+        }
 
         if ($canedit) {
             echo "<tr class='tab_bg_2'>";

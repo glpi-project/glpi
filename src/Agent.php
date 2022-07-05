@@ -37,6 +37,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Conf;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
@@ -689,23 +690,51 @@ class Agent extends CommonDBTM
      */
     private static function cleanAgent(Agent $agent, array $config): bool
     {
-        // Actions that will need the associated item
-        static $item_actions = ['change_status', 'apply_uninstall_profile'];
+        global $PLUGIN_HOOKS;
+
         // Actions to apply to the agent or item
+        /** @phpstan-var array{item_action: bool, callback: callable(?Agent, array, ?CommonDBTM):bool}[] $actions_to_apply */
         $actions_to_apply = [];
+        $need_item = false;
         if (isset($config['stale_agents_status']) && $config['stale_agents_status']) {
-            $actions_to_apply[] = 'change_status';
+            $need_item = true;
+            $actions_to_apply[] = [
+                'item_action' => true,
+                'callback' => static function(?Agent $agent, array $config, ?CommonDBTM $item): bool {
+                    return $item !== null && $item->update([
+                        'id' => $item->fields['id'],
+                        'states_id' => $config['agents_status']
+                    ]);
+                }
+            ];
         }
-        if (isset($config['stale_agents_uninstall']) && $config['stale_agents_uninstall']) {
-            $actions_to_apply[] = 'apply_uninstall_profile';
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG];
+        /**
+         * @var string $plugin
+         * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+         */
+        foreach ($plugin_actions as $plugin => $actions) {
+            if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
+                foreach ($actions as $action) {
+                    if ($action['item_action']) {
+                        $need_item = true;
+                    }
+                    $actions_to_apply[] = $action['action_callback'];
+                }
+            }
         }
         if  (isset($config['stale_agents_clean']) && $config['stale_agents_clean']) {
-            $actions_to_apply[] = 'clean';
+            $actions_to_apply[] = [
+                'item_action' => false,
+                'callback' => static function(?Agent $agent, array $config, ?CommonDBTM $item): bool {
+                    return $agent !== null && $agent->delete(['id' => $agent->fields['id']]);
+                }
+            ];
         }
         $item = null;
 
         // If an action to apply needs the item
-        if (count(array_intersect($actions_to_apply, $item_actions)) > 0) {
+        if ($need_item) {
             $orphan = false;
             try {
                 $item = new $agent->fields['itemtype'];
@@ -725,6 +754,16 @@ class Agent extends CommonDBTM
         }
 
         // Run all actions, with the clean action running last
+        foreach ($actions_to_apply as $action) {
+            // If the action needs the item, and we don't have one, skip it
+            if ($action['item_action'] && $item === null) {
+                continue;
+            }
+            // Run the action
+            if (!$action['callback']($agent, $config, $item)) {
+                return false;
+            }
+        }
         if ($item !== null && in_array('change_status', $actions_to_apply, true)) {
             $result = $item->update([
                 'id' => $item->fields['id'],
