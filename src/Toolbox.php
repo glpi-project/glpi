@@ -2761,9 +2761,9 @@ class Toolbox
             $json_data = $encoded;
         } else {
             //something went wrong... Try to unsanitize before decoding.
-            $json_data = Sanitizer::unsanitize($json_data);
-            if (self::isJSON($encoded)) {
-                $json_data = null;
+            $raw_encoded = Sanitizer::unsanitize($encoded);
+            if (self::isJSON($raw_encoded)) {
+                $json_data = $raw_encoded;
             }
         }
 
