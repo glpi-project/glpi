@@ -9000,9 +9000,9 @@ abstract class CommonITILObject extends CommonDBTM
                             ];
                         } else {
                             foreach (['use_notification', 'alternative_email'] as $param_key) {
-                               if (!is_array($input[$notif_key][$param_key])) {
-                                  $input[$notif_key][$param_key] = !empty($input[$notif_key][$param_key]) ? [$input[$notif_key][$param_key]] : [];
-                               }
+                                if (!is_array($input[$notif_key][$param_key])) {
+                                    $input[$notif_key][$param_key] = !empty($input[$notif_key][$param_key]) ? [$input[$notif_key][$param_key]] : [];
+                                }
                             }
                         }
                     }
