@@ -38,12 +38,7 @@
  * @var Migration $migration
  */
 
-// Get inventory config values
-$c = getAllDataFromTable('glpi_configs', ['context' => 'inventory']);
-$inventory_config = [];
-foreach ($c as $config) {
-    $inventory_config[$config['name']] = $config['value'];
-}
+$inventory_config = \Config::getConfigurationValues('inventory');
 
 if (isset($inventory_config['stale_agents_action'])) {
     // If stale_agents_action was 0 (clean), enable the separate clean action
