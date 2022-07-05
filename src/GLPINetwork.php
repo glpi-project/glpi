@@ -222,9 +222,17 @@ class GLPINetwork extends CommonGLPI
             ],
             $error_message
         );
-        $registration_data = $error_message === null ? json_decode($registration_response, true) : null;
+
+        $valid_json = false;
+        if ($error_message === null) {
+           if (\Toolbox::isJSON($registration_response)) {
+               $valid_json = true;
+               $registration_data = json_decode($registration_response, true);
+            }
+        }
+
         if (
-            $error_message !== null || json_last_error() !== JSON_ERROR_NONE
+            $error_message !== null || !$valid_json
             || !is_array($registration_data) || !array_key_exists('is_valid', $registration_data)
         ) {
             $informations['validation_message'] = __('Unable to fetch registration information.');
