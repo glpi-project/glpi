@@ -3313,7 +3313,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         switch ($p['showtype']) {
             case 'allowed':
-                $tab = static::getAllowedStatusArray($p['value_calculation'] ?? $p['value']);
+                $tab = static::getAllowedStatusArray($p['value_calculation'] ?: $p['value']);
                 break;
 
             case 'search':
