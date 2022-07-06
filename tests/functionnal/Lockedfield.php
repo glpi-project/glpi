@@ -366,7 +366,7 @@ class Lockedfield extends DbTestCase
         $this->boolean($printer->getFromDB($printers_id))->isTrue();
         $this->integer($printer->fields['locations_id'])->isEqualTo(0);
 
-        //ensure no new manufacturer has been added
+        //ensure no new location has been added
         $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
 
         //manually update to lock locations_id field
@@ -420,7 +420,7 @@ class Lockedfield extends DbTestCase
         $this->boolean($printer->getFromDB($printers_id))->isTrue();
         $this->integer($printer->fields['locations_id'])->isEqualTo($locations_id);
 
-        //ensure no new manufacturer has been added
+        //ensure no new location has been added
         $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
     }
 
@@ -496,7 +496,7 @@ class Lockedfield extends DbTestCase
         $this->boolean($printer->getFromDB($printers_id))->isTrue();
         $this->integer($printer->fields['locations_id'])->isEqualTo(0);
 
-        //ensure no new manufacturer has been added
+        //ensure no new location has been added
         $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
     }
 }
