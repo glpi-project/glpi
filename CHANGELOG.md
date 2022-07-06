@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [10.0.2] unreleased
+## [10.0.3] unreleased
 
 ### Added
 
@@ -23,14 +23,12 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
-## [10.0.1] 2022-06-02
+## [10.0.2] 2022-06-28
 
-### Added
+## [10.0.1] 2022-06-02
 
 ### Changed
 - PDF export library has been changed back from `mPDF` to `TCPDF`.
-
-### Deprecated
 
 ### Removed
 - Gantt feature has been moved into the `gantt` plugin.
@@ -42,8 +40,6 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - `Glpi\Api\Api::initEndpoint()` visibility changed to `protected`.
-
-#### Deprecated
 
 #### Removed
 - `GlpiGantt` javascript helper and `dhtmlx-gantt` library.
