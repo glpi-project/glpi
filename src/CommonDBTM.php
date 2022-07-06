@@ -1719,7 +1719,7 @@ class CommonDBTM extends CommonGLPI
             $lockedfield = new Lockedfield();
             $locks = $lockedfield->getLocks($this->getType(), 0);
             foreach ($locks as $lock) {
-                if (isset($this->input[$lock])) {
+                if (array_key_exists($lock, $this->input)) {
                     $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
                     unset($this->input[$lock]);
                 }
