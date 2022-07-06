@@ -112,6 +112,7 @@ abstract class Device extends InventoryAsset
                 }
 
                 //force convertion if needed for date format as 2015-04-16T00:00:00Z
+                // TODO : need to straighten up date format globally (especially for JSON inventory) which does not use the converter
                 if (isset($val->date)) {
                     $val->date = date('Y-m-d', strtotime($val->date));
                 }
