@@ -99,7 +99,7 @@
     .timeline-content {
         position: relative;
         border-top-left-radius: 0;
-        max-width: 100%;
+        max-width: 700px;
         word-break: break-word;
 
         @include media-breakpoint-up(sm) {
