@@ -234,11 +234,11 @@ final class RichText
 
            // Plain text line breaks have to be transformed into <br /> tags.
             $content = '<p>' . nl2br($content) . '</p>';
+        }
 
-            if ($enhanced_html) {
-               // URLs have to be transformed into <a> tags.
-                $content = autolink($content, false);
-            }
+        if ($enhanced_html) {
+            // URLs have to be transformed into <a> tags.
+            $content = autolink($content, false);
         }
 
         return $content;
