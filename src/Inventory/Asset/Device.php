@@ -112,7 +112,9 @@ abstract class Device extends InventoryAsset
                 }
 
                 //force convertion if needed for date format as 2015-04-16T00:00:00Z
-                $val->date = date('Y-m-d', strtotime($val->date));
+                if (isset($val->date)) {
+                    $val->date = date('Y-m-d', strtotime($val->date));
+                }
 
                 //create device or get existing device ID
                 $device_id = $device->import(\Toolbox::addslashes_deep((array)$val) + ['with_history' => false]);
