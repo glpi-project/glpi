@@ -1655,16 +1655,6 @@ $ curl -X GET \
 
 The body of the answer contains the raw image.
 
-### Sanitized content
-
-By default, the API will return sanitized content.  
-This mean that all HTML special characters will be encoded.  
-You can disable this feature by adding the following header to your request:  
-
-```
-X-GLPI-Sanitized-Content: false
-```
-
 ## Errors
 
 ### ERROR_ITEM_NOT_FOUND

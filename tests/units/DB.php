@@ -690,8 +690,8 @@ OTHER EXPRESSION;"
         $table = sprintf('glpitests_%s', uniqid());
         $this->when(
             function () use ($db, $create_query_template, $drop_query_template, $table) {
-                $db->query(sprintf($create_query_template, $table));
-                $db->query(sprintf($drop_query_template, $table));
+                $db->doQuery(sprintf($create_query_template, $table));
+                $db->doQuery(sprintf($drop_query_template, $table));
             }
         )->error()
             ->withType(E_USER_WARNING)
@@ -735,7 +735,7 @@ OTHER EXPRESSION;"
     {
         $db = new \mock\DB();
 
-        $db->query('SELECT 1/0');
+        $db->doQuery('SELECT 1/0');
         $this->array($db->getLastQueryWarnings())->isEqualTo(
             [
                 [
@@ -747,7 +747,7 @@ OTHER EXPRESSION;"
         );
         $this->hasSqlLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
 
-        $db->query('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
+        $db->doQuery('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
         $this->array($db->getLastQueryWarnings())->isEqualTo(
             [
                 [
@@ -766,5 +766,88 @@ OTHER EXPRESSION;"
             '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
             LogLevel::WARNING
         );
+    }
+
+    protected function fetchResultProvider(): iterable
+    {
+        foreach (['fetchArray', 'fetchRow', 'fetchAssoc', 'fetchObject'] as $method) {
+            // No more results => null.
+            yield [
+                'method'   => $method,
+                'row'      => null,
+                'expected' => null,
+            ];
+
+            // Fetch failed => false.
+            yield [
+                'method'   => $method,
+                'row'      => false,
+                'expected' => false,
+            ];
+
+            // Data produced by GLPI <= 10.0 XSS cleaning process.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '&lt;strong&gt;string&lt;/strong&gt;',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<strong>string</strong>',
+                    'extra'   => null,
+                ],
+            ];
+
+            // Data produced by GLPI 10.0 XSS cleaning process.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '&#60;p&#62;HTML containing a code snippet&#60;/p&#62;&#60;pre&#62;&#38;lt;a href=&#38;quot;/test&#38;quot;&#38;gt;link&#38;lt;/a&#38;gt;&#60;/pre&#62;',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+            ];
+
+            // Data produced by GLPI 10.1.
+            yield [
+                'method'   => $method,
+                'row'      => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+                'expected' => [
+                    'id'      => 10,
+                    'content' => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
+                    'extra'   => null,
+                ],
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider fetchResultProvider
+     */
+    public function testDecodeFetchResult(string $method, mixed $row, mixed $expected)
+    {
+        if ($method === 'fetchObject') {
+            $row = is_array($row) ? (object)$row : $row;
+            $expected = is_array($expected) ? (object)$expected : $expected;
+        }
+
+        $this->mockGenerator->orphanize('__construct');
+        $mysqli_result = new \mock\mysqli_result();
+        $mysqli_method = strtolower(preg_replace('/[A-Z]/', '_$0', $method)); // e.g. fetchArray -> fetch_array
+        $this->calling($mysqli_result)->{$mysqli_method} = $row;
+
+        $this->newTestedInstance();
+        $this->variable($this->testedInstance->{$method}($mysqli_result))->isEqualTo($expected);
     }
 }

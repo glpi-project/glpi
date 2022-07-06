@@ -328,8 +328,8 @@ class KnowbaseItem_Revision extends CommonDBTM
         $this->getEmpty();
         unset($this->fields['id']);
         $this->fields['knowbaseitems_id'] = $item->fields['id'];
-        $this->fields['name'] = Toolbox::addslashes_deep($item->fields['name']);
-        $this->fields['answer'] = Toolbox::addslashes_deep($item->fields['answer']);
+        $this->fields['name'] = $item->fields['name'];
+        $this->fields['answer'] = $item->fields['answer'];
         $this->fields['date'] = $item->fields['date_mod'];
         $this->fields['revision'] = $this->getNewRevision();
         $this->fields['users_id'] = $item->fields['users_id'];
@@ -348,8 +348,8 @@ class KnowbaseItem_Revision extends CommonDBTM
         $this->getEmpty();
         unset($this->fields['id']);
         $this->fields['knowbaseitems_id'] = $item->fields['knowbaseitems_id'];
-        $this->fields['name'] = Toolbox::addslashes_deep($item->fields['name']);
-        $this->fields['answer'] = Toolbox::addslashes_deep($item->fields['answer']);
+        $this->fields['name'] = $item->fields['name'];
+        $this->fields['answer'] = $item->fields['answer'];
         $this->fields['date'] = $item->fields['date_mod'];
         $this->fields['language'] = $item->fields['language'];
         $this->fields['revision'] = $this->getNewRevision();

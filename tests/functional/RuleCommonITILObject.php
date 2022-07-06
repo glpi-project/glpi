@@ -39,7 +39,6 @@ use CommonITILActor;
 use CommonITILValidation;
 use DbTestCase;
 use Generator;
-use Glpi\Toolbox\Sanitizer;
 use Group;
 use Group_Ticket;
 use Group_User;
@@ -492,7 +491,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         // Create solution template
         $solutionTemplate = new \SolutionTemplate();
         $solutionTemplate_id = $solutionTemplate->add($solutionInput = [
-            'content' => Toolbox::addslashes_deep("<p>content of solution template  white ' quote</p>")
+            'content' => "<p>content of solution template  white ' quote</p>"
         ]);
         $this->integer((int)$solutionTemplate_id)->isGreaterThan(0);
 
@@ -537,20 +536,23 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->integer((int)$itil_id)->isGreaterThan(0);
 
         // update ITIL Object content and trigger rule on content updating
-        $itil->update([
-            'id'   => $itil_id,
-            'content' => 'test ITIL Object, will trigger on rule (content)'
-        ]);
+        $this->boolean(
+            $itil->update([
+                'id'   => $itil_id,
+                'content' => 'test ITIL Object, will trigger on rule (content)'
+            ]),
+            'Not updated'
+        );
 
         //load ITILSolution
         $itilSolution = new \ITILSolution();
         $this->boolean($itilSolution->getFromDBByCrit([
             'items_id' => $itil_id,
             'itemtype' => $itil::getType(),
-            'content'  => Sanitizer::sanitize("<p>content of solution template  white ' quote</p>")
         ]))->isTrue();
 
         $this->integer((int)$itilSolution->getID())->isGreaterThan(0);
+        $this->string($itilSolution->fields['content'])->isEqualTo("<p>content of solution template  white ' quote</p>");
 
         //reload and check ITIL Object status
         $itil->getFromDB($itil_id);
@@ -816,7 +818,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->array($itil_tasks)->hasSize(1);
         $task_data = array_pop($itil_tasks);
         $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo(Sanitizer::encodeHtmlSpecialChars('<p>test content</p>'));
+        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
 
         // Test on update
         $itil_em = $this->getITILObjectInstance();
@@ -845,9 +847,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->array($itil_tasks)->hasSize(1);
         $task_data = array_pop($itil_tasks);
         $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test content</p>')
-        );
+        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
 
         // Add a second action to the rule (test multiple creation)
         $this->createItem('TaskTemplate', [
@@ -875,15 +875,11 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         $task_data = array_pop($itil_tasks);
         $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test content 2</p>')
-        );
+        $this->string($task_data['content'])->isEqualTo('<p>test content 2</p>');
 
         $task_data = array_pop($itil_tasks);
         $this->array($task_data)->hasKey('content');
-        $this->string($task_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test content</p>')
-        );
+        $this->string($task_data['content'])->isEqualTo('<p>test content</p>');
     }
 
     public function testFollowupTemplateAssignFromRule()
@@ -950,9 +946,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->array($itil_followups)->hasSize(1);
         $itil_followups_data = array_pop($itil_followups);
         $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test testFollowupTemplateAssignFromRule</p>')
-        );
+        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
 
         // Test on update
         $itil = $this->getITILObjectInstance();
@@ -985,9 +979,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->array($itil_followups)->hasSize(1);
         $itil_followups_data = array_pop($itil_followups);
         $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test testFollowupTemplateAssignFromRule</p>')
-        );
+        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
 
         // Add a second action to the rule (test multiple creation)
         $this->createItem('ITILFollowupTemplate', [
@@ -1017,15 +1009,11 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         $itil_followups_data = array_pop($itil_followups);
         $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test testFollowupTemplateAssignFromRule 2</p>')
-        );
+        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule 2</p>');
 
         $itil_followups_data = array_pop($itil_followups);
         $this->array($itil_followups_data)->hasKey('content');
-        $this->string($itil_followups_data['content'])->isEqualTo(
-            Sanitizer::encodeHtmlSpecialChars('<p>test testFollowupTemplateAssignFromRule</p>')
-        );
+        $this->string($itil_followups_data['content'])->isEqualTo('<p>test testFollowupTemplateAssignFromRule</p>');
     }
 
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateITILContent()
@@ -1052,7 +1040,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_of_requester',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
+            'pattern'   => '/(.+\([^()]*\))/',   //retrieve group with '(' and ')'
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -1213,9 +1201,8 @@ abstract class RuleCommonITILObject extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_of_requester',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
+            'pattern'   => '/(.+\([^()]*\))/',   //retrieve group with '(' and ')'
         ]);
-        //change value because of addslashes
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
         //create action to put group matching on criteria
@@ -1340,7 +1327,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_of_requester',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
+            'pattern'   => '/(.+\([^()]*\))/',   //retrieve group with '(' and ')'
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 

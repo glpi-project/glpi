@@ -36,7 +36,6 @@
 namespace test\units;
 
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/knowbaseitem.class.php */
 
@@ -194,11 +193,10 @@ class KnowbaseItem extends DbTestCase
         $instance = new \KnowbaseItem();
         $input = [
             'name'     => 'Test to remove',
-            'answer'   => Sanitizer::sanitize(<<<HTML
+            'answer'   => <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -226,11 +224,10 @@ HTML
         file_put_contents($tmpFilename, base64_decode($base64Image));
         $success = $instance->update([
             'id'       => $instance->getID(),
-            'answer'   => Sanitizer::sanitize(<<<HTML
+            'answer'   => <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1ffff.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],

@@ -38,7 +38,6 @@ use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Filter;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject;
 
 class User extends CommonDBTM
@@ -687,7 +686,7 @@ class User extends CommonDBTM
             return false;
         }
 
-        if (empty($input['name']) || !Auth::isValidLogin(stripslashes($input['name']))) {
+        if (empty($input['name']) || !Auth::isValidLogin($input['name'])) {
             Session::addMessageAfterRedirect(
                 __('The login is not valid. Unable to add the user.'),
                 false,
@@ -737,7 +736,7 @@ class User extends CommonDBTM
                     $password_errors = [];
                     if ($this->validatePassword($input["password"], $password_errors)) {
                         $input["password"]
-                        = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
+                        = Auth::getPasswordHash($input["password"]);
 
                         $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                     } else {
@@ -955,7 +954,7 @@ class User extends CommonDBTM
                            && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))))
                     ) {
                         $input["password"]
-                        = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
+                        = Auth::getPasswordHash($input["password"]);
 
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
@@ -1707,7 +1706,7 @@ class User extends CommonDBTM
                         $group_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_groups',
-                            'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($v[$i]['ou'])]
+                            'WHERE'  => ['ldap_group_dn' => $v[$i]['ou']]
                         ]);
 
                         foreach ($group_iterator as $group) {
@@ -1728,7 +1727,7 @@ class User extends CommonDBTM
                     ) {
                         unset($v[$i][$field]['count']);
                         $lgroups = [];
-                        foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
+                        foreach ($v[$i][$field] as $lgroup) {
                             $lgroups[] = [
                                 new \QueryExpression($DB->quoteValue($lgroup) .
                                              " LIKE " .
@@ -1785,7 +1784,7 @@ class User extends CommonDBTM
             $ldap_connection,
             $ldap_method["basedn"],
             $user_tmp,
-            Sanitizer::unsanitize($ldap_method["group_condition"]),
+            $ldap_method["group_condition"],
             $ldap_method["group_member_field"],
             $ldap_method["use_dn"],
             $ldap_method["login_field"]
@@ -1799,7 +1798,7 @@ class User extends CommonDBTM
                 $iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_groups',
-                    'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]])]
+                    'WHERE'  => ['ldap_group_dn' => $result[$ldap_method["group_member_field"]]]
                 ]);
 
                 foreach ($iterator as $group) {
@@ -1855,7 +1854,7 @@ class User extends CommonDBTM
             }
 
            //Store user's dn
-            $this->fields['user_dn']    = addslashes($userdn);
+            $this->fields['user_dn']    = $userdn;
            //Store date_sync
             $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
            // Empty array to ensure than syncDynamicEmails will be done
@@ -1886,7 +1885,6 @@ class User extends CommonDBTM
                             $this->fields[$k] = "";
                     }
                 } else {
-                    $val = Toolbox::addslashes_deep($val);
                     switch ($k) {
                         case "email1":
                         case "email2":
@@ -1896,7 +1894,7 @@ class User extends CommonDBTM
                             if (!empty($v[0][$e])) {
                                 foreach ($v[0][$e] as $km => $m) {
                                     if (!preg_match('/count/', $km)) {
-                                         $this->fields["_emails"][] = addslashes($m);
+                                         $this->fields["_emails"][] = $m;
                                     }
                                 }
                                 // Only get them once if duplicated
@@ -1962,7 +1960,7 @@ class User extends CommonDBTM
                     $groups = [];
                 }
 
-                $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
+                $this->fields = $rule->processAllRules($groups, $this->fields, [
                     'type'        => Auth::LDAP,
                     'ldap_server' => $ldap_method["id"],
                     'connection'  => $ldap_connection,
@@ -2038,7 +2036,7 @@ class User extends CommonDBTM
                             $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
                             break;
                         case 'users_id_supervisor':
-                            $supervisor_id = self::getIdByField('user_dn', $val, false);
+                            $supervisor_id = self::getIdByField('user_dn', $val);
                             if ($supervisor_id) {
                                 $this->fields[$k] = $supervisor_id;
                             }
@@ -2092,7 +2090,6 @@ class User extends CommonDBTM
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
 
-        $group_condition = Sanitizer::unsanitize($group_condition);
         if (!$use_dn) {
             $filter = "(& $group_condition (|($group_member_field=$user_dn)
                                           ($group_member_field=$login_field=$user_dn)))";
@@ -2167,7 +2164,7 @@ class User extends CommonDBTM
             } else {
                 $groups = [];
             }
-            $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
+            $this->fields = $rule->processAllRules($groups, $this->fields, [
                 'type'        => Auth::MAIL,
                 'mail_server' => $mail_method["id"],
                 'login'       => $name,
@@ -2227,7 +2224,6 @@ class User extends CommonDBTM
                     // encoding issues (see #12898).
                     $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
                 }
-                $value = Sanitizer::sanitize($value); // $_SERVER is not automatically sanitized
                 switch ($field) {
                     case "email1":
                     case "email2":
@@ -2273,7 +2269,7 @@ class User extends CommonDBTM
                 $groups_id = array_column($groups, 'id');
             }
 
-            $this->fields = $rule->processAllRules($groups_id, Toolbox::stripslashes_deep($this->fields), [
+            $this->fields = $rule->processAllRules($groups_id, $this->fields, [
                 'type'   => Auth::EXTERNAL,
                 'email'  => $this->fields["_emails"],
                 'login'  => $this->fields["name"]
@@ -3409,7 +3405,7 @@ JAVASCRIPT;
                  );
             }
 
-            if (!Auth::isValidLogin(stripslashes($this->input['name']))) {
+            if (!Auth::isValidLogin($this->input['name'])) {
                 $this->fields['name'] = $this->oldvalues['name'];
                 unset($this->updates[$key]);
                 unset($this->oldvalues['name']);
@@ -4899,12 +4895,10 @@ JAVASCRIPT;
                     $changes = [
                         0,
                         '',
-                        addslashes(
-                            sprintf(
-                                __('%1$s: %2$s'),
-                                __('Update authentification method to'),
-                                Auth::getMethodName($authtype, $server)
-                            )
+                        sprintf(
+                            __('%1$s: %2$s'),
+                            __('Update authentification method to'),
+                            Auth::getMethodName($authtype, $server)
                         )
                     ];
                     Log::history($ID, __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
@@ -5221,7 +5215,7 @@ JAVASCRIPT;
                 ]
             ],
             'WHERE'     => [
-                'glpi_useremails.email' => $DB->escape(stripslashes($email))
+                'glpi_useremails.email' => $email
             ],
             'ORDER'     => ['glpi_users.is_active DESC', 'is_deleted ASC']
         ]);
@@ -5408,19 +5402,16 @@ JAVASCRIPT;
      * Get user ID from a field
      *
      * @since 0.84
+     * @since 10.1.0 Parameter `$escape` has been removed.
      *
      * @param string $field Field name
      * @param string $value Field value
      *
      * @return integer
      */
-    public static function getIdByField($field, $value, $escape = true)
+    public static function getIdByField($field, $value)
     {
         global $DB;
-
-        if ($escape) {
-            $value = addslashes($value);
-        }
 
         $iterator = $DB->request([
             'SELECT' => 'id',
@@ -6069,14 +6060,11 @@ JAVASCRIPT;
     {
         global $CFG_GLPI;
 
-       // prevent xss
-        $picture = Html::cleanInputText($picture);
-
         if (!empty($picture)) {
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                return $CFG_GLPI["root_doc"] . "/front/document.send.php?file=_pictures/" . $tmp[0] .
-                   "_min." . $tmp[1];
+                return $CFG_GLPI["root_doc"] . "/front/document.send.php?file=_pictures/" . htmlspecialchars($tmp[0]) .
+                   "_min." . htmlspecialchars($tmp[1]);
             }
         }
 
@@ -6178,7 +6166,6 @@ JAVASCRIPT;
     private static function getLdapFieldValue($map, array $res)
     {
 
-        $map = Sanitizer::unsanitize($map);
         $ret = preg_replace_callback(
             '/%{(.*)}/U',
             function ($matches) use ($res) {

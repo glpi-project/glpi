@@ -35,7 +35,6 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Class used to manage Auth LDAP config
@@ -1483,7 +1482,7 @@ class AuthLDAP extends CommonDBTM
         }
 
         if (!isset($_SESSION[$filter_var]) || ($_SESSION[$filter_var] == '')) {
-            $_SESSION[$filter_var] = Sanitizer::unsanitize($config_ldap->fields[$filter_name1]);
+            $_SESSION[$filter_var] = $config_ldap->fields[$filter_name1];
         }
 
         echo "<div class='card'>";
@@ -1500,7 +1499,7 @@ class AuthLDAP extends CommonDBTM
             && ($config_ldap->fields["group_search_type"] == self::GROUP_SEARCH_BOTH)
         ) {
             if (!isset($_SESSION["ldap_group_filter2"]) || ($_SESSION["ldap_group_filter2"] == '')) {
-                $_SESSION["ldap_group_filter2"] = Sanitizer::unsanitize($config_ldap->fields[$filter_name2]);
+                $_SESSION["ldap_group_filter2"] = $config_ldap->fields[$filter_name2];
             }
             echo "</td></tr>";
 
@@ -1896,7 +1895,6 @@ class AuthLDAP extends CommonDBTM
         $count    = 0;  //Store the number of results ldap_search
 
         do {
-            $filter = Sanitizer::unsanitize($filter);
             if (self::isLdapPageSizeAvailable($config_ldap)) {
                 $controls = [
                     [
@@ -2069,7 +2067,7 @@ class AuthLDAP extends CommonDBTM
             if ($values['ldap_filter'] == '') {
                 $filter = "(" . $field_for_sync . "=*)";
                 if (!empty($config_ldap->fields['condition'])) {
-                    $filter = "(& $filter " . Sanitizer::unsanitize($config_ldap->fields['condition']) . ")";
+                    $filter = "(& $filter " . $config_ldap->fields['condition'] . ")";
                 }
             } else {
                 $filter = $values['ldap_filter'];
@@ -2130,7 +2128,7 @@ class AuthLDAP extends CommonDBTM
                    // -> renaming case
                     if ($userfound) {
                         //Get user in DB with this dn
-                        if (!$tmpuser->getFromDBByDn(Toolbox::addslashes_deep($user['user_dn']))) {
+                        if (!$tmpuser->getFromDBByDn($user['user_dn'])) {
                           //This should never happened
                           //If a user_dn is present more than one time in database
                           //Just skip user synchronization to avoid errors
@@ -2185,7 +2183,7 @@ class AuthLDAP extends CommonDBTM
 
             foreach ($diff as $user) {
                //If user dn exists in DB, it means that user login field has changed
-                if (!$tmpuser->getFromDBByDn(Toolbox::addslashes_deep($user_infos[$user]["user_dn"]))) {
+                if (!$tmpuser->getFromDBByDn($user_infos[$user]["user_dn"])) {
                     $entry  = ["user"      => $user_infos[$user][$config_ldap->fields['login_field']],
                         "timestamp" => $user_infos[$user]["timestamp"],
                         "date_sync" => Dropdown::EMPTY_VALUE
@@ -2568,16 +2566,15 @@ class AuthLDAP extends CommonDBTM
         if ($filter == '') {
             if ($search_in_groups) {
                 $filter = (!empty($config_ldap->fields['group_condition'])
-                       ? Sanitizer::unsanitize($config_ldap->fields['group_condition']) : "(objectclass=*)");
+                       ? $config_ldap->fields['group_condition'] : "(objectclass=*)");
             } else {
                 $filter = (!empty($config_ldap->fields['condition'])
-                       ? Sanitizer::unsanitize($config_ldap->fields['condition']) : "(objectclass=*)");
+                       ? $config_ldap->fields['condition'] : "(objectclass=*)");
             }
         }
         $cookie = '';
         $count  = 0;
         do {
-            $filter = Sanitizer::unsanitize($filter);
             if (self::isLdapPageSizeAvailable($config_ldap)) {
                 $controls = [
                     [
@@ -2653,7 +2650,7 @@ class AuthLDAP extends CommonDBTM
                                         'SELECT' => ['ldap_value'],
                                         'FROM'   => 'glpi_groups',
                                         'WHERE'  => [
-                                            'ldap_group_dn' => Toolbox::addslashes_deep($ou)
+                                            'ldap_group_dn' => $ou
                                         ]
                                     ]);
 
@@ -2783,7 +2780,6 @@ class AuthLDAP extends CommonDBTM
     ) {
         global $DB;
 
-        $params      = Toolbox::stripslashes_deep($params);
         $config_ldap = new self();
         $res         = $config_ldap->getFromDB($ldap_server);
         $input = [];
@@ -2822,7 +2818,7 @@ class AuthLDAP extends CommonDBTM
                 'login_field'       => $search_parameters['fields'][$search_parameters['method']],
                 'search_parameters' => $search_parameters,
                 'user_params'       => $params,
-                'condition'         => Sanitizer::unsanitize($config_ldap->fields['condition'])
+                'condition'         => $config_ldap->fields['condition'],
             ];
 
             try {
@@ -2840,16 +2836,16 @@ class AuthLDAP extends CommonDBTM
                             $ds,
                             $config_ldap->fields,
                             $user_dn,
-                            addslashes($login),
+                            $login,
                             ($action == self::ACTION_IMPORT)
                         )
                     ) {
                         //Get the ID by sync field (Used to check if restoration is needed)
                         $searched_user = new User();
                         $user_found = false;
-                        if ($login === null || !($user_found = $searched_user->getFromDBbySyncField($DB->escape($login)))) {
+                        if ($login === null || !($user_found = $searched_user->getFromDBbySyncField($login))) {
                          //In case user id has changed : get id by dn (Used to check if restoration is needed)
-                            $user_found = $searched_user->getFromDBbyDn($DB->escape($user_dn));
+                            $user_found = $searched_user->getFromDBbyDn($user_dn);
                         }
                         if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
@@ -2941,18 +2937,18 @@ class AuthLDAP extends CommonDBTM
        //Connect to the directory
         $ds = $config_ldap->connect();
         if ($ds) {
-            $group_infos = self::getGroupByDn($ds, stripslashes($group_dn));
+            $group_infos = self::getGroupByDn($ds, $group_dn);
             $group       = new Group();
             if ($options['type'] == "groups") {
-                return $group->add(["name"          => addslashes($group_infos["cn"][0]),
-                    "ldap_group_dn" => addslashes($group_infos["dn"]),
+                return $group->add(["name"          => $group_infos["cn"][0],
+                    "ldap_group_dn" => $group_infos["dn"],
                     "entities_id"   => $options['entities_id'],
                     "is_recursive"  => $options['is_recursive']
                 ]);
             }
-            return $group->add(["name"         => addslashes($group_infos["cn"][0]),
+            return $group->add(["name"         => $group_infos["cn"][0],
                 "ldap_field"   => $config_ldap->fields["group_field"],
-                "ldap_value"   => addslashes($group_infos["dn"]),
+                "ldap_value"   => $group_infos["dn"],
                 "entities_id"  => $options['entities_id'],
                 "is_recursive" => $options['is_recursive']
             ]);
@@ -3263,7 +3259,7 @@ class AuthLDAP extends CommonDBTM
            // try by login+auth_id and next by dn
             if (
                 $auth->user->getFromDBbyNameAndAuth($login, Auth::LDAP, $ldap_method['id'])
-                || $auth->user->getFromDBbyDn(Toolbox::addslashes_deep($user_dn))
+                || $auth->user->getFromDBbyDn($user_dn)
             ) {
                 //There's already an existing user in DB with the same DN but its login field has changed
                 $auth->user->fields['name'] = $login;
@@ -3324,7 +3320,7 @@ class AuthLDAP extends CommonDBTM
                 [
                     'SELECT' => 'auths_id',
                     'FROM'   => User::getTable(),
-                    'WHERE'  => ['name' => addslashes($login)],
+                    'WHERE'  => ['name' => $login],
                 ]
             );
             $known_servers_id = array_column(iterator_to_array($known_servers), 'auths_id');
@@ -3439,7 +3435,7 @@ class AuthLDAP extends CommonDBTM
         $filter = "(" . $values['login_field'] . "=" . $filter_value . ")";
 
         if (!empty($values['condition'])) {
-            $filter = "(& $filter " . Sanitizer::unsanitize($values['condition']) . ")";
+            $filter = "(& $filter " . $values['condition'] . ")";
         }
 
         if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
@@ -3849,7 +3845,7 @@ class AuthLDAP extends CommonDBTM
                         $field_counter++;
                         $field_value = '';
                         if (isset($_SESSION['ldap_import']['criterias'][$field])) {
-                            $field_value = Html::entities_deep(Sanitizer::unsanitize($_SESSION['ldap_import']['criterias'][$field]));
+                            $field_value = htmlspecialchars($_SESSION['ldap_import']['criterias'][$field]);
                         }
                         echo "<input type='text' class='form-control' id='criterias$field' name='criterias[$field]' value='$field_value'>";
                         echo "</td>";
@@ -3954,7 +3950,7 @@ class AuthLDAP extends CommonDBTM
                      && !empty($_SESSION['ldap_import']['end_date'])
                         ? $_SESSION['ldap_import']['end_date'] : null);
         $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
-        $ldap_condition = Sanitizer::unsanitize($authldap->getField('condition'));
+        $ldap_condition = $authldap->getField('condition');
        //Add entity filter and filter filled in directory's configuration form
         return  "(&" . (isset($_SESSION['ldap_import']['entity_filter'])
                     ? $_SESSION['ldap_import']['entity_filter']
@@ -4417,7 +4413,7 @@ class AuthLDAP extends CommonDBTM
             return $user;
         }
 
-        if ($user->getFromDBbyNameAndAuth($DB->escape($name), Auth::LDAP, $authldaps_id)) {
+        if ($user->getFromDBbyNameAndAuth($name, Auth::LDAP, $authldaps_id)) {
             return $user;
         }
 

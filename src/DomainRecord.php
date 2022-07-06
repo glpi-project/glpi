@@ -403,8 +403,8 @@ class DomainRecord extends CommonDBChild
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Data') . "</td>";
         echo "<td colspan='3'>";
-        echo "<input type='hidden' id='data_obj{$rand}' name='data_obj' value=\"" . Html::cleanInputText($this->fields["data_obj"]) . "\">";
-        echo "<input type='text' id='data{$rand}' name='data' value=\"" . Html::cleanInputText($this->fields["data"]) . "\" style='width: 95%'>";
+        echo "<input type='hidden' id='data_obj{$rand}' name='data_obj' value=\"" . htmlspecialchars($this->fields["data_obj"]) . "\">";
+        echo "<input type='text' id='data{$rand}' name='data' value=\"" . htmlspecialchars($this->fields["data"]) . "\" style='width: 95%'>";
         echo " <a href='#' title='" . __s('Open helper form') . "'>";
         echo "<i class='far fa-edit'></i>";
         echo "<span class='sr-only'>" . __('Open helper form') . "</span>";

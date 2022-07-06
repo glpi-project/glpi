@@ -37,7 +37,6 @@ namespace Glpi\Inventory\Asset;
 
 use DatabaseInstance as GDatabaseInstance;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
 
@@ -137,7 +136,7 @@ class DatabaseInstance extends InventoryAsset
                         'itemtype'     => $this->item->getType(),
                         'items_id'     => $this->item->fields['id']
                     ];
-                    $items_id = $instance->add(Sanitizer::sanitize($input));
+                    $items_id = $instance->add($input);
                 } else {
                     $items_id = $data['found_inventories'][0];
                     $databases = $val->databases ?? [];
@@ -145,7 +144,7 @@ class DatabaseInstance extends InventoryAsset
                     $instance->getFromDB($items_id);
                     $input = $this->handleInput($val, $instance);
                     $input += ['id' => $instance->fields['id']];
-                    $instance->update(Sanitizer::sanitize($input));
+                    $instance->update($input);
 
                     $existing_databases = $instance->getDatabases();
                     //update databases, relying on name
@@ -154,7 +153,7 @@ class DatabaseInstance extends InventoryAsset
                             if ($existing_database['name'] == $database->name) {
                                  $dbinput = (array)$database;
                                  $dbinput += ['id' => $dbkey, 'is_deleted' => 0, 'is_dynamic' => 1];
-                                 $odatabase->update(Sanitizer::sanitize($dbinput));
+                                 $odatabase->update($dbinput);
                                  unset(
                                      $existing_databases[$dbkey],
                                      $databases[$key]
@@ -179,7 +178,7 @@ class DatabaseInstance extends InventoryAsset
                         'databaseinstances_id' => $instance->fields['id'],
                         'is_dynamic' => 1
                     ];
-                    $odatabase->add(Sanitizer::sanitize($dbinput));
+                    $odatabase->add($dbinput);
                 }
 
                 $instances[$items_id] = $items_id;

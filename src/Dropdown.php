@@ -36,7 +36,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
-use Glpi\Toolbox\Sanitizer;
 
 class Dropdown
 {
@@ -222,12 +221,6 @@ class Dropdown
            // Put condition in session and replace it by its key
            // This is made to prevent passing to many parameters when calling the ajax script
             $params['condition'] = static::addNewCondition($params['condition']);
-        }
-
-        if ($params['multiple']) {
-            $names = Sanitizer::unsanitize($names);
-        } else {
-            $name = Sanitizer::unsanitize($name);
         }
 
         $p = [
@@ -2979,8 +2972,6 @@ JAVASCRIPT;
                             $outputval = $data['completename'];
                         }
 
-                        $outputval = CommonTreeDropdown::sanitizeSeparatorInCompletename($outputval);
-
                         $level = 0;
                     } else { // Need to check if parent is the good one
                         // Do not do if only get one item
@@ -2999,8 +2990,6 @@ JAVASCRIPT;
                                         // Do not do for first item for next page load
                                         if (!$firstitem) {
                                             $title = $item->fields['completename'];
-
-                                            $title = CommonTreeDropdown::sanitizeSeparatorInCompletename($title);
 
                                             $selection_text = $title;
 
@@ -3069,8 +3058,6 @@ JAVASCRIPT;
                         } else {
                             $title = $data['completename'];
                         }
-
-                        $title = CommonTreeDropdown::sanitizeSeparatorInCompletename($title);
 
                         if (isset($data['alias']) && !empty($data['alias'])) {
                             $outputval = $data['alias'];
@@ -3456,7 +3443,7 @@ JAVASCRIPT;
             }
         }
 
-        $ret['results'] = Sanitizer::unsanitize($datas);
+        $ret['results'] = $datas;
         $ret['count']   = $count;
 
         return ($json === true) ? json_encode($ret) : $ret;

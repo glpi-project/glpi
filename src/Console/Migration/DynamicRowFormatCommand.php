@@ -134,7 +134,7 @@ class DynamicRowFormatCommand extends AbstractCommand
         };
 
         foreach ($this->iterate($tables, $progress_message) as $table) {
-            $result = $this->db->query(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->db->quoteName($table)));
+            $result = $this->db->doQuery(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->db->quoteName($table)));
 
             if (!$result) {
                 $message = sprintf(

@@ -43,7 +43,6 @@ use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Common DataBase Table Manager Class - Persistent Object
@@ -696,7 +695,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add an item to the database
      *
-     * @return integer|boolean new ID of the item is insert successfull else false
+     * @return integer|boolean new ID of the item is insert successful else false
      **/
     public function addToDB()
     {
@@ -709,6 +708,9 @@ class CommonDBTM extends CommonGLPI
                 //FIXME: why is that handled here?
                 if (($this->getType() == 'ProfileRight') && ($value == '')) {
                     $value = 0;
+                }
+                if ($value === 'NULL' || $value === 'null') {
+                    $value = null;
                 }
                 $params[$key] = $value;
             }
@@ -1163,7 +1165,7 @@ class CommonDBTM extends CommonGLPI
     {
 
         if (isset($_SESSION['saveInput'][$this->getType()])) {
-            $saved = Html::cleanPostForTextArea($_SESSION['saveInput'][$this->getType()]);
+            $saved = $_SESSION['saveInput'][$this->getType()];
 
            // clear saved data when restored (only need once)
             $this->clearSavedInput();
@@ -1419,7 +1421,6 @@ class CommonDBTM extends CommonGLPI
         $title = '';
         if (!preg_match('/title=/', $p['linkoption'])) {
             $thename = $this->getName(['complete' => true]);
-            $thename = Sanitizer::getVerbatimValue($thename); // Prevent double encoding of special chars
             if ($thename != NOT_AVAILABLE) {
                 $title = ' title="' . htmlentities($thename, ENT_QUOTES, 'utf-8') . '"';
             }
@@ -1490,7 +1491,7 @@ class CommonDBTM extends CommonGLPI
             Session::addMessageAfterRedirect(sprintf(
                 __('%1$s: %2$s'),
                 __('Item successfully added'),
-                stripslashes($display)
+                $display
             ));
         }
     }
@@ -1561,17 +1562,17 @@ class CommonDBTM extends CommonGLPI
             return false;
         }
 
-       // Store input in the object to be available in all sub-method / hook
+        // Store input in the object to be available in all sub-method / hook
         $this->input = $input;
 
-       // Manage the _no_history
+        // Manage the _no_history
         if (!isset($this->input['_no_history'])) {
             $this->input['_no_history'] = !$history;
         }
 
         if (isset($this->input['update'])) {
-           // Input from the interface
-           // Save this data to be available if add fail
+            // Input from the interface
+            // Save this data to be available if add fail
             $this->saveInput();
         }
 
@@ -1580,17 +1581,17 @@ class CommonDBTM extends CommonGLPI
             unset($this->input['update']);
         }
 
-       // Plugin hook - $this->input can be altered
+        // Plugin hook - $this->input can be altered
         Plugin::doHook(Hooks::PRE_ITEM_UPDATE, $this);
         if ($this->input && is_array($this->input)) {
             $this->input = $this->prepareInputForUpdate($this->input);
             $this->filterValues(!isCommandLine());
         }
 
-       //Process business rules for assets
+        //Process business rules for assets
         $this->assetBusinessRules(\RuleAsset::ONUPDATE);
 
-       // Valid input for update
+        // Valid input for update
         if ($this->checkUnicity(false, $options)) {
             if ($this->input && is_array($this->input)) {
                // Fill the update-array with changes
@@ -1607,7 +1608,7 @@ class CommonDBTM extends CommonGLPI
                         ) {
                              $this->fields[$key] = 'NULL';
                         }
-                      // Compare item
+                        // Compare item
                         $ischanged = true;
                         $searchopt = $this->getSearchOptionByField('field', $key, $this->getTable());
                         if (isset($searchopt['datatype'])) {
@@ -1615,7 +1616,7 @@ class CommonDBTM extends CommonGLPI
                                 case 'string':
                                 case 'text':
                                     $ischanged = (strcmp(
-                                        (string)$DB->escape($this->fields[$key]),
+                                        (string)$this->fields[$key],
                                         (string)$this->input[$key]
                                     ) != 0);
                                     break;
@@ -1623,7 +1624,7 @@ class CommonDBTM extends CommonGLPI
                                 case 'itemlink':
                                     if ($key == 'name') {
                                         $ischanged = (strcmp(
-                                            (string)$DB->escape($this->fields[$key]),
+                                            (string)$this->fields[$key],
                                             (string)$this->input[$key]
                                         ) != 0);
                                         break;
@@ -1631,16 +1632,16 @@ class CommonDBTM extends CommonGLPI
                                // else default
 
                                 default:
-                                    $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                                    $ischanged = ($this->fields[$key] != $this->input[$key]);
                                     break;
                             }
                         } else {
                          // No searchoption case
-                            $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                            $ischanged = ($this->fields[$key] != $this->input[$key]);
                         }
                         if ($ischanged) {
                             if ($key != "id") {
-                         // Store old values
+                                // Store old values
                                 if (!in_array($key, $this->history_blacklist)) {
                                      $this->oldvalues[$key] = $this->fields[$key];
                                 }
@@ -1815,6 +1816,7 @@ class CommonDBTM extends CommonGLPI
             if ($idx !== false) {
                 unset($fields[$idx]);
             }
+
             $stmt = $DB->prepare(
                 $DB->buildInsert(
                     $lockedfield->getTable(),
@@ -1827,8 +1829,8 @@ class CommonDBTM extends CommonGLPI
                 )
             );
             foreach ($fields as $field) {
-                 $stmt->bind_param('s', $field);
-                 $res = $stmt->execute();
+                $stmt->bind_param('s', $field);
+                $res = $stmt->execute();
                 if ($res === false) {
                     if ($DB->errno() != 1062) {
                         trigger_error('Unable to add locked field!', E_USER_WARNING);
@@ -1918,7 +1920,7 @@ class CommonDBTM extends CommonGLPI
             }
            // Do not display quotes
             if (isset($this->fields['name'])) {
-                $this->fields['name'] = stripslashes($this->fields['name']);
+                $this->fields['name'] = $this->fields['name'];
             } else {
                //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $this->fields['name'] = sprintf(
@@ -5514,7 +5516,7 @@ class CommonDBTM extends CommonGLPI
             } else {
                 if ($this->getType() == 'Ticket') {
                    //TRANS: Default document to files attached to tickets : %d is the ticket id
-                    $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
+                    $input2["name"] = sprintf(__('Document Ticket %d'), $this->getID());
                     $input2["tickets_id"] = $this->getID();
                 }
 
@@ -5543,8 +5545,8 @@ class CommonDBTM extends CommonGLPI
                // complete doc information
                 $docadded[$docID]['data'] = sprintf(
                     __('%1$s - %2$s'),
-                    stripslashes($doc->fields["name"]),
-                    stripslashes($doc->fields["filename"])
+                    $doc->fields["name"],
+                    $doc->fields["filename"]
                 );
                 $docadded[$docID]['filepath'] = $doc->fields["filepath"];
 

@@ -238,14 +238,18 @@ class DataHelpersExtension extends AbstractExtension
      * @param mixed  $string
      *
      * @return mixed
+     *
+     * @deprecated 10.1
      */
     public function getVerbatimValue($string)
     {
+        Toolbox::deprecated();
+
         if (!is_string($string)) {
             return $string;
         }
 
-        return Sanitizer::getVerbatimValue($string);
+        return Sanitizer::unsanitize($string);
     }
 
 

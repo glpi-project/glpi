@@ -35,7 +35,6 @@
 
 use Glpi\Features\Clonable;
 use Glpi\Search\SearchOption;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Class that manages all the massive actions
@@ -631,9 +630,7 @@ class MassiveAction
 
         foreach ($common_fields as $field) {
             if (isset($this->POST[$field])) {
-                // Value will be sanitized again when massive action form will be submitted.
-                // It have to be unsanitized here to prevent double sanitization.
-                echo Html::hidden($field, ['value' => Sanitizer::unsanitize($this->POST[$field])]);
+                echo Html::hidden($field, ['value' => $this->POST[$field]]);
             }
         }
     }
@@ -1233,7 +1230,7 @@ class MassiveAction
 
                 $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                    $submitname = stripslashes($ma->POST['submitname']);
+                    $submitname = $ma->POST['submitname'];
                 }
                 echo Html::submit($submitname, [
                     'name'  => 'massiveaction',
@@ -1262,7 +1259,7 @@ class MassiveAction
 
                 $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                      $submitname = stripslashes($ma->POST['submitname']);
+                      $submitname = $ma->POST['submitname'];
                 }
                 echo Html::submit($submitname, [
                     'name'  => 'massiveaction',

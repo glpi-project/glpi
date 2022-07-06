@@ -120,7 +120,7 @@ class Process extends InventoryAsset
                     $input = (array)$val + [
                         'id'           => $keydb,
                     ];
-                    $itemProcess->update(Toolbox::addslashes_deep($input));
+                    $itemProcess->update($input);
                     unset($value[$key]);
                     unset($db_itemProcess[$keydb]);
                     break;
@@ -144,7 +144,7 @@ class Process extends InventoryAsset
                     'itemtype'     => $this->item->getType()
                 ];
 
-                $itemProcess->add(Toolbox::addslashes_deep($input));
+                $itemProcess->add($input);
             }
         }
     }

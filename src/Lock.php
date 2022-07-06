@@ -913,10 +913,10 @@ class Lock extends CommonGLPI
             echo "<td class='left' width='80%'>";
 
             echo "<input type='submit' name='unlock' ";
-            echo "value=\"" . addslashes(_sx('button', 'Unlock')) . "\" class='btn btn-primary'>&nbsp;";
+            echo "value=\"" . _sx('button', 'Unlock') . "\" class='btn btn-primary'>&nbsp;";
 
             echo "<input type='submit' name='purge' ";
-            echo "value=\"" . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
+            echo "value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>&nbsp;";
             echo "</td></tr>";
             echo "</table>";
         } else {

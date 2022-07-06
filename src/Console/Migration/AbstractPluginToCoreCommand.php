@@ -251,7 +251,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
             return null;
         }
 
-        if ($item->getFromDBByCrit(Toolbox::addslashes_deep($criteria))) {
+        if ($item->getFromDBByCrit($criteria)) {
             $id = $item->getID();
             $this->matching_items_mapping[$itemtype][$criteria_sha] = $id;
             return $id;

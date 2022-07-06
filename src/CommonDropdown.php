@@ -35,7 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
-use Glpi\Toolbox\Sanitizer;
 
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM
@@ -733,8 +732,6 @@ abstract class CommonDropdown extends CommonDBTM
             return -1;
         }
 
-        $input = Sanitizer::sanitize($input);
-
        // Check twin :
         if ($ID = $this->findID($input)) {
             if ($ID > 0) {
@@ -751,10 +748,10 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * This import a new dropdown if it doesn't exist - Play dictionnary if needed
      *
-     * @param string  $value           Value of the new dropdown (need to be addslashes)
+     * @param string  $value           Value of the new dropdown
      * @param integer $entities_id     Entity in case of specific dropdown (default -1)
-     * @param array   $external_params (manufacturer) (need to be addslashes)
-     * @param string  $comment         Comment (need to be addslashes)
+     * @param array   $external_params (manufacturer)
+     * @param string  $comment         Comment
      * @param boolean $add             if true, add it if not found. if false,
      *                                 just check if exists (true by default)
      *
@@ -795,14 +792,14 @@ abstract class CommonDropdown extends CommonDBTM
             break;
        }*/
 
-        $input = Sanitizer::sanitize([
+        $input = [
             'name'        => $value,
             'comment'     => $comment,
             'entities_id' => $entities_id,
-        ]);
+        ];
 
         if ($rulecollection) {
-            $res_rule = $rulecollection->processAllRules(Sanitizer::dbUnescapeRecursive($ruleinput), [], []);
+            $res_rule = $rulecollection->processAllRules($ruleinput, [], []);
             if (isset($res_rule["name"])) {
                 $input["name"] = $res_rule["name"];
             }
@@ -896,7 +893,6 @@ abstract class CommonDropdown extends CommonDBTM
                       // Change entity
                             $input2['entities_id']  = $_SESSION['glpiactive_entity'];
                             $input2['is_recursive'] = 1;
-                            $input2 = Toolbox::addslashes_deep($input2);
                       // Import new
                             if ($newid = $item->import($input2)) {
                                // Delete old

@@ -109,11 +109,11 @@ class Event extends CommonDBTM
         global $DB;
 
         $input = ['items_id' => intval($items_id),
-            'type'     => $DB->escape($type),
+            'type'     => $type,
             'date'     => $_SESSION["glpi_currenttime"],
-            'service'  => $DB->escape($service),
+            'service'  => $service,
             'level'    => intval($level),
-            'message'  => $DB->escape($event)
+            'message'  => $event
         ];
         $tmp = new self();
         return $tmp->add($input);

@@ -41,7 +41,7 @@ $migration->addPostQuery(
     $DB->buildUpdate(
         'glpi_rulecriterias',
         [
-            'pattern' => $DB->escape('/(.*)[,|\/]/'),
+            'pattern' => '/(.*)[,|\/]/',
         ],
         [
             'id' => 19,

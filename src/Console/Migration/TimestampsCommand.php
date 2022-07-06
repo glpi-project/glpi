@@ -182,7 +182,7 @@ class TimestampsCommand extends AbstractCommand
                // apply alter to table
                 $query = "ALTER TABLE " . $this->db->quoteName($table) . " " . $tablealter . ";\n";
 
-                $result = $this->db->query($query);
+                $result = $this->db->doQuery($query);
                 if (false === $result) {
                     $message = sprintf(
                         __('Migration of table "%s" failed with message "(%s) %s".'),

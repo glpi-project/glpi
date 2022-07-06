@@ -382,7 +382,7 @@ class TicketTask extends DbTestCase
         ]);
         $this->integer($tasks_id)->isGreaterThan(0);
 
-        $this->string($task->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->string($task->fields['content'])->isEqualTo('<p>test template</p>');
         $this->integer($task->fields['users_id_tech'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
         $this->integer($task->fields['state'])->isEqualTo(\Planning::DONE);
         $this->integer($task->fields['is_private'])->isEqualTo(1);
@@ -396,7 +396,7 @@ class TicketTask extends DbTestCase
         ]);
         $this->integer($tasks_id)->isGreaterThan(0);
 
-        $this->string($task->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->string($task->fields['content'])->isEqualTo('<p>test template</p>');
         $this->integer($task->fields['users_id_tech'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
         $this->integer($task->fields['state'])->isEqualTo(\Planning::TODO);
         $this->integer($task->fields['is_private'])->isEqualTo(0);

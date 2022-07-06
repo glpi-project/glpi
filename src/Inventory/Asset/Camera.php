@@ -36,7 +36,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use Item_Devices;
 
 class Camera extends Device
@@ -95,13 +94,11 @@ class Camera extends Device
                 continue;
             }
 
-            $rsl = Sanitizer::sanitize($rsl);
-
             $resolution = new \ImageResolution();
             if (!$resolution->getFromDBByCrit(['name' => $rsl])) {
                 $resolution->add([
                     'name'         => $rsl,
-                    'is_video'     => $is_video,
+                    'is_video'     => (int)$is_video,
                     'is_dynamic'   => 1
                 ]);
             }
@@ -130,8 +127,6 @@ class Camera extends Device
             if (empty($fmt)) {
                 continue;
             }
-
-            $fmt = Sanitizer::sanitize($fmt);
 
             if (!$format->getFromDBByCrit(['name' => $fmt])) {
                 $format->add([

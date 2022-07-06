@@ -211,7 +211,7 @@ class UnsignedKeysCommand extends AbstractCommand
                     $extra
                 );
 
-                $result = $this->db->query($query);
+                $result = $this->db->doQuery($query);
 
                 if ($result === false) {
                     $message = sprintf(

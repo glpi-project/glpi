@@ -1128,7 +1128,7 @@ class RuleImportAsset extends DbTestCase
         unset($fields['date_mod']);
         $fields['name'] = $this->getUniqueString();
         $fields['serial'] = '75F4BFC';
-        $this->integer((int)$computer->add(\Toolbox::addslashes_deep($fields)))->isGreaterThan(0);
+        $this->integer((int)$computer->add($fields))->isGreaterThan(0);
 
         $input = [
             'itemtype' => 'Computer',

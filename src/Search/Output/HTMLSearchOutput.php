@@ -37,7 +37,6 @@ namespace Glpi\Search\Output;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
-use Glpi\Toolbox\Sanitizer;
 use Ticket;
 
 /**
@@ -79,8 +78,8 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         // Contruct parameters
         $globallinkto  = \Toolbox::append_params([
-            'criteria'     => Sanitizer::unsanitize($search['criteria']),
-            'metacriteria' => Sanitizer::unsanitize($search['metacriteria'])
+            'criteria'     => $search['criteria'],
+            'metacriteria' => $search['metacriteria'],
         ], '&');
 
         $parameters = http_build_query([

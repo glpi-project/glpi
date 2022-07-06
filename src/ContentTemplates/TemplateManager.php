@@ -37,7 +37,6 @@ namespace Glpi\ContentTemplates;
 
 use CommonITILObject;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Twig\Environment;
 use Twig\Extension\SandboxExtension;
 use Twig\Loader\ArrayLoader;
@@ -66,8 +65,6 @@ class TemplateManager
         string $content,
         array $params
     ): string {
-        $content = Sanitizer::getVerbatimValue($content);
-
        // Init twig
         $loader = new ArrayLoader(['template' => $content]);
         $twig = new Environment($loader);
@@ -124,8 +121,6 @@ class TemplateManager
      */
     public static function validate(string $content, ?string &$err_msg = null): bool
     {
-        $content = Sanitizer::getVerbatimValue($content);
-
         $twig = new Environment(new ArrayLoader(['template' => $content]));
         $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));
 

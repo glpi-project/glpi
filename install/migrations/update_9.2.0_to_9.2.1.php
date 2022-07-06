@@ -373,8 +373,8 @@ function update920to921()
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_savedsearches",
-            ['entities_id' => "0"],
-            ['entities_id' => "-1"]
+            ['entities_id' => 0],
+            ['entities_id' => -1]
         )
     );
 

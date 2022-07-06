@@ -80,6 +80,9 @@ The present file will list all changes made to the project; according to the
 - All types of rules are now sortable and ordered by ranking.
 - Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
 - GLPI web root is now the `/public` directory and all web request to PHP scripts are proxified by `public/index.php` script.
+- Usage of `DBmysql::query()` method is prohibited to ensure that legacy unsafe DB are no more executed. To execute DB queries,
+  either `DBmysql::request()` can be used to craft query using the GLPI query builder,
+  either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
@@ -93,17 +96,35 @@ The present file will list all changes made to the project; according to the
 - Usage of `users_id_validate` input in `CommonITILObject`.
 - Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
+- Usage of `verbatim_value` Twig filter.
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
 - `Config::validatePassword()`
+- `Glpi\Application\View\Extension::getVerbatimValue()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
 - `Glpi\Features\DCBreadcrumb::isRackPart()`
+- `Glpi\Toolbox\Sanitizer::dbEscape()`
+- `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
+- `Glpi\Toolbox\Sanitizer::dbUnescape()`
+- `Glpi\Toolbox\Sanitizer::dbUnescapeRecursive()`
+- `Glpi\Toolbox\Sanitizer::decodeHtmlSpecialChars()`
+- `Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()`
+- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialChars()`
+- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()`
+- `Glpi\Toolbox\Sanitizer::getVerbatimValue()`
+- `Glpi\Toolbox\Sanitizer::isDbEscaped()`
+- `Glpi\Toolbox\Sanitizer::isHtmlEncoded()`
+- `Glpi\Toolbox\Sanitizer::isNsClassOrCallableIdentifier()`
+- `Glpi\Toolbox\Sanitizer::sanitize()`
+- `Glpi\Toolbox\Sanitizer::unsanitize()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
 - `Html::displayAjaxMessageAfterRedirect()`
 - `Item_Ticket::showForTicket()`
 - `HookManager::enableCSRF()`
@@ -117,17 +138,23 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::countOpenChildren()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`
+- `Toolbox::addslashes_deep()`
 - `Toolbox::seems_utf8()`
+- `Toolbox::stripslashes_deep()`
 - `Search::getOptions()` no longer returns a reference
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
+- `X-GLPI-Sanitized-Content` REST API header support.
+- Handling of encoded/escaped value in `autoName()`.
 - `regenerateTreeCompleteName()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
+- `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
+- `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
 - `Glpi\System\Requirement\DataDirectoriesProtectedPath` class.
 - `Glpi\System\Requirement\ProtectedWebAccess` class.
@@ -146,6 +173,9 @@ The present file will list all changes made to the project; according to the
 - `Search::outputData()`
 - `Search::sylk_clean()`
 - `Toolbox::canUseCas()`
+- `Toolbox::clean_cross_side_scripting_deep()`
+- `Toolbox::getHtmlToDisplay()`
+- `Toolbox::unclean_cross_side_scripting_deep()`
 - `XML` class.
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 abstract class RuleCommonITILObject extends Rule
 {
     const PARENT  = 1024;

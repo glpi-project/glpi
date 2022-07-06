@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\Mime\Address;
 
 /**
@@ -66,7 +65,6 @@ class NotificationMailing implements NotificationInterface
     public static function isUserAddressValid($address, $options = ['checkdns' => false])
     {
        //drop sanitize...
-        $address = Toolbox::stripslashes_deep($address);
         $isValid = GLPIMailer::validateAddress($address);
 
         $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
@@ -165,7 +163,7 @@ class NotificationMailing implements NotificationInterface
             $data['body_html'] = $options['content_html'];
         }
 
-        $data['recipient']                            = Toolbox::stripslashes_deep($options['to']);
+        $data['recipient']                            = $options['to'];
         $data['recipientname']                        = $options['toname'];
 
         if (!empty($options['messageid'])) {
@@ -180,7 +178,7 @@ class NotificationMailing implements NotificationInterface
 
         $queue = new QueuedNotification();
 
-        if (!$queue->add(Sanitizer::sanitize($data))) {
+        if (!$queue->add($data)) {
             Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
             return false;
         } else {

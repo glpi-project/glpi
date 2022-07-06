@@ -40,7 +40,6 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
-use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use ITILSolution;
 use NotificationEvent;
@@ -189,7 +188,6 @@ final class UserMention
         $ids = [];
 
         try {
-            $content = Sanitizer::getVerbatimValue($content);
             libxml_use_internal_errors(true);
             $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');
         } catch (\Throwable $e) {

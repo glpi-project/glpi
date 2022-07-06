@@ -263,7 +263,7 @@ class RuleAsset extends Rule
                                          $regex_result
                                      );
                                     if ($res != null) {
-                                          $user = User::getIdByName(addslashes($res));
+                                          $user = User::getIdByName($res);
                                         if ($user) {
                                             $output['users_id'] = $user;
                                         }

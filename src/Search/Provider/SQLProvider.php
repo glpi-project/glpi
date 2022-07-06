@@ -43,7 +43,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
-use Glpi\Toolbox\Sanitizer;
 use Group;
 use ITILFollowup;
 use Problem;
@@ -70,8 +69,10 @@ final class SQLProvider implements SearchProviderInterface
 
     private static function buildSelect(array $data, string $itemtable): string
     {
+        global $DB;
+
         // request currentuser for SQL supervision, not displayed
-        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . \Toolbox::addslashes_deep($_SESSION['glpiname'] ?? '') . "' AS currentuser,
+        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, " . $DB->quote($_SESSION['glpiname'] ?? '') . " AS currentuser,
                         " . \Search::addDefaultSelect($data['itemtype']);
 
         // Add select for all toview item
@@ -1292,7 +1293,6 @@ final class SQLProvider implements SearchProviderInterface
                 return $criteria;
 
             case "glpi_ipaddresses.name":
-                $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                 if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
                     if ($nott) {
                         if ($regs[1] == '<') {
@@ -1564,7 +1564,6 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         return $criteria;
                     }
-                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                         if (is_numeric($regs[2])) {
                             return [
@@ -1626,7 +1625,6 @@ final class SQLProvider implements SearchProviderInterface
                 case "timestamp":
                 case "progressbar":
                     $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
-                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
 
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
@@ -3185,7 +3183,6 @@ final class SQLProvider implements SearchProviderInterface
                 case "number":
                 case "decimal":
                 case "timestamp":
-                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if ($NOT) {
                             if ($regs[1] === '<') {
@@ -3615,7 +3612,7 @@ final class SQLProvider implements SearchProviderInterface
             $count = "count(DISTINCT `$itemtable`.`id`)";
             // request currentuser for SQL supervision, not displayed
             $query_num = "SELECT $count,
-                              '" . \Toolbox::addslashes_deep($_SESSION['glpiname']) . "' AS currentuser
+                              " . $DB->quote($_SESSION['glpiname']) . " AS currentuser
                        FROM `$itemtable`" .
                 $COMMONLEFTJOIN;
 
@@ -4156,10 +4153,10 @@ final class SQLProvider implements SearchProviderInterface
 
         // Use a ReadOnly connection if available and configured to be used
         $DBread = \DBConnection::getReadConnection();
-        $DBread->query("SET SESSION group_concat_max_len = 8194304;");
+        $DBread->doQuery("SET SESSION group_concat_max_len = 8194304;");
 
         $DBread->execution_time = true;
-        $result = $DBread->query($data['sql']['search']);
+        $result = $DBread->doQuery($data['sql']['search']);
 
         if ($result) {
             $data['data']['execution_time'] = $DBread->execution_time;
@@ -4185,7 +4182,7 @@ final class SQLProvider implements SearchProviderInterface
                     $data['data']['totalcount'] = $DBread->numrows($result);
                 } else {
                     foreach ($data['sql']['count'] as $sqlcount) {
-                        $result_num = $DBread->query($sqlcount);
+                        $result_num = $DBread->doQuery($sqlcount);
                         $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                     }
                 }
@@ -4330,6 +4327,7 @@ final class SQLProvider implements SearchProviderInterface
 
             while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
                 $row = $DBread->fetchAssoc($result);
+
                 $newrow        = [];
                 $newrow['raw'] = $row;
 
@@ -4474,21 +4472,16 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function makeTextSearchValue($val)
     {
-        // `$val` will mostly comes from sanitized input, but may also be raw value.
-        // 1. Unsanitize value to be sure to use raw value.
-        // 2. Escape raw value to protect SQL special chars.
-        $val = Sanitizer::dbEscape(Sanitizer::unsanitize($val));
-
         // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
         // https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html
         // > To search for \, specify it as \\\\; this is because the backslashes are stripped once by the parser
         // > and again when the pattern match is made, leaving a single backslash to be matched against.
         //
-        // At this point, backslashes are already escaped, so escaped backslashes (\\) have to be transformed to \\\\.
-        $val = str_replace('\\\\', '\\\\\\\\', $val);
+        // At this point, we escape backslashes, that will then be escaped a second time when request will be sent.
+        $val = str_replace('\\', '\\\\', $val);
 
         // escape _ char used as wildcard in mysql likes
-        $val = str_replace('_', '\\_', $val);
+        $val = str_replace('_', '\_', $val);
 
         if ($val === 'NULL' || $val === 'null') {
             return null;
@@ -5834,14 +5827,12 @@ HTML;
                     if (isset($field_data['trans']) && !empty($field_data['trans'])) {
                         $out .= $field_data['trans'];
                     } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
-                        $out .= \CommonTreeDropdown::sanitizeSeparatorInCompletename($field_data['trans_completename']);
+                        $out .= $field_data['trans_completename'];
                     } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
                         $out .= $field_data['trans_name'];
                     } else {
                         $value = $field_data['name'];
-                        $out .= $so['field'] === 'completename'
-                            ? \CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
-                            : $value;
+                        $out .= $value;
                     }
                 }
             }
