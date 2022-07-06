@@ -9044,17 +9044,35 @@ abstract class CommonITILObject extends CommonDBTM
                     );
                 };
 
-                // Reset all keys, as the full actors list is expected to be set in `_actors` key.
+                // Normalize all keys.
                 foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
                     $input_key = $get_input_key($actor_itemtype, $actor_type);
                     $notif_key = sprintf('%s_notif', $input_key);
 
-                    $input[$input_key] = [];
+                    if (!array_key_exists($input_key, $input) || !is_array($input[$input_key])) {
+                        $input[$input_key] = !empty($input[$input_key]) ? [$input[$input_key]] : [];
+                    }
+
                     if ($actor_itemtype !== Group::class) {
-                        $input[$notif_key] = [
-                            'use_notification'  => [],
-                            'alternative_email' => [],
-                        ];
+                        if (
+                            !array_key_exists($notif_key, $input)
+                            || !is_array($input[$notif_key])
+                            || (
+                                !array_key_exists('use_notification', $input[$notif_key])
+                                && !array_key_exists('alternative_email', $input[$notif_key])
+                            )
+                        ) {
+                            $input[$notif_key] = [
+                                'use_notification'  => [],
+                                'alternative_email' => [],
+                            ];
+                        } else {
+                            foreach (['use_notification', 'alternative_email'] as $param_key) {
+                                if (!is_array($input[$notif_key][$param_key])) {
+                                    $input[$notif_key][$param_key] = !empty($input[$notif_key][$param_key]) ? [$input[$notif_key][$param_key]] : [];
+                                }
+                            }
+                        }
                     }
                     $input[sprintf('%s_deleted', $input_key)] = [];
                 }
