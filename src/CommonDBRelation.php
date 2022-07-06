@@ -864,7 +864,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $changes = [
                     (isset($this->_force_log_option) ? $this->_force_log_option : 0),
                     '',
-                    addslashes($this->getHistoryNameForItem1($item2, 'add')),
+                    $this->getHistoryNameForItem1($item2, 'add'),
                 ];
                 Log::history(
                     $item1->getID(),
@@ -879,7 +879,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $changes = [
                     '0',
                     '',
-                    addslashes($this->getHistoryNameForItem2($item1, 'add')),
+                    $this->getHistoryNameForItem2($item1, 'add'),
                 ];
                 Log::history(
                     $item2->getID(),
@@ -965,10 +965,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_1
             ) {
                 $changes[0] = '0';
-                $changes[1] = addslashes($this->getHistoryNameForItem1(
+                $changes[1] = $this->getHistoryNameForItem1(
                     $previous2,
                     'update item previous'
-                ));
+                );
                 $changes[2] = "";
                 Log::history(
                     $previous1->getID(),
@@ -985,10 +985,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_2
             ) {
                 $changes[0] = '0';
-                $changes[1] = addslashes($this->getHistoryNameForItem2(
+                $changes[1] = $this->getHistoryNameForItem2(
                     $previous1,
                     'update item previous'
-                ));
+                );
                 $changes[2] = "";
                 Log::history(
                     $previous2->getID(),
@@ -1006,7 +1006,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             ) {
                 $changes[0] = '0';
                 $changes[1] = "";
-                $changes[2] = addslashes($this->getHistoryNameForItem1($new2, 'update item next'));
+                $changes[2] = $this->getHistoryNameForItem1($new2, 'update item next');
                 Log::history(
                     $new1->getID(),
                     $new1->getType(),
@@ -1023,7 +1023,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             ) {
                 $changes[0] = '0';
                 $changes[1] = "";
-                $changes[2] = addslashes($this->getHistoryNameForItem2($new1, 'update item next'));
+                $changes[2] = $this->getHistoryNameForItem2($new1, 'update item next');
                 Log::history(
                     $new2->getID(),
                     $new2->getType(),
@@ -1060,7 +1060,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ) {
                     $changes = [
                         '0',
-                        addslashes($this->getHistoryNameForItem1($item2, 'lock')),
+                        $this->getHistoryNameForItem1($item2, 'lock'),
                         '',
                     ];
 
@@ -1079,7 +1079,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ) {
                     $changes = [
                         '0',
-                        addslashes($this->getHistoryNameForItem2($item1, 'lock')),
+                        $this->getHistoryNameForItem2($item1, 'lock'),
                         '',
                     ];
                     Log::history(
@@ -1120,7 +1120,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     $changes = [
                         '0',
                         '',
-                        addslashes($this->getHistoryNameForItem1($item2, 'unlock')),
+                        $this->getHistoryNameForItem1($item2, 'unlock'),
                     ];
                     Log::history(
                         $item1->getID(),
@@ -1138,7 +1138,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     $changes = [
                         '0',
                         '',
-                        addslashes($this->getHistoryNameForItem2($item1, 'unlock')),
+                        $this->getHistoryNameForItem2($item1, 'unlock'),
                     ];
                     Log::history(
                         $item2->getID(),
@@ -1173,7 +1173,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             ) {
                 $changes = [
                     '0',
-                    addslashes($this->getHistoryNameForItem1($item2, 'delete')),
+                    $this->getHistoryNameForItem1($item2, 'delete'),
                     '',
                 ];
                 Log::history(
@@ -1191,7 +1191,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             ) {
                 $changes = [
                     '0',
-                    addslashes($this->getHistoryNameForItem2($item1, 'delete')),
+                    $this->getHistoryNameForItem2($item1, 'delete'),
                     '',
                 ];
                 Log::history(

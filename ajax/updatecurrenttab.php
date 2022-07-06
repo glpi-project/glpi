@@ -39,15 +39,15 @@ if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
     Session::checkLoginUser();
 }
 
-/** @global array $_UGET */
+/** @global array $_GET */
 
 // Manage tabs
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
-    $tabs = Toolbox::getAvailablesTabs($_UGET['itemtype'], $_GET['id'] ?? null);
+    $tabs = Toolbox::getAvailablesTabs($_GET['itemtype'], $_GET['id'] ?? null);
     $current      = 0;
     foreach (array_keys($tabs) as $key) {
         if ($current == $_GET['tab']) {
-            Session::setActiveTab($_UGET['itemtype'], $key);
+            Session::setActiveTab($_GET['itemtype'], $key);
             break;
         }
         $current++;

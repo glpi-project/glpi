@@ -860,12 +860,12 @@ class CommonDBTM extends DbTestCase
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -878,10 +878,10 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
        //test with default date
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -904,12 +904,12 @@ class CommonDBTM extends DbTestCase
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01");
 
         $this->integer($computerID)->isGreaterThan(0);
@@ -919,7 +919,7 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01");
 
         $this->boolean(
-            $computer->update(['id' => $computerID, 'name' => \Toolbox::addslashes_deep('Computer01 \'')])
+            $computer->update(['id' => $computerID, 'name' => 'Computer01 \''])
         )->isTrue();
         $this->string($computer->fields['name'])->isIdenticalTo('Computer01 \'');
         $this->boolean($computer->getFromDB($computerID))->isTrue();

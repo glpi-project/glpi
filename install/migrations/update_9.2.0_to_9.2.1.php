@@ -332,24 +332,24 @@ function update920to921()
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['itemtype' => "QueuedNotification"],
-            ['itemtype' => "QueuedMail"]
+            ['itemtype' => 'QueuedNotification'],
+            ['itemtype' => 'QueuedMail']
         )
     );
 
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['name' => "queuednotification"],
-            ['name' => "queuedmail"]
+            ['name' => 'queuednotification'],
+            ['name' => 'queuedmail']
         )
     );
 
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['name' => "queuednotificationclean"],
-            ['name' => "queuedmailclean"]
+            ['name' => 'queuednotificationclean'],
+            ['name' => 'queuedmailclean']
         )
     );
 
@@ -363,8 +363,8 @@ function update920to921()
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_profilerights",
-            ['name' => "queuednotification"],
-            ['name' => "queuedmail"]
+            ['name' => 'queuednotification'],
+            ['name' => 'queuedmail']
         )
     );
 
@@ -373,8 +373,8 @@ function update920to921()
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_savedsearches",
-            ['entities_id' => "0"],
-            ['entities_id' => "-1"]
+            ['entities_id' => 0],
+            ['entities_id' => -1]
         )
     );
 
@@ -446,11 +446,9 @@ function update920to921()
                     ['license_number' => null],
                     ['license_number' => ""]
                 ]
-            ],
             ['OR' => [
                 ['license_id' => null],
                 ['license_id' => ""]
-            ]
             ]
         ])
     );

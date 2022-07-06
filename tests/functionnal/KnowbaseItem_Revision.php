@@ -113,7 +113,7 @@ class KnowbaseItem_Revision extends DbTestCase
             $kb1->update(
                 [
                     'id'     => $kb1->getID(),
-                    'answer' => \Toolbox::addslashes_deep('Don\'t use paths with spaces, like C:\\Program Files\\MyApp')
+                    'answer' => 'Don\'t use paths with spaces, like C:\\Program Files\\MyApp'
                 ]
             )
         )->isTrue();

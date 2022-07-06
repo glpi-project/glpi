@@ -60,15 +60,15 @@ function update921to922()
 
     $migration->addPostQuery(
         $DB->buildDelete("glpi_configs", [
-            'context'   => "core",
-            'name'      => "default_graphtype"
+            'context'   => 'core',
+            'name'      => 'default_graphtype'
         ])
     );
 
     $migration->addPostQuery(
         $DB->buildDelete(
             "glpi_crontasks",
-            ['name' => "optimize"]
+            ['name' => 'optimize']
         )
     );
 

@@ -179,22 +179,22 @@ class Log extends CommonDBTM
                        // other cases; link field -> get data from dropdown
                         if ($val2["table"] != 'glpi_auth_tables') {
                             $changes = [$id_search_option,
-                                addslashes(sprintf(
+                                sprintf(
                                     __('%1$s (%2$s)'),
                                     Dropdown::getDropdownName(
                                         $val2["table"],
                                         $oldval
                                     ),
                                     $oldval
-                                )),
-                                addslashes(sprintf(
+                                ),
+                                sprintf(
                                     __('%1$s (%2$s)'),
                                     Dropdown::getDropdownName(
                                         $val2["table"],
                                         $values[$key]
                                     ),
                                     $values[$key]
-                                ))
+                                )
                             ];
                         }
                     }
@@ -1294,9 +1294,10 @@ class Log extends CommonDBTM
             return;
         }
 
+        $dparams = array_fill_keys(array_keys($queue[0]), new \QueryParam());
         $update = $DB->buildInsert(
             static::getTable(),
-            array_fill_keys(array_keys($queue[0]), new \QueryParam())
+            $dparams
         );
         $stmt = $DB->prepare($update);
 

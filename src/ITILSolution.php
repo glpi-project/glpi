@@ -196,7 +196,7 @@ class ITILSolution extends CommonDBChild
             }
             $input = array_replace(
                 [
-                    'content'           => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'content'           => $template->getRenderedContent($parent_item),
                     'solutiontypes_id'  => $template->fields['solutiontypes_id'],
                     'status'            => CommonITILValidation::WAITING,
                 ],
@@ -215,7 +215,7 @@ class ITILSolution extends CommonDBChild
             if (isset($template_fields['content'])) {
                 $parent_item = new $input['itemtype']();
                 $parent_item->getFromDB($input['items_id']);
-                $template_fields['content'] = Sanitizer::sanitize($template->getRenderedContent($parent_item));
+                $template_fields['content'] = $template->getRenderedContent($parent_item);
             }
             $input = array_replace($template_fields, $input);
         }

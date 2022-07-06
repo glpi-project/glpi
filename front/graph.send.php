@@ -44,7 +44,7 @@ include('../inc/includes.php');
 Session::checkRight("statistic", READ);
 
 // Read params
-$statdata_itemtype = $_UGET['statdata_itemtype'] ?? null;
+$statdata_itemtype = $_GET['statdata_itemtype'] ?? null;
 
 // Validate stats itemtype
 if (!is_a($statdata_itemtype, StatData::class, true)) {

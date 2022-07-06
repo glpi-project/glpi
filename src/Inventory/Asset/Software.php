@@ -188,7 +188,7 @@ class Software extends InventoryAsset
                     if (!isset($this->known_links[$mkey])) {
                         $new_value = Dropdown::importExternal(
                             'Manufacturer',
-                            addslashes($val->manufacturers_id),
+                            $val->manufacturers_id,
                             $this->entities_id
                         );
                         $this->known_links[$mkey] = $new_value;
@@ -561,8 +561,8 @@ class Software extends InventoryAsset
             'SELECT' => ['id', 'name', 'manufacturers_id'],
             'FROM'   => \Software::getTable(),
             'WHERE'  => [
-                'entities_id'       => $this->entities_id,
-                'is_recursive'      => $this->is_recursive,
+                'entities_id'       => new QueryParam(),
+                'is_recursive'      => new QueryParam(),
                 'name'               => new QueryParam(),
                 'manufacturers_id'   => new QueryParam()
             ]
@@ -591,7 +591,7 @@ class Software extends InventoryAsset
             ]);
 
             $stmt->bind_param(
-                'ss',
+                'ssss',
                 $input['name'],
                 $input['manufacturers_id'],
             );
@@ -623,7 +623,7 @@ class Software extends InventoryAsset
             'SELECT' => ['id', 'name', 'arch', 'softwares_id', 'operatingsystems_id'],
             'FROM'   => \SoftwareVersion::getTable(),
             'WHERE'  => [
-                'entities_id'           => $this->entities_id,
+                'entities_id'           => new QueryParam(),
                 'name'                  => new QueryParam(),
                 'arch'                  => new QueryParam(),
                 'softwares_id'          => new QueryParam(),
@@ -666,7 +666,7 @@ class Software extends InventoryAsset
             ]);
 
             $stmt->bind_param(
-                'ssss',
+                'sssss',
                 $input['version'],
                 $input['arch'],
                 $input['softwares_id'],
@@ -854,16 +854,17 @@ class Software extends InventoryAsset
             }
 
             if ($stmt === null) {
+                $dparams = [
+                    'itemtype'              => new QueryParam(),
+                    'items_id'              => new QueryParam(),
+                    'softwareversions_id'   => new QueryParam(),
+                    'is_dynamic'            => new QueryParam(),
+                    'entities_id'           => new QueryParam(),
+                    'date_install'          => new QueryParam()
+                ];
                 $insert_query = $DB->buildInsert(
                     'glpi_items_softwareversions',
-                    [
-                        'itemtype'              => $this->item->getType(),
-                        'items_id'              => $this->item->fields['id'],
-                        'softwareversions_id'   => new QueryParam(),
-                        'is_dynamic'            => new QueryParam(),
-                        'entities_id'           => new QueryParam(),
-                        'date_install'          => new QueryParam()
-                    ]
+                    $dparams
                 );
                  $stmt = $DB->prepare($insert_query);
             }
@@ -876,7 +877,9 @@ class Software extends InventoryAsset
             ]);
 
             $stmt->bind_param(
-                'ssss',
+                'ssssss',
+                $itemtype,
+                $this->item->fields['id'],
                 $input['softwareversions_id'],
                 $input['is_dynamic'],
                 $input['entities_id'],

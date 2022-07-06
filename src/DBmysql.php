@@ -42,13 +42,13 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class DBmysql
 {
-   //! Database Host - string or Array of string (round robin)
+    //! Database Host - string or Array of string (round robin)
     public $dbhost             = "";
-   //! Database User
+    //! Database User
     public $dbuser             = "";
-   //! Database Password
+    //! Database Password
     public $dbpassword         = "";
-   //! Default Database
+    //! Default Database
     public $dbdefault          = "";
 
     /**
@@ -57,10 +57,10 @@ class DBmysql
      */
     protected $dbh;
 
-   //! Database Error
+    //! Database Error
     public $error              = 0;
 
-   // Slave management
+    // Slave management
     public $slave              = false;
     private $in_transaction;
 
@@ -166,13 +166,17 @@ class DBmysql
      * if first attempt fail -> display a warning which indicates that glpi is in readonly
      **/
     public $first_connection   = true;
-   // Is connected to the DB ?
+    // Is connected to the DB ?
     public $connected          = false;
 
-   //to calculate execution time
+    //to calculate execution time
     public $execution_time          = false;
 
     private $cache_disabled = false;
+
+    private string $current_query;
+
+    private DBmysqlIterator $iterator;
 
     /**
      * Cached list fo tables.
@@ -221,8 +225,8 @@ class DBmysql
     {
         $this->connected = false;
 
-       // Do not trigger errors nor throw exceptions at PHP level
-       // as we already extract error and log while fetching result.
+        // Do not trigger errors nor throw exceptions at PHP level
+        // as we already extract error and log while fetching result.
         mysqli_report(MYSQLI_REPORT_OFF);
 
         $this->dbh = @new mysqli();
@@ -237,7 +241,7 @@ class DBmysql
         }
 
         if (is_array($this->dbhost)) {
-           // Round robin choice
+            // Round robin choice
             $i    = (isset($choice) ? $choice : mt_rand(0, count($this->dbhost) - 1));
             $host = $this->dbhost[$i];
         } else {
@@ -246,13 +250,13 @@ class DBmysql
 
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {
-           // Host
+            // Host
             $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
         } else if (intval($hostport[1]) > 0) {
-           // Host:port
+            // Host:port
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
         } else {
-            // :Socket
+             // :Socket
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
         }
 
@@ -265,7 +269,7 @@ class DBmysql
         } else {
             $this->setConnectionCharset();
 
-           // force mysqlnd to return int and float types correctly (not as strings)
+            // force mysqlnd to return int and float types correctly (not as strings)
             $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
 
             $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
@@ -333,6 +337,7 @@ class DBmysql
         return $this->dbh->real_escape_string($string);
     }
 
+
     /**
      * Execute a MySQL query
      *
@@ -362,7 +367,7 @@ class DBmysql
 
         $res = $this->dbh->query($query);
         if (!$res) {
-           // no translation for error logs
+            // no translation for error logs
             $error = "  *** MySQL query error:\n  SQL: " . $query . "\n  Error: " .
                    $this->dbh->error . "\n";
             $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
@@ -414,7 +419,7 @@ class DBmysql
 
     /**
      * Execute a MySQL query and die
-     * (optionnaly with a message) if it fails
+     * (optionally with a message) if it fails
      *
      * @since 0.84
      *
@@ -427,7 +432,7 @@ class DBmysql
     {
         $res = $this->query($query);
         if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
@@ -457,7 +462,7 @@ class DBmysql
 
         $res = $this->dbh->prepare($query);
         if (!$res) {
-           // no translation for error logs
+            // no translation for error logs
             $error = "  *** MySQL prepare error:\n  SQL: " . $query . "\n  Error: " .
                    $this->dbh->error . "\n";
             $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
@@ -475,6 +480,7 @@ class DBmysql
                 $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
             }
         }
+        $this->current_query = $query;
         return $res;
     }
 
@@ -1262,15 +1268,8 @@ class DBmysql
             // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int)$value . "'";
         } else {
-            if (Sanitizer::isNsClassOrCallableIdentifier($value)) {
-                // Values that corresponds to an existing namespaced class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
-                // However, they have to be escaped in SQL queries.
-                // Note: method is called statically, so `$DB` may be not defined yet in edge cases (install process).
-                global $DB;
-                $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
-            }
-
-           // phone numbers may start with '+' and will be considered as numeric
+            global $DB;
+            $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             $value = "'$value'";
         }
         return $value;
@@ -1291,14 +1290,22 @@ class DBmysql
         $query = "INSERT INTO " . self::quoteName($table) . " (";
 
         $fields = [];
-        foreach ($params as $key => &$value) {
+        $values = [];
+        foreach ($params as $key => $value) {
             $fields[] = $this->quoteName($key);
-            $value = $this->quoteValue($value);
+            if ($value instanceof \QueryExpression) {
+                $values[] = $value->getValue();
+                unset($params[$key]);
+            } elseif ($value instanceof \QueryParam) {
+                $values[] = $value->getValue();
+            } else {
+                $values[] = self::quoteValue($value);
+            }
         }
 
         $query .= implode(', ', $fields);
         $query .= ") VALUES (";
-        $query .= implode(", ", $params);
+        $query .= implode(", ", $values);
         $query .= ")";
 
         return $query;
@@ -1336,14 +1343,13 @@ class DBmysql
      */
     public function insertOrDie($table, $params, $message = '')
     {
-        $insert = $this->buildInsert($table, $params);
-        $res = $this->query($insert);
+        $res = $this->insert($table, $params);
         if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
-                $insert,
+                $this->current_query,
                 $this->error()
             );
             if (isCommandLine()) {
@@ -1371,7 +1377,7 @@ class DBmysql
      */
     public function buildUpdate($table, $params, $clauses, array $joins = [])
     {
-       //when no explicit "WHERE", we only have a WHEre clause.
+       //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
             $clauses  = ['WHERE' => $clauses];
         } else {
@@ -1382,7 +1388,7 @@ class DBmysql
                         str_replace(
                             '%clause',
                             $key,
-                            'Trying to use an unknonw clause (%clause) building update query!'
+                            'Trying to use an unknown clause (%clause) building update query!'
                         )
                     );
                 }
@@ -1395,26 +1401,36 @@ class DBmysql
 
         $query  = "UPDATE " . self::quoteName($table);
 
-       //JOINS
-        $it = new DBmysqlIterator($this);
-        $query .= $it->analyseJoins($joins);
+        //JOINS
+        $this->iterator = new DBmysqlIterator($this);
+        $query .= $this->iterator->analyseJoins($joins);
 
         $query .= " SET ";
         foreach ($params as $field => $value) {
-            $query .= self::quoteName($field) . " = " . $this->quoteValue($value) . ", ";
+            if ($value instanceof QueryParam || $value instanceof QueryExpression) {
+                //no quote for query parameters nor expressions
+                $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
+            } else if ($value === null || $value === 'NULL' || $value === 'null') {
+                $query .= self::quoteName($field) . " = NULL, ";
+            } else if (is_bool($value)) {
+                // transform boolean as int (prevent `false` to be transformed to empty string)
+                $query .= self::quoteName($field) . " = '" . (int)$value . "', ";
+            } else {
+                $query .= self::quoteName($field) . " = " . self::quoteValue($value) . ", ";
+            }
         }
         $query = rtrim($query, ', ');
 
-        $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
+        $query .= " WHERE " . $this->iterator->analyseCrit($clauses['WHERE']);
 
        // ORDER BY
         if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
-            $query .= $it->handleOrderClause($clauses['ORDER']);
+            $query .= $this->iterator->handleOrderClause($clauses['ORDER']);
         }
 
         if (isset($clauses['LIMIT']) && !empty($clauses['LIMIT'])) {
             $offset = (isset($clauses['START']) && !empty($clauses['START'])) ? $clauses['START'] : null;
-            $query .= $it->handleLimits($clauses['LIMIT'], $offset);
+            $query .= $this->iterator->handleLimits($clauses['LIMIT'], $offset);
         }
 
         return $query;
@@ -1457,14 +1473,13 @@ class DBmysql
      */
     public function updateOrDie($table, $params, $where, $message = '', array $joins = [])
     {
-        $update = $this->buildUpdate($table, $params, $where, $joins);
-        $res = $this->query($update);
+        $res = $this->update($table, $params, $where, $joins);
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
-                $update,
+                $this->current_query,
                 $this->error()
             );
             if (isCommandLine()) {
@@ -1525,9 +1540,9 @@ class DBmysql
 
         $query  = "DELETE " . self::quoteName($table) . " FROM " . self::quoteName($table);
 
-        $it = new DBmysqlIterator($this);
-        $query .= $it->analyseJoins($joins);
-        $query .= " WHERE " . $it->analyseCrit($where);
+        $this->iterator = new DBmysqlIterator($this);
+        $query .= $this->iterator->analyseJoins($joins);
+        $query .= " WHERE " . $this->iterator->analyseCrit($where);
 
         return $query;
     }
@@ -1567,14 +1582,13 @@ class DBmysql
      */
     public function deleteOrDie($table, $where, $message = '', array $joins = [])
     {
-        $update = $this->buildDelete($table, $where, $joins);
-        $res = $this->query($update);
+        $res = $this->delete($table, $where, $joins);
         if (!$res) {
            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
-                $update,
+                $this->current_query,
                 $this->error()
             );
             if (isCommandLine()) {
@@ -1966,6 +1980,9 @@ class DBmysql
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
+            echo $this->current_query;
+            $e = new RuntimeException($stmt->error);
+            echo $e->getTraceAsString();
             trigger_error($stmt->error, E_USER_ERROR);
         }
     }

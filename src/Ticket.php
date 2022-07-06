@@ -994,8 +994,8 @@ class Ticket extends CommonITILObject
 
        // Clean new lines before passing to rules
         if (isset($input["content"])) {
-            $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-            $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+            $input["content"] = preg_replace('/\\r\\n/', "\n", $input['content']);
+            $input["content"] = preg_replace('/\\n/', "\n", $input['content']);
         }
 
        // automatic recalculate if user changes urgence or technician change impact
@@ -1829,7 +1829,6 @@ class Ticket extends CommonITILObject
                 ['recursive' => true],
                 ['condition' => RuleTicket::ONADD]
             );
-            $input = Toolbox::stripslashes_deep($input);
 
             // Recompute default values based on values computed by rules
             $input = $this->computeDefaultValuesForAdd($input);

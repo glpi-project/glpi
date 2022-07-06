@@ -48,7 +48,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-/** @global array $_UPOST */
+/** @global array $_POST */
 
 if (!isset($_REQUEST['action'])) {
     Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
@@ -141,14 +141,14 @@ if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['inputs']);
     $item = new $itemtype();
     $inputs = [];
-    parse_str($_UPOST['inputs'], $inputs);
+    parse_str($_POST['inputs'], $inputs);
 
     $item->add(Sanitizer::sanitize($inputs));
 } else if (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
     $item = new $itemtype();
     $inputs = [];
-    parse_str($_UPOST['inputs'], $inputs);
+    parse_str($_POST['inputs'], $inputs);
 
     $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
     if (!empty($bulk_item_list)) {

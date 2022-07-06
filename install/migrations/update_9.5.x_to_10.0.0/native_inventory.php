@@ -62,7 +62,7 @@ if (!$DB->tableExists('glpi_agenttypes')) {
                 'id'           => 1,
                 'name'         => 'Core',
             ]
-        )
+        ),
     );
 }
 if (!$DB->tableExists('glpi_agents')) {
@@ -772,8 +772,9 @@ if (countElementsInTable('glpi_snmpcredentials') === 0) {
                 'snmpversion'   => 1,
                 'community'     => 'public'
             ]
-        )
+        ),
     );
+
     $migration->addPostQuery(
         $DB->buildInsert(
             'glpi_snmpcredentials',

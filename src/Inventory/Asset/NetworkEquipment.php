@@ -261,7 +261,7 @@ class NetworkEquipment extends MainAsset
             $netname->add([
                 'itemtype'  => 'NetworkPort',
                 'items_id'  => $netports_id,
-                'name'      => addslashes($port->name)
+                'name'      => $port->name
             ]);
         }
     }

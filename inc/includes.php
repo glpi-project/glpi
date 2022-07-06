@@ -86,30 +86,6 @@ if (!isset($PLUGINS_INCLUDED)) {
     $plugin->init(true, $PLUGINS_EXCLUDED);
 }
 
-// Security system
-if (isset($_POST)) {
-    $_UPOST = $_POST; //keep raw, as a workaround
-    if (isset($_POST['_glpi_simple_form'])) {
-        $_POST = array_map('urldecode', $_POST);
-    }
-    $_POST = Sanitizer::sanitize($_POST);
-}
-if (isset($_GET)) {
-    $_UGET = $_GET; //keep raw, as a workaround
-    $_GET  = Sanitizer::sanitize($_GET);
-}
-if (isset($_REQUEST)) {
-    $_UREQUEST = $_REQUEST; //keep raw, as a workaround
-    $_REQUEST  = Sanitizer::sanitize($_REQUEST);
-}
-if (isset($_FILES)) {
-    $_UFILES = $_FILES; //keep raw, as a workaround
-    foreach ($_FILES as &$file) {
-        $file['name'] = Sanitizer::sanitize($file['name']);
-    }
-}
-unset($file);
-
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
     $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
 }

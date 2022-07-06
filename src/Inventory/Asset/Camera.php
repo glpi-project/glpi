@@ -101,7 +101,7 @@ class Camera extends Device
             if (!$resolution->getFromDBByCrit(['name' => $rsl])) {
                 $resolution->add([
                     'name'         => $rsl,
-                    'is_video'     => $is_video,
+                    'is_video'     => (int)$is_video,
                     'is_dynamic'   => 1
                 ]);
             }

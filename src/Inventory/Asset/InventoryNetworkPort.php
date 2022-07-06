@@ -144,7 +144,7 @@ trait InventoryNetworkPort
         $criteria = [
             'FROM'   => NetworkPort::getTable(),
             'WHERE'  => [
-                'itemtype'  => 'Unmanaged',
+                'itemtype'  => new QueryParam(),
                 'mac'       => new QueryParam()
             ]
         ];
@@ -157,8 +157,8 @@ trait InventoryNetworkPort
         foreach ($this->ports as $port) {
             if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
                 $stmt->bind_param(
-                    's',
-                    $port->mac
+                    'ss',
+                    ...([Unmanaged::class, $port->mac])
                 );
                 $DB->executeStatement($stmt);
                 $results = $stmt->get_result();
@@ -206,7 +206,7 @@ trait InventoryNetworkPort
                     'COUNT'  => 'cnt',
                     'FROM'   => IPNetwork::getTable(),
                     'WHERE'  => [
-                        'entities_id'  => $this->entities_id,
+                        'entities_id'  => new QueryParam(),
                         'address'      => new QueryParam(),
                         'netmask'      => new QueryParam(),
                         'gateway'      => new QueryParam(),
@@ -221,12 +221,19 @@ trait InventoryNetworkPort
             }
             $stmt = $this->ipnetwork_stmt;
 
-            $stmt->bind_param(
-                'sss',
+            $res = $stmt->bind_param(
+                'ssss',
+                $this->entities_id,
                 $port->subnet,
                 $port->netmask,
                 $port->gateway
             );
+            if (false === $res) {
+                $msg = "Error binding params";
+                //$msg .= print_r($params, true);
+                throw new \RuntimeException($msg);
+            }
+
             $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
@@ -569,8 +576,8 @@ trait InventoryNetworkPort
                     'SELECT' => 'id',
                     'FROM'   => Item_DeviceNetworkCard::getTable(),
                     'WHERE'  => [
-                        'itemtype'  => $this->itemtype,
-                        'items_id'  => $this->items_id,
+                        'itemtype'  => new QueryParam(),
+                        'items_id'  => new QueryParam(),
                         'mac'       => new QueryParam()
                     ]
                 ];
@@ -583,7 +590,9 @@ trait InventoryNetworkPort
 
             $stmt = $this->idevice_stmt;
             $stmt->bind_param(
-                's',
+                'sss',
+                $this->itemtype,
+                $this->items_id,
                 $data->mac
             );
             $DB->executeStatement($stmt);

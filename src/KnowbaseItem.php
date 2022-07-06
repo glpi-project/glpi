@@ -1338,7 +1338,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         echo "<form method='get' action='" . $this->getSearchURL() . "' class='d-flex justify-content-center'>";
         echo "<input class='form-control me-1' type='text' size='50' name='contains' value=\"" .
-             Html::cleanInputText(stripslashes($params["contains"])) . "\">";
+             Html::cleanInputText($params["contains"]) . "\">";
         echo "<input type='submit' value=\"" . _sx('button', 'Search') . "\" class='btn btn-primary'>";
         echo "</table>";
         if (
@@ -1592,7 +1592,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
             case 'search':
                 if (strlen($params["contains"]) > 0) {
-                    $search  = Sanitizer::unsanitize($params["contains"]);
+                    $search  = Sanitizer::decodeHtmlSpecialChars($params["contains"]);
 
                    // Replace all non word characters with spaces (see: https://stackoverflow.com/a/26537463)
                     $search_wilcard = preg_replace('/[^\p{L}\p{N}_]+/u', ' ', $search);
@@ -2511,8 +2511,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $values = [
             'id'     => $this->getID(),
-            'name'   => addslashes($revision->fields['name']),
-            'answer' => addslashes($revision->fields['answer'])
+            'name'   => $revision->fields['name'],
+            'answer' => $revision->fields['answer']
         ];
 
         if ($this->update($values)) {

@@ -400,8 +400,6 @@ class Calendar extends AbstractBackend
             'data'     => $calendarData,
         ];
 
-        $input = \Toolbox::addslashes_deep($input);
-
         if ($vobject->isNewItem()) {
             return $vobject->add($input);
         }

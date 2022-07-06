@@ -58,7 +58,7 @@ if (!empty($_POST["update"])) {
     foreach (array_keys($_POST) as $field) {
         if ($glpikey->isConfigSecured($context, $field)) {
            // Field must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-            $_POST[$field] = $_UPOST[$field];
+            $_POST[$field] = $_POST[$field];
         }
     }
 
