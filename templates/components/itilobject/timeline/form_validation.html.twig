@@ -254,8 +254,10 @@
          </form>
       </div>
 
-      <script type="text/javascript">
-        window.scrollTo(0,document.body.scrollHeight);
-      </script>
+      {% if scroll %}
+         <script type="text/javascript">
+            window.scrollTo(0,document.body.scrollHeight);
+         </script>
+      {% endif %}
    {% endif %}
 {% endblock %}

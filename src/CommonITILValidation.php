@@ -1074,7 +1074,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_validation.html.twig', [
             'item'      => $options['parent'],
-            'subitem'   => $this
+            'subitem'   => $this,
+            'scroll'    => true,
         ]);
 
         return true;
