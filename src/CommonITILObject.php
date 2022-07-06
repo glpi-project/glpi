@@ -2596,19 +2596,19 @@ abstract class CommonITILObject extends CommonDBTM
         $input["name"]    = ltrim($input["name"]);
         $input['content'] = ltrim($input['content']);
         if (empty($input["name"])) {
-           // Build name based on content
+            // Build name based on content
 
-           // Unsanitize
-            $content = Sanitizer::unsanitize($input['content']);
+            // Unsanitize
+            $content = Sanitizer::decodeHtmlSpecialChars($input['content']);
 
-           // Get unformatted text
-            $name = RichText::getTextFromHtml($content, false);
+            // Get unformatted text
+            $name = RichText::getTextFromHtml($input['content'], false);
 
-           // Shorten result
+            // Shorten result
             $name = Toolbox::substr(preg_replace('/\s{2,}/', ' ', $name), 0, 70);
 
-           // Sanitize result
-            $input['name'] = Sanitizer::sanitize($name);
+            // Sanitize result
+            $input['name'] = Sanitizer::encodeHtmlSpecialChars($name);
         }
 
        // Set default dropdown
@@ -9600,8 +9600,8 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Clean new lines before passing to rules
         if (isset($input["content"])) {
-            $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-            $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+            $input["content"] = preg_replace('/\\r\\n/', "\n", $input['content']);
+            $input["content"] = preg_replace('/\\n/', "\n", $input['content']);
         }
     }
 

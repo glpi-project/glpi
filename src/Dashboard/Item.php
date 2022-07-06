@@ -89,7 +89,7 @@ class Item extends \CommonDBChild
      */
     public static function addForDashboard(int $dashboards_id = 0, array $items = [])
     {
-        global $DB, $_UREQUEST;
+        global $DB, $_REQUEST;
 
         $query_items = $DB->buildInsert(
             self::getTable(),
@@ -107,7 +107,7 @@ class Item extends \CommonDBChild
         $stmt = $DB->prepare($query_items);
         foreach ($items as $item_key => $item) {
            // card_options should be unescaped as they will be json_encoded after
-            $card_options = $_UREQUEST['items'][$item_key]['card_options'] ?? $item['card_options'] ?? [];
+            $card_options = $_REQUEST['items'][$item_key]['card_options'] ?? $item['card_options'] ?? [];
 
            // clean
             unset(

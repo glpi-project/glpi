@@ -185,7 +185,7 @@ class TestUpdatedDataCommand extends Command
                 $found_in_updated = $updated_db->request(
                     [
                         'FROM'  => $table_name,
-                        'WHERE' => Toolbox::addslashes_deep($criteria),
+                        'WHERE' => $criteria,
                     ]
                 );
                 if ($found_in_updated->count() !== 1) {

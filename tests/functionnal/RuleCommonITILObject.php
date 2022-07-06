@@ -492,7 +492,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         // Create solution template
         $solutionTemplate = new \SolutionTemplate();
         $solutionTemplate_id = $solutionTemplate->add($solutionInput = [
-            'content' => Toolbox::addslashes_deep("<p>content of solution template  white ' quote</p>")
+            'content' => "<p>content of solution template  white ' quote</p>"
         ]);
         $this->integer((int)$solutionTemplate_id)->isGreaterThan(0);
 
@@ -537,17 +537,20 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->integer((int)$itil_id)->isGreaterThan(0);
 
         // update ITIL Object content and trigger rule on content updating
-        $itil->update([
-            'id'   => $itil_id,
-            'content' => 'test ITIL Object, will trigger on rule (content)'
-        ]);
+        $this->boolean(
+            $itil->update([
+                'id'   => $itil_id,
+                'content' => 'test ITIL Object, will trigger on rule (content)'
+            ]),
+            'Not updated'
+        );
 
         //load ITILSolution
         $itilSolution = new \ITILSolution();
         $this->boolean($itilSolution->getFromDBByCrit([
             'items_id' => $itil_id,
             'itemtype' => $itil::getType(),
-            'content'  => Sanitizer::sanitize("<p>content of solution template  white ' quote</p>")
+            'content'  => "<p>content of solution template  white ' quote</p>"
         ]))->isTrue();
 
         $this->integer((int)$itilSolution->getID())->isGreaterThan(0);
@@ -1052,7 +1055,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_of_requester',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
+            'pattern'   => '/(.+\([^()]*\))/',   //retrieve group with '(' and ')'
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -1213,7 +1216,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_of_requester',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
+            'pattern'   => '/(.+\([^()]*\))/',   //retrieve group with '(' and ')'
         ]);
         //change value because of addslashes
         $this->checkInput($rulecrit, $crit_id, $crit_input);
@@ -1340,7 +1343,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => '_groups_id_of_requester',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => Toolbox::addslashes_deep('/(.+\([^()]*\))/'),   //retrieve group with '(' and ')'
+            'pattern'   => '/(.+\([^()]*\))/',   //retrieve group with '(' and ')'
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 

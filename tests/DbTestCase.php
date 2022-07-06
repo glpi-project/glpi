@@ -117,8 +117,6 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
-
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($object->getFromDB($id))->isTrue();
         $this->variable($object->getField('id'))->isEqualTo($id);
@@ -209,7 +207,6 @@ class DbTestCase extends \GLPITestCase
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
-        $input = Sanitizer::sanitize($input);
         $id = $item->add($input);
         $this->integer($id)->isGreaterThan(0);
 

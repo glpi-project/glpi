@@ -56,7 +56,7 @@ class Computer extends DbTestCase
         unset($fields['date_creation']);
         unset($fields['date_mod']);
         $fields['name'] = $this->getUniqueString();
-        $this->integer((int)$computer->add(\Toolbox::addslashes_deep($fields)))->isGreaterThan(0);
+        $this->integer((int)$computer->add($fields))->isGreaterThan(0);
         return $computer;
     }
 
@@ -68,7 +68,7 @@ class Computer extends DbTestCase
         unset($pfields['date_creation']);
         unset($pfields['date_mod']);
         $pfields['name'] = $this->getUniqueString();
-        $this->integer((int)$printer->add(\Toolbox::addslashes_deep($pfields)))->isGreaterThan(0);
+        $this->integer((int)$printer->add($pfields))->isGreaterThan(0);
         return $printer;
     }
 
@@ -102,7 +102,7 @@ class Computer extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->boolean($computer->update(\Toolbox::addslashes_deep($in)))->isTrue();
+        $this->boolean($computer->update($in))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
         $this->boolean($printer->getFromDB($printer->getID()))->isTrue();
         unset($in['id']);
@@ -110,7 +110,7 @@ class Computer extends DbTestCase
            // Check the computer new values
             $this->variable($computer->getField($k))->isEqualTo($v);
            // Check the printer and test propagation occurs
-            $this->variable($printer->getField($k))->isEqualTo($v);
+            $this->variable($printer->getField($k))->isEqualTo($v, $k);
         }
 
        //reset values
@@ -147,7 +147,7 @@ class Computer extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->boolean($computer->update(\Toolbox::addslashes_deep($in2)))->isTrue();
+        $this->boolean($computer->update($in2))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
         $this->boolean($printer->getFromDB($printer->getID()))->isTrue();
         unset($in2['id']);
@@ -269,7 +269,7 @@ class Computer extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->boolean($computer->update(\Toolbox::addslashes_deep($in)))->isTrue();
+        $this->boolean($computer->update($in))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
 
         $printer = new \Printer();

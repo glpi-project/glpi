@@ -793,7 +793,7 @@ $empty_data_builder = new class
                 'hourmax' => 24,
             ], [
                 'id' => 37,
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
                 'name' => 'checkAllUpdates',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -3025,7 +3025,7 @@ $empty_data_builder = new class
             ], [
                 'id' => 71,
                 'name' => 'Check plugin updates',
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
                 'event' => 'checkpluginsupdate',
                 'is_recursive' => 1,
                 'is_active' => 1,
@@ -4265,7 +4265,7 @@ $empty_data_builder = new class
             ], [
                 'id' => '28',
                 'name' => 'Plugin updates',
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
             ], [
                 'id' => '29',
                 'name' => 'Password Initialization',

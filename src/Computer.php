@@ -161,7 +161,7 @@ class Computer extends CommonDBTM
 
         $changes = [];
         $update_count = count($this->updates ?? []);
-        $input = Toolbox::addslashes_deep($this->fields);
+        $input = $this->fields;
         for ($i = 0; $i < $update_count; $i++) {
            // Update contact of attached items
             if ($this->updates[$i] == 'contact_num' && $CFG_GLPI['is_contact_autoupdate']) {

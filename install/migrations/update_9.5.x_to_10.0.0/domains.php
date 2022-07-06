@@ -57,7 +57,7 @@ $migration->addPostQuery(
     $DB->buildUpdate(
         'glpi_domains',
         ['is_active' => 1],
-        [true]
+        [new \QueryExpression('true')]
     )
 );
 /** /Active domains */

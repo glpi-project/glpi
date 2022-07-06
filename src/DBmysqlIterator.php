@@ -273,7 +273,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 }
             }
 
-           // FROM table list
+            // FROM table list
             if (is_array($table)) {
                 if (count($table)) {
                     $table = array_map([DBmysql::class, 'quoteName'], $table);
@@ -283,7 +283,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 }
             } else if ($table) {
                 if ($table instanceof \AbstractQuery) {
-                    $table = $table->getQuery();
+                    $query = $table;
+                    $table = $query->getQuery();
                 } else if ($table instanceof \QueryExpression) {
                     $table = $table->getValue();
                 } else {
@@ -298,12 +299,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 trigger_error("Missing table name", E_USER_ERROR);
             }
 
-           // JOIN
+            // JOIN
             if (!empty($join)) {
                 $this->sql .= $this->analyseJoins($join);
             }
 
-           // WHERE criteria list
+            // WHERE criteria list
             if (!empty($crit)) {
                 $this->sql .= " WHERE " . $this->analyseCrit($crit);
                 if ($where) {
@@ -316,7 +317,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $this->sql .= " WHERE " . $this->analyseCrit($where);
             }
 
-           // GROUP BY field list
+            // GROUP BY field list
             if (is_array($groupby)) {
                 if (count($groupby)) {
                     $groupby = array_map([DBmysql::class, 'quoteName'], $groupby);
@@ -329,17 +330,17 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $this->sql .= " GROUP BY $groupby";
             }
 
-           // HAVING criteria list
+            // HAVING criteria list
             if ($having) {
                 $this->sql .= " HAVING " . $this->analyseCrit($having);
             }
 
-           // ORDER BY
+            // ORDER BY
             if ($orderby !== null) {
                 $this->sql .= $this->handleOrderClause($orderby);
             }
 
-           //LIMIT & OFFSET
+            //LIMIT & OFFSET
             $this->sql .= $this->handleLimits($limit, $start);
         }
 
