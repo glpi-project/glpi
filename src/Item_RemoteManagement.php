@@ -42,6 +42,7 @@ class Item_RemoteManagement extends CommonDBChild
     public const TEAMVIEWER = 'teamviewer';
     public const LITEMANAGER = 'litemanager';
     public const ANYDESK = 'anydesk';
+    public const MESHCENTRAL = 'meshcentral';
 
 
     public static function getTypeName($nb = 0)
@@ -350,7 +351,8 @@ class Item_RemoteManagement extends CommonDBChild
         $types = [
             self::TEAMVIEWER => 'TeamViewer',
             self::LITEMANAGER => 'LiteManager',
-            self::ANYDESK => 'AnyDesk'
+            self::ANYDESK => 'AnyDesk',
+	    self::MESHCENTRAL => 'MeshCentral'
         ];
         echo "<td>";
         echo Dropdown::showFromArray(
