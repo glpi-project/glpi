@@ -81,7 +81,7 @@ foreach (['glpi_olas', 'glpi_slas'] as $table) {
                 $table . '.calendars_id'        => new QueryExpression($DB->quoteName('glpi_slms.calendars_id')),
             ],
             [
-                true
+                new \QueryExpression('true')
             ],
             [
                 'INNER JOIN' => [

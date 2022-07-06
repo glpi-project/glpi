@@ -44,7 +44,6 @@ use Dropdown;
 use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
-use Glpi\Toolbox\Sanitizer;
 use NetworkEquipment;
 use Printer;
 use RefusedEquipment;
@@ -610,7 +609,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (!is_numeric($input['autoupdatesystems_id'])) {
-            $system_name = Sanitizer::sanitize($input['autoupdatesystems_id']);
+            $system_name = $input['autoupdatesystems_id'];
             $auto_update_system = new AutoUpdateSystem();
             if ($auto_update_system->getFromDBByCrit(['name' => $system_name])) {
                 // Load from DB
@@ -627,7 +626,7 @@ abstract class MainAsset extends InventoryAsset
         $refused_input['autoupdatesystems_id'] = $input['autoupdatesystems_id'];
 
         $refused = new \RefusedEquipment();
-        $refused->add(Sanitizer::sanitize($refused_input));
+        $refused->add($refused_input);
         $this->refused[] = $refused;
     }
 
@@ -696,7 +695,7 @@ abstract class MainAsset extends InventoryAsset
             $input = $this->handleInput($val, $this->item);
             unset($input['ap_port']);
             unset($input['firmware']);
-            $items_id = $this->item->add(Sanitizer::sanitize($input));
+            $items_id = $this->item->add($input);
             $this->setNew();
         }
 
@@ -713,7 +712,7 @@ abstract class MainAsset extends InventoryAsset
             $matching_domains = $DB->request([
                 'FROM' => $domain->getTable(),
                 'WHERE' => [
-                    'name' => Sanitizer::sanitize($val->domains_id),
+                    'name' => $val->domains_id,
                     'is_deleted' => 0,
                 ] + getEntitiesRestrictCriteria($domain->getTable(), '', $entities_id, true),
                 'LIMIT' => 1, // Get the first domain, as we assume that a domain should not be declared multiple times in the same entity scope
@@ -722,10 +721,10 @@ abstract class MainAsset extends InventoryAsset
                 $domain->getFromResultSet($matching_domains->current());
             } else {
                 $domain->add(
-                    Sanitizer::sanitize([
+                    [
                         'name' => $val->domains_id,
                         'entities_id' => $entities_id,
-                    ]),
+                    ],
                     [],
                     false
                 );
@@ -808,12 +807,12 @@ abstract class MainAsset extends InventoryAsset
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
                 $input = $this->handleInput($val, $this->item);
-                $this->item->update(Sanitizer::sanitize(['id' => $input['id'],
+                $this->item->update(['id' => $input['id'],
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
                     'snmpcredentials_id'    => $input['snmpcredentials_id'],
                     'is_dynamic'            => true
-                ]));
+                ]);
                 return;
             }
         }
@@ -845,7 +844,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = $this->handleInput($val, $this->item);
-        $this->item->update(Sanitizer::sanitize($input));
+        $this->item->update($input);
 
         if (!($this->item instanceof RefusedEquipment)) {
             $this->handleAssets();

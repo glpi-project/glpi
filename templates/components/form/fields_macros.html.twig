@@ -69,13 +69,13 @@
 {% endmacro %}
 
 {% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
-   {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name]|verbatim_value %}
+   {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
    {% set tplmark = '' %}
    {% if item.isTemplate() %} {# TODO exluded types #}
       {% set tplmark = item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value) %}
    {% endif %}
    {% if item.fields[name] is defined and item.fields[name] is not null %}
-      {% set value = call('autoName', [item.fields[name]|verbatim_value, name, (withtemplate == 2), item.getType(), item.fields['entities_id']]) %}
+      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id']]) %}
    {% else %}
       {% set value = null %}
    {% endif %}
@@ -97,7 +97,7 @@
    {% set field %}
       <input type="{{ options.type }}" id="%id%"
              class="form-control {{ options.input_addclass }}"
-             name="{{ name }}" value="{{ value|verbatim_value }}"
+             name="{{ name }}" value="{{ value }}"
              {{ options.maxlength ? 'maxlength=' ~ options.maxlength : '' }}
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }}
@@ -202,7 +202,7 @@
          {% if value|length == 0 %}
             &nbsp;
          {% else %}
-            {{ value|verbatim_value }}
+            {{ value }}
          {% endif %}
       </span>
    {% endset %}
@@ -235,7 +235,7 @@
                 style="width: 100%;"
                 {{ options.disabled ? 'disabled' : '' }}
                 {{ options.readonly ? 'readonly' : '' }}
-                {{ options.required ? 'required' : '' }}>{{ options.enable_richtext ? value|safe_html|escape : value|verbatim_value }}</textarea>
+                {{ options.required ? 'required' : '' }}>{{ options.enable_richtext ? value|safe_html|escape : value }}</textarea>
    {% endset %}
 
    {% if options.enable_richtext %}
@@ -322,7 +322,7 @@
       {# .rounded-start added to prevent issue with bootstrap .input-group #}
       {# the first element is an input[type=hidden] added by flatpickr and so we don't have border-radius on the start #}
       <input type="text" class="form-control rounded-start ps-2 {{ options.input_addclass }} {{ class }}" data-input
-             name="{{ name }}" value="{{ value|verbatim_value }}"
+             name="{{ name }}" value="{{ value }}"
              {{ options.required ? 'required' : '' }}
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }} />
@@ -416,7 +416,7 @@
    {% set field %}
       <input id="%id%"
              class="form-control {{ options.input_addclass }}"
-             name="{{ name }}" value="{{ value|verbatim_value }}"
+             name="{{ name }}" value="{{ value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }} />
@@ -525,7 +525,7 @@
          {% if url is not empty %}
             <a href="{{ url }}" {{ call('Html::parseAttributes', [link_options])|raw }}>
          {% endif %}
-               <img src="{{ value|verbatim_value }}" {{ call('Html::parseAttributes', [options])|raw }} />
+               <img src="{{ value }}" {{ call('Html::parseAttributes', [options])|raw }} />
          {% if url is not empty %}
             </a>
          {% endif %}
@@ -585,7 +585,7 @@
    {% set field %}
       <input type="hidden" id="%id%"
              class="form-control {{ options.input_addclass }}"
-             name="{{ name }}" value="{{ value|verbatim_value }}"
+             name="{{ name }}" value="{{ value }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }} />
@@ -640,7 +640,7 @@
 
    {% set field %}
       {% do call('Dropdown::showFromArray', [name, elements, {
-         'value': value|verbatim_value,
+         'value': value,
          'rand': rand,
       }|merge(options)]) %}
    {% endset %}

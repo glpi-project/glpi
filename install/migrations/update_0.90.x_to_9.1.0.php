@@ -346,7 +346,7 @@ function update090xto910()
                   KEY `wwn` (`wwn`),
                   KEY `speed` (`speed`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->query($query);
+        $DB->doQuery($query);
     }
 
    /************** Kernel version for os *************/
@@ -468,12 +468,12 @@ function update090xto910()
                 'entities_id'        => 0,
                 'is_recursive'       => 1,
                 'name'               => "full access from localhost",
-                'date_mod'           => new \QueryExpression("NOW()"),
+                'date_mod'           => null,
                 'is_active'          => 1,
                 'ipv4_range_start'   => new \QueryExpression("INET_ATON('127.0.0.1')"),
                 'ipv4_range_end'     => new \QueryExpression("INET_ATON('127.0.0.1')"),
                 'ipv6'               => "::1",
-                'app_token'          => "",
+                'app_token'          => null,
                 'app_token_date'     => null,
                 'dolog_method'       => 0,
                 'comment'            => null
@@ -859,11 +859,11 @@ function update090xto910()
                     "glpi_slts",
                     [
                         'id'                 => $data['id'],
-                        'name'               => Toolbox::addslashes_deep($data['name']),
+                        'name'               => $data['name'],
                         'entities_id'        => $data['entities_id'],
                         'is_recursive'       => $data['is_recursive'],
                         'type'               => SLM::TTR,
-                        'comment'            => addslashes($data['comment']),
+                        'comment'            => $data['comment'],
                         'number_time'        => $data['resolution_time'],
                         'date_mod'           => $data['date_mod'],
                         'definition_time'    => $data['definition_time'],

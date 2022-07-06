@@ -1592,11 +1592,6 @@ JAVASCRIPT;
         ];
         $p = array_merge($default, $params);
 
-       // fix auto-escaping
-        if (isset($p['markdown_content'])) {
-            $p['markdown_content'] = \Html::cleanPostForTextArea($p['markdown_content']);
-        }
-
         $ph           = __("Type markdown text here");
         $fg_color     = Toolbox::getFgColor($p['color']);
         $border_color = Toolbox::getFgColor($p['color'], 10);

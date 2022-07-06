@@ -34,7 +34,6 @@
  */
 
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * NotificationTemplateTranslation Class
@@ -131,7 +130,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         Ajax::createIframeModalWindow(
             "tags" . $rand,
             $CFG_GLPI['root_doc'] . "/front/notification.tags.php?sub_type=" .
-            addslashes($template->getField('itemtype'))
+            $template->getField('itemtype')
         );
         echo "<a class='btn btn-primary' href='#' data-bs-toggle='modal' data-bs-target='#tags$rand'>" . __('Show list of available tags') . "</a>";
         echo "</td></tr>";
@@ -275,15 +274,8 @@ class NotificationTemplateTranslation extends CommonDBChild
      */
     public static function cleanContentHtml(array $input)
     {
-
-       // Unsanitize
-        $txt = Sanitizer::unsanitize($input['content_html']);
-
        // Get as text plain text
-        $txt = RichText::getTextFromHtml($txt, true, false, false, true);
-
-       // Sanitize result
-        $txt = Sanitizer::sanitize($txt);
+        $txt = RichText::getTextFromHtml($input['content_html'], true, false, false, true);
 
         if (!$txt) {
            // No HTML (nothing to display)

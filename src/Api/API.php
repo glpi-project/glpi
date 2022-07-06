@@ -51,7 +51,6 @@ use Contract;
 use Document;
 use Dropdown;
 use Glpi\Search\SearchOption;
-use Glpi\Toolbox\Sanitizer;
 use Html;
 use Infocom;
 use Item_Devices;
@@ -283,7 +282,7 @@ abstract class API
 
         $noAuto = true;
         if (isset($params['user_token']) && !empty($params['user_token'])) {
-            $_REQUEST['user_token'] = Sanitizer::dbEscape($params['user_token']);
+            $_REQUEST['user_token'] = $params['user_token'];
             $noAuto = false;
         } else if (!$CFG_GLPI['enable_api_login_credentials']) {
             $this->returnError(
@@ -1028,14 +1027,6 @@ abstract class API
             );
         }
 
-        // Decode HTML
-        if (!$this->returnSanitizedContent()) {
-            $fields = array_map(
-                fn ($f) => is_string($f) ? Sanitizer::decodeHtmlSpecialChars($f) : $f,
-                $fields
-            );
-        }
-
         return $fields;
     }
 
@@ -1212,7 +1203,7 @@ abstract class API
            // make text search
             foreach ($params['searchText'] as $filter_field => $filter_value) {
                 if (!empty($filter_value)) {
-                    $search_value = Search::makeTextSearch($DB->escape($filter_value));
+                    $search_value = Search::makeTextSearch($filter_value);
                     $where .= " AND (" . $DB->quoteName("$table.$filter_field") . " $search_value)";
                 }
             }
@@ -1252,7 +1243,7 @@ abstract class API
                 WHERE $where
                 ORDER BY " . $DB->quoteName($params['sort']) . " " . $params['order'] . "
                 LIMIT " . (int)$params['start'] . ", " . (int)$params['list_limit'];
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             while ($data = $DB->fetchAssoc($result)) {
                 if ($add_keys_names) {
                     // Insert raw names into the data row
@@ -1273,7 +1264,7 @@ abstract class API
 
        // get result full row counts
         $count_query = "SELECT COUNT(*) FROM {$DB->quoteName($table)} $join WHERE $where";
-        $totalcount = $DB->query($count_query)->fetch_row()[0];
+        $totalcount = $DB->doQuery($count_query)->fetch_row()[0];
 
         if ($params['range'][0] > $totalcount) {
             $this->returnError(
@@ -1303,14 +1294,6 @@ abstract class API
                         'href' => self::$api_url . "/$itemtype/" . $fields['id'] . "/$hclass/"
                     ];
                 }
-            }
-
-            // Decode HTML
-            if (!$this->returnSanitizedContent()) {
-                $fields = array_map(
-                    fn ($f) => is_string($f) ? Sanitizer::decodeHtmlSpecialChars($f) : $f,
-                    $fields
-                );
             }
         }
        // Break reference
@@ -1606,9 +1589,6 @@ abstract class API
                     ) {
                         return __("Forbidden field ID in search criteria");
                     }
-
-                  // Escape value to prevent SQL injection
-                    $criterion['value'] = Toolbox::addslashes_deep($criterion['value']);
                 }
 
                 return true;
@@ -1847,18 +1827,12 @@ abstract class API
                     $object["_add"] = true;
 
                    //add current item
-                    $object = Sanitizer::sanitize($object);
                     $new_id = $item->add($object);
                     if ($new_id === false) {
                         $failed++;
                     }
 
                     $message = $this->getGlpiLastMessage();
-                    if (!$this->returnSanitizedContent()) {
-                        // Message may contains the created item name, which may
-                        // contains some encoded html
-                        $message = Sanitizer::decodeHtmlSpecialChars($message);
-                    }
                     $current_res = ['id'      => $new_id,
                         'message' => $message
                     ];
@@ -1988,7 +1962,7 @@ abstract class API
                         }
 
                      //update item
-                        $object = Sanitizer::sanitize($this->inputObjectToArray($object));
+                        $object = $this->inputObjectToArray($object);
                         $update_return = $item->update($object);
                         if ($update_return === false) {
                              $failed++;
@@ -2167,9 +2141,8 @@ abstract class API
 
         $user = new User();
         if (!isset($params['password_forget_token'])) {
-            $email = Toolbox::addslashes_deep($params['email']);
             try {
-                $user->forgetPassword($email);
+                $user->forgetPassword($params['email']);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
                 $this->returnError($e->getMessage());
             }
@@ -2179,9 +2152,9 @@ abstract class API
         } else {
             $password = isset($params['password']) ? $params['password'] : '';
             $input = [
-                'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
-                'password'                 => Toolbox::addslashes_deep($password),
-                'password2'                => Toolbox::addslashes_deep($password),
+                'password_forget_token'    => $params['password_forget_token'],
+                'password'                 => $password,
+                'password2'                => $password,
             ];
             try {
                 $user->updateForgottenPassword($input);
@@ -3387,15 +3360,5 @@ abstract class API
             "changeActiveEntities",
             "changeActiveProfile",
         ];
-    }
-
-    /**
-     * Will the API content be sanitized ?
-     *
-     * @return bool
-     */
-    public function returnSanitizedContent(): bool
-    {
-        return true;
     }
 }

@@ -76,7 +76,7 @@ class USBVendor extends DbTestCase
        //override
         $this->integer(
             $vendors->add([
-                'name'  => addslashes("Farnsworth's Electronics"),
+                'name'  => "Farnsworth's Electronics",
                 'vendorid'  => '0001'
             ])
         )->isGreaterThan(0);

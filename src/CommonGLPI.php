@@ -35,7 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Common GLPI object
@@ -924,9 +923,6 @@ class CommonGLPI implements CommonGLPIInterface
                 unset($cleaned_options['content']);
             }
 
-            // prevent double sanitize, because the includes.php sanitize all data
-            $cleaned_options = Sanitizer::unsanitize($cleaned_options);
-
             $extraparamhtml = "&amp;" . Toolbox::append_params($cleaned_options, '&amp;');
         }
 
@@ -1179,7 +1175,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
-        return Sanitizer::unsanitize($name);
+        return $name;
     }
 
     /**

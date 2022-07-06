@@ -37,7 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Kanban;
 use Glpi\Features\Teamwork;
 use Glpi\Http\Response;
-use Glpi\Toolbox\Sanitizer;
 
 $AJAX_INCLUDE = 1;
 
@@ -48,7 +47,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-/** @global array $_UPOST */
+/** @global array $_POST */
 
 if (!isset($_REQUEST['action'])) {
     Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
@@ -141,14 +140,14 @@ if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['inputs']);
     $item = new $itemtype();
     $inputs = [];
-    parse_str($_UPOST['inputs'], $inputs);
+    parse_str($_POST['inputs'], $inputs);
 
-    $item->add(Sanitizer::sanitize($inputs));
+    $item->add($inputs);
 } else if (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
     $item = new $itemtype();
     $inputs = [];
-    parse_str($_UPOST['inputs'], $inputs);
+    parse_str($_POST['inputs'], $inputs);
 
     $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
     if (!empty($bulk_item_list)) {
@@ -156,7 +155,7 @@ if (($_POST['action'] ?? null) === 'update') {
         foreach ($bulk_item_list as $item_entry) {
             $item_entry = trim($item_entry);
             if (!empty($item_entry)) {
-                $item->add(Sanitizer::sanitize($inputs + ['name' => $item_entry, 'content' => '']));
+                $item->add($inputs + ['name' => $item_entry, 'content' => '']);
             }
         }
     }

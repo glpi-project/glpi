@@ -45,16 +45,16 @@
                     <br>
                     <span class="p-0 float-left badge bg-blue-lt d-inline-block text-truncate"
                           data-bs-toggle="tooltip"
-                          title="{{ breadcrumb_item['location']['completename']|verbatim_value }}"
+                          title="{{ breadcrumb_item['location']['completename'] }}"
                           style="max-width: 100px;">
                         <i class="{{ call('Location::getIcon') }}"></i>
                         {% if breadcrumb_item['location']['locations_id'] == previous_location_id %}
                            {% if previous_location_id is not null %}
                               &gt;
                            {% endif %}
-                           {{ breadcrumb_item['location']['name']|verbatim_value }}
+                           {{ breadcrumb_item['location']['name'] }}
                         {% else %}
-                           {{ breadcrumb_item['location']['completename']|verbatim_value }}
+                           {{ breadcrumb_item['location']['completename'] }}
                         {% endif %}
                     </span>
                     {% set previous_location_id = breadcrumb_item['location']['id'] %}

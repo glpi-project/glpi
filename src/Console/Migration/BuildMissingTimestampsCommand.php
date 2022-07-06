@@ -95,7 +95,7 @@ class BuildMissingTimestampsCommand extends AbstractCommand
 
             $target_date = $column === 'date_creation' ? 'MIN(`date_mod`)' : 'MAX(`date_mod`)';
 
-            $result = $this->db->query(
+            $result = $this->db->doQuery(
                 "
             UPDATE `$table`
             LEFT JOIN (

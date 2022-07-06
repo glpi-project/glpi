@@ -125,7 +125,7 @@
                {% set entry_user = users_id is defined and users_id is not null ? get_item('User', users_id) : null %}
                {% if entry_user is not null %}
                   {% set user_fields = entry_user.fields %}
-                  {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()|verbatim_value}) %}
+                  {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()}) %}
                   {% set user_fields = user_fields|merge({email: entry_user.getDefaultEmail()}) %}
                   <span id="timeline-avatar{{ avatar_rand }}">
                      {{ include('components/user/picture.html.twig', {

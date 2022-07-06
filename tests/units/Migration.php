@@ -63,7 +63,7 @@ class Migration extends \GLPITestCase
             $this->db = new \mock\DB();
             $queries = [];
             $this->queries = &$queries;
-            $this->calling($this->db)->query = function ($query) use (&$queries) {
+            $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
                 $queries[] = $query;
                 return true;
             };
@@ -842,7 +842,7 @@ class Migration extends \GLPITestCase
 
         $queries = [];
         $this->queries = &$queries;
-        $this->calling($this->db)->query = function ($query) use (&$queries) {
+        $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
             if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
                   // Make DbUtils::isIndex return false
                   return false;
@@ -1117,10 +1117,10 @@ class Migration extends \GLPITestCase
         );
 
         $this->array($this->queries)->isIdenticalTo([
-            "UPDATE `glpi_computers` SET `itemtype` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype` = 'PluginFooThing'",
-            "UPDATE `glpi_users` SET `itemtype` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype` = 'PluginFooThing'",
-            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
-            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
+            "UPDATE `glpi_computers` SET `itemtype` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
+            "UPDATE `glpi_users` SET `itemtype` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
+            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
+            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
         ]);
     }
 

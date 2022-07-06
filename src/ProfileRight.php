@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * Profile class
  *
@@ -61,7 +59,7 @@ class ProfileRight extends CommonDBChild
             return false;
         }
         $new_item = new static();
-        $input = Sanitizer::dbEscapeRecursive($this->fields);
+        $input = $this->fields;
         $input['profiles_id'] = $override_input['profiles_id'];
         unset($input['id']);
 

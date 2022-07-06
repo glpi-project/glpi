@@ -189,7 +189,7 @@ function step3($host, $user, $password, $update)
        // get databases
         if (
             $engine_requirement->isValidated() && $config_requirement->isValidated()
-            && $DB_list = $link->query("SHOW DATABASES")
+            && $DB_list = $link->doQuery("SHOW DATABASES")
         ) {
             while ($row = $DB_list->fetch_array()) {
                 if (
@@ -340,7 +340,7 @@ function step4($databasename, $newdatabasename)
                 prev_form($host, $user, $password);
             }
         } else { // try to create the DB
-            if ($link->query("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
+            if ($link->doQuery("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
                 echo "<p>" . __('Database created') . "</p>";
 
                 $select_db = $link->select_db($newdatabasename);
@@ -427,7 +427,7 @@ function step8()
     $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
     $DB->update(
         'glpi_configs',
-        ['value' => $DB->escape($url_base)],
+        ['value' => $url_base],
         [
             'context'   => 'core',
             'name'      => 'url_base'
@@ -437,7 +437,7 @@ function step8()
     $url_base_api = "$url_base/apirest.php/";
     $DB->update(
         'glpi_configs',
-        ['value' => $DB->escape($url_base_api)],
+        ['value' => $url_base_api],
         [
             'context'   => 'core',
             'name'      => 'url_base_api'
@@ -545,9 +545,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
 
    // DB clean
     if (isset($_POST["db_pass"])) {
-        $_POST["db_pass"] = stripslashes($_POST["db_pass"]);
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);
-        $_POST["db_pass"] = stripslashes($_POST["db_pass"]);
     }
 
     switch ($_POST["install"]) {

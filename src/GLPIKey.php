@@ -468,6 +468,9 @@ class GLPIKey
             $result .= $char;
         }
 
-        return Sanitizer::unsanitize($result);
+        // In legacy paswword encrytion logic, a sanitized value of password was sometimes stored
+        $result = Sanitizer::unsanitize($result);
+
+        return $result;
     }
 }

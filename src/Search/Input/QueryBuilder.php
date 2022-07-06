@@ -38,7 +38,6 @@ namespace Glpi\Search\Input;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
-use Glpi\Toolbox\Sanitizer;
 
 final class QueryBuilder implements SearchInputInterface
 {
@@ -311,7 +310,7 @@ final class QueryBuilder implements SearchInputInterface
         // Default case : text field
         if (!$display) {
             echo "<input type='text' class='form-control' size='13' name='$inputname' value=\"" .
-                \Html::cleanInputText($request['value']) . "\">";
+                htmlspecialchars($request['value']) . "\">";
         }
     }
 
@@ -395,9 +394,7 @@ final class QueryBuilder implements SearchInputInterface
             $value = $criteria['field'];
         }
 
-        $p_value    = isset($criteria['value'])
-            ? Sanitizer::dbUnescape($criteria['value'])
-            : "";
+        $p_value    = $criteria['value'] ?? "";
 
         TemplateRenderer::getInstance()->display('components/search/query_builder/criteria.html.twig', [
             'mainform'    => $p['mainform'],

@@ -53,7 +53,6 @@ use Dropdown;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 use Html;
 use Monitor;
 use NetworkPortType;

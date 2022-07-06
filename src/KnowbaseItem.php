@@ -35,7 +35,6 @@
 
 use Glpi\Event;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * KnowbaseItem Class
@@ -1338,7 +1337,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         echo "<form method='get' action='" . $this->getSearchURL() . "' class='d-flex justify-content-center'>";
         echo "<input class='form-control me-1' type='text' size='50' name='contains' value=\"" .
-             Html::cleanInputText(stripslashes($params["contains"])) . "\">";
+             htmlspecialchars($params["contains"]) . "\">";
         echo "<input type='submit' value=\"" . _sx('button', 'Search') . "\" class='btn btn-primary'>";
         echo "</table>";
         if (
@@ -1588,7 +1587,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
             case 'search':
                 if (strlen($params["contains"]) > 0) {
-                    $search  = Sanitizer::unsanitize($params["contains"]);
+                    $search = $params["contains"];
                     $search_wilcard = self::computeBooleanFullTextSearch($search);
 
                     $addscore = [];
@@ -2542,8 +2541,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $values = [
             'id'     => $this->getID(),
-            'name'   => addslashes($revision->fields['name']),
-            'answer' => addslashes($revision->fields['answer'])
+            'name'   => $revision->fields['name'],
+            'answer' => $revision->fields['answer']
         ];
 
         if ($this->update($values)) {

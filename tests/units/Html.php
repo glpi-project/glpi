@@ -108,7 +108,7 @@ class Html extends \GLPITestCase
     {
         $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
         $expected = 'This is a &apos;string&apos; with some &quot;replacements&quot; needed, but not « others »!';
-        $this->string(\Html::cleanInputText($origin))->isIdenticalTo($expected);
+        $this->string(@\Html::cleanInputText($origin))->isIdenticalTo($expected);
     }
 
     public function cleanParametersURL()
@@ -137,7 +137,7 @@ class Html extends \GLPITestCase
     {
         $origin = "A text that \\\"would\\\" be entered in a \\'textarea\\'\\nWith breakline\\r\\nand breaklines.";
         $expected = "A text that \"would\" be entered in a 'textarea'\nWith breakline\nand breaklines.";
-        $this->string(\Html::cleanPostForTextArea($origin))->isIdenticalTo($expected);
+        $this->string(@\Html::cleanPostForTextArea($origin))->isIdenticalTo($expected);
 
         $aorigin = [
             $origin,
@@ -147,7 +147,7 @@ class Html extends \GLPITestCase
             $expected,
             "Another\none!"
         ];
-        $this->array(\Html::cleanPostForTextArea($aorigin))->isIdenticalTo($aexpected);
+        $this->array(@\Html::cleanPostForTextArea($aorigin))->isIdenticalTo($aexpected);
     }
 
     public function testFormatNumber()
@@ -756,15 +756,15 @@ class Html extends \GLPITestCase
     public function testAddConfirmationOnAction()
     {
         $string = 'Are U\' OK?';
-        $expected = 'onclick="if (window.confirm(\'Are U\\\' OK?\')){ ;return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&#039; OK?&quot;)){ ;return true;} else { return false;}"';
         $this->string(\Html::addConfirmationOnAction($string))->isIdenticalTo($expected);
 
         $strings = ['Are you', 'OK?'];
-        $expected = 'onclick="if (window.confirm(\'Are you\nOK?\')){ ;return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
         $this->string(\Html::addConfirmationOnAction($strings))->isIdenticalTo($expected);
 
         $actions = '$("#mydiv").focus();';
-        $expected = 'onclick="if (window.confirm(\'Are U\\\' OK?\')){ $("#mydiv").focus();return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
         $this->string(\Html::addConfirmationOnAction($string, $actions))->isIdenticalTo($expected);
     }
 
@@ -816,11 +816,11 @@ class Html extends \GLPITestCase
         $options = [
             'confirm'   => 'U sure?'
         ];
-        $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ ;return true;} else { return false;}">My link</a>';
+        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
         $this->string(\Html::link($text, $url, $options))->isIdenticalTo($expected);
 
         $options['confirmaction'] = 'window.close();';
-        $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ window.close();return true;} else { return false;}">My link</a>';
+        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
         $this->string(\Html::link($text, $url, $options))->isIdenticalTo($expected);
     }
 

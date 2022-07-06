@@ -42,7 +42,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-/** @global array $_UREQUEST */
+/** @global array $_REQUEST */
 
 $mailcollector = new MailCollector();
 
@@ -59,9 +59,9 @@ if (isset($_REQUEST['action'])) {
             $input = $_REQUEST;
             if (array_key_exists('passwd', $input)) {
                // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-                $input['passwd'] = $_UREQUEST['passwd'];
+                $input['passwd'] = $_REQUEST['passwd'];
             }
-            $input['login'] = stripslashes($input['login']);
+            $input['login'] = $input['login'];
 
             if (isset($input["passwd"])) {
                 if (empty($input["passwd"])) {

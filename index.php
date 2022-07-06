@@ -44,7 +44,6 @@ if (
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
@@ -103,7 +102,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Auth::redirectIfAuthenticated();
     }
 
-    $redirect = array_key_exists('redirect', $_GET) ? Sanitizer::unsanitize($_GET['redirect']) : '';
+    $redirect = $_GET['redirect'] ?? '';
 
     Auth::checkAlternateAuthSystems(true, $redirect);
 

@@ -99,7 +99,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
     );
 
     if (isset($_POST['value'])) {
-        $paramsaction['value'] = stripslashes($_POST['value']);
+        $paramsaction['value'] = $_POST['value'];
     }
 
     Ajax::updateItem(

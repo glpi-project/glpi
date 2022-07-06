@@ -34,7 +34,6 @@
  */
 
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * NotificationTemplate Class
@@ -212,7 +211,7 @@ class NotificationTemplate extends CommonDBTM
             'name'       => $name,
             'value'     => $value,
             'comment'   => 1,
-            'condition' => ['itemtype' => addslashes($itemtype)]
+            'condition' => ['itemtype' => $itemtype]
         ]);
     }
 
@@ -288,9 +287,6 @@ class NotificationTemplate extends CommonDBTM
             if ($template_datas = $this->getByLanguage($language)) {
                //Template processing
 
-                $template_datas  = Sanitizer::unsanitize($template_datas);
-                $data            = Sanitizer::unsanitize($data);
-
                 $lang['subject']      = $target->getSubjectPrefix($event)
                 . self::process($template_datas['subject'], self::getDataForPlainText($data));
                 $lang['content_html'] = '';
@@ -304,9 +300,7 @@ class NotificationTemplate extends CommonDBTM
                         self::getDataForHtml($data)
                     );
 
-                    $css = !empty($this->fields['css'])
-                        ? Sanitizer::decodeHtmlSpecialChars($this->fields['css'])
-                        : '';
+                    $css = $this->fields['css'] ?? '';
 
                     $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"

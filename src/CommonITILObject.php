@@ -38,7 +38,6 @@ use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * CommonITILObject Class
@@ -2596,19 +2595,15 @@ abstract class CommonITILObject extends CommonDBTM
         $input["name"]    = ltrim($input["name"]);
         $input['content'] = ltrim($input['content']);
         if (empty($input["name"])) {
-           // Build name based on content
+            // Build name based on content
 
-           // Unsanitize
-            $content = Sanitizer::unsanitize($input['content']);
+            // Get unformatted text
+            $name = RichText::getTextFromHtml($input['content'], false);
 
-           // Get unformatted text
-            $name = RichText::getTextFromHtml($content, false);
-
-           // Shorten result
+            // Shorten result
             $name = Toolbox::substr(preg_replace('/\s{2,}/', ' ', $name), 0, 70);
 
-           // Sanitize result
-            $input['name'] = Sanitizer::sanitize($name);
+            $input['name'] = $name;
         }
 
        // Set default dropdown
@@ -2643,20 +2638,14 @@ abstract class CommonITILObject extends CommonDBTM
                                     ($key == 'content')
                                     && isset($tt->predefined['content'])
                                 ) {
-                                    // Decode then re-encode predefine content to be sure to have it encoded using the same
-                                    // entities.
-                                    // Without this, predefined content created prior to GLPI 10.0 will never match
-                                    // sanitized input, as entities used for encoding will be different in both.
-                                    $predefined_content = Sanitizer::encodeHtmlSpecialChars(
-                                        Sanitizer::decodeHtmlSpecialChars($tt->predefined['content'])
-                                    );
+                                    $predefined_content = $tt->predefined['content'];
                                  // Clean new lines to be fix encoding
                                     if (
                                         strcmp(
                                             preg_replace(
                                                 "/\r?\n/",
                                                 "",
-                                                Html::cleanPostForTextArea($input[$key])
+                                                $input[$key]
                                             ),
                                             preg_replace(
                                                 "/\r?\n/",
@@ -9638,8 +9627,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Clean new lines before passing to rules
         if (isset($input["content"])) {
-            $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-            $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+            $input["content"] = str_replace("\r\n", "\n", $input['content']);
         }
     }
 

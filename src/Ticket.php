@@ -39,7 +39,6 @@ use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Event;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Ticket Class
@@ -996,11 +995,10 @@ class Ticket extends CommonITILObject
 
        // Clean new lines before passing to rules
         if (isset($input["content"])) {
-            $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
-            $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
+            $input["content"] = str_replace("\r\n", "\n", $input['content']);
         }
 
-       // automatic recalculate if user changes urgence or technician change impact
+       // automatic recalculate if user changes urgency or technician change impact
         $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         if (
             (isset($input['urgency']) && $input['urgency'] != $this->fields['urgency'])
@@ -1180,7 +1178,7 @@ class Ticket extends CommonITILObject
             ) {
                 if (
                     !isset($this->fields[$key])
-                    || ($DB->escape($this->fields[$key]) != $input[$key])
+                    || ($this->fields[$key] != $input[$key])
                 ) {
                     $changes[] = $key;
                 }
@@ -1230,7 +1228,6 @@ class Ticket extends CommonITILObject
                     'only_criteria' => $changes
                 ]
             );
-            $input = Toolbox::stripslashes_deep($input);
         }
 
        // Clean actors fields added for rules
@@ -1831,7 +1828,6 @@ class Ticket extends CommonITILObject
                 ['recursive' => true],
                 ['condition' => RuleTicket::ONADD]
             );
-            $input = Toolbox::stripslashes_deep($input);
 
             // Recompute default values based on values computed by rules
             $input = $this->computeDefaultValuesForAdd($input);
@@ -3752,12 +3748,6 @@ JAVASCRIPT;
             $options = $_POST;
         }
 
-        if (isset($options['name'])) {
-            $order           = ["\\'", '\\"', "\\\\"];
-            $replace         = ["'", '"', "\\"];
-            $options['name'] = str_replace($order, $replace, $options['name']);
-        }
-
         $this->restoreInputAndDefaults($ID, $options, $default_values, true);
 
        // Check category / type validity
@@ -4002,17 +3992,6 @@ JAVASCRIPT;
         }
 
         $this->restoreInputAndDefaults($ID, $options, null, true);
-
-        if (isset($options['content'])) {
-            $order              = ["\\'", '\\"', "\\\\"];
-            $replace            = ["'", '"', "\\"];
-            $options['content'] = str_replace($order, $replace, $options['content']);
-        }
-        if (isset($options['name'])) {
-            $order           = ["\\'", '\\"', "\\\\"];
-            $replace         = ["'", '"', "\\"];
-            $options['name'] = str_replace($order, $replace, $options['name']);
-        }
 
         if (!isset($options['_skip_promoted_fields'])) {
             $options['_skip_promoted_fields'] = false;
@@ -6165,7 +6144,7 @@ JAVASCRIPT;
                     $input = [
                         'itemtype'        => 'Ticket',
                         'items_id'        => $merge_target_id,
-                        'content'         => $DB->escape($ticket->fields['name'] . Sanitizer::encodeHtmlSpecialChars("<br /><br />") . $ticket->fields['content']),
+                        'content'         => $ticket->fields['name'] . "<br /><br />" . $ticket->fields['content'],
                         'users_id'        => $ticket->fields['users_id_recipient'],
                         'date_creation'   => $ticket->fields['date_creation'],
                         'date_mod'        => $ticket->fields['date_mod'],
@@ -6185,7 +6164,7 @@ JAVASCRIPT;
                         foreach ($tomerge as $fup2) {
                              $fup2['items_id'] = $merge_target_id;
                              $fup2['sourceitems_id'] = $id;
-                             $fup2['content'] = $DB->escape($fup2['content']);
+                             $fup2['content'] = $fup2['content'];
                              unset($fup2['id']);
                             if (!$fup->add($fup2)) {
                              // Cannot add followup. Abort/fail the merge
@@ -6205,7 +6184,7 @@ JAVASCRIPT;
                         foreach ($tomerge as $task2) {
                              $task2['tickets_id'] = $merge_target_id;
                              $task2['sourceitems_id'] = $id;
-                             $task2['content'] = $DB->escape($task2['content']);
+                             $task2['content'] = $task2['content'];
                              unset($task2['id']);
                              unset($task2['uuid']);
                             if (!$task->add($task2)) {

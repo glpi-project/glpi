@@ -239,7 +239,7 @@ class DropdownTranslation extends CommonDBChild
 
         return countElementsInTable(
             getTableForItemType(__CLASS__),
-            ['itemtype' => $DB->escape($item->getType()),
+            ['itemtype' => $item->getType(),
                 'items_id' => $item->getID(),
                 'NOT'      => ['field' => 'completename' ]
             ]
@@ -330,7 +330,7 @@ class DropdownTranslation extends CommonDBChild
             $tmp['items_id']          = $input['items_id'];
             $tmp['itemtype']          = $input['itemtype'];
             $tmp['field']             = 'completename';
-            $tmp['value']             = addslashes($completename);
+            $tmp['value']             = $completename;
             $tmp['language']          = $input['language'];
             $tmp['_no_completename']  = true;
             if ($completenames_id) {
@@ -405,7 +405,7 @@ class DropdownTranslation extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => getTableForItemType(__CLASS__),
             'WHERE'  => [
-                'itemtype'  => $DB->escape($item->getType()),
+                'itemtype'  => $item->getType(),
                 'items_id'  => $item->getID(),
                 'field'     => ['<>', 'completename']
             ],
@@ -586,7 +586,7 @@ class DropdownTranslation extends CommonDBChild
                 'SELECT' => 'field',
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'itemtype'  => $DB->escape($item->getType()),
+                    'itemtype'  => $item->getType(),
                     'items_id'  => $item->getID(),
                     'language'  => $language
                 ]
@@ -748,7 +748,7 @@ class DropdownTranslation extends CommonDBChild
             'SELECT' => ['id'],
             'FROM'   => getTableForItemType($itemtype),
             'WHERE'  => [
-                $field   => Toolbox::addslashes_deep($value)
+                $field   => $value
             ]
         ]);
         if (count($iterator) > 0) {

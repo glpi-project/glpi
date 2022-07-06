@@ -293,7 +293,7 @@
                   </div>
                {% else %}
                   {% for note in notes %}
-                     <div class="alert alert-info entitynote" role="alert">{{ note['content']|verbatim_value }}</div>
+                     <div class="alert alert-info entitynote" role="alert">{{ note['content'] }}</div>
                   {% endfor %}
                {% endif %}
             </div>

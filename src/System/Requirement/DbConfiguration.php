@@ -59,7 +59,7 @@ class DbConfiguration extends AbstractRequirement
     {
         $query = 'SELECT @@GLOBAL.' . $this->db->quoteName('innodb_page_size as innodb_page_size');
 
-        if (($db_config_res = $this->db->query($query)) === false) {
+        if (($db_config_res = $this->db->doQuery($query)) === false) {
             $this->validated = false;
             $this->validation_messages[] = __('Unable to validate database configuration variables.');
         }

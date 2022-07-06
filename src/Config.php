@@ -40,7 +40,6 @@ use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
-use Glpi\Toolbox\Sanitizer;
 use Glpi\UI\ThemeManager;
 use SimplePie\SimplePie;
 
@@ -1934,7 +1933,7 @@ JAVASCRIPT
         echo wordwrap($msg . "\n", $p['word_wrap_width'], "\n\t");
 
         if (isset($_SERVER["HTTP_USER_AGENT"])) {
-            echo "\t" . Sanitizer::encodeHtmlSpecialChars($_SERVER["HTTP_USER_AGENT"]) . "\n";
+            echo "\t" . htmlspecialchars($_SERVER["HTTP_USER_AGENT"]) . "\n";
         }
 
         foreach ($DB->getInfo() as $key => $val) {

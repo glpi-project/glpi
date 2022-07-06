@@ -35,7 +35,6 @@
 
 use Glpi\Inventory\Conf;
 use Glpi\Socket;
-use Glpi\Toolbox\Sanitizer;
 
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
@@ -793,7 +792,7 @@ $empty_data_builder = new class
                 'hourmax' => 24,
             ], [
                 'id' => 37,
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
                 'name' => 'checkAllUpdates',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -3025,7 +3024,7 @@ $empty_data_builder = new class
             ], [
                 'id' => 71,
                 'name' => 'Check plugin updates',
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
                 'event' => 'checkpluginsupdate',
                 'is_recursive' => 1,
                 'is_active' => 1,
@@ -4265,7 +4264,7 @@ $empty_data_builder = new class
             ], [
                 'id' => '28',
                 'name' => 'Plugin updates',
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
             ], [
                 'id' => '29',
                 'name' => 'Password Initialization',
@@ -8709,7 +8708,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
         $tables[DomainRecordType::getTable()] = DomainRecordType::getDefaults();
         $tables[DomainRelation::getTable()] = DomainRelation::getDefaults();
-        $tables[NetworkPortType::getTable()] = Sanitizer::encodeHtmlSpecialCharsRecursive(NetworkPortType::getDefaults());
+        $tables[NetworkPortType::getTable()] = NetworkPortType::getDefaults();
 
         $tables['glpi_agenttypes'] = [
             [

@@ -1340,7 +1340,7 @@ class Computer extends AbstractInventoryAsset
 
         //check domain has been created
         $domain = new \Domain();
-        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed")]))->isTrue();
+        $this->boolean($domain->getFromDBByCrit(['name' => "workgroup'ed"]))->isTrue();
 
         //check relation has been created
         $domain_item = new \Domain_Item();
@@ -1360,7 +1360,7 @@ class Computer extends AbstractInventoryAsset
         //check domain has been created
         $first_id = $domain->fields['id'];
         $domain = new \Domain();
-        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed another time")]))->isTrue();
+        $this->boolean($domain->getFromDBByCrit(['name' => "workgroup'ed another time"]))->isTrue();
 
         //check relation has been created - and there is only one remaining
         $domain_item = new \Domain_Item();
@@ -1396,7 +1396,7 @@ class Computer extends AbstractInventoryAsset
         //check domain has been created
         $first_id = $domain->fields['id'];
         $domain = new \Domain();
-        $this->boolean($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed another time")]))->isTrue();
+        $this->boolean($domain->getFromDBByCrit(['name' => "workgroup'ed another time"]))->isTrue();
 
         //check relation is still present - and non dynamic one as well
         $domain_item = new \Domain_Item();

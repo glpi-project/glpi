@@ -35,7 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchOption;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Log Class
@@ -159,7 +158,7 @@ class Log extends CommonDBTM
                         && ($val2['rightname'] == $item->fields['name'])
                     ) {
                         $id_search_option = $key2;
-                        $changes          =  [$id_search_option, addslashes($oldval ?? ''), $values[$key]];
+                        $changes          =  [$id_search_option, $oldval ?? '', $values[$key]];
                     }
                 } else if (
                     ($val2['linkfield'] == $key && $real_type === $item->getType())
@@ -170,31 +169,27 @@ class Log extends CommonDBTM
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                     if ($val2['table'] == $item->getTable()) {
-                        if ($val2['field'] === 'completename') {
-                            $oldval = CommonTreeDropdown::sanitizeSeparatorInCompletename($oldval);
-                            $values[$key] = CommonTreeDropdown::sanitizeSeparatorInCompletename($values[$key]);
-                        }
-                        $changes = [$id_search_option, addslashes($oldval ?? ''), $values[$key]];
+                        $changes = [$id_search_option, $oldval ?? '', $values[$key]];
                     } else {
                        // other cases; link field -> get data from dropdown
                         if ($val2["table"] != 'glpi_auth_tables') {
                             $changes = [$id_search_option,
-                                addslashes(sprintf(
+                                sprintf(
                                     __('%1$s (%2$s)'),
                                     Dropdown::getDropdownName(
                                         $val2["table"],
                                         $oldval
                                     ),
                                     $oldval
-                                )),
-                                addslashes(sprintf(
+                                ),
+                                sprintf(
                                     __('%1$s (%2$s)'),
                                     Dropdown::getDropdownName(
                                         $val2["table"],
                                         $values[$key]
                                     ),
                                     $values[$key]
-                                ))
+                                )
                             ];
                         }
                     }
@@ -253,8 +248,8 @@ class Log extends CommonDBTM
             );
         }
 
-        $old_value = $DB->escape(Toolbox::substr(stripslashes($old_value), 0, 180));
-        $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
+        $old_value = Toolbox::substr($old_value, 0, 180);
+        $new_value = Toolbox::substr($new_value, 0, 180);
 
         // Security to be sure that values do not pass over the max length
         if (Toolbox::strlen($old_value) > 255) {
@@ -269,7 +264,7 @@ class Log extends CommonDBTM
             'itemtype'          => $itemtype,
             'itemtype_link'     => $itemtype_link,
             'linked_action'     => $linked_action,
-            'user_name'         => addslashes($username),
+            'user_name'         => $username,
             'date_mod'          => $date_mod,
             'id_search_option'  => $id_search_option,
             'old_value'         => $old_value,
@@ -325,7 +320,7 @@ class Log extends CommonDBTM
             'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
             'is_tab'            => true,
             'items_id'          => $items_id,
-            'filters'           => Sanitizer::dbEscapeRecursive($filters),
+            'filters'           => $filters,
             'user_names'        => $is_filtered
             ? Log::getDistinctUserNamesValuesInItemLog($item)
             : [],
@@ -1294,9 +1289,10 @@ class Log extends CommonDBTM
             return;
         }
 
+        $dparams = array_fill_keys(array_keys($queue[0]), new \QueryParam());
         $update = $DB->buildInsert(
             static::getTable(),
-            array_fill_keys(array_keys($queue[0]), new \QueryParam())
+            $dparams
         );
         $stmt = $DB->prepare($update);
 
