@@ -69,10 +69,10 @@ class StatDataTicketAverageTime extends StatDataAlwaysDisplay
         $this->series = [
             [
                 'name' => __('Closure'),
-                'data' => $avgsolved
+                'data' => $avgclosed
             ], [
                 'name' => __('Resolution'),
-                'data' => $avgclosed
+                'data' => $avgsolved
             ], [
                 'name' => __('Real duration'),
                 'data' => $avgactiontime
