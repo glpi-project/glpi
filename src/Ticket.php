@@ -1912,8 +1912,6 @@ class Ticket extends CommonITILObject
                     $input = $this->setTechAndGroupFromHardware($input, $item);
                     break;
             }
-
-            $input = $this->assign($input);
         }
 
         if (!isset($input['_skip_sla_assign']) || $input['_skip_sla_assign'] === false) {
