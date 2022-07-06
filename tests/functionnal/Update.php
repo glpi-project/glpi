@@ -126,6 +126,7 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
                     $path . '/update_10.0.0_to_10.0.1.php' => 'update1000to1001',
                     $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
@@ -148,6 +149,7 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
                     $path . '/update_10.0.0_to_10.0.1.php' => 'update1000to1001',
                     $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
@@ -177,85 +179,86 @@ class Update extends \GLPITestCase
                     $path . '/update_9.5.x_to_10.0.0.php' => 'update95xto1000',
                     $path . '/update_10.0.0_to_10.0.1.php' => 'update1000to1001',
                     $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // Dev versions always triggger latest migration
-                'current_version'     => '10.0.2-dev',
+                'current_version'     => '10.0.3-dev',
                 'force_latest'        => false,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // Alpha versions always triggger latest migration
-                'current_version'     => '10.0.2-alpha',
+                'current_version'     => '10.0.3-alpha',
                 'force_latest'        => false,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // AlphaX versions always triggger latest migration
-                'current_version'     => '10.0.2-alpha3',
+                'current_version'     => '10.0.3-alpha3',
                 'force_latest'        => false,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // Beta versions always triggger latest migration
-                'current_version'     => '10.0.2-beta',
+                'current_version'     => '10.0.3-beta',
                 'force_latest'        => false,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // BetaX versions always triggger latest migration
-                'current_version'     => '10.0.2-beta1',
+                'current_version'     => '10.0.3-beta1',
                 'force_latest'        => false,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // RC versions always triggger latest migration
-                'current_version'     => '10.0.2-rc',
+                'current_version'     => '10.0.3-rc',
                 'force_latest'        => false,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // RCX versions always triggger latest migration
-                'current_version'     => '10.0.2-rc2',
+                'current_version'     => '10.0.3-rc2',
                 'force_latest'        => false,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // Force latests does not duplicate latest in list
-                'current_version'     => '10.0.2-dev',
+                'current_version'     => '10.0.3-dev',
                 'force_latest'        => true,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ],
             [
             // Validate that list is empty when version matches
-                'current_version'     => '10.0.2',
+                'current_version'     => '10.0.3',
                 'force_latest'        => false,
                 'expected_migrations' => [
                 ],
             ],
             [
             // Validate force latest
-                'current_version'     => '10.0.2',
+                'current_version'     => '10.0.3',
                 'force_latest'        => true,
                 'expected_migrations' => [
-                    $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
+                    $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                 ],
             ]
         ];

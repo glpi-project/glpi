@@ -167,9 +167,11 @@ class Update
     {
         global $DB;
 
+        $normalized_nersion = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+
         $checker = new DatabaseSchemaIntegrityChecker($DB, false, true, true, true, true, true);
         $differences = $checker->checkCompleteSchema(
-            sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, GLPI_VERSION),
+            sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $normalized_nersion),
             true
         );
 

@@ -36,8 +36,13 @@
 use Glpi\SocketModel;
 
 // Current version of GLPI
-define('GLPI_VERSION', '10.0.2');
-$schema_file = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, GLPI_VERSION);
+define('GLPI_VERSION', '10.0.3-dev');
+
+$schema_file = sprintf(
+    '%s/install/mysql/glpi-%s-empty.sql',
+    GLPI_ROOT,
+    preg_replace('/^(\d+\.\d+\.\d+)(-.+)?$/', '$1', GLPI_VERSION) // strip stability suffix
+);
 define(
     "GLPI_SCHEMA_VERSION",
     GLPI_VERSION . (is_readable($schema_file) ? '@' . sha1_file($schema_file) : '')
