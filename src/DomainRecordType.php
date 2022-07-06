@@ -332,12 +332,17 @@ class DomainRecordType extends CommonDropdown
      */
     public static function decodeFields(string $json_encoded_fields): ?array
     {
-        $fields = json_decode($json_encoded_fields, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        $fields = null;
+        if (\Toolbox::isJSON($json_encoded_fields)) {
+            $fields = json_decode($json_encoded_fields, true);
+        } else {
             $fields_str = stripslashes(preg_replace('/(\\\r|\\\n)/', '', $json_encoded_fields));
-            $fields = json_decode($fields_str, true);
+            if (\Toolbox::isJSON($fields_str)) {
+                $fields = json_decode($fields_str, true);
+            }
         }
-        if (json_last_error() !== JSON_ERROR_NONE || !is_array($fields)) {
+
+        if (!is_array($fields)) {
             return null;
         }
 

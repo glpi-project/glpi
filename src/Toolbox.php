@@ -2756,17 +2756,23 @@ class Toolbox
             return $encoded;
         }
 
-        $json = json_decode($encoded, $assoc);
-
-        if (json_last_error() != JSON_ERROR_NONE) {
-           //something went wrong... Try to unsanitize before decoding.
-            $json = json_decode(Sanitizer::unsanitize($encoded), $assoc);
-            if (json_last_error() != JSON_ERROR_NONE) {
-                self::log(null, Logger::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
-                return $encoded;
+        $json_data = null;
+        if (self::isJSON($encoded)) {
+            $json_data = $encoded;
+        } else {
+            //something went wrong... Try to unsanitize before decoding.
+            $raw_encoded = Sanitizer::unsanitize($encoded);
+            if (self::isJSON($raw_encoded)) {
+                $json_data = $raw_encoded;
             }
         }
 
+        if ($json_data === null) {
+            self::log(null, Logger::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
+            return $encoded;
+        }
+
+        $json = json_decode($json_data, $assoc);
         return $json;
     }
 
@@ -2791,6 +2797,7 @@ class Toolbox
             return false;
         }
 
+        $json = trim($json);
         // Any non-numeric JSON string must be longer than 2 characters.
         if (strlen($json) < 2) {
             return false;

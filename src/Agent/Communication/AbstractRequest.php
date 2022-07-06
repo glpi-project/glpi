@@ -307,12 +307,12 @@ abstract class AbstractRequest
      */
     public function handleJSONRequest($data): bool
     {
-        $jdata = json_decode($data);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (!\Toolbox::isJSON($data)) {
             $this->addError('JSON not well formed!', 400);
             return false;
         }
+
+        $jdata = json_decode($data);
 
         $this->deviceid = $jdata->deviceid ?? null;
         $action = self::INVENT_ACTION;
