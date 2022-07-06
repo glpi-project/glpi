@@ -312,8 +312,6 @@ class Problem extends CommonITILObject
                     $input = $this->setTechAndGroupFromItilCategory($input);
                     break;
             }
-
-            $input = $this->assign($input);
         }
 
         return $input;
