@@ -38,7 +38,6 @@ namespace tests\units\Glpi\ContentTemplates;
 use Change;
 use CommonITILActor;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use Problem;
 use Ticket;
 
@@ -109,7 +108,7 @@ class TemplateManager extends DbTestCase
         ]);
         $this->array($tasks)->hasSize(1);
         $task = array_pop($tasks);
-        $this->string(Sanitizer::unsanitize($task['content']))->isEqualTo(
+        $this->string($task['content'])->isEqualTo(
             "<p>{$common_itil_object->getId()} {$user->fields['name']}</p>"
         );
     }

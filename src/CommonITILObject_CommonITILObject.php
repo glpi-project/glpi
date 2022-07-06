@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * Links CommonITILObjects to other CommonITILObjects
  * @since 10.1.0
@@ -620,7 +618,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                             $solution_data['items_id'] = $data['items_id'];
                             $solution_data['_linked_ticket'] = true;
                             $new_solution = new ITILSolution();
-                            $new_solution->add(Sanitizer::dbEscapeRecursive($solution_data));
+                            $new_solution->add($solution_data);
                         }
                     } else if (isset($changes['status']) && in_array($changes['status'], Ticket::getSolvedStatusArray())) {
                         $linked_ticket = new Ticket();

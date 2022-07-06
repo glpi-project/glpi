@@ -99,7 +99,7 @@ final class Environment extends InventoryAsset
                     $input = (array)$val + [
                         'id'           => $keydb,
                     ];
-                    $itemEnv->update(Toolbox::addslashes_deep($input));
+                    $itemEnv->update($input);
                     unset($value[$key]);
                     unset($db_itemEnvs[$keydb]);
                     break;
@@ -123,7 +123,7 @@ final class Environment extends InventoryAsset
                     'itemtype'     => $this->item->getType()
                 ];
 
-                $itemEnv->add(Toolbox::addslashes_deep($input));
+                $itemEnv->add($input);
             }
         }
     }

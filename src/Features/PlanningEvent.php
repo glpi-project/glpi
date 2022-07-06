@@ -43,7 +43,6 @@ use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Group_User;
 use Html;
 use Planning;
@@ -574,7 +573,7 @@ trait PlanningEvent
                         'users_id'         => $data["users_id"],
                         'state'            => $data["state"],
                         'background'       => $has_bg ? $data['background'] : false,
-                        'name'             => Sanitizer::unsanitize($data['name']), // name is re-encoded on JS side
+                        'name'             => $data['name'],
                         'text'             => $data['text'] !== null
                      ? RichText::getSafeHtml($data['text'])
                      : '',

@@ -89,7 +89,7 @@ function update94xto950()
             $DB->buildUpdate(
                 'glpi_suppliers',
                 ['is_active' => 1],
-                [true]
+                [new \QueryExpression('true')]
             )
         );
     }
@@ -378,7 +378,7 @@ function update94xto950()
                         $DB->quoteName('date_mod')
                     )
                 ],
-                [true]
+                [new \QueryExpression('true')]
             )
         );
         $migration->addKey('glpi_documents_items', 'date_creation');
@@ -415,8 +415,8 @@ function update94xto950()
             ]
         );
         foreach ($elements_to_fix as $data) {
-            $data['picture_front'] = $DB->escape($fix_picture_fct($data['picture_front']));
-            $data['picture_rear']  = $DB->escape($fix_picture_fct($data['picture_rear']));
+            $data['picture_front'] = $fix_picture_fct($data['picture_front']);
+            $data['picture_rear']  = $fix_picture_fct($data['picture_rear']);
             $DB->update($table, $data, ['id' => $data['id']]);
         }
     }
@@ -431,7 +431,7 @@ function update94xto950()
         ]
     );
     foreach ($elements_to_fix as $data) {
-        $data['blueprint'] = $DB->escape($fix_picture_fct($data['blueprint']));
+        $data['blueprint'] = $fix_picture_fct($data['blueprint']);
         $DB->update('glpi_dcrooms', $data, ['id' => $data['id']]);
     }
     /** /Make datacenter pictures path relative */
@@ -1037,7 +1037,7 @@ function update94xto950()
            // add current dashboard
             $dashboard_id = $dashboard_obj->add($default_dashboard);
 
-           // add items to this new dashboard
+            // add items to this new dashboard
             $query = $DB->buildInsert(
                 \Glpi\Dashboard\Item::getTable(),
                 [
@@ -1605,7 +1605,7 @@ HTML
     /** Marketplace */
    // crontask
     CronTask::Register(
-        'Glpi\\Marketplace\\Controller',
+        'Glpi\Marketplace\Controller',
         'checkAllUpdates',
         DAY_TIMESTAMP,
         [
@@ -1617,14 +1617,14 @@ HTML
    // notification
     if (
         countElementsInTable('glpi_notifications', [
-            'itemtype' => 'Glpi\\\\Marketplace\\\\Controller'
+            'itemtype' => 'Glpi\Marketplace\Controller'
         ]) === 0
     ) {
         $DB->insertOrDie(
             'glpi_notificationtemplates',
             [
                 'name'            => 'Plugin updates',
-                'itemtype'        => 'Glpi\\\\Marketplace\\\\Controller',
+                'itemtype'        => 'Glpi\Marketplace\Controller',
                 'date_mod'        => new \QueryExpression('NOW()'),
             ],
             'Add plugins updates notification template'
@@ -1661,7 +1661,7 @@ HTML
             [
                 'name'            => 'Check plugin updates',
                 'entities_id'     => 0,
-                'itemtype'        => 'Glpi\\\\Marketplace\\\\Controller',
+                'itemtype'        => 'Glpi\Marketplace\Controller',
                 'event'           => 'checkpluginsupdate',
                 'comment'         => null,
                 'is_recursive'    => 1,

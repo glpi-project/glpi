@@ -35,7 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\URL;
 use SimplePie\SimplePie;
 
@@ -610,9 +609,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         if ($feed = self::getRSSFeed($input['url'])) {
             $input['have_error'] = 0;
-            $input['name']       = addslashes($feed->get_title());
+            $input['name']       = $feed->get_title();
             if (empty($input['comment'])) {
-                $input['comment'] = addslashes($feed->get_description());
+                $input['comment'] = $feed->get_description();
             }
         } else {
             $input['have_error'] = 1;
@@ -637,9 +636,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             && isset($input['url'])
             && ($feed = self::getRSSFeed($input['url']))
         ) {
-            $input['name'] = addslashes($feed->get_title());
+            $input['name'] = $feed->get_title();
             if (empty($input['comment'])) {
-                $input['comment'] = addslashes($feed->get_description());
+                $input['comment'] = $feed->get_description();
             }
         }
         return $input;
@@ -920,10 +919,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
         global $GLPI_CACHE;
-
-        if (Sanitizer::isHtmlEncoded($url)) {
-            $url = Sanitizer::decodeHtmlSpecialChars($url);
-        }
 
         // Fetch feed data, unless it is already cached
         $cache_key = sha1($url);

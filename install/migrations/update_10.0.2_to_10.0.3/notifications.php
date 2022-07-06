@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -97,7 +95,7 @@ $template_iterator = $DB->request([
     'FROM'   => 'glpi_notificationtemplatetranslations',
 ]);
 foreach ($template_iterator as $template_data) {
-    $content_html = Sanitizer::decodeHtmlSpecialChars($template_data['content_html']);
+    $content_html = $template_data['content_html'];
 
     if (str_contains($content_html, '&lt;p&gt;') && str_contains($content_html, '&lt;/p&gt;')) {
         // HTML still contains encoded HTML. It can be result of 2 different initial states
@@ -107,15 +105,14 @@ foreach ($template_iterator as $template_data) {
         // 2. A template partially encoded has been saved from UI, resulting in presence of `&#38;lt;p&#38;gt;` and `&#38;lt;/p&#38;gt;`.
         //    Sanitizer::decodeHtmlSpecialChars() will transform these to `&lt;p&gt;` and `&lt;/p&gt;`.
         //
-        // In both cases, remaining encoded HTML has to be decoded, so it will be then possible to reencode the whole
-        // content without having some characters that are double-encoded.
+        // In both cases, remaining encoded HTML has to be decoded.
         $content_html = str_replace(['&lt;', '&gt;'], ['<', '>'], $content_html);
 
         $migration->addPostQuery(
             $DB->buildUpdate(
                 'glpi_notificationtemplatetranslations',
                 [
-                    'content_html' => Sanitizer::sanitize($content_html),
+                    'content_html' => $content_html,
                 ],
                 [
                     'id' => $template_data['id'],

@@ -40,7 +40,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
-use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\URL;
 use Glpi\UI\ThemeManager;
 use ScssPhp\ScssPhp\Compiler;
@@ -247,9 +246,13 @@ class Html
      * @param string $string
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      **/
     public static function cleanInputText($string)
     {
+        Toolbox::deprecated();
+
         if (!is_string($string)) {
             return $string;
         }
@@ -297,9 +300,12 @@ class Html
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      **/
     public static function cleanPostForTextArea($value)
     {
+        Toolbox::deprecated();
 
         if (is_array($value)) {
             return array_map(__METHOD__, $value);
@@ -526,10 +532,9 @@ class Html
     {
 
         $toadd = '';
-        $dest = addslashes($dest);
 
         if (!headers_sent() && !Toolbox::isAjax()) {
-            header("Location: $dest", true, $http_response_code);
+            header("Location: " . addslashes($dest), true, $http_response_code);
             exit();
         }
 
@@ -542,9 +547,9 @@ class Html
         echo "<script type='text/javascript'>
             NomNav = navigator.appName;
             if (NomNav=='Konqueror') {
-               window.location='" . $dest . $toadd . "';
+               window.location=" . json_encode($dest . $toadd) . ";
             } else {
-               window.location='" . $dest . "';
+               window.location=" . json_encode($dest) . ";
             }
          </script>";
         exit();
@@ -908,7 +913,7 @@ class Html
     public static function addConfirmationOnAction($string, $additionalactions = '')
     {
 
-        return "onclick=\"" . Html::getConfirmationOnActionScript($string, $additionalactions) . "\"";
+        return "onclick=\"" . htmlspecialchars(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
     }
 
 
@@ -929,7 +934,6 @@ class Html
         if (!is_array($string)) {
             $string = [$string];
         }
-        $string            = Toolbox::addslashes_deep($string);
         $additionalactions = trim($additionalactions);
         $out               = "";
         $multiple          = false;
@@ -938,17 +942,17 @@ class Html
         foreach ($string as $tab) {
             if (is_array($tab)) {
                 $multiple      = true;
-                $out          .= "if (window.confirm('";
-                $out          .= implode('\n', $tab);
-                $out          .= "')){ ";
+                $out          .= "if (window.confirm(";
+                $out          .= json_encode(implode("\n", $tab));
+                $out          .= ")){ ";
                 $close_string .= "return true;} else { return false;}";
             }
         }
        // manage simple confirmation
         if (!$multiple) {
-            $out          .= "if (window.confirm('";
-            $out          .= implode('\n', $string);
-            $out          .= "')){ ";
+            $out          .= "if (window.confirm(";
+            $out          .= json_encode(implode("\n", $string));
+            $out          .= ")){ ";
             $close_string .= "return true;} else { return false;}";
         }
         $out .= $additionalactions . (substr($additionalactions, -1) != ';' ? ';' : '') . $close_string;
@@ -1033,8 +1037,8 @@ HTML;
         }
 
         if ($params['message'] !== null) {
-            $out .= Html::scriptBlock(self::jsGetElementbyID($id . '_text') . ".html(\"" .
-                                addslashes($params['message']) . "\");");
+            $out .= Html::scriptBlock(self::jsGetElementbyID($id . '_text') . ".html(" .
+                                json_encode($params['message']) . ");");
         }
 
         if (
@@ -2330,7 +2334,7 @@ HTML;
                     if (is_array($confirm) && isset($confirm[$name])) {
                         echo self::addConfirmationOnAction($confirm[$name]);
                     }
-                    echo "value=\"" . addslashes($label) . "\" class='btn btn-primary'>&nbsp;";
+                    echo "value=\"" . htmlspecialchars($label) . "\" class='btn btn-primary'>&nbsp;";
                 }
             }
         }
@@ -2417,7 +2421,7 @@ HTML;
            // Only enabled checkbox
             $criterion .= ':enabled';
 
-            return addslashes($criterion);
+            return $criterion;
         }
         return '';
     }
@@ -2486,7 +2490,7 @@ HTML;
 
         $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
         if (!empty($criterion)) {
-            $out .= " onClick='massiveUpdateCheckbox(\"$criterion\", this)'";
+            $out .= " onClick='massiveUpdateCheckbox(" . json_encode($criterion) . ", this)'";
         }
 
         if (!empty($params['massive_tags'])) {
@@ -3821,7 +3825,7 @@ JS;
         $name    = "field_" . $params['name'] . $rand;
 
         $output = "<input " . $params['option'] . " type='text' id='text$name' class='form-control' name='" . $params['name'] . "'
-                value=\"" . self::cleanInputText($params['value']) . "\"" .
+                value=\"" . htmlspecialchars($params['value']) . "\"" .
                 ($params['required'] ? ' required="required"' : '') . ">";
 
         if (!isset($options['display']) || $options['display']) {
@@ -4222,7 +4226,7 @@ JAVASCRIPT
             echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
             foreach ($tab as $key => $val) {
-                $key = Sanitizer::encodeHtmlSpecialChars($key);
+                $key = htmlspecialchars($key);
                 echo "<tr><td>";
                 echo $key;
                 echo "</td><td>";
@@ -5116,12 +5120,12 @@ JAVASCRIPT
         }
        // Do not escape title if it is an image or a i tag (fontawesome)
         if (!preg_match('/<i(mg)?.*/', $text)) {
-            $text = Html::cleanInputText($text);
+            $text = htmlspecialchars($text);
         }
 
         return sprintf(
             '<a href="%1$s" %2$s>%3$s</a>',
-            Html::cleanInputText($url),
+            htmlspecialchars($url),
             Html::parseAttributes($options),
             $text
         );
@@ -5155,7 +5159,7 @@ JAVASCRIPT
         }
         return sprintf(
             '<input type="hidden" name="%1$s" %2$s />',
-            Html::cleanInputText($fieldName),
+            htmlspecialchars($fieldName),
             Html::parseAttributes($options)
         );
     }
@@ -5184,7 +5188,7 @@ JAVASCRIPT
         return sprintf(
             '<input type="%1$s" name="%2$s" %3$s />',
             $type,
-            Html::cleanInputText($fieldName),
+            htmlspecialchars($fieldName),
             Html::parseAttributes($options)
         );
     }
@@ -5210,18 +5214,18 @@ JAVASCRIPT
         }
         $select = sprintf(
             '<select name="%1$s" %2$s>',
-            self::cleanInputText($name),
+            htmlspecialchars($name),
             self::parseAttributes($options)
         );
         foreach ($values as $key => $value) {
             $select .= sprintf(
                 '<option value="%1$s"%2$s>%3$s</option>',
-                self::cleanInputText($key),
+                htmlspecialchars($key),
                 ($selected != false && (
                 $key == $selected
                 || is_array($selected) && in_array($key, $selected))
                 ) ? ' selected="selected"' : '',
-                Html::entities_deep($value)
+                htmlspecialchars($value)
             );
         }
         $select .= '</select>';
@@ -5280,7 +5284,7 @@ JAVASCRIPT
             $options['alt']   = $caption;
             return sprintf(
                 '<input type="image" src="%s" %s />',
-                Html::cleanInputText($image),
+                htmlspecialchars($image),
                 Html::parseAttributes($options)
             );
         }
@@ -5295,7 +5299,7 @@ JAVASCRIPT
                <span>$caption</span>
             </button>&nbsp;";
 
-        return sprintf($button, strip_tags(Html::cleanInputText($caption)), Html::parseAttributes($options));
+        return sprintf($button, htmlspecialchars(strip_tags($caption)), Html::parseAttributes($options));
     }
 
 
@@ -5391,7 +5395,7 @@ HTML;
             $value = implode(' ', $value);
         }
 
-        return sprintf('%1$s="%2$s"', $key, Html::cleanInputText($value));
+        return sprintf('%1$s="%2$s"', htmlspecialchars($key), htmlspecialchars($value ?? ''));
     }
 
 
@@ -6095,8 +6099,8 @@ HTML;
     public static function jsConfirmCallback($msg, $title, $yesCallback = null, $noCallback = null)
     {
         return "glpi_confirm({
-         title: '" . Toolbox::addslashes_deep($title) . "',
-         message: '" . Toolbox::addslashes_deep($msg) . "',
+         title: " . json_encode($title) . ",
+         message: " . json_encode($msg) . ",
          confirm_callback: function() {
             " . ($yesCallback !== null ? '(' . $yesCallback . ')()' : '') . "
          },
@@ -6185,8 +6189,8 @@ HTML;
     public static function jsAlertCallback($msg, $title, $okCallback = null)
     {
         return "glpi_alert({
-         title: '" . Toolbox::addslashes_deep($title) . "',
-         message: '" . Toolbox::addslashes_deep($msg) . "',
+         title: " . json_encode($title) . ",
+         message: " . json_encode($msg) . ",
          ok_callback: function() {
             " . ($okCallback !== null ? '(' . $okCallback . ')()' : '') . "
          },

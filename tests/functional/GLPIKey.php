@@ -93,7 +93,7 @@ class GLPIKey extends \DbTestCase
 
        // string with special chars, default key
         yield [
-            'encrypted' => 'IYx+rrgV1IqUtqSD1repTebaf4c=',
+            'encrypted' => 'IYx+rrgV1IqUtqSD1repTQ==',
             'decrypted' => 'zE2^oS1!mC6"dD6&',
             'key'       => null,
         ];
@@ -107,7 +107,7 @@ class GLPIKey extends \DbTestCase
 
        // string with special chars, complex custom  key
         yield [
-            'encrypted' => 'n7iLkqvGhVeXsoFVwqWEVkimkW8=',
+            'encrypted' => 'n7iLkqvGhVeXsoFVwqWEVg==',
             'decrypted' => 'zE2^oS1!mC6"dD6&',
             'key'       => 'sY4<sT6*oK3^aN0%',
         ];

@@ -34,7 +34,6 @@
  */
 
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Rule Class store all information about a GLPI rule :
@@ -2315,14 +2314,10 @@ class Rule extends CommonDBTM
         $condition = RuleCriteria::getConditionByID($fields["condition"], get_class($this), $fields["criteria"]);
         $pattern   = $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"], $fields["pattern"]);
 
-        // Some data may come from the database, and be sanitized (i.e. html special chars already encoded),
-        // but some data may have been build from translation or from some plugin code and may be not sanitized.
-        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode special chars to
-        // ensure HTML validity (and to prevent XSS).
         return [
-            'criterion' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($criterion)),
-            'condition' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($condition)),
-            'pattern'   => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern)),
+            'criterion' => $criterion,
+            'condition' => $condition,
+            'pattern'   => $pattern,
         ];
     }
 
@@ -2350,14 +2345,10 @@ class Rule extends CommonDBTM
             ? $this->getActionValue($fields["field"], $fields['action_type'], $fields["value"])
             : '';
 
-        // Some data may come from the database, and be sanitized (i.e. html special chars already encoded),
-        // but some data may have been build from translation or from some plugin code and may be not sanitized.
-        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode special chars to
-        // ensure HTML validity (and to prevent XSS).
         return [
-            'field' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($field)),
-            'type'  => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($type)),
-            'value' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($value)),
+            'field' => $field,
+            'type'  => $type,
+            'value' => $value,
         ];
     }
 
@@ -3586,8 +3577,6 @@ class Rule extends CommonDBTM
         $input['ranking']     = $nextRanking;
         $input['uuid']        = static::getUuid();
 
-        $input = Toolbox::addslashes_deep($input);
-
         return $input;
     }
 
@@ -3708,7 +3697,7 @@ class Rule extends CommonDBTM
                 'condition'    => (string)$rulexml->condition,
             ];
 
-            $rule_id = $rule->add(Sanitizer::sanitize($rule_input));
+            $rule_id = $rule->add($rule_input);
             if ($rule_id === false) {
                 trigger_error(
                     sprintf('Unable to create rule `%s`.', (string)$rulexml->uuid),
@@ -3727,7 +3716,7 @@ class Rule extends CommonDBTM
                 ];
 
                 $criteria = new RuleCriteria();
-                $criteria_id = $criteria->add(Sanitizer::sanitize($criteria_input));
+                $criteria_id = $criteria->add($criteria_input);
                 if ($criteria_id === false) {
                     trigger_error(
                         sprintf('Unable to create criteria for rule `%s`.', (string)$rulexml->uuid),
@@ -3747,7 +3736,7 @@ class Rule extends CommonDBTM
                 ];
 
                 $action = new RuleAction();
-                $action_id = $action->add(Sanitizer::sanitize($action_input));
+                $action_id = $action->add($action_input);
                 if ($action_id === false) {
                     trigger_error(
                         sprintf('Unable to create action for rule `%s`.', (string)$rulexml->uuid),

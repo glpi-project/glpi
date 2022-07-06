@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Process Class
@@ -149,7 +148,7 @@ class Item_Process extends CommonDBChild
             ]) : "",
             'is_tab' => true,
             'items_id' => $items_id,
-            'filters' => Sanitizer::dbEscapeRecursive($filters),
+            'filters' => $filters,
             'columns' => [
                 'pid'           => __("PID"),
                 'cmd'           => __("Command"),

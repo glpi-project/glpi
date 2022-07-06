@@ -342,10 +342,10 @@ class RuleImportComputer extends Rule
 
                 case 'model':
                    // search for model, don't create it if not found
-                    $options    = ['manufacturer' => addslashes($input['manufacturer'])];
+                    $options    = ['manufacturer' => $input['manufacturer']];
                     $mid        = Dropdown::importExternal(
                         'ComputerModel',
-                        addslashes($input['model']),
+                        $input['model'],
                         -1,
                         $options,
                         '',
@@ -358,7 +358,7 @@ class RuleImportComputer extends Rule
                    // search for manufacturer, don't create it if not found
                     $mid        = Dropdown::importExternal(
                         'Manufacturer',
-                        addslashes($input['manufacturer']),
+                        $input['manufacturer'],
                         -1,
                         [],
                         '',

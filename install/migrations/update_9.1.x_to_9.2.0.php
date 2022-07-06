@@ -215,17 +215,33 @@ function update91xto920()
     $migration->migrationOneTable("glpi_taskcategories");
     $migration->addKey("glpi_taskcategories", "knowbaseitemcategories_id");
 
-   // #1476 - Add users_id on glpi_documents_items
+    // #1476 - Add users_id on glpi_documents_items
     $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => true]);
     $migration->migrationOneTable("glpi_documents_items");
     $migration->addKey("glpi_documents_items", "users_id");
-   // TODO : can be improved when DBmysql->buildUpdate() support joins
     $migration->addPostQuery(
-        "UPDATE `glpi_documents_items`,
-                                    `glpi_documents`
-                             SET `glpi_documents_items`.`users_id` = `glpi_documents`.`users_id`
-                             WHERE `glpi_documents_items`.`documents_id` = `glpi_documents`.`id`",
-        "9.2 update set users_id on glpi_documents_items"
+        $DB->buildUpdate(
+            'glpi_documents_items',
+            [
+                'glpi_documents_items.users_id' => new \QueryExpression(DBmysql::quoteName('glpi_documents.users_id'))
+            ],
+            [
+                'glpi_documents_items.documents_id' => new \QueryExpression(DBmysql::quoteName('glpi_documents.id'))
+            ],
+            [
+                'LEFT JOIN' => [
+                    'glpi_documents' => [
+                        'ON' => [
+                            'glpi_documents_items' => 'documents_id',
+                            'glpi_documents' => 'id'
+                        ]
+                    ]
+                ]
+            ]
+        ),
+        "9.2 update set users_id on glpi_documents_items",
+        [],
+        true
     );
 
    //add product number
@@ -1005,16 +1021,18 @@ function update91xto920()
         $DB->buildUpdate(
             "glpi_savedsearches",
             ['do_count' => SavedSearch::COUNT_AUTO],
-            [true]
-        )
+            [new \QueryExpression('true')]
+        ),
+        'Set count auto on saved searches'
     );
 
     $migration->addPostQuery(
         $DB->buildUpdate(
             "glpi_savedsearches",
-            ['entities_id' => "0"],
-            ['entities_id' => "-1"]
-        )
+            ['entities_id' => 0],
+            ['entities_id' => -1]
+        ),
+        'Update entities_id in saved searches'
     );
 
     if (
@@ -1471,7 +1489,7 @@ Regards,',
             if (!isset($mapping[$key])) {
                 $mapping[$key] = [];
             }
-            $kver->add(['version' => $DB->escape($data['os_kernel_version'])]);
+            $kver->add(['version' => $data['os_kernel_version']]);
             $mapping[$key][$data['id']] = $kver->getID();
         }
 
@@ -2013,11 +2031,11 @@ Regards,',
         foreach ($iterator as $row) {
             if (!isset($firmwares[$row['firmware']])) {
                 $fw = new DeviceFirmware();
-                if ($fw->getFromDBByCrit(['designation' => $DB->escape($row['firmware'])])) {
+                if ($fw->getFromDBByCrit(['designation' => $row['firmware']])) {
                     $firmwares[$row['firmware']] = $fw->getID();
                 } else {
                     $id = $fw->add([
-                        'designation'              => $DB->escape($row['firmware']),
+                        'designation'              => $row['firmware'],
                         'devicefirmwaretypes_id'   => '3' //type "firmware"
                     ]);
                     $firmwares[$row['firmware']] = $id;
@@ -2043,8 +2061,8 @@ Regards,',
         foreach ($iterator as $row) {
             $fw = new DeviceFirmware();
             $id = $fw->add([
-                'designation'              => $DB->escape($row['name']),
-                'comment'                  => $DB->escape($row['comment']),
+                'designation'              => $row['name'],
+                'comment'                  => $row['comment'],
                 'devicefirmwaretypes_id'   => 3, //type "Firmware"
                 'date_creation'            => $row['date_creation'],
                 'date_mod'                 => $row['date_mod']
@@ -2266,7 +2284,7 @@ Regards,',
     ];
     foreach ($tables as $table => $fields) {
         $add = true;
-        $result = $DB->query("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
+        $result = $DB->doQuery("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
         if ($result && $DB->numrows($result)) {
             $row = $DB->fetchAssoc($result);
             if ($row['Non_unique'] == 1) {
@@ -2409,8 +2427,8 @@ Regards,',
             $migration->addPostQuery(
                 $DB->buildUpdate(
                     $tl_table,
-                    ["$tl_table.timeline_position" => "1"],
-                    ["$tl_table.timeline_position" => "0"]
+                    ["$tl_table.timeline_position" => 1],
+                    ["$tl_table.timeline_position" => 0]
                 )
             );
         }

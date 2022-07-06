@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -422,7 +420,7 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
     if (!$DB->tableExists('glpi_networkporttypes')) {
         $migration->migrationOneTable(NetworkPortType::getTable());
     }
-    $default_types = Sanitizer::encodeHtmlSpecialCharsRecursive(NetworkPortType::getDefaults());
+    $default_types = NetworkPortType::getDefaults();
     $reference = array_replace(
         $default_types[0],
         array_fill_keys(
@@ -529,7 +527,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
                 $DB->quoteName('date')
             )
         );
-        $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        $to_preserve_result = $DB->doQuery($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->delete(
                 'glpi_printerlogs',
@@ -609,7 +607,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
                 $DB->quoteName('date')
             )
         );
-        $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        $to_preserve_result = $DB->doQuery($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
             $DB->delete(
                 'glpi_networkportmetrics',

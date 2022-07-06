@@ -37,8 +37,6 @@ use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;
-use Glpi\Toolbox\Sanitizer;
-use Glpi\Toolbox\VersionParser;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Psr\Log\LoggerInterface;
@@ -267,44 +265,6 @@ class Toolbox
         Toolbox::deprecated('Use "GLPIKey::decrypt()"');
         $glpikey = new GLPIKey();
         return $glpikey->decrypt($content, $key);
-    }
-
-
-    /**
-     * Prevent from XSS
-     * Clean code
-     *
-     * @param array|string $value  item to prevent
-     *
-     * @return array|string  clean item
-     *
-     * @see unclean_cross_side_scripting_deep*
-     *
-     * @deprecated 10.0.0
-     **/
-    public static function clean_cross_side_scripting_deep($value)
-    {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()"');
-        return Sanitizer::encodeHtmlSpecialCharsRecursive($value);
-    }
-
-
-    /**
-     *  Invert fonction from clean_cross_side_scripting_deep
-     *
-     * @param array|string $value  item to unclean from clean_cross_side_scripting_deep
-     *
-     * @return array|string  unclean item
-     *
-     * @see clean_cross_side_scripting_deep()
-     *
-     * @deprecated 10.0.0
-     **/
-    public static function unclean_cross_side_scripting_deep($value)
-    {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()"');
-        global $DB;
-        return $DB->escape(Sanitizer::decodeHtmlSpecialCharsRecursive($value));
     }
 
     /**
@@ -768,9 +728,13 @@ class Toolbox
      * @param string|string[] $value value to add slashes
      *
      * @return string|string[]
+     *
+     * @deprecated 10.1.0
      **/
     public static function addslashes_deep($value)
     {
+        Toolbox::deprecated();
+
         global $DB;
 
         $value = ((array) $value === $value)
@@ -796,9 +760,12 @@ class Toolbox
      * @param array|string $value  item to stripslashes
      *
      * @return array|string stripslashes item
+     *
+     * @deprecated 10.1.0
      **/
     public static function stripslashes_deep($value)
     {
+        Toolbox::deprecated();
 
         $value = ((array) $value === $value)
                   ? array_map([__CLASS__, 'stripslashes_deep'], $value)
@@ -2688,15 +2655,6 @@ class Toolbox
         if (count($doc_data)) {
             $base_path = $CFG_GLPI['root_doc'];
 
-            $was_html_encoded = Sanitizer::isHtmlEncoded($content_text);
-            $was_escaped      = Sanitizer::isDbEscaped($content_text);
-            if ($was_html_encoded) {
-                $content_text = Sanitizer::decodeHtmlSpecialChars($content_text);
-            }
-            if ($was_escaped) {
-                $content_text = Sanitizer::dbUnescape($content_text);
-            }
-
             foreach ($doc_data as $id => $image) {
                 if (isset($image['tag'])) {
                    // Add only image files : try to detect mime type
@@ -2794,13 +2752,6 @@ class Toolbox
                     }
                 }
             }
-
-            if ($was_html_encoded) {
-                $content_text = Sanitizer::encodeHtmlSpecialChars($content_text);
-            }
-            if ($was_escaped) {
-                $content_text = Sanitizer::dbEscape($content_text);
-            }
         }
 
         return $content_text;
@@ -2818,20 +2769,15 @@ class Toolbox
      **/
     public static function cleanTagOrImage($content, array $tags)
     {
-        $content = Sanitizer::unsanitize($content);
-
         foreach ($tags as $tag) {
             $content = preg_replace("/<img.*alt=['|\"]" . $tag . "['|\"][^>]*\>/", "<p></p>", $content);
         }
-
-        $content = Sanitizer::sanitize($content);
 
         return $content;
     }
 
     /**
-     * Decode JSON in GLPI
-     * Because json can have been modified from Sanitizer
+     * Decode JSON in GLPI.
      *
      * @param string $encoded Encoded JSON
      * @param boolean $assoc  assoc parameter of json_encode native function
@@ -2848,12 +2794,6 @@ class Toolbox
         $json_data = null;
         if (self::isJSON($encoded)) {
             $json_data = $encoded;
-        } else {
-            //something went wrong... Try to unsanitize before decoding.
-            $raw_encoded = Sanitizer::unsanitize($encoded);
-            if (self::isJSON($raw_encoded)) {
-                $json_data = $raw_encoded;
-            }
         }
 
         if ($json_data === null) {
@@ -3104,36 +3044,6 @@ class Toolbox
     }
 
     /**
-     * Get HTML content to display (cleaned)
-     *
-     * @since 9.1.8
-     *
-     * @param string $content Content to display
-     *
-     * @return string
-     *
-     * @deprecated 10.0.0
-     */
-    public static function getHtmlToDisplay($content)
-    {
-        Toolbox::deprecated('Use Glpi\Toolbox\RichText::getEnhancedHtml()');
-
-        $content = Toolbox::unclean_cross_side_scripting_deep(
-            $content
-        );
-
-        $content = Html::clean($content, false, 1);
-
-       // If content does not contain <br> or <p> html tag, use nl2br
-       // Required to correctly render linebreaks from "simple text mode" from GLPI prior to 9.4.0.
-        if (!preg_match('/<br\s?\/?>/', $content) && !preg_match('/<p>/', $content)) {
-            $content = nl2br($content);
-        }
-
-        return $content;
-    }
-
-    /**
      * Strip HTML tags from a string.
      *
      * @since 10.0.0
@@ -3146,8 +3056,6 @@ class Toolbox
      */
     public static function stripTags(string $str): string
     {
-        $str = Sanitizer::getVerbatimValue($str);
-
         return strip_tags($str);
     }
 
@@ -3237,13 +3145,11 @@ class Toolbox
     {
         global $CFG_GLPI;
 
-        $path = Html::cleanInputText($path); // prevent xss
-
         if (empty($path)) {
             return null;
         }
 
-        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . $path;
+        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . htmlspecialchars($path);
     }
 
     /**
@@ -3460,7 +3366,7 @@ HTML;
        // (or would require usage of a dedicated lib).
         return (preg_match(
             "/^(?:http[s]?:\/\/(?:[^\s`!(){};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
-            Sanitizer::unsanitize($url)
+            $url
         ) === 1);
     }
 

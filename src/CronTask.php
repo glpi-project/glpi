@@ -253,7 +253,7 @@ class CronTask extends CommonDBTM
 
             $this->startlog = $log->add(['crontasks_id'    => $this->fields['id'],
                 'date'            => $_SESSION['glpi_currenttime'],
-                'content'         => addslashes($txt),
+                'content'         => $txt,
                 'crontasklogs_id' => 0,
                 'state'           => CronTaskLog::STATE_START,
                 'volume'          => 0,
@@ -369,7 +369,7 @@ class CronTask extends CommonDBTM
         $content = Toolbox::substr($content, 0, 200);
         return $log->add(['crontasks_id'    => $this->fields['id'],
             'date'            => $_SESSION['glpi_currenttime'],
-            'content'         => addslashes($content),
+            'content'         => $content,
             'crontasklogs_id' => $this->startlog,
             'state'           => CronTaskLog::STATE_RUN,
             'volume'          => $this->volume,
@@ -397,7 +397,7 @@ class CronTask extends CommonDBTM
          // Core crontasks
             [
                 ['NOT' => ['itemtype' => ['LIKE', 'Plugin%']]],
-                ['NOT' => ['itemtype' => ['LIKE', addslashes('GlpiPlugin\\\\') . '%']]]
+                ['NOT' => ['itemtype' => ['LIKE', 'GlpiPlugin\\\\' . '%']]]
             ]
         ];
         foreach (Plugin::getPlugins() as $plug) {
@@ -405,7 +405,7 @@ class CronTask extends CommonDBTM
             $itemtype_orwhere[] = [
                 'OR' => [
                     ['itemtype' => ['LIKE', sprintf('Plugin%s', $plug) . '%']],
-                    ['itemtype' => ['LIKE', addslashes(sprintf('GlpiPlugin\\\\%s\\\\', $plug)) . '%']]
+                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plug) . '%']]
                 ]
             ];
         }
@@ -415,7 +415,7 @@ class CronTask extends CommonDBTM
         ];
 
         if ($name) {
-            $WHERE['name'] = addslashes($name);
+            $WHERE['name'] = $name;
         }
 
        // In force mode
@@ -956,16 +956,13 @@ class CronTask extends CommonDBTM
     public static function register($itemtype, $name, $frequency, $options = [])
     {
 
-       // Check that hook exists
+        // Check that hook exists
         if (!isPluginItemType($itemtype) && !class_exists($itemtype)) {
             return false;
         }
 
-       // manage NS class
-        $itemtype = addslashes($itemtype);
-
         $temp = new self();
-       // Avoid duplicate entry
+        // Avoid duplicate entry
         if ($temp->getFromDBbyName($itemtype, $name)) {
             return false;
         }
@@ -1019,7 +1016,7 @@ class CronTask extends CommonDBTM
             'WHERE'  => [
                 'OR' => [
                     ['itemtype' => ['LIKE', sprintf('Plugin%s', $plugin) . '%']],
-                    ['itemtype' => ['LIKE', addslashes(sprintf('GlpiPlugin\\\\%s\\\\', $plugin)) . '%']]
+                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plugin) . '%']]
                 ]
             ]
         ]);

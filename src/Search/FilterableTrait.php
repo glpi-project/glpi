@@ -36,7 +36,6 @@
 namespace Glpi\Search;
 
 use CommonDBTM;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Helper trait to ease interaction with filters
@@ -84,11 +83,7 @@ trait FilterableTrait
         $filter = CriteriaFilter::getForItem($this);
 
         // Build data
-        // JSON fields must only be sanitized AFTER being encoded to avoid \'
-        // being encoded as \\' where both antislashes cancel each others
-        // -> $search_criteria should come from $_UPOST not $_POST
         $search_criteria = json_encode($search_criteria);
-        $search_criteria = Sanitizer::sanitize($search_criteria);
 
         if ($filter) {
             // Override existing filter

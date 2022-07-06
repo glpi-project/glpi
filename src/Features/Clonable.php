@@ -220,7 +220,7 @@ trait Clonable
             return false;
         }
         $new_item = new static();
-        $input = Toolbox::addslashes_deep($this->fields);
+        $input = $this->fields;
         foreach ($override_input as $key => $value) {
             $input[$key] = $value;
         }

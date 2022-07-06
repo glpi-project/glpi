@@ -176,7 +176,6 @@ class Change extends CommonITILObject
                 ['recursive' => true],
                 ['condition' => RuleCommonITILObject::ONADD]
             );
-            $input = Toolbox::stripslashes_deep($input);
 
             // Recompute default values based on values computed by rules
             $input = $this->computeDefaultValuesForAdd($input);
@@ -281,7 +280,7 @@ class Change extends CommonITILObject
                 ) {
                     if (
                         !isset($this->fields[$key])
-                        || ($DB->escape($this->fields[$key]) != $input[$key])
+                        || ($this->fields[$key] != $input[$key])
                     ) {
                         $changes[] = $key;
                     }
@@ -316,7 +315,6 @@ class Change extends CommonITILObject
                         'only_criteria' => $changes
                     ]
                 );
-                $input = Toolbox::stripslashes_deep($input);
             }
 
             // Clean actors fields added for rules
@@ -543,7 +541,7 @@ class Change extends CommonITILObject
                      unset($row['tickets_id']);
                      unset($row['id']);
                      $row['changes_id'] = $this->fields['id'];
-                     $assoc->add(Toolbox::addslashes_deep($row));
+                     $assoc->add($row);
                 }
             }
         }
@@ -568,7 +566,7 @@ class Change extends CommonITILObject
                      unset($row['problems_id']);
                      unset($row['id']);
                      $row['changes_id'] = $this->fields['id'];
-                     $assoc->add(Toolbox::addslashes_deep($row));
+                     $assoc->add($row);
                 }
             }
         }

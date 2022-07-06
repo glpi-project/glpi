@@ -34,7 +34,6 @@
  */
 
 use Glpi\Event;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Document class
@@ -246,7 +245,7 @@ class Document extends CommonDBTM
 
         $upload_ok = false;
         if (isset($input["_filename"]) && !(empty($input["_filename"]) == 1)) {
-            $upload_ok = $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+            $upload_ok = $this->moveDocument($input, array_shift($input["_filename"]));
         } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
            // Move doc from upload dir
             $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
@@ -376,7 +375,7 @@ class Document extends CommonDBTM
 
         if (isset($input['current_filepath'])) {
             if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
-                $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+                $this->moveDocument($input, array_shift($input["_filename"]));
             } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
                // Move doc from upload dir
                 $this->moveUploadedDocument($input, $input["upload_file"]);
@@ -1229,7 +1228,7 @@ class Document extends CommonDBTM
         }
 
        // For display
-        $input['filename'] = addslashes($filename);
+        $input['filename'] = $filename;
        // Storage path
         $input['filepath'] = $new_path;
        // Checksum
@@ -1342,7 +1341,7 @@ class Document extends CommonDBTM
         }
 
        // For display
-        $input['filename'] = addslashes($filename);
+        $input['filename'] = $filename;
        // Storage path
         $input['filepath'] = $new_path;
        // Checksum
@@ -1435,7 +1434,7 @@ class Document extends CommonDBTM
         if (self::renameForce($FILEDESC['tmp_name'], GLPI_DOC_DIR . "/" . $path)) {
             Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
            // For display
-            $input['filename'] = addslashes($FILEDESC['name']);
+            $input['filename'] = $FILEDESC['name'];
            // Storage path
             $input['filepath'] = $path;
            // Checksum
@@ -1590,7 +1589,7 @@ class Document extends CommonDBTM
         ]);
 
         foreach ($iterator as $data) {
-            if (preg_match(Sanitizer::unsanitize($data['ext']) . "i", $ext, $results) > 0) {
+            if (preg_match($data['ext'] . "i", $ext, $results) > 0) {
                 return Toolbox::strtoupper($ext);
             }
         }

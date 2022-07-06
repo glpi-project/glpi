@@ -1226,8 +1226,6 @@ JAVASCRIPT;
                             $crit
                         )
                     ) {
-                       //escape pattern
-                        $criteria['pattern'] = $DB->escape(Html::entity_decode_deep($criteria['pattern']));
                         $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                         $item     = new $itemtype();
                         if ($item instanceof CommonTreeDropdown) {
@@ -1270,8 +1268,6 @@ JAVASCRIPT;
                             continue;
                         }
 
-                       //escape value
-                        $action['value'] = $DB->escape(Html::entity_decode_deep($action['value']));
                         $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                         $item     = new $itemtype();
                         if ($item instanceof CommonTreeDropdown) {
@@ -1481,7 +1477,7 @@ JAVASCRIPT;
 
            //Find a rule by it's uuid
             $found    = $item->find(['uuid' => $current_rule['uuid']]);
-            $params   = Toolbox::addslashes_deep($current_rule);
+            $params   = $current_rule;
             unset($params['rulecriteria']);
             unset($params['ruleaction']);
 
@@ -1549,7 +1545,6 @@ JAVASCRIPT;
                         if (is_array($criteria['pattern'])) {
                             $criteria['pattern'] = null;
                         }
-                        $criteria = Toolbox::addslashes_deep($criteria);
                         $ruleCriteria->add($criteria);
                     }
                 }
@@ -1563,7 +1558,6 @@ JAVASCRIPT;
                         if (is_array($action['value'])) {
                              $action['value'] = null;
                         }
-                        $action = Toolbox::addslashes_deep($action);
                         $ruleAction->add($action);
                     }
                 }
@@ -1586,7 +1580,7 @@ JAVASCRIPT;
      *                            - condition : specific condition to limit rule list
      *                            - only_criteria : only react on specific criteria
      *
-     * @return the output array updated by actions (addslashes datas)
+     * @return the output array updated by actions
      **/
     public function processAllRules($input = [], $output = [], $params = [], $options = [])
     {
@@ -1619,7 +1613,7 @@ JAVASCRIPT;
                     if ((isset($output['_stop_rules_processing']) && (int) $output['_stop_rules_processing'] === 1) || ($output["_rule_process"] && $this->stop_on_first_match)) {
                         unset($output["_stop_rules_processing"], $output["_rule_process"]);
                         $output["_ruleid"] = $rule->fields["id"];
-                        return Toolbox::addslashes_deep($output);
+                        return $output;
                     }
                 }
 
@@ -1630,7 +1624,7 @@ JAVASCRIPT;
             }
         }
 
-        return Toolbox::addslashes_deep($output);
+        return $output;
     }
 
 

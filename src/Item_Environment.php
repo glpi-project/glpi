@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Environment Class
@@ -148,7 +147,7 @@ final class Item_Environment extends CommonDBChild
             ]) : "",
             'is_tab' => true,
             'items_id' => $items_id,
-            'filters' => Sanitizer::dbEscapeRecursive($filters),
+            'filters' => $filters,
             'columns' => [
                 'key'           => __("Key"),
                 'value'           => __("Value"),

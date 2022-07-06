@@ -634,7 +634,7 @@ class Socket extends CommonDBChild
         if ($parent) {
             $changes[0] = '0';
             $changes[1] = '';
-            $changes[2] = addslashes($this->getNameID(['forceid' => true]));
+            $changes[2] = $this->getNameID(['forceid' => true]);
             Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
         }
 
@@ -672,7 +672,7 @@ class Socket extends CommonDBChild
         $parent = $this->fields['locations_id'];
         if ($parent) {
             $changes[0] = '0';
-            $changes[1] = addslashes($this->getNameID(['forceid' => true]));
+            $changes[1] = $this->getNameID(['forceid' => true]);
             $changes[2] = '';
             Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
         }

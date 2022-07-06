@@ -35,7 +35,6 @@
 
 use Glpi\Http\Response;
 use Glpi\Search\FilterableInterface;
-use Glpi\Toolbox\Sanitizer;
 
 include('../inc/includes.php');
 
@@ -52,7 +51,7 @@ switch ($action) {
         // Default values for this endpoint
         $itemtype = $_POST['item_itemtype'] ?? null; // Note: "item_" prefix because the search engine already use the itemtype key
         $items_id = $_POST['item_items_id'] ?? null;
-        $search_criteria = Sanitizer::unsanitize($_POST['criteria'] ?? []); // Note: criteria may be missing in a valid form + must be unsanitized
+        $search_criteria = $_POST['criteria'] ?? []; // Note: criteria may be missing in a valid form
 
         // Validate itemtype
         if (

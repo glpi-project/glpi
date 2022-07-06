@@ -54,7 +54,7 @@
    {% set entity_id = 0 %}
 {% endif %}
 
-{% set template_name = item.fields['template_name']|verbatim_value %}
+{% set template_name = item.fields['template_name'] %}
 {% if withtemplate == 2 and not item.isNewItem() %}
    <input type="hidden" name="template_name" value="{{ template_name }}" />
    {% set nametype = __('Created from the template %s')|format(template_name) %}

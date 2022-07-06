@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * @since 9.4.0
@@ -335,7 +334,7 @@ class ITILFollowup extends CommonDBChild
             }
             $input = array_replace(
                 [
-                    'content'         => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'content'         => $template->getRenderedContent($parent_item),
                     'is_private'      => $template->fields['is_private'],
                     'requesttypes_id' => $template->fields['requesttypes_id'],
                 ],

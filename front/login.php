@@ -38,7 +38,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 include('../inc/includes.php');
 
@@ -55,8 +54,6 @@ if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
     $_POST['totp_code'] = implode('', $_POST['totp_code']);
 }
 
-$_POST = array_map('stripslashes', $_POST);
-
 //Do login and checks
 //$user_present = 1;
 if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
@@ -65,7 +62,7 @@ if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
     $login = '';
 }
 if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-    $password = Sanitizer::unsanitize($_POST[$_SESSION['pwdfield']]);
+    $password = $_POST[$_SESSION['pwdfield']];
 } else {
     $password = '';
 }
