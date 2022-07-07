@@ -352,7 +352,7 @@ class Item_RemoteManagement extends CommonDBChild
             self::TEAMVIEWER => 'TeamViewer',
             self::LITEMANAGER => 'LiteManager',
             self::ANYDESK => 'AnyDesk',
-	    self::MESHCENTRAL => 'MeshCentral'
+            self::MESHCENTRAL => 'MeshCentral',
         ];
         echo "<td>";
         echo Dropdown::showFromArray(
