@@ -220,6 +220,11 @@ if (($_POST['action'] ?? null) === 'update') {
         'timestamp' => $_SESSION['glpi_currenttime']
     ];
     echo json_encode($response, JSON_FORCE_OBJECT);
+} else if ($_REQUEST['action'] === 'clear_column_state') {
+    $checkParams(['items_id']);
+    $result = Item_Kanban::clearStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id']);
+    http_response_code($result ? 200 : 500);
+    return;
 } else if ($_REQUEST['action'] === 'list_columns') {
     $checkParams(['column_field']);
     header("Content-Type: application/json; charset=UTF-8", true);
