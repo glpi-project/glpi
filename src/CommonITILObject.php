@@ -1341,7 +1341,8 @@ abstract class CommonITILObject extends CommonDBTM
                     $allowed_fields[] = '_accepted';
                 }
                 $validation_class = static::getType() . 'Validation';
-                if (class_exists($validation_class)
+                if (
+                    class_exists($validation_class)
                     && (
                         // for validation created by rules
                         // FIXME Use a more precise input name to ensure that 'global_validation' has been defined by rules
