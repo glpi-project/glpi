@@ -1340,9 +1340,18 @@ abstract class CommonITILObject extends CommonDBTM
                     $allowed_fields[] = 'status';
                     $allowed_fields[] = '_accepted';
                 }
-               // for validation created by rules
                 $validation_class = static::getType() . 'Validation';
-                if (class_exists($validation_class) && isset($input["_rule_process"])) {
+                if (
+                    class_exists($validation_class)
+                    && (
+                        // for validation created by rules
+                        // FIXME Use a more precise input name to ensure that 'global_validation' has been defined by rules
+                        // e.g. $input['_validation_from_rule']
+                        isset($input["_rule_process"])
+                        // for validation status updated after CommonITILValidation add/update/delete
+                        || (array_key_exists('_from_itilvalidation', $input) && $input['_from_itilvalidation'])
+                    )
+                ) {
                     $allowed_fields[] = 'global_validation';
                 }
                // Manage assign and steal right
