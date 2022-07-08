@@ -1400,10 +1400,11 @@ class NetworkPort extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => ['jointype' => 'itemtype_item',
-            'condition'          => ['NOT' => [
-                                        'instantiation_type'  => NetworkPortAggregate::getType()
-                                        ]
-                                    ],]
+                'condition' => ['NOT' => [
+                    'instantiation_type'  => NetworkPortAggregate::getType()
+                ]
+                ],
+            ]
         ];
 
         $tab[] = [
