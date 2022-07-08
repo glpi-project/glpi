@@ -81,7 +81,6 @@ class ITILSolution extends DbTestCase
         ]))->isGreaterThan(0);
 
         $this->boolean($ticket->isNewItem())->isFalse();
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); //reload from DB
         $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
 
         $solution = new \ITILSolution();
@@ -185,7 +184,6 @@ class ITILSolution extends DbTestCase
         ]))->isGreaterThan(0);
 
         $this->boolean($problem->isNewItem())->isFalse();
-        $this->boolean($problem->getFromDB($problem->getID()))->isTrue(); //reload from DB
         $this->variable($problem->getField('status'))->isIdenticalTo($problem::ASSIGNED);
 
         $solution = new \ITILSolution();
@@ -305,7 +303,6 @@ class ITILSolution extends DbTestCase
         ]))->isGreaterThan(0);
 
         $this->boolean($ticket->isNewItem())->isFalse();
-        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue(); //reload from DB
         $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
 
         $solution = new \ITILSolution();
