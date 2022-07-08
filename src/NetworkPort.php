@@ -1415,11 +1415,11 @@ class NetworkPort extends CommonDBChild
 
         $networkNameJoin = ['jointype'          => 'itemtype_item',
             'specific_itemtype' => 'NetworkPort',
-             'condition'        => ['NEWTABLE.is_deleted' => 0 ,
-                                    'NOT' => [
-                                        'REFTABLE.instantiation_type'  => NetworkPortAggregate::getType()
-                                        ]
-                                    ],
+            'condition'        => ['NEWTABLE.is_deleted' => 0 ,
+                'NOT' => [
+                    'REFTABLE.instantiation_type'  => NetworkPortAggregate::getType()
+                ]
+            ],
             'beforejoin'        => ['table'      => 'glpi_networkports',
                 'joinparams' => $joinparams
             ]
