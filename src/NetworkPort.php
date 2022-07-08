@@ -1401,7 +1401,7 @@ class NetworkPort extends CommonDBChild
             'massiveaction'      => false,
             'joinparams'         => ['jointype' => 'itemtype_item',
                 'condition' => ['NOT' => [
-                    'instantiation_type'  => NetworkPortAggregate::getType()
+                    'NEWTABLE.instantiation_type'  => NetworkPortAggregate::getType()
                 ]
                 ],
             ]
