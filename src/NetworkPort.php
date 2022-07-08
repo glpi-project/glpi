@@ -1399,7 +1399,11 @@ class NetworkPort extends CommonDBChild
             'datatype'           => 'mac',
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => ['jointype' => 'itemtype_item',
+            'condition'          => ['NOT' => [
+                                        'instantiation_type'  => NetworkPortAggregate::getType()
+                                        ]
+                                    ],]
         ];
 
         $tab[] = [
