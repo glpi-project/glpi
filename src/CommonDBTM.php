@@ -1281,6 +1281,7 @@ class CommonDBTM extends CommonGLPI
             $table_fields = $DB->listFields($this->getTable());
 
             // fill array for add
+            $this->cleanLockedsOnAdd();
             foreach (array_keys($this->input) as $key) {
                 if (
                     ($key[0] != '_')
@@ -1705,6 +1706,25 @@ class CommonDBTM extends CommonGLPI
         }
 
         return false;
+    }
+
+    /**
+     * Clean locked fields from add, if needed
+     *
+     * @return void
+     */
+    protected function cleanLockedsOnAdd()
+    {
+        if (isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true) {
+            $lockedfield = new Lockedfield();
+            $locks = $lockedfield->getLocks($this->getType(), 0);
+            foreach ($locks as $lock) {
+                if (array_key_exists($lock, $this->input)) {
+                    $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
+                    unset($this->input[$lock]);
+                }
+            }
+        }
     }
 
     /**
