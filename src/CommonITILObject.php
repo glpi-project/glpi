@@ -8177,6 +8177,7 @@ abstract class CommonITILObject extends CommonDBTM
                             '_from_assignment'                => true
                         ]
                     );
+                    $this->fields['status'] = $self->fields['status'];
                 }
             }
             // Update existing actors
