@@ -485,11 +485,11 @@ class Group extends CommonTreeDropdown
         ];
 
         $tab[] = [
-           'id'                 => '21',
-           'table'              => $this->getTable(),
-           'field'              => 'is_watcher',
-           'name'               => _n('Watcher', 'Watchers', 1),
-           'datatype'           => 'bool'
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'is_watcher',
+            'name'               => _n('Watcher', 'Watchers', 1),
+            'datatype'           => 'bool'
         ];
 
         $tab[] = [
