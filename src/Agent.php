@@ -695,19 +695,20 @@ class Agent extends CommonDBTM
         /** @phpstan-var array{item_action: bool, callback: callable(?Agent, array, ?CommonDBTM):bool}[] $actions_to_apply */
         $actions_to_apply = [];
         $need_item = false;
-        if (isset($config['stale_agents_status']) && $config['stale_agents_status']) {
+        if (isset($config['stale_agents_status']) && $config['stale_agents_status'] >= 0) {
+            // 0 = none, -1 or other negative = no change
             $need_item = true;
             $actions_to_apply[] = [
                 'item_action' => true,
-                'callback' => static function(?Agent $agent, array $config, ?CommonDBTM $item): bool {
+                'callback' => static function (?Agent $agent, array $config, ?CommonDBTM $item): bool {
                     return $item !== null && $item->update([
                         'id' => $item->fields['id'],
-                        'states_id' => $config['agents_status']
+                        'states_id' => $config['stale_agents_status']
                     ]);
                 }
             ];
         }
-        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG];
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
         /**
          * @var string $plugin
          * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
@@ -722,10 +723,10 @@ class Agent extends CommonDBTM
                 }
             }
         }
-        if  (isset($config['stale_agents_clean']) && $config['stale_agents_clean']) {
+        if (isset($config['stale_agents_clean']) && $config['stale_agents_clean']) {
             $actions_to_apply[] = [
                 'item_action' => false,
-                'callback' => static function(?Agent $agent, array $config, ?CommonDBTM $item): bool {
+                'callback' => static function (?Agent $agent, array $config, ?CommonDBTM $item): bool {
                     return $agent !== null && $agent->delete(['id' => $agent->fields['id']]);
                 }
             ];
@@ -736,7 +737,7 @@ class Agent extends CommonDBTM
         if ($need_item) {
             $orphan = false;
             try {
-                $item = new $agent->fields['itemtype'];
+                $item = new $agent->fields['itemtype']();
                 if ($item instanceof CommonDBTM) {
                     if (!$item->getFromDB($agent->fields['items_id'])) {
                         $orphan = true;

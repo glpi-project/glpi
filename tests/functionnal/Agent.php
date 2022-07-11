@@ -321,4 +321,254 @@ class Agent extends DbTestCase
             ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
     }
+
+    protected function staleAgentCleanProvider()
+    {
+        return [
+            ['Computer', 0],
+            ['Computer', null],
+            ['Phone', 0],
+            ['Phone', null]
+        ];
+    }
+
+    /**
+     * @dataProvider staleAgentCleanProvider
+     */
+    public function testStaleAgentClean(string $itemtype, ?int $items_id)
+    {
+        global $DB;
+
+        $test_stale_days = 10;
+
+        $item = new $itemtype();
+        if ($items_id === null) {
+            $items_id = $item->add([
+                'name' => __FUNCTION__,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            ]);
+            $this->integer($items_id)->isGreaterThan(0);
+        }
+        // Create a new agent
+        $agent = new \Agent();
+        $rand = mt_rand();
+        $agents_id = $agent->add([
+            'name' => __FUNCTION__ . $rand. '-2018-07-09-09-07-13',
+            'deviceid' => __FUNCTION__ . $rand. '-2018-07-09-09-07-13',
+            'version' => '2.5.2-1.fc31',
+            'itemtype' => $itemtype,
+            'items_id' => $items_id,
+            'tag' => '000005',
+            'agenttypes_id' => 1
+        ]);
+        $this->integer($agents_id)->isGreaterThan(0);
+        // Force-change last_contact to be older than the stale period
+        $this->boolean($agent->update([
+            'id' => $agents_id,
+            'last_contact' => date('Y-m-d H:i:s', strtotime('-' . ($test_stale_days + 1) . ' days'))
+        ]))->isTrue();
+        // Get current stale_agents_delay config value
+        $original_stale_days = \Config::getConfigurationValues('inventory', ['stale_agents_delay'])['stale_agents_delay'] ?? 0;
+        $original_stale_clean = \Config::getConfigurationValues('inventory', ['stale_agents_clean'])['stale_agents_clean'] ?? 1;
+
+        // Set stale_agents_delay
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_delay',
+                'value' => $test_stale_days
+            ],
+            [
+                'name' => 'stale_agents_delay'
+            ]
+        );
+        // Set stale_agents_clean to 1
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_clean',
+                'value' => 1
+            ],
+            [
+                'name' => 'stale_agents_clean'
+            ]
+        );
+
+        // Force run the cleanup cron task (direct call the function)
+        $crontask = new \CronTask();
+        $this->boolean(\Agent::cronCleanoldagents($crontask))->isTrue();
+        // Restore stale_agents_delay config value
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_delay',
+                'value' => $original_stale_days
+            ],
+            [
+                'name' => 'stale_agents_delay'
+            ]
+        );
+        // Restore stale_agents_clean config value
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_clean',
+                'value' => $original_stale_clean
+            ],
+            [
+                'name' => 'stale_agents_clean'
+            ]
+        );
+        // Verify that the agent has been deleted
+        $this->boolean($agent->getFromDB($agents_id))->isFalse();
+    }
+
+    protected function staleAgentStatusChangeProvider()
+    {
+        return [
+            ['Computer', 0],
+            ['Computer', null],
+            ['Phone', 0],
+            ['Phone', null]
+        ];
+    }
+
+    /**
+     * @dataProvider staleAgentStatusChangeProvider
+     */
+    public function testStaleAgentStatusChange(string $itemtype, ?int $items_id)
+    {
+        global $DB;
+
+        $test_stale_days = 10;
+
+        $item = new $itemtype();
+        if ($items_id === null) {
+            $items_id = $item->add([
+                'name' => __FUNCTION__,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'states_id' => 1
+            ]);
+            $this->integer($items_id)->isGreaterThan(0);
+        }
+
+        // Create a new agent (Does need a real item linked)
+        $agent = new \Agent();
+        $rand = mt_rand();
+        $agents_id = $agent->add([
+            'name' => __FUNCTION__ . $rand. '-2018-07-09-09-07-13',
+            'deviceid' => __FUNCTION__ . $rand. '-2018-07-09-09-07-13',
+            'version' => '2.5.2-1.fc31',
+            'itemtype' => $itemtype,
+            'items_id' => $items_id,
+            'tag' => '000005',
+            'agenttypes_id' => 1
+        ]);
+        $this->integer($agents_id)->isGreaterThan(0);
+        // Force-change last_contact to be older than the stale period
+        $this->boolean($agent->update([
+            'id' => $agents_id,
+            'last_contact' => date('Y-m-d H:i:s', strtotime('-' . ($test_stale_days + 1) . ' days'))
+        ]))->isTrue();
+        // Get current stale_agents_delay config value
+        $original_stale_days = \Config::getConfigurationValues('inventory', ['stale_agents_delay'])['stale_agents_delay'] ?? 0;
+        $original_stale_status = \Config::getConfigurationValues('inventory', ['stale_agents_status'])['stale_agents_status'] ?? -1;
+        $original_stale_clean = \Config::getConfigurationValues('inventory', ['stale_agents_clean'])['stale_agents_clean'] ?? 1;
+
+        // Set stale_agents_delay
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_delay',
+                'value' => $test_stale_days
+            ],
+            [
+                'name' => 'stale_agents_delay'
+            ]
+        );
+        // Set stale_agents_status to -1
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_status',
+                'value' => -1
+            ],
+            [
+                'name' => 'stale_agents_status'
+            ]
+        );
+        // Set stale_agents_clean to 0
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_clean',
+                'value' => 0
+            ],
+            [
+                'name' => 'stale_agents_clean'
+            ]
+        );
+
+        // Force run the cleanup cron task (direct call the function)
+        $crontask = new \CronTask();
+        // Should return true even if the agent has an invalid item
+        $this->boolean(\Agent::cronCleanoldagents($crontask))->isTrue();
+        // Verify that the agent has not been deleted
+        $this->boolean((bool) $agent->getFromDB($agents_id))->isTrue();
+        if ($items_id > 0) {
+            $item->getFromDB($items_id);
+            // Verify the computer status has not changed
+            $this->integer($item->fields['states_id'])->isEqualTo(1);
+        }
+
+        // Set stale_agents_status to 2, run the stale agent cron, and verify the computer status matches
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_status',
+                'value' => 2
+            ],
+            [
+                'name' => 'stale_agents_status'
+            ]
+        );
+        // Should return true even if the agent has an invalid item
+        $this->boolean(\Agent::cronCleanoldagents($crontask))->isTrue();
+        if ($items_id > 0) {
+            $item->getFromDB($items_id);
+            $this->integer($item->fields['states_id'])->isEqualTo(2);
+        }
+
+        // Restore config values
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_status',
+                'value' => $original_stale_status
+            ],
+            [
+                'name' => 'stale_agents_status'
+            ]
+        );
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_clean',
+                'value' => $original_stale_clean
+            ],
+            [
+                'name' => 'stale_agents_clean'
+            ]
+        );
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_delay',
+                'value' => $original_stale_days
+            ],
+            [
+                'name' => 'stale_agents_delay'
+            ]
+        );
+    }
 }
