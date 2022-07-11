@@ -543,7 +543,7 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = [])
     {
-        global $DB;
+        global $CFG_GLPI, $DB;
 
         echo "<td>" . DeviceNetworkCard::getTypeName(1) . "</td>\n";
         echo "<td>";
@@ -551,9 +551,8 @@ class NetworkPortInstantiation extends CommonDBChild
         if (count($recursiveItems)  > 0) {
             $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
-           // Network card association is only available for computers
             if (
-                ($lastItem->getType() == 'Computer')
+                in_array($lastItem->getType(), $CFG_GLPI["itemdevicenetworkcard_types"])
                 && !$options['several']
             ) {
                 // Query each link to network cards
