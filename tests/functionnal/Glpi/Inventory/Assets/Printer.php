@@ -131,7 +131,8 @@ class Printer extends AbstractInventoryAsset
             'have_usb' => 0,
             'have_ethernet' => 1,
             'memory_size' => 512,
-            'last_pages_counter' => 1802
+            'last_pages_counter' => 1802,
+            'snmpcredentials_id' => 4,
         ]);
 
        //get one management port only, since iftype 24 is not importable per default

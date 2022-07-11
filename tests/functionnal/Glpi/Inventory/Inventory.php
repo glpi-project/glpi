@@ -1901,7 +1901,7 @@ class Inventory extends InventoryTestCase
             'cpu' => 4,
             'uptime' => '482 days, 05:42:18.50',
             'last_inventory_update' => $date_now,
-            'snmpcredentials_id' => 0,
+            'snmpcredentials_id' => 4,
         ];
         $this->array($equipment->fields)->isIdenticalTo($expected);
 
