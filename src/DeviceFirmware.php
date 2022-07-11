@@ -112,6 +112,133 @@ class DeviceFirmware extends CommonDevice
         return $tab;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    {
+        $tab = [];
+
+        //SO defined from glpi_devicefirmwares table
+        $tab[] = [
+            'id'                 => '1313',
+            'table'              => 'glpi_devicefirmwares',
+            'field'              => 'designation',
+            'name'               => self::getTypeName(1),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicefirmwares',
+                    'joinparams'         => $main_joinparams
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '1314',
+            'table'              => 'glpi_devicefirmwares',
+            'field'              => 'version',
+            'name'               => __('firmware: version'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicefirmwares',
+                    'joinparams'         => $main_joinparams
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '1315',
+            'table'              => 'glpi_devicefirmwaretypes',
+            'field'              => 'name',
+            'name'               => __('firmware: firmware type'),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => DeviceFirmware::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Item_DeviceFirmware::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '1316',
+            'table'              => 'glpi_devicefirmwaremodels',
+            'field'              => 'name',
+            'name'               => __('firmware: firmware model'),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => DeviceFirmware::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Item_DeviceFirmware::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '1317',
+            'table'              => 'glpi_manufacturers',
+            'field'              => 'name',
+            'name'               => __('firmware: manufacturers'),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => DeviceFirmware::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Item_DeviceFirmware::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        //SO defined from relation (glpi_items_devicefirmwares) table
+        $tab[] = [
+            'id'                 => '1318',
+            'table'              => 'glpi_items_devicefirmwares',
+            'field'              => 'serial',
+            'name'               => __('firmware: serial'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1319',
+            'table'              => 'glpi_items_devicefirmwares',
+            'field'              => 'otherserial',
+            'name'               => __('firmware: otherserial'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        return $tab;
+    }
+
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
