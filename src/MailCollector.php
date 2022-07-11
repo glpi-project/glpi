@@ -1746,6 +1746,18 @@ class MailCollector extends CommonDBTM
                     $content = $body_matches['body'];
                 }
 
+                // Strip <style> and <script> tags located in HTML body.
+                // They could be neutralized by RichText::getSafeHtml(), but their content would be displayed,
+                // and end-user would probably prefer having them completely removed.
+                $content = preg_replace(
+                    [
+                        '/<style[^>]*>.*?<\/style>/s',
+                        '/<script[^>]*>.*?<\/script>/s',
+                    ],
+                    '',
+                    $content
+                );
+
                 // do not check for text part if we found html one.
                 break;
             }

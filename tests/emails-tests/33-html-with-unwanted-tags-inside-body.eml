@@ -1,0 +1,42 @@
+Date: Thu, 7 Jun 2018 12:05:51 +0200 (CEST)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <1695134010.1757889.1528365951040.JavaMail.zimbra@glpi-project.org>
+Subject: 33 - HTML message with unwanted tags inside body tag
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body dir="auto">
+    <p>This HTML message constains style, scripts and meta tags.</p>
+    <style>
+      p, li, div {
+        font-size: 12px;
+        font-family: sans-serif;
+      }
+    </style>
+    <p>It also contains text,</p>
+    <style type="text/css">
+      p {
+        text-decoration: underline;
+      }
+    </style>
+    <p>between</p>
+    <script type="text/javascript">
+      p {
+        text-decoration: underline;
+      }
+    </script>
+    <p>these unwanted</p>
+    <script>
+      p {
+        text-decoration: underline;
+      }
+    </script>
+    <p>tags.</p>
+  </body>
+</html>
