@@ -192,6 +192,7 @@ class Item_Ticket extends CommonItilObject_Item
 
         $params = [
             'id'  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '') ? $ticket->fields['id'] : 0,
+            'entities_id'  => (isset($ticket->fields['entities_id']) && $ticket->fields['entities_id'] != '') ? $ticket->fields['entities_id'] : 0,
             '_users_id_requester' => 0,
             'items_id'            => [],
             'itemtype'            => '',
@@ -279,12 +280,12 @@ class Item_Ticket extends CommonItilObject_Item
            // My items
             if ($params['_users_id_requester'] > 0) {
                 ob_start();
-                self::dropdownMyDevices($params['_users_id_requester'], $ticket->fields["entities_id"], $params['itemtype'], 0, $p);
+                self::dropdownMyDevices($params['_users_id_requester'], $params['entities_id'], $params['itemtype'], 0, $p);
                 $twig_params['my_items_dropdown'] = ob_get_clean();
             }
            // Global search
             ob_start();
-            self::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $ticket->fields["entities_id"], $p);
+            self::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $params['entities_id'], $p);
             $twig_params['all_items_dropdown'] = ob_get_clean();
         }
 
@@ -319,7 +320,7 @@ class Item_Ticket extends CommonItilObject_Item
         $twig_params['count'] = $count;
         $twig_params['usedcount'] = $usedcount;
 
-        foreach (['id', '_users_id_requester', 'items_id', 'itemtype', '_canupdate'] as $key) {
+        foreach (['id', '_users_id_requester', 'items_id', 'itemtype', '_canupdate', 'entities_id'] as $key) {
             $twig_params['opt'][$key] = $params[$key];
         }
 
