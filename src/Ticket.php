@@ -3910,6 +3910,7 @@ JAVASCRIPT;
             '_tasktemplates_id'         => []
         ];
 
+
        // Get default values from posted values on reload form
         if (!$ticket_template) {
             if (isset($_POST)) {
@@ -3923,17 +3924,11 @@ JAVASCRIPT;
             $options['name'] = str_replace($order, $replace, $options['name']);
         }
 
-       // Restore saved value or override with page parameter
-        $saved = $this->restoreInput();
-        foreach ($default_values as $name => $value) {
-            if (!isset($options[$name])) {
-                if (isset($saved[$name])) {
-                    $options[$name] = $saved[$name];
-                } else {
-                    $options[$name] = $value;
-                }
-            }
-        }
+        // Restore saved value or override with page parameter
+        $options['_saved'] = $this->restoreInput();
+
+        // Restore saved values and override $this->fields
+        $this->restoreSavedValues($options['_saved']);
 
        // Check category / type validity
         if ($options['itilcategories_id']) {
