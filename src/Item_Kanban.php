@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\Features\Kanban;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -34,6 +32,8 @@ use Glpi\Features\Kanban;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Features\Kanban;
 
 class Item_Kanban extends CommonDBRelation
 {
