@@ -353,8 +353,8 @@ class Agent extends DbTestCase
         $agent = new \Agent();
         $rand = mt_rand();
         $agents_id = $agent->add([
-            'name' => __FUNCTION__ . $rand. '-2018-07-09-09-07-13',
-            'deviceid' => __FUNCTION__ . $rand. '-2018-07-09-09-07-13',
+            'name' => __FUNCTION__ . $rand . '-2018-07-09-09-07-13',
+            'deviceid' => __FUNCTION__ . $rand . '-2018-07-09-09-07-13',
             'version' => '2.5.2-1.fc31',
             'itemtype' => $itemtype,
             'items_id' => $items_id,
@@ -456,8 +456,8 @@ class Agent extends DbTestCase
         $agent = new \Agent();
         $rand = mt_rand();
         $agents_id = $agent->add([
-            'name' => __FUNCTION__ . $rand. '-2018-07-09-09-07-13',
-            'deviceid' => __FUNCTION__ . $rand. '-2018-07-09-09-07-13',
+            'name' => __FUNCTION__ . $rand . '-2018-07-09-09-07-13',
+            'deviceid' => __FUNCTION__ . $rand . '-2018-07-09-09-07-13',
             'version' => '2.5.2-1.fc31',
             'itemtype' => $itemtype,
             'items_id' => $items_id,
