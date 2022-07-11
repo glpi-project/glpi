@@ -36,7 +36,6 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
@@ -761,26 +760,6 @@ class Agent extends CommonDBTM
             }
             // Run the action
             if (!$action['callback']($agent, $config, $item)) {
-                return false;
-            }
-        }
-        if ($item !== null && in_array('change_status', $actions_to_apply, true)) {
-            $result = $item->update([
-                'id' => $item->fields['id'],
-                'states_id' => $config['agents_status']
-            ]);
-            if (!$result) {
-                return false;
-            }
-        }
-        if ($item !== null && in_array('apply_uninstall_profile', $actions_to_apply, true)) {
-            \PluginUninstallUninstall::uninstall(get_class($item), $config['stale_agents_status'], [
-                get_class($item) => [$item->fields['id'] => true]
-            ], '');
-        }
-        if (in_array('clean', $actions_to_apply, true)) {
-            $result = $agent->delete(['id' => $agent->fields['id']]);
-            if (!$result) {
                 return false;
             }
         }
