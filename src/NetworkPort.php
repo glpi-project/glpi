@@ -1399,12 +1399,7 @@ class NetworkPort extends CommonDBChild
             'datatype'           => 'mac',
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'joinparams'         => ['jointype' => 'itemtype_item',
-                'condition' => ['NOT' => [
-                    'NEWTABLE.instantiation_type'  => NetworkPortAggregate::getType()
-                ]
-                ],
-            ]
+            'joinparams'         => $joinparams
         ];
 
         $tab[] = [
@@ -1420,11 +1415,7 @@ class NetworkPort extends CommonDBChild
 
         $networkNameJoin = ['jointype'          => 'itemtype_item',
             'specific_itemtype' => 'NetworkPort',
-            'condition'        => ['NEWTABLE.is_deleted' => 0 ,
-                'NOT' => [
-                    'REFTABLE.instantiation_type'  => NetworkPortAggregate::getType()
-                ]
-            ],
+            'condition'         => ['NEWTABLE.is_deleted' => 0],
             'beforejoin'        => ['table'      => 'glpi_networkports',
                 'joinparams' => $joinparams
             ]
