@@ -3910,7 +3910,6 @@ JAVASCRIPT;
             '_tasktemplates_id'         => []
         ];
 
-
        // Get default values from posted values on reload form
         if (!$ticket_template) {
             if (isset($_POST)) {
