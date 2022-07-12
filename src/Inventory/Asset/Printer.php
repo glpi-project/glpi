@@ -159,6 +159,31 @@ class Printer extends NetworkEquipment
             }
         }
 
+        //try to know if management port IP is already known as IP port
+        //if yes remove it from management port
+        $port_managment = $this->getManagementPorts();
+        if (isset($this->getManagementPorts()['management']) && property_exists($this->getManagementPorts()['management'], 'ipaddress')) {
+            foreach ($this->getManagementPorts()['management']->ipaddress as $pa_ip_key => $pa_ip_val) {
+                if (property_exists($this->raw_data->content, 'network_ports')) {
+                    foreach ($this->raw_data->content->network_ports as $port_obj) {
+                        if (property_exists($port_obj, 'ips')) {
+                            foreach ($port_obj->ips as $port_ip) {
+                                if ($pa_ip_val == $port_ip) {
+                                    unset($port_managment['management']->ipaddress[$pa_ip_key]);
+                                    if (empty($port_managment['management']->ipaddress)) {
+                                        unset($port_managment['management']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        $this->setManagementPorts($port_managment);
+
         return $this->data;
     }
 
