@@ -1768,7 +1768,7 @@ class Provider
                     'link'       => 'AND',
                     'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
                     'searchtype' => 'equals',
-                    'value'      =>  (int) $apply_filters['user_tech'] ?: (int) Session::getLoginUserID()
+                    'value'      =>  $apply_filters['user_tech'] == 'myself' ? (int) Session::getLoginUserID() : (int) $apply_filters['user_tech']
                 ];
             } elseif (
                 in_array($table, [
@@ -1781,7 +1781,7 @@ class Provider
                     'link'       => 'AND',
                     'field'      => 5,// tech
                     'searchtype' => 'equals',
-                    'value'      =>  (int) $apply_filters['user_tech'] ?: $apply_filters['user_tech']
+                    'value'      =>  is_numeric($apply_filters['user_tech']) ? (int) $apply_filters['user_tech'] : $apply_filters['user_tech']
                 ];
             }
         }
