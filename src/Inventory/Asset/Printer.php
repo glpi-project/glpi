@@ -123,6 +123,12 @@ class Printer extends NetworkEquipment
                 unset($val->ram);
             }
 
+            if (property_exists($val, 'credentials')) {
+                $val->snmpcredentials_id = $val->credentials;
+                unset($val->credentials);
+            }
+
+
             $res_rule = $rulecollection->processAllRules(['name' => $val->name]);
             if (
                 (!isset($res_rule['_ignore_ocs_import']) || $res_rule['_ignore_ocs_import'] != "1")
