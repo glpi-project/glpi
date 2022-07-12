@@ -418,6 +418,20 @@ class Link extends CommonDBTM
                         'glpi_ipaddresses.name AS ip',
                     ],
                     'FROM'   => 'glpi_networknames',
+                    'JOIN' => [
+                        'glpi_networkports'   => [
+                            'ON' => [
+                                'glpi_networkports'   => 'id',
+                                'glpi_networknames'  => 'networkports_id', [
+                                    'AND' => [
+                                        'NOT' => [
+                                            'glpi_networkports.instantiation_type'  => NetworkPortAggregate::getType()
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
                     'INNER JOIN'   => [
                         'glpi_ipaddresses'   => [
                             'ON' => [
@@ -482,7 +496,10 @@ class Link extends CommonDBTM
                 ],
                 'WHERE'        => [
                     'glpi_networkports.items_id'  => $item->getID(),
-                    'glpi_networkports.itemtype'  => $item->getType()
+                    'glpi_networkports.itemtype'  => $item->getType(),
+                    'NOT' => [
+                        'glpi_networkports.instantiation_type'  => NetworkPortAggregate::getType()
+                    ]
                 ]
             ]);
             foreach ($iterator as $data2) {
@@ -500,7 +517,10 @@ class Link extends CommonDBTM
                 'FROM'   => 'glpi_networkports',
                 'WHERE'  => [
                     'glpi_networkports.items_id'  => $item->getID(),
-                    'glpi_networkports.itemtype'  => $item->getType()
+                    'glpi_networkports.itemtype'  => $item->getType(),
+                    'NOT' => [
+                        'glpi_networkports.instantiation_type'  => NetworkPortAggregate::getType()
+                    ]
                 ],
                 'GROUP' => 'glpi_networkports.mac'
             ];
