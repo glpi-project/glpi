@@ -2557,6 +2557,19 @@ abstract class CommonITILObject extends CommonDBTM
         $this->manageValidationAdd($this->input);
 
         parent::post_addItem();
+        
+        if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
+                __('%1$s (%2$s)'),
+                __('Your ticket has been registered.'),
+            Session::addMessageAfterRedirect(sprintf(
+                sprintf(
+                    __('%1$s: %2$s'),
+                    $this->getTypeName(1),
+                    "<a href='" . $this->getFormURLWithID($this->fields['id']) . "'>" .
+                    $this->fields['id'] . "</a>"
+                )
+            ));
+        }
     }
 
     /**
