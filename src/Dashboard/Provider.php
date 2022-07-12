@@ -1758,16 +1758,19 @@ class Provider
 
         if (
             isset($apply_filters['user_tech'])
-            && (int) $apply_filters['user_tech'] > 0
+            && (
+                (int) $apply_filters['user_tech'] > 0
+                || $apply_filters['user_tech'] == 'myself'
+            )
         ) {
             if ($DB->fieldExists($table, 'users_id_tech')) {
                 $s_criteria['criteria'][] = [
                     'link'       => 'AND',
                     'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
                     'searchtype' => 'equals',
-                    'value'      =>  (int) $apply_filters['user_tech']
+                    'value'      =>  (int) $apply_filters['user_tech'] ?: (int) Session::getLoginUserID()
                 ];
-            } else if (
+            } elseif (
                 in_array($table, [
                     Ticket::getTable(),
                     Change::getTable(),
@@ -1778,7 +1781,7 @@ class Provider
                     'link'       => 'AND',
                     'field'      => 5,// tech
                     'searchtype' => 'equals',
-                    'value'      =>  (int) $apply_filters['user_tech']
+                    'value'      =>  (int) $apply_filters['user_tech'] ?: $apply_filters['user_tech']
                 ];
             }
         }
