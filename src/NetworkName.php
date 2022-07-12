@@ -228,13 +228,8 @@ class NetworkName extends FQDNLabel
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'  => 'itemtype_item',
-                'specific_itemtype' => NetworkName::getType(),
-                'condition' => ['NEWTABLE.is_deleted' => 0],
-                'beforejoin' => [
-                    'table'      => 'glpi_networknames',
-                    'joinparams' => $joinparams
-                ]
+                'jointype'  => 'mainitemtype_mainitem',
+                'condition' => ['NEWTABLE.is_deleted' => 0]
             ]
         ];
 
