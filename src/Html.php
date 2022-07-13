@@ -6481,10 +6481,13 @@ HTML;
     {
         global $CFG_GLPI;
 
+        // prevent leak of data for non logged sessions
+        $full = $full && (Session::getLoginUserID(true) !== false);
+
         $cfg_glpi = "var CFG_GLPI  = {
-         'url_base': '" . (isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '') . "',
-         'root_doc': '" . $CFG_GLPI["root_doc"] . "',
-      };";
+            'url_base': '" . (isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '') . "',
+            'root_doc': '" . $CFG_GLPI["root_doc"] . "',
+        };";
 
         if ($full) {
             $debug = (isset($_SESSION['glpi_use_mode'])
@@ -6499,9 +6502,9 @@ HTML;
         $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
 
         return self::scriptBlock("
-         $cfg_glpi
-         $plugins_path
-      ");
+            $cfg_glpi
+            $plugins_path
+        ");
     }
 
     /**
