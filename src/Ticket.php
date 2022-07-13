@@ -2120,19 +2120,6 @@ class Ticket extends CommonITILObject
             }
             NotificationEvent::raiseEvent($type, $this);
         }
-
-        if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
-            Session::addMessageAfterRedirect(sprintf(
-                __('%1$s (%2$s)'),
-                __('Your ticket has been registered.'),
-                sprintf(
-                    __('%1$s: %2$s'),
-                    Ticket::getTypeName(1),
-                    "<a href='" . Ticket::getFormURLWithID($this->fields['id']) . "'>" .
-                    $this->fields['id'] . "</a>"
-                )
-            ));
-        }
     }
 
 

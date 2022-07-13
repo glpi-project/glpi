@@ -1480,8 +1480,9 @@ class CommonDBTM extends CommonGLPI
                     $this->fields['id']
                 );
             }
-            $display = (isset($this->input['_no_message_link']) ? $this->getNameID()
-                                                            : $this->getLink());
+            $opt = [ 'forceid' => $this instanceof CommonITILObject ];
+            $display = (isset($this->input['_no_message_link']) ? $this->getNameID($opt)
+                                                            : $this->getLink($opt));
 
            // Do not display quotes
            //TRANS : %s is the description of the added item
