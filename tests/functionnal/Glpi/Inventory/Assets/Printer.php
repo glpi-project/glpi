@@ -323,12 +323,12 @@ class Printer extends AbstractInventoryAsset
         //2 NetworkPort
         $np = new \NetworkPort();
         $this->integer(
-          countElementsInTable(
-              $np::getTable(),
-              [['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']]
-          )
+            countElementsInTable(
+                $np::getTable(),
+                [['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']]
+            )
         )->isIdenticalTo(2);
-        
+
         //0 NetworkPortAggregate
         $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
 
