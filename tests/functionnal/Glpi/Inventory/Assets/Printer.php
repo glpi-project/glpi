@@ -135,19 +135,9 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802,
         ]);
 
-       //get one management port only, since iftype 24 is not importable per default
+       //no managmenet port (network_device->ips same as network_port->ips)
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-        $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
-        $this->array((array)$mports['management'])->isIdenticalTo([
-            'mac' => '00:68:eb:f2:be:10',
-            'name' => 'Management',
-            'netname' => 'internal',
-            'instantiation_type' => 'NetworkPortAggregate',
-            'is_internal' => true,
-            'ipaddress' => [
-                '10.59.29.175'
-            ]
-        ]);
+        $this->array($main->getManagementPorts())->hasSize(0);
 
         $pcounter = new \stdClass();
         $pcounter->rectoverso = 831;
@@ -192,6 +182,158 @@ class Printer extends AbstractInventoryAsset
             'date_creation' => $_SESSION['glpi_currenttime'],
             'date_mod' => $_SESSION['glpi_currenttime'],
         ]);
+    }
+
+    public function testSnmpPrinterManagementPortAdded()
+    {
+        /**
+         * This check if management port is well added
+         * When network-device->ips and networkport->ips are different
+         */
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'printer_2.json');
+
+        $json = json_decode($json_str);
+
+        $printer = new \Printer();
+
+        $data = (array)$json->content;
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->boolean($inventory->setData($json))->isTrue();
+
+        $agent = new \Agent();
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
+
+        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new \Glpi\Inventory\Conf());
+        $result = $main->prepare();
+        $this->array($result)->hasSize(1);
+        $this->array((array)$result[0])->isIdenticalTo([
+            'autoupdatesystems_id' => 'GLPI Native Inventory',
+            'last_inventory_update' => $date_now,
+            'firmware' => '8745213_951236',
+            'ips' => ['10.59.29.176'],
+            'mac' => '00:85:eb:f4:be:20',
+            'manufacturer' => 'Canon',
+            'model' => 'Canon MX 5970',
+            'name' => 'MX5970',
+            'serial' => 'SDFSDF9874',
+            'type' => 'Printer',
+            'uptime' => '8 days, 01:26:41.98',
+            'printermodels_id' => 'Canon MX 5970',
+            'printertypes_id' => 'Printer',
+            'manufacturers_id' => 'Canon',
+            'snmpcredentials_id' => 4,
+            'have_usb' => 0,
+            'have_ethernet' => 1,
+            'memory_size' => 256,
+            'last_pages_counter' => 800
+        ]);
+
+        //get one management port only
+        $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
+        $this->array((array)$mports['management'])->isIdenticalTo([
+            'mac' => '00:85:eb:f4:be:20',
+            'name' => 'Management',
+            'netname' => 'internal',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'is_internal' => true,
+            'ipaddress' => [
+                '10.59.29.176'
+            ]
+        ]);
+
+        //do real inventory to check dataDB
+        $json_str = file_get_contents(self::INV_FIXTURES . 'printer_2.json');
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDbByCrit(['name' => 'MX5970', 'serial' => 'SDFSDF9874']))->isTrue();
+
+        $np = new \NetworkPort();
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']))->isTrue();
+
+        //remove printer for other test
+        $printer->delete($printer->fields);
+    }
+
+    public function testSnmpPrinterManagementPortExcluded()
+    {
+        /**
+         * This check if management port is well excluded
+         * When network-device->ips and networkport->ips are same
+         */
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'printer_3.json');
+
+        $json = json_decode($json_str);
+
+        $printer = new \Printer();
+
+        $data = (array)$json->content;
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->boolean($inventory->setData($json))->isTrue();
+
+        $agent = new \Agent();
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
+
+        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new \Glpi\Inventory\Conf());
+        $result = $main->prepare();
+        $this->array($result)->hasSize(1);
+        $this->array((array)$result[0])->isIdenticalTo([
+            'autoupdatesystems_id' => 'GLPI Native Inventory',
+            'last_inventory_update' => $date_now,
+            'firmware' => '8745213_951236',
+            'ips' => ['10.59.29.176'],
+            'mac' => '00:85:eb:f4:be:20',
+            'manufacturer' => 'Canon',
+            'model' => 'Canon MX 5970',
+            'name' => 'MX5970',
+            'serial' => 'SDFSDF9874',
+            'type' => 'Printer',
+            'uptime' => '8 days, 01:26:41.98',
+            'printermodels_id' => 'Canon MX 5970',
+            'printertypes_id' => 'Printer',
+            'manufacturers_id' => 'Canon',
+            'snmpcredentials_id' => 4,
+            'have_usb' => 0,
+            'have_ethernet' => 1,
+            'memory_size' => 256,
+            'last_pages_counter' => 800
+        ]);
+
+        //get no management port
+        $this->array($main->getManagementPorts())->hasSize(0);
+
+        //do real inventory to check dataDB
+        $json_str = file_get_contents(self::INV_FIXTURES . 'printer_3.json');
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDbByCrit(['name' => 'MX5970', 'serial' => 'SDFSDF9874']))->isTrue();
+
+        //2 NetworkPort
+        $np = new \NetworkPort();
+        $this->integer(
+          countElementsInTable(
+              $np::getTable(),
+              [['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']]
+          )
+        )->isIdenticalTo(2);
+        
+        //0 NetworkPortAggregate
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isFalse();
+
+        //remove printer for other test
+        $printer->delete($printer->fields);
     }
 
     public function testInventoryMove()
