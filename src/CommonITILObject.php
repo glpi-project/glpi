@@ -6626,7 +6626,7 @@ abstract class CommonITILObject extends CommonDBTM
             $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
             foreach ($followups as $followups_id => $followup) {
                 $followup_obj->getFromDB($followups_id);
-                if ($followup_obj->canViewItem()) {
+                if ($followup_obj->canViewItem() || $params['bypass_rights']) {
                     $followup['can_edit'] = $followup_obj->canUpdateItem();
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type' => ITILFollowup::class,
@@ -6642,7 +6642,7 @@ abstract class CommonITILObject extends CommonDBTM
             $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date DESC');
             foreach ($tasks as $tasks_id => $task) {
                 $task_obj->getFromDB($tasks_id);
-                if ($task_obj->canViewItem()) {
+                if ($task_obj->canViewItem() || $params['bypass_rights']) {
                     $task['can_edit'] = $task_obj->canUpdateItem();
                     $timeline[$task_obj::getType() . "_" . $tasks_id] = [
                         'type' => $taskClass,
