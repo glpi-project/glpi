@@ -192,7 +192,7 @@ class Item_Ticket extends CommonItilObject_Item
 
         $params = [
             'id'  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '') ? $ticket->fields['id'] : 0,
-            'entities_id'  => (isset($ticket->fields['entities_id']) && is_numeric($ticket->fields['entities_id']) ? $ticket->fields['entities_id'] : Session::getActiveEntity(),
+            'entities_id'  => (isset($ticket->fields['entities_id']) && is_numeric($ticket->fields['entities_id']) ? $ticket->fields['entities_id'] : Session::getActiveEntity()),
             '_users_id_requester' => 0,
             'items_id'            => [],
             'itemtype'            => '',
