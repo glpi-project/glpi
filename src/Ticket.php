@@ -2115,13 +2115,14 @@ class Ticket extends CommonITILObject
             $this->getFromDB($this->fields['id']);
 
             $type = "new";
+            NotificationEvent::raiseEvent("new", $this);
+            
             if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
-                $type = "solved";
+                NotificationEvent::raiseEvent("solved", $this);
             }
             if (isset($this->fields["status"]) && ($this->fields["status"] == self::CLOSED)) {
-                $type = "closed";
+                NotificationEvent::raiseEvent("closed", $this);
             }
-            NotificationEvent::raiseEvent($type, $this);
         }
     }
 
