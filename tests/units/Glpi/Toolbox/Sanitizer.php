@@ -102,6 +102,21 @@ class Sanitizer extends \GLPITestCase
             'htmlencoded_value' => '&#60;p&#62;HTML containing a code snippet&#60;/p&#62;&#60;pre&#62;&#38;lt;a href=&#38;quot;/test&#38;quot;&#38;gt;link&#38;lt;/a&#38;gt;&#60;/pre&#62;',
             'dbescaped_value'   => '<p>HTML containing a code snippet</p><pre>&lt;a href=&quot;/test&quot;&gt;link&lt;/a&gt;</pre>',
         ];
+        yield [
+            'value'             => 'text many backslashes ' . str_repeat('\\', 3), // 3 backslashes
+            'sanitized_value'   => 'text many backslashes ' . str_repeat('\\', 6), // escaped to 6 backslashes
+            'htmlencoded_value' => 'text many backslashes ' . str_repeat('\\', 3),
+            'dbescaped_value'   => 'text many backslashes ' . str_repeat('\\', 6),
+        ];
+
+        // Long string with many escapable chars should not be a problem
+        $multiplier = 100000;
+        yield [
+            'value'             => str_repeat("<strong>text with slashable chars ' \n \"</strong>", $multiplier),
+            'sanitized_value'   => str_repeat("&#60;strong&#62;text with slashable chars \' \\n \\\"&#60;/strong&#62;", $multiplier),
+            'htmlencoded_value' => str_repeat("&#60;strong&#62;text with slashable chars ' \n \"&#60;/strong&#62;", $multiplier),
+            'dbescaped_value'   => str_repeat("<strong>text with slashable chars \' \\n \\\"</strong>", $multiplier),
+        ];
 
         // Strings in array should be sanitized
         yield [
@@ -127,7 +142,7 @@ class Sanitizer extends \GLPITestCase
             'sanitized_value' => ['itemtype' => 'Glpi\Dashboard\Dashboard'],
         ];
 
-        //  syntax should not be sanitized
+        // callable syntax should not be sanitized
         yield [
             'value'           => 'Glpi\Socket:update',
             'sanitized_value' => 'Glpi\Socket:update',
