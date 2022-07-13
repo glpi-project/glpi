@@ -128,11 +128,11 @@ class Printer extends AbstractInventoryAsset
             'printermodels_id' => 'HP LaserJet M507',
             'printertypes_id' => 'Printer',
             'manufacturers_id' => 'Hewlett-Packard',
+            'snmpcredentials_id' => 4,
             'have_usb' => 0,
             'have_ethernet' => 1,
             'memory_size' => 512,
             'last_pages_counter' => 1802,
-            'snmpcredentials_id' => 4,
         ]);
 
        //get one management port only, since iftype 24 is not importable per default
