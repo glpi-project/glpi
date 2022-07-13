@@ -65,13 +65,6 @@ class TicketTask extends DbTestCase
         $this->boolean($ticket->isNewItem())->isFalse();
         $tid = (int)$ticket->fields['id'];
 
-        $this->hasSessionMessages(
-            INFO,
-            [
-                "Your ticket has been registered. (Ticket: <a href='" . \Ticket::getFormURLWithID($tid) . "'>$tid</a>)"
-            ]
-        );
-
         return ($as_object ? $ticket : $tid);
     }
 

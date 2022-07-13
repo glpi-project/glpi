@@ -164,13 +164,6 @@ class ProjectTask extends DbTestCase
         $this->boolean($ticket->isNewItem())->isFalse();
         $tid = (int)$ticket->fields['id'];
 
-        $this->hasSessionMessages(
-            INFO,
-            [
-                "Your ticket has been registered. (Ticket: <a href='" . \Ticket::getFormURLWithID($tid) . "'>$tid</a>)"
-            ]
-        );
-
         $ttask = new \TicketTask();
         $ttask_id = (int)$ttask->add([
             'name'               => 'A ticket task in bounds',
