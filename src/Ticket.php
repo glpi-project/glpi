@@ -1727,10 +1727,21 @@ class Ticket extends CommonITILObject
         if (
             isset($input['check_delegatee'], $input['_users_id_requester'])
             && $input['check_delegatee']
-            && !self::canDelegateeCreateTicket($input['_users_id_requester'], ($input['entities_id'] ?? -2))
         ) {
-            Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
-            return false;
+            $requesters_ids = is_array($input['_users_id_requester'])
+                ? $input['_users_id_requester']
+                : [$input['_users_id_requester']];
+            $can_delegatee_create_ticket = false;
+            foreach ($requesters_ids as $requester_id) {
+                if (self::canDelegateeCreateTicket($requester_id, ($input['entities_id'] ?? -2))) {
+                    $can_delegatee_create_ticket = true;
+                    break;
+                }
+            }
+            if (!$can_delegatee_create_ticket) {
+                Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
+                return false;
+            }
         }
 
         if (!isset($input["requesttypes_id"])) {
