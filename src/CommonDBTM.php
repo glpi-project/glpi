@@ -491,6 +491,17 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    public function getSNMPCredential()
+    {
+        if ($this->isField('snmpcredentials_id') && $this->fields['snmpcredentials_id']) {
+            $snmp_credential = new SNMPCredential();
+            $snmp_credential->getFromDB($this->fields['snmpcredentials_id']);
+            return $snmp_credential;
+        }
+        return false;
+    }
+
+
     /**
      * Retrieve locked field for the current item
      *
