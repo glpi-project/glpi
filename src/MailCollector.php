@@ -1476,12 +1476,9 @@ class MailCollector extends CommonDBTM
             $subject = '';
         }
 
-       // secu on message_id setting
-        try {
-            $message_id = $message->getHeader('message_id')->getFieldValue();
-        } catch (Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
-            $message_id = '';
-        }  
+        $message_id = $message->getHeaders()->has('message-id')
+            ? $message->getHeader('message-id')->getFieldValue()
+            : 'MISSING_ID_' . sha1($message->getHeaders()->toString());
 
         $mail_details = [
             'from'       => Toolbox::strtolower($sender_email),
