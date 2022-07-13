@@ -42,7 +42,7 @@ class Item_RemoteManagement extends CommonDBChild
     public const TEAMVIEWER = 'teamviewer';
     public const LITEMANAGER = 'litemanager';
     public const ANYDESK = 'anydesk';
-    public const MESHCENTRAL = 'meshcentral';
+    public const SUPREMO = 'supremo';
 
 
     public static function getTypeName($nb = 0)
@@ -214,6 +214,9 @@ class Item_RemoteManagement extends CommonDBChild
             case self::ANYDESK:
                 $href = "anydesk:$id";
                 break;
+            case self::SUPREMO:
+                $href = "supremo:$id";
+                break;
         }
 
         if ($href === null) {
@@ -352,7 +355,7 @@ class Item_RemoteManagement extends CommonDBChild
             self::TEAMVIEWER => 'TeamViewer',
             self::LITEMANAGER => 'LiteManager',
             self::ANYDESK => 'AnyDesk',
-            self::MESHCENTRAL => 'MeshCentral',
+            self::SUPREMO => 'SupRemo'
         ];
         echo "<td>";
         echo Dropdown::showFromArray(
