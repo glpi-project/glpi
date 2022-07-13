@@ -42,6 +42,7 @@ class Item_RemoteManagement extends CommonDBChild
     public const TEAMVIEWER = 'teamviewer';
     public const LITEMANAGER = 'litemanager';
     public const ANYDESK = 'anydesk';
+    public const MESHCENTRAL = 'meshcentral';
     public const SUPREMO = 'supremo';
 
 
@@ -355,6 +356,7 @@ class Item_RemoteManagement extends CommonDBChild
             self::TEAMVIEWER => 'TeamViewer',
             self::LITEMANAGER => 'LiteManager',
             self::ANYDESK => 'AnyDesk',
+            self::MESHCENTRAL => 'MeshCentral',
             self::SUPREMO => 'SupRemo'
         ];
         echo "<td>";
