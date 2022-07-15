@@ -1774,7 +1774,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'assigntousers.phone2'                => __('Phone 2'),
             'assigntousers.mobile'                => __('Mobile phone'),
             'assigntousers.category'              => _n('Category', 'Categories', 1),
-            'assigntousers.location'              => __('Requester location'),
+            'assigntousers.location'              => __('User location'),
             'assigntousers.address'               => __('Address'),
             'assigntousers.postcode'              => __('Postal code'),
             'assigntousers.town'                  => __('City'),
