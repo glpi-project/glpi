@@ -1476,12 +1476,16 @@ class MailCollector extends CommonDBTM
             $subject = '';
         }
 
+        $message_id = $message->getHeaders()->has('message-id')
+            ? $message->getHeader('message-id')->getFieldValue()
+            : 'MISSING_ID_' . sha1($message->getHeaders()->toString());
+
         $mail_details = [
             'from'       => Toolbox::strtolower($sender_email),
             'subject'    => $subject,
             'reply-to'   => $reply_to_addr !== null ? Toolbox::strtolower($reply_to_addr) : null,
             'to'         => $to !== null ? Toolbox::strtolower($to) : null,
-            'message_id' => $message->getHeader('message_id')->getFieldValue(),
+            'message_id' => $message_id,
             'tos'        => $tos,
             'ccs'        => $ccs,
             'date'       => $date

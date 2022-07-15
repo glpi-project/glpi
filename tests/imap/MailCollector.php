@@ -699,6 +699,7 @@ class MailCollector extends DbTestCase
                     '31 - HTML message without body',
                     '32 - HTML message with attributes on body tag',
                     '33 - HTML message with unwanted tags inside body tag',
+                    '34 - Message with no MessageID header',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
