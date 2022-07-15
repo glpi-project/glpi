@@ -660,56 +660,6 @@ class Problem extends CommonITILObject
     }
 
     /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
-    {
-
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-
-        switch ($field) {
-            case 'status':
-                return Problem::getStatus($values[$field]);
-        }
-        return parent::getSpecificValueToDisplay($field, $values, $options);
-    }
-
-
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param $options   array
-     *
-     * @return string
-     **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
-    {
-
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-        $options['display'] = false;
-
-        switch ($field) {
-            case 'status':
-                return Problem::dropdownStatus(['name' => $name,
-                    'value' => $values[$field],
-                    'display' => false
-                ]);
-        }
-        return parent::getSpecificValueToSelect($field, $name, $values, $options);
-    }
-
-    /**
      * get the problem status list
      *
      * @param $withmetaforsearch  boolean  (false by default)
