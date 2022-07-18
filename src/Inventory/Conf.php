@@ -926,7 +926,11 @@ class Conf extends CommonGLPI
         $defaults = self::$defaults;
         unset($values['_glpi_csrf_token']);
 
-        $unknown = array_diff_key($values, $defaults);
+        $inv_values = array_filter($values, static function ($value) {
+            return !str_starts_with($value, '_');
+        });
+
+        $unknown = array_diff_key($inv_values, $defaults);
         if (count($unknown)) {
             $msg = sprintf(
                 __('Some properties are not known: %1$s'),
