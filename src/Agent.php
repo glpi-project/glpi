@@ -743,10 +743,6 @@ class Agent extends CommonDBTM
 
         // Run all actions, with the clean action running last
         foreach ($actions_to_apply as $action) {
-            // If the action needs the item, and we don't have one, skip it
-            if ($action['item_action'] && $item === null) {
-                continue;
-            }
             // Run the action
             if (!$action['callback']($agent, $config, $item)) {
                 return false;
