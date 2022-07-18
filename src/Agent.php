@@ -714,7 +714,7 @@ class Agent extends CommonDBTM
          * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
          */
         foreach ($plugin_actions as $plugin => $actions) {
-            if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
+            if (is_array($actions) && Plugin::isPluginActive($plugin)) {
                 foreach ($actions as $action) {
                     if ($action['item_action']) {
                         $need_item = true;
@@ -735,20 +735,8 @@ class Agent extends CommonDBTM
 
         // If an action to apply needs the item
         if ($need_item) {
-            $orphan = false;
-            try {
-                $item = new $agent->fields['itemtype']();
-                if ($item instanceof CommonDBTM) {
-                    if (!$item->getFromDB($agent->fields['items_id'])) {
-                        $orphan = true;
-                    }
-                } else {
-                    $orphan = true;
-                }
-            } catch (\Exception $e) {
-                $orphan = true;
-            }
-            if ($orphan) {
+            $item = is_a($agent->fields['itemtype'], CommonDBTM::class, true) ? new $agent->fields['itemtype']() : null;
+            if ($item !== null && $item->getFromDB($agent->fields['items_id']) === false) {
                 $item = null;
             }
         }

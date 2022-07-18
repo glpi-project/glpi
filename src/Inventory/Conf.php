@@ -871,7 +871,7 @@ class Conf extends CommonGLPI
                     $field = $action['render_callback']($config);
                     if (!empty($field)) {
                         echo "<td>";
-                        echo $action['label'];
+                        echo $action['label'] ?? '';
                         echo "</td>";
                         echo "<td width='20%'>";
                         echo $field;

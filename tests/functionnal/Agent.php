@@ -397,28 +397,6 @@ class Agent extends DbTestCase
         // Force run the cleanup cron task (direct call the function)
         $crontask = new \CronTask();
         $this->boolean(\Agent::cronCleanoldagents($crontask))->isTrue();
-        // Restore stale_agents_delay config value
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_delay',
-                'value' => $original_stale_days
-            ],
-            [
-                'name' => 'stale_agents_delay'
-            ]
-        );
-        // Restore stale_agents_clean config value
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_clean',
-                'value' => $original_stale_clean
-            ],
-            [
-                'name' => 'stale_agents_clean'
-            ]
-        );
         // Verify that the agent has been deleted
         $this->boolean($agent->getFromDB($agents_id))->isFalse();
     }
@@ -470,10 +448,6 @@ class Agent extends DbTestCase
             'id' => $agents_id,
             'last_contact' => date('Y-m-d H:i:s', strtotime('-' . ($test_stale_days + 1) . ' days'))
         ]))->isTrue();
-        // Get current stale_agents_delay config value
-        $original_stale_days = \Config::getConfigurationValues('inventory', ['stale_agents_delay'])['stale_agents_delay'] ?? 0;
-        $original_stale_status = \Config::getConfigurationValues('inventory', ['stale_agents_status'])['stale_agents_status'] ?? -1;
-        $original_stale_clean = \Config::getConfigurationValues('inventory', ['stale_agents_clean'])['stale_agents_clean'] ?? 1;
 
         // Set stale_agents_delay
         $DB->updateOrInsert(
@@ -538,37 +512,5 @@ class Agent extends DbTestCase
             $item->getFromDB($items_id);
             $this->integer($item->fields['states_id'])->isEqualTo(2);
         }
-
-        // Restore config values
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_status',
-                'value' => $original_stale_status
-            ],
-            [
-                'name' => 'stale_agents_status'
-            ]
-        );
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_clean',
-                'value' => $original_stale_clean
-            ],
-            [
-                'name' => 'stale_agents_clean'
-            ]
-        );
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_delay',
-                'value' => $original_stale_days
-            ],
-            [
-                'name' => 'stale_agents_delay'
-            ]
-        );
     }
 }
