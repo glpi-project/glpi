@@ -716,6 +716,13 @@ class Agent extends CommonDBTM
         foreach ($plugin_actions as $plugin => $actions) {
             if (is_array($actions) && Plugin::isPluginActive($plugin)) {
                 foreach ($actions as $action) {
+                    if (!is_callable($action['action_callback'] ?? null)) {
+                        trigger_error(
+                            sprintf('Invalid plugin "%s" action callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                            E_USER_WARNING
+                        );
+                        continue;
+                    }
                     if ($action['item_action']) {
                         $need_item = true;
                     }

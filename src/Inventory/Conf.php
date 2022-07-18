@@ -865,6 +865,14 @@ class Conf extends CommonGLPI
         foreach ($plugin_actions as $plugin => $actions) {
             if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
                 foreach ($actions as $action) {
+                    if (!is_callable($action['render_callback'] ?? null)) {
+                        trigger_error(
+                            sprintf('Invalid plugin "%s" render callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                            E_USER_WARNING
+                        );
+                        continue;
+                    }
+
                     if (!$odd) {
                         echo "<tr class='tab_bg_1'>";
                     }
