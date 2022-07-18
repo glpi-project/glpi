@@ -2414,8 +2414,6 @@ var GLPIImpact = {
         $(GLPIImpact.selectors.save).removeClass('dirty');
         $(GLPIImpact.selectors.save).removeClass('clean'); // Needed for animations if the workspace is not dirty
         $(GLPIImpact.selectors.save).addClass('clean');
-        $(GLPIImpact.selectors.save).find('i').removeClass("fas fa-exclamation-triangle");
-        $(GLPIImpact.selectors.save).find('i').addClass("fas fa-check");
     },
 
     /**
@@ -2424,8 +2422,6 @@ var GLPIImpact = {
     showDirtyWorkspaceStatus: function() {
         $(GLPIImpact.selectors.save).removeClass('clean');
         $(GLPIImpact.selectors.save).addClass('dirty');
-        $(GLPIImpact.selectors.save).find('i').removeClass("fas fa-check");
-        $(GLPIImpact.selectors.save).find('i').addClass("fas fa-exclamation-triangle");
     },
 
     /**
