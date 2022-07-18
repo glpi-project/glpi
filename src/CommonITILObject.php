@@ -3176,7 +3176,7 @@ abstract class CommonITILObject extends CommonDBTM
                 static::STATUS_MATRIX_FIELD,
                 $_SESSION['glpiactiveprofile']
             )
-            && self::isStatusExists($new)
+            && static::isStatusExists($new)
         ) { // maybe not set for post-only
             return true;
         }
