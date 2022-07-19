@@ -700,6 +700,7 @@ class MailCollector extends DbTestCase
                     '32 - HTML message with attributes on body tag',
                     '33 - HTML message with unwanted tags inside body tag',
                     '34 - Message with no MessageID header',
+                    '35 - Message with some invalid headers',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -754,6 +755,9 @@ HTML,
     
     <p>tags.</p>
 HTML,
+            '35 - Message with some invalid headers' => <<<PLAINTEXT
+This message has some invalid headers, but it should collected anyways.
+PLAINTEXT,
         ];
 
         foreach ($actors_specs as $actor_specs) {
