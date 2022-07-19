@@ -52,7 +52,7 @@ class DbEngine extends \GLPITestCase
             ],
             [
                 'version'   => '5.7.50-log',
-                'validated' => true,
+                'validated' => false,
                 'messages'  => ['Database engine version (5.7.50) is not supported. Minimum required version is MySQL 8.0.'],
             ],
             [
@@ -67,7 +67,7 @@ class DbEngine extends \GLPITestCase
             ],
             [
                 'version'   => '10.2.36-MariaDB',
-                'validated' => true,
+                'validated' => false,
                 'messages'  => ['Database engine version (10.2.36) is not supported. Minimum required version is MariaDB 10.3.'],
             ],
             [
