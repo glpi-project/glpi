@@ -136,7 +136,6 @@ class Conf extends CommonGLPI
         'stale_agents_delay'             => 0,
         'stale_agents_clean'             => 1,
         'stale_agents_status'            => 0,
-        'stale_agents_uninstall'         => 0,
     ];
 
     /**
@@ -926,11 +925,11 @@ class Conf extends CommonGLPI
         $defaults = self::$defaults;
         unset($values['_glpi_csrf_token']);
 
-        $inv_values = array_filter($values, static function ($value) {
-            return !str_starts_with($value, '_');
-        });
+        $ext_configs = array_filter($values, static function ($k, $v) {
+            return str_starts_with($v, '_');
+        }, ARRAY_FILTER_USE_BOTH);
 
-        $unknown = array_diff_key($inv_values, $defaults);
+        $unknown = array_diff_key($values, $defaults, $ext_configs);
         if (count($unknown)) {
             $msg = sprintf(
                 __('Some properties are not known: %1$s'),
@@ -947,6 +946,7 @@ class Conf extends CommonGLPI
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
         }
+        $to_process = array_merge($to_process, $ext_configs);
         \Config::setConfigurationValues('inventory', $to_process);
         $this->currents = $to_process;
         return true;
