@@ -2805,10 +2805,10 @@ HTML;
         $server  = preg_match('/-MariaDB/', $raw) ? 'MariaDB' : 'MySQL';
         $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $raw);
 
-       // MySQL >= 5.7 || MariaDB >= 10.2
+        // MySQL >= 8.0 || MariaDB >= 10.3
         $is_supported = $server === 'MariaDB'
-         ? version_compare($version, '10.2', '>=')
-         : version_compare($version, '5.7', '>=');
+            ? version_compare($version, '10.3', '>=')
+            : version_compare($version, '8.0', '>=');
 
         return [$version => $is_supported];
     }
