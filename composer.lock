@@ -707,10 +707,10 @@
         },
         {
             "name": "htmlawed/htmlawed",
-            "version": "1.2.6",
+            "version": "1.2.9",
             "dist": {
                 "type": "zip",
-                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed126.zip"
+                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed129.zip"
             },
             "type": "library",
             "autoload": {
@@ -725,7 +725,7 @@
             "authors": [
                 {
                     "name": "Santosh Patnaik",
-                    "email": "drpatnaik@yahoo.com",
+                    "email": "drpatnaikREMOVEALLCAPS@yahoo.com",
                     "role": "Developer"
                 }
             ],
@@ -5562,5 +5562,5 @@
     "platform-overrides": {
         "php": "7.4.0"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
