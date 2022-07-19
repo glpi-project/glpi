@@ -586,7 +586,7 @@ class MailCollector extends DbTestCase
         $this->doConnect();
         $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
 
-        $expected_errors = [
+        $expected_logged_errors = [
             // 05-empty-from.eml
             'The input is not a valid email address. Use the basic format local-part@hostname' => LogLevel::CRITICAL,
             // 17-malformed-email.eml
@@ -596,12 +596,20 @@ class MailCollector extends DbTestCase
         $msg = null;
         $this->output(
             function () use (&$msg) {
-                $msg = $this->collector->collect($this->mailgate_id);
+                $this->when(
+                    function () use (&$msg) {
+                        $msg = $this->collector->collect($this->mailgate_id);
+                    }
+                )
+                ->error()
+                    ->withType(E_USER_WARNING)
+                    ->withMessage('Invalid header "X-Invalid-Encoding"')
+                    ->exists();
             }
-        )->matches('/^(.*\n){' . count($expected_errors) . '}$/'); // Ensure that output has same count of lines than expected error count
+        )->matches('/^(.*\n){' . count($expected_logged_errors) . '}$/'); // Ensure that output has same count of lines than expected error count
 
         // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
-        foreach ($expected_errors as $error_message => $error_level) {
+        foreach ($expected_logged_errors as $error_message => $error_level) {
             $this->hasPhpLogRecordThatContains($error_message, $error_level);
         }
 
@@ -700,6 +708,7 @@ class MailCollector extends DbTestCase
                     '32 - HTML message with attributes on body tag',
                     '33 - HTML message with unwanted tags inside body tag',
                     '34 - Message with no MessageID header',
+                    '35 - Message with some invalid headers',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -754,6 +763,9 @@ HTML,
     
     <p>tags.</p>
 HTML,
+            '35 - Message with some invalid headers' => <<<PLAINTEXT
+This message has some invalid headers, but it should collected anyways.
+PLAINTEXT,
         ];
 
         foreach ($actors_specs as $actor_specs) {

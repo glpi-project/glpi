@@ -1,0 +1,26 @@
+diff --git a/src/Headers.php b/src/Headers.php
+index 23475bc..8cdb76f 100644
+--- a/src/Headers.php
++++ b/src/Headers.php
+@@ -278,10 +278,17 @@ class Headers implements Countable, Iterator
+         }
+ 
+         if ($fieldValue === null) {
+-            $headers = $this->loadHeader($headerFieldNameOrLine);
+-            $headers = is_array($headers) ? $headers : [$headers];
+-            foreach ($headers as $header) {
+-                $this->addHeader($header);
++            try {
++                $headers = $this->loadHeader($headerFieldNameOrLine);
++                $headers = is_array($headers) ? $headers : [$headers];
++                foreach ($headers as $header) {
++                    $this->addHeader($header);
++                }
++            } catch (\Laminas\Mail\Header\Exception\InvalidArgumentException $e) {
++                // Header line cannot be parsed, ignore it and add a warning
++                $parts = explode(':', $headerFieldNameOrLine, 2);
++                $msg = count($parts) !== 2 ? $e->getMessage() : sprintf('Invalid header "%s"', $parts[0]);
++                trigger_error($msg, E_USER_WARNING);
+             }
+         } elseif (is_array($fieldValue)) {
+             foreach ($fieldValue as $i) {
