@@ -1503,12 +1503,16 @@ class MailCollector extends CommonDBTM
             $subject = '';
         }
 
+        $message_id = $message->getHeaders()->has('message-id')
+            ? $message->getHeader('message-id')->getFieldValue()
+            : 'MISSING_ID_' . sha1($message->getHeaders()->toString());
+
         $mail_details = [
             'from'       => Toolbox::strtolower($sender_email),
             'subject'    => $subject,
             'reply-to'   => $reply_to_addr !== null ? Toolbox::strtolower($reply_to_addr) : null,
             'to'         => $to !== null ? Toolbox::strtolower($to) : null,
-            'message_id' => $message->getHeader('message_id')->getFieldValue(),
+            'message_id' => $message_id,
             'tos'        => $tos,
             'ccs'        => $ccs,
             'date'       => $date
@@ -1772,6 +1776,18 @@ class MailCollector extends CommonDBTM
                 if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
                     $content = $body_matches['body'];
                 }
+
+                // Strip <style> and <script> tags located in HTML body.
+                // They could be neutralized by RichText::getSafeHtml(), but their content would be displayed,
+                // and end-user would probably prefer having them completely removed.
+                $content = preg_replace(
+                    [
+                        '/<style[^>]*>.*?<\/style>/s',
+                        '/<script[^>]*>.*?<\/script>/s',
+                    ],
+                    '',
+                    $content
+                );
 
                 // do not check for text part if we found html one.
                 break;

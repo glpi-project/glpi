@@ -1901,7 +1901,7 @@ class Inventory extends InventoryTestCase
             'cpu' => 4,
             'uptime' => '482 days, 05:42:18.50',
             'last_inventory_update' => $date_now,
-            'snmpcredentials_id' => 0,
+            'snmpcredentials_id' => 4,
         ];
         $this->array($equipment->fields)->isIdenticalTo($expected);
 
@@ -3361,7 +3361,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->array($cloc);
         $locations_id = $cloc['id'];
 
-       //check created equipments
+        //check created equipments
         $expected_eq_count = 302;
         $iterator = $DB->request([
             'FROM'   => \NetworkEquipment::getTable(),

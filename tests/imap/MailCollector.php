@@ -699,6 +699,8 @@ class MailCollector extends DbTestCase
                     '30 - &#60;GLPI&#62; Special &#38; chars',
                     '31 - HTML message without body',
                     '32 - HTML message with attributes on body tag',
+                    '33 - HTML message with unwanted tags inside body tag',
+                    '34 - Message with no MessageID header',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -741,6 +743,17 @@ This HTML message does not have a <i>body</i> tag.
 HTML,
             '32 - HTML message with attributes on body tag' => <<<HTML
 This HTML message has an attribut on its <i>body</i> tag.
+HTML,
+            '33 - HTML message with unwanted tags inside body tag' => <<<HTML
+<p>This HTML message constains style, scripts and meta tags.</p>
+    
+    <p>It also contains text,</p>
+    
+    <p>between</p>
+    
+    <p>these unwanted</p>
+    
+    <p>tags.</p>
 HTML,
         ];
 

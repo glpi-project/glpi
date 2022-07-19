@@ -273,6 +273,9 @@ class Toolbox extends DbTestCase
             ], [
                 '{ bad content',
                 false
+            ], [
+                file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_1.json'),
+                true
             ]
         ];
     }

@@ -389,8 +389,9 @@ abstract class CommonITILValidation extends CommonDBChild
                 || ($item->fields['global_validation'] == self::NONE)
             ) {
                 $input = [
-                    'id'                => $this->fields[static::$items_id],
-                    'global_validation' => self::WAITING,
+                    'id'                    => $this->fields[static::$items_id],
+                    'global_validation'     => self::WAITING,
+                    '_from_itilvalidation'  => true,
                 ];
 
                // to fix lastupdater
@@ -528,8 +529,9 @@ abstract class CommonITILValidation extends CommonDBChild
             //if status is updated, update global approval status
             if (in_array("status", $this->updates)) {
                 $input = [
-                    'id'                => $this->fields[static::$items_id],
-                    'global_validation' => self::computeValidationStatus($item),
+                    'id'                    => $this->fields[static::$items_id],
+                    'global_validation'     => self::computeValidationStatus($item),
+                    '_from_itilvalidation'  => true,
                 ];
                 $item->update($input);
             }
@@ -544,8 +546,9 @@ abstract class CommonITILValidation extends CommonDBChild
         if ($item->getFromDB($this->fields[static::$items_id])) {
             if (($item->fields['global_validation'] == self::WAITING)) {
                 $input = [
-                    'id'                => $this->fields[static::$items_id],
-                    'global_validation' => self::NONE,
+                    'id'                    => $this->fields[static::$items_id],
+                    'global_validation'     => self::NONE,
+                    '_from_itilvalidation'  => true,
                 ];
                 $item->update($input);
             }
@@ -1235,7 +1238,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_validation.html.twig', [
             'item'      => $options['parent'],
-            'subitem'   => $this
+            'subitem'   => $this,
+            'scroll'    => true,
         ]);
 
         return true;

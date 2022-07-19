@@ -668,6 +668,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
                 'after' => 'agents_id'
             ]
         );
+        $migration->addKey('glpi_refusedequipments', 'autoupdatesystems_id');
     }
 }
 

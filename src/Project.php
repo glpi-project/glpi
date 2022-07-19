@@ -2169,9 +2169,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $criteria = [
                 'projectstates_id'   => $column_ids
             ];
-        } else {
-            // Avoid fetching everything when nothing is needed
-            return [];
         }
         $items      = self::getDataToDisplayOnKanban($ID, $criteria);
 

@@ -1835,8 +1835,6 @@ class Ticket extends CommonITILObject
                     $input = $this->setTechAndGroupFromHardware($input, $item);
                     break;
             }
-
-            $input = $this->assign($input);
         }
 
         if (!isset($input['_skip_sla_assign']) || $input['_skip_sla_assign'] === false) {
@@ -2028,19 +2026,6 @@ class Ticket extends CommonITILObject
                 $type = "solved";
             }
             NotificationEvent::raiseEvent($type, $this);
-        }
-
-        if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
-            Session::addMessageAfterRedirect(sprintf(
-                __('%1$s (%2$s)'),
-                __('Your ticket has been registered.'),
-                sprintf(
-                    __('%1$s: %2$s'),
-                    Ticket::getTypeName(1),
-                    "<a href='" . Ticket::getFormURLWithID($this->fields['id']) . "'>" .
-                    $this->fields['id'] . "</a>"
-                )
-            ));
         }
     }
 
@@ -3825,17 +3810,11 @@ JAVASCRIPT;
             $options['name'] = str_replace($order, $replace, $options['name']);
         }
 
-       // Restore saved value or override with page parameter
-        $saved = $this->restoreInput();
-        foreach ($default_values as $name => $value) {
-            if (!isset($options[$name])) {
-                if (isset($saved[$name])) {
-                    $options[$name] = $saved[$name];
-                } else {
-                    $options[$name] = $value;
-                }
-            }
-        }
+        // Restore saved value or override with page parameter
+        $options['_saved'] = $this->restoreInput();
+
+        // Restore saved values and override $this->fields
+        $this->restoreSavedValues($options['_saved']);
 
        // Check category / type validity
         if ($options['itilcategories_id']) {

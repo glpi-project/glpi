@@ -2490,6 +2490,10 @@ class GLPIKanbanRights {
             <button type="button" name="add" class="btn btn-primary">${_x('button', 'Add')}</button>
          `;
             const modal = $('#kanban-modal');
+            // Remove old click handlers
+            modal.off('click', 'button[name="add"]');
+            modal.off('click', 'button[name="delete"]');
+
             modal.on('click', 'button[name="add"]', () => {
                 const itemtype = modal.find('select[name="itemtype"]').val();
                 const items_id = modal.find('select[name="items_id"]').val();

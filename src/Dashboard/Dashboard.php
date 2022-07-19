@@ -509,10 +509,10 @@ class Dashboard extends \CommonDBTM
     public static function importFromJson($import = null)
     {
         if (!is_array($import)) {
-            $import = json_decode($import, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
+            if (!\Toolbox::isJSON($import)) {
                 return false;
             }
+            $import = json_decode($import, true);
         }
 
         foreach ($import as $key => $dashboard) {

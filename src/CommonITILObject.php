@@ -1376,9 +1376,18 @@ abstract class CommonITILObject extends CommonDBTM
                     $allowed_fields[] = 'status';
                     $allowed_fields[] = '_accepted';
                 }
-               // for validation created by rules
                 $validation_class = static::getType() . 'Validation';
-                if (class_exists($validation_class) && isset($input["_rule_process"])) {
+                if (
+                    class_exists($validation_class)
+                    && (
+                        // for validation created by rules
+                        // FIXME Use a more precise input name to ensure that 'global_validation' has been defined by rules
+                        // e.g. $input['_validation_from_rule']
+                        isset($input["_rule_process"])
+                        // for validation status updated after CommonITILValidation add/update/delete
+                        || (array_key_exists('_from_itilvalidation', $input) && $input['_from_itilvalidation'])
+                    )
+                ) {
                     $allowed_fields[] = 'global_validation';
                 }
                // Manage assign and steal right
@@ -3321,6 +3330,7 @@ abstract class CommonITILObject extends CommonDBTM
                 static::STATUS_MATRIX_FIELD,
                 $_SESSION['glpiactiveprofile']
             )
+            && static::isStatusExists($new)
         ) { // maybe not set for post-only
             return true;
         }
@@ -3469,7 +3479,10 @@ abstract class CommonITILObject extends CommonDBTM
 
         switch ($p['showtype']) {
             case 'allowed':
-                $tab = static::getAllowedStatusArray($p['value_calculation'] ?? $p['value']);
+                $current = isset($p['value_calculation']) && $p['value_calculation'] !== ''
+                    ? $p['value_calculation']
+                    : $p['value'];
+                $tab = static::getAllowedStatusArray($current);
                 break;
 
             case 'search':
@@ -6819,7 +6832,7 @@ abstract class CommonITILObject extends CommonDBTM
             $followups = $followup_obj->find(['items_id'  => $this->getID()] + $restrict_fup, ['date DESC', 'id DESC']);
             foreach ($followups as $followups_id => $followup) {
                 $followup_obj->getFromDB($followups_id);
-                if ($followup_obj->canViewItem()) {
+                if ($followup_obj->canViewItem() || $params['bypass_rights']) {
                     $followup['can_edit'] = $followup_obj->canUpdateItem();
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type' => ITILFollowup::class,
@@ -6835,7 +6848,7 @@ abstract class CommonITILObject extends CommonDBTM
             $tasks = $task_obj->find([$foreignKey => $this->getID()] + $restrict_task, 'date DESC');
             foreach ($tasks as $tasks_id => $task) {
                 $task_obj->getFromDB($tasks_id);
-                if ($task_obj->canViewItem()) {
+                if ($task_obj->canViewItem() || $params['bypass_rights']) {
                     $task['can_edit'] = $task_obj->canUpdateItem();
                     $timeline[$task_obj::getType() . "_" . $tasks_id] = [
                         'type' => $taskClass,
@@ -8420,6 +8433,7 @@ abstract class CommonITILObject extends CommonDBTM
                             '_from_assignment'                => true
                         ]
                     );
+                    $this->fields['status'] = $self->fields['status'];
                 }
             }
             // Update existing actors
@@ -8471,24 +8485,19 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function setTechAndGroupFromItilCategory($input)
     {
+        $cat = new ITILCategory();
+        $has_user_assigned  = $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN);
+        $has_group_assigned = $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN);
         if (
-            ($input['itilcategories_id'] > 0)
-            && ((!isset($input['_users_id_assign']) || !$input['_users_id_assign'])
-            || (!isset($input['_groups_id_assign']) || !$input['_groups_id_assign']))
+            $input['itilcategories_id'] > 0
+            && (!$has_user_assigned || !$has_group_assigned)
+            && $cat->getFromDB($input['itilcategories_id'])
         ) {
-            $cat = new ITILCategory();
-            $cat->getFromDB($input['itilcategories_id']);
-            if (
-                (!isset($input['_users_id_assign']) || !$input['_users_id_assign'])
-                && $cat->isField('users_id')
-            ) {
-                $input['_users_id_assign'] = $cat->getField('users_id');
+            if (!$has_user_assigned && $cat->fields['users_id'] > 0) {
+                $input['_users_id_assign'] = $cat->fields['users_id'];
             }
-            if (
-                (!isset($input['_groups_id_assign']) || !$input['_groups_id_assign'])
-                && $cat->isField('groups_id')
-            ) {
-                $input['_groups_id_assign'] = $cat->getField('groups_id');
+            if (!$has_group_assigned && $cat->fields['groups_id'] > 0) {
+                $input['_groups_id_assign'] = $cat->fields['groups_id'];
             }
         }
 
@@ -8504,19 +8513,16 @@ abstract class CommonITILObject extends CommonDBTM
     protected function setTechAndGroupFromHardware($input, $item)
     {
         if ($item != null) {
-           // Auto assign tech from item
-            if (
-                (!isset($input['_users_id_assign']) || ($input['_users_id_assign'] == 0))
-                && $item->isField('users_id_tech')
-            ) {
-                $input['_users_id_assign'] = $item->getField('users_id_tech');
+            // Auto assign tech from item
+            $has_user_assigned  = $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN);
+            if (!$has_user_assigned && $item->isField('users_id_tech') && $item->fields['users_id_tech'] > 0) {
+                $input['_users_id_assign'] = $item->fields['users_id_tech'];
             }
-           // Auto assign group from item
-            if (
-                (!isset($input['_groups_id_assign']) || ($input['_groups_id_assign'] == 0))
-                && $item->isField('groups_id_tech')
-            ) {
-                $input['_groups_id_assign'] = $item->getField('groups_id_tech');
+
+            // Auto assign group from item
+            $has_group_assigned = $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN);
+            if (!$has_group_assigned && $item->isField('groups_id_tech') && $item->fields['groups_id_tech'] > 0) {
+                $input['_groups_id_assign'] = $item->fields['groups_id_tech'];
             }
         }
 
@@ -8533,35 +8539,16 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function assign(array $input)
     {
+        // FIXME Deprecate this method in GLPI 10.1.
         if (!in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
             return $input;
         }
 
         if (
             (
-                (
-                    isset($input['_actors']['assign'])
-                    && is_array($input['_actors']['assign'])
-                    && count($input['_actors']['assign']) > 0
-                ) || (
-                    isset($input["_users_id_assign"])
-                    && (
-                        (!is_array($input['_users_id_assign']) && $input["_users_id_assign"] > 0)
-                        || is_array($input['_users_id_assign']) && count($input['_users_id_assign']) > 0
-                    )
-                ) || (
-                    isset($input["_groups_id_assign"])
-                    && (
-                        (!is_array($input['_groups_id_assign']) && $input["_groups_id_assign"] > 0)
-                        || is_array($input['_groups_id_assign']) && count($input['_groups_id_assign']) > 0
-                    )
-                ) || (
-                    isset($input["_suppliers_id_assign"])
-                    && (
-                        (!is_array($input['_suppliers_id_assign']) && $input["_suppliers_id_assign"] > 0)
-                        || is_array($input['_suppliers_id_assign']) && count($input['_suppliers_id_assign']) > 0
-                    )
-                )
+                $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN)
+                || $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN)
+                || $this->hasValidActorInInput($input, Supplier::class, CommonITILActor::ASSIGN)
             )
             && (in_array($input['status'], $this->getNewStatusArray()))
             && !$this->isStatusComputationBlocked($input)
@@ -8570,6 +8557,102 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         return $input;
+    }
+
+    /**
+     * Check if input contains a valid actor for given itemtype / actortype.
+     *
+     * @param array $input
+     * @param string $itemtype
+     * @param string $actortype
+     *
+     * @return bool
+     */
+    private function hasValidActorInInput(array $input, string $itemtype, string $actortype): bool
+    {
+        $input_id_key = sprintf(
+            '_%s_%s',
+            getForeignKeyFieldForItemType($itemtype),
+            self::getActorFieldNameType($actortype)
+        );
+        $input_notif_key = sprintf(
+            '%s_notif',
+            $input_id_key
+        );
+
+        $has_valid_actor = false;
+        if (array_key_exists($input_id_key, $input)) {
+            if (is_array($input[$input_id_key]) && !empty($input[$input_id_key])) {
+                foreach ($input[$input_id_key] as $key => $actor_id) {
+                    if (
+                        // actor with valid ID
+                        (int)$actor_id > 0
+                        // or "email" actor
+                        || (
+                            $itemtype === User::class
+                            && (int)$actor_id === 0
+                            && array_key_exists($input_notif_key, $input)
+                            && (bool)($input[$input_notif_key]['use_notification'][$key] ?? false) === true
+                            && !empty($input[$input_notif_key]['alternative_email'][$key])
+                        )
+                    ) {
+                        $has_valid_actor = true;
+                        break;
+                    }
+                }
+            } elseif (is_numeric($input[$input_id_key])) {
+                $actor_id = (int)$input[$input_id_key];
+                if (
+                    // actor with valid ID
+                    $actor_id > 0
+                    // or "email" actor
+                    || (
+                        $itemtype === User::class
+                        && $actor_id === 0
+                        // Expected formats
+                        //
+                        // Value provided by Change::getDefaultValues()
+                        // '_users_id_requester_notif' => [
+                        //     'use_notification'  => 1,
+                        //     'alternative_email' => 'user1@example.com',
+                        // ]
+                        //
+                        // OR
+                        //
+                        // Value provided by Ticket::getDefaultValues()
+                        // '_users_id_requester_notif' => [
+                        //     'use_notification'  => [1, 0],
+                        //     'alternative_email' => ['user1@example.com', 'user2@example.com'],
+                        // ]
+                        && array_key_exists($input_notif_key, $input)
+                        && (
+                            array_key_exists('use_notification', $input[$input_notif_key])
+                            && (
+                                (
+                                    is_array($input[$input_notif_key]['use_notification'])
+                                    && (bool)($input[$input_notif_key]['use_notification'][0] ?? false) === true
+                                )
+                                || (bool)($input[$input_notif_key]['use_notification'] ?? false) === true
+                            )
+                        )
+                        && (
+                            array_key_exists('alternative_email', $input[$input_notif_key])
+                            && (
+                                (
+                                    is_array($input[$input_notif_key]['alternative_email'])
+                                    && !empty($input[$input_notif_key]['alternative_email'][0])
+                                )
+                                || !empty($input[$input_notif_key]['alternative_email'])
+                            )
+                        )
+                    )
+                ) {
+                    $has_valid_actor = true;
+                }
+            }
+        }
+
+        return $has_valid_actor;
     }
 
     /**
@@ -9543,7 +9626,7 @@ abstract class CommonITILObject extends CommonDBTM
                 if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
                     continue;
                 }
-                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->canUpdateItem()) {
+                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->canUpdateItem()) {
                     continue;
                 }
 
@@ -9555,17 +9638,35 @@ abstract class CommonITILObject extends CommonDBTM
                     );
                 };
 
-                // Reset all keys, as the full actors list is expected to be set in `_actors` key.
+                // Normalize all keys.
                 foreach ([User::class, Group::class, Supplier::class] as $actor_itemtype) {
                     $input_key = $get_input_key($actor_itemtype, $actor_type);
                     $notif_key = sprintf('%s_notif', $input_key);
 
-                    $input[$input_key] = [];
+                    if (!array_key_exists($input_key, $input) || !is_array($input[$input_key])) {
+                        $input[$input_key] = !empty($input[$input_key]) ? [$input[$input_key]] : [];
+                    }
+
                     if ($actor_itemtype !== Group::class) {
-                        $input[$notif_key] = [
-                            'use_notification'  => [],
-                            'alternative_email' => [],
-                        ];
+                        if (
+                            !array_key_exists($notif_key, $input)
+                            || !is_array($input[$notif_key])
+                            || (
+                                !array_key_exists('use_notification', $input[$notif_key])
+                                && !array_key_exists('alternative_email', $input[$notif_key])
+                            )
+                        ) {
+                            $input[$notif_key] = [
+                                'use_notification'  => [],
+                                'alternative_email' => [],
+                            ];
+                        } else {
+                            foreach (['use_notification', 'alternative_email'] as $param_key) {
+                                if (!is_array($input[$notif_key][$param_key])) {
+                                    $input[$notif_key][$param_key] = !empty($input[$notif_key][$param_key]) ? [$input[$notif_key][$param_key]] : [];
+                                }
+                            }
+                        }
                     }
                     $input[sprintf('%s_deleted', $input_key)] = [];
                 }

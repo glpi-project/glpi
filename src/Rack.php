@@ -569,7 +569,7 @@ class Rack extends CommonDBTM
                $('#viewgraph').toggleClass('clear_grid');
             })
 
-         GridStack.init({
+         window.dcroom_grid = GridStack.init({
             column: $cols,
             maxRow: ($rows + 1),
             cellHeight: {$cell_h},
@@ -600,36 +600,34 @@ class Rack extends CommonDBTM
          var y_before_drag = 0;
          var dirty = false;
 
+         window.dcroom_grid.on('change', function(event, items) {
+           if (dirty) {
+              return;
+           }
+           var grid = $(event.target).data('gridstack');
+
+           $.each(items, function(index, item) {
+              $.post('{$ajax_url}', {
+                 id: item.id,
+                 dcrooms_id: $room_id,
+                 action: 'move_rack',
+                 x: item.x + 1,
+                 y: item.y + 1,
+              }, function(answer) {
+                 // revert to old position
+                 if (!answer.status) {
+                    dirty = true;
+                    grid.update(item.el, {
+                       'x': x_before_drag,
+                       'y': y_before_drag
+                    });
+                    dirty = false;
+                    displayAjaxMessageAfterRedirect();
+                 }
+              });
+           });
+         });
          $('.grid-stack')
-            .on('change', function(event, items) {
-               if (dirty) {
-                  return;
-               }
-               var grid = $(event.target).data('gridstack');
-
-               $.each(items, function(index, item) {
-                  $.post('{$ajax_url}', {
-                     id: item.id,
-                     dcrooms_id: $room_id,
-                     action: 'move_rack',
-                     x: $(item.el).attr('gs-x') + 1,
-                     y: $(item.el).attr('gs-y') + 1,
-                  }, function(answer) {
-                     var answer = jQuery.parseJSON(answer);
-
-                     // revert to old position
-                     if (!answer.status) {
-                        dirty = true;
-                        grid.update(item.el, {
-                           'x': x_before_drag,
-                           'y': y_before_drag
-                        });
-                        dirty = false;
-                        displayAjaxMessageAfterRedirect();
-                     }
-                  });
-               });
-            })
             .on('dragstart', function(event, ui) {
                var element = $(event.target);
                var node    = element.data('_gridstack_node');

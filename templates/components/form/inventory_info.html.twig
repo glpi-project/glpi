@@ -144,6 +144,20 @@
       });
       </script>
    {% endif %}
+
+   {% if item.isField('is_dynamic') and (item.getType() == 'NetworkEquipment' or item.getType() == 'Printer') %}
+      <div class="card-body row">
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('SNMP Credential') }}</label>
+            <span>{{ get_item_link(item.getSNMPCredential()) }} </span>
+         </div>
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Last inventory') }}</label>
+            <span>{{ item.fields['last_inventory_update']|formatted_datetime }}</span>
+         </div>
+      </div>
+   {% endif %}
+
    {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
    {% endif %}

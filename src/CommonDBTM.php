@@ -491,6 +491,17 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    public function getSNMPCredential()
+    {
+        if ($this->isField('snmpcredentials_id') && $this->fields['snmpcredentials_id']) {
+            $snmp_credential = new SNMPCredential();
+            $snmp_credential->getFromDB($this->fields['snmpcredentials_id']);
+            return $snmp_credential;
+        }
+        return false;
+    }
+
+
     /**
      * Retrieve locked field for the current item
      *
@@ -1287,6 +1298,7 @@ class CommonDBTM extends CommonGLPI
             $table_fields = $DB->listFields($this->getTable());
 
             // fill array for add
+            $this->cleanLockedsOnAdd();
             foreach (array_keys($this->input) as $key) {
                 if (
                     ($key[0] != '_')
@@ -1474,8 +1486,9 @@ class CommonDBTM extends CommonGLPI
                     $this->fields['id']
                 );
             }
-            $display = (isset($this->input['_no_message_link']) ? $this->getNameID()
-                                                            : $this->getLink());
+            $opt = [ 'forceid' => $this instanceof CommonITILObject ];
+            $display = (isset($this->input['_no_message_link']) ? $this->getNameID($opt)
+                                                            : $this->getLink($opt));
 
            // Do not display quotes
            //TRANS : %s is the description of the added item
@@ -1711,6 +1724,25 @@ class CommonDBTM extends CommonGLPI
         }
 
         return false;
+    }
+
+    /**
+     * Clean locked fields from add, if needed
+     *
+     * @return void
+     */
+    protected function cleanLockedsOnAdd()
+    {
+        if (isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true) {
+            $lockedfield = new Lockedfield();
+            $locks = $lockedfield->getLocks($this->getType(), 0);
+            foreach ($locks as $lock) {
+                if (array_key_exists($lock, $this->input)) {
+                    $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
+                    unset($this->input[$lock]);
+                }
+            }
+        }
     }
 
     /**

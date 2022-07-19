@@ -152,7 +152,7 @@ abstract class AbstractRequest
     private function guessMode($contents): void
     {
         // In the case handleContentType() didn't set mode, just check $contents first char
-        if (\Toolbox::isJSON($contents)) {
+        if ($contents[0] === '{') {
             $this->setMode(self::JSON_MODE);
         } else {
             //defaults to XML; whose validity is checked later.
@@ -307,12 +307,12 @@ abstract class AbstractRequest
      */
     public function handleJSONRequest($data): bool
     {
-        $jdata = json_decode($data);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (!\Toolbox::isJSON($data)) {
             $this->addError('JSON not well formed!', 400);
             return false;
         }
+
+        $jdata = json_decode($data);
 
         $this->deviceid = $jdata->deviceid ?? null;
         $action = self::INVENT_ACTION;
