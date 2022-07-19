@@ -52,7 +52,7 @@ if (!defined('GLPI_MARKETPLACE_PRERELEASES')) {
     define('GLPI_MARKETPLACE_PRERELEASES', preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1);
 }
 
-define('GLPI_MIN_PHP', '7.4.0'); // Must also be changed in top of index.php
+define('GLPI_MIN_PHP', '8.0.0'); // Must also be changed in top of index.php
 define('GLPI_MAX_PHP', '8.2.0'); // (Exclusive) Must also be changed in top of index.php
 define('GLPI_YEAR', '2022');
 

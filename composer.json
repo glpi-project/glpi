@@ -10,7 +10,7 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-fileinfo": "*",
@@ -96,7 +96,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.4.0"
+            "php": "8.0.0"
         },
         "sort-packages": true
     },
