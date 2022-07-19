@@ -97,16 +97,17 @@ if (empty($config['system_user'])) {
     if ($user->getFromDBbyName($system_user_name)) {
         $system_user_name .= '-' . Toolbox::getRandomString(8);
     }
-    $id = $user->add([
-        'name'     => $system_user_name,
-        'realname' => 'Support',
-    ]);
-
-    if (!$id) {
+    $system_user_params = [
+        'name'          => $system_user_name,
+        'realname'      => 'Support',
+        'password'      => '',
+        'authtype'      => 1,
+    ];
+    if (!$DB->insert('glpi_users', $system_user_params)) {
         die("Can't add 'glpi-system' user");
     }
 
-    Config::setConfigurationValues('core', ['system_user' => $id]);
+    Config::setConfigurationValues('core', ['system_user' => $DB->insertId()]);
 }
 
 // Add crontask for auto bump and auto solve
