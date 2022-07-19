@@ -222,10 +222,6 @@ body.horizontal-layout {
     }
 }
 
-td.priority_block {
-    display: table-cell;
-}
-
 table.search-results {
     thead th[data-searchopt-id][data-nosort] {
         vertical-align: bottom !important;// Fix alignment for when no sorting indicator element is present
