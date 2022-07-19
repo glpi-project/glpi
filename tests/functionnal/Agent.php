@@ -367,9 +367,6 @@ class Agent extends DbTestCase
             'id' => $agents_id,
             'last_contact' => date('Y-m-d H:i:s', strtotime('-' . ($test_stale_days + 1) . ' days'))
         ]))->isTrue();
-        // Get current stale_agents_delay config value
-        $original_stale_days = \Config::getConfigurationValues('inventory', ['stale_agents_delay'])['stale_agents_delay'] ?? 0;
-        $original_stale_clean = \Config::getConfigurationValues('inventory', ['stale_agents_clean'])['stale_agents_clean'] ?? 1;
 
         // Set stale_agents_delay
         $DB->updateOrInsert(
