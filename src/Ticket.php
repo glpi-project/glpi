@@ -2116,7 +2116,6 @@ class Ticket extends CommonITILObject
 
             $type = "new";
             NotificationEvent::raiseEvent("new", $this);
-            
             if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
                 NotificationEvent::raiseEvent("solved", $this);
             }
