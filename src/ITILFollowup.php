@@ -276,7 +276,7 @@ class ITILFollowup extends CommonDBChild
         if (
             isset($this->input["_close"])
             && $this->input["_close"]
-            && ($parentitem->fields["status"] == CommonITILObject::SOLVED)
+            && ($parentitem->isSolved())
         ) {
             $update = [
                 'id'        => $parentitem->fields['id'],
