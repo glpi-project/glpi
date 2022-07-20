@@ -2114,7 +2114,6 @@ class Ticket extends CommonITILObject
            // Clean reload of the ticket
             $this->getFromDB($this->fields['id']);
 
-            $type = "new";
             NotificationEvent::raiseEvent("new", $this);
             if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
                 NotificationEvent::raiseEvent("solved", $this);
