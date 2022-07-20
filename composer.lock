@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4a69c0a0e6f449f9a2771ed5e554d11",
+    "content-hash": "ab6e5cc0772c0462d121da58cca84e28",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -5405,23 +5405,23 @@
         },
         {
             "name": "friendsoftwig/twigcs",
-            "version": "v5.1.0",
+            "version": "v6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/friendsoftwig/twigcs.git",
-                "reference": "c82b078e9c199bc57375e557fb888b04f53420b2"
+                "reference": "035af79b0fabbab1fc6b8e5698ead1f80e25c4ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/friendsoftwig/twigcs/zipball/c82b078e9c199bc57375e557fb888b04f53420b2",
-                "reference": "c82b078e9c199bc57375e557fb888b04f53420b2",
+                "url": "https://api.github.com/repos/friendsoftwig/twigcs/zipball/035af79b0fabbab1fc6b8e5698ead1f80e25c4ec",
+                "reference": "035af79b0fabbab1fc6b8e5698ead1f80e25c4ec",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2 || ^8.0",
-                "symfony/console": "^3.4 || ^4.3 || ^5.0",
-                "symfony/filesystem": "^3.4 || ^4.3 || ^5.0",
-                "symfony/finder": "^3.4 || ^4.3 || ^5.0"
+                "php": "^7.4 || ^8.0",
+                "symfony/console": "^4.4 || ^5.3 || ^6.0",
+                "symfony/filesystem": "^4.4 || ^5.3 || ^6.0",
+                "symfony/finder": "^4.4 || ^5.3 || ^6.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.0 || ^9.0"
@@ -5448,9 +5448,9 @@
             "description": "Checkstyle automation for Twig",
             "support": {
                 "issues": "https://github.com/friendsoftwig/twigcs/issues",
-                "source": "https://github.com/friendsoftwig/twigcs/tree/v5.1.0"
+                "source": "https://github.com/friendsoftwig/twigcs/tree/v6.0.0"
             },
-            "time": "2021-09-21T21:04:19+00:00"
+            "time": "2021-12-15T11:20:27+00:00"
         },
         {
             "name": "glpi-project/tools",
@@ -5806,16 +5806,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v5.4.0",
+            "version": "v5.4.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "731f917dc31edcffec2c6a777f3698c33bea8f01"
+                "reference": "36a017fa4cce1eff1b8e8129ff53513abcef05ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/731f917dc31edcffec2c6a777f3698c33bea8f01",
-                "reference": "731f917dc31edcffec2c6a777f3698c33bea8f01",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/36a017fa4cce1eff1b8e8129ff53513abcef05ba",
+                "reference": "36a017fa4cce1eff1b8e8129ff53513abcef05ba",
                 "shasum": ""
             },
             "require": {
@@ -5850,7 +5850,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v5.4.0"
+                "source": "https://github.com/symfony/filesystem/tree/v5.4.9"
             },
             "funding": [
                 {
@@ -5866,20 +5866,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-10-28T13:39:27+00:00"
+            "time": "2022-05-20T13:55:35+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v5.4.2",
+            "version": "v5.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "e77046c252be48c48a40816187ed527703c8f76c"
+                "reference": "9b630f3427f3ebe7cd346c277a1408b00249dad9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/e77046c252be48c48a40816187ed527703c8f76c",
-                "reference": "e77046c252be48c48a40816187ed527703c8f76c",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/9b630f3427f3ebe7cd346c277a1408b00249dad9",
+                "reference": "9b630f3427f3ebe7cd346c277a1408b00249dad9",
                 "shasum": ""
             },
             "require": {
@@ -5913,7 +5913,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v5.4.2"
+                "source": "https://github.com/symfony/finder/tree/v5.4.8"
             },
             "funding": [
                 {
@@ -5929,7 +5929,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-15T11:06:13+00:00"
+            "time": "2022-04-15T08:07:45+00:00"
         },
         {
             "name": "webmozart/glob",
@@ -6006,5 +6006,5 @@
     "platform-overrides": {
         "php": "8.0.0"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
