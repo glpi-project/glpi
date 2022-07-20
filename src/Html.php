@@ -5390,6 +5390,9 @@ HTML;
             $url .= '?v=' . FrontEnd::getVersionCacheKey($version);
         }
 
+        // Convert filesystem path to URL path (fix issues with Windows directory separator)
+        $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
+
         return sprintf('<script type="%s" src="%s"></script>', $type, $url);
     }
 
@@ -5473,6 +5476,9 @@ HTML;
 
             $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
         }
+
+        // Convert filesystem path to URL path (fix issues with Windows directory separator)
+        $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
 
         return sprintf(
             '<link rel="stylesheet" type="text/css" href="%s" %s>',
@@ -6917,13 +6923,7 @@ CSS;
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
-        return implode(
-            DIRECTORY_SEPARATOR,
-            [
-                self::getScssCompileDir(),
-                str_replace('/', '_', $file) . '.min.css',
-            ]
-        );
+        return self::getScssCompileDir() . '/' . str_replace('/', '_', $file) . '.min.css';
     }
 
     /**
