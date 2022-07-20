@@ -125,8 +125,7 @@ class DeactivateCommand extends AbstractPluginCommand
         $plugin = new Plugin();
 
        // Check that directory is valid
-        $informations = $plugin->getInformationsFromDirectory($directory);
-        if (empty($informations)) {
+        if (!$plugin->isLoadable($directory)) {
             $this->output->writeln(
                 '<error>' . sprintf(__('Invalid plugin directory "%s".'), $directory) . '</error>',
                 OutputInterface::VERBOSITY_QUIET
