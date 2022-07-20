@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Project Class
@@ -1560,9 +1561,21 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         }
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
+        $tplmark = $this->getAutofillMark('name', $options);
+        echo "<td>" . __('Name') . $tplmark . "</td>";
         echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
+        echo Html::input(
+            'name',
+            [
+                'value' => autoName(
+                    Sanitizer::decodeHtmlSpecialChars($this->fields['name']),
+                    'name',
+                    $from_template,
+                    $this->getType(),
+                    $this->fields['entities_id']
+                )
+            ]
+        );
         echo "</td>";
         echo "<td>" . __('Code') . "</td>";
         echo "<td>";
