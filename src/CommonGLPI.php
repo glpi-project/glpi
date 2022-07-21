@@ -73,6 +73,20 @@ class CommonGLPI implements CommonGLPIInterface
     public $get_item_to_display_tab = false;
     protected static $othertabs     = [];
 
+    /**
+     * The class can represent multiple distinct objects.
+     * @var int
+     */
+    public const RECORD_ITEMIZED = 0;
+
+    /**
+     * The class can represent a single object but may have multiple records, for example key/value pairs, to represent different attributes of the singleton item.
+     * @var int
+     */
+    public const RECORD_SINGLETON = 1;
+
+    public static int $record_type = self::RECORD_ITEMIZED;
+
 
     public function __construct()
     {

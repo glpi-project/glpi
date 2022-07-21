@@ -70,6 +70,7 @@ class Config extends CommonDBTM
         'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
     ];
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
+    public static int $record_type = self::RECORD_SINGLETON;
 
     public static function getTypeName($nb = 0)
     {

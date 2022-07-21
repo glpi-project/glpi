@@ -6340,28 +6340,36 @@ class CommonDBTM extends CommonGLPI
             $menus = $menus[Session::getCurrentInterface()];
         }
 
-        if (static::isNewID($id)) {
-            // New item, check create rights
-            if (!static::canCreate()) {
-                static::displayAccessDeniedPage($menus);
-                return;
-            }
+        if (static::$record_type === static::RECORD_ITEMIZED) {
+            if (static::isNewID($id)) {
+                // New item, check create rights
+                if (!static::canCreate()) {
+                    static::displayAccessDeniedPage($menus);
+                    return;
+                }
 
-            // Tab name will be generic (item isn't saved yet)
-            $title = static::getBrowserTabNameForNewItem();
+                // Tab name will be generic (item isn't saved yet)
+                $title = static::getBrowserTabNameForNewItem();
+            } else {
+                // Existing item, try to load it and check read rights
+                if (!$item->getFromDB($id)) {
+                    static::displayItemNotFoundPage($menus);
+                    return;
+                }
+
+                if (!$item->can($id, READ)) {
+                    static::displayAccessDeniedPage($menus);
+                    return;
+                }
+
+                // Tab name will be specific to the loaded item
+                $title = $item->getBrowserTabName();
+            }
         } else {
-            // Existing item, try to load it and check read rights
-            if (!$item->getFromDB($id)) {
-                static::displayItemNotFoundPage($menus);
-                return;
-            }
-
-            if (!$item->can($id, READ)) {
+            if (!$item::canView()) {
                 static::displayAccessDeniedPage($menus);
                 return;
             }
-
-            // Tab name will be specific to the loaded item
             $title = $item->getBrowserTabName();
         }
 

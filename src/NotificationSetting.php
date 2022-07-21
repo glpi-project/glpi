@@ -41,6 +41,7 @@ abstract class NotificationSetting extends CommonDBTM
     public $table           = 'glpi_configs';
     protected $displaylist  = false;
     public static $rightname       = 'config';
+    public static int $record_type = self::RECORD_SINGLETON;
 
     public static function getTypeName($nb = 0)
     {
