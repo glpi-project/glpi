@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Html;
 use Mexitek\PHPColors\Color;
@@ -247,7 +248,7 @@ class Widget
             ],
         ];
 
-        $more_types = Plugin::doHookFunction("dashboard_types");
+        $more_types = Plugin::doHookFunction(Hooks::DASHBOARD_TYPES);
         if (is_array($more_types)) {
             $types = array_merge($types, $more_types);
         }

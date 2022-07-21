@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use Glpi\Plugin\Hooks;
 use Group;
 use Html;
 use ITILCategory;
@@ -72,7 +73,7 @@ class Filter extends \CommonDBChild
             'user_tech'    => __("Technician"),
         ];
 
-        $more_filters = Plugin::doHookFunction("dashboard_filters");
+        $more_filters = Plugin::doHookFunction(Hooks::DASHBOARD_FILTERS);
         if (is_array($more_filters)) {
             $filters = array_merge($filters, $more_filters);
         }
