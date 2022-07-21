@@ -170,7 +170,11 @@ abstract class CommonITILObject extends CommonDBTM
             // we don't want to trigger it on form reload
             // at first load, the key _skip_default_actor is not present (can only be present after a submit)
             if (!isset($params['_skip_default_actor'])) {
-                $users_id_default = $this->getDefaultActor($actortype);
+                // $params['_users_id_' . $actortypestring] corresponds to value defined by static::getDefaultValues()
+                // fallback to static::getDefaultActor() value if empty
+                $users_id_default = array_key_exists('_users_id_' . $actortypestring, $params) && $params['_users_id_' . $actortypestring] > 0
+                    ? $params['_users_id_' . $actortypestring]
+                    : $this->getDefaultActor($actortype);
                 if ($users_id_default > 0) {
                     $userobj  = new User();
                     if ($userobj->getFromDB($users_id_default)) {
