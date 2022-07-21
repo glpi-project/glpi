@@ -252,8 +252,7 @@ class Central extends CommonGLPI
         }
 
         $twig_params = [
-            'messages'  => self::getMessages(),
-            'cards'     => []
+            'cards' => []
         ];
         foreach ($lists as $list) {
             $card_params = [
@@ -321,7 +320,6 @@ class Central extends CommonGLPI
             'personal'  => 'true'
         ]);
         $twig_params = [
-            'messages'  => self::getMessages(),
             'cards'     => [
                 [
                     'itemtype'  => RSSFeed::class,
