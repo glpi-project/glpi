@@ -44,6 +44,7 @@
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
    {% for entry in timeline %}
       {% set entry_i = entry['item'] %}
+      {% set entry_object = get_item(entry['type'], entry_i['id']) %}
       {% set users_id = entry_i['users_id'] %}
       {% set is_private = entry_i['is_private'] ?? false %}
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
@@ -102,6 +103,9 @@
       <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
+
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
+
          <div class="row">
             <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
                {% if entry_i['state'] is constant('Planning::TODO') and can_edit_i %}
@@ -170,6 +174,8 @@
                {% endif %}
             </div>
          </div>
+
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
       </div>
    {% endfor %}
 
