@@ -1940,8 +1940,6 @@ class Ticket extends CommonITILObject
 
     public function post_addItem()
     {
-        global $CFG_GLPI;
-
        // Log this event
         $username = 'anonymous';
         if (isset($_SESSION["glpiname"])) {
@@ -2109,17 +2107,7 @@ class Ticket extends CommonITILObject
 
         parent::post_addItem();
 
-       // Processing Email
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-           // Clean reload of the ticket
-            $this->getFromDB($this->fields['id']);
-
-            $type = "new";
-            if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
-                $type = "solved";
-            }
-            NotificationEvent::raiseEvent($type, $this);
-        }
+        $this->handleNewItemNotifications();
     }
 
 
