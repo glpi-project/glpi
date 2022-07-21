@@ -544,6 +544,24 @@ class Migration extends \GLPITestCase
                 ],
             ], [
                 'table'     => 'my_table',
+                'field'     => 'othertables_id',
+                'format'    => 'fkey',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `othertables_id` INT  NOT NULL DEFAULT 0   ",
+                'db_properties' => [
+                    'allow_signed_keys' => true,
+                ],
+            ], [
+                'table'     => 'my_table',
+                'field'     => 'othertables_id',
+                'format'    => 'fkey',
+                'options'   => [],
+                'sql'       => "ALTER TABLE `my_table` ADD `othertables_id` INT unsigned NOT NULL DEFAULT 0   ",
+                'db_properties' => [
+                    'allow_signed_keys' => false,
+                ],
+            ], [
+                'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => "INT NOT NULL DEFAULT '42'",
                 'options'   => [],
