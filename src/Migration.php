@@ -372,6 +372,10 @@ class Migration
                 $format = "INT " . DBConnection::getDefaultPrimaryKeySignOption() . " NOT NULL AUTO_INCREMENT";
                 break;
 
+            case 'fkey':
+                $format = "INT " . DBConnection::getDefaultPrimaryKeySignOption() . " NOT NULL DEFAULT 0";
+                break;
+
             default:
                // for compatibility with old 0.80 migrations
                 $format = $type;
