@@ -38,6 +38,7 @@ namespace Glpi\Dashboard;
 use DBConnection;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 use Html;
 use Plugin;
 use Ramsey\Uuid\Uuid;
@@ -1442,7 +1443,7 @@ HTML;
                 ]
             ];
 
-            $more_cards = Plugin::doHookFunction("dashboard_cards");
+            $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);
             if (is_array($more_cards)) {
                 $cards = array_merge($cards, $more_cards);
             }
