@@ -1454,4 +1454,181 @@ DIFF,
                 ->isEqualTo($expected);
         }
     }
+
+    public function testImactContextsPositionsDefaultValueHack()
+    {
+        // Schema contained in GLPI 9.5.0 database installation file
+        $schema_sql_from_950 = <<<SQL
+CREATE TABLE `glpi_impactcontexts` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `positions` TEXT NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+  `zoom` FLOAT NOT NULL DEFAULT '0',
+  `pan_x` FLOAT NOT NULL DEFAULT '0',
+  `pan_y` FLOAT NOT NULL DEFAULT '0',
+  `impact_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+  `depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+  `impact_and_depends_color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
+  `show_depends` TINYINT(1) NOT NULL DEFAULT '1',
+  `show_impact` TINYINT(1) NOT NULL DEFAULT '1',
+  `max_depth` INT(11) NOT NULL DEFAULT '5',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+SQL;
+
+        // Schema contained in GLPI 10.0.1 database installation file
+        $schema_sql_from_1001 = <<<SQL
+CREATE TABLE `glpi_impactcontexts` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `positions` mediumtext NOT NULL,
+  `zoom` float NOT NULL DEFAULT '0',
+  `pan_x` float NOT NULL DEFAULT '0',
+  `pan_y` float NOT NULL DEFAULT '0',
+  `impact_color` varchar(255) NOT NULL DEFAULT '',
+  `depends_color` varchar(255) NOT NULL DEFAULT '',
+  `impact_and_depends_color` varchar(255) NOT NULL DEFAULT '',
+  `show_depends` tinyint NOT NULL DEFAULT '1',
+  `show_impact` tinyint NOT NULL DEFAULT '1',
+  `max_depth` int NOT NULL DEFAULT '5',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL;
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+        $this->calling($db)->tableExists = true;
+        $this->calling($db)->fieldExists = true;
+        $that = $this;
+
+        // Case 1: "DEFAULT ''" not returned by MySQL should not be detected as a difference for GLPI < 10.0.1
+        $this->calling($db)->query = function ($query) use ($that) {
+            if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
+                $that->mockGenerator->orphanize('__construct');
+                $res = new \mock\mysqli_result();
+                $that->calling($res)->fetch_assoc = [
+                    'Create Table' => <<<SQL
+CREATE TABLE `glpi_impactcontexts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `positions` text CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL,
+  `zoom` float NOT NULL DEFAULT '0',
+  `pan_x` float NOT NULL DEFAULT '0',
+  `pan_y` float NOT NULL DEFAULT '0',
+  `impact_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `depends_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `impact_and_depends_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `show_depends` tinyint(1) NOT NULL DEFAULT '1',
+  `show_impact` tinyint(1) NOT NULL DEFAULT '1',
+  `max_depth` int NOT NULL DEFAULT '5',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+SQL
+                ];
+                return $res;
+            }
+            return false;
+        };
+
+        $dbversions = [
+            '9.5.0',
+            '9.5.1',
+            '9.5.2',
+            '9.5.3',
+            '9.5.4',
+            '9.5.5',
+            '9.5.6',
+            '9.5.7',
+            '9.5.8',
+            '10.0.0-beta1',
+            '10.0.0-rc1',
+            '10.0.0-rc2',
+            '10.0.0-rc3',
+            '10.0.0',
+        ];
+        foreach ($dbversions as $dbversion) {
+            $this->newTestedInstance($db);
+            $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
+            $getNomalizedSql->setAccessible(true);
+            $this->calling($db)->request = function ($query) use ($dbversion) {
+                return new \ArrayIterator(
+                    [
+                        [
+                            'context' => 'core',
+                            'name'    => 'dbversion',
+                            'value'   => $dbversion,
+                        ]
+                    ]
+                );
+            };
+            $this->string($this->testedInstance->getDiff('glpi_impactcontexts', $schema_sql_from_950))->isEqualTo(null);
+        }
+
+        // Case 2: "DEFAULT ''" returned by MariaDB should be detected as a difference for GLPI >= 10.0.1
+        $db->use_utf8mb4 = true;
+        $this->calling($db)->query = function ($query) use ($that) {
+            if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
+                $that->mockGenerator->orphanize('__construct');
+                $res = new \mock\mysqli_result();
+                $that->calling($res)->fetch_assoc = [
+                    'Create Table' => <<<SQL
+CREATE TABLE `glpi_impactcontexts` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `positions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `zoom` float NOT NULL DEFAULT '0',
+  `pan_x` float NOT NULL DEFAULT '0',
+  `pan_y` float NOT NULL DEFAULT '0',
+  `impact_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `depends_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `impact_and_depends_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `show_depends` tinyint(1) NOT NULL DEFAULT '1',
+  `show_impact` tinyint(1) NOT NULL DEFAULT '1',
+  `max_depth` int NOT NULL DEFAULT '5',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL
+                ];
+                return $res;
+            }
+            return false;
+        };
+
+        $dbversions = [
+            '10.0.1',
+            '10.0.2',
+            '10.0.3',
+            '10.1.0-dev',
+            '10.1.0',
+            '11.0.0-beta1',
+            '11.0.0-rc2',
+            '11.0.0',
+        ];
+        foreach ($dbversions as $dbversion) {
+            $this->newTestedInstance($db);
+            $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
+            $getNomalizedSql->setAccessible(true);
+            $this->calling($db)->request = function ($query) use ($dbversion) {
+                return new \ArrayIterator(
+                    [
+                        [
+                            'context' => 'core',
+                            'name'    => 'dbversion',
+                            'value'   => $dbversion,
+                        ]
+                    ]
+                );
+            };
+            $this->string($this->testedInstance->getDiff('glpi_impactcontexts', $schema_sql_from_1001))->isEqualTo(<<<DIFF
+--- Original
++++ New
+@@ @@
+ CREATE TABLE `glpi_impactcontexts` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+-  `positions` text NOT NULL,
++  `positions` text NOT NULL DEFAULT '',
+   `zoom` float NOT NULL DEFAULT 0,
+   `pan_x` float NOT NULL DEFAULT 0,
+   `pan_y` float NOT NULL DEFAULT 0,
+
+DIFF
+            );
+        }
+    }
 }
