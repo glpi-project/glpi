@@ -1994,12 +1994,8 @@ class User extends CommonDBTM
         $groups     = [];
         $listgroups = [];
 
-       //User dn may contain ( or ), need to espace it!
-        $user_dn = str_replace(
-            ["(", ")", "\,", "\+"],
-            ["\(", "\)", "\\\,", "\\\+"],
-            $user_dn
-        );
+       //User dn may contain ['(', ')', ',', '\'] then it needs to be escaped!
+        $user_dn = ldap_escape($user_dn, "", LDAP_ESCAPE_FILTER);
 
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
