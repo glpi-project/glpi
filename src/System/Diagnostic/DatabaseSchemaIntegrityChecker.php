@@ -36,6 +36,7 @@
 namespace Glpi\System\Diagnostic;
 
 use DBmysql;
+use Glpi\Toolbox\VersionParser;
 use RuntimeException;
 use SebastianBergmann\Diff\Differ;
 
@@ -437,6 +438,35 @@ class DatabaseSchemaIntegrityChecker
         if ($this->ignore_unsigned_keys_migration) {
             $column_replacements['/(`id`|`.+_id(_.+)?`) int unsigned/i'] = '$1 int';
         }
+
+        if (
+            $table_name === 'glpi_impactcontexts'
+            && $this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'context')
+        ) {
+            // Remove default value on glpi_impactcontexts.positions column.
+            // The default cannot be added on MySQL server, so it is impossible to fix this diff prior to migration.
+            //
+            // Apply this "hack" only when current DB version is < 10.0.1, which is the version that removed
+            // this default value on GLPI firstly installed in version <= 9.5.3.
+            // see https://github.com/glpi-project/glpi/pull/8415
+            // see https://github.com/glpi-project/glpi/pull/11662
+            $dbversion_res = $this->db->request(
+                [
+                    'FROM'   => 'glpi_configs',
+                    'WHERE'  => [
+                        'context' => 'core',
+                        'name'    => 'dbversion',
+                    ]
+                ]
+            )->current();
+            if (
+                $dbversion_res !== null
+                && version_compare(VersionParser::getNormalizedVersion($dbversion_res['value']), '10.0.1', '<')
+            ) {
+                $column_replacements['/(`positions`.*)\s*DEFAULT\s*\'\'\s*(.*)/'] = '$1 $2';
+            }
+        }
+
         $columns = preg_replace(array_keys($column_replacements), array_values($column_replacements), $columns);
 
         // Normalize indexes definitions
