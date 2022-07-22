@@ -135,7 +135,13 @@ class CompileScssCommand extends Command
                 ]
             );
 
-            $css = $licence_header . $css;
+            // Insert licence header after the "@charset" directive.
+            $css = preg_replace(
+                '/^(@charset [^;]+;)/',
+                '$0' . PHP_EOL . $licence_header,
+                $css,
+                1
+            );
 
             if ($dry_run) {
                 $message = sprintf('"%s" compiled successfully.', $file);
