@@ -97,7 +97,6 @@ class Item_Ticket extends CommonItilObject_Item
         $ticket = new Ticket();
         $input  = ['id'            => $this->fields['tickets_id'],
             'date_mod'      => $_SESSION["glpi_currenttime"],
-            '_donotadddocs' => true
         ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -118,7 +117,6 @@ class Item_Ticket extends CommonItilObject_Item
         $ticket = new Ticket();
         $input = ['id'            => $this->fields['tickets_id'],
             'date_mod'      => $_SESSION["glpi_currenttime"],
-            '_donotadddocs' => true
         ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {

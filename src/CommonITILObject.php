@@ -1793,22 +1793,8 @@ abstract class CommonITILObject extends CommonDBTM
        // Handle "_solutiontemplates_id" special input
         $this->handleSolutionTemplateInput();
 
-       // Handle files pasted in the file field
-        $this->input = $this->addFiles($this->input);
-
-       // Handle files pasted in the text area
-        if (!isset($this->input['_donotadddocs']) || !$this->input['_donotadddocs']) {
-            $options = [
-                'force_update' => true,
-                'name' => 'content',
-                'content_field' => 'content',
-            ];
-            if (isset($this->input['solution'])) {
-                $options['name'] = 'solution';
-                $options['content_field'] = 'solution';
-            }
-            $this->input = $this->addFiles($this->input, $options);
-        }
+        // Handle rich-text images and uploaded documents
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
        // handle actors changes
         $this->updateActors();
@@ -2533,10 +2519,8 @@ abstract class CommonITILObject extends CommonDBTM
        // Handle "_solutiontemplates_id" special input
         $this->handleSolutionTemplateInput();
 
-       // Add document if needed, without notification for file input
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
-       // Add document if needed, without notification for textarea
-        $this->input = $this->addFiles($this->input, ['name' => 'content', 'force_update' => true]);
 
        // Add default document if set in template
         if (
