@@ -2997,13 +2997,28 @@ class Dropdown
             }
         } else { // Not a dropdowntree
             $multi = false;
+            $entity_table = $table;
+            $ljoin = [];
+            $addselect = [];
            // No multi if get one item
             if ($item->isEntityAssign()) {
                 $multi = $item->maybeRecursive();
 
+                if ($item instanceof CommonDBChild && !$item->isField('entities_id')) {
+                    $parent_item = $item->getItem(false);
+                    $entity_table = $parent_item->getTable();
+                    $ljoin[$entity_table] = [
+                        'ON' => [
+                            $entity_table => $parent_item->getIndexName(),
+                            $table        => $item::$items_id,
+                        ]
+                    ];
+                    $addselect[] = $entity_table . '.entities_id';
+                }
+
                 if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
                     $where = $where + getEntitiesRestrictCriteria(
-                        $table,
+                        $entity_table,
                         "entities_id",
                         $post["entity_restrict"],
                         $multi
@@ -3015,7 +3030,7 @@ class Dropdown
                 } else {
                    // Do not use entity if may be private
                     if (!$item->maybePrivate()) {
-                        $where = $where + getEntitiesRestrictCriteria($table, '', '', $multi);
+                        $where = $where + getEntitiesRestrictCriteria($entity_table, '', '', $multi);
 
                         if (count($_SESSION['glpiactiveentities']) > 1) {
                             $multi = true;
@@ -3064,8 +3079,6 @@ class Dropdown
 
                 $where[] = ['OR' => $orwhere];
             }
-            $addselect = [];
-            $ljoin = [];
             if (Session::haveTranslations($post['itemtype'], $field)) {
                 $addselect[] = "namet.value AS transname";
                 $ljoin['glpi_dropdowntranslations AS namet'] = [
@@ -3205,7 +3218,7 @@ class Dropdown
                 $order_field = $post['order'];
             }
             if ($multi) {
-                $criteria['ORDERBY'] = ["$table.entities_id", $order_field];
+                $criteria['ORDERBY'] = ["$entity_table.entities_id", $order_field];
             } else {
                 $criteria['ORDERBY'] = [$order_field];
             }
