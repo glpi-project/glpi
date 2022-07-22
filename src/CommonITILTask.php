@@ -360,10 +360,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     {
         global $CFG_GLPI;
 
-       // Add document if needed, without notification for file input
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
-       // Add document if needed, without notification for textarea
-        $this->input = $this->addFiles($this->input, ['name' => 'content', 'force_update' => true]);
 
         if (in_array("begin", $this->updates)) {
             PlanningRecall::managePlanningUpdates(
@@ -568,10 +566,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     {
         global $CFG_GLPI;
 
-       // Add document if needed, without notification for file input
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
-       // Add document if needed, without notification for textarea
-        $this->input = $this->addFiles($this->input, ['name' => 'content', 'force_update' => true]);
 
         if (isset($this->input['_planningrecall'])) {
             $this->input['_planningrecall']['items_id'] = $this->fields['id'];

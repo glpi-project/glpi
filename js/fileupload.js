@@ -41,13 +41,18 @@ function uploadFile(file, editor) {
     insertIntoEditor[file.name] = isImage(file);
 
     // Search for fileupload container.
-    // First try to find it in editor siblings, and fallback to any container found in current form.
-    var fileupload_container = $(editor.getElement()).siblings('.fileupload');
-    if (fileupload_container.length === 0) {
-        fileupload_container = $(editor.getElement()).closest('form').find('.fileupload');
+    // First try to find an uplaoder having same name as editor element.
+    var uploader = $('[data-uploader-name="' + editor.getElement().name + '"]');
+    if (uploader.length === 0) {
+        // Fallback to uploader using default name
+        uploader = $(editor.getElement()).closest('form').find('[data-uploader-name="filename"]');
+    }
+    if (uploader.length === 0) {
+        // Fallback to any uploader found in current form
+        uploader = $(editor.getElement()).closest('form').find('[data-uploader-name=]').first();
     }
 
-    fileupload_container.find('[type="file"]').fileupload('add', {files: [file]});
+    uploader.fileupload('add', {files: [file]});
 }
 
 var handleUploadedFile = function (files, files_data, input_name, container, editor_id) {
