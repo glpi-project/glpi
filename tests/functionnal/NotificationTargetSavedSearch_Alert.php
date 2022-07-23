@@ -41,7 +41,6 @@ use DbTestCase;
 
 class NotificationTargetSavedSearch_Alert extends DbTestCase
 {
-
     public function testAddDataForTemplate()
     {
         $this->login();
@@ -60,7 +59,7 @@ class NotificationTargetSavedSearch_Alert extends DbTestCase
         // Create saved search alert
         $saved_search_alert = new \SavedSearch_Alert();
         $saved_search_alerts_id = $saved_search_alert->add([
-           'savedsearches_id' => $saved_searches_id,
+            'savedsearches_id' => $saved_searches_id,
             'name' => __FUNCTION__,
             'is_active' => 1,
             'operator' => \SavedSearch_Alert::OP_GREATEQ,
@@ -88,6 +87,6 @@ class NotificationTargetSavedSearch_Alert extends DbTestCase
         ]);
 
         // Host may change so only check the end of the URL
-        $this->bool(str_ends_with($target->data['##savedsearch.url##'], '/index.php?redirect=/front/savedsearch.php%3Faction=load%26id=1&noAUTO=1'))->isTrue();
+        $this->boolean(str_ends_with($target->data['##savedsearch.url##'], '/index.php?redirect=/front/savedsearch.php%3Faction=load%26id=1&noAUTO=1'))->isTrue();
     }
 }
