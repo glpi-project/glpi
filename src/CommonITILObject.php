@@ -399,8 +399,6 @@ abstract class CommonITILObject extends CommonDBTM
 
         $this->restoreInputAndDefaults($ID, $options);
 
-        $this->initForm($ID, $options);
-
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
@@ -517,6 +515,8 @@ abstract class CommonITILObject extends CommonDBTM
             $options['time_to_resolve']     = $problem->fields['time_to_resolve'];
             $options['entities_id']         = $problem->fields['entities_id'];
         }
+
+        $this->initForm($this->fields['id'], $options);
 
         // Store predefined fields to be able not to take into account on change template
         $predefined_fields = [];
