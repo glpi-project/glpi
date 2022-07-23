@@ -126,7 +126,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
     // redirect to ticket
     if (isset($_GET["redirect"])) {
-        Toolbox::manageRedirect($_GET["redirect"]);
+        global $_UGET;
+        Toolbox::manageRedirect($_UGET["redirect"]);
     }
 
     TemplateRenderer::getInstance()->display('pages/login.html.twig', [
