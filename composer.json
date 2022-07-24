@@ -60,7 +60,7 @@
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "^4.0",
-        "consolidation/robo": "^2.0",
+        "consolidation/robo": "^3.0",
         "glpi-project/coding-standard": "^0.9",
         "glpi-project/tools": "^0.5.1",
         "maglnet/composer-require-checker": "^2.0",
