@@ -3786,16 +3786,16 @@
         },
         {
             "name": "sabre/vobject",
-            "version": "4.4.1",
+            "version": "4.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/vobject.git",
-                "reference": "06feff370141fd3118609f808e86d9315864bf14"
+                "reference": "b8a44ea1610d9b7012e42a7ff6f1cb66f0b757dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/06feff370141fd3118609f808e86d9315864bf14",
-                "reference": "06feff370141fd3118609f808e86d9315864bf14",
+                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/b8a44ea1610d9b7012e42a7ff6f1cb66f0b757dd",
+                "reference": "b8a44ea1610d9b7012e42a7ff6f1cb66f0b757dd",
                 "shasum": ""
             },
             "require": {
@@ -3886,7 +3886,7 @@
                 "issues": "https://github.com/sabre-io/vobject/issues",
                 "source": "https://github.com/fruux/sabre-vobject"
             },
-            "time": "2021-12-07T09:45:33+00:00"
+            "time": "2022-06-24T11:36:21+00:00"
         },
         {
             "name": "sabre/xml",
