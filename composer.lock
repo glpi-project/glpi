@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd9e69ade7db7326952be38b3d4aa8dc",
+    "content-hash": "783267a5d36b5c26d9a585d915a2d6b2",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -5678,16 +5678,16 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.4.4",
+            "version": "0.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "4f36f111ba7f025bd17916f0d3402986ac098395"
+                "reference": "8d32c53bd9fb6c4cd85cbbb405a63ea88ca033e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/4f36f111ba7f025bd17916f0d3402986ac098395",
-                "reference": "4f36f111ba7f025bd17916f0d3402986ac098395",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/8d32c53bd9fb6c4cd85cbbb405a63ea88ca033e4",
+                "reference": "8d32c53bd9fb6c4cd85cbbb405a63ea88ca033e4",
                 "shasum": ""
             },
             "require": {
@@ -5697,7 +5697,6 @@
             "bin": [
                 "bin/extract-locales",
                 "bin/licence-headers-check",
-                "tools/extract_template.sh",
                 "tools/plugin-release"
             ],
             "type": "library",
@@ -5727,7 +5726,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2022-03-10T13:35:21+00:00"
+            "time": "2022-06-28T11:18:30+00:00"
         },
         {
             "name": "grasmash/expander",
@@ -6732,16 +6731,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.3.10",
+            "version": "v3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "8442df056c51b706793adf80a9fd363406dd3674"
+                "reference": "e939eae92386b69b49cfa4599dd9bead6bf4a342"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/8442df056c51b706793adf80a9fd363406dd3674",
-                "reference": "8442df056c51b706793adf80a9fd363406dd3674",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e939eae92386b69b49cfa4599dd9bead6bf4a342",
+                "reference": "e939eae92386b69b49cfa4599dd9bead6bf4a342",
                 "shasum": ""
             },
             "require": {
@@ -6756,7 +6755,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3-dev"
+                    "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -6792,7 +6791,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.3.10"
+                "source": "https://github.com/twigphp/Twig/tree/v3.4.1"
             },
             "funding": [
                 {
@@ -6804,7 +6803,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-06T06:47:41+00:00"
+            "time": "2022-05-17T05:48:52+00:00"
         },
         {
             "name": "webmozart/assert",
