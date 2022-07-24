@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -34,747 +37,753 @@ namespace tests\units;
 
 use DbTestCase;
 
-class SLM extends DbTestCase {
-   private $method;
+class SLM extends DbTestCase
+{
+    private $method;
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-      //to handle GLPI barbarian replacements.
-      $this->method = str_replace(
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
+       //to handle GLPI barbarian replacements.
+        $this->method = str_replace(
             ['\\', 'beforeTestMethod'],
             ['', $method],
             __METHOD__
-            );
-   }
+        );
+    }
 
 
-   /**
-    * Create a full SLM with all level filled (slm/sla/ola/levels/action/criterias)
-    * And Delete IT to check clean os sons objects
-    */
-   public function testLifecyle() {
-      $this->login();
+    /**
+     * Create a full SLM with all level filled (slm/sla/ola/levels/action/criterias)
+     * And Delete IT to check clean os sons objects
+     */
+    public function testLifecyle()
+    {
+        $this->login();
 
-      // ## 1 - test adding sla and sub objects
+       // ## 1 - test adding sla and sub objects
 
-      // prepare a calendar with limited time ranges [8:00 -> 20:00]
-      $cal    = new \Calendar();
-      $calseg = new \CalendarSegment();
-      $cal_id = $cal->add(['name' => "test calendar"]);
-      $this->checkInput($cal, $cal_id);
-      for ($day = 1; $day <= 5; $day++) {
-         $calseg_id = $calseg->add([
+       // prepare a calendar with limited time ranges [8:00 -> 20:00]
+        $cal    = new \Calendar();
+        $calseg = new \CalendarSegment();
+        $cal_id = $cal->add(['name' => "test calendar"]);
+        $this->checkInput($cal, $cal_id);
+        for ($day = 1; $day <= 5; $day++) {
+            $calseg_id = $calseg->add([
+                'calendars_id' => $cal_id,
+                'day'          => $day,
+                'begin'        => '08:00:00',
+                'end'          => '20:00:00'
+            ]);
+            $this->checkInput($calseg, $calseg_id);
+        }
+
+        $slm    = new \SLM();
+        $slm_id = $slm->add($slm_in = [
+            'name'         => $this->method,
+            'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
-            'day'          => $day,
-            'begin'        => '08:00:00',
-            'end'          => '20:00:00'
-         ]);
-         $this->checkInput($calseg, $calseg_id);
-      }
+        ]);
+        $this->checkInput($slm, $slm_id, $slm_in);
 
-      $slm    = new \SLM();
-      $slm_id = $slm->add($slm_in = [
-         'name'         => $this->method,
-         'comment'      => $this->getUniqueString(),
-         'calendars_id' => $cal_id,
-      ]);
-      $this->checkInput($slm, $slm_id, $slm_in);
-
-      // prepare sla/ola inputs
-      $sla1_in = $sla2_in = [
-         'slms_id'         => $slm_id,
-         'name'            => "SLA TTO",
-         'comment'         => $this->getUniqueString(),
-         'type'            => \SLM::TTO,
-         'number_time'     => 4,
-         'definition_time' => 'day',
-      ];
-      $sla2_in['type'] = \SLM::TTR;
-      $sla2_in['name'] = "SLA TTR";
-
-      // add two sla (TTO & TTR)
-      $sla    = new \SLA();
-      $sla1_id = $sla->add($sla1_in);
-      $this->checkInput($sla, $sla1_id, $sla1_in);
-      $sla2_id = $sla->add($sla2_in);
-      $this->checkInput($sla, $sla2_id, $sla2_in);
-
-      // add two ola (TTO & TTR), we re-use the same inputs as sla
-      $ola  = new \OLA();
-      $sla1_in['name'] = str_replace("SLA", "OLA", $sla1_in['name']);
-      $sla2_in['name'] = str_replace("SLA", "OLA", $sla2_in['name']);
-      $ola1_id = $ola->add($sla1_in);
-      $this->checkInput($ola, $ola1_id, $sla1_in);
-      $ola2_id = $ola->add($sla2_in);
-      $this->checkInput($ola, $ola2_id, $sla2_in);
-
-      // prepare levels input for each ola/sla
-      $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-         'name'           => $this->method,
-         'execution_time' => -DAY_TIMESTAMP,
-         'is_active'      => 1,
-         'match'          => 'AND',
-         'slas_id'        => $sla1_id
-      ];
-      $slal2_in['slas_id'] = $sla2_id;
-      unset($olal1_in['slas_id'], $olal2_in['slas_id']);
-      $olal1_in['olas_id'] = $ola1_id;
-      $olal2_in['olas_id'] = $ola2_id;
-
-      // add levels
-      $slal = new \SlaLevel();
-      $slal1_id = $slal->add($slal1_in);
-      $this->checkInput($slal, $slal1_id, $slal1_in);
-      $slal2_id = $slal->add($slal2_in);
-      $this->checkInput($slal, $slal2_id, $slal2_in);
-
-      $olal = new \OlaLevel();
-      $olal1_id = $olal->add($olal1_in);
-      $this->checkInput($olal, $olal1_id, $olal1_in);
-      $olal2_id = $olal->add($olal2_in);
-      $this->checkInput($olal, $olal2_id, $olal2_in);
-
-      // add criteria/actions
-      $scrit_in = $ocrit_in = [
-         'slalevels_id' => $slal1_id,
-         'criteria'     => 'status',
-         'condition'    => 1,
-         'pattern'      => 1
-      ];
-      unset($ocrit_in['slalevels_id']);
-      $ocrit_in['olalevels_id'] = $olal1_id;
-      $saction_in = $oaction_in = [
-         'slalevels_id' => $slal1_id,
-         'action_type'  => 'assign',
-         'field'        => 'status',
-         'value'        => 4
-      ];
-      unset($oaction_in['slalevels_id']);
-      $oaction_in['olalevels_id'] = $olal1_id;
-
-      $scrit    = new \SlaLevelCriteria;
-      $ocrit    = new \OlaLevelCriteria;
-      $saction  = new \SlaLevelAction;
-      $oaction  = new \OlaLevelAction;
-
-      $scrit_id   = $scrit->add($scrit_in);
-      $ocrit_id   = $ocrit->add($ocrit_in);
-      $saction_id = $saction->add($saction_in);
-      $oaction_id = $oaction->add($oaction_in);
-      $this->checkInput($scrit, $scrit_id, $scrit_in);
-      $this->checkInput($ocrit, $ocrit_id, $ocrit_in);
-      $this->checkInput($saction, $saction_id, $saction_in);
-      $this->checkInput($oaction, $oaction_id, $oaction_in);
-
-      // ## 2 - test using sla in tickets
-
-      // add rules for using sla
-      $ruleticket = new \RuleTicket;
-      $rulecrit   = new \RuleCriteria;
-      $ruleaction = new \RuleAction;
-
-      $ruletid = $ruleticket->add($ruleinput = [
-         'name'         => $this->method,
-         'match'        => 'AND',
-         'is_active'    => 1,
-         'sub_type'     => 'RuleTicket',
-         'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
-         'is_recursive' => 1
-      ]);
-      $this->checkInput($ruleticket, $ruletid, $ruleinput);
-      $crit_id = $rulecrit->add($crit_input = [
-         'rules_id'  => $ruletid,
-         'criteria'  => 'name',
-         'condition' => 2,
-         'pattern'   => $this->method
-      ]);
-      $this->checkInput($rulecrit, $crit_id, $crit_input);
-      $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'assign',
-         'field'       => 'slas_id_tto',
-         'value'       => $sla1_id
-      ]);
-      $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'assign',
-         'field'       => 'slas_id_ttr',
-         'value'       => $sla2_id
-      ]);
-      $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'assign',
-         'field'       => 'olas_id_tto',
-         'value'       => $ola1_id
-      ]);
-      $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'assign',
-         'field'       => 'olas_id_ttr',
-         'value'       => $ola2_id
-      ]);
-      $this->checkInput($ruleaction, $act_id, $act_input);
-
-      // test create ticket
-      $ticket = new \Ticket;
-      $start_date = date("Y-m-d H:i:s", time() - 4 * DAY_TIMESTAMP);
-      $tickets_id = $ticket->add($ticket_input = [
-         'date'    => $start_date,
-         'name'    => $this->method,
-         'content' => $this->method
-      ]);
-      $this->checkInput($ticket, $tickets_id, $ticket_input);
-      $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-      $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
-      $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
-      $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
-      $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
-
-      // test update ticket
-      $ticket = new \Ticket;
-      $tickets_id_2 = $ticket->add($ticket_input_2 = [
-         'name'    => "to be updated",
-         'content' => $this->method
-      ]);
-      $ticket->update([
-         'id'   => $tickets_id_2,
-         'name' => $this->method
-      ]);
-      $ticket_input_2['name'] = $this->method;
-      $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
-      $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-      $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
-      $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
-      $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
-      $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
-
-      // ## 3 - test purge of slm and check if we don't find any sub objects
-      $this->boolean($slm->delete(['id' => $slm_id], true))->isTrue();
-      //sla
-      $this->boolean($sla->getFromDB($sla1_id))->isFalse();
-      $this->boolean($sla->getFromDB($sla2_id))->isFalse();
-      //ola
-      $this->boolean($ola->getFromDB($ola1_id))->isFalse();
-      $this->boolean($ola->getFromDB($ola2_id))->isFalse();
-      //slalevel
-      $this->boolean($slal->getFromDB($slal1_id))->isFalse();
-      $this->boolean($slal->getFromDB($slal2_id))->isFalse();
-      //olalevel
-      $this->boolean($olal->getFromDB($olal1_id))->isFalse();
-      $this->boolean($olal->getFromDB($olal2_id))->isFalse();
-      //crit
-      $this->boolean($scrit->getFromDB($scrit_id))->isFalse();
-      $this->boolean($ocrit->getFromDB($ocrit_id))->isFalse();
-      //action
-      $this->boolean($saction->getFromDB($saction_id))->isFalse();
-      $this->boolean($oaction->getFromDB($oaction_id))->isFalse();
-   }
-
-
-   /**
-    * Create a full SLM by month with all level filled (slm/sla/ola/levels/action/criterias)
-    * And Delete IT to check clean os sons objects
-    */
-   public function testLifecylebyMonth() {
-      $this->login();
-
-      // ## 1 - test adding sla and sub objects
-
-      // prepare a calendar with limited time ranges [8:00 -> 20:00]
-      $cal    = new \Calendar();
-      $calseg = new \CalendarSegment();
-      $cal_id = getItemByTypeName('Calendar', 'Default', true);
-
-      $slm    = new \SLM();
-      $slm_id = $slm->add($slm_in = [
-         'name'         => $this->method,
-         'comment'      => $this->getUniqueString(),
-         'calendars_id' => $cal_id,
-      ]);
-      $this->checkInput($slm, $slm_id, $slm_in);
-
-      // prepare sla/ola inputs
-      $sla1_in = $sla2_in = [
-         'slms_id'         => $slm_id,
-         'name'            => "SLA TTO",
-         'comment'         => $this->getUniqueString(),
-         'type'            => \SLM::TTO,
-         'number_time'     => 4,
-         'definition_time' => 'month',
-      ];
-      $sla2_in['type'] = \SLM::TTR;
-      $sla2_in['name'] = "SLA TTR";
-
-      // add two sla (TTO & TTR)
-      $sla    = new \SLA();
-      $sla1_id = $sla->add($sla1_in);
-      $this->checkInput($sla, $sla1_id, $sla1_in);
-      $sla2_id = $sla->add($sla2_in);
-      $this->checkInput($sla, $sla2_id, $sla2_in);
-
-      // add two ola (TTO & TTR), we re-use the same inputs as sla
-      $ola  = new \OLA();
-      $sla1_in['name'] = str_replace("SLA", "OLA", $sla1_in['name']);
-      $sla2_in['name'] = str_replace("SLA", "OLA", $sla2_in['name']);
-      $ola1_id = $ola->add($sla1_in);
-      $this->checkInput($ola, $ola1_id, $sla1_in);
-      $ola2_id = $ola->add($sla2_in);
-      $this->checkInput($ola, $ola2_id, $sla2_in);
-
-      // prepare levels input for each ola/sla
-      $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-         'name'           => $this->method,
-         'execution_time' => -MONTH_TIMESTAMP,
-         'is_active'      => 1,
-         'match'          => 'AND',
-         'slas_id'        => $sla1_id
-      ];
-      $slal2_in['slas_id'] = $sla2_id;
-      unset($olal1_in['slas_id'], $olal2_in['slas_id']);
-      $olal1_in['olas_id'] = $ola1_id;
-      $olal2_in['olas_id'] = $ola2_id;
-
-      // add levels
-      $slal = new \SlaLevel();
-      $slal1_id = $slal->add($slal1_in);
-      $this->checkInput($slal, $slal1_id, $slal1_in);
-      $slal2_id = $slal->add($slal2_in);
-      $this->checkInput($slal, $slal2_id, $slal2_in);
-
-      $olal = new \OlaLevel();
-      $olal1_id = $olal->add($olal1_in);
-      $this->checkInput($olal, $olal1_id, $olal1_in);
-      $olal2_id = $olal->add($olal2_in);
-      $this->checkInput($olal, $olal2_id, $olal2_in);
-
-      // add criteria/actions
-      $scrit_in = $ocrit_in = [
-         'slalevels_id' => $slal1_id,
-         'criteria'     => 'status',
-         'condition'    => 1,
-         'pattern'      => 1
-      ];
-      unset($ocrit_in['slalevels_id']);
-      $ocrit_in['olalevels_id'] = $olal1_id;
-      $saction_in = $oaction_in = [
-         'slalevels_id' => $slal1_id,
-         'action_type'  => 'assign',
-         'field'        => 'status',
-         'value'        => 4
-      ];
-      unset($oaction_in['slalevels_id']);
-      $oaction_in['olalevels_id'] = $olal1_id;
-
-      $scrit    = new \SlaLevelCriteria;
-      $ocrit    = new \OlaLevelCriteria;
-      $saction  = new \SlaLevelAction;
-      $oaction  = new \OlaLevelAction;
-
-      $scrit_id   = $scrit->add($scrit_in);
-      $ocrit_id   = $ocrit->add($ocrit_in);
-      $saction_id = $saction->add($saction_in);
-      $oaction_id = $oaction->add($oaction_in);
-      $this->checkInput($scrit, $scrit_id, $scrit_in);
-      $this->checkInput($ocrit, $ocrit_id, $ocrit_in);
-      $this->checkInput($saction, $saction_id, $saction_in);
-      $this->checkInput($oaction, $oaction_id, $oaction_in);
-
-      // ## 2 - test using sla in tickets
-
-      // add rules for using sla
-      $ruleticket = new \RuleTicket;
-      $rulecrit   = new \RuleCriteria;
-      $ruleaction = new \RuleAction;
-
-      $ruletid = $ruleticket->add($ruleinput = [
-         'name'         => $this->method,
-         'match'        => 'AND',
-         'is_active'    => 1,
-         'sub_type'     => 'RuleTicket',
-         'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
-         'is_recursive' => 1
-      ]);
-      $this->checkInput($ruleticket, $ruletid, $ruleinput);
-      $crit_id = $rulecrit->add($crit_input = [
-         'rules_id'  => $ruletid,
-         'criteria'  => 'name',
-         'condition' => 2,
-         'pattern'   => $this->method
-      ]);
-      $this->checkInput($rulecrit, $crit_id, $crit_input);
-      $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'assign',
-         'field'       => 'slas_id_tto',
-         'value'       => $sla1_id
-      ]);
-      $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'assign',
-         'field'       => 'slas_id_ttr',
-         'value'       => $sla2_id
-      ]);
-      $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'assign',
-         'field'       => 'olas_id_tto',
-         'value'       => $ola1_id
-      ]);
-      $act_id = $ruleaction->add($act_input = [
-         'rules_id'    => $ruletid,
-         'action_type' => 'assign',
-         'field'       => 'olas_id_ttr',
-         'value'       => $ola2_id
-      ]);
-      $this->checkInput($ruleaction, $act_id, $act_input);
-
-      // test create ticket
-      $ticket = new \Ticket;
-      $start_date = date("Y-m-d H:i:s", time() - 4 * MONTH_TIMESTAMP);
-      $tickets_id = $ticket->add($ticket_input = [
-         'date'    => $start_date,
-         'name'    => $this->method,
-         'content' => $this->method
-      ]);
-      $this->checkInput($ticket, $tickets_id, $ticket_input);
-      $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-      $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
-      $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
-      $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
-      $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
-
-      // test update ticket
-      $ticket = new \Ticket;
-      $tickets_id_2 = $ticket->add($ticket_input_2 = [
-         'name'    => "to be updated",
-         'content' => $this->method
-      ]);
-      //SLA/OLA  TTR/TTO not already set
-      $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo(0);
-      $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo(0);
-      $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo(0);
-      $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo(0);
-
-      $ticket->update([
-         'id'   => $tickets_id_2,
-         'name' => $this->method
-      ]);
-      $ticket_input_2['name'] = $this->method;
-      $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
-      $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
-      $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
-      $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
-      $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
-      $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
-
-      // ## 3 - test purge of slm and check if we don't find any sub objects
-      $this->boolean($slm->delete(['id' => $slm_id], true))->isTrue();
-      //sla
-      $this->boolean($sla->getFromDB($sla1_id))->isFalse();
-      $this->boolean($sla->getFromDB($sla2_id))->isFalse();
-      //ola
-      $this->boolean($ola->getFromDB($ola1_id))->isFalse();
-      $this->boolean($ola->getFromDB($ola2_id))->isFalse();
-      //slalevel
-      $this->boolean($slal->getFromDB($slal1_id))->isFalse();
-      $this->boolean($slal->getFromDB($slal2_id))->isFalse();
-      //olalevel
-      $this->boolean($olal->getFromDB($olal1_id))->isFalse();
-      $this->boolean($olal->getFromDB($olal2_id))->isFalse();
-      //crit
-      $this->boolean($scrit->getFromDB($scrit_id))->isFalse();
-      $this->boolean($ocrit->getFromDB($ocrit_id))->isFalse();
-      //action
-      $this->boolean($saction->getFromDB($saction_id))->isFalse();
-      $this->boolean($oaction->getFromDB($oaction_id))->isFalse();
-   }
-
-   /**
-    * Check 'internal_time_to_resolve' computed dates.
-    */
-   public function testInternalTtrComputation() {
-      $this->login();
-
-      $currenttime_bak = $_SESSION['glpi_currenttime'];
-      $tomorrow_1pm = date('Y-m-d H:i:s', strtotime('tomorrow 1pm'));
-      $tomorrow_2pm = date('Y-m-d H:i:s', strtotime('tomorrow 2pm'));
-
-      // Create a calendar having tommorow as working day
-      $calendar = new \Calendar();
-      $segment  = new \CalendarSegment();
-      $calendar_id = $calendar->add(['name' => 'TicketRecurrent testing calendar']);
-      $this->integer($calendar_id)->isGreaterThan(0);
-
-      $segment_id = $segment->add(
-         [
-            'calendars_id' => $calendar_id,
-            'day'          => (int)date('w') === 6 ? 0 : (int)date('w')+1,
-            'begin'        => '09:00:00',
-            'end'          => '19:00:00'
-         ]
-      );
-      $this->integer($segment_id)->isGreaterThan(0);
-
-      // Create SLM with TTR OLA
-      $slm = new \SLM();
-      $slm_id = $slm->add(
-         [
-            'name'         => 'Test SLM',
-            'calendars_id' => $calendar_id,
-         ]
-      );
-      $this->integer($slm_id)->isGreaterThan(0);
-
-      $ola = new \OLA();
-      $ola_id = $ola->add(
-         [
+       // prepare sla/ola inputs
+        $sla1_in = $sla2_in = [
             'slms_id'         => $slm_id,
-            'name'            => 'Test TTR OLA',
-            'type'            => \SLM::TTR,
+            'name'            => "SLA TTO",
+            'comment'         => $this->getUniqueString(),
+            'type'            => \SLM::TTO,
             'number_time'     => 4,
-            'definition_time' => 'hour',
-         ]
-      );
-      $this->integer($ola_id)->isGreaterThan(0);
+            'definition_time' => 'day',
+        ];
+        $sla2_in['type'] = \SLM::TTR;
+        $sla2_in['name'] = "SLA TTR";
 
-      // Create ticket to test computation based on OLA
-      $ticket = new \Ticket();
-      $ticket_id = $ticket->add(
-         [
-            'name'    => 'Test Ticket',
-            'content' => 'Ticket for TTR OLA test',
-         ]
-      );
-      $this->integer($ticket_id)->isGreaterThan(0);
+       // add two sla (TTO & TTR)
+        $sla    = new \SLA();
+        $sla1_id = $sla->add($sla1_in);
+        $this->checkInput($sla, $sla1_id, $sla1_in);
+        $sla2_id = $sla->add($sla2_in);
+        $this->checkInput($sla, $sla2_id, $sla2_in);
 
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
-      $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
-      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
+       // add two ola (TTO & TTR), we re-use the same inputs as sla
+        $ola  = new \OLA();
+        $sla1_in['name'] = str_replace("SLA", "OLA", $sla1_in['name']);
+        $sla2_in['name'] = str_replace("SLA", "OLA", $sla2_in['name']);
+        $ola1_id = $ola->add($sla1_in);
+        $this->checkInput($ola, $ola1_id, $sla1_in);
+        $ola2_id = $ola->add($sla2_in);
+        $this->checkInput($ola, $ola2_id, $sla2_in);
 
-      // Assign TTR OLA
-      $update_time = strtotime('+10s');
-      $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', $update_time);
-      $updated = $ticket->update(['id' => $ticket_id, 'olas_id_ttr' => $ola_id]);
-      $_SESSION['glpi_currenttime'] = $currenttime_bak;
-      $this->boolean($updated)->isTrue();
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_id);
-      $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))->isEqualTo($update_time);
-      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_1pm);
+       // prepare levels input for each ola/sla
+        $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
+            'name'           => $this->method,
+            'execution_time' => -DAY_TIMESTAMP,
+            'is_active'      => 1,
+            'match'          => 'AND',
+            'slas_id'        => $sla1_id
+        ];
+        $slal2_in['slas_id'] = $sla2_id;
+        unset($olal1_in['slas_id'], $olal2_in['slas_id']);
+        $olal1_in['olas_id'] = $ola1_id;
+        $olal2_in['olas_id'] = $ola2_id;
 
-      // Simulate waiting to first working hour +1
-      $this->boolean(
-         $ticket->update(
+       // add levels
+        $slal = new \SlaLevel();
+        $slal1_id = $slal->add($slal1_in);
+        $this->checkInput($slal, $slal1_id, $slal1_in);
+        $slal2_id = $slal->add($slal2_in);
+        $this->checkInput($slal, $slal2_id, $slal2_in);
+
+        $olal = new \OlaLevel();
+        $olal1_id = $olal->add($olal1_in);
+        $this->checkInput($olal, $olal1_id, $olal1_in);
+        $olal2_id = $olal->add($olal2_in);
+        $this->checkInput($olal, $olal2_id, $olal2_in);
+
+       // add criteria/actions
+        $scrit_in = $ocrit_in = [
+            'slalevels_id' => $slal1_id,
+            'criteria'     => 'status',
+            'condition'    => 1,
+            'pattern'      => 1
+        ];
+        unset($ocrit_in['slalevels_id']);
+        $ocrit_in['olalevels_id'] = $olal1_id;
+        $saction_in = $oaction_in = [
+            'slalevels_id' => $slal1_id,
+            'action_type'  => 'assign',
+            'field'        => 'status',
+            'value'        => 4
+        ];
+        unset($oaction_in['slalevels_id']);
+        $oaction_in['olalevels_id'] = $olal1_id;
+
+        $scrit    = new \SlaLevelCriteria();
+        $ocrit    = new \OlaLevelCriteria();
+        $saction  = new \SlaLevelAction();
+        $oaction  = new \OlaLevelAction();
+
+        $scrit_id   = $scrit->add($scrit_in);
+        $ocrit_id   = $ocrit->add($ocrit_in);
+        $saction_id = $saction->add($saction_in);
+        $oaction_id = $oaction->add($oaction_in);
+        $this->checkInput($scrit, $scrit_id, $scrit_in);
+        $this->checkInput($ocrit, $ocrit_id, $ocrit_in);
+        $this->checkInput($saction, $saction_id, $saction_in);
+        $this->checkInput($oaction, $oaction_id, $oaction_in);
+
+       // ## 2 - test using sla in tickets
+
+       // add rules for using sla
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruleinput = [
+            'name'         => $this->method,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+            'is_recursive' => 1
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruleinput);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'name',
+            'condition' => 2,
+            'pattern'   => $this->method
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'slas_id_tto',
+            'value'       => $sla1_id
+        ]);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'slas_id_ttr',
+            'value'       => $sla2_id
+        ]);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'olas_id_tto',
+            'value'       => $ola1_id
+        ]);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'olas_id_ttr',
+            'value'       => $ola2_id
+        ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
+
+       // test create ticket
+        $ticket = new \Ticket();
+        $start_date = date("Y-m-d H:i:s", time() - 4 * DAY_TIMESTAMP);
+        $tickets_id = $ticket->add($ticket_input = [
+            'date'    => $start_date,
+            'name'    => $this->method,
+            'content' => $this->method
+        ]);
+        $this->checkInput($ticket, $tickets_id, $ticket_input);
+        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
+        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
+        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
+        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
+        $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+
+       // test update ticket
+        $ticket = new \Ticket();
+        $tickets_id_2 = $ticket->add($ticket_input_2 = [
+            'name'    => "to be updated",
+            'content' => $this->method
+        ]);
+        $ticket->update([
+            'id'   => $tickets_id_2,
+            'name' => $this->method
+        ]);
+        $ticket_input_2['name'] = $this->method;
+        $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
+        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
+        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
+        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
+        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
+        $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+
+       // ## 3 - test purge of slm and check if we don't find any sub objects
+        $this->boolean($slm->delete(['id' => $slm_id], true))->isTrue();
+       //sla
+        $this->boolean($sla->getFromDB($sla1_id))->isFalse();
+        $this->boolean($sla->getFromDB($sla2_id))->isFalse();
+       //ola
+        $this->boolean($ola->getFromDB($ola1_id))->isFalse();
+        $this->boolean($ola->getFromDB($ola2_id))->isFalse();
+       //slalevel
+        $this->boolean($slal->getFromDB($slal1_id))->isFalse();
+        $this->boolean($slal->getFromDB($slal2_id))->isFalse();
+       //olalevel
+        $this->boolean($olal->getFromDB($olal1_id))->isFalse();
+        $this->boolean($olal->getFromDB($olal2_id))->isFalse();
+       //crit
+        $this->boolean($scrit->getFromDB($scrit_id))->isFalse();
+        $this->boolean($ocrit->getFromDB($ocrit_id))->isFalse();
+       //action
+        $this->boolean($saction->getFromDB($saction_id))->isFalse();
+        $this->boolean($oaction->getFromDB($oaction_id))->isFalse();
+    }
+
+
+    /**
+     * Create a full SLM by month with all level filled (slm/sla/ola/levels/action/criterias)
+     * And Delete IT to check clean os sons objects
+     */
+    public function testLifecylebyMonth()
+    {
+        $this->login();
+
+       // ## 1 - test adding sla and sub objects
+
+       // prepare a calendar with limited time ranges [8:00 -> 20:00]
+        $cal    = new \Calendar();
+        $calseg = new \CalendarSegment();
+        $cal_id = getItemByTypeName('Calendar', 'Default', true);
+
+        $slm    = new \SLM();
+        $slm_id = $slm->add($slm_in = [
+            'name'         => $this->method,
+            'comment'      => $this->getUniqueString(),
+            'calendars_id' => $cal_id,
+        ]);
+        $this->checkInput($slm, $slm_id, $slm_in);
+
+       // prepare sla/ola inputs
+        $sla1_in = $sla2_in = [
+            'slms_id'         => $slm_id,
+            'name'            => "SLA TTO",
+            'comment'         => $this->getUniqueString(),
+            'type'            => \SLM::TTO,
+            'number_time'     => 4,
+            'definition_time' => 'month',
+        ];
+        $sla2_in['type'] = \SLM::TTR;
+        $sla2_in['name'] = "SLA TTR";
+
+       // add two sla (TTO & TTR)
+        $sla    = new \SLA();
+        $sla1_id = $sla->add($sla1_in);
+        $this->checkInput($sla, $sla1_id, $sla1_in);
+        $sla2_id = $sla->add($sla2_in);
+        $this->checkInput($sla, $sla2_id, $sla2_in);
+
+       // add two ola (TTO & TTR), we re-use the same inputs as sla
+        $ola  = new \OLA();
+        $sla1_in['name'] = str_replace("SLA", "OLA", $sla1_in['name']);
+        $sla2_in['name'] = str_replace("SLA", "OLA", $sla2_in['name']);
+        $ola1_id = $ola->add($sla1_in);
+        $this->checkInput($ola, $ola1_id, $sla1_in);
+        $ola2_id = $ola->add($sla2_in);
+        $this->checkInput($ola, $ola2_id, $sla2_in);
+
+       // prepare levels input for each ola/sla
+        $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
+            'name'           => $this->method,
+            'execution_time' => -MONTH_TIMESTAMP,
+            'is_active'      => 1,
+            'match'          => 'AND',
+            'slas_id'        => $sla1_id
+        ];
+        $slal2_in['slas_id'] = $sla2_id;
+        unset($olal1_in['slas_id'], $olal2_in['slas_id']);
+        $olal1_in['olas_id'] = $ola1_id;
+        $olal2_in['olas_id'] = $ola2_id;
+
+       // add levels
+        $slal = new \SlaLevel();
+        $slal1_id = $slal->add($slal1_in);
+        $this->checkInput($slal, $slal1_id, $slal1_in);
+        $slal2_id = $slal->add($slal2_in);
+        $this->checkInput($slal, $slal2_id, $slal2_in);
+
+        $olal = new \OlaLevel();
+        $olal1_id = $olal->add($olal1_in);
+        $this->checkInput($olal, $olal1_id, $olal1_in);
+        $olal2_id = $olal->add($olal2_in);
+        $this->checkInput($olal, $olal2_id, $olal2_in);
+
+       // add criteria/actions
+        $scrit_in = $ocrit_in = [
+            'slalevels_id' => $slal1_id,
+            'criteria'     => 'status',
+            'condition'    => 1,
+            'pattern'      => 1
+        ];
+        unset($ocrit_in['slalevels_id']);
+        $ocrit_in['olalevels_id'] = $olal1_id;
+        $saction_in = $oaction_in = [
+            'slalevels_id' => $slal1_id,
+            'action_type'  => 'assign',
+            'field'        => 'status',
+            'value'        => 4
+        ];
+        unset($oaction_in['slalevels_id']);
+        $oaction_in['olalevels_id'] = $olal1_id;
+
+        $scrit    = new \SlaLevelCriteria();
+        $ocrit    = new \OlaLevelCriteria();
+        $saction  = new \SlaLevelAction();
+        $oaction  = new \OlaLevelAction();
+
+        $scrit_id   = $scrit->add($scrit_in);
+        $ocrit_id   = $ocrit->add($ocrit_in);
+        $saction_id = $saction->add($saction_in);
+        $oaction_id = $oaction->add($oaction_in);
+        $this->checkInput($scrit, $scrit_id, $scrit_in);
+        $this->checkInput($ocrit, $ocrit_id, $ocrit_in);
+        $this->checkInput($saction, $saction_id, $saction_in);
+        $this->checkInput($oaction, $oaction_id, $oaction_in);
+
+       // ## 2 - test using sla in tickets
+
+       // add rules for using sla
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruleinput = [
+            'name'         => $this->method,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+            'is_recursive' => 1
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruleinput);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'name',
+            'condition' => 2,
+            'pattern'   => $this->method
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'slas_id_tto',
+            'value'       => $sla1_id
+        ]);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'slas_id_ttr',
+            'value'       => $sla2_id
+        ]);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'olas_id_tto',
+            'value'       => $ola1_id
+        ]);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'olas_id_ttr',
+            'value'       => $ola2_id
+        ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
+
+       // test create ticket
+        $ticket = new \Ticket();
+        $start_date = date("Y-m-d H:i:s", time() - 4 * MONTH_TIMESTAMP);
+        $tickets_id = $ticket->add($ticket_input = [
+            'date'    => $start_date,
+            'name'    => $this->method,
+            'content' => $this->method
+        ]);
+        $this->checkInput($ticket, $tickets_id, $ticket_input);
+        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
+        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
+        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
+        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
+        $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+
+       // test update ticket
+        $ticket = new \Ticket();
+        $tickets_id_2 = $ticket->add($ticket_input_2 = [
+            'name'    => "to be updated",
+            'content' => $this->method
+        ]);
+       //SLA/OLA  TTR/TTO not already set
+        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo(0);
+        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo(0);
+        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo(0);
+        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo(0);
+
+        $ticket->update([
+            'id'   => $tickets_id_2,
+            'name' => $this->method
+        ]);
+        $ticket_input_2['name'] = $this->method;
+        $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
+        $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
+        $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
+        $this->integer((int)$ticket->getField('olas_id_tto'))->isEqualTo($ola1_id);
+        $this->integer((int)$ticket->getField('olas_id_ttr'))->isEqualTo($ola2_id);
+        $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+
+       // ## 3 - test purge of slm and check if we don't find any sub objects
+        $this->boolean($slm->delete(['id' => $slm_id], true))->isTrue();
+       //sla
+        $this->boolean($sla->getFromDB($sla1_id))->isFalse();
+        $this->boolean($sla->getFromDB($sla2_id))->isFalse();
+       //ola
+        $this->boolean($ola->getFromDB($ola1_id))->isFalse();
+        $this->boolean($ola->getFromDB($ola2_id))->isFalse();
+       //slalevel
+        $this->boolean($slal->getFromDB($slal1_id))->isFalse();
+        $this->boolean($slal->getFromDB($slal2_id))->isFalse();
+       //olalevel
+        $this->boolean($olal->getFromDB($olal1_id))->isFalse();
+        $this->boolean($olal->getFromDB($olal2_id))->isFalse();
+       //crit
+        $this->boolean($scrit->getFromDB($scrit_id))->isFalse();
+        $this->boolean($ocrit->getFromDB($ocrit_id))->isFalse();
+       //action
+        $this->boolean($saction->getFromDB($saction_id))->isFalse();
+        $this->boolean($oaction->getFromDB($oaction_id))->isFalse();
+    }
+
+    /**
+     * Check 'internal_time_to_resolve' computed dates.
+     */
+    public function testInternalTtrComputation()
+    {
+        $this->login();
+
+        $currenttime_bak = $_SESSION['glpi_currenttime'];
+        $tomorrow_1pm = date('Y-m-d H:i:s', strtotime('tomorrow 1pm'));
+        $tomorrow_2pm = date('Y-m-d H:i:s', strtotime('tomorrow 2pm'));
+
+       // Create a calendar having tommorow as working day
+        $calendar = new \Calendar();
+        $segment  = new \CalendarSegment();
+        $calendar_id = $calendar->add(['name' => 'TicketRecurrent testing calendar']);
+        $this->integer($calendar_id)->isGreaterThan(0);
+
+        $segment_id = $segment->add(
             [
-               'id' => $ticket_id,
-               'status' => \CommonITILObject::WAITING,
+                'calendars_id' => $calendar_id,
+                'day'          => (int)date('w') === 6 ? 0 : (int)date('w') + 1,
+                'begin'        => '09:00:00',
+                'end'          => '19:00:00'
             ]
-         )
-      )->isTrue();
-      $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('tomorrow 10am'));
-      $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
-      $_SESSION['glpi_currenttime'] = $currenttime_bak;
-      $this->boolean($updated)->isTrue();
-      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
+        );
+        $this->integer($segment_id)->isGreaterThan(0);
 
-      // Create ticket to test computation based on manual date
-      $ticket = new \Ticket();
-      $ticket_id = $ticket->add(
-         [
-            'name'    => 'Test Ticket',
-            'content' => 'Ticket for TTR manual test',
-         ]
-      );
-      $this->integer($ticket_id)->isGreaterThan(0);
-
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
-      $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
-      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
-
-      // Assign manual TTR
-      $this->boolean($ticket->update(['id' => $ticket_id, 'internal_time_to_resolve' => $tomorrow_1pm]))->isTrue();
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
-      $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
-      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_1pm);
-
-      // Simulate 1 hour of waiting time
-      $this->boolean(
-         $ticket->update(
+       // Create SLM with TTR OLA
+        $slm = new \SLM();
+        $slm_id = $slm->add(
             [
-               'id' => $ticket_id,
-               'status' => \CommonITILObject::WAITING,
+                'name'         => 'Test SLM',
+                'calendars_id' => $calendar_id,
             ]
-         )
-      )->isTrue();
-      $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($currenttime_bak)));
-      $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
-      $_SESSION['glpi_currenttime'] = $currenttime_bak;
-      $this->boolean($updated)->isTrue();
-      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
-   }
+        );
+        $this->integer($slm_id)->isGreaterThan(0);
 
-      /**
-    * Check 'internal_time_to_resolve' computed dates.
-    */
-   public function testComputationByMonth() {
-      $this->login();
+        $ola = new \OLA();
+        $ola_id = $ola->add(
+            [
+                'slms_id'         => $slm_id,
+                'name'            => 'Test TTR OLA',
+                'type'            => \SLM::TTR,
+                'number_time'     => 4,
+                'definition_time' => 'hour',
+            ]
+        );
+        $this->integer($ola_id)->isGreaterThan(0);
 
-      $currenttime_bak = $_SESSION['glpi_currenttime'];
+       // Create ticket to test computation based on OLA
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'    => 'Test Ticket',
+                'content' => 'Ticket for TTR OLA test',
+            ]
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
 
-      // Create SLM with TTR/TTO OLA/SLA
-      $slm = new \SLM();
-      $slm_id = $slm->add(
-         [
-            'name'         => 'Test SLM',
-            'calendars_id' => 0, //24/24 7/7
-         ]
-      );
-      $this->integer($slm_id)->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
+        $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
+        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
 
-      $ola_ttr = new \OLA();
-      $ola_ttr_id = $ola_ttr->add(
-         [
-            'slms_id'            => $slm_id,
-            'name'               => 'Test TTR OLA',
-            'type'               => \SLM::TTR,
-            'number_time'        => 4,
-            'definition_time'    => 'month',
-            'end_of_working_day' => false,
-         ]
-      );
-      $this->integer($ola_ttr_id)->isGreaterThan(0);
+       // Assign TTR OLA
+        $update_time = strtotime('+10s');
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', $update_time);
+        $updated = $ticket->update(['id' => $ticket_id, 'olas_id_ttr' => $ola_id]);
+        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $this->boolean($updated)->isTrue();
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_id);
+        $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))->isEqualTo($update_time);
+        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_1pm);
 
-      $ola_tto = new \OLA();
-      $ola_tto_id = $ola_tto->add(
-         [
-            'slms_id'            => $slm_id,
-            'name'               => 'Test TTO OLA',
-            'type'               => \SLM::TTO,
-            'number_time'        => 3,
-            'definition_time'    => 'month',
-            'end_of_working_day' => false,
-         ]
-      );
-      $this->integer($ola_tto_id)->isGreaterThan(0);
+       // Simulate waiting to first working hour +1
+        $this->boolean(
+            $ticket->update(
+                [
+                    'id' => $ticket_id,
+                    'status' => \CommonITILObject::WAITING,
+                ]
+            )
+        )->isTrue();
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('tomorrow 10am'));
+        $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
+        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $this->boolean($updated)->isTrue();
+        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
 
-      $sla_ttr = new \SLA();
-      $sla_ttr_id = $sla_ttr->add(
-         [
-            'slms_id'            => $slm_id,
-            'name'               => 'Test TTR SLA',
-            'type'               => \SLM::TTR,
-            'number_time'        => 2,
-            'definition_time'    => 'month',
-            'end_of_working_day' => false,
-         ]
-      );
-      $this->integer($sla_ttr_id)->isGreaterThan(0);
+       // Create ticket to test computation based on manual date
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'    => 'Test Ticket',
+                'content' => 'Ticket for TTR manual test',
+            ]
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
 
-      $sla_tto = new \SLA();
-      $sla_tto_id = $sla_tto->add(
-         [
-            'slms_id'            => $slm_id,
-            'name'               => 'Test TTO SLA',
-            'type'               => \SLM::TTO,
-            'number_time'        => 1,
-            'definition_time'    => 'month',
-            'end_of_working_day' => false,
-         ]
-      );
-      $this->integer($sla_tto_id)->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
+        $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
+        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
 
-      // Create ticket with SLA/OLA TTO/TTR to test computation based on SLA OLA
-      $ticket = new \Ticket();
-      $ticket_id = $ticket->add(
-         [
-            'name'    => 'Test Ticket',
-            'content' => 'Ticket for TTR OLA test on create',
-            'olas_id_ttr' => $ola_ttr_id,
-            'olas_id_tto' => $ola_tto_id,
-            'slas_id_ttr' => $sla_ttr_id,
-            'slas_id_tto' => $sla_tto_id,
-         ]
-      );
-      $this->integer($ticket_id)->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+       // Assign manual TTR
+        $this->boolean($ticket->update(['id' => $ticket_id, 'internal_time_to_resolve' => $tomorrow_1pm]))->isTrue();
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
+        $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
+        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_1pm);
 
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-      //check computed data from SLA / OLA
-      $this->integer((int)$ticket->fields['slas_id_tto'])->isEqualTo($sla_tto_id);
-      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1*MONTH_TIMESTAMP)));
+       // Simulate 1 hour of waiting time
+        $this->boolean(
+            $ticket->update(
+                [
+                    'id' => $ticket_id,
+                    'status' => \CommonITILObject::WAITING,
+                ]
+            )
+        )->isTrue();
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($currenttime_bak)));
+        $updated = $ticket->update(['id' => $ticket_id, 'status' => \CommonITILObject::ASSIGNED]);
+        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $this->boolean($updated)->isTrue();
+        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo($tomorrow_2pm);
+    }
 
-      $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
-      // date + delay
-      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2*MONTH_TIMESTAMP)));
+    /**
+     * Check 'internal_time_to_resolve' computed dates.
+     */
+    public function testComputationByMonth()
+    {
+        $this->login();
 
-      $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
-      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (3*MONTH_TIMESTAMP)));
+        $currenttime_bak = $_SESSION['glpi_currenttime'];
 
-      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
-      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['ola_ttr_begin_date']) + (4*MONTH_TIMESTAMP)));
+       // Create SLM with TTR/TTO OLA/SLA
+        $slm = new \SLM();
+        $slm_id = $slm->add(
+            [
+                'name'         => 'Test SLM',
+                'calendars_id' => 0, //24/24 7/7
+            ]
+        );
+        $this->integer($slm_id)->isGreaterThan(0);
 
-      $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
+        $ola_ttr = new \OLA();
+        $ola_ttr_id = $ola_ttr->add(
+            [
+                'slms_id'            => $slm_id,
+                'name'               => 'Test TTR OLA',
+                'type'               => \SLM::TTR,
+                'number_time'        => 4,
+                'definition_time'    => 'month',
+                'end_of_working_day' => false,
+            ]
+        );
+        $this->integer($ola_ttr_id)->isGreaterThan(0);
+
+        $ola_tto = new \OLA();
+        $ola_tto_id = $ola_tto->add(
+            [
+                'slms_id'            => $slm_id,
+                'name'               => 'Test TTO OLA',
+                'type'               => \SLM::TTO,
+                'number_time'        => 3,
+                'definition_time'    => 'month',
+                'end_of_working_day' => false,
+            ]
+        );
+        $this->integer($ola_tto_id)->isGreaterThan(0);
+
+        $sla_ttr = new \SLA();
+        $sla_ttr_id = $sla_ttr->add(
+            [
+                'slms_id'            => $slm_id,
+                'name'               => 'Test TTR SLA',
+                'type'               => \SLM::TTR,
+                'number_time'        => 2,
+                'definition_time'    => 'month',
+                'end_of_working_day' => false,
+            ]
+        );
+        $this->integer($sla_ttr_id)->isGreaterThan(0);
+
+        $sla_tto = new \SLA();
+        $sla_tto_id = $sla_tto->add(
+            [
+                'slms_id'            => $slm_id,
+                'name'               => 'Test TTO SLA',
+                'type'               => \SLM::TTO,
+                'number_time'        => 1,
+                'definition_time'    => 'month',
+                'end_of_working_day' => false,
+            ]
+        );
+        $this->integer($sla_tto_id)->isGreaterThan(0);
+
+       // Create ticket with SLA/OLA TTO/TTR to test computation based on SLA OLA
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'    => 'Test Ticket',
+                'content' => 'Ticket for TTR OLA test on create',
+                'olas_id_ttr' => $ola_ttr_id,
+                'olas_id_tto' => $ola_tto_id,
+                'slas_id_ttr' => $sla_ttr_id,
+                'slas_id_tto' => $sla_tto_id,
+            ]
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+       //check computed data from SLA / OLA
+        $this->integer((int)$ticket->fields['slas_id_tto'])->isEqualTo($sla_tto_id);
+        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own'])))
+         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1 * MONTH_TIMESTAMP)));
+
+        $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
+       // date + delay
+        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve'])))
+         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2 * MONTH_TIMESTAMP)));
+
+        $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
+        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own'])))
+         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (3 * MONTH_TIMESTAMP)));
+
+        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
+        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve'])))
+         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['ola_ttr_begin_date']) + (4 * MONTH_TIMESTAMP)));
+
+        $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
          ->isEqualTo(strtotime($ticket->fields['date']));
 
-      // Create ticket to test computation based on OLA / SLA on update
-      $ticket = new \Ticket();
-      $ticket_id = $ticket->add(
-         [
-            'name'    => 'Test Ticket',
-            'content' => 'Ticket for TTR OLA test on update',
-         ]
-      );
-      $this->integer($ticket_id)->isGreaterThan(0);
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
-      $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
-      $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
+       // Create ticket to test computation based on OLA / SLA on update
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'    => 'Test Ticket',
+                'content' => 'Ticket for TTR OLA test on update',
+            ]
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo(0);
+        $this->variable($ticket->fields['ola_ttr_begin_date'])->isEqualTo(null);
+        $this->variable($ticket->fields['internal_time_to_resolve'])->isEqualTo(null);
 
-      // Assign TTR/TTO OLA/SLA
+       // Assign TTR/TTO OLA/SLA
 
-      $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+10s'));
-      $updated = $ticket->update(
-         [
-            'id' => $ticket_id,
-            'olas_id_ttr' => $ola_ttr_id,
-            'olas_id_tto' => $ola_tto_id,
-            'slas_id_ttr' => $sla_ttr_id,
-            'slas_id_tto' => $sla_tto_id,
-            'date_mod'    => date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + 1),
-         ]
-      );
-      $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+10s'));
+        $updated = $ticket->update(
+            [
+                'id' => $ticket_id,
+                'olas_id_ttr' => $ola_ttr_id,
+                'olas_id_tto' => $ola_tto_id,
+                'slas_id_ttr' => $sla_ttr_id,
+                'slas_id_tto' => $sla_tto_id,
+                'date_mod'    => date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + 1),
+            ]
+        );
+        $_SESSION['glpi_currenttime'] = $currenttime_bak;
 
-      $this->boolean($updated)->isTrue();
+        $this->boolean($updated)->isTrue();
 
-      $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
 
-      //check computed data from SLA / OLA
-      $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
-      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['ola_ttr_begin_date']) + (4*MONTH_TIMESTAMP)));
+       //check computed data from SLA / OLA
+        $this->integer((int)$ticket->fields['olas_id_ttr'])->isEqualTo($ola_ttr_id);
+        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_resolve'])))
+         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['ola_ttr_begin_date']) + (4 * MONTH_TIMESTAMP)));
 
-      $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
-      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date_mod']) + (3*MONTH_TIMESTAMP)));
+        $this->integer((int)$ticket->fields['olas_id_tto'])->isEqualTo($ola_tto_id);
+        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['internal_time_to_own'])))
+         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date_mod']) + (3 * MONTH_TIMESTAMP)));
 
-      $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
-      // date + delay
-      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2*MONTH_TIMESTAMP)));
+        $this->integer((int)$ticket->fields['slas_id_ttr'])->isEqualTo($sla_ttr_id);
+       // date + delay
+        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_resolve'])))
+         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (2 * MONTH_TIMESTAMP)));
 
-      $this->integer((int)$ticket->fields['slas_id_tto'])->isEqualTo($sla_tto_id);
-      $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own'])))
-         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1*MONTH_TIMESTAMP)));
+        $this->integer((int)$ticket->fields['slas_id_tto'])->isEqualTo($sla_tto_id);
+        $this->variable(date('Y-m-d H:i:s', strtotime($ticket->fields['time_to_own'])))
+         ->isEqualTo(date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + (1 * MONTH_TIMESTAMP)));
 
-      $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
+        $this->integer(strtotime($ticket->fields['ola_ttr_begin_date']))
          ->isEqualTo(strtotime($ticket->fields['date_mod']));
-   }
+    }
 }

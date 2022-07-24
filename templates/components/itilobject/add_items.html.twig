@@ -1,0 +1,106 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div id="itemAddForm{{ rand }}">
+   {% if can_edit %}
+      {{ my_items_dropdown|raw }}
+      {{ all_items_dropdown|raw }}
+      <a href="javascript:itemAction{{ rand }}('add');" class="btn btn-sm btn-outline-secondary">
+         <i class="fas fa-plus"></i>
+         <span>{{ _x('button', 'Add') }}</span>
+      </a>
+   {% endif %}
+
+   {% for item_to_add in items_to_add %}
+      {{ item_to_add|raw }}
+   {% endfor %}
+
+   {% if count == 0 %}
+      <input type="hidden" value="0" name="items_id">
+   {% endif %}
+
+   {% if params.id > 0 and usedcount != count %}
+      <i>{{ _n('%1$s item not saved', '%1$s items not saved', (count - usedcount))|format((count - usedcount)) }}</i>
+   {% endif %}
+   {% if params.id > 0 and usedcount > 5 %}
+      <i><a href="{{ 'Ticket'|itemtype_form_path(params.id) }}&amp;forcetab=Item_Ticket$1">{{ __('Display all items') ~ '(' ~ usedcount ~ ')' }}</a></i>
+   {% endif %}
+   <script>
+      function refreshItemCounter{{ rand }}() {
+         const item_form = $("#itemAddForm{{ rand }}");
+         let item_count = item_form.find('input[type="hidden"][name^="items_id["]').length;
+         item_form.closest('.accordion-item').find('.item-counter').text(item_count);
+      }
+
+      function itemAction{{ rand }}(action, itemtype, items_id) {
+          if (itemtype === undefined && items_id === undefined) {
+              const my_items_dropdown = $('#dropdown_my_items{{ rand }}');
+              if (my_items_dropdown.length > 0) {
+                 const val = my_items_dropdown.val();
+                 if (val && val.includes('_')) {
+                    itemtype = val.split('_')[0];
+                    items_id = val.split('_')[1];
+                 }
+              }
+              if (itemtype === undefined && items_id === undefined) {
+                  const dropdown_itemtype = $('#dropdown_itemtype{{ rand }}');
+                  const dropdown_items_id = $('#dropdown_add_items_id{{ rand }}');
+                  if (dropdown_itemtype.length > 0 && dropdown_items_id.length > 0) {
+                      itemtype = dropdown_itemtype.val();
+                      items_id = dropdown_items_id.val();
+                  }
+              }
+          }
+         if (!itemtype || !items_id) {
+            glpi_toast_error(__('Please select an item to add'));
+            return;
+         }
+         $.ajax({
+            url: CFG_GLPI.root_doc + '/ajax/itemTicket.php',
+            dataType: 'html',
+            data: {
+               'action': action,
+               'rand': {{ rand }},
+               'params': {{ opt|json_encode|raw }},
+               'my_items': $('#dropdown_my_items{{ rand }}').val(),
+               'itemtype': itemtype,
+               'items_id': items_id,
+            },
+            success: function(response) {
+               $("#itemAddForm{{ rand }}").replaceWith(response);
+            }
+         });
+      }
+      refreshItemCounter{{ rand }}();
+   </script>
+</div>

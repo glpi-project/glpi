@@ -1,0 +1,256 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+:root[data-high-contrast="1"] {
+    $hc-border-color: $gray-600;
+    $hc-tr-background-color: $gray-600;
+    $hc-border-color-contrast: $gray-800;
+
+    @if $is-dark {
+        $hc-border-color-contrast: $gray-400;
+    }
+
+    /****** TABLES ******/
+
+    table {
+        box-sizing: border-box;
+        border-collapse: collapse;
+        border: 1px solid $hc-border-color;
+    }
+
+    .tab-content .tab-pane:first-of-type .main-header {
+        border-bottom: 1px solid $hc-border-color;
+        border-top: 1px solid $hc-border-color;
+        box-sizing: border-box;
+        border-collapse: collapse;
+    }
+
+    // Tables in KB should still have border
+    #kbanswer table {
+        th,
+        td {
+            border: 1px solid $hc-border-color;
+        }
+    }
+
+    #searchcriterias {
+        .tab_cadre_fixe {
+            border: 1px solid $hc-border-color;
+        }
+
+        th,
+        td {
+            border: 0;
+        }
+    }
+
+    table.table tr {
+        border: 1px solid $hc-border-color-contrast;
+    }
+
+    .order_DESC::before {
+        color: $dark;
+    }
+
+    .tab_cadre_pager {
+        img {
+            &[src*="first.png"],
+            &[src*="left.png"],
+            &[src*="right.png"],
+            &[src*="last.png"] {
+                border: 1px solid $hc-border-color-contrast;
+                padding: 2px;
+                border-radius: 2px;
+            }
+
+            &:hover {
+                opacity: 0.5;
+            }
+        }
+
+        .fa-wrench {
+            border: 1px solid $hc-border-color-contrast;
+            padding: 2px;
+            border-radius: 2px;
+        }
+    }
+
+    /****** TABS ******/
+
+    .card-tabs {
+        &:not(.horizontal) {
+            .nav-tabs {
+                border-bottom: 1px solid $hc-border-color-contrast;
+                padding: 0;
+            }
+        }
+
+        .nav-tabs li {
+            border-color: $hc-border-color-contrast;
+            border-bottom: 0;
+            box-sizing: border-box;
+            border-collapse: collapse;
+        }
+
+        &.vertical .nav-tabs li {
+            border-color: $hc-border-color-contrast;
+            border-bottom: 0;
+            box-sizing: border-box;
+            border-collapse: collapse;
+            border-right-width: 1px !important;
+            margin: 0;
+            width: 99%;
+
+            a {
+                border: 1px solid $hc-border-color-contrast !important;
+            }
+        }
+    }
+
+    /****** CONTROLS ******/
+
+    textarea {
+        border: 1px solid $hc-border-color-contrast;
+    }
+
+    input {
+        &[type="text"],
+        &[type="password"],
+        &[type="number"] {
+            border: 1px solid $hc-border-color-contrast;
+        }
+    }
+
+    select,
+    .select2-choice,
+    .select2-container--default .select2-selection {
+        border: 1px solid $hc-border-color-contrast !important;
+    }
+
+    @each $color, $value in $theme-colors {
+        @if $is-dark {
+            @each $color, $value in $theme-colors {
+                .btn-#{$color} {
+                    border-color: lighten($value, 15%);
+                }
+                .btn-outline-#{$color} {
+                    border-color: lighten($value, 15%);
+                }
+            }
+        } @else {
+            @each $color, $value in $theme-colors {
+                .btn-#{$color} {
+                    border-color: darken($value, 45%);
+                }
+                .btn-outline-#{$color} {
+                    border-color: darken($value, 45%);
+                }
+            }
+        }
+    }
+
+    .btn.btn-secondary,
+    .btn.btn-outline-secondary {
+        border-color: $hc-border-color-contrast;
+    }
+
+    .btn.btn-ghost-secondary {
+        border: 1px solid $hc-border-color-contrast;
+    }
+
+    .subheader .box {
+        background-color: $light;
+        border: 2px solid $dark;
+        margin-right: 2px;
+    }
+
+    .form-check {
+        border: 1px solid;
+    }
+
+    /****** TinyMCE *****/
+    .tox:not([dir="rtl"]) .tox-toolbar__group:not(:last-of-type) {
+        border-right: 1px solid $hc-border-color-contrast;
+    }
+
+    /****** MISC ******/
+
+    .pointer {
+        opacity: 1;
+    }
+
+    .dropdown-toggle {
+        border: 1px solid $hc-border-color-contrast;
+    }
+
+    #navbar-menu .dropdown-toggle {
+        border: 1px solid $dark;
+    }
+
+    .nav.nav-tabs .nav-item .nav-link {
+        border-color: $hc-border-color-contrast !important;
+
+        &.active {
+            border: 2px solid $hc-border-color-contrast;
+        }
+    }
+
+    .navigationheader a {
+        border: 1px solid $hc-border-color-contrast;
+    }
+
+    .pagination .page-item {
+        border: 1px solid $hc-border-color-contrast;
+
+        .page-link {
+            border-radius: 0 !important;
+        }
+    }
+
+    .accordion-header {
+        border: 1px solid $hc-border-color-contrast;
+    }
+
+    .timeline-item .timeline-content {
+        border: 1px solid $hc-border-color-contrast;
+
+        &::before,
+        &::after {
+            border-color: $hc-border-color-contrast $hc-border-color-contrast transparent transparent;
+        }
+    }
+
+    .timeline-buttons .answer-action {
+        border: 1px solid $hc-border-color-contrast;
+    }
+}

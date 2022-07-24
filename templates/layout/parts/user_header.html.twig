@@ -1,0 +1,168 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand_header = random() %}
+
+<div class="btn-group">
+   {% if is_debug_active %}
+      <button class="btn btn-outline-danger d-none d-md-block see_debug" role="button">
+         <i class="ti ti-bug fa-lg mt-1" title=" {{ __('Display GLPI debug informations') }}">
+            <span class="visually-hidden">{{ __('Display GLPI debug informations') }}</span>
+         </i>
+      </button>
+   {% endif %}
+
+   {% if user is not null %}
+      <div class="navbar-nav flex-row order-md-last user-menu">
+         <div class="nav-item dropdown">
+            <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle user-menu-dropdown-toggle {% if is_debug_active %}bg-red-lt{% endif %}"
+               data-bs-toggle="dropdown" data-bs-auto-close="outside">
+               {% if not anonymous %}
+                  <div class="pe-2 d-none d-xl-block">
+                     <div>{{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value|u.truncate(35, '...') }}</div>
+                     {% set entity_completename = session('glpiactive_entity_name')|verbatim_value %}
+                     <div class="mt-1 small text-muted" title="{{ entity_completename }}"
+                          data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        {{ entity_completename|truncate_left }}
+                     </div>
+                  </div>
+
+                  {{ include('components/user/picture.html.twig', {
+                     'users_id': user.fields['id'],
+                     'with_link': false,
+                     'avatar_size': '',
+                  }) }}
+               {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
+               <h6 class="dropdown-header">{{ get_item_name(user) }}</h6>
+
+               {% if not anonymous %}
+                  {{ include('layout/parts/profile_selector.html.twig') }}
+
+                  <div class="dropdown-divider"></div>
+
+                  {% if has_itemtype_right('Config', constant('UPDATE')) %}
+                     <a href="{{ path('/ajax/switchdebug.php') }}"
+                        class="dropdown-item {% if is_debug_active %}bg-red-lt{% endif %}"
+                        title="{{ __('Change mode') }}">
+                        <i class="ti fa-fw ti-bug debug"></i>
+                        {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
+                     </a>
+                  {% endif %}
+               {% endif %}
+
+               {# @TODO Saved searches panel #}
+
+               <div class="dropdown-item">
+                  <i class="ti fa-fw ti-language"></i>
+                  {{ call('User::showSwitchLangForm')|raw }}
+               </div>
+
+               <div class="dropdown-divider"></div>
+
+               <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
+                  <i class="ti fa-fw ti-help"></i>
+                  {{ __('Help') }}
+               </a>
+
+               <a href="#" class="dropdown-item" title="{{ __('About') }}"
+                  id="show_about_modal_{{ rand_header }}">
+                  <i class="ti fa-fw ti-info-circle"></i>
+                  {{ __('About') }}
+                  {% if founded_new_version is not null %}
+                     <span class="badge bg-info text-dark ms-2">
+                        1
+                     </span>
+                  {% endif %}
+               </a>
+
+               <div class="dropdown-divider"></div>
+
+               <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
+                  <i class="ti fa-fw ti-adjustments-alt"></i>
+                  {{ __('My settings') }}
+               </a>
+               <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">
+                  <i class="ti fa-fw ti-logout"></i>
+                  {{ __('Logout') }}
+               </a>
+            </div>
+         </div>
+      </div>
+
+      <div class="modal fade" id="about_modal_{{ rand_header }}" role="dialog">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h4 class="modal-title">{{ __('About') }}</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+               </div>
+               <div class="modal-body">
+                  <p><a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
+                     GLPI {{ constant('GLPI_VERSION') }}
+                     Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
+                  </a></p>
+                  {% if founded_new_version is not null %}
+                     <p>
+                        <a href="http://www.glpi-project.org" target="_blank"
+                           title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
+                           {{ __('A new version is available: %s.')|format(founded_new_version) }}
+                           <span class="badge bg-info text-dark">
+                              1
+                           </span>
+                        </a>
+                     </p>
+                  {% endif %}
+               </div>
+            </div>
+         </div>
+      </div>
+
+   {% elseif constant('GLPI_DEMO_MODE') %}
+      <div class="dropdown-item">
+         <i class="fas fa-fw fa-language"></i>
+         {{ call('User::showSwitchLangForm')|raw }}
+      </div>
+
+   {% endif %}
+</div>
+
+<script type="text/javascript">
+$(function() {
+   $("#show_about_modal_{{ rand_header }}").click(function(e) {
+      e.preventDefault();
+      $("#about_modal_{{ rand_header }}").remove().modal("show");
+   });
+});
+</script>

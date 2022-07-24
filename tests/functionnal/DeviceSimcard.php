@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -34,84 +37,89 @@ namespace tests\units;
 
 use DbTestCase;
 
-class DeviceSimcard extends DbTestCase {
-   private $method;
+class DeviceSimcard extends DbTestCase
+{
+    private $method;
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-      //to handle GLPI barbarian replacements.
-      $this->method = str_replace(
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
+       //to handle GLPI barbarian replacements.
+        $this->method = str_replace(
             ['\\', 'beforeTestMethod'],
             ['', $method],
             __METHOD__
-            );
-   }
+        );
+    }
 
-   public function testAdd() {
-      $this->login();
-      $obj = new \DeviceSimcard();
+    public function testAdd()
+    {
+        $this->login();
+        $obj = new \DeviceSimcard();
 
-      // Add
-      $in = [
+       // Add
+        $in = [
             'designation'              => $this->method,
             'manufacturers_id'         => $this->getUniqueInteger(),
             'devicesimcardtypes_id'    => $this->getUniqueInteger(),
             'voltage'                  => $this->getUniqueInteger(),
             'allow_voip'               => '1'
-      ];
-      $id = $obj->add($in);
-      $this->integer((int)$id)->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $id = $obj->add($in);
+        $this->integer((int)$id)->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      $this->variable($obj->getField('id'))->isEqualTo($id);
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        $this->variable($obj->getField('id'))->isEqualTo($id);
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testUpdate() {
-      $this->login();
-      $obj = new \DeviceSimcard();
+    public function testUpdate()
+    {
+        $this->login();
+        $obj = new \DeviceSimcard();
 
-      // Add
-      $id = $obj->add([
+       // Add
+        $id = $obj->add([
             'designation' => $this->getUniqueString(),
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Update
-      $in = [
+       // Update
+        $in = [
             'id'                       => $id,
             'designation'              => $this->method,
             'manufacturers_id'         => $this->getUniqueInteger(),
             'devicesimcardtypes_id'    => $this->getUniqueInteger(),
             'voltage'                  => $this->getUniqueInteger(),
             'allow_voip'               => '1'
-      ];
-      $this->boolean($obj->update($in))->isTrue();
-      $this->boolean($obj->getFromDB($id))->isTrue();
+        ];
+        $this->boolean($obj->update($in))->isTrue();
+        $this->boolean($obj->getFromDB($id))->isTrue();
 
-      // getField methods
-      foreach ($in as $k => $v) {
-         $this->variable($obj->getField($k))->isEqualTo($v);
-      }
-   }
+       // getField methods
+        foreach ($in as $k => $v) {
+            $this->variable($obj->getField($k))->isEqualTo($v);
+        }
+    }
 
-   public function testDelete() {
-      $this->login();
-      $obj = new \DeviceSimcard();
+    public function testDelete()
+    {
+        $this->login();
+        $obj = new \DeviceSimcard();
 
-      // Add
-      $id = $obj->add([
+       // Add
+        $id = $obj->add([
             'designation' => $this->method,
-      ]);
-      $this->integer($id)->isGreaterThan(0);
+        ]);
+        $this->integer($id)->isGreaterThan(0);
 
-      // Delete
-      $in = [
+       // Delete
+        $in = [
             'id'                       => $obj->getID(),
-      ];
-      $this->boolean($obj->delete($in))->isTrue();
-   }
+        ];
+        $this->boolean($obj->delete($in))->isTrue();
+    }
 }

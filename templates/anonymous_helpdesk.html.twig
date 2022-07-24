@@ -1,0 +1,75 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'layout/page_card_notlogged.html.twig' %}
+
+{% block content_block %}
+   <form action="{{ path('front/tracking.injector.php') }}" method="post" autocomplete="off" data-submit-once>
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="_type" value="Helpdesk" />
+      <input type="hidden" name="_auto_import" value="1" />
+
+      <h2 class="mb-4">{{ __('Helpdesk reporting form') }}</h2>
+
+      <div class="mb-3">
+         <label class="form-label text-muted">{{ __('Select an urgency level') }}</label>
+         <select name="urgency" class="form-select">
+            <option value="5">{{ _x('urgency', 'Very high') }}</option>
+            <option value="4">{{ _x('urgency', 'High') }}</option>
+            <option value="3" selected="selected">{{ _x('urgency', 'Medium') }}</option>
+            <option value="2">{{ _x('urgency', 'Low') }}</option>
+            <option value="1">{{ _x('urgency', 'Very low') }}</option>
+         </select>
+      </div>
+
+      <span class="text-muted">{{ __('Describe your issue') }}</span>
+      <fieldset class="form-fieldset">
+         <div class="mb-3">
+            <label class="form-label">{{ __('Title') }}</label>
+            <input type="text" name="name" class="form-control" />
+         </div>
+
+         <div class="mb-3">
+            <label class="form-label">{{ __('Content') }}</label>
+            <textarea name="content" class="form-control" rows="6"></textarea>
+         </div>
+      </fieldset>
+
+      <div class="form-footer">
+         <button class="btn btn-icon btn-primary w-100" name="add">
+            <i class="fas fa-envelope"></i>
+            <span>{{ __('Send') }}</span>
+         </button>
+      </div>
+   </form>
+{% endblock %}

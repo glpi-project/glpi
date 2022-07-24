@@ -1,0 +1,236 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+
+<div class="itil-timeline d-flex flex-column align-items-start mb-auto">
+    {% if not is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/main_description.html.twig') }}
+    {% else %}
+        {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
+        {{ include('components/itilobject/answer.html.twig') }}
+    {% endif %}
+
+   {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
+   {% for entry in timeline %}
+      {% set entry_i = entry['item'] %}
+      {% set users_id = entry_i['users_id'] %}
+      {% set is_private = entry_i['is_private'] ?? false %}
+      {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
+      {% set date_mod = entry_i['date_mod'] %}
+      {% set entry_rand = random() %}
+      {% set is_current_user = users_id == session('glpiID') %}
+      {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
+
+      {# Fix solution type #}
+      {% if entry['type'] is same as 'Solution' %}
+         {% set entry = entry|merge({'type': 'ITILSolution'}) %}
+      {% endif %}
+
+      {% set can_edit_i  = entry_i['can_edit'] %}
+      {% set can_promote = (entry['type'] == 'ITILFollowup' or entry['type'] == 'TicketTask') and can_edit_i and not status_closed %}
+      {% set is_promoted = can_promote and entry_i['sourceof_items_id'] > 0 %}
+
+      {% set timeline_position = entry_i['timeline_position'] %}
+      {% set item_position = 't-left' %}
+      {% if timeline_position == constant('CommonITILObject::TIMELINE_LEFT') %}
+         {% set item_position = 't-left' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDLEFT') %}
+         {% set item_position = 't-left t-middle' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDRIGHT') %}
+         {% set item_position = 't-right t-middle' %}
+      {% elseif timeline_position == constant('CommonITILObject::TIMELINE_RIGHT') %}
+         {% set item_position = 't-right' %}
+      {% endif %}
+
+      {% set itiltype = entry['itiltype'] is defined ? 'ITIL' ~ entry['itiltype'] : entry['type'] %}
+
+      {% set state_class = '' %}
+      {% if entry_i['state'] is constant('Planning::INFO') %}
+         {% set state_class = 'info' %}
+      {% endif %}
+      {% if entry_i['state'] is constant('Planning::TODO') %}
+         {% set state_class = 'todo' %}
+      {% endif %}
+      {% if entry_i['state'] is constant('Planning::DONE') %}
+         {% set state_class = 'done' %}
+      {% endif %}
+
+      {% set solution_class = '' %}
+      {% if itiltype == 'ITILSolution'  %}
+         {% if entry_i['status'] is constant('CommonITILValidation::WAITING') %}
+            {% set solution_class = 'waiting' %}
+         {% endif %}
+         {% if entry_i['status'] is constant('CommonITILValidation::ACCEPTED') %}
+            {% set solution_class = 'accepted' %}
+         {% endif %}
+         {% if entry_i['status'] is constant('CommonITILValidation::REFUSED') %}
+            {% set solution_class = 'refused' %}
+         {% endif %}
+      {% endif %}
+
+      <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
+            data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
+            {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
+         <div class="row">
+            <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
+               {% if entry_i['state'] is constant('Planning::TODO') and can_edit_i %}
+                  <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+               {% elseif entry_i['state'] is constant('Planning::DONE') and can_edit_i %}
+                  <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+               {% endif %}
+            </div>
+
+            <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : 'order-first' }}">
+               {% set avatar_rand = random() %}
+               {# log entries have no users_id #}
+               {% set entry_user = users_id is defined and users_id is not null ? get_item('User', users_id) : null %}
+               {% if entry_user is not null %}
+                  {% set user_fields = entry_user.fields %}
+                  {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()|verbatim_value}) %}
+                  {% set user_fields = user_fields|merge({email: entry_user.getDefaultEmail()}) %}
+                  <span id="timeline-avatar{{ avatar_rand }}">
+                     {{ include('components/user/picture.html.twig', {
+                        'users_id': users_id,
+                        'enable_anonymization': anonym_user
+                     }, with_context = false) }}
+                  </span>
+                  {% if not anonym_user %}
+                     {% do call('Html::showToolTip', [
+                        include('components/user/info_card.html.twig', {
+                           'user': user_fields,
+                           'enable_anonymization': false,
+                        }, with_context = false), {
+                           'applyto': 'timeline-avatar' ~ avatar_rand
+                        }]) %}
+                  {% endif %}
+               {% else %}
+                  <span id="timeline-avatar{{ avatar_rand }}"><span class="avatar avatar-md rounded"></span></span>
+               {% endif %}
+            </div>
+            <div class="col-12 col-sm d-flex flex-column content-part">
+               <span class="mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
+                  <div class="card-body px-1 px-xxl-3">
+                     {{ include('components/itilobject/timeline/timeline_item_header.html.twig') }}
+
+                     {% if itiltype in timeline_itemtypes|column('type') %}
+                        {% set matching_types = timeline_itemtypes|filter((v) => v.type == itiltype) %}
+                        {% if matching_types|length > 0 %}
+                           {% set timeline_itemtype = matching_types|first %}
+                           {% if timeline_itemtype.template is defined %}
+                              {{ include(timeline_itemtype.template, {'form_mode': 'view'}) }}
+                           {% endif %}
+                        {% endif %}
+                     {% else %}
+                        <div class="read-only-content">
+                           {{ entry_i['content']|safe_html }}
+                        </div>
+                     {% endif %}
+                     <div class="edit-content collapse">
+                        <div class="ajax-content"></div>
+                     </div>
+                  </div>
+               </span>
+
+               {% if entry['documents'] is defined %}
+                  {{ include('components/itilobject/timeline/sub_documents.html.twig', {
+                     'item': item,
+                     'entry': entry
+                  }) }}
+               {% endif %}
+            </div>
+         </div>
+      </div>
+   {% endfor %}
+
+    {% if is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/main_description.html.twig') }}
+    {% endif %}
+
+    <div class="timeline-item tasks-title d-none">
+        <h3>{{ _n('Task', 'Tasks', get_plural_number()) }}</h3>
+    </div>
+
+    {{ include('components/itilobject/timeline/todo-list-summary.html.twig') }}
+
+    <div class="timeline-item validations-title d-none mt-4">
+        <h3>{{ _n('Validation', 'Validations', get_plural_number()) }}</h3>
+    </div>
+
+    {% if not is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
+        {{ include('components/itilobject/answer.html.twig') }}
+    {% endif %}
+
+</div>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".edit-timeline-item", function() {
+      var timeline_item = $(this).closest(".timeline-item");
+      var content_block = timeline_item.find(".timeline-content");
+      var itemtype      = timeline_item.data('itemtype');
+      var items_id      = timeline_item.data('items-id');
+      var item_action   = timeline_item.data('item-action');
+
+      content_block.find(".read-only-content").hide();
+      content_block.find(".edit-content").show()
+         .find(".ajax-content")
+         .html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+         .load("{{ path('/ajax/timeline.php') }}", {
+            'action'     : 'viewsubitem',
+            'type'       : itemtype,
+            'parenttype' : '{{ item.getType() }}',
+            '{{ item.getForeignKeyField() }}': {{ item.fields['id'] }},
+            'id'         : items_id,
+            'item_action': item_action
+         });
+
+      timeline_item.find('.timeline-item-buttons').addClass('d-none');
+      timeline_item.find('.close-edit-content').removeClass('d-none');
+
+      $("#itil-footer").find(".main-actions").hide();
+   });
+
+   $(document).on("click", ".close-edit-content", function() {
+      var timeline_item = $(this).closest(".timeline-item");
+      timeline_item.find('.timeline-item-buttons').removeClass('d-none');
+      timeline_item.find('.close-edit-content').addClass('d-none');
+
+      timeline_item.find('.ajax-content').html('');
+      timeline_item.find('.read-only-content').show();
+
+      $("#itil-footer .main-actions").show();
+   });
+});
+</script>

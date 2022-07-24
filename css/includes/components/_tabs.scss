@@ -1,0 +1,81 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.card-tabs {
+    #tabspanel.nav-tabs {
+        .nav-link {
+            background: $tabs-bg;
+            color: $tabs-fg;
+            border-color: $tabs-border;
+
+            &.active {
+                background: $tabs-active-bg;
+                color: $tabs-active-fg;
+                border-color: $tabs-active-border;
+                font-weight: bold;
+
+                .badge {
+                    font-weight: bold;
+                }
+            }
+
+            .badge {
+                margin-left: 5px;
+                background-color: $badge-bg;
+                color: $badge-fg;
+            }
+        }
+    }
+
+    &.vertical {
+        .nav-link {
+            border-bottom: $card-border-width solid $card-border-color;
+
+            &.active {
+                border-left-width: 5px;
+                border-right-color: transparent !important;
+            }
+        }
+    }
+
+    &.horizontal {
+        .nav-link {
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+
+            &.active {
+                border-bottom-color: transparent !important;
+            }
+        }
+    }
+}

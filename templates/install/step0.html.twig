@@ -1,0 +1,70 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
+<div class="container text-center">
+   <div class="text-start">
+      {% set alert_messages %}
+         {{ __("Choose 'Install' for a completely new installation of GLPI.") }}<br>
+         {{ __("Select 'Upgrade' to update your version of GLPI from an earlier version") }}
+      {% endset %}
+
+      {{ alerts.alert_info(
+         __('Installation or update of GLPI'),
+         alert_messages
+      ) }}
+   </div>
+
+   <form action="install.php" method="post" class="d-inline" data-submit-once>
+      <button type="submit" name="submit" class="btn btn-primary">
+         {{ _x("button", "Install") }}
+         <i class="fas fa-download ms-1"></i>
+      </button>
+
+      <input type="hidden" name="update" value="no">
+      <input type="hidden" name="install" value="Etape_0">
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+
+   <form action="install.php" method="post" class="d-inline" data-submit-once>
+      <button type="submit" name="submit" class="btn btn-primary">
+         {{ _x("button", "Upgrade") }}
+         <i class="fas fa-caret-square-up ms-1"></i>
+      </button>
+
+      <input type="hidden" name="update" value="yes">
+      <input type="hidden" name="install" value="Etape_0">
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+</div>

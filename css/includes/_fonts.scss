@@ -1,0 +1,51 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+@import "~@fontsource/inter/scss/mixins";
+
+$fontDir: "../css/lib/fontsource/inter/files";
+
+@include fontFace($weight: 100);
+@include fontFace($weight: 200);
+@include fontFace($weight: 300);
+@include fontFace($weight: 400);
+@include fontFace($weight: 500);
+@include fontFace($weight: 600);
+@include fontFace($weight: 700);
+@include fontFace($weight: 800);
+@include fontFace($weight: 900);
+
+$font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
+$ti-font-path: "../css/lib/tabler/icons/iconfont/fonts";
+
+@import "~@tabler/icons/iconfont/tabler-icons";

@@ -1,0 +1,81 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+$ct-series-names: () !default;
+$ct-series-colors: () !default;
+
+@function setColor($color) {
+    @if (lightness($color) > 40) {
+        @return darken($color, 30%);
+    } @else {
+        @return lighten($color, 30%);
+    }
+}
+
+@for $i from 0 to length($ct-series-names) {
+    $color: nth($ct-series-colors, $i + 1);
+
+    .ct-series-#{nth($ct-series-names, $i + 1)} {
+        .ct-point,
+        .ct-line,
+        .ct-bar,
+        .ct-slice-donut {
+            stroke: $color;
+        }
+
+        .ct-bar + .ct-barlabel {
+            fill: setcolor($color);
+        }
+
+        .ct-circle {
+            fill: $color;
+
+            & + .ct-label {
+                fill: $color;
+            }
+        }
+
+        .ct-slice-pie,
+        .ct-area,
+        .ct-slice-donut-solid {
+            fill: $color;
+            stroke: setcolor($color);
+        }
+    }
+
+    // legend
+    .ct-series-#{$i}:before {
+        background-color: $color;
+        border-color: $color;
+    }
+}

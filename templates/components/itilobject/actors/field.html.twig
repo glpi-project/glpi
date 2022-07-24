@@ -1,0 +1,334 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+
+{% set actors = item.getActorsForType(actortypeint, params) %}
+
+{% set required = false %}
+{% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) or itiltemplate.isMandatoryField('_groups_id_' ~ actortype) or (actortype == 'assign' and itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
+   {% set required = true %}
+{% endif %}
+
+{% set is_actor_hidden = false %}
+{% if itiltemplate.isHiddenField('_users_id_' ~ actortype) and itiltemplate.isHiddenField('_groups_id_' ~ actortype) and (actortype != 'assign' or itiltemplate.isHiddenField('_suppliers_id_' ~ actortype)) %}
+   {% set is_actor_hidden = true %}
+{% endif %}
+
+{% set onchange = '' %}
+{% if item.isNewItem() %}
+   {% set onchange = 'this.form.submit();' %}
+{% endif %}
+
+{% if not is_actor_hidden %}
+   <select class="form-select" multiple="true" id="actor_{{ rand }}" data-actor-type="{{ actortype }}"
+        {{ required ? 'required' : '' }}>
+   {% for actor in actors %}
+      {% set unique_id = "user_opt_" ~ actortype ~ actor.itemtype ~ actor.items_id %}
+      <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
+            data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
+            data-use-notification="{{ actor['use_notification'] }}"
+            data-alternative-email="{{ actor['alternative_email'] }}"
+            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}" data-glpi-popover-source="content{{ unique_id }}">
+         {{ actor['title']|verbatim_value }}
+      </option>
+   {% endfor %}
+   </select>
+
+   {% if not item.isNewItem() and not params['template_preview'] and not disable_assign_to_me and canupdate %}
+      {{ include('components/itilobject/actors/assign_to_me.html.twig') }}
+   {% endif %}
+
+   <script type="text/javascript">
+   $(function() {
+      var actorytype = '{{ actortype }}';
+
+      // function to display an option in the list or the selected input
+      var genericTemplate_{{ rand }} = function(option = {}, is_selection = false) {
+         var element   = $(option.element);
+         var itemtype  = element.data('itemtype') ?? option.itemtype;
+         var items_id  = element.data('items-id') ?? option.items_id;
+         var text      = escapeMarkupText(element.data('text') ?? option.text ?? '');
+         var title     = escapeMarkupText(element.data('title') ?? option.title ?? '');
+         var use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
+         var alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
+
+         var icon = "";
+         var fk   = "";
+         switch (itemtype) {
+            case "User":
+               if (items_id == 0) {
+                  text = alt_email;
+                  icon = `<i class="ti  fa-fw ti-mail mx-1" title="{{ __('Direct email') }}"></i>`;
+               } else {
+                  icon = `<i class="ti  fa-fw ti-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
+               }
+               if ("{{ actortype }}" == "assign") {
+                  fk = "users_id_assign";
+               } else if ("{{ actortype }}" == "requester") {
+                  fk = "users_id_requester";
+               }
+               break;
+            case "Group":
+               icon = `<i class="ti  fa-fw ti-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
+               if ("{{ actortype }}" == "assign") {
+                  fk = "groups_id_assign";
+               } else if ("{{ actortype }}" == "requester") {
+                  fk = "groups_id_requester";
+               }
+               break;
+            case "Supplier":
+               icon = `<i class="ti fa-fw ti-package mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
+               fk   = "suppliers_id_assign";
+               break;
+         }
+
+         var actions = "";
+         {% if canupdate %}
+         if (['User', 'Supplier', 'Email'].includes(itemtype)
+            && is_selection) {
+            var fa_class = "far";
+            if (use_notif) {
+               fa_class = "fas";
+            }
+            actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
+                              data-bs-toggle="tooltip" data-bs-placement="top"
+                              title="{{ __('Email followup') }}"
+                              type="button">
+               <i class="${fa_class} fa-bell notify-icon"></i>
+            </button>`;
+         }
+         {% endif %}
+
+         // manage specific display for tree data (like groups)
+         var indent = "";
+         if (!is_selection && "level" in option && option.level > 1) {
+            for (let index = 1; index < option.level; index++) {
+               indent = "&nbsp;&nbsp;&nbsp;"+indent;
+            }
+            indent = indent+"&raquo;";
+         }
+
+         // prepare html for option element
+         var text = (is_selection && itemtype == "Group") ? title : text;
+         var option_text    = `<span class="actor_text">${text}</span>`;
+         var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}">${indent}${icon}${option_text}${actions}</span>`);
+
+          if (is_selection && itemtype == "User") {
+              const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;
+              $.ajax({
+                  url: '{{ path('/ajax/comments.php') }}',
+                  type: 'POST',
+                  data: {
+                      'itemtype': 'User',
+                      'value': items_id,
+                  }
+              }).then((result) => {
+                  if (result) {
+                      actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                      option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+                  }
+              });
+          }
+
+         // manage ticket information (number of assigned ticket for an actor)
+         if (is_selection && itemtype != "Email") {
+            var label = '';
+            if ("{{ actortype }}" == "assign") {
+               label = "{{ __('Number of tickets already assigned') }}";
+            } else if ("{{ actortype }}" == "requester") {
+               label = "{{ __('Number of tickets as requester') }}";
+            }
+            var existing_element = $(
+               `<span class="assign_infos ms-1" title="${label}"
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     data-id="${items_id}" data-fk="${fk}">
+                  <i class="fas fa-spinner fa-spin"></i>
+               </span>`
+            );
+            option_element.append(existing_element);
+
+            $.get("{{ path('/ajax/actorinformation.php') }}", {
+               [fk]: items_id,
+               only_number: true,
+            }).done(function (number) {
+               var badge = "";
+               if (number.length > 0) {
+                  badge = `<span class="badge bg-secondary-lt">
+                  ${number}
+               </span>`;
+               }
+               existing_element.html(badge);
+            });
+         }
+
+         return option_element;
+      };
+
+      var select2_width = "{{ not disable_assign_to_me ? 'calc(100% - 30px)' : '100%' }}";
+
+      const actor_select = $("#actor_{{ rand }}");
+      actor_select.select2({
+         tags: true,
+         width: select2_width,
+         tokenSeparators: [',', ' '],
+         disabled: false, // TODO can edit
+         containerCssClass: 'actor-field',
+         templateSelection: function(option) { return genericTemplate_{{ rand }}(option, true); },
+         templateResult:    function(option) { return genericTemplate_{{ rand }}(option, false); },
+         disabled: {{ canupdate ? 'false' : 'true' }},
+         createTag: function (params) {
+            var term = $.trim(params.term);
+
+            if (term === '') {
+               return null;
+            }
+
+            // Don't offset to create a tag if it's not an email
+            if (!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/).test(term)) {
+               // Return null to disable tag creation
+               return null;
+            }
+
+            return {
+               id: term,
+               text: term,
+               itemtype: "User",
+               items_id: 0,
+               use_notification: 1,
+               alternative_email: term,
+            }
+         },
+         ajax: {
+            url: '{{ path('/ajax/actors.php') }}',
+            datatype: 'json',
+            type: 'POST',
+            data: function (params) {
+               var is_new_item = {{ item.isNewItem() ? "true" : "false" }};
+               return {
+                  action: 'getActors',
+                  actortype: actorytype,
+                  users_right: '{{ users_right ?? 'all' }}',
+                  entity_restrict: (actors.requester.length == 0 && is_new_item) ? -1 : {{ entities_id }},
+                  searchText: params.term,
+                  _idor_token: '{{ idor_token() }}',
+                  itiltemplate_class: '{{ itiltemplate.getType() }}',
+                  itiltemplates_id: {{ itiltemplate.fields['id'] ?? 0 }},
+                  itemtype: '{{ item.getType() }}',
+                  items_id: {{ item.isNewItem() ? -1 : item.fields['id'] }},
+                  item: {{ item.fields|json_encode|raw }},
+                  returned_itemtypes: {{ (returned_itemtypes ?? ['User', 'Group', 'Supplier'])|json_encode()|raw }},
+               };
+            },
+         }
+      }).on('select2:open', () => {
+          // Close popovers
+          $('.popover').popover('hide');
+      });
+
+       actor_select.parent().popover({
+           selector: '[data-glpi-popover-source]',
+           container: actor_select.parent(),
+           html: true,
+           sanitize: false,
+           trigger: 'hover',
+           delay: {
+               hide: 1500
+           },
+           template: '<' + 'div class="popover shadow" role="tooltip"><' + 'div class="popover-arrow"><' + '/div><' + 'h3 class="popover-header"><' + '/h3><' + 'div class="popover-body"><' + '/div><' + '/div>',
+           content: function() {
+               // Close other popovers
+               $('.popover').popover('hide');
+               return $('#' + $(this).attr('data-glpi-popover-source')).html();
+           }
+       });
+
+      // manage actors change
+      var updateActors{{ rand }} = function() {
+         var data = $("#actor_{{ rand }}").select2('data');
+
+         var new_actors = [];
+         data.forEach(function(selection) {
+            var element = $(selection.element);
+
+            var itemtype  = selection.itemtype ?? element.data('itemtype');
+            var items_id  = selection.items_id ?? element.data('items-id');
+            var use_notif = selection.use_notification  ?? element.data('use-notification')  ?? false;
+            var alt_email = selection.alternative_email ?? element.data('alternative-email') ?? '';
+
+            if (itemtype == "Email") {
+               itemtype  = "User";
+               use_notif = true;
+               alt_email = selection.id;
+            }
+
+            new_actors.push({
+               itemtype: itemtype,
+               items_id: items_id,
+               use_notification: use_notif,
+               alternative_email: alt_email,
+            });
+         });
+
+         actors[actorytype] = new_actors;
+
+         saveActorsToDom();
+      };
+      $("#actor_{{ rand }}").on('select2:select', function () {
+         updateActors{{ rand }}();
+         {{ onchange }}
+      });
+      $("#actor_{{ rand }}").on('select2:unselect', function () {
+         updateActors{{ rand }}();
+         {{ onchange }}
+      });
+
+      // intercept event for edit notification button
+      document.addEventListener('click', event => {
+         if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")) {
+            return openNotifyModal(event);
+         }
+         // if a click on assign info is detected prevent opening of select2
+         if (event.target.closest("#actor_{{ rand }} + .select2 .assign_infos")) {
+            event.stopPropagation();
+         }
+      }, {capture: true})
+      document.addEventListener('keydown', event => {
+         if (event.target.closest("#actor_{{ rand }} + .select2 .edit-notify-user")
+            && event.key == "Enter") {
+            return openNotifyModal(event);
+         }
+      }, {capture: true})
+   });
+   </script>
+{% endif %}

@@ -1,0 +1,61 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="table-responsive card-table">
+   <table class="{{ class|default('') }}">
+      <thead>
+      {% for header_row in header_rows %}
+         <tr>
+            {% for header in header_row %}
+               {% if header is not iterable %}
+                  {% set header = {'content': header} %}
+               {% endif %}
+               <th colspan="{{ header.colspan|default(1) }}" style="{{ header.style|default('') }}">{{ header.content|raw }}</th>
+            {% endfor %}
+         </tr>
+      {% endfor %}
+      </thead>
+      <tbody>
+      {% for row in rows %}
+         <tr class="{{ row.class|default('') }}">
+            {% for value in row.values %}
+               {% if value is not iterable %}
+                  {% set value = {'content': value} %}
+               {% endif %}
+               <td colspan="{{ value.colspan|default(1) }}" class="{{ value.class|default('') }}" style="{{ value.style|default('') }}">{{ value.content|raw }}</td>
+            {% endfor %}
+         </tr>
+      {% endfor %}
+      </tbody>
+   </table>
+</div>

@@ -1,0 +1,82 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+$is-dark: true;
+$primary: #fec95c;
+$primary-fg: #644e21;
+$secondary: #b0bbd4;
+$secondary-fg: #262d3d;
+$min-contrast-ratio: 3;
+
+.btn-primary,
+.btn-outline-primary,
+.btn-ghost-primary {
+    --tblr-btn-color-text: red;
+}
+
+$dark: #232e3c;
+$light: #9ca8c0;
+$link-color: #b6c3e0;
+$text-muted: #757d91;
+$mainmenu_bg: #2f3f64;
+$mainmenu_fg: #f4f6fa;
+$logo: "../pics/logos/logo-GLPI-100-white.png";
+$logo_reduced: "../pics/logos/logo-G-100-white.png";
+$header-fg: #6ba8f3;
+$header-border-color: transparent;
+$header-badge-bg: #1d2c3f;
+$header-badge-fg: #6ba8f3;
+$tabs-bg: #1d2531;
+$tabs-fg: $light;
+$tabs-border: transparent;
+$tabs-active-bg: rgb(42, 58, 79);
+$tabs-active-fg: #d8dfe7;
+$tabs-active-border: transparent;
+$badge-bg: $light;
+$badge-fg: $dark;
+$input-border: #35455a;
+$input-focus-bg: #35455a;
+$input-focus-border-color: #b4bfce;
+$input-disabled-bg: #35404e;
+$table-border-color: #1f2936;
+$search_border: rgba(101, 109, 119, 16%);
+$table_border: rgba(101, 109, 119, 16%);
+$border-color: rgba(101, 109, 119, 16%);
+$table-head-bg: #2c3b4f;
+$table-head-color: $light;
+$itil-secondary-bg: #1d2531 !default;
+$timeline-fup-bg: #1c2430 !default;
+$timeline-fup-fg: #8892a8 !default;
+$timeline-fup-border: #2f3d50 !default;
+
+@import "../includes/palette_dark";

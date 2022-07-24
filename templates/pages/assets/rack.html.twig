@@ -1,0 +1,187 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set rand = random() %}
+
+{% block more_fields %}
+   {{ fields.dropdownField('DCRoom', 'dcrooms_id', item.fields['dcrooms_id'], 'DCRoom'|itemtype_name, {
+      'rand': rand,
+   }) }}
+   {% set current_position = item.fields['position'] %}
+   {% do call('Ajax::updateItemOnSelectEvent',
+      [
+         'dropdown_dcrooms_id' ~ rand,
+         'room_positions',
+         config('root_doc') ~ '/ajax/dcroom_size.php',
+         {
+            'id': '__VALUE__',
+            'current': current_position,
+            'rand': rand
+         }
+      ]) %}
+   {% do call('Ajax::updateItemOnSelectEvent',
+      [
+         'dropdown_dcrooms_id' ~ rand,
+         'dropdown_locations_id' ~ rand,
+         config('root_doc') ~ '/ajax/dropdownLocation.php',
+         {
+            'items_id': '__VALUE__',
+            'itemtype': 'DCRoom'
+         }
+      ]) %}
+
+   {% set initial_field %}
+      {% if item.fields['dcrooms_id'] > 0 %}
+         {% set dcroom = get_item('DCRoom', item.fields['dcrooms_id']) %}
+         {% if dcroom is not null %}
+            {% set used = dcroom.getFilled(current_position) %}
+            {% set positions = dcroom.getAllPositions() %}
+            {{ fields.dropdownArrayField('position', current_position, positions, null, {
+               'rand': rand,
+               'used': used,
+               'no_label': true
+            }) }}
+         {% else %}
+            <div class="col-form-label">{{ __('No room found or selected') }}</div>
+         {% endif %}
+      {% else %}
+         <div class="col-form-label">{{ __('No room found or selected') }}</div>
+      {% endif %}
+   {% endset %}
+   {{ fields.ajaxField('room_positions', initial_field, __('Position in room'), {
+      'rand': rand
+   }) }}
+
+   {{ fields.dropdownArrayField(
+      'room_orientation',
+      item.fields['room_orientation'],
+      {
+         (constant('Rack::ROOM_O_NORTH')): __('North'),
+         (constant('Rack::ROOM_O_EAST')): __('East'),
+         (constant('Rack::ROOM_O_SOUTH')): __('South'),
+         (constant('Rack::ROOM_O_WEST')): __('West'),
+      },
+      __('Door orientation in room'),
+      field_options|merge({
+         'rand': rand
+      })
+   ) }}
+
+   {{ fields.numberField(
+       'number_units',
+       item.fields['number_units'],
+       __('Number of units'),
+       field_options|merge({
+          'rand': rand,
+          'min': 1,
+          'max': 100,
+          'step': 1,
+       })
+   ) }}
+
+   {{ fields.numberField(
+       'width',
+       item.fields['width'],
+       __('Width'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
+
+   {{ fields.numberField(
+       'height',
+       item.fields['height'],
+       __('Height'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
+
+   {{ fields.numberField(
+       'depth',
+       item.fields['depth'],
+       __('Depth'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
+
+   {{ fields.numberField(
+       'max_power',
+       item.fields['max_power'],
+       __('Max. power (in watts)'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
+
+   {{ fields.numberField(
+       'mesured_power',
+       item.fields['mesured_power'],
+       __('Measured power (in watts)'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
+
+   {{ fields.numberField(
+       'max_weight',
+       item.fields['max_weight'],
+       __('Max. weight'),
+       field_options|merge({
+          'rand': rand,
+          'min': 0,
+          'step': 1,
+       })
+   ) }}
+
+   {{ fields.colorField(
+       'bgcolor',
+       item.fields['bgcolor'],
+       __('Background color'),
+       field_options
+    ) }}
+{% endblock %}

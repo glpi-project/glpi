@@ -1,0 +1,108 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="item-details-panel" data-itemtype="{{ itemtype }}" data-items_id="{{ item_fields.id }}">
+   <div class="card d-flex flex-column h-100">
+      <div class="card-header d-block">
+         <h5 class="card-title">
+            <a href="{{ itemtype|itemtype_form_path(item_fields.id) }}">
+               <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}"></i>
+               {{ item_fields.name|verbatim_value }}
+            </a>
+            <button type="button" class="btn-link" onclick="$(this).closest('.item-details-panel').remove()"><i class="ti ti-x"></i></button>
+         </h5>
+         <h6 class="card-subtitle">
+            {% if item_fields.is_milestone %}
+               <i class="fas fa-map-signs me-2"></i>{{ __('Milestone') }}
+            {% endif %}
+         </h6>
+      </div>
+      <div class="card-body overflow-auto">
+         {% macro print_hook_section(name, itemtype, items_id) %}
+            {% set content = call_plugin_hook_func(name, {
+               "itemtype": itemtype,
+               "items_id": items_id
+            }, true) %}
+            {% if content is not empty and content['content']|trim is not empty %}
+               {{ content['content']|raw }}
+               <hr>
+            {% endif %}
+         {% endmacro %}
+         {{ _self.print_hook_section('pre_kanban_panel_content', itemtype, item_fields.id) }}
+         {{ _self.print_hook_section('pre_kanban_panel_main_content', itemtype, item_fields.id) }}
+
+         {% set content = item_fields.content|safe_html %}
+         {% set preview = content|length > 1000 ? content|slice(0, 1000) ~ ' (...)' : content %}
+         <div class="col-12 mb-3 rich_text_container">{{ preview|safe_html }}</div>
+
+         {{ _self.print_hook_section('post_kanban_panel_main_content', itemtype, item_fields.id) }}
+
+         <h5 class="d-flex justify-content-between">
+            <span>{{ __('Team') }}</span>
+            <button type="button" class="btn-link kanban-item-edit-team"><i class="fas fa-plus"></i></button>
+         </h5>
+         {% if team is not empty %}
+            {% set item = itemtype|itemtype_class %}
+            {% if item is usingtrait('Glpi\\Features\\Teamwork') %}
+               {% for team_role in item.getTeamRoles() %}
+                  {% set role_members = team|filter(m => m.role == team_role) %}
+                  {% if role_members|length > 0 %}
+                     <h5>{{ item.getTeamRoleName(team_role, get_plural_number()) }}</h5>
+                     <ul class="list-group team-list" data-role="{{ team_role }}">
+                        {% for team_member in role_members %}
+                           <li class="list-group-item d-flex justify-content-between p-2" data-itemtype="{{ team_member.itemtype }}"
+                               data-items_id="{{ team_member.items_id }}"
+                               data-name="{{ team_member.display_name|default(team_member.name)|verbatim_value }}"
+                               data-firstname="{{ team_member.firstname|verbatim_value }}"
+                               data-realname="{{ team_member.realname|verbatim_value }}">
+                              {# Contents added in Kanban JS #}
+                           </li>
+                        {% endfor %}
+                     </ul>
+                  {% endif %}
+               {% endfor %}
+            {% endif %}
+         {% else %}
+            {{ __('No team members') }}
+         {% endif %}
+         <hr>
+
+         {{ _self.print_hook_section('post_kanban_panel_content', itemtype, item_fields.id) }}
+      </div>
+      <div class="card-footer border-top flex-shrink-0 text-center p-3">
+         <a class="btn btn-outline w-100" target="_blank" rel="noopener" href="{{ itemtype|itemtype_form_path(item_fields.id) }}">
+            <span class="pr-1">{{ __('Open full form') }}</span>
+         </a>
+      </div>
+   </div>
+</div>

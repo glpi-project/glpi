@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,123 +17,130 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 if (!isset($_REQUEST["action"])) {
-   exit;
+    exit;
 }
+
+$extevent = new PlanningExternalEvent();
 
 if ($_REQUEST["action"] == "get_events") {
-   header("Content-Type: application/json; charset=UTF-8");
-   echo json_encode(Planning::constructEventsArray($_REQUEST));
-   exit;
+    header("Content-Type: application/json; charset=UTF-8");
+    echo json_encode(Planning::constructEventsArray($_REQUEST));
+    exit;
 }
 
-if ($_REQUEST["action"] == "update_event_times") {
-   echo Planning::updateEventTimes($_REQUEST);
-   exit;
+if (($_POST["action"] ?? null) == "update_event_times") {
+    echo Planning::updateEventTimes($_POST);
+    exit;
 }
 
-if ($_REQUEST["action"] == "view_changed") {
-   echo Planning::viewChanged($_REQUEST['view']);
-   exit;
+if (($_POST["action"] ?? null) == "view_changed") {
+    Planning::viewChanged($_POST['view']);
+    exit;
 }
 
-if ($_REQUEST["action"] == "clone_event") {
-   echo Planning::cloneEvent($_REQUEST['event']);
-   exit;
+if (($_POST["action"] ?? null) == "clone_event") {
+    $extevent->check(-1, CREATE);
+    echo Planning::cloneEvent($_POST['event']);
+    exit;
 }
 
-if ($_REQUEST["action"] == "delete_event") {
-   echo Planning::deleteEvent($_REQUEST['event']);
-   exit;
+if (($_POST["action"] ?? null) == "delete_event") {
+    $extevent->check(-1, DELETE);
+    echo Planning::deleteEvent($_POST['event']);
+    exit;
 }
 
 if ($_REQUEST["action"] == "get_externalevent_template") {
-   $key = 'planningexternaleventtemplates_id';
-   if (isset($_POST[$key])
-       && $_POST[$key] > 0) {
-      $template = new PlanningExternalEventTemplate();
-      $template->getFromDB($_POST[$key]);
+    $key = 'planningexternaleventtemplates_id';
+    if (
+        isset($_POST[$key])
+        && $_POST[$key] > 0
+    ) {
+        $template = new PlanningExternalEventTemplate();
+        $template->getFromDB($_POST[$key]);
 
-      $template->fields = array_map('html_entity_decode', $template->fields);
-      $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
-      header("Content-Type: application/json; charset=UTF-8");
-      echo json_encode($template->fields, JSON_NUMERIC_CHECK);
-      exit;
-   }
+        $template->fields = array_map('html_entity_decode', $template->fields);
+        $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
+        header("Content-Type: application/json; charset=UTF-8");
+        echo json_encode($template->fields, JSON_NUMERIC_CHECK);
+        exit;
+    }
 }
 
 Html::header_nocache();
 header("Content-Type: text/html; charset=UTF-8");
 
 if ($_REQUEST["action"] == "add_event_fromselect") {
-   Planning::showAddEventForm($_REQUEST);
+    Planning::showAddEventForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "add_event_sub_form") {
-   Planning::showAddEventSubForm($_REQUEST);
+    Planning::showAddEventSubForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "add_planning_form") {
-   Planning::showAddPlanningForm();
+    Planning::showAddPlanningForm();
 }
 
 if ($_REQUEST["action"] == "add_user_form") {
-   Planning::showAddUserForm();
+    Planning::showAddUserForm();
 }
 
 if ($_REQUEST["action"] == "add_group_users_form") {
-   Planning::showAddGroupUsersForm();
+    Planning::showAddGroupUsersForm();
 }
 
 if ($_REQUEST["action"] == "add_group_form") {
-   Planning::showAddGroupForm();
+    Planning::showAddGroupForm();
 }
 
 if ($_REQUEST["action"] == "add_external_form") {
-   Planning::showAddExternalForm();
+    Planning::showAddExternalForm();
 }
 
 if ($_REQUEST["action"] == "add_event_classic_form") {
-   Planning::showAddEventClassicForm($_REQUEST);
+    Planning::showAddEventClassicForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "edit_event_form") {
-   Planning::editEventForm($_REQUEST);
+    Planning::editEventForm($_REQUEST);
 }
 
 if ($_REQUEST["action"] == "get_filters_form") {
-   Planning::showPlanningFilter();
+    Planning::showPlanningFilter();
 }
 
-if ($_REQUEST["action"] == "toggle_filter") {
-   Planning::toggleFilter($_REQUEST);
+if (($_POST["action"] ?? null) == "toggle_filter") {
+    Planning::toggleFilter($_POST);
 }
 
-if ($_REQUEST["action"] == "color_filter") {
-   Planning::colorFilter($_REQUEST);
+if (($_POST["action"] ?? null) == "color_filter") {
+    Planning::colorFilter($_POST);
 }
 
-if ($_REQUEST["action"] == "delete_filter") {
-   Planning::deleteFilter($_REQUEST);
+if (($_POST["action"] ?? null) == "delete_filter") {
+    Planning::deleteFilter($_POST);
 }
 
 Html::ajaxFooter();

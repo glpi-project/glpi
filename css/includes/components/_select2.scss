@@ -1,0 +1,314 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+@import "~select2/src/scss/core";
+
+.select2-container {
+    display: inline-block;
+
+    *:focus {
+        outline: 0;
+    }
+
+    .select2-selection {
+        background-color: $input-bg;
+        border: $input-border-width solid $input-border-color;
+
+        @include border-radius($input-border-radius);
+        @include box-shadow($input-box-shadow);
+        @include transition($input-transition);
+
+        @include dark-mode {
+            & {
+                background-color: $dark-mode-darken;
+                border-color: $input-border;
+            }
+        }
+
+        .select2-container--focus& {
+            border-color: $input-focus-border-color;
+            box-shadow: $input-focus-box-shadow;
+        }
+
+        .select2-container--disabled& {
+            background-color: $input-disabled-bg;
+            border-color: $input-border-color;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        &.select2-selection--single {
+            @include font-size($input-font-size);
+
+            height: $input-height;
+            position: relative; // fix arrow position
+
+            .select2-selection__arrow {
+                height: $input-height;
+            }
+
+            .select2-selection__rendered {
+                line-height: $input-height;
+                direction: rtl; // ellipsis on left
+                text-align: left;
+
+                &::before {
+                    content: "\200E"; // left-to-right mark: be sure that content is displayed in ltr way
+                }
+
+                > * {
+                    unicode-bidi: plaintext; // preserve text direction
+                }
+
+                @include dark-mode {
+                    & {
+                        color: $dark-mode-text;
+                        border-color: $input-border;
+                    }
+                }
+            }
+
+            .form-select-sm + & {
+                @include font-size($input-font-size-sm);
+
+                height: $input-height-sm;
+
+                .select2-selection__arrow {
+                    height: $input-height-sm;
+
+                    b {
+                        margin-top: -4px;
+                    }
+                }
+
+                .select2-selection__rendered {
+                    line-height: $input-height-sm;
+                }
+            }
+
+            .form-select-lg + & {
+                @include font-size($input-font-size-lg);
+
+                height: $input-height-lg;
+
+                .select2-selection__arrow {
+                    height: $input-height-lg;
+
+                    b {
+                        margin-top: -1px;
+                    }
+                }
+
+                .select2-selection__rendered {
+                    line-height: $input-height-lg;
+                }
+            }
+        }
+
+        &.select2-selection--multiple {
+            @include font-size($input-font-size * 0.875);
+
+            min-height: $input-height;
+
+            .form-select-sm + & {
+                @include font-size($input-font-size-sm * 0.875);
+
+                min-height: $input-height-sm;
+            }
+
+            .form-select-lg + & {
+                @include font-size($input-font-size-lg * 0.875);
+
+                min-height: $input-height-lg;
+            }
+
+            .select2-selection__rendered {
+                .select2-selection__choice {
+                    background-color: $light;
+                    border: $input-border-width solid $input-border-color;
+
+                    @include border-radius($input-border-radius-sm);
+
+                    padding: 1px 3px;
+                    margin: 3px 3px 0 0;
+
+                    @include dark-mode {
+                        & {
+                            background-color: $dark;
+                            border-color: $input-border;
+                        }
+                    }
+
+                    .select2-selection__choice__remove {
+                        color: $dark;
+                        font-weight: bold;
+                        margin: 0 0 0 3px;
+
+                        &:hover {
+                            color: $black;
+                        }
+
+                        @include dark-mode {
+                            &,
+                            &:hover {
+                                color: $light;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .select2-dropdown {
+        border-color: $input-border-color;
+        border-radius: 0;
+
+        @include font-size($input-font-size);
+
+        @include dark-mode {
+            & {
+                background-color: $dark;
+            }
+        }
+
+        &.select-dropdown-sm {
+            @include font-size($input-font-size-sm);
+        }
+
+        &.select-dropdown-lg {
+            @include font-size($input-font-size-lg);
+        }
+
+        &.select2-dropdown--below {
+            border-top: none;
+
+            @include border-bottom-radius($input-border-radius);
+        }
+
+        &.select2-dropdown--above {
+            border-top: 1px solid $input-border-color;
+
+            @include border-top-radius($input-border-radius);
+        }
+
+        .select2-search {
+            .select2-search__field {
+                border: $input-border-width solid $input-border-color;
+
+                @include border-radius($input-border-radius);
+
+                @include dark-mode {
+                    & {
+                        background-color: $dark-mode-darken;
+                        color: $dark-mode-text;
+                        border-color: $input-border;
+                    }
+                }
+            }
+        }
+
+        .select2-results {
+            .select2-results__options {
+                .select2-results__option {
+                    &[aria-selected="true"]:not(.select2-results__option--highlighted) {
+                        background-color: darken($light, 5%);
+
+                        @include dark-mode {
+                            & {
+                                background-color: lighten($dark, 5%);
+                            }
+                        }
+                    }
+
+                    &.select2-results__option--highlighted {
+                        background-color: $primary;
+                        color: $light;
+
+                        @include dark-mode {
+                            & {
+                                background-color: $dark-mode-darken;
+                                color: $dark-mode-text;
+                                border-color: $input-border;
+                            }
+                        }
+                    }
+
+                    &[role="group"] {
+                        padding: 0;
+
+                        .select2-results__options--nested .select2-results__option {
+                            padding-left: 1em;
+                        }
+                    }
+
+                    .select2-rendered__match {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+
+    .btn-group & {
+        flex-grow: 1;
+        flex-basis: content;
+
+        // avoid overflow of select2 with btn-group
+        @at-root .btn-group.w-100 .select2-container {
+            width: 0 !important;
+        }
+
+        &:not(:last-child) {
+            .select2-selection {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+        }
+    }
+
+    & ~ .btn.btn-outline-secondary {
+        border: $input-border-width solid $input-border-color;
+
+        @include dark-mode {
+            & {
+                border-color: $input-border;
+            }
+        }
+    }
+}
+
+// fix z-index issue for select2 dropdown container with a boostrap modal
+.modal-backdrop ~ .select2-container--open {
+    z-index: $zindex-modal + 1;
+}

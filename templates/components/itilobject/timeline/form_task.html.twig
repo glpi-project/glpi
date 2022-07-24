@@ -1,0 +1,480 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set params = {'parent': item}|merge(params|default({})) %}
+
+{% set candedit = item.maySolve() %}
+{% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
+{% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
+{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
+{% set rand = random() %}
+
+{% block timeline_card %}
+   {% if form_mode == 'view' %}
+      <div class="read-only-content {{ entry_i['state'] is constant('Planning::DONE') ? 'done' : '' }}">
+         <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
+              title="{{ entry_i['content']|html_to_text }}" data-bs-toggle="tooltip">
+            {{ entry_i['content']|enhanced_html({
+               'user_mentions': true,
+               'images_gallery': true
+            }) }}
+         </div>
+
+         <div class="timeline-badges">
+            {% if entry_i['users_id_tech'] %}
+               <span class="badge bg-orange-lt">
+                  {% set is_current_tech = (entry_i['users_id_tech'] == session('glpiID')) %}
+                  {% set anonym_tech = (get_current_interface() == 'helpdesk' and not is_current_tech and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
+                  {{ include('components/user/link_with_tooltip.html.twig', {
+                     'users_id': entry_i['users_id_tech'],
+                     'enable_anonymization': anonym_tech
+                  }, with_context = false) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['groups_id_tech'] %}
+               <span class="badge bg-orange-lt">
+                  <i class="fas fa-users me-1"></i>
+                  {{ get_item_link('Group', entry_i['groups_id_tech'], {'enable_anonymization': true}) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['taskcategories_id'] %}
+               <span class="badge bg-orange-lt">
+                  {{ get_item_name('TaskCategory', entry_i['taskcategories_id']) }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['actiontime'] %}
+               <span class="actiontime badge bg-orange-lt">
+                  <i class="fas fa-stopwatch me-1"></i>
+                  {{ entry_i['actiontime']|formatted_duration }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['begin'] %}
+               <span class="planification badge bg-orange-lt">
+                  <i class="fas fa-calendar me-1"></i>
+                  {{ entry_i['begin']|formatted_datetime }}
+                  &rArr;
+                  {{ entry_i['end']|formatted_datetime }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['sourceitems_id'] %}
+               <span class="badge bg-blue-lt">
+                  <i class="fas fa-code-branch me-1"></i>
+                  {% set merged_badge %}
+                     <span class="badge ms-2 me-n2">
+                        {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
+                     </span>
+                  {% endset %}
+                  {{ __('Merged from Ticket %1$s')|format(merged_badge)|raw }}
+               </span>
+            {% endif %}
+
+            {% if entry_i['sourceof_items_id'] %}
+               <span class="badge bg-blue-lt">
+                  <i class="fas fa-code-branch me-1"></i>
+                  {% set promoted_badge %}
+                     <span class="badge ms-2 me-n2">
+                        {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
+                     </span>
+                  {% endset %}
+                  {{ __('Promoted to Ticket %1$s')|format(promoted_badge)|raw }}
+               </span>
+            {% endif %}
+
+            {{ include('components/itilobject/timeline/pending_reasons_messages.html.twig') }}
+         </div>
+      </div>
+
+      <script type="text/javascript">
+         function change_task_state(tasks_id, target) {
+            $.post('{{ path('/ajax/timeline.php') }}',
+               {'action':     'change_task_state',
+                  'tasks_id':   tasks_id,
+                  'parenttype': '{{ item.getType() }}',
+                  '{{ item.getForeignKeyField() }}': {{ item.fields['id'] }}
+               })
+               .done(function(response) {
+                  $(target).closest('.timeline-item').find('.state')
+                     .removeClass('state_1 state_2')
+                     .addClass('state_'+response.state)
+                     .attr('title', response.label);
+
+                  $(target).closest('.timeline-item').find('.read-only-content')
+                     .toggleClass('done');
+
+                  var todo_tasks   = $('.todo-list-state .state.state_1').length;
+                  var done_tasks   = $('.todo-list-state .state.state_2').length;
+                  var total_tasks  = todo_tasks + done_tasks;
+                  var percent_done = Math.floor(100 * done_tasks / total_tasks);
+
+                  $('.timeline-progress')
+                     .css('width', percent_done + '%')
+                     .attr('aria-valuenow', percent_done);
+                  $('.task-progress-label').html(percent_done + '%');
+               });
+         }
+      </script>
+   {% else %}
+      <div class="itiltask">
+         <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
+               action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
+            <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+            <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
+            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+
+            <div class="row mx-n3 mx-xxl-auto">
+               <div class="col-12 col-xl-7 col-xxl-8">
+                  {{ fields.textareaField(
+                     'content',
+                     subitem.fields['content'],
+                     '',
+                     {
+                        'full_width': true,
+                        'no_label': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': true,
+                        'enable_mentions': true,
+                        'rand': rand,
+                     }
+                  ) }}
+               </div>
+               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-o pe-xxl-auto">
+                  <div class="row">
+
+                     {% set task_template_lbl %}
+                        <i class="fas fa-reply fa-fw me-1"
+                           title="{{ _n('Task template', 'Task templates', get_plural_number()) }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
+                        'TaskTemplate',
+                        'tasktemplates_id',
+                        subitem.fields['tasktemplates_id'],
+                        task_template_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'on_change': 'itiltasktemplate_update' ~ rand ~ '(this.value)',
+                           'entity': item.fields['entities_id'],
+                           'rand': rand,
+                        }
+                     ) }}
+
+                     {% set task_date_lbl %}
+                        <i class="fas fa-calendar fa-fw me-1"
+                           title="{{ _n('Date', 'Dates', 1) }}"></i>
+                     {% endset %}
+                     {{ fields.datetimeField(
+                        'date',
+                        subitem.fields['date'],
+                        task_date_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'rand': rand,
+                        }
+                     ) }}
+
+                     {# Category #}
+                     {% set task_category_lbl %}
+                        <i class="fas fa-tag fa-fw me-1" title="{{ _n('Category', 'Categories', 1) }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
+                        'TaskCategory',
+                        'taskcategories_id',
+                        subitem.fields['taskcategories_id'],
+                        task_category_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'entity': item.fields['entities_id'],
+                           'condition': {
+                              'is_active': 1,
+                           },
+                           'rand': rand,
+                        }
+                     ) }}
+
+                     {# Status #}
+                     {% set task_state_lbl %}
+                        <i class="fas fa-tasks fa-fw me-1" title="{{ __('Status') }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownArrayField('state', subitem.fields['state'], {
+                        0: _n('Information', 'Information', 1),
+                        1: __('To do'),
+                        2: __('Done')
+                     }, task_state_lbl, {
+                        'full_width': true,
+                        'icon_label': true,
+                        'rand': rand,
+                     }) }}
+
+
+                     {% set task_private_lbl %}
+                        <i class="ti ti-lock fa-fw me-1" title="{{ __('Private') }}"></i>
+                     {% endset %}
+                     {{ fields.sliderField(
+                        'is_private',
+                        subitem.fields['is_private'],
+                        task_private_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'rand': rand,
+                        }
+                     ) }}
+
+                     {% if can_read_kb and kb_id_toload > 0 %}
+                        {% set link_kb_lbl %}
+                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                              title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
+                        {% endset %}
+                        {{ fields.sliderField(
+                           'kb_linked_id',
+                           kb_id_toload,
+                           link_kb_lbl,
+                           {
+                              'full_width': true,
+                              'icon_label': true,
+                              'rand': rand,
+                           }
+                        ) }}
+                     {% endif %}
+
+                     {% if candedit and can_update_kb and not nokb %}
+                        {% set task_to_kb_lbl %}
+                           <i class="far fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                        {% endset %}
+                        {{ fields.sliderField(
+                           '_task_to_kb',
+                           0,
+                           task_to_kb_lbl,
+                           {
+                              'full_width': true,
+                              'icon_label': true,
+                              'rand': rand,
+                           }
+                        ) }}
+                     {% endif %}
+
+                     {# Duration #}
+                     {% set task_actiontime_lbl %}
+                        <i class="fas fa-stopwatch fa-fw me-1" title="{{ __('Duration') }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownTimestampField('actiontime', subitem.fields['actiontime'], task_actiontime_lbl, {
+                        'full_width': true,
+                        'icon_label': true,
+                        'rand': rand,
+                        'min': 0,
+                        'max': 8 * constant('HOUR_TIMESTAMP'),
+                        'addfirstminutes': true,
+                        'inhours': true,
+                        'toadd': range(9, 100)|map(i => i * constant('HOUR_TIMESTAMP')),
+                     }) }}
+
+                     {# User #}
+                     {% set task_user_lbl %}
+                        <i class="fas fa-user fa-fw me-1" title="{{ 'User'|itemtype_name }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
+                        'User',
+                        'users_id_tech',
+                        subitem.fields['users_id_tech']|default(session('glpiID')),
+                        task_user_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'entity': item.fields['entities_id'],
+                           'right': 'own_ticket',
+                           'rand': rand,
+                        }
+                     ) }}
+
+                     {# Group #}
+                     {% set task_group_lbl %}
+                        <i class="fas fa-users fa-fw me-1" title="{{ 'Group'|itemtype_name }}"></i>
+                     {% endset %}
+                     {{ fields.dropdownField(
+                        'Group',
+                        'groups_id_tech',
+                        subitem.fields['groups_id_tech'],
+                        task_group_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'entity': item.fields['entities_id'],
+                           'condition': {'is_task': 1},
+                           'rand': rand,
+                        }
+                     ) }}
+
+                     <script type="text/javascript">
+                        function showPlanUpdate{{ rand }}(e) {
+                           $('#plan{{ rand }}').hide();
+                           $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
+                              action: "add_event_classic_form",
+                              form: "followups", // Was followups for tasks before. Can't find where this is used.
+                              entity: {{ item.fields['entities_id'] }},
+                              rand_user: {{ random() }},
+                              rand_group: {{ random() }},
+                              itemtype: "{{ subitem.type }}",
+                              items_id: {{ subitem.fields['id']|default(-1) }},
+                              parent_itemtype: "{{ item.type }}",
+                              parent_items_id: {{ item.fields['id'] }},
+                              parent_fk_field: "{{ item.getForeignKeyField() }}",
+                           });
+                        }
+                     </script>
+                     <div class="col-12">
+                        <button id="plan{{ rand }}" class="btn btn-outline-secondary d-block mb-2 text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
+                           <i class="fas fa-calendar"></i>
+                           <span>{{ __('Plan this task') }}</span>
+                        </button>
+                        <div id="viewplan{{ rand }}"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+            <div class="d-flex card-footer mx-n3 mb-n3">
+               {% if subitem.fields['id'] <= 0 %}
+                  <div class="input-group">
+                     <button class="btn btn-primary" type="submit" name="add">
+                        <i class="fas fa-plus"></i>
+                        <span>{{ _x('button', 'Add') }}</span>
+                     </button>
+                     <span class="input-group-text bg-yellow-lt py-0 pe-0" id="pending-reasons-control-{{ rand }}">
+                        <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top" role="button">
+                           <i class="fas fa-pause me-2"></i>
+                           <label class="form-check form-switch pt-2">
+                              <input type="hidden"   name="pending" value="0" />
+                              <input type="checkbox" name="pending" value="1" class="form-check-input"
+                                    id="enable-pending-reasons-{{ rand }}"
+                                    role="button"
+                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
+                           </label>
+                        </span>
+
+                        <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
+                           {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
+                        </div>
+                     </span>
+                  </div>
+               {% else %}
+                  <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
+                  <button class="btn btn-primary me-2" type="submit" name="update">
+                     <i class="far fa-save"></i>
+                     <span>{{ _x('button', 'Save') }}</span>
+                  </button>
+
+                  {% if subitem.can(id, constant('PURGE')) %}
+                     <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                             onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>{{ _x('button', 'Delete permanently') }}</span>
+                     </button>
+                  {% endif %}
+               {% endif %}
+            </div>
+
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+         </form>
+      </div>
+
+      <script type="text/javascript">
+         function itiltasktemplate_update{{ rand }}(value) {
+            $.ajax({
+               url: '{{ path('/ajax/task.php') }}',
+               type: 'POST',
+               data: {
+                  tasktemplates_id: value,
+                  items_id: '{{ item.fields['id'] }}',
+                  itemtype: '{{ item.getType() }}'
+               }
+            }).done(function (data) {
+                if (data.content !== undefined) {
+                    // set textarea content
+                    if (tasktinymce = tinymce.get("content_{{ rand }}")) {
+                        tasktinymce.setContent(data.content);
+                    }
+                }
+
+                if (data.taskcategories_id !== undefined) {
+                    // set category
+                    const taskcategories_id = isNaN(parseInt(data.taskcategories_id))
+                        ? 0
+                        : parseInt(data.taskcategories_id);
+                    $("#dropdown_taskcategories_id{{ rand }}").trigger("setValue", taskcategories_id);
+                }
+
+                if (data.is_private !== undefined) {
+                    // set is_private
+                    $("#is_private_{{ rand }}")
+                        .prop("checked", data.is_private == "0"
+                            ? false
+                            : true);
+                }
+
+                if (data.state !== undefined) {
+                    // Set state
+                    $("#dropdown_state{{ rand }}").trigger('setValue', data.state);
+                }
+
+                if (data.actiontime !== undefined) {
+                    // Set duration
+                    $("#dropdown_actiontime{{ rand }}").trigger('setValue', data.actiontime);
+                }
+
+                if (data.users_id_tech !== undefined) {
+                    // Set user
+                    $("#dropdown_users_id_tech{{ rand }}").trigger('setValue', data.users_id_tech);
+                }
+
+               if (data.groups_id_tech !== undefined) {
+                   // Set group
+                   $("#dropdown_groups_id_tech{{ rand }}").trigger('setValue', data.groups_id_tech);
+               }
+            });
+         }
+      </script>
+   {% endif %}
+{% endblock %}

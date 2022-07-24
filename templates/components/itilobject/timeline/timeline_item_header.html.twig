@@ -1,0 +1,110 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="d-flex timeline-header">
+   <div class="d-flex creator">
+      {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
+         'users_id': users_id,
+         'date_creation': date_creation,
+         'date_mod': date_mod,
+         'users_id_editor': entry_i['users_id_editor'],
+         'anonym_user': anonym_user,
+      }, with_context = false) }}
+   </div>
+
+   <div class="d-flex ms-auto timeline-item-buttons">
+      {% set actions = {} %}
+      {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
+         {% set edit_btn %}
+            <li>
+               <a class="dropdown-item edit-timeline-item" href="#">
+                  <i class="fa-fw ti ti-edit"></i>
+                  <span>{{ __('Edit') }}</span>
+               </a>
+            </li>
+         {% endset %}
+         {% set actions = actions|merge({edit_btn}) %}
+      {% endif %}
+
+      {% if is_private %}
+         <span class="is-private ms-2" title="{{ __('Private') }}"
+               data-bs-toggle="tooltip" data-bs-placement="bottom">
+            <i class="ti ti-lock" aria-label="{{ __('Private') }}"></i>
+         </span>
+      {% endif %}
+
+      {% if is_promoted %}
+         {% set promoted_btn %}
+            <li>
+               <a class="dropdown-item text-warning" href="{{ 'Ticket'|itemtype_form_path(entry_i['sourceof_items_id']) }}">
+                  <i class="fa-fw ti ti-git-branch"></i>
+                  <span>{{ __('%s was already promoted')|format(entry['type']|itemtype_name) }}</span>
+               </a>
+            </li>
+         {% endset %}
+         {% set actions = actions|merge({promoted_btn}) %}
+      {% elseif get_current_interface() == 'central' and item.getType() is same as 'Ticket' and item.canCreate() and (entry['type'] is same as 'ITILFollowup' or entry['type'] is same as 'TicketTask')  %}
+         {% set promote_url = '?_promoted_fup_id=' ~ entry_i['id'] %}
+         {% if entry['type'] is same as 'TicketTask' %}
+            {% set promote_url = '?_promoted_task_id=' ~ entry_i['id'] %}
+         {% endif %}
+
+         {% set promote_btn %}
+            <li>
+               <a class="dropdown-item" href="{{ 'Ticket'|itemtype_form_path ~ promote_url }}">
+                  <i class="fa-fw ti ti-git-branch"></i>
+                  <span>{{ __('Promote to Ticket') }}</span>
+               </a>
+            </li>
+         {% endset %}
+         {% set actions = actions|merge({promote_btn}) %}
+      {% endif %}
+
+      {% if actions|length %}
+         <div class="dropdown ms-2">
+            <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+               <i class="ti ti-dots-vertical"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+               {% for action in actions %}
+                  {{ action }}
+               {% endfor %}
+            </ul>
+         </div>
+      {% endif %}
+   </div>
+
+   <button class="btn btn-sm btn-ghost-secondary close-edit-content d-none ms-auto">
+      <i class="ti ti-x"></i>
+   </button>
+</div>

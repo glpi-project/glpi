@@ -1,0 +1,30 @@
+version: 2
+
+updates:
+  # Keep Github Actions dependencies up-to-date
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Strategy for npm dependencies on main branch.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    allow:
+      - dependency-type: "direct"
+    open-pull-requests-limit: 100
+    target-branch: "main"
+    versioning-strategy: "lockfile-only"
+
+  # Strategy for composer dependencies on main branch.
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    allow:
+      - dependency-type: "direct"
+    open-pull-requests-limit: 100
+    target-branch: "main"
+    versioning-strategy: "lockfile-only"

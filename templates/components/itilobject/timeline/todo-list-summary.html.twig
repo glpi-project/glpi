@@ -1,0 +1,51 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set timeline_stats = item.getTimelineStats() %}
+{% set total_duration = timeline_stats['total_duration'] ?? 0 %}
+{% set todo_percent = timeline_stats['percent_done'] ?? 0 %}
+
+<div class="timeline-item timeline_stats pb-3">
+   <div class="mb-2 ms-1 text-muted">
+      {{ __('Total duration: %s')|format(total_duration|formatted_duration) }}
+   </div>
+   <div class="d-flex">
+      <span class="task-progress-label mx-2">
+         {{ todo_percent }}%
+      </span>
+      <div class="progress mt-1" style="max-width: 260px">
+         <div class="progress-bar progress-bar-striped timeline-progress" role="progressbar" style="width: {{ todo_percent }}%;"
+              aria-valuenow="{{ todo_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+   </div>
+</div>

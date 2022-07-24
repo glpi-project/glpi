@@ -1,0 +1,183 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+$info: #80abe4;
+$enable-negative-margins: true;
+$link-hover-decoration: none;
+$table_header_bg: $dark !default;
+$input-bg: darken($dark, 2%) !default;
+$input-color: $light !default;
+$input-focus-bg: #444 !default;
+$input-focus-border-color: #868686 !default;
+$timeline-itilc-bg: #1a221a34 !default;
+$timeline-itilc-fg: #85bd81 !default;
+$timeline-itilc-border: #324132 !default;
+$timeline-fup-bg: #222 !default;
+$timeline-fup-fg: #acacac !default;
+$timeline-fup-border: #3b3b3b !default;
+$timeline-task-bg: #2722172f !default;
+$timeline-task-fg: #ccb686 !default;
+$timeline-task-border: #363532 !default;
+$timeline-sol-bg: #3a4d55 !default;
+$timeline-sol-fg: #89bfd3 !default;
+$timeline-sol-border: #435963 !default;
+$timeline-badge-bg: rgba(104, 104, 104, 15%) !default;
+$timeline-badge-fg: rgba(236, 236, 236, 80%) !default;
+$scrollbar-color-thumb: rgba($color: $secondary, $alpha: 20%) !default;
+$gray-100: $light !default;
+$gray-200: mix($light, $dark, 98%) !default;
+$gray-300: mix($light, $dark, 94%) !default;
+$gray-400: mix($light, $dark, 88%) !default;
+$gray-500: mix($light, $dark, 78%) !default;
+$gray-600: mix($light, $dark, 60%) !default;
+$gray-700: mix($light, $dark, 36%) !default;
+$gray-800: mix($light, $dark, 16%) !default;
+$gray-900: $dark !default;
+$table-striped-bg: rgba(#fff, 0.05) !default;
+$toast-header-background-color: $gray-400;
+$toast-header-color: $light;
+$btn-close-color: $light;
+
+@import "fonts";
+@import "~@tabler/core/src/scss/tabler";
+@import "logos";
+
+@mixin dark-mode {
+    $selector: &;
+
+    @media not print {
+        @if ($selector) {
+            body & {
+                @content;
+            }
+        } @else {
+            body {
+                @content;
+            }
+        }
+    }
+}
+
+// re-import styles impacted by dark-mode mixin
+@import "~@tabler/core/src/scss/layout/dark";
+@import "~@tabler/core/src/scss/layout/navbar";
+
+$input-border: $dark-mode-text !default;
+
+@include dark-mode {
+    // missing border (TODO open a pr upstream ?)
+    .form-check-input:not(:checked),
+    .form-select,
+    .form-file-text,
+    .form-control,
+    .form-selectgroup-label,
+    .form-selectgroup-check,
+    .form-imagecheck-figure::before {
+        border-color: $input-border;
+    }
+
+    .card {
+        border: 1px solid $input-border;
+    }
+
+    // Manually applied patch from unmerged PR tabler/tabler#855
+    .alert:not(.alert-important) {
+        background-color: $dark;
+        color: inherit;
+    }
+}
+
+input[type="color"] {
+    background-color: transparent;
+}
+
+.table-danger {
+    --tblr-table-bg: #642b2b;
+    --tblr-table-striped-bg: #642b2b;
+    --tblr-table-striped-color: var(--light);
+    --tblr-table-active-bg: #642b2b;
+    --tblr-table-active-color: var(--light);
+    --tblr-table-hover-bg: #642b2b;
+    --tblr-table-hover-color: var(--light);
+
+    color: var(--light);
+    border-color: #6d000a;
+}
+
+.accordion-item .accordion-button {
+    background-color: var(--dark) !important;
+}
+
+.search_page .search-container .search-card .search-results.deleted-results td {
+    color: var(--light);
+}
+
+body .modal-content,
+body .modal-header {
+    background-color: $dark-mode-lighten;
+}
+
+.navbar-collapsed {
+    #navbar-menu {
+        .nav-item {
+            .nav-link {
+                & + .dropdown-menu {
+                    background-color: $dark !important;
+                    color: $mainmenu-fg !important;
+                }
+            }
+        }
+    }
+}
+
+.page-anonymous {
+    .glpi-logo {
+        --logo: url(#{$logo-light-login}) !important;
+    }
+}
+
+.qtip-bootstrap,
+.popover .popover-body {
+    background-color: $dark-mode-lighten !important;
+    color: var(--light) !important;
+}
+
+.popover .popover-arrow::after {
+    border-top-color: $dark-mode-lighten !important;
+}
+
+.toast {
+    background-color: lighten($dark, 5%);
+}
+
+@import "includes";

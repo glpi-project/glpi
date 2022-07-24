@@ -1,0 +1,134 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if can_update_config or has_active_mode %}
+   <div class="container">
+      <div class="row justify-content-evenly">
+      {% if can_update_config %}
+         <div class="card col-12 col-lg-5">
+            <form method="POST" action="{{ path('/front/setup.notification.php') }}" data-submit-once>
+               <div class="card-header">
+                  <h3>{{ __('Notifications configuration') }}</h3>
+               </div>
+
+               {% if use_notifications and not has_active_mode %}
+                  <div class="alert alert-important alert-warning m-3">
+                     <i class="fa fa-exclamation-triangle me-2"></i>
+                     {{ __('You must enable at least one notification mode.') }}
+                  </div>
+               {% endif %}
+
+               <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                     <div class="form-check form-switch">
+                        <input name="use_notifications" type="hidden" value="0" />
+                        <input name="use_notifications" id="use_notifications"
+                              class="form-check-input" type="checkbox" value="1"
+                              {{ use_notifications ? 'checked="checked"' : '' }} />
+                        <label class="form-check-label" for="use_notifications">
+                           {{ __('Enable followup') }}
+                        </label>
+                     </div>
+                  </li>
+                  {% for mode_key, mode in modes %}
+                     {% set mode_disabled = not use_notifications %}
+                     <li class="list-group-item {{ mode_disabled ? 'disabled' : '' }}">
+                        <div class="form-check form-switch">
+                           <input name="notifications_{{ mode_key }}" type="hidden" value="0" />
+                           <input name="notifications_{{ mode_key }}" id="notifications_{{ mode_key }}"
+                                 class="form-check-input" type="checkbox" value="1"
+                                 {{ mode['is_active'] ? 'checked="checked"' : '' }}
+                                 {{ mode_disabled ? 'disabled' : '' }} />
+                           <label class="form-check-label" for="notifications_{{ mode_key }}">
+                              {{ mode['label'] }}
+                           </label>
+                        </div>
+                     </li>
+                  {% endfor %}
+               </ul>
+
+               <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">
+                     <i class="far fa-save"></i>
+                     <span>{{ __('Save') }}</span>
+                  </button>
+               </div>
+
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            </form>
+         </div>
+      {% endif %}
+
+      {% if use_notifications and has_active_mode %}
+         <div class="card col-12 col-lg-5 mt-4 mt-lg-0">
+            <div class="card-header">
+               <h3>{{ _n('Notification', 'Notifications', get_plural_number()) }}</h3>
+            </div>
+
+            <div class="list-group list-group-flush">
+               {% if has_profile_right('config', constant('READ')) %}
+                  <a href="{{ path('front/notificationtemplate.php') }}" class="list-group-item list-group-item-action">
+                     <i class="fa-fw ti ti-template"></i>
+                     <span>{{ _n('Notification template', 'Notification templates', get_plural_number()) }}</span>
+                  </a>
+               {% endif %}
+
+               {% if has_profile_right('notification', constant('READ')) %}
+                  <a href="{{ path('front/notification.php') }}" class="list-group-item list-group-item-action">
+                     <i class="fa-fw ti ti-bell "></i>
+                     <span>{{ _n('Notification', 'Notifications', get_plural_number()) }}</span>
+                  </a>
+               {% else %}
+                  <div class="list-group-item">
+                     <div class="alert alert-important alert-warning m-3">
+                        <i class="fa-fw ti ti-alert-triangle me-2"></i>
+                        {{ __('Unable to configure notifications: please configure at least one followup type using the above configuration.') }}
+                     </div>
+                  </div>
+               {% endif %}
+
+               {% for mode in modes %}
+                  {% if can_update_config and mode['is_active'] %}
+                     <a href="{{ mode['setting_url'] }}" class="list-group-item list-group-item-action">
+                        <i class="fa-fw {{ mode['icon'] }}"></i>
+                        <span>{{ mode['label_settings'] }}</span>
+                     </a>
+                  {% endif %}
+               {% endfor %}
+            </div>
+
+         </div
+      {% endif %}
+      </div>
+   </div>
+{% endif %}

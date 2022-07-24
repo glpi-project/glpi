@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -34,28 +37,31 @@ namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
 
-class Inventory extends \GLPITestCase {
-   private $http_client;
-   private $base_uri;
+class Inventory extends \GLPITestCase
+{
+    private $http_client;
+    private $base_uri;
 
-   public function beforeTestMethod($method) {
-      global $CFG_GLPI;
+    public function beforeTestMethod($method)
+    {
+        global $CFG_GLPI;
 
-      $this->http_client = new GuzzleHttp\Client();
-      $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/";
+        $this->http_client = new GuzzleHttp\Client();
+        $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
 
-      parent::beforeTestMethod($method);
-   }
+        parent::beforeTestMethod($method);
+    }
 
-   public function testInventoryRequest() {
-      $res = $this->http_client->request(
-         'POST',
-         $this->base_uri . 'front/inventory.php',
-         [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ],
-            'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+    public function testInventoryRequest()
+    {
+        $res = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml'
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                   "<REQUEST>
                   <CONTENT>
                      <BIOS>
@@ -121,34 +127,33 @@ class Inventory extends \GLPITestCase {
                   <DEVICEID>computer-2018-07-09-09-07-13</DEVICEID>
                   <QUERY>INVENTORY</QUERY>
                   </REQUEST>"
-         ]
-      );
-      $this->integer($res->getStatusCode())->isIdenticalTo(200);
-      $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
-      //FIXME: should send something else obviously
-      $this->string((string)$res->getBody())
-         ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>\n");
+            ]
+        );
+        $this->integer($res->getStatusCode())->isIdenticalTo(200);
+        $this->string((string)$res->getBody())
+         ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>");
+        $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
 
-      //check agent in database
-      $agent = new \Agent();
-      $this->boolean($agent->getFromDBByCrit(['deviceid' => 'computer-2018-07-09-09-07-13']))->isTrue();
+       //check agent in database
+        $agent = new \Agent();
+        $this->boolean($agent->getFromDBByCrit(['deviceid' => 'computer-2018-07-09-09-07-13']))->isTrue();
 
-      $expected = [
-         'deviceid'        => 'computer-2018-07-09-09-07-13',
-         'version'         => '2.5.1-1.fc30',
-         'agenttypes_id'   => 1,
-         'locked'          => 0,
-         'itemtype'        => 'Computer',
-         'items_id'        => 0
-      ];
+        $expected = [
+            'deviceid'        => 'computer-2018-07-09-09-07-13',
+            'version'         => '2.5.1-1.fc30',
+            'agenttypes_id'   => 1,
+            'locked'          => 0,
+            'itemtype'        => 'Computer',
+            'items_id'        => 0
+        ];
 
-      foreach ($expected as $key => $value) {
-         if ($key === 'items_id') {
-            //FIXME: retrieve created items_id
-            $this->integer((int)$agent->fields[$key])->isGreaterThan(0);
-         } else {
-            $this->variable($agent->fields[$key])->isEqualTo($value, "$key differs");
-         }
-      }
-   }
+        foreach ($expected as $key => $value) {
+            if ($key === 'items_id') {
+               //FIXME: retrieve created items_id
+                $this->integer((int)$agent->fields[$key])->isGreaterThan(0);
+            } else {
+                $this->variable($agent->fields[$key])->isEqualTo($value, "$key differs");
+            }
+        }
+    }
 }

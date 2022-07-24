@@ -1,0 +1,214 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+{% set main_rand = rand %}
+
+{% set itil_layout = user_pref('itil_layout', true) %}
+{% set is_collapsed = itil_layout['collapsed'] == "true" %}
+{% set is_expanded  = itil_layout['expanded'] == "true" %}
+{% set collapsed_cls = (is_collapsed ? "right-collapsed" : "") %}
+{% set expanded_cls  = (is_expanded == "true" ? "right-expanded" : "") %}
+
+{% set left_regular_cls = "col-xl-8 col-md-10" %}
+{% set right_regular_cls = "col-xl-4 col-md-2" %}
+
+{% set left_expanded_cls = "col-xxl-4 col-md-4" %}
+{% set right_expanded_cls = "col-xxl-8 col-md-8" %}
+
+{% set left_side_cls = left_regular_cls %}
+{% set right_side_cls = right_regular_cls %}
+{% if is_expanded %}
+    {% set left_side_cls = left_expanded_cls %}
+    {% set right_side_cls = right_expanded_cls %}
+{% endif %}
+
+
+<div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}">
+
+   {% if item.isNewItem and not params['template_preview'] %}
+      {{ include('components/itilobject/mainform_open.html.twig') }}
+   {% endif %}
+
+   <div class="row d-flex flex-column alin-items-stretch itil-object">
+      {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+      {% set fl_direction = (item.isNewItem or is_timeline_reversed ? 'flex-column' : 'flex-column-reverse') %}
+      <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-md-first pt-2 pe-2 pe-md-4 d-flex {{ fl_direction }} border-top border-4">
+         {% if item.isNewItem() %}
+            {{ include('components/itilobject/timeline/new_form.html.twig') }}
+         {% else %}
+            {{ include('components/itilobject/timeline/timeline.html.twig') }}
+         {% endif %}
+      </div>
+      <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-md-n1 card-footer p-0 rounded-0">
+         {% if not item.isNewItem() %}
+            {{ include('components/itilobject/mainform_open.html.twig') }}
+         {% endif %}
+         {{ include('components/itilobject/fields_panel.html.twig') }}
+         {% if not item.isNewItem() %}
+            {{ include('components/itilobject/mainform_close.html.twig') }}
+         {% endif %}
+      </div>
+   </div>
+
+   {% if not params['template_preview'] %}
+      {{ include('components/itilobject/footer.html.twig') }}
+   {% endif %}
+
+   {% if not item.isNewItem() and not params['template_preview'] %}
+      {{ include('components/itilobject/mainform_close.html.twig') }}
+   {% endif %}
+
+</div>
+
+{% if ticket_ticket %}
+   {# Common form fields for ticket_ticket purge action #}
+   <form method="POST" action="{{ ticket_ticket.getFormURL() }}" class="d-none" id="linked_tickets_{{ main_rand }}" data-submit-once>
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="purge" value="1" />
+      <input type="hidden" name="tickets_id" value="{{ item.fields['id'] }}" />
+   </form>
+{% endif %}
+
+{# Common form fields for "addme_as_actor" action #}
+{% for actortype in ['requester', 'observer', 'assign'] %}
+   <form method="POST" action="{{ item.getFormURL() }}" class="d-none" id="addme_as_{{ actortype }}_{{ main_rand }}" data-submit-once>
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="addme_as_actor" value="1" />
+      <input type="hidden" name="actortype" value="{{ actortype }}" />
+   </form>
+{% endfor %}
+
+<form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
+      action="{{ path('/front/massiveaction.php') }}" data-submit-once>
+   <div id="massive_container_{{ rand }}"></div>
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+</form>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".switch-panel-width", function() {
+       if ($('#itil-object-container').hasClass('right-collapsed')) {
+           $('#itil-object-container').removeClass('right-collapsed');
+       } else if ($('.itil-left-side').hasClass("{{ left_regular_cls }}")) {
+         // Expand right-side panel
+         $('#itil-object-container').addClass('right-expanded');
+         // Left side
+         $('.itil-left-side').removeClass("{{ left_regular_cls }}").addClass("{{ left_expanded_cls }}");
+         $('.itil-footer .timeline-buttons').removeClass("{{ left_regular_cls }}").addClass("{{ left_expanded_cls }}");
+         // Right side
+         $('.itil-footer .form-buttons').removeClass('col-md').addClass("{{ right_expanded_cls }}");
+         $('.itil-right-side').removeClass("{{ right_regular_cls }}").addClass("{{ right_expanded_cls }}");
+         // Switcher buttons
+         $('.switch-panel-width i.fas').removeClass('fa-caret-left').addClass('fa-caret-right');
+         $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-12').removeClass('col-12').addClass('col-sm-6');
+         $('#actors .col-12').removeClass('col-12').addClass('col-sm-4');
+      } else {
+         // Decrease right-side panel
+         $('#itil-object-container').removeClass('right-expanded');
+         // Left side
+         $('.itil-left-side').removeClass("{{ left_expanded_cls }}").addClass("{{ left_regular_cls }}");
+         $('.itil-footer .timeline-buttons').removeClass("{{ left_expanded_cls }}").addClass("{{ left_regular_cls }}");
+         // Right side
+         $('.itil-footer .form-buttons').removeClass("{{ right_expanded_cls }}").addClass('col-md');
+         $('.itil-right-side').removeClass("{{ right_expanded_cls }}").addClass("{{ right_regular_cls }}");
+         // Switcher buttons
+         $('.switch-panel-width i.fas').removeClass('fa-caret-right').addClass('fa-caret-left');
+         $('.itil-right-side .accordion-body:not(.accordion-actors).row .col-sm-6').removeClass('col-sm-6').addClass('col-12');
+         $('#actors .col-sm-4').removeClass('col-sm-4').addClass('col-12');
+      }
+
+      saveFieldPanelState();
+   });
+
+    $(document).on("click", ".collapse-panel", function() {
+       $('#itil-object-container').addClass('right-collapsed');
+
+        // Hide all accordion item
+        $('#itil-data .accordion-collapse').removeClass('show');
+        $('#itil-data .accordion-button').addClass('collapsed');
+
+       saveFieldPanelState();
+    });
+
+    $(document).on("click", ".right-collapsed .itil-right-side", function(event) {
+        $('#itil-object-container').removeClass('right-collapsed');
+        saveFieldPanelState();
+    });
+
+    var myCollapsible = document.getElementById('itil-data')
+    myCollapsible.addEventListener('shown.bs.collapse', function () {
+        saveFieldPanelState();
+    });
+    myCollapsible.addEventListener('hidden.bs.collapse', function () {
+        saveFieldPanelState();
+    });
+
+    var itil_layout = {
+        collapsed: false,
+        expanded: false,
+        items: {}
+    };
+
+    var saveFieldPanelState = function() {
+        itil_layout.collapsed = $('#itil-object-container').hasClass('right-collapsed');
+        itil_layout.expanded  = $('#itil-object-container').hasClass('right-expanded');
+
+        $('#itil-data .accordion-collapse').each(function() {
+            var item_shown = $(this).hasClass('show');
+            var item_id    = $(this).attr('id');
+
+            itil_layout.items[item_id] = item_shown;
+        });
+
+        $.ajax({
+            url: CFG_GLPI.root_doc + '/ajax/itillayout.php',
+            type: 'POST',
+            datatype: "json",
+            data: {
+                'itil_layout': itil_layout
+            }
+        });
+    }
+
+    var restoreFieldPanelState = function() {
+        $.each(field_panel_state.items, function(item_id, item_shown) {
+            if (item_shown) {
+                $('#' + item_id).addClass('show');
+            } else {
+                $('#' + item_id).removeClass('show');
+            }
+        });
+    }
+});
+</script>

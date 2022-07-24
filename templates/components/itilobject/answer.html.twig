@@ -1,0 +1,75 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div id="new-itilobject-form" class="ms-auto ps-3">
+   {% for timeline_itemtype in timeline_itemtypes %}
+      {% set show_kb_sol = load_kb_sol > 0 and timeline_itemtype.type == 'ITILSolution' %}
+      <div class="timeline-item mb-3  {{ timeline_itemtype.type }} collapse {{ show_kb_sol ? 'show' : '' }}"
+        id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
+         <div class="row">
+            <div class="col-auto order-last d-none d-md-block">
+               {{ include('components/user/picture.html.twig', {'users_id': session('glpiID')}, with_context = false) }}
+            </div>
+            <div class="col">
+               <div class="row timeline-content t-right card mt-4">
+                  <div class="card-body">
+                     <div class="clearfix">
+                        <button class="btn btn-sm btn-ghost-secondary float-end mb-1 close-itil-answer"
+                              data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                           <i class="fa-lg ti ti-x"></i>
+                        </button>
+                     </div>
+                     <div>
+                        {% if timeline_itemtype.template is defined %}
+                           {{ include(timeline_itemtype.template, {
+                              'item': item,
+                              'subitem': timeline_itemtype.item,
+                              'kb_id_toload': show_kb_sol
+                           }) }}
+                        {% else %}
+                           {% set sf_options = {'parent': item} %}
+                           {% if show_kb_sol %}
+                              {% set sf_options = sf_options|merge({
+                                 'kb_id_toload': load_kb_sol
+                              }) %}
+                           {% endif %}
+                           {{ timeline_itemtype.item.showForm(-1, sf_options) }}
+                        {% endif %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   {% endfor %}
+</div>

@@ -1,0 +1,110 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set enable_anonymization = enable_anonymization ?? false %}
+
+<div class="p-0 user-info-card">
+   <div class="row">
+      <div class="col pt-1">
+         {% if user['id'] %}
+            {{ include('components/user/picture.html.twig', {
+               'users_id': user['id'],
+               'enable_anonymization': enable_anonymization
+            }) }}
+         {% endif %}
+      </div>
+      <div class="col-auto ms-2">
+         <h4 class="card-title mb-1">
+            {% if user['id'] %}
+               <a href="{{ 'User'|itemtype_form_path(user['id']) }}">{{ user['user_name'] }}</a>
+            {% else %}
+               {{ user['user_name'] }}
+            {% endif %}
+         </h4>
+
+         <div class="text-muted">
+            {% if user['email']|length > 0 %}
+               <div>
+                  <i class="fas fa-fw fa-envelope"></i>
+                  <a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a>
+               </div>
+            {% endif %}
+            {% if user['phone']|length > 0 %}
+               <div>
+                  <i class="fas fa-fw fa-phone"></i>
+                  <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
+               </div>
+            {% endif %}
+            {% if user['mobile']|length > 0 %}
+               <div>
+                  <i class="fas fa-fw fa-mobile"></i>
+                  <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
+               </div>
+            {% endif %}
+            {% if user['locations_id'] > 0 %}
+               <div title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="fas fa-fw fa-map-marker-alt"></i>
+                  {{ get_item_name('Location', user['locations_id']) }}
+               </div>
+            {% endif %}
+            {% if user['usertitles_id'] > 0 %}
+               <div title="{{ _x('person', 'Title') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="fas fa-fw fa-user-tie"></i>
+                  {{ get_item_name('UserTitle', user['usertitles_id']) }}
+               </div>
+            {% endif %}
+            {% if user['usercategories_id'] > 0 %}
+               <div title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="fas fa-fw fa-user-tag"></i>
+                  {{ get_item_name('UserCategory', user['usercategories_id']) }}
+               </div>
+            {% endif %}
+            {% if user['groups_id'] > 0 %}
+               <div title="{{ __('Default group') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="fas fa-fw fa-users"></i>
+                  {{ get_item_name('Group', user['groups_id']) }}
+               </div>
+            {% endif %}
+         </div>
+      </div>
+
+      {% if can_edit %}
+         <div class="col">
+            <a class="btn btn-icon btn-sm btn-outline-secondary" href="{{ path('front/preference.php') }}"
+               title="{{ __('Edit') }}" data-bs-toggle="tooltip" data-bs-placement="right">
+               <i class="fas fa-user-edit"></i>
+            </a>
+         </div>
+      {% endif %}
+   </div>
+</div>

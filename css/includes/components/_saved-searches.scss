@@ -1,0 +1,169 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.saved-searches-panel {
+    border-color: rgba($color: $secondary, $alpha: 30%);
+    border-left-width: 0;
+    border-radius: unset;
+    position: fixed;
+    top: $contextbar-height;
+    bottom: 0;
+    left: $sidebar-width;
+    z-index: $zindex-fixed;
+    transition: left var(--animate-duration);
+    min-width: 400px;
+    padding: 0;
+
+    &.pinned {
+        position: sticky;
+        top: 0;
+        left: 0;
+        border-left-width: 1px;
+        height: calc(100vh - #{$contextbar-height} - #{$content-margin});
+        min-width: 320px;
+
+        .pin-saved-searches-panel {
+            border: 2px inset rgba($color: $secondary, $alpha: 50%);
+            background-color: rgba($color: $secondary, $alpha: 10%);
+            border-radius: 0.15rem;
+        }
+
+        .close-saved-searches-panel {
+            display: none;
+        }
+    }
+
+    .saved-searches-tabs {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+
+        .saved-searches-panel-content {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+
+            .saved-searches-panel-lists {
+                overflow-x: hidden;
+                overflow-y: auto;
+                margin: 0;
+                padding: 0;
+                height: 100%;
+
+                .saved-searches-link {
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+
+                .default-ctrl {
+                    padding-right: 0;
+                }
+
+                .badge {
+                    background-color: $badge-bg;
+                    color: $badge-fg;
+                }
+            }
+        }
+    }
+}
+
+body.navbar-collapsed {
+    .saved-searches-panel {
+        height: calc(100vh - #{$topbar-height});
+
+        &:not(.pinned) {
+            top: $contextbar-height;
+            left: 70px;
+        }
+    }
+}
+
+body.horizontal-layout {
+    .saved-searches-panel {
+        top: $topbar-height;
+        left: 0;
+
+        &.pinned {
+            top: 0;
+            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+        }
+    }
+
+    .secondary-bar {
+        top: $topbar-height;
+        z-index: 1010;
+
+        @include media-breakpoint-down(md) {
+            top: 0;
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .saved-searches-panel {
+        width: 100%;
+        position: fixed !important;
+        top: 79px !important;
+        line-height: 20px;
+        bottom: 0;
+        left: 0 !important;
+        margin-top: 0 !important;
+        padding-bottom: 20px;
+        margin-left: 0 !important;
+        z-index: $zindex-fixed;
+        display: flex !important;
+
+        &.responsive-toggle {
+            display: none !important;
+        }
+
+        .close-saved-searches-panel {
+            display: flex !important;
+        }
+    }
+
+    body.horizontal-layout {
+        .secondary-bar {
+            top: initial;
+        }
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .saved-searches-panel {
+        left: 0 !important;
+        min-width: 200px;
+    }
+}

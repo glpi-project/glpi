@@ -1,0 +1,75 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set model_itemtype = item.getModelClass() %}
+{% set gallery_type = gallery_type|default('') %}
+{% if model_itemtype is not null or item is usingtrait('Glpi\\Features\\AssetImage') %}
+
+   {% set picture_single = item.getItemtypeOrModelPicture('picture') %}
+   {% set picture_front = item.getItemtypeOrModelPicture('picture_front') %}
+   {% set picture_rear = item.getItemtypeOrModelPicture('picture_rear') %}
+   {% set pictures_misc = item.getItemtypeOrModelPicture('pictures') %}
+
+   {% if picture_single is not empty or picture_front is not empty or picture_rear is not empty or pictures_misc is not empty %}
+      <div class="{{ gallery_type == 'horizontal' ? 'col-12 me-n2' : '' }} d-flex flex-column card">
+         <div class="card-body">
+            <h3 class="mb-3">
+               {{ _n('Picture', 'Pictures', get_plural_number()) }}
+            </h3>
+
+            <div class="d-flex">
+               {% if picture_single is not empty %}
+                  {% set picture_single = picture_single|first %}
+                  {% set imgs = [picture_single|merge({'title': _n('Picture', 'Pictures', 1)})] %}
+               {% else %}
+                  {% if picture_front is not empty or picture_rear is not empty or pictures_misc is not empty %}
+                     {% set imgs = [] %}
+                     {% if picture_front|length >= 1 %}
+                        {% set picture_front = picture_front|first %}
+                        {% set imgs = imgs|merge([picture_front|merge({'title': __('Front picture')})]) %}
+                     {% endif %}
+                     {% if picture_rear|length >= 1 %}
+                        {% set picture_rear = picture_rear|first %}
+                        {% set imgs = imgs|merge([picture_rear|merge({'title': __('Rear picture')})]) %}
+                     {% endif %}
+                     {% if pictures_misc is not empty %}
+                        {% set imgs = imgs|merge(pictures_misc) %}
+                     {% endif %}
+                  {% endif %}
+               {% endif %}
+               {{ include('components/photoswipe.html.twig', {'imgs': imgs, 'gallery_type': gallery_type}) }}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+{% endif %}

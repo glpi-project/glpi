@@ -1,17 +1,16 @@
 {
     "name": "glpi/glpi",
     "description": "GLPI dependencies",
-    "license": "GPL-2.0-or-later",
+    "license": "GPL-3.0-or-later",
     "type": "project",
-    "homepage": "http://www.glpi-project.org/",
+    "homepage": "https://www.glpi-project.org/",
     "support": {
-        "irc": "irc://irc.freenode.org/glpi",
-        "forum": "http://forum.glpi-project.org/",
+        "forum": "https://forum.glpi-project.org/",
         "issues": "https://github.com/glpi-project/glpi/issues",
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": "^7.2",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-fileinfo": "*",
@@ -23,56 +22,70 @@
         "ext-mysqli": "*",
         "ext-simplexml": "*",
         "ext-zlib": "*",
-        "blueimp/jquery-file-upload": "^10.2",
-        "elvanto/litemoji": "^3.0.1",
-        "glpi-project/inventory_format": "^1.0",
-        "guzzlehttp/guzzle": "^7.2",
-        "guzzlehttp/psr7": "^2.4",
+        "blueimp/jquery-file-upload": "^10.32",
+        "donatj/phpuseragentparser": "^1.5",
+        "elvanto/litemoji": "^4.1",
+        "glpi-project/inventory_format": "^1.1",
+        "guzzlehttp/guzzle": "^7.4",
+        "guzzlehttp/psr7": "^2.1",
+        "html2text/html2text": "^4.3",
         "htmlawed/htmlawed": "^1.2",
         "iamcal/lib_autolink": "^1.7",
-        "laminas/laminas-cache": "^2.8",
-        "laminas/laminas-i18n": "^2.10",
-        "laminas/laminas-mail": "^2.12",
-        "laminas/laminas-mime": "^2.7",
-        "laminas/laminas-serializer": "^2.8",
-        "league/csv": "^9.5",
-        "mexitek/phpcolors": "^1.0.1",
-        "michelf/php-markdown": "^1.6",
-        "monolog/monolog": "^2.0",
-        "paragonie/sodium_compat": "^1.14",
-        "phpmailer/phpmailer": "^6.0",
+        "laminas/laminas-i18n": "^2.12",
+        "laminas/laminas-mail": "^2.15",
+        "laminas/laminas-mime": "^2.9",
+        "laminas/laminas-servicemanager": "~3.10.0",
+        "league/csv": "^9.7",
+        "mexitek/phpcolors": "^1.0",
+        "michelf/php-markdown": "^1.9",
+        "monolog/monolog": "^2.3",
+        "paragonie/sodium_compat": "^1.17",
+        "phpmailer/phpmailer": "^6.5",
+        "psr/cache": "^1.0",
         "psr/log": "^1.1",
         "psr/simple-cache": "^1.0",
-        "ramsey/uuid": "^4.0",
-        "rlanvin/php-rrule": "^2.1",
-        "sabre/dav": "^4.0",
-        "sabre/http": "^5.0",
-        "sabre/uri": "^2.1",
-        "sabre/vobject": "^4.1",
-        "scssphp/scssphp": "^1.0",
-        "sebastian/diff": "^3.0",
+        "ramsey/uuid": "^4.2",
+        "rlanvin/php-rrule": "^2.3",
+        "sabre/dav": "^4.2",
+        "sabre/http": "^5.1",
+        "sabre/uri": "^2.2",
+        "sabre/vobject": "^4.4",
+        "scssphp/scssphp": "^1.8",
+        "sebastian/diff": "^4.0",
         "simplepie/simplepie": "^1.5",
-        "symfony/console": "^4.4",
-        "tecnickcom/tcpdf": "^6.2",
+        "symfony/cache": "^5.4",
+        "symfony/console": "^5.4",
+        "symfony/css-selector": "^5.4",
+        "symfony/dom-crawler": "^5.4",
+        "symfony/polyfill-ctype": "^1.23",
+        "symfony/polyfill-iconv": "^1.23",
+        "symfony/polyfill-mbstring": "^1.23",
+        "symfony/polyfill-php80": "^1.23",
+        "symfony/polyfill-php81": "^1.23",
+        "tecnickcom/tcpdf": "^6.4",
         "true/punycode": "^2.1",
-        "wapmorgan/unified-archive": "^1.0"
+        "twig/string-extra": "^3.3",
+        "twig/twig": "^3.3",
+        "wapmorgan/unified-archive": "^1.1"
     },
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "^4.0",
-        "consolidation/robo": "^3.0",
-        "glpi-project/coding-standard": "^0.9",
-        "glpi-project/tools": "^0.5.1",
-        "maglnet/composer-require-checker": "^2.0",
+        "friendsoftwig/twigcs": "^5.1",
+        "glpi-project/tools": "^0.5",
+        "maglnet/composer-require-checker": "^3.5",
         "mikey179/vfsstream": "^1.6",
-        "natxet/cssmin": "^3.0",
-        "php-parallel-lint/php-parallel-lint": "^1.1"
+        "php-parallel-lint/php-parallel-lint": "^1.3",
+        "squizlabs/php_codesniffer": "^3.6"
     },
     "replace": {
         "paragonie/random_compat": "*",
-        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-intl-grapheme": "*",
         "symfony/polyfill-intl-idn": "*",
-        "symfony/polyfill-php72": "*"
+        "symfony/polyfill-intl-normalizer": "*",
+        "symfony/polyfill-php72": "*",
+        "symfony/polyfill-php73": "*",
+        "symfony/polyfill-php74": "*"
     },
     "suggest": {
         "ext-ldap": "Used to provide LDAP authentication and synchronization",
@@ -81,9 +94,20 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.2.5"
+            "php": "7.4.0"
         },
         "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Glpi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Glpi\\Tools\\": "tools/src/",
+            "Glpi\\Tests\\": "tests/src/"
+        }
     },
     "scripts": {
         "testdb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database",
@@ -92,20 +116,21 @@
         "testweb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web",
         "testldap": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP",
         "testimap": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap",
-        "csp": "phpcs --parallel=500 --cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
-        "cs": "phpcs -d memory_limit=512M --cache -p --extensions=php --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
+        "csp": "phpcs --parallel=500 --cache -p --extensions=php --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
+        "cs": "phpcs -d memory_limit=512M --cache -p --extensions=php --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
         "lint": "parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/laminas-mail-128.patch || echo 'Error applying patch, retrieving some mail attachement could fail'",
-            "@php -f vendor/bin/build_hw_jsons"
+            "@php -f vendor/bin/build_hw_jsons",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-            "patch -f -p1 -d vendor/tecnickcom/tcpdf/ < tools/tcpdf-php8-compat.patch || echo 'Error applying patch, deprecation warnings related to TCPDF lib may pollute logs'",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/laminas-mail-128.patch || echo 'Error applying patch, retrieving some mail attachement could fail'",
-            "@php -f vendor/bin/build_hw_jsons"
+            "@php -f vendor/bin/build_hw_jsons",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true"
+        ],
+        "build": [
+            "bin/console dependencies install && bin/console locales:compile"
         ]
     },
     "repositories": {

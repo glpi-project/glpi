@@ -10,10 +10,12 @@
         "/public/lib/*",
         "/public/build/*",
         "/tests/config/*",
-        "/vendor/*"
+        "/vendor/*",
+        "**/*.min.js"
     ],
     "env": {
         "browser": true,
+        "es6": true,
         "jquery": true
     },
     "extends": "eslint:recommended",
@@ -26,7 +28,7 @@
         "_nx": true
     },
     "parserOptions": {
-        "ecmaVersion": 6
+        "ecmaVersion": 8
     },
     "rules": {
         "eol-last": [
@@ -35,7 +37,7 @@
         ],
         "indent": [
             "error",
-            3,
+            4,
             {
                 "SwitchCase": 1
             }
@@ -70,9 +72,27 @@
     },
     "overrides": [
         {
-            "files": ["webpack.config.js"],
+            "files": ["js/modules/**"],
+            "parserOptions": {
+                "sourceType": "module"
+            }
+        },
+        {
+            "files": ["stylelint.config.js", "webpack.config.js", "babel.config.js"],
             "env": {
                 "node": true
+            }
+        },
+        {
+            "files": ["tests/js/**"],
+            "env": {
+                "node": true,
+                "jest": true,
+                "es2021": true
+            },
+            "parserOptions": {
+                "ecmaVersion": 12,
+                "sourceType": "module"
             }
         }
     ]

@@ -1,0 +1,368 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="asset">
+   {% if can_edit or can_create %}
+      <form action="{{ path('front/infocom.form.php') }}" method="post" data-submit-once>
+   {% endif %}
+
+   {% if infocom.fields['id'] <= 0 %}
+      {% if can_create and withtemplate != 2 %}
+         <div class="mx-auto my-4" style="width: 400px;">
+               <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+               <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+               <button type="submit" class="btn btn-primary" name="add" value="1">
+                  <i class="fas fa-coins"></i>
+                  <span>{{ __('Enable the financial and administrative information') }}</span>
+               </button>
+         </div>
+      {% endif %}
+   {% else %}
+      {% set disabled = (withtemplate != 2) %}
+      {% set disabled = false %}
+      {% set in_modal = _get is defined and _get._in_modal|default("0") %}
+      <input type="hidden" name="id" value="{{ infocom.fields['id'] }}" />
+      <div class="card-body d-flex flex-wrap p-0 {{ in_modal == "1" ? "ps-3 me-2" : "" }}">
+         <div class="col-12 flex-column">
+            <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+               <div class="row flex-row align-items-start flex-grow-1">
+                  <div class="row flex-row">
+                     {# ## LIFECYCLE PART ## #}
+                     {{ fields.largeTitle(
+                        __('Asset lifecycle'),
+                        'fas fa-sync-alt',
+                        true
+                     ) }}
+
+                     {{ fields.dateField(
+                        'order_date',
+                        infocom.fields['order_date'],
+                        __('Order date'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {{ fields.dateField(
+                        'buy_date',
+                        infocom.fields['buy_date'],
+                        __('Date of purchase'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {{ fields.dateField(
+                        'delivery_date',
+                        infocom.fields['delivery_date'],
+                        __('Delivery date'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {{ fields.dateField(
+                        'use_date',
+                        infocom.fields['use_date'],
+                        __('Startup date'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {{ fields.dateField(
+                        'inventory_date',
+                        infocom.fields['inventory_date'],
+                        __('Date of last physical inventory'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {{ fields.dateField(
+                        'decommission_date',
+                        infocom.fields['decommission_date'],
+                        __('Decommission date'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {# ## FINANCIAL PART ## #}
+                     {{ fields.largeTitle(
+                        __('Financial and administrative information'),
+                        'fas fa-coins'
+                     ) }}
+
+                     {{ fields.dropdownField(
+                        'Supplier',
+                        'suppliers_id',
+                        infocom.fields['suppliers_id'],
+                        'Supplier'|itemtype_name,
+                        {
+                           'entity'  : item.fields['entities_id'],
+                           'disabled': disabled
+                        }
+                     ) }}
+
+                     {% if has_itemtype_right('Budget', constant('READ')) %}
+                        {{ fields.dropdownField(
+                           'Budget',
+                           'budgets_id',
+                           infocom.fields['budgets_id'],
+                           'Budget'|itemtype_name,
+                           {
+                              'entity'  : item.fields['entities_id'],
+                              'comments': 1,
+                              'disabled': disabled
+                           }
+                        ) }}
+                     {% endif %}
+
+                     {{ fields.textField(
+                        'order_number',
+                        infocom.fields['order_number'],
+                        __('Order number'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {{ fields.autoNameField(
+                        'immo_number',
+                        infocom,
+                        __('Immobilization number'),
+                        withtemplate,
+                        {'disabled': disabled, 'value': infocom.fields['immo_number']}
+                     ) }}
+
+                     {{ fields.textField(
+                        'bill',
+                        infocom.fields['bill'],
+                        __('Invoice number'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {{ fields.textField(
+                        'delivery_number',
+                        infocom.fields['delivery_numbe'],
+                        __('Delivery form'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {{ fields.numberField(
+                        'value',
+                        infocom.fields['value'],
+                        _x('price', 'Value'),
+                        {
+                            'disabled': disabled,
+                            'step': 'any',
+                        }
+                     ) }}
+
+                     {{ fields.numberField(
+                        'warranty_value',
+                        infocom.fields['warranty_value'],
+                        __('Warranty extension value'),
+                        {
+                            'disabled': disabled,
+                            'step': 'any',
+                        }
+                     ) }}
+
+
+                     {% set amort = infocom.Amort(
+                           infocom.fields['sink_type'],
+                           infocom.fields['value'],
+                           infocom.fields['sink_time'],
+                           infocom.fields['sink_coeff'],
+                           infocom.fields['buy_date'],
+                           infocom.fields['use_date'],
+                           config('date_tax'),
+                           'n'
+                         ) %}
+                     {{ fields.readOnlyField(
+                        '',
+                        amort|formatted_number,
+                        __('Account net value'),
+                     ) }}
+
+                     {% if withtemplate == 2 or disabled == true %}
+                        {% set sink_type_field = infocom.getAmortTypeName(infocom.fields['sink_type']) %}
+                     {% else %}
+                        {% set sink_type_field = infocom.dropdownAmortType('sink_type', infocom.fields['sink_type'], false) %}
+                     {% endif %}
+
+                     {{ fields.field(
+                        '',
+                        sink_type_field,
+                        __('Amortization type'),
+                     ) }}
+
+                     {{ fields.dropdownNumberField(
+                        'sink_time',
+                        infocom.fields['sink_time'],
+                        __('Amortization duration'),
+                        {
+                           'max'      : 15,
+                           'unit'     : 'year',
+                           'disabled' : disabled
+                        }
+                     ) }}
+
+                     {{ fields.numberField(
+                        'sink_coeff',
+                        infocom.fields['sink_coeff'],
+                        __('Amortization coefficient'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
+                        {% set ticket_tco_value = infocom.showTco(item.fields['ticket_tco'], infocom.fields['value']) %}
+                        {{ fields.readOnlyField(
+                           'ticket_tco',
+                           ticket_tco_value,
+                           __('TCO (value + tracking cost)'),
+                           {'disabled': disabled}
+                        ) }}
+
+                        {% set ticket_tco2_value = infocom.showTco(item.fields['ticket_tco'], infocom.fields['value'], infocom.fields['buy_date']) %}
+                        {{ fields.readOnlyField(
+                           'ticket_tco',
+                           ticket_tco2_value,
+                           __('Monthly TCO'),
+                           {'disabled': disabled}
+                        ) }}
+                     {% endif %}
+
+
+                     {{ fields.dropdownField(
+                        'BusinessCriticity',
+                        'businesscriticities_id',
+                        infocom.fields['businesscriticities_id'],
+                        _n('Business criticity', 'Business criticities', 1),
+                        {
+                           'disabled': disabled
+                        }
+                     ) }}
+
+                     {{ fields.textareaField(
+                        'comment',
+                        infocom.fields['comment'],
+                        _n('Comment', 'Comments', get_plural_number()),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {# ## WARRANTY PART ## #}
+                     {{ fields.largeTitle(
+                        __('Warranty information'),
+                        'fas fa-file-contract'
+                     ) }}
+
+                     {{ fields.dateField(
+                        'warranty_date',
+                        infocom.fields['warranty_date'],
+                        __('Start date of warranty'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {% if withtemplate == 2 %}
+                        {% if infocom.fields['warranty_duration'] == -1 %}
+                           {{ __('Lifelong') }}
+                        {% else %}
+                           {{ _n('%d month', '%d months', infocom.fields['warranty_duration'])|format(infocom.fields['warranty_duration']) }}
+                        {% endif %}
+                     {% else %}
+                        {% set warrantyexpir = infocom.getWarrantyExpir(infocom.fields['warranty_date'], infocom.fields['warranty_duration'], 0, true) %}
+                        {{ fields.dropdownNumberField(
+                           'warranty_duration',
+                           infocom.fields['warranty_duration'],
+                           __('Warranty duration'),
+                           {
+                              'min'            : 0,
+                              'max'            : 120,
+                              'step'           : 1,
+                              'toadd'          : {'-1': __('Lifelong')},
+                              'unit'           : 'month',
+                              'disabled'       : disabled,
+                              'add_field_html' : '<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>'
+                           }
+                        ) }}
+                     {% endif %}
+
+                     {{ fields.textField(
+                        'warranty_info',
+                        infocom.fields['warranty_info'],
+                        __('Warranty information'),
+                        {'disabled': disabled}
+                     ) }}
+
+                     {% if config('use_notifications') %}
+                        {% set alert_html %}
+                           {% do call('Alert::displayLastAlert', ['Infocom', infocom.fields['id']]) %}
+                        {% endset %}
+
+                        {% set alert_field = infocom.dropdownAlert({
+                              'name'   : 'alert',
+                              'value'  : infocom.fields['alert'],
+                              'display': false,
+                              'width'  : '100%',
+                              'class'  : 'form-select'
+                           }) %}
+
+                        {{ fields.field(
+                           'alert',
+                           alert_field,
+                           __('Alarms on financial and administrative information'),
+                           {'add_field_html': '<span class="text-muted">' ~ alert_html ~ '</span>'}
+                        ) }}
+                     {% endif %}
+
+                     {% do call_plugin_hook_func(constant('Glpi\\Plugin\\Hooks::INFOCOM'), item) %}
+
+                     <div class="card-body mx-n2 mb-4  border-top">
+                        {% if can_global_update %}
+                           <button class="btn btn-primary me-2" type="submit" name="update">
+                              <i class="far fa-save"></i>
+                              <span>{{ _x('button', 'Save') }}</span>
+                           </button>
+                        {% endif %}
+
+                        {% if can_global_purge %}
+                           <button class="btn btn-outline-danger me-2" type="submit" name="purge">
+                              <i class="fas fa-trash-alt"></i>
+                              <span>{{ _x('button', 'Delete permanently') }}</span>
+                           </button>
+                        {% endif %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+   {% endif %}
+
+   {% if can_edit or can_create %}
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+   </form>
+   {% endif %}
+</div>

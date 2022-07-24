@@ -1,0 +1,79 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.asset {
+    .card-header {
+        background-color: $header-bg;
+        color: $header-fg;
+        border-color: $header-border-color;
+
+        &:not(.main-header) {
+            border-top: 1px solid $header-border-color;
+        }
+
+        .badge {
+            @include tabler-badge-fix;
+
+            &.entity-name {
+                background-color: $header-badge-bg;
+                color: $header-badge-fg;
+            }
+        }
+
+        .badge .ribbon {
+            left: 0.5rem;
+        }
+    }
+
+    &.asset-deleted {
+        .card-header {
+            background-color: tint-color($header-danger-bg, 30%);
+            color: shade-color($header-danger-bg, 50%);
+            border-color: shade-color($header-danger-bg, 50%);
+
+            .badge.entity-name {
+                background-color: tint-color($header-danger-bg, 80%);
+                color: shade-color($header-danger-bg, 50%);
+            }
+        }
+    }
+
+    .asset-pictures {
+        max-height: 40em;
+        overflow-y: auto;
+    }
+}
+
+#page > .asset {
+    margin-top: 15px; // Fix top of form when embedded in iframe (Usually positioned properly because of .tab-content)
+}

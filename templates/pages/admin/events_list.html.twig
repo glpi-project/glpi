@@ -1,0 +1,108 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="container-fluid">
+   <div class="search_page">
+      <div class="search-container">
+         <div class="card card-sm search-card">
+            {% if count == 0 %}
+               <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
+                  {{ __('No item found') }}
+               </div>
+            {% else %}
+               <div class="card-header search-header pe-0">
+                  {% if count > 0 %}
+                     {% set limitdropdown = include('components/dropdown/limit.html.twig', {
+                        'href': target ~ '?',
+                        'additional_params': 'sort=' ~ sort ~ '&order=' ~ order
+                     }) %}
+                     <div class="ms-auto d-inline-flex align-items-center d-none d-md-block search-limit">
+                        {{ __('Show %s entries')|format(limitdropdown)|raw }}
+                     </div>
+               {% endif %}
+               </div>
+               <div class="table-responsive-md">
+                  <table class="search-results table table-hover table-card">
+                     <thead>
+                        {% set headings = {
+                           'type': __('Source'),
+                           'items_id': __('ID'),
+                           'date': _n('Date', 'Dates', 1),
+                           'service': __('Service'),
+                           'level': __('Level'),
+                           'message': __('Message')
+                        } %}
+
+                        {% for field, label in headings %}
+                           <th>
+                              <a href="{{ target }}?sort={{ field }}&amp;order={{ order == 'ASC' ? 'DESC' : 'ASC' }}">
+                                 {% if sort == field %}
+                                    {% set sort_icon = (order == 'ASC' ? 'fa-sort-up' : 'fa-sort-down') %}
+                                    <i class="fas fa-lg {{ sort_icon }}"></i>
+                                 {% endif %}
+                                 {{ label }}
+                              </a>
+                           </th>
+                        {% endfor %}
+                     </thead>
+                     <tbody>
+                        {% for event in events %}
+                           <tr>
+                              <td>
+                                 {% set itemtype = call('getSingular', [event['type']]) %}
+                                 <i class="fa-fw text-muted {{ itemtype|itemtype_icon }}"></i>
+                                 <span>{{ itemtypes[itemtype] ?? itemtype|itemtype_name }}</span>
+                              </td>
+                              <td>{% do call('Glpi\\Event::displayItemLogID', [event['type'], event['items_id']]) %}</td>
+                              <td>{{ event['date']|formatted_datetime }}</td>
+                              <td>{{ services[event['service']] ?? event['service'] }}</td>
+                              <td>{{ event['level'] }}</td>
+                              <td>{{ event['message'] }}</td>
+                           </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+
+               <div class="search-footer card-footer">
+                  {{ include('components/pager.html.twig', {
+                     'href': target ~ '?',
+                     'additional_params': 'sort=' ~ sort ~ '&order=' ~ order,
+                     'count': count
+                  }) }}
+               </div>
+            {% endif %}
+         </div>
+      </div>
+   </div>
+</div>

@@ -1,0 +1,144 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set is_vertical = user_pref('page_layout') == 'vertical' %}
+{% set is_horizontal = user_pref('page_layout') == 'horizontal' %}
+{% set is_menu_folded = user_pref('fold_menu') == '1' %}
+{% set rand = random() %}
+
+<ul class="navbar-nav" id="menu_{{ rand }}">
+{% for firstlevel in menu %}
+   {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
+   {% set firstlevel_shown = (menu[sector]['title'] == firstlevel['title'] and is_vertical and is_menu_folded == false) %}
+   {% set has_subitems = false %}
+   {% if firstlevel['content'] is defined %}
+      {# Are there any items under contents with a page property? #}
+      {% for secondlevel in firstlevel['content'] %}
+         {% if secondlevel['page'] is defined %}
+            {% set has_subitems = true %}
+         {% endif %}
+      {% endfor %}
+   {% endif %}
+   {% if has_subitems %}
+   <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
+       title="{{ firstlevel['title'] }}">
+      <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown ? 'show' : '' }}"
+         data-bs-toggle="dropdown" role="button"
+         aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
+         <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
+         <span class="menu-label">{{ firstlevel['title'] }}</span>
+      </a>
+      <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? '' : 'animate__animated' }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_shown ? 'show' : '' }}">
+         <h6 class="dropdown-header">{{ firstlevel['title'] }}</h6>
+         <div class="dropdown-menu-columns">
+            <div class="dropdown-menu-column">
+            {% set has_dashboard = firstlevel['default_dashboard'] is defined %}
+            {% if has_dashboard %}
+               <a class="dropdown-item"
+                  href="{{ path(firstlevel['default_dashboard']) }}">
+                  <i class="ti ti-dashboard"></i>
+                  {{ __('Dashboard') }}
+               </a>
+            {% endif %}
+            {% for sublevel in firstlevel['content'] %}
+               {% if sublevel['page'] is defined %}
+               <a class="dropdown-item {{ menu_active == sublevel['title'] ? 'active' : '' }}"
+                  href="{{ path(sublevel['page']) }}"
+                  accesskey="{{ sublevel['shortcut'] ?? '' }}" title="{{ sublevel['title'] }}">
+                  <i class="fa-fw {{ sublevel['icon'] ?? '' }}"></i>
+                  <span class='text-wrap'>
+                     {{ sublevel['title']|shortcut(sublevel['shortcut'] ?? '') }}
+                  </span>
+               </a>
+               {% endif %}
+
+               {% set count_per_column = 6 %}
+               {% if loop.index % count_per_column == (has_dashboard ? count_per_column - 1 : 0) and not loop.last %}
+                  </div>
+                  <div class="dropdown-menu-column">
+               {% endif %}
+            {% endfor %}
+            </div>
+         </div>
+      </div>
+   </li>
+   {% elseif firstlevel['default'] is defined and (firstlevel['display'] ?? true) != false %}
+      <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}" data-bs-toggle="tooltip"
+       title="{{ firstlevel['title'] }}">
+         <a class="nav-link" href="{{ path(firstlevel['default']) }}">
+            <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
+            <span class="menu-label">{{ firstlevel['title'] }}</span>
+         </a>
+      <li>
+   {% endif %}
+{% endfor %}
+</ul>
+
+{% if is_vertical %}
+<script type="text/javascript">
+$(function() {
+   // below, some modifications of dropdowns menu behavior
+   document.querySelectorAll('#menu_{{ rand }} > .dropdown').forEach(function(menuDropdown) {
+      // prevent menu closes
+      menuDropdown.addEventListener('hide.bs.dropdown', function (event) {
+         var orig_event = event.clickEvent;
+         if (typeof orig_event != "undefined"
+             && typeof orig_event.target != "undefined") {
+            // prevent body clicking to hide menu
+            if (!document.getElementById('menu_{{ rand }}').contains(orig_event.target)) {
+               event.preventDefault();
+               return;
+            }
+
+            // prevent menu links to close menu (waiting the page redirection)
+            if (orig_event.target.className.indexOf('dropdown-item') !== false) {
+               for (var item of document.querySelectorAll('#menu_{{ rand }} .dropdown-item')) {
+                  item.classList.remove('active');
+               }
+               orig_event.target.classList.add('active');
+               event.preventDefault();
+            }
+         }
+      });
+
+      // opening a sub menu close others
+      menuDropdown.addEventListener('show.bs.dropdown', function (event) {
+         $('#menu_{{ rand }} .nav-link').removeClass('show active');
+         $('#menu_{{ rand }} .nav-item').removeClass('active');
+         $('#menu_{{ rand }} .dropdown-menu').removeClass('show');
+      })
+   });
+
+});
+</script>
+{% endif %}

@@ -1,0 +1,526 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+$break_phones: 900px;
+$break_ss_screen: 1080px;
+$break_s_screen: 1400px;
+
+.marketplace {
+    $left_width: 150px;
+
+    text-align: left;
+    display: flex;
+    padding: 10px;
+    margin: 0 -10px;
+
+    @media screen and (max-width: $break_phones) {
+        display: block;
+    }
+
+    .left-panel {
+        width: $left_width;
+
+        @media screen and (max-width: $break_phones) {
+            width: initial;
+        }
+
+        .plugins-tags {
+            vertical-align: top;
+            display: inline-block;
+            width: 100%;
+            font-size: 1.1em;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+            @media screen and (max-width: $break_phones) {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 0 0 10px 10px;
+            }
+
+            .tag {
+                border-radius: 3px;
+                border: 1px solid rgba(100, 100, 100, 20%);
+                padding: 5px;
+                margin: 0 3px 3px 0;
+                text-align: center;
+                cursor: pointer;
+
+                &:hover {
+                    background: rgba(100, 100, 100, 50%);
+                }
+
+                &.active {
+                    background: rgba(100, 100, 100, 50%);
+                    color: #fff;
+                    border-color: transparent;
+                }
+            }
+        }
+    }
+
+    .right-panel {
+        padding-left: 5px;
+        width: 100%;
+
+        .left-panel + & {
+            width: calc(100% - #{$left_width});
+        }
+
+        .top-panel {
+            display: flex;
+
+            .filter-list {
+                flex: 1;
+                margin: 0 8px 5px 5px;
+                height: 25px;
+            }
+
+            .controls {
+                width: 170px;
+
+                .select2 {
+                    .select2-selection.select2-selection--single {
+                        height: 25px;
+                        text-overflow: clip;
+                        text-overflow: unset;
+                        padding-left: 0;
+                    }
+
+                    .select2-selection.select2-selection--single::before {
+                        content: "";
+                    }
+                }
+
+                i {
+                    vertical-align: middle;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .plugins {
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+            @media screen and (max-width: $break_phones) {
+                flex-direction: column;
+            }
+
+            .loading-plugins {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                backdrop-filter: blur(2px);
+                background-color: rgba(0, 0, 0, 50%);
+
+                i.fas,
+                i.fa-solid {
+                    position: absolute;
+                    top: 50%;
+                    left: calc(50% - 1.5rem);
+                    color: white;
+                    font-size: 3rem;
+                }
+            }
+
+            .warning {
+                flex-basis: 100%;
+            }
+
+            .plugin {
+                $margin_width: 10px;
+
+                width: calc(25% - #{$margin_width}); // minus margin
+                margin: calc(#{$margin_width} / 2);
+                margin-bottom: 10px;
+                border-radius: 2px;
+                background-color: rgba(100, 100, 100, 3%);
+                border: 1px solid rgba(100, 100, 100, 30%);
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: space-between;
+
+                @media screen and (max-width: $break_s_screen) {
+                    width: calc(33% - #{$margin_width});
+                }
+
+                @media screen and (max-width: $break_ss_screen) {
+                    width: calc(50% - #{$margin_width});
+                }
+
+                @media screen and (max-width: $break_phones) {
+                    width: calc(100% - #{$margin_width});
+                }
+
+                .main {
+                    display: flex;
+                    padding-bottom: 5px;
+
+                    .icon {
+                        flex-shrink: 0;
+                        padding: 5px;
+                        width: 70px;
+
+                        img {
+                            object-fit: contain;
+                            max-width: 50px;
+                            max-height: 50px;
+                            margin: 2px 10px;
+                        }
+
+                        .icon-text {
+                            display: block;
+                            margin: 2px 10px;
+                            text-align: center;
+                            width: 50px;
+                            height: 50px;
+                            line-height: 50px;
+                            font-size: 1.4em;
+                            font-weight: bold;
+                            text-transform: uppercase;
+                        }
+                    }
+
+                    .details {
+                        padding: 5px 10px;
+
+                        .title {
+                            margin: 2px 0 5px;
+                            font-size: 1.25em;
+                        }
+
+                        .offers {
+                            .badge {
+                                &.glpi-network {
+                                    background-color: #ffd45f;
+                                    color: #352804;
+                                }
+
+                                i {
+                                    margin: 1px 3px 0 0;
+                                    vertical-align: top;
+                                }
+                            }
+                        }
+
+                        .description {
+                            margin: 5px 0;
+                        }
+                    }
+
+                    .buttons {
+                        width: 39px;
+                        padding: 5px;
+                        margin-left: auto;
+
+                        button {
+                            background-color: rgba(100, 100, 100, 10%);
+                            border: 1px solid rgba(100, 100, 100, 40%);
+                            border-radius: 2px;
+                            cursor: pointer;
+                            width: 28px;
+                            padding: 3px 5px;
+                            margin: 1px;
+
+                            &:hover {
+                                background-color: rgba(100, 100, 100, 20%);
+                            }
+
+                            i {
+                                color: #666;
+                            }
+
+                            &[data-action="disable_plugin"] {
+                                i {
+                                    color: #6ebb43;
+                                }
+                            }
+
+                            &[data-action="download_plugin"]:hover,
+                            &[data-action="install_plugin"]:hover,
+                            &[data-action="enable_plugin"]:hover {
+                                background-color: rgb(226, 247, 226);
+                                border-color: rgb(91, 150, 91);
+
+                                i {
+                                    color: rgb(74, 121, 74);
+                                }
+                            }
+
+                            &[data-action="uninstall_plugin"]:hover,
+                            &[data-action="disable_plugin"]:hover {
+                                background-color: rgb(245, 199, 199);
+                                border-color: rgb(190, 83, 83);
+
+                                i {
+                                    color: rgb(105, 60, 60);
+                                }
+                            }
+
+                            &.download_manually,
+                            &.need_offers {
+                                background-color: rgb(253, 240, 215);
+                                border-color: rgb(221, 188, 125);
+
+                                i {
+                                    color: #8f5a0a;
+                                }
+
+                                &:hover {
+                                    background-color: rgb(253, 227, 179);
+                                    border-color: rgb(97, 82, 54);
+
+                                    i {
+                                        color: rgb(97, 82, 54);
+                                    }
+                                }
+                            }
+                        }
+
+                        progress {
+                            appearance: none;
+                            border: none;
+                            width: 25px;
+                            height: 5px;
+
+                            &::-webkit-progress-bar {
+                                background: transparent;
+                                border: 1px solid #c2c2c2;
+                            }
+                        }
+
+                        > .ti-alert-triangle {
+                            color: #8f5a0a;
+                            margin: 1px;
+                            padding: 3px 5px;
+
+                            &.plugin-error {
+                                color: red;
+                            }
+                        }
+                    }
+                }
+
+                .footer {
+                    background-color: rgba(0, 0, 0, 3%);
+                    display: flex;
+                    align-items: stretch;
+                    justify-content: space-between;
+                    padding: 5px;
+                    color: #666;
+                    margin: 0;
+                    border: 0;
+
+                    .misc-left {
+                        .note {
+                            width: 85px;
+
+                            i.fas,
+                            i.fa-solid,
+                            i.far,
+                            i.fa-regular {
+                                color: #fb0;
+                            }
+                        }
+
+                        .links {
+                            a {
+                                i {
+                                    color: #999;
+
+                                    &:hover {
+                                        color: #000;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .misc-right {
+                        width: calc(100% - 85px);
+                        text-align: left;
+
+                        i {
+                            margin-right: 5px;
+                        }
+
+                        .authors {
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+                }
+
+                .misc-right {
+                    i {
+                        margin-right: 5px;
+                    }
+
+                    .authors {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+
+                    .license,
+                    .authors {
+                        a {
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .pagination {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
+            li {
+                padding: 8px 16px;
+                transition: background-color 0.1s;
+                border: 1px solid rgba(100, 100, 100, 20%);
+
+                &.current {
+                    background-color: rgba(100, 100, 100, 50%);
+                    border: 1px solid rgba(100, 100, 100, 40%);
+                    color: white;
+                    font-weight: bold;
+
+                    & + li {
+                        border-left-width: 0;
+                    }
+                }
+
+                &.nav-disabled {
+                    color: #c2c2c2;
+                }
+
+                &.nb_plugin {
+                    border: none;
+                    background-color: transparent;
+                }
+
+                &.dots {
+                    padding: 8px 10px;
+                }
+
+                &:not(.current):not(.nb_plugin):not(.nav-disabled):hover {
+                    background-color: #ddd;
+                    cursor: pointer;
+                }
+
+                &:first-child {
+                    border-top-left-radius: 3px;
+                    border-bottom-left-radius: 3px;
+                }
+
+                &:last-child {
+                    border-top-right-radius: 3px;
+                    border-bottom-right-radius: 3px;
+                }
+
+                &:not(:first-child) {
+                    border-left-width: 0;
+                }
+            }
+        }
+
+        .network-mail {
+            display: inline-block;
+            margin: 20px 10px;
+        }
+    }
+
+    &.installed {
+        .plugins {
+            .plugin {
+                min-height: 84px;
+                margin-bottom: 5px;
+                flex-direction: row;
+                flex-wrap: wrap;
+
+                .main {
+                    height: 100%;
+                    width: 100%;
+
+                    .details {
+                        flex: 1;
+                        border-right: 1px solid rgba(100, 100, 100, 30%);
+                        padding: 5px 0 0 10px;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+
+                        .misc-right {
+                            color: #8f8f8f;
+                        }
+                    }
+
+                    .buttons {
+                        width: 39px;
+                        padding: 4px 5px;
+
+                        .plugin-unavailable {
+                            // Do not display unavailability on marketplace in installed view
+                            display: none;
+                        }
+                    }
+                }
+
+                .footer {
+                    background: none;
+                    border: none;
+                    margin: -25px 36px 0 0;
+
+                    .misc-left {
+                        padding-top: 3px;
+                    }
+                }
+            }
+        }
+    }
+}

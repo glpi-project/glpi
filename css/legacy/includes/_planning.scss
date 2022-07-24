@@ -1,0 +1,416 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+@import "../../includes/components/fullcalendar";
+
+#planning_container {
+   gap: 10px;
+
+   &.folded {
+      padding-left: 28px;
+   }
+
+   #planning_filter {
+      #planning_filter_content {
+         min-width: 300px;
+      }
+
+      .toggle {
+         float: right;
+         margin: 8px 8px 0 0;
+         height: 18px;
+         width: 18px;
+         display: block;
+
+         &::before {
+            font: var(--fa-font-solid);
+            content: "\f191";
+         }
+      }
+
+      &.folded {
+         .toggle {
+            float: none;
+            &::before {
+               font: var(--fa-font-solid);
+               content: "\f152";
+            }
+         }
+
+         width: 18px;
+      }
+
+      h3 {
+         background: $header-bg;
+         color: $header-fg;
+         margin: 2px 0 0 0;
+         padding: .5em .5em .5em .7em;
+         font-weight: normal;
+         line-height: 1.3;
+         font-size: 13px;
+      }
+
+      ul.filters {
+         border: 0;
+         padding: 5px;
+         list-style: none;
+         margin: 0;
+         padding: 0;
+
+         > li {
+            padding: 5px 0 5px 5px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+
+            .actor_icon {
+               padding-bottom: 2px;
+               vertical-align: top;
+               font-size: 14px;
+               margin-left: 5px;
+            }
+
+            label {
+               padding-left: 5px;
+               line-height: 16px;
+               width: 185px;
+               overflow: hidden;
+               text-overflow: ellipsis;
+               display: inline-block;
+               white-space: nowrap;
+            }
+
+            .filter-icon {
+               float: right;
+               padding: 0;
+               border: none;
+            }
+
+            .sp-replacer {
+               float: right;
+               padding: 0;
+               border: none;
+
+               .sp-preview {
+                  margin-right: 0;
+                  border: none;
+               }
+
+               .sp-dd {
+                  display: none;
+               }
+            }
+
+            &.group_users {
+               .toggle {
+                  width: 14px;
+                  height: 14px;
+                  margin: 0 4px 2px 0;
+                  vertical-align: middle;
+
+                  &::before {
+                     font: var(--fa-font-solid);
+                     content: "\f0fe";
+                  }
+               }
+
+               &.expanded .toggle {
+                  &::before {
+                     font: var(--fa-font-solid);
+                     content: "\f146";
+                  }
+               }
+
+               ul.group_listofusers {
+                  border-left: 1px dashed #D4D4D4;
+                  margin: 6px 0 0 6px;
+                  padding: 0;
+                  display: none;
+                  width: 100%;
+               }
+
+               &.expanded ul.group_listofusers {
+                  display: block;
+
+                  > li label {
+                     width: 162px;
+                  }
+               }
+            }
+
+            .color_input {
+               float: right;
+               margin-right: 2px;
+
+               input {
+                  border: 0 !important;
+                  background-color: transparent !important;
+               }
+            }
+         }
+      }
+
+      .planning_link {
+         text-align: center;
+         display: block;
+      }
+
+      .planning_add_filter {
+         float: right;
+         margin-right: 3px;
+      }
+
+      .filter_option {
+         width: 12px;
+         height: 12px;
+         margin: 3px 2px;
+         display: inline-block;
+         position: relative;
+         left: 0;
+
+         > img {
+            z-index: 1;
+         }
+
+         ul {
+            display: none;
+            width: 140px;
+
+            li {
+               white-space: normal;
+            }
+         }
+      }
+   }
+
+   #planning {
+      flex-grow: 1;
+      min-height: calc(100vh - 160px);
+
+      .fc-time-grid-event {
+         // TODO check new version,
+         // Fullcalendar 2.4.0 seems to have removed this property
+         overflow: hidden;
+      }
+
+      .end-of-day {
+         border-right: 1px solid #bdbdbd;
+      }
+
+      .fc-toolbar h2 {
+         font-size: 1.2em;
+
+      }
+
+      .event_today {
+         background: #fcf8e3;
+      }
+
+      .fc-event {
+         font-weight: normal;
+         display: block;
+
+         .fc-content {
+            margin-right: 8px;
+         }
+
+         .fc-time {
+            overflow: hidden;
+         }
+
+         .fc-title {
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+         }
+
+         .content {
+            font-weight: normal;
+            padding: 0 7px 0 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+            display: block;
+
+            .event-description {
+               border-top: 1px solid rgba(0, 0, 0, 0.2);
+               margin-top: 2px;
+               padding-top: 2px;
+
+               p {
+                  margin: 0;
+               }
+            }
+         }
+
+         .event_type {
+            position: absolute;
+            width: 7px;
+            bottom: 0;
+            top: 0;
+            right: 0;
+         }
+      }
+
+      .fc-timeline {
+         .fc-event {
+            .content {
+               max-height: 25px;
+            }
+         }
+      }
+
+      .fc-list-item-title .event_type {
+         height: 12px;
+         width: 6px;
+         margin-right: 3px;
+         display: inline-block;
+      }
+
+      .event_past .fc-list-item-title .event_type {
+         opacity: .5;
+      }
+
+      .planning-select-helper {
+         border: 2px solid #3B8CBE;
+         background-color: rgba(59, 140, 190, 0.5);
+      }
+
+      .fc-day-grid-event .fc-resizer {
+         width: 10px;
+      }
+
+      .fc-time-grid-event .fc-resizer {
+         height: 10px;
+      }
+
+      .fc-divider {
+         border: 1px dashed #cccccc;
+      }
+
+      .fc-list-empty-wrap2 {
+         position: initial;
+      }
+   }
+
+}
+
+.planning_on_central {
+   .fc-head {
+      display: none;
+   }
+
+   .fc-scroller {
+      height: auto !important;
+      max-height: 400px;
+   }
+}
+
+/* for checkavailable */
+
+.planning {
+   text-align: center;
+   border: 1px dashed #cccccc;
+   background-color: #d7d7d2;
+   font-size: 9px;
+
+   &:hover {
+      border: 1px solid #999999;
+      background-color: white;
+   }
+}
+
+.available {
+   background-color: green;
+}
+
+.notavailable {
+   background-color: red;
+}
+
+.partialavailableend {
+   background-image: -webkit-linear-gradient(left, red 50%, green 0%);
+   background-image: -moz-linear-gradient(left, red 50%, green 0%);
+   background-image: -ms-linear-gradient(left, red 50%, green 0%);
+   background-image: -o-linear-gradient(left, red 50%, green 0%);
+   background-image: linear-gradient(left, red 50%, green 0%);
+}
+
+.partialavailablebegin {
+   background-image: -webkit-linear-gradient(left, green 50%, red 0%);
+   background-image: -moz-linear-gradient(left, green 50%, red 0%);
+   background-image: -ms-linear-gradient(left, green 50%, red 0%);
+   background-image: -o-linear-gradient(left, green 50%, red 0%);
+   background-image: linear-gradient(left, green 50%, red 0%);
+}
+
+.planning-context-menu {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   position:fixed;
+   z-index:20000;
+   background-color: #FFF;
+   box-shadow: 0 10px 20px rgba(0,0,0,0.19),
+               0 6px 6px rgba(0,0,0,0.23);
+
+   li {
+      padding: 8px 10px;
+      cursor: pointer;
+
+      i.fas,
+      i.fa-solid,
+      i.far,
+      i.fa-regular {
+         margin-right: 5px;
+         color: #555
+      }
+
+      &:hover {
+         background-color: #CCC;
+      }
+   }
+}
+
+@media screen and (max-width:767px) {
+   .fc-toolbar.fc-header-toolbar {
+      flex-direction:column;
+   }
+
+   .fc-toolbar-chunk {
+      display: table-row;
+      text-align:center;
+      padding:5px 0;
+   }
+}

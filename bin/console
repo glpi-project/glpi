@@ -1,14 +1,16 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -43,22 +46,20 @@ if (isset($_SERVER['argv'])) {
 
 // Handle specific dependencies update command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SERVER['argv'], 1, 2)) {
-   $composer_command = 'composer install --ansi --no-interaction';
-   $npm_command = 'npm install';
-
-   if (array_key_exists('composer-options', $options) && is_string($options['composer-options'])) {
-      $composer_command .= ' ' . $options['composer-options'];
-   }
-
    chdir(dirname(__FILE__, 2));
 
    $exit_code = 0;
 
+   $composer_command = 'composer install --ansi --no-interaction';
+   if (array_key_exists('composer-options', $options) && is_string($options['composer-options'])) {
+      $composer_command .= ' ' . $options['composer-options'];
+   }
    passthru($composer_command, $exit_code);
    if ($exit_code > 0) {
       exit($exit_code);
    }
 
+   $npm_command = 'npm install --no-save';
    passthru($npm_command, $exit_code);
    if ($exit_code > 0) {
       exit($exit_code);
@@ -67,6 +68,25 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
    file_put_contents('.package.hash', sha1_file('package-lock.json'));
 
    passthru('npm run-script build', $exit_code);
+   exit($exit_code);
+}
+
+// Handle specific "locales:compile" command that cannot be made upon symfony console
+if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile') {
+   chdir(dirname(__FILE__, 2));
+
+   $exit_code = 0;
+
+   $po_files = preg_grep('/\.po$/', scandir('./locales'));
+   foreach ($po_files as $po_file) {
+      $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
+      echo("Processing {$po_file}\n");
+      passthru("cd ./locales && msgfmt -f -o {$mo_file} {$po_file}", $exit_code);
+      if ($exit_code > 0) {
+         exit($exit_code);
+      }
+   }
+
    exit($exit_code);
 }
 

@@ -1,0 +1,95 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set is_ajax = data['searchform_id'] is defined and data['searchform_id'] is not null %}
+{% set fluid_search = fluid_search|default(true) %}
+{% if not is_ajax %}
+   <div class="ajax-container search-display-data">
+{% endif %}
+
+{# Remove namespace separators for use in HTML attributes #}
+{% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
+
+<form id="massform{{ normalized_itemtype }}" method="get" action="{{ path('front/massiveaction.php') }}"
+      data-search-itemtype="{{ data['itemtype'] }}" data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}" data-submit-once>
+   <div class="card card-sm mt-0 search-card">
+      <div class="card-header d-flex justify-content-between search-header pe-0">
+         {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
+            <h2>{{ itemtype|itemtype_name }}</h2>
+
+            {% if count > (start + constant('Search::GLOBAL_DISPLAY_COUNT')) %}
+               <a href="{{ href }}">
+                  <i class="far fa-eye"></i>
+                  {{ __('View all') }}
+               </a>
+            {% endif %}
+         {% else %}
+            {{ include('components/search/controls.html.twig') }}
+         {% endif %}
+      </div>
+
+      {% if data['search']['as_map'] == 0 %}
+         {{ include('components/search/table.html.twig') }}
+      {% endif %}
+      {% if count > 0 %}
+         {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
+            <div class="card-footer search-footer">
+               {{ include('components/pager.html.twig') }}
+            </div>
+         {% endif %}
+      {% elseif data['search']['as_map'] == 1 %}
+         <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
+            {{ __('No item found') }}
+         </div>
+      {% endif %}
+   </div>
+</form>
+
+{% if not is_ajax %}
+   </div>
+
+   {% if data['search']['as_map'] == 0 %}
+      <script>
+          if (typeof initFluidSearch !== "function") {
+             window.initFluidSearch = () => {
+                 new GLPI.Search.ResultsView("massform{{ normalized_itemtype }}", GLPI.Search.Table);
+             };
+          }
+          if (document.readyState === 'complete') {
+              initFluidSearch();
+          } else {
+              $(document).on('ready', initFluidSearch);
+          }
+      </script>
+   {% endif %}
+{% endif %}

@@ -1,0 +1,61 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+
+<span id="user_{{ rand }}">
+    <i class="ti ti-user ms-1"></i>
+    {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization}) }}
+</span>
+
+{% if not enable_anonymization %}
+    {% set user = get_item('User', users_id) %}
+    {% if user is not null %}
+        {% set user_fields = user.fields %}
+        {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
+        {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
+        {% do call(
+            'Html::showToolTip',
+            [
+                include(
+                    'components/user/info_card.html.twig',
+                    {'user': user_fields},
+                    with_context = false
+                ),
+                {
+                    'applyto': "user_" ~ rand
+                }
+            ]
+        ) %}
+    {% endif %}
+{% endif %}

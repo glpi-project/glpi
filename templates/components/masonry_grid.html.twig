@@ -1,0 +1,64 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if grid_item_class is not defined %}
+   {% set grid_item_class = 'col-xl-6 col-xxl-4' %}
+{% endif %}
+
+{% set rand = random() %}
+<div id="grid_{{ rand }}" class="masonry_grid row row-cards mb-5">
+   {% for item in grid_items %}
+      {% if item is not empty %}
+         <div class="grid-item {{ grid_item_class }}">
+            {{ item|raw }}
+         </div>
+      {% endif %}
+   {% endfor %}
+</div>
+
+<script type="text/javascript">
+$(function() {
+   window.msnry = new Masonry('#grid_{{ rand }}', {
+      "percentPosition": true,
+      "horizontalOrder": true,
+   });
+
+   $('#grid_{{ rand }}').on("layout:refresh", function() {
+       window.msnry.layout();
+   });
+
+   $(document).on('masonry_grid:layout', function() {
+       window.msnry.layout();
+   })
+});
+</script>

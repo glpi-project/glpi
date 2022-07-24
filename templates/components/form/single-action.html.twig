@@ -1,0 +1,95 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if onlyicon is not defined %}
+   {% set onlyicon = false %}
+{% endif %}
+
+{% if not(item.isNewItem()) %}
+   {% set input = item.getMassiveActionsForItem().getInput() %}
+   {% if input['actions']|length > 0 %}
+   {% set ms_auto = single_actions_ms_auto ? 'ms-auto' : '' %}
+<div class="d-none d-sm-block btn-group {{ ms_auto }}" title="{{ __('Actions') }}"
+     {% if onlyicon %}data-bs-toggle="tooltip" data-bs-placement="top"{% endif %}>
+   <button class="btn {{ onlyicon ? 'btn-icon' : 'dropdown-toggle' }} btn-outline-secondary" type="button"
+           id="single-action" data-bs-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false">
+      <i class="ti ti-dots-vertical"></i>
+      {% if not onlyicon %}
+         <span>{{ __('Actions') }}</span>
+      {% endif %}
+   </button>
+
+   <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-2" aria-labelledby="single-action">
+      {% for key, action in input['actions'] %}
+         <a class="dropdown-item" data-action="{{ key }}" href="#">{{ action|raw }}</a>
+      {% endfor %}
+   </div>
+</div>
+<script>
+$(function () {
+   var ma = {{ input|json_encode|raw }};
+
+   $(document).on('click', '.moreactions', function () {
+      $('.moreactions + .dropdown-menu').toggle();
+   });
+
+   $(document).on('click', function (event) {
+      var target = $(event.target);
+      var parent = target.parent();
+
+      if (!target.hasClass('moreactions')
+         && !parent.hasClass('moreactions')) {
+         $('.moreactions + .dropdown-menu').hide();
+      }
+   });
+
+   $(document).on('click', '[data-action]', function () {
+      $('.moreactions + .dropdown-menu').hide();
+
+      var current_action = $(this).data('action');
+
+      glpi_ajax_dialog({
+         url: '{{ path('/ajax/dropdownMassiveAction.php') }}',
+         title: ma.actions[current_action],
+         params: Object.assign(
+            { action: current_action },
+            ma
+         ),
+         appendTo: '#massive_container_{{ rand }}',
+      });
+   });
+});
+</script>
+   {% endif %}
+{% endif %}

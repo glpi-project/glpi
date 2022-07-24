@@ -1,0 +1,284 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = random() %}
+{% set base_field_options = {
+    'is_horizontal': false,
+    'full_width': true,
+    'full_width_adapt_column': false,
+    'fields_template': itiltemplate,
+    'rand': rand,
+} %}
+{% set right_field_options = base_field_options|merge({
+    'is_horizontal': true,
+    'label_class': 'col-lg-3',
+    'input_class': 'col-lg-9',
+}) %}
+
+<div class="container-lg">
+
+    {% if has_tickets_to_validate and not url_validate is empty %}
+        <div class="alert alert-warning" role="alert">
+            {{ __('There are some tickets awaiting approval') }} — <a href="{{ url_validate }}" class="alert-link">{{ __('check it out!') }}</a>
+        </div>
+    {% endif %}
+
+   {{ include('components/itilobject/mainform_open.html.twig') }}
+
+   {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+   <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                {{ __('Describe the incident or request') }}
+            </h3>
+        </div>
+
+        <div class="card-body bg-secondary-lt pt-0">
+            {% if delegating|length %}
+                <div class="row align-items-end w-100">
+                    <div class="col-sm-6">
+
+                        {% set actor_add_form %}
+                            <div id="delegate_other{{ rand }}" class="card mt-2">
+                                <div class="card-body">
+                                    {{ item.showActorAddFormOnCreate(
+                                        constant('CommonITILActor::REQUESTER'),
+                                        params
+                                    )|u.truncate(0) }}
+                                </div>
+                            </div>
+                        {% endset %}
+
+                        {{ fields.dropdownYesNo(
+                            'nodelegate',
+                            params['nodelegate'],
+                            __('This ticket concerns me'),
+                            base_field_options|merge({
+                                'add_field_html': actor_add_form
+                            })
+                        ) }}
+                    </div>
+                    <div class="col-sm-6 {{ config('use_check_pref') and params['nodelegate'] ? "" : "d-none" }}" id="user-info{{ rand }}-block">
+                        {% set personal_information %}
+                        <div class="d-inline-flex">
+                            <div class="card mb-0" id="user-info{{ rand }}">
+                                <div class="card-body">
+                                    {% set user = get_current_user() %}
+                                    {% set user_fields = user.fields %}
+                                    {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()|verbatim_value}) %}
+                                    {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
+                                    {{ include('components/user/info_card.html.twig', {
+                                        'user': user_fields,
+                                        'can_edit': true
+                                    }, with_context = false) }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endset %}
+                        {{ fields.field(
+                            '',
+                            personal_information,
+                            __('Check your personnal information'),
+                            base_field_options
+                        ) }}
+                    </div>
+                </div>
+
+            {% else %}
+                <input type="hidden" name="_users_id_requester" value="{{ session('glpiID') }}">
+            {% endif %}
+        </div>
+        <div class="card-body row mx-0">
+            <div class="offset-md-1 col-md-8 col-xxl-6">
+               {{ fields.field(
+                  'type',
+                  item.dropdownType('type', {
+                     'value': params['type'],
+                     'width': '100%',
+                     'display': false,
+                     'on_change': 'this.form.submit()',
+                  }|merge(right_field_options)),
+                  _n('Type', 'Types', 1),
+                  right_field_options
+               ) }}
+
+               {% set cat_params = right_field_options|merge({
+                  'on_change': 'this.form.submit()',
+               }) %}
+               {% set condition = {
+                  'is_helpdeskvisible': 1
+               } %}
+               {% if params['type'] == constant('Ticket::INCIDENT_TYPE') %}
+                  {% set condition = condition|merge({'is_incident': 1}) %}
+               {% elseif params['type'] == constant('Ticket::DEMAND_TYPE') %}
+                  {% set condition = condition|merge({'is_request': 1}) %}
+               {% endif %}
+               {{ fields.dropdownField(
+                  'ITILCategory',
+                  'itilcategories_id',
+                  params['itilcategories_id'],
+                  _n('Category', 'Categories', 1),
+                  cat_params|merge({'condition': condition}),
+               ) }}
+
+               {{ fields.field(
+                  'urgency',
+                  item.dropdownUrgency({
+                     'value': params['urgency'],
+                     'width': '100%',
+                     'display': false,
+                     'required': right_field_options.fields_template.isMandatoryField('urgency'),
+                  }),
+                  __('Urgency'),
+                  right_field_options
+               ) }}
+
+               {% if session('glpiactiveprofile')['helpdesk_hardware'] and session('glpiactiveprofile')['helpdesk_item_type']|length %}
+                  {% set associated_items %}
+                     <a class="btn btn-sm btn-ghost-secondary mt-2" role="button"
+                        id="btn-collapse-items{{ rand }}"
+                        aria-expanded="false" aria-controls="collapse-items{{ rand }}"
+                        data-bs-toggle="collapse" href="#collapse-items{{ rand }}" >
+                        <i class="fas fa-plus"></i>
+                     </a>
+                     <div class="collapse" id="collapse-items{{ rand }}">
+                        {% do call('Item_Ticket::itemAddForm', [item, params|merge({
+                           '_canupdate': has_profile_right('ticket', constant('CREATE')),
+                           '_tickettemplate': itiltemplate,
+                        })]) %}
+                     </div>
+                  {% endset %}
+
+                  {{ fields.field(
+                     'items_id',
+                     associated_items,
+                     _n('Associated element', 'Associated elements', get_plural_number()),
+                     right_field_options
+                  ) }}
+               {% endif %}
+
+               {% if not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer') %}
+                  {% set observer_field %}
+
+                     {{ include('components/itilobject/actors/main.html.twig', {
+                        'item': item,
+                        'entities_id': params['entities_id'],
+                        'itiltemplate': itiltemplate,
+                        'field_options': right_field_options,
+                        'canupdate': true,
+                        'returned_itemtypes': ['User'],
+                        'display_actortypes': ['observer'],
+                        'display_labels': false,
+                        'disable_assign_to_me': true,
+                     }) }}
+                  {% endset %}
+                  {{ fields.field(
+                     'observer',
+                     observer_field,
+                     _n('Watcher', 'Watchers', get_plural_number()),
+                     right_field_options|merge({
+                        required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
+                     })
+                  ) }}
+               {% endif %}
+
+               {{ fields.dropdownField(
+                  'Location',
+                  'locations_id',
+                  params['locations_id'],
+                  'Location'|itemtype_name,
+                  right_field_options|merge({
+                     'hide_if_no_elements': true
+                  })
+               ) }}
+
+               {{ fields.textField(
+                  'name',
+                  params['name'],
+                  __('Title'),
+                  right_field_options
+               ) }}
+
+               {{ fields.textareaField(
+                  'content',
+                  params['content'],
+                  __('Description'),
+                  right_field_options|merge({
+                     'enable_richtext': true,
+                     'enable_fileupload': true,
+                  })
+               ) }}
+            </div>
+        </div>
+
+      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+        <div class="card-footer text-center">
+            <input type="hidden" name="entities_id" value="{{ params['entities_id'] }}" />
+            <button type="submit" class="btn btn-primary" name="add">
+                <i class="fas fa-plus"></i>
+                <span>{{ __('Submit message') }}</span>
+            </button>
+        </div>
+    </div>
+
+   {{ include('components/itilobject/mainform_close.html.twig') }}
+</div>
+
+<script type="text/javascript">
+$(function () {
+    $('#btn-collapse-items{{ rand }}').on('click', function() {
+        $(this).hide();
+    });
+
+    $('#dropdown_nodelegate{{ rand }}').on('change', function() {
+        var is_for_me = ($(this).val() == '1');
+        $('#user-info{{ rand }}-block').toggleClass('d-none', !is_for_me);
+        $('#delegate_other{{ rand }} .card-body')
+            .html("")
+            .load('{{ path('ajax/dropdownDelegationUsers.php') }}', {
+                'right': "delegate",
+                'nodelegate': (is_for_me ? 1 : 0),
+                '_users_id_requester': {{ params['_users_id_requester'] }},
+                '_users_id_requester_notif': {{ params['_users_id_requester_notif']|json_encode()|raw }},
+                'use_notification': {{ params['_users_id_requester_notif']['use_notification'] }},
+                'entity_restrict':  {{ session('glpiactive_entity') }}
+            });
+    })
+
+    saveActorsToDom();
+});
+</script>

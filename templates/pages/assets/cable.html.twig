@@ -1,0 +1,182 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+   {{ fields.dropdownField(
+      'CableStrand',
+      'cablestrands_id',
+      item.fields['cablestrands_id'],
+      'CableStrand'|itemtype_name,
+      field_options
+   ) }}
+
+   {{ fields.colorField(
+      'color',
+      item.fields['color'],
+      __('Color'),
+      field_options
+   ) }}
+
+   <div class="mx-n3 d-flex">
+      {% for side in ['a', 'b'] %}
+         {% set rand_side = random() %}
+         {% set side_options = field_options|merge({
+            'full_width': true,
+            'full_width_adapt_column': false,
+            'rand': rand_side,
+         }) %}
+         {% set html_side %}
+            <div class="card mx-n2 border-0 shadow-none">
+
+               {% set side_heading %}
+                  <h4 class="card-title">
+                     {{ __('Endpoint %s')|format(side|upper()) }}
+                  </h4>
+               {% endset %}
+               <div class="card-header">
+               {{ fields.field(
+                  '',
+                  side_heading,
+                  '',
+                  side_options
+               ) }}
+               </div>
+
+               <div class="card-body row">
+                  {% set dropdown_item %}
+                     <span id="show_items_id_endpoint_{{ side }}_field" class="input_rear_listener">
+                        {% set current_itemtype = item.fields['itemtype_endpoint_' ~ side] %}
+                        {{ fields.dropdownField(
+                           current_itemtype,
+                           'items_id_endpoint_' ~ side,
+                           item.fields['items_id_endpoint_' ~ side],
+                           '',
+                           side_options|merge({
+                              no_label: true,
+                           })
+                        ) }}
+                     </span>
+                  {% endset %}
+
+                  {{ fields.dropdownArrayField(
+                     'itemtype_endpoint_' ~ side,
+                     item.fields['itemtype_endpoint_' ~ side],
+                     call('Glpi\\Socket::getSocketLinkTypes'),
+                     _n('Asset', 'Assets', 1),
+                     side_options|merge({
+                        'add_field_html': dropdown_item
+                     })
+                  ) }}
+
+                  {% do call('Ajax::updateItemOnSelectEvent', [
+                     'dropdown_itemtype_endpoint_' ~ side ~ rand_side,
+                     'show_items_id_endpoint_' ~ side ~ '_field',
+                     config('root_doc') ~ '/ajax/cable.php',
+                     {
+                        'itemtype': '__VALUE__',
+                        'dom_name': 'items_id_endpoint_' ~ side,
+                        'action': 'get_items_from_itemtype',
+                        'dom_rand': rand_side
+                     }
+                  ]) %}
+
+                  {{ fields.dropdownField(
+                     'Glpi\\SocketModel',
+                     'socketmodels_id_endpoint_' ~ side,
+                     item.fields['socketmodels_id_endpoint_' ~ side],
+                     'Glpi\\SocketModel'|itemtype_name,
+                     side_options
+                  ) }}
+
+                  {{ fields.dropdownField(
+                     'Glpi\\Socket',
+                     'sockets_id_endpoint_' ~ side,
+                     item.fields['sockets_id_endpoint_' ~ side],
+                     'Glpi\\Socket'|itemtype_name,
+                     side_options|merge({
+                           'condition': {
+                              'socketmodels_id': item.fields['socketmodels_id_endpoint_' ~ side],
+                              'itemtype': item.fields['itemtype_endpoint_' ~ side],
+                              'items_id': item.fields['items_id_endpoint_' ~ side]
+                           }
+                        })
+                  ) }}
+
+                  {% set asset_breadcrumb %}
+                     <span id="show_{{ side }}_asset_breadcrumb">
+                        {% if item.fields['items_id_endpoint_' ~ side]|length > 0 %}
+                           {% set breadcrumb = call(item.fields['itemtype_endpoint_' ~ side] ~ '::getDcBreadcrumbSpecificValueToDisplay', [
+                              item.fields['items_id_endpoint_' ~ side],
+                           ]) %}
+                           {{ breadcrumb|raw }}
+                        {% endif %}
+                     </span>
+
+                     <script>
+                        //listener to remove socket selector and breadcrumb
+                        $(document).on('change', '#dropdown_itemtype_endpoint_{{ side }}{{ rand_side }}', function(e) {
+                           $('#show_{{ side }}_asset_breadcrumb').empty();
+                           $('#show_rear_sockets_field').empty();
+                        });
+
+                        //listener to refresh socket selector and breadcrumb
+                        $(document).on('change', '#dropdown_items_id_endpoint_{{ side }}{{ rand_side }}', function(e) {
+                           var items_id = $('#dropdown_items_id_endpoint_{{ side }}{{ rand_side }}').find(':selected').val();
+                           var itemtype = $('#dropdown_itemtype_endpoint_{{ side }}{{ rand_side }}').find(':selected').val();
+                           var socketmodels_id = $('#dropdown_socketmodels_id_endpoint_{{ side }}{{ rand_side }}').find(':selected').val();
+                           refreshAssetBreadcrumb(itemtype, items_id, 'show_{{ side }}_asset_breadcrumb');
+                           refreshSocketDropdown(itemtype, items_id, socketmodels_id, 'sockets_id_endpoint_{{ side }}');
+
+                        });
+                     </script>
+                  {% endset %}
+                  {{ fields.htmlField(
+                     'position',
+                     asset_breadcrumb,
+                     __('Position'),
+                     side_options
+                  ) }}
+               </div>
+            </div>
+         {% endset %}
+
+         {{ fields.noLabelField(
+            html_side
+         ) }}
+      {% endfor %}
+   </div>
+{% endblock %}

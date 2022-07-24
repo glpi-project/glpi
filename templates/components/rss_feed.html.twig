@@ -1,0 +1,67 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="firstbloc">
+   {% if rss_feed.error is defined and rss_feed.error is not null %}
+      {{ __('Error retrieving RSS feed') }}
+   {% endif %}
+   <table class="table table-striped table-hover">
+      <thead>
+         <tr>
+            <th colspan="3">{{ rss_feed.title }}</th>
+         </tr>
+      </thead>
+      {% for rss_item in rss_feed.items %}
+         <tr class="tab_bg_1">
+            <td>{{ rss_item.timestamp }}</td>
+            <td>
+               {% if rss_item.link is defined and rss_item.link is not null %}
+                  <a target="_blank" href="{{ rss_item.link }}">{{ rss_item.title }}</a>
+               {% else %}
+                  {{ rss_item.title }}
+               {% endif %}
+            </td>
+            <td>
+               {% set rand = random() %}
+               {% set preview = rss_item.content|html_to_text %}
+               {% set preview = preview|length > 1000 ? preview|slice(0, 1000) ~ ' (...)' : preview %}
+               <span id="rssitem{{ rand }}" class="pointer">{{ preview }}</span>
+               {% do call('Html::showToolTip', [rss_item.content, {
+                  'applyto': 'rssitem' ~ rand,
+                  'display': true
+               }]) %}
+            </td>
+         </tr>
+      {% endfor %}
+   </table>
+</div>

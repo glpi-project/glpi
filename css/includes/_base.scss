@@ -1,0 +1,320 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+$mainmenu_bg: $dark !default;
+$mainmenu_fg: $light !default;
+$search_bg: transparentize($mainmenu_bg, 0.95) !default;
+$search_fg: lighten($mainmenu_bg, 5%) !default;
+$search_border: lighten($color: $search_fg, $amount: 35) !default;
+$table_border: #eee !default;
+$table_header_bg: #f8f8f8 !default;
+$header-fg: $blue !default;
+$header-bg: theme-color-lighter($header-fg, true) !default;
+$header-border-color: tint-color($header-fg, 75%) !default;
+$header-danger-bg: $danger !default;
+$header-badge-bg: tint-color($header-fg, 80%) !default;
+$header-badge-fg: darken($header-fg, 20%) !default;
+$scrollbar-color-thumb: rgba($color: $secondary, $alpha: 80%) !default;
+$scrollbar-color-track: transparent !default;
+$tabs-bg: $card-cap-bg !default;
+$tabs-fg: $text-muted !default;
+$tabs-border: $card-border-color !default;
+$tabs-active-bg: #fff !default;
+$tabs-active-fg: $dark !default;
+$tabs-active-border: $tabs-border !default;
+$badge-bg: $secondary !default;
+$badge-fg: $light !default;
+$itil-secondary-bg: #f5f5f5 !default; // secondary color for right side and footer (primary color is card background)
+$timeline-itilc-bg: #e2f2e3 !default;
+$timeline-itilc-fg: #155210 !default;
+$timeline-itilc-border: #87aa8a !default;
+$timeline-fup-bg: #ececec !default;
+$timeline-fup-fg: #535353 !default;
+$timeline-fup-border: #ccc !default;
+$timeline-task-bg: #ffe8b9 !default;
+$timeline-task-fg: #38301f !default;
+$timeline-task-border: #e5c88c !default;
+$timeline-sol-bg: #9fd6ed !default;
+$timeline-sol-fg: #27363b !default;
+$timeline-sol-border: #90c2d8 !default;
+$timeline-doc-bg: #80cead !default;
+$timeline-doc-fg: #21352c !default;
+$timeline-doc-border: #68b997 !default;
+$timeline-log-bg: #cacaca21 !default;
+$timeline-badge-bg: rgba(97, 97, 97, 15%) !default;
+$timeline-badge-fg: rgba(43, 43, 43, 80%) !default;
+$input-border: $dark-mode-text !default;
+$dropdowns-list-contrast: rgba(167, 171, 175, 10%) !default;
+$entity-badge-bg: theme-color-lighter($link-color, true) !default;
+$entity-badge-fg: $link-color !default;
+
+// helpers
+$topbar-height: 79px;
+$contextbar-height: 56px;
+$content-margin: 20px;
+
+body.iframed {
+    background-color: transparent;
+    overflow-x: hidden;
+}
+
+.page {
+    .glpi-logo {
+        background: url($logo) no-repeat;
+        height: 55px;
+        width: 100px;
+    }
+
+    .page-body {
+        margin-bottom: 0;
+    }
+
+    .footer {
+        font-size: 0.75rem;
+        padding: 0.5em;
+    }
+}
+
+.breadcrumb-alternate {
+    a {
+        &:hover {
+            text-decoration: $link-hover-decoration;
+        }
+    }
+}
+
+.dropdown-item {
+    & > .fas:first-child,
+    & > .fa-solid:first-child,
+    & > .far:first-child,
+    & > .fa-regular:first-child,
+    & > .fab:first-child,
+    & > .fa-brands:first-child,
+    & > .ti:first-child {
+        margin-right: 0.5em;
+    }
+}
+
+.ti {
+    font-size: 1.25em;
+    text-align: left;
+
+    &.fa-fw {
+        width: 0.9em;
+    }
+
+    &.fa-xs {
+        font-size: 0.85em;
+    }
+
+    &.fa-lg {
+        font-size: 1.8em;
+        line-height: 0.75em;
+        vertical-align: -0.0667em;
+    }
+
+    &.fa-2x {
+        font-size: 2.3em;
+        vertical-align: bottom;
+    }
+}
+
+.btn {
+    .btn-group .select2-container ~ & {
+        max-width: 25px;
+    }
+
+    a {
+        color: inherit;
+    }
+
+    i.fas,
+    i.fa-solid,
+    i.far,
+    i.fa-regular,
+    i.fab,
+    i.fa-brands,
+    i.ti,
+    .fa-stack {
+        margin-inline-start: 0;
+
+        & + * {
+            margin-left: 0.25rem;
+        }
+    }
+
+    &.btn-icon {
+        i.fas,
+        i.fa-solid,
+        i.far,
+        i.fa-regular,
+        i.fab,
+        i.fa-brands,
+        i.ti {
+            margin-right: 0;
+            line-height: 1.5em;
+        }
+
+        &.btn-sm {
+            // try to have same height for ti and fa icons
+            min-height: 24px;
+
+            .fa-stack {
+                height: 1.65em;
+                line-height: 1.2em;
+                width: 1.8em;
+                margin-top: -2px;
+                font-size: 0.8em;
+
+                @include media-breakpoint-down(sm) {
+                    width: 1.4em;
+                }
+            }
+
+            i.fas,
+            i.fa-solid,
+            i.far,
+            i.fa-regular,
+            i.fab,
+            i.fa-brands,
+            i.ti {
+                line-height: 1.2em;
+            }
+        }
+    }
+}
+
+.toast-container {
+    z-index: 999999;
+    position: fixed;
+}
+
+.img-overlay-wrapper {
+    width: fit-content;
+}
+
+.page-anonymous {
+    .glpi-logo {
+        --logo: url(#{$logo-dark-login});
+
+        content: var(--logo);
+        width: 200px;
+        height: 110px;
+    }
+}
+
+table {
+    td.active,
+    td.tab_bg_4 {
+        background-color: $table-active-bg;
+        color: $table-active-color;
+    }
+
+    &.deleted-results {
+        & > :not(caption) > * > * {
+            box-shadow: none; // override tabler for deleted results
+        }
+    }
+}
+
+.entity-badge {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background: $entity-badge-bg;
+    color: $entity-badge-fg !important;
+    padding: calc(0.25rem - 1px) 0.25rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+.entity_tree {
+    width: 450px;
+    max-width: 85vw;
+    position: relative;
+
+    table {
+        width: 100%;
+    }
+
+    .fancytree-expander,
+    .fancytree-icon {
+        margin-top: 5px;
+    }
+
+    .fancytree-folder {
+        .fancytree-title {
+            font-weight: bold;
+        }
+    }
+
+    .fancytree-selected {
+        background-color: $component-active-bg;
+    }
+
+    .plain-scrollbar {
+        &[data-scrollable="false"] {
+            visibility: hidden;
+        }
+
+        &.scrollbar-vertical {
+            width: 8px;
+        }
+
+        .arrow-up,
+        .arrow-down {
+            display: none;
+        }
+
+        .slider-area {
+            top: 0 !important;
+            bottom: 0 !important;
+        }
+    }
+}
+
+.qtip-bootstrap,
+.popover .popover-body {
+    background-color: $color-contrast-light;
+    color: $dark;
+}
+
+.popover .popover-arrow::after {
+    border-top-color: $color-contrast-light;
+}
+
+kbd {
+    white-space: nowrap;
+}

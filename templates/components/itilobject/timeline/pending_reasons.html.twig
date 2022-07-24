@@ -1,0 +1,156 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set pending_item = call('PendingReason_Item::getForItem', [subitem, true]) %}
+{% if subitem.isNewItem() or pending_item or call('PendingReason_Item::isLastTimelineItem', [subitem])  %}
+   <div class="row">
+      <div class="col-12 col-sm-4" title="{{ "PendingReason"|itemtype_name }}"
+           data-bs-toggle="tooltip" data-bs-placement="top">
+         {% set pendingreasons_lbl %}
+            <i class="fas fa-tags fa-fw"></i>
+         {% endset %}
+         {% set pending_reasons_id_script %}
+            <script>
+               var myCollapsible = $('#pending-reasons-setup-{{ rand }}')[0];
+               myCollapsible.addEventListener('show.bs.collapse', function () {
+                  $('#pending-reasons-control-{{ rand }}').addClass('flex-fill');
+               });
+               myCollapsible.addEventListener('hide.bs.collapse', function () {
+                  $('#pending-reasons-control-{{ rand }}').removeClass('flex-fill');
+               });
+            </script>
+         {% endset %}
+         {{ fields.dropdownField(
+            'PendingReason',
+            'pendingreasons_id',
+            subitem.fields['pendingreasons_id'],
+            pendingreasons_lbl,
+            {
+               'label_class': 'col-1',
+               'input_class': 'col-10 ms-1',
+               'rand': rand,
+               'mb': '',
+               'hide_if_no_elements': true,
+               'addicon': false,
+               'comments': false,
+               'width': '95%',
+               'field_class': '',
+               'add_field_html': pending_reasons_id_script
+            }
+         ) }}
+         <script>
+            $('#dropdown_pendingreasons_id{{ rand }}').change(function() {
+               var pending_val = $(this).val();
+               if (pending_val > 0) {
+                  $('#pending-reasons-more_options_{{ rand }}').addClass('show');
+                  $.ajax({
+                     url: '{{ path("ajax/pendingreason.php") }}',
+                     type: 'POST',
+                     data: {
+                        pendingreasons_id: pending_val
+                     }
+                  }).done(function(data) {
+                     $('#dropdown_followup_frequency{{ rand }}')
+                        .val(data.followup_frequency)
+                        .trigger('change');
+                     $('#dropdown_followups_before_resolution{{ rand }}')
+                        .val(data.followups_before_resolution)
+                        .trigger('change');
+                  });
+               } else {
+                  $('#pending-reasons-more_options_{{ rand }}').removeClass('show');
+               }
+            });
+         </script>
+      </div>
+
+      <div class="collapse col-12 col-sm-8" id="pending-reasons-more_options_{{ rand }}">
+         <div class="row">
+            <div class="col-12 col-sm-6" title="{{ __('Automatic follow-up') }}"
+                  data-bs-toggle="tooltip" data-bs-placement="top">
+               {% set pendingreasons_frequency_field = call('PendingReason::displayFollowupFrequencyfield', [
+                  pending_item.fields["followup_frequency"],
+                  "",
+                  {
+                     'rand': rand
+                  },
+                  false
+               ]) %}
+               {% set pendingreasons_frequency_lbl %}
+                  <i class="fas fa-redo fa-fw"></i>
+               {% endset %}
+               {{ fields.field(
+                  'followup_frequency',
+                  pendingreasons_frequency_field,
+                  pendingreasons_frequency_lbl,
+                  {
+                     'field_class': '',
+                     'label_class': 'col-1',
+                     'input_class': 'col-10 ms-1',
+                     'rand': rand,
+                     'mb': '',
+                  }
+               ) }}
+            </div>
+            <div class="col-12 col-sm-6" title="{{ __('Automatic resolution') }}"
+                 data-bs-toggle="tooltip" data-bs-placement="top">
+               {% set pendingreasons_resolution_field = call('PendingReason::displayFollowupsNumberBeforeResolutionField', [
+                     pending_item.fields["followups_before_resolution"],
+                     "",
+                     {
+                        'rand': rand
+                     },
+                     false
+               ]) %}
+               {% set pendingreasons_resolution_lbl %}
+                  <i class="fas fa-check fa-fw"></i>
+               {% endset %}
+               {{ fields.field(
+                  'followups_before_resolution',
+                  pendingreasons_resolution_field,
+                  pendingreasons_resolution_lbl,
+                  {
+                     'field_class': '',
+                     'label_class': 'col-1',
+                     'input_class': 'col-10 ms-1',
+                     'rand': rand,
+                     'mb': '',
+                  }
+               ) }}
+            </div>
+         </div>
+      </div>
+   </div>
+{% endif %}

@@ -1,0 +1,242 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="d-inline-flex search-controls">
+   {% if showmassiveactions and count > 0 %}
+      {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+   {% endif %}
+
+   {% if may_be_located and (count > 0 or data['search']['as_map'] == 1) %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show as map') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                name="as_map" value="1" autocomplete="off"
+                onclick="toogle('as_map','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                {{ data['search']['as_map'] == 1 ? 'checked' : '' }} />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="ti fa-lg ti-map-2"></i>
+         </span >
+      </label>
+   {% endif %}
+
+   {% if may_be_browsed %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Toggle browse') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                name="browse" value="1" autocomplete="off"
+                onclick="toogle('browse','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                {{ data['search']['browse'] == 1 ? 'checked' : '' }} />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="ti fa-lg ti-subtask"></i>
+         </span>
+      </label>
+   {% endif %}
+
+   {% if may_be_deleted %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-danger me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show the trashbin') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                name="is_deleted" value="1" autocomplete="off"
+                onclick="toogle('is_deleted','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                {{ data['search']['is_deleted'] == 1 ? 'checked' : '' }} />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="ti fa-lg ti-trash"></i>
+         </span>
+      </label>
+   {% endif %}
+
+   <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+          data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
+          title="{{ __('Toggle search filters') }}">
+      <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 fold-search" role="button"
+             {{ session('glpifold_search') ? '' : 'checked' }} autocomplete="off" />
+      <span class="form-check-label mb-1 mb-sm-0">
+         <i class="ti fa-lg ti-search"></i>
+      </span>
+   </label>
+
+   <div class="d-inline-flex" role="group">
+
+      {% if can_config and count > 0 %}
+      <button class="btn btn-sm btn-icon btn-ghost-secondary show_displaypreference_modal me-0 me-sm-1"
+             title="{{ __('Select default items to show') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+         <i class="ti fa-lg ti-tool"></i>
+      </button>
+      {% endif %}
+
+      {% if count > 0 %}
+         <button class="dropdown-toggle btn btn-sm btn-icon btn-ghost-secondary" type="button" id="dropdown-export"
+               data-bs-toggle="dropdown" aria-expanded="false" >
+            <span class="py-1 px-2 my-n1 mx-n2"data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ _x('button', 'Export') }}">
+               <i id="export_dropdown_icon" class="ti fa-lg ti-file-download"></i>
+            </span>
+         </button>
+      {% set exporthref = path('/front/report.dynamic.php') ~ '?item_type=' ~ itemtype ~ '&start=' ~ start ~ '&' ~ posthref %}
+      <ul class="dropdown-menu" aria-labelledby="dropdown-export">
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
+            <i class="far fa-lg fa-file-pdf"></i>
+            {{ __('Current page in landscape PDF') }}
+         </a></li>
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
+            <i class="far fa-lg fa-file-pdf"></i>
+            {{ __('Current page in portrait PDF') }}
+         </a></li>
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::SYLK_OUTPUT') }}">
+            <i class="far fa-lg fa-file-excel"></i>
+            {{ __('Current page in SLK') }}
+         </a></li>
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::CSV_OUTPUT') }}">
+            <i class="fas fa-lg fa-file-csv"></i>
+            {{ __('Current page in CSV') }}
+         </a></li>
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
+            <i class="far fa-lg fa-file-pdf"></i>
+            {{ __('All pages in landscape PDF') }}
+         </a></li>
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
+            <i class="far fa-lg fa-file-pdf"></i>
+            {{ __('All pages in portrait PDF') }}
+         </a></li>
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::SYLK_OUTPUT') }}">
+            <i class="far fa-lg fa-file-excel"></i>
+            {{ __('All pages in SLK') }}
+         </a></li>
+         <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::CSV_OUTPUT') }}">
+            <i class="fas fa-lg fa-file-csv"></i>
+            {{ __('All pages in CSV') }}
+         </a></li>
+         {% if itemtype != 'Stat' %}
+         <li id="copy_names_to_clipboard"><a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}">
+            <i class="far fa-lg fa-copy"></i>
+            {{ __('Copy names to clipboard') }}
+         </a></li>
+         {% endif %}
+      </ul>
+      {% endif %}
+   </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+   $('.show_displaypreference_modal').click(function(e) {
+      e.preventDefault();
+
+      var modal = '<div class="modal fade" id="displayprefence_modal{{ rand }}" role="dialog">';
+      modal += '<div class="modal-dialog modal-lg">';
+      modal += '<div class="modal-content">';
+      modal += '<div class="modal-header">';
+      modal += '<h4 class="modal-title">{{ __('Select default items to show') }}</h4>';
+      modal += '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close modal') }}"></button>';
+      modal += '</div>';
+      modal += '<div class="modal-body">';
+      modal += '<div class="ratio ratio-4x3">';
+      modal += '<iframe src="{{ path('front/displaypreference.form.php?itemtype=' ~ itemtype|escape('url')) }}"></iframe>'
+      modal += '</div>';
+      modal += '</div>';
+      modal += '</div>';
+      modal += '</div>';
+
+      // remove old modal
+      $('#displayprefence_modal{{ rand }}').remove();
+
+      // create new one
+      $('body').append(modal);
+      $('#displayprefence_modal{{ rand }}').modal('show');
+   });
+
+   $("body").on('hide.bs.modal', '#displayprefence_modal{{ rand }}', function() {
+      location.reload();
+   });
+
+   $('.fold-search').change(function(event) {
+      var show_search = $(this).is(":checked");
+
+      // hide tooltips (issue maybe ?)
+      $('[data-toggle="tooltip"]').tooltip('hide');
+
+      event.preventDefault();
+      $.ajax({
+         url: '{{ path('/ajax/search.php') }}',
+         type: 'POST',
+         datatype: 'json',
+         data: {
+            'action': 'fold_search',
+            'show_search': (show_search ? 1 : 0),
+         },
+         success: function() {
+            toggle_fold_search(show_search);
+
+            // scroll to top to display the change
+            if (show_search) {
+               $("html, body, .search-container").animate({ scrollTop: 0 });
+            }
+         }
+      });
+   });
+
+   // Callbacks for copy success/failure
+   function copy_success() {
+      glpi_toast_info(__('Results copied to clipboard'));
+      $('#export_dropdown_icon').removeClass('fa-circle-notch');
+      $('#export_dropdown_icon').removeClass('fa-spin');
+      $('#export_dropdown_icon').addClass('fa-file-download');
+      $('#export_dropdown_icon').parent().parent().addClass('dropdown-toggle');
+   }
+   function copy_error() {
+      glpi_toast_error(__('Unexpected error'));
+      $('#export_dropdown_icon').removeClass('fa-circle-notch');
+      $('#export_dropdown_icon').removeClass('fa-spin');
+      $('#export_dropdown_icon').addClass('fa-file-download');
+      $('#export_dropdown_icon').parent().parent().addClass('dropdown-toggle');
+   }
+
+   $('#copy_names_to_clipboard').click(function(e) {
+      // Get target link
+      var link = $(this).find('a').prop('href');
+
+      // Show loading indicator
+      $('#export_dropdown_icon').removeClass('fa-file-download');
+      $('#export_dropdown_icon').addClass('fa-circle-notch');
+      $('#export_dropdown_icon').addClass('fa-spin');
+      $('#export_dropdown_icon').parent().parent().removeClass('dropdown-toggle');
+
+      // Prevent link from working
+      e.preventDefault();
+
+      // Get data using ajax
+      $.get(link, function (data) {
+         navigator.clipboard.writeText(data).then(copy_success, copy_error);
+      }).fail(copy_error);
+   });
+});
+</script>

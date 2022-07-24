@@ -1,0 +1,234 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/modals_macros.html.twig' as modals %}
+
+{% set la_fields = [] %}
+
+{% set la_fields = la_fields|merge([
+   {
+      'la': sla,
+      'type_str': 'sla',
+      'type': constant('SLM::TTO'),
+      'datefieldname': 'time_to_own',
+      'lafieldname': 'slas_id_tto',
+      'label': __('TTO'),
+      'helper': __('Time to own'),
+   }, {
+      'la': sla,
+      'type_str': 'sla',
+      'type': constant('SLM::TTR'),
+      'datefieldname': 'time_to_resolve',
+      'lafieldname': 'slas_id_ttr',
+      'label': __('TTR'),
+      'helper': __('Time to resolve'),
+   }
+]) %}
+
+{% set la_fields = la_fields|merge([
+   {
+      'la': ola,
+      'type_str': 'ola',
+      'type': constant('SLM::TTO'),
+      'datefieldname': 'internal_time_to_own',
+      'lafieldname': 'olas_id_tto',
+      'label': __('Internal TTO'),
+      'helper': __('Internal Time to own'),
+   }, {
+      'la': ola,
+      'type_str': 'ola',
+      'type': constant('SLM::TTR'),
+      'datefieldname': 'internal_time_to_resolve',
+      'lafieldname': 'olas_id_ttr',
+      'label': __('Internal TTR'),
+      'helper': __('Internal Time to resolve'),
+   }
+]) %}
+
+
+{% for la_field in la_fields %}
+   {% set rand = random() %}
+   {% set date_displayed = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField(la_field.datefieldname) %}
+   {% set la_displayed = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField(la_field.lafieldname) %}
+
+   {% if date_displayed or la_displayed %}
+      {% set la_html %}
+         {% if la_field.la.getDataForTicket(item.fields['id'], la_field.type) %}
+            {% if date_displayed %}
+               <span class="text-muted">
+                  {{ item.fields[la_field.datefieldname]|formatted_datetime }}
+               </span>
+            {% endif %}
+
+            {% if la_displayed %}
+               <span class="level_name badge itil-badge bg-secondary ms-1 flex-column flex-sm-row">
+                  <span class="d-flex align-items-center">
+                     <i class="fas fa-stopwatch slt me-1"></i>
+                     <span class="text-truncate"
+                           title="{{ get_item_comment(la_field.la.getType(), item.fields[la_field.lafieldname]) }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top">
+                        {{ get_item_name(la_field.la.getType(), item.fields[la_field.lafieldname]) }}
+                     </span>
+
+                     {% if canupdate %}
+                        <i class="ti ti-x ms-1" role="button"
+                           onclick="delete_date_{{ rand }}(event)"
+                           title="{{ _x('button', 'Delete permanently') }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                     {% endif %}
+                  </span>
+
+                  {% set nextaction = la_field.la.getNextActionForTicket(item, la_field.type) %}
+                  {% set level  = la_field.la.getLevelFromAction(nextaction) %}
+                  {% if level != false %}
+                     <span class="badge bg-info ms-0 ms-sm-1">
+                        <i class="fas fa-clock me-1"
+                           title="{{ __('Next escalation: %s')|format(nextaction.fields['date']|formatted_datetime) }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                        <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), get_item_name(level)) }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top">
+                           {{ get_item_name(level) }}
+                        </span>
+                     </span>
+                  {% endif %}
+               </span>
+               <script type="text/javascript">
+                  function delete_date_{{ rand }}(e) {
+                     e.preventDefault();
+
+                     var delete_date = 0;
+                     if (confirm('{{ __('Also delete date?') }}')) {
+                        delete_date = 1;
+                     }
+
+                     submitGetLink('{{ item.getFormURL() }}', {
+                        '{{ la_field.type_str }}_delete': 1,
+                        'id': {{ item.fields['id'] }},
+                        'type': {{ la_field.type }},
+                        '_glpi_csrf_token': '{{ csrf_token() }}',
+                        '_glpi_simple_form': 1,
+                        'delete_date': delete_date
+                     });
+                  }
+               </script>
+            {% endif %}
+         {% else %}
+            <div class="d-flex align-items-center flex-wrap">
+               {% set assign_la_id = 'assign_la_' ~ rand %}
+
+               {% if date_displayed %}
+                  <div class="la_datefield">
+                     {{ fields.datetimeField(
+                        la_field.datefieldname,
+                        item.fields[la_field.datefieldname],
+                        '',
+                        {
+                           'include_field': false,
+                           'id': 'date_' ~ assign_la_id,
+                           'disabled': (not canupdate),
+                        }
+                     ) }}
+                  </div>
+               {% endif %}
+
+               {% if la_displayed %}
+                  <div class="{{ item.isNewItem ? '' : 'collapsed' }} w-100 mt-1" id="dropdown_{{ assign_la_id }}">
+                     {{ fields.dropdownField(
+                        la_field.la.getType(),
+                        la_field.lafieldname,
+                        item.fields[la_field.lafieldname],
+                        '',
+                        {
+                           'include_field': false,
+                           'entity': item.fields['entities_id'],
+                           'condition': {'type': la_field.type},
+                           'disabled': (not canupdate),
+                           'add_field_class': (is_expanded ? 'col-sm-6' : ''),
+                        }
+                     ) }}
+                  </div>
+
+                  {% if canupdate %}
+                     <button class="btn btn-sm btn-ghost-secondary ms-1" type="button"
+                           id="button_{{ assign_la_id }}"
+                           data-bs-toggle="modal" data-bs-target="#{{ assign_la_id }}"
+                           aria-expanded="false" aria-controls="{{ assign_la_id }}">
+                        <i class="fas fa-stopwatch slt pointer"
+                           title="{{ __('Assign a SLA') }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                     </button>
+
+                     {{ modals.confirm(
+                        __('Warning'),
+                        la_field.la.getAddConfirmation()|join('<br />'),
+                        {
+                           'id': assign_la_id,
+                           'confirm_label': '<i class="fas fa-stopwatch me-1"></i>' ~ __('Assign'),
+                           'confirm_event': 'toggleAssignLA_' ~ rand ~ '()',
+                        }
+                     ) }}
+
+                     <script type="text/javascript">
+                        function toggleAssignLA_{{ rand }}() {
+                           // hide button clicked
+                           $("#button_{{ assign_la_id }}").hide();
+
+                           // hide date field
+                           $("#date_{{ assign_la_id }}").closest('.la_datefield').hide();
+
+                           // show level agreement dropdown
+                           var myCollapse = new bootstrap.Collapse(document.getElementById('dropdown_{{ assign_la_id }}'));
+                           myCollapse.show();
+                        }
+                     </script>
+                  {% endif %}
+               {% endif %}
+            </div>
+         {% endif %}
+      {% endset %}
+      {{ fields.field(
+         la_field.lafieldname,
+         la_html,
+         la_field.label,
+         {
+            helper: la_field.helper,
+            mb: 'mb-2',
+            label_class: 'col-auto',
+            full_width: true,
+            is_horizontal: false,
+            add_field_class: (is_expanded ? 'col-sm-6' : ''),
+         }
+      ) }}
+   {% endif %}
+{% endfor %}

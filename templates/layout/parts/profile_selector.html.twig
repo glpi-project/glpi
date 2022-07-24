@@ -1,0 +1,247 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+
+<div class="dropdown dropstart">
+   <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+      <i class="ti ti-user-check"></i>
+      {{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value }}
+   </button>
+   <div class="dropdown-menu" data-bs-popper="none">
+      <span class="dropdown-header">{{ __('Profiles') }}</span>
+      {% for profile_id, profile in session('glpiprofiles') %}
+      <a class="dropdown-item {{ profile_id == (session('glpiactiveprofile')['id'] ?? 0) ? 'active' : '' }}"
+         href="{{ index_path() }}?newprofile={{ profile_id }}">
+         <i class="ti ti-user-check"></i>{{ profile['name']|verbatim_value }}
+      </a>
+      {% endfor %}
+   </div>
+</div>
+
+{% set target = path("front/central.php") %}
+{% if get_current_interface() == "helpdesk" %}
+   {% set target = path("front/helpdesk.public.php") %}
+{% endif %}
+
+{% set current_entity = session('glpiactive_entity_name')|verbatim_value %}
+{% set current_entity_short = session('glpiactive_entity_shortname')|verbatim_value %}
+{% if current_entity != current_entity_short %}
+   {% set current_entity_short = '... > ' ~ current_entity_short %}
+{% endif %}
+{% if not is_multi_entities_mode() %}
+   <span class="dropdown-item dropdown-item-text" title="{{ current_entity }}">
+      <i class="fa-fw ti ti-stack"></i>
+      {{ current_entity_short|u.truncate(35, '...') }}
+   </span>
+{% else %}
+   <div class="dropdown dropstart">
+      <a href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
+         <i class="fa-fw ti ti-stack"></i>
+         {{ current_entity_short|u.truncate(35, '...') }}
+      </a>
+      <div class="dropdown-menu p-3">
+         <h3>{{ __('Select the desired entity') }}</h3>
+
+         <div class="alert alert-info" role="alert">
+            {% set shortcut = __('Ctrl + Alt + E') %}
+            {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
+                {% set shortcut = __('⌥ (option) + ⌘ (command) + E') %}
+            {% endif %}
+            {{ __("Tip: You can call this modal with %s keys combination")|format('<kbd>' ~ shortcut ~ '</kbd>')|raw }}
+         </div>
+         <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            <span class="ms-2">
+               {% set recursive_icon %}
+                  <i class="fas fa-angle-double-down" title="{{ __('+ sub-entities') }}"></i>
+               {% endset %}
+               {{ __('Click on the %s icon to load the elements of the selected entity, as well as its sub-entities.')|format(recursive_icon)|raw }}
+            </span>
+         </div>
+
+         <form id="entsearchform{{ rand }}">
+            <div class="input-group">
+               <input type="text" class="form-control" name="entsearchtext" id="entsearchtext{{ rand }}"
+                     placeholder="{{ __('Search entity') }}" autocomplete="off">
+               <button type="submit" class="btn btn-icon btn-primary" title="{{ __('Search') }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="ti ti-search"></i>
+               </button>
+               <a class="btn btn-icon btn-outline-secondary" href="#" id="entsearchtext{{ rand }}_clear"
+                  title="{{ __("Clear search") }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                     <i class="ti ti-x"></i>
+               </a>
+               <a href="{{ target }}?active_entity=all" class="btn btn-secondary"
+                  title="{{ __('Select all') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="ti ti-eye"></i>
+               </a>
+            </div>
+         </form>
+
+         <div class="fancytree-grid-container flexbox-item-grow entity_tree">
+            <table id="tree_entity{{ rand }}">
+               <colgroup>
+                  <col></col>
+               </colgroup>
+               <thead>
+                  <tr>
+                     <th class="parent-path"></th>
+                  </tr>
+               </thead>
+               <tbody>
+               </tbody>
+            </table>
+            <div id="verticalScrollbar-{{ rand }}" style="height:100%;"></div>
+         </div>
+      </div>
+   </div>
+
+   <script type="text/javascript">
+   $(function() {
+      $('#tree_entity{{ rand }}').fancytree({
+         // load plugins
+         extensions: ['filter', 'glyph', 'grid'],
+
+         // Scroll node into visible area, when focused by keyboard
+         autoScroll: true,
+
+         // enable font-awesome icons
+         glyph: {
+            preset: "awesome5",
+            map: {}
+         },
+
+         // enable virtual dom, it requires the grid (table extension) plugin
+         table: {
+            indentation: 20,       // indent 20px per node level
+            nodeColumnIdx: 0,      // render the node title into the 1st column
+            mergeStatusColumns: false,
+         },
+         grid: {
+            mergeStatusColumns: false,
+         },
+         viewport: {
+            enabled: true,
+            count: 15, // number of items to display at once
+         },
+
+         // load data by ajax
+         source: {
+            url:  '{{ path("/ajax/entitytreesons.php") }}',
+            cache: false
+         },
+
+         // filter plugin options
+         filter: {
+            mode: "hide", // remove unmatched nodes
+            autoExpand: true, // if results found in children, auto-expand parent
+            nodata: '{{ __("No entity found") }}', // message when no data found
+            highlight: false, // do not highlight matches by wrapping inside tags (when true, this strip the a tag)
+         },
+
+         // load 3rd party scrollbar extension for viewport mode
+         preInit: function(event, data) {
+            var tree = data.tree;
+
+            tree.verticalScrollbar = new PlainScrollbar({
+               alwaysVisible: true,
+               arrows: true,
+               orientation: "vertical",
+               onSet: function(numberOfItems) {
+                  tree.setViewport({
+                     start: Math.round(numberOfItems.start),
+                  });
+               },
+               scrollbarElement: document.getElementById("verticalScrollbar-{{ rand }}"),
+            });
+         },
+
+         // update scrollbar when viewport is updated
+         updateViewport: function(event, data) {
+            var tree = data.tree;
+
+            tree.verticalScrollbar.set({
+               start: tree.viewport.start,
+               total: tree.visibleNodeList.length,
+               visible: tree.viewport.count,
+            }, true);  // do not trigger `onSet`
+
+            initTooltips();
+         },
+
+        // update toolips on node expand
+        expand: function(event, data) {
+            initTooltips();
+        },
+      });
+
+      var searchTree = function() {
+         var search_text = $("#entsearchtext{{ rand }}").val();
+         $.ui.fancytree.getTree("#tree_entity{{ rand }}").filterNodes(search_text);
+      }
+
+      $('#entsearchform{{ rand }}').submit(function(event) {
+         // cancel submit of entity search form
+         event.preventDefault();
+
+         searchTree();
+      });
+
+      $('#entsearchtext{{ rand }}').keyup(function () {
+         var inputsearch = $(this);
+         typewatch(function () {
+            if (inputsearch.val().length >= 3) {
+               searchTree();
+            }
+         }, 500);
+      }).focus();
+
+      $('#entsearchtext{{ rand }}_clear').click(function () {
+         $('#entsearchtext{{ rand }}').val('');
+         searchTree();
+      });
+
+      // when the shortcut for entity form is called
+      hotkeys('ctrl+alt+e, option+command+e', async function(e) {
+         e.stopPropagation();
+         e.preventDefault();
+         $('.user-menu-dropdown-toggle').dropdown('show');
+         await new Promise(r => setTimeout(r, 100));
+         $('.entity-dropdown-toggle').dropdown('show');
+         $('input[name=entsearchtext]').filter(":visible")[0].focus();
+      });
+   });
+   </script>
+{% endif %}

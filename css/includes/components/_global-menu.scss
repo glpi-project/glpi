@@ -1,0 +1,290 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.navbar .navbar-toggler {
+    color: $mainmenu-fg;
+}
+
+.sidebar,
+.topbar {
+    background-color: $mainmenu-bg;
+    color: $mainmenu-fg;
+    z-index: $zindex-fixed;
+
+    .btn-ghost-secondary {
+        color: rgba($color: $mainmenu-fg, $alpha: 80%);
+    }
+
+    .btn-outline-secondary {
+        color: rgba($color: $mainmenu-fg, $alpha: 80%);
+        border-color: rgba($color: $mainmenu-fg, $alpha: 80%);
+
+        &:hover {
+            background-color: rgba($color: $mainmenu-fg, $alpha: 80%);
+            color: rgba($color: $mainmenu-bg, $alpha: 80%);
+            border-color: transparent;
+        }
+    }
+}
+
+.topbar {
+    .nav-item {
+        i {
+            margin-right: 0.3em;
+        }
+    }
+}
+
+.sidebar {
+    & ~ .navbar {
+        z-index: $zindex-fixed;
+    }
+
+    & ~ .page-wrapper,
+    ~ .navbar {
+        transition: margin-inline-start var(--animate-duration);
+    }
+
+    #navbar-menu {
+        .nav-item {
+            .nav-link {
+                color: rgba($color: $mainmenu-fg, $alpha: 80%);
+                border-left: 3px solid transparent;
+                border-radius: unset;
+
+                &.show,
+                &.active {
+                    border-left-color: rgba($color: $primary, $alpha: 30%);
+                    color: rgba($color: $primary, $alpha: 90%);
+                    font-weight: bold;
+                }
+
+                &.active,
+                &.show {
+                    & + .dropdown-menu {
+                        border-radius: unset;
+                        background-color: rgba($color: #000, $alpha: 10%);
+
+                        .dropdown-header {
+                            display: none;
+                        }
+
+                        .dropdown-item {
+                            border-left: 3px solid rgba($color: #000, $alpha: 50%);
+
+                            &.active {
+                                border-left-color: rgba($color: $primary, $alpha: 30%);
+                                background-color: rgba($color: #000, $alpha: 10%);
+                                font-weight: bold;
+                            }
+
+                            &:hover {
+                                border-left-color: $primary;
+                                color: $primary;
+                                background-color: rgba($color: #000, $alpha: 20%);
+                            }
+                        }
+                    }
+                }
+            }
+
+            i {
+                margin-right: 0.7em;
+            }
+
+            &:hover {
+                .nav-link {
+                    border-left-color: $primary;
+                    color: $primary;
+                    background-color: rgba($color: #000, $alpha: 10%);
+                }
+            }
+        }
+    }
+
+    .reduce-menu::before {
+        font: var(--fa-font-solid);
+        content: "\f100";
+        display: inline-block;
+        padding-right: 3px;
+        vertical-align: middle;
+        font-size: 1.3333em;
+        line-height: 0.75em;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .sidebar {
+        transition: width var(--animate-duration) !important;
+    }
+
+    body.navbar-collapsed {
+        .navbar-brand {
+            padding: 0.4rem !important;
+            margin: 0 calc(-1 * var(--tblr-gutter-x, 1.5rem)) 0.5rem;
+            width: calc(100% + var(--tblr-gutter-x, 1.5rem) * 2);
+
+            .glpi-logo {
+                background: url($logo_reduced) no-repeat;
+                background-size: contain;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        .sidebar {
+            z-index: 1050;
+
+            $siderbar-collasped-width: 70px;
+
+            width: $siderbar-collasped-width;
+            overflow-x: visible;
+
+            & ~ .page-wrapper,
+            ~ .navbar {
+                margin-inline-start: $siderbar-collasped-width;
+            }
+
+            .menu-label {
+                display: none;
+            }
+
+            #navbar-menu {
+                .dropdown-toggle::after {
+                    display: none;
+                }
+
+                .dropdown-menu {
+                    box-shadow: $card-shadow-hover;
+
+                    &.show {
+                        display: none;
+                    }
+
+                    .dropdown-menu-columns {
+                        display: flex;
+                        flex-direction: row;
+
+                        .dropdown-item {
+                            padding: 0.5rem 0.75rem;
+                        }
+                    }
+                }
+
+                .nav-item {
+                    .nav-link {
+                        z-index: 1060;
+
+                        & + .dropdown-menu {
+                            &.animate__fadeInLeft::before {
+                                left: -2px;
+                                height: 100%;
+                                width: 4px;
+                                content: " ";
+                                position: absolute;
+                                background: transparent;
+                            }
+
+                            background-color: $mainmenu-fg;
+                            color: $mainmenu-bg;
+                            top: 0;
+                            left: calc(100% + 1px);
+                            border: 1px solid $mainmenu-bg;
+                            position: absolute;
+                            z-index: 1050;
+
+                            .dropdown-header {
+                                display: block;
+                            }
+
+                            .dropdown-item {
+                                border-left: 3px solid transparent;
+
+                                &.active {
+                                    background-color: lighten($mainmenu-bg, 5%);
+                                    border-left-color: $primary;
+                                }
+                            }
+                        }
+
+                        &.show,
+                        &.active {
+                            color: inherit;
+                            font-weight: normal;
+                        }
+                    }
+
+                    &:hover {
+                        .nav-link {
+                            & + .dropdown-menu {
+                                display: block;
+                            }
+                        }
+                    }
+
+                    &.active {
+                        background-color: lighten($mainmenu-bg, 5%);
+                    }
+                }
+            }
+
+            .reduce-menu::before {
+                content: "\f101";
+            }
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .user-menu {
+        .dropstart {
+            .dropdown-menu {
+                position: static;
+                border-radius: unset;
+                box-shadow: unset;
+                background-color: rgba(0, 0, 0, 2%);
+                border-style: inset;
+                border-width: 2px 0;
+            }
+        }
+    }
+
+    // fix z-index issues on responsive menu
+    .sidebar {
+        z-index: $zindex-fixed;
+
+        & ~ .navbar {
+            z-index: inherit;
+        }
+    }
+}

@@ -1,0 +1,141 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.documentation {
+    background-color: white;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    h1 {
+        color: #300000;
+    }
+
+    > ul:nth-child(2) {
+        list-style-type: disc;
+        margin-top: 40px;
+
+        > li {
+            margin-left: 30px;
+        }
+    }
+
+    h2 {
+        color: #940000;
+        margin-top: 70px;
+        border-bottom: 1px solid #a87a7a;
+    }
+
+    li {
+        margin-left: 10px;
+        padding: 5px 0 5px 5px;
+    }
+
+    > ul > li > ul > li {
+        border-left: 1px solid grey;
+
+        > ul > li {
+            list-style-type: disc;
+            margin-left: 35px;
+        }
+    }
+
+    pre {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    dt {
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    dd {
+        margin-left: 20px;
+    }
+
+    td,
+    th {
+        padding-right: 24px;
+        padding-bottom: 8px;
+        font-size: 12px;
+    }
+
+    th {
+        text-align: left;
+    }
+}
+
+.documentation-large {
+    max-width: 1000px;
+}
+
+.documentation-page {
+    #footer-login {
+        position: unset;
+        text-align: center;
+        padding-bottom: 30px;
+    }
+}
+
+@include media-breakpoint-up(sm) {
+    .documentation #summary,
+    .documentation .summary {
+        position: fixed;
+        top: 40px;
+        left: 15px;
+        margin-top: 0;
+
+        + ul {
+            width: 200px;
+            position: fixed;
+            top: 70px;
+            left: 10px;
+            bottom: 0;
+            overflow: auto;
+        }
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .documentation {
+        margin-left: 200px;
+    }
+}
+
+@include media-breakpoint-down(xl) {
+    .documentation-large {
+        margin-left: 200px;
+    }
+}

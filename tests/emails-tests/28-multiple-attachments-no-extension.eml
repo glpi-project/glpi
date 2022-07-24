@@ -1,0 +1,47 @@
+Date: Wed, 6 Oct 2021 12:28:35 +0300
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Message-ID: <1633512515.935376498.JavaMail.zimbra@glpi-project.org>
+Subject: 28 Multiple attachments no extension
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515"
+
+
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
+Content-Type: multipart/alternative;
+	boundary="--ALT--830d948E4F132F127Bf05d404C2420cC1633512515"
+
+
+----ALT--830d948E4F132F127Bf05d404C2420cC1633512515
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+
+CsKgClRlc3QKwqA=
+----ALT--830d948E4F132F127Bf05d404C2420cC1633512515
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: base64
+
+CjxIVE1MPjxCT0RZPjxkaXY+Jm5ic3A7PC9kaXY+PGRpdj5UZXN0PC9kaXY+PGRpdj4mbmJzcDs8
+L2Rpdj48L0JPRFk+PC9IVE1MPgo=
+----ALT--830d948E4F132F127Bf05d404C2420cC1633512515--
+
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
+Content-Type: application/octet-stream; name="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Disposition: attachment; filename="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Transfer-Encoding: base64
+
+MTIzNDU2Nzg5MA==
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
+Content-Type: application/octet-stream; name="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Disposition: attachment; filename="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Transfer-Encoding: base64
+
+MTIzNDU2Nzg5MDEyMzQ1Njc4OTA=
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515
+Content-Type: application/octet-stream; name="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Disposition: attachment; filename="=?UTF-8?B?MTIzNDU2Nzg5MA==?="
+Content-Transfer-Encoding: base64
+
+MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkw
+------830d948E4F132F127Bf05d404C2420cC-6bgzLovPanysmu4y-1633512515--

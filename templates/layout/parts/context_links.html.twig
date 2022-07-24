@@ -1,0 +1,120 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] %}
+
+{# @TODO  border-start is not implemented in current boostrap beta (remove border-left when done)  #}
+<ul class="nav navbar-nav border-start border-left ps-1 ps-sm-2 flex-row">
+
+{% if links['add'] is defined %}
+<li class="nav-item">
+   <a href="{{ path(links['add']) }}" class="btn btn-icon btn-sm btn-secondary me-1 pe-2" title="{{ __('Add') }}">
+      <i class="ti ti-plus"></i>
+      <span class="d-none d-xxl-block">{{ __('Add') }}</span>
+   </a>
+</li>
+{% endif %}
+
+{% if links['search'] is defined %}
+<li class="nav-item">
+   <a href="{{ path(links['search']) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Search') }}">
+      <i class="ti ti-search"></i>
+      <span class="d-none d-xxl-block">{{ __('Search') }}</span>
+   </a>
+</li>
+{% endif %}
+
+{% if links['lists'] is defined %}
+<li class="nav-item">
+   <a href="#" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2 show-saved-searches"
+      data-itemtype="{{ item }}" title="{{ __('Lists') }}">
+      <i class="ti ti-star"></i>
+      <span class="d-none d-xxl-block">{{ __('Lists') }}</span>
+   </a>
+</li>
+{% endif %}
+
+{% for type, link in links %}
+   {% if type == 'add' or type == 'search' or type == 'lists' %}
+   {% elseif type == 'template' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Manage templates...') }}">
+            <i class="ti ti-template"></i>
+            <span class="d-none d-xxl-block">{{ __('Templates') }}</span>
+         </a>
+      </li>
+   {% elseif type == 'showall' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Show all') }}">
+            <i class="ti ti-eye-check"></i>
+            <span class="d-none d-xxl-block">{{ __('Show all') }}</span>
+         </a>
+      </li>
+   {% elseif type == 'summary' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Summary') }}">
+            <i class="ti ti-notes"></i>
+            <span class="d-none d-xxl-block">{{ __('Summary') }}</span>
+         </a>
+      </li>
+   {% elseif type == 'summary_kanban' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Global Kanban') }}">
+            <i class="ti ti-layout-columns"></i>
+            <span class="d-none d-xxl-block">{{ __('Global Kanban') }}</span>
+         </a>
+      </li>
+   {% elseif type == 'transfer_list' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Transfer list') }}">
+            <i class="ti ti-list-check"></i>
+            <span class="d-none d-xxl-block">{{ __('Transfer list') }}</span>
+         </a>
+      </li>
+   {% elseif type == 'config' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Setup') }}">
+            <i class="ti ti-tool"></i>
+            <span class="d-none d-xxl-block">{{ __('Setup') }}</span>
+         </a>
+      </li>
+   {% else %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2">
+            {{ type|raw }}
+         </a>
+      </li>
+   {% endif %}
+
+{% endfor %}
+</ul>

@@ -1,0 +1,489 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.kanban {
+    position: relative;
+    height: 100%;
+
+    .kanban-toolbar {
+        display: flex;
+        margin-bottom: 15px;
+        font-size: 14px;
+        padding: 10px;
+
+        .fas,
+        .fa-solid {
+            margin: auto auto auto 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .select2 {
+            min-width: 150px;
+        }
+    }
+
+    .kanban-form {
+        text-align: left;
+        padding: 10px;
+        z-index: 10;
+
+        input {
+            &[type="checkbox"] {
+                margin-right: 5px;
+            }
+
+            &:not([type="checkbox"]) {
+                display: block;
+            }
+
+            &[type="submit"] {
+                margin: auto;
+            }
+
+            &[type="button"] {
+                width: 100%;
+            }
+        }
+
+        .kanban-item-subtitle {
+            font-style: italic;
+            font-weight: normal;
+        }
+
+        .kanban-item-content {
+            margin-bottom: 5px;
+
+            .kanban-columns-list {
+                max-height: 50vh;
+                overflow-y: auto;
+                margin: 10px 0;
+                list-style: none;
+
+                li {
+                    padding: 5px 0 0;
+                }
+            }
+        }
+    }
+
+    .kanban-container {
+        overflow: auto;
+
+        .kanban-dropdown {
+            position: fixed;
+            width: max-content;
+            min-width: 100px;
+            text-align: left;
+            list-style: none;
+            padding-left: 0;
+
+            li {
+                margin-top: 2px;
+                position: relative;
+
+                a,
+                span {
+                    color: inherit;
+                    cursor: pointer;
+                    display: block;
+
+                    i {
+                        color: inherit;
+                    }
+                }
+
+                ul {
+                    position: absolute;
+                    left: 100%;
+                    top: 0;
+                    display: block;
+                    width: max-content;
+                    min-width: 100px;// Use outline instead of border on submenus to avoid them being aligned off by one pixel
+                    margin-left: 1px;
+                    list-style: none;
+                }
+
+                i {
+                    margin-right: 1em;
+                }
+            }
+
+            li:first-of-type {
+                margin-top: 0;
+            }
+
+            li.dropdown-trigger {
+                a::after {
+                    content: "\f054";
+                    font: var(--fa-font-solid);
+                    padding-left: 10px;
+                }
+            }
+        }
+
+        .kanban-columns {
+            width: max-content; /* Fix overflow when collapsed */
+            display: flex;
+
+            .kanban-column {
+                margin-right: 16px;
+                width: 350px;
+                height: 600px;
+                border-radius: 5px;
+                flex-direction: column;
+                flex: 1 0 auto;
+                text-align: center;
+                border-top: 5px solid $header-border-color;
+
+                &[data-drop-only="true"] .kanban-body {
+                    background: #fffa90;
+                    color: #777620;
+                }
+
+                &.collapsed {
+                    min-width: unset;
+                    width: calc(1.2em + 20px);
+
+                    .kanban-column-header {
+                        box-shadow: unset;
+
+                        .kanban-column-header-content {
+                            flex-direction: column;
+
+                            .kanban-collapse-column,
+                            .kanban-column-title,
+                            .kanban_nb {
+                                transform: rotate(90deg);
+                                transform-origin: center;
+                                display: inline-block;
+                                margin: calc(50% - 8px) 0;
+                                white-space: nowrap;
+                            }
+
+                            .kanban-collapse-column {
+                                margin: 0 0 8px;
+                            }
+
+                            .kanban-column-toolbar {
+                                display: none;
+                            }
+                        }
+                    }
+
+                    .kanban-body {
+                        display: none;
+                    }
+                }
+
+                .kanban-column-header {
+                    font-size: 1.2em;
+                    padding: 10px;
+                    margin-bottom: 5px;
+
+                    .kanban-column-header-content {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+
+                    .pointer {
+                        opacity: 0.3;
+
+                        &:hover {
+                            opacity: 1;
+                        }
+                    }
+
+                    i.fas,
+                    i.fa-solid {
+                        cursor: pointer;
+                        flex: 0 1 auto;
+                        position: relative;
+
+                        // Increase click area to make it easier to collapse/expand boards
+                        &::after {
+                            content: "";
+                            position: absolute;
+                            top: -50%;
+                            left: -50%;
+                            width: 200%;
+                            height: 200%;
+                        }
+                    }
+
+                    .kanban-column-title {
+                        margin-left: 2px;
+                        padding: 3px 12px;
+                    }
+
+                    .kanban_nb {
+                        margin-left: 10px;
+                    }
+
+                    .kanban-column-toolbar {
+                        margin-left: auto;
+                        flex-direction: column;
+                        flex: 0 1 auto;
+
+                        i {
+                            margin-left: 0.2rem;
+                        }
+                    }
+                }
+
+                .kanban-body {
+                    min-height: 150px;
+                    padding: 0 5px;
+                    height: calc(100% - (1.2em + 35px));
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    list-style: none;
+
+                    .kanban-add-form {
+                        padding-top: 10px !important;
+                        padding-bottom: 10px !important;
+
+                        input {
+                            margin: 8px 0 0;
+                        }
+
+                        textarea {
+                            margin: 8px 0;
+                        }
+                    }
+
+                    .kanban-item,
+                    .kanban-add-form {
+                        text-align: left;
+                        padding-left: 0;
+                        box-shadow: 0 1px 2px rgba(0, 0, 0, 10%);
+                        min-height: 50px;
+                        margin-top: 10px;
+                        border-radius: 5px;
+                        min-width: 250px;
+
+                        &.filtered-out {
+                            display: none;
+                        }
+
+                        .kanban-item-header,
+                        .kanban-item-header a {
+                            .fas,
+                            .fa-solid {
+                                &:hover {
+                                    text-decoration: none;
+                                }
+
+                                float: right;
+                                cursor: pointer;
+                            }
+
+                            .kanban-item-title .fas,
+                            .kanban-item-title .fa-solid {
+                                float: none;
+
+                                &:last-of-type {
+                                    margin-right: 5px;
+                                }
+                            }
+
+                            padding: 5px 10px 0;
+                            font-weight: bold;
+
+                            a:hover {
+                                text-decoration: underline;
+                            }
+
+                            a {
+                                padding: unset;
+                            }
+                        }
+
+                        .kanban-item-content {
+                            padding: 0 10px;
+
+                            .kanban-core-content {
+                                display: flex;
+                                flex-wrap: wrap;
+                                margin: 10px 0;
+                            }
+                        }
+
+                        .kanban-item-team {
+                            display: flex;
+                            padding-right: 10px;
+                            padding-bottom: 10px;
+
+                            span:first-of-type {
+                                margin-left: auto;
+                            }
+
+                            span {
+                                margin-right: 2px;
+
+                                img {
+                                    border-radius: 50%;
+                                }
+
+                                &.fa-stack {
+                                    width: 2em;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            > .sortable-placeholder {
+                min-width: 200px;
+                height: 600px;
+                margin: 0 8px 0 0;
+                border-radius: 5px;
+            }
+        }
+    }
+
+    .kanban-color-preview,
+    .kanban-column-title {
+        &.itilstatus {
+            &.assigned,
+            &.new {
+                background-color: #49bf4d;
+                color: #000f01;
+            }
+
+            &.accepted {
+                background-color: green;
+                color: rgb(255, 255, 255);
+            }
+
+            &.refused {
+                background-color: rgb(167, 47, 0);
+                color: rgb(19, 5, 0);
+            }
+
+            &.test,
+            &.qualif,
+            &.waiting {
+                background-color: orange;
+                color: rgb(27, 18, 0);
+            }
+
+            &.approval {
+                background-color: #8cabdb;
+                color: rgb(18, 24, 36);
+            }
+
+            &.eval {
+                background-color: lightblue;
+                color: rgb(30, 38, 41);
+            }
+
+            &.closed,
+            &.solved,
+            &.observe,
+            &.canceled {
+                background-color: black;
+                color: white;
+            }
+
+            &.planned {
+                background-color: #1b2f62;
+                color: #f3f3f5;
+            }
+        }
+    }
+
+    .kanban-color-preview {
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+
+    .sortable-placeholder {
+        border: 2px dashed #dad55e;
+        background: #fff99038;
+        color: #777620;
+        height: 40px;
+        margin-top: 5px;
+
+        &.invalid-position {
+            border: 2px dashed #d3413c;
+            background: #ff7370;
+            color: #792220;
+        }
+    }
+
+    .item-details-panel {
+        width: 360px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 100;
+        height: calc(100% - 10px);
+
+        .card-header .card-title {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        ul.team-list li {
+            img {
+                border-radius: 50%;
+            }
+
+            button {
+                display: none;
+                padding: unset;
+            }
+
+            button:hover,
+            button i:hover,
+            &:hover button {
+                display: inline-flex;
+            }
+
+            .member-details > span {
+                margin-right: 2rem;
+            }
+        }
+    }
+}
+
+.flex-break {
+    width: 100%;
+}

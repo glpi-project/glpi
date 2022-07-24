@@ -1,0 +1,144 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block more_fields %}
+   {{ fields.autoNameField(
+      'num',
+      item,
+      _x('phone', 'Number'),
+      withtemplate
+   ) }}
+
+   {% if item.fields['begin_date'] is not empty and item.fields['duration'] is not empty %}
+      {% set warranty_expiration %}
+         <i class="fas fa-arrow-right"></i>
+         {{ call('Infocom::getWarrantyExpir', [
+            item.fields['begin_date'],
+            item.fields['duration'],
+            0,
+            true,
+            item.fields['renewal'] == constant('Contract::RENEWAL_TACIT')
+         ])|raw }}
+      {% endset %}
+   {% endif %}
+   {{ fields.dropdownNumberField('duration', item.fields['duration'], __('Initial contract period'), {
+      'rand': rand,
+      'min': 1,
+      'max': 120,
+      'step': 1,
+      'toadd': [constant('Dropdown::EMPTY_VALUE')],
+      'unit': 'month',
+      'add_field_html': warranty_expiration|default('')
+   }) }}
+
+   {% if item.fields['begin_date'] is not empty and item.fields['notice'] > 0 and item.fields['duration'] is not empty %}
+      {% set notice_info %}
+         <i class="fas fa-arrow-right"></i>
+         {{ call('Infocom::getWarrantyExpir', [
+            item.fields['begin_date'],
+            item.fields['duration'],
+            item.fields['notice'],
+            true
+         ])|raw }}
+      {% endset %}
+   {% endif %}
+   {{ fields.dropdownNumberField('notice', item.fields['notice'], __('Notice'), {
+      'rand': rand,
+      'min': 0,
+      'max': 120,
+      'step': 1,
+      'unit': 'month',
+      'add_field_html': notice_info|default('')
+   }) }}
+
+   {{ fields.autoNameField(
+      'accounting_number',
+      item,
+      __('Account number'),
+      withtemplate
+   ) }}
+
+   {{ fields.dropdownNumberField('periodicity', item.fields['periodicity'], __('Contract renewal period'), {
+      'rand': rand,
+      'min': 12,
+      'max': 60,
+      'step': 12,
+      'toadd': {
+         0: constant('Dropdown::EMPTY_VALUE'),
+         1: _n('%d month', '%d months', 1)|format(1),
+         2: _n('%d month', '%d months', 2)|format(2),
+         3: _n('%d month', '%d months', 3)|format(3),
+         6: _n('%d month', '%d months', 6)|format(6),
+      },
+      'unit': 'month',
+   }) }}
+
+   {{ fields.dropdownNumberField('billing', item.fields['billing'], __('Invoice period'), {
+      'rand': rand,
+      'min': 12,
+      'max': 60,
+      'step': 12,
+      'toadd': {
+         0: constant('Dropdown::EMPTY_VALUE'),
+         1: _n('%d month', '%d months', 1)|format(1),
+         2: _n('%d month', '%d months', 2)|format(2),
+         3: _n('%d month', '%d months', 3)|format(3),
+         6: _n('%d month', '%d months', 6)|format(6),
+      },
+      'unit': 'month',
+   }) }}
+
+   {{ fields.dropdownArrayField('renewal', item.fields['renewal'], {
+      (constant('Contract::RENEWAL_NEVER')): __('Never'),
+      (constant('Contract::RENEWAL_TACIT')): __('Tacit'),
+      (constant('Contract::RENEWAL_EXPRESS')): __('Express'),
+   }, __('Renewal')) }}
+
+   {{ fields.dropdownNumberField('max_links_allowed', item.fields['max_links_allowed'], __('Max number of items'), {
+      'min': 1,
+      'max': 200000,
+      'step': 1,
+      'toadd': {0: __('Unlimited')}
+   }) }}
+
+   {% set alert_html %}
+      {% do call('Alert::displayLastAlert', ['Contract', item.fields['id']]) %}
+   {% endset %}
+   {{ fields.dropdownArrayField('alert', item.fields['alert'], item.getAlertName(), __('Email alarms'), {
+      'add_field_html': '<span class="text-muted">' ~ alert_html ~ '</span>'
+   }) }}
+{% endblock %}

@@ -1,0 +1,112 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set documents = entry['documents'] ?? [] %}
+<ul class="list-group list-group-hoverable sub-documents">
+   {% set media_docs = documents|filter(d => d['_is_image'] or d['item']['mime'] starts with 'video') %}
+   {% set other_docs = documents|filter(d => not (d['_is_image'] or d['item']['mime'] starts with 'video')) %}
+
+   {% if media_docs|length > 0 %}
+      {% set imgs = [] %}
+      {% for document in media_docs %}
+         {% set fk = item.getForeignKeyField() %}
+         {% set docpath = path('front/document.send.php?docid=' ~ document['item']['id'] ~ '&' ~ fk ~ '=' ~ item.fields['id']) %}
+         {% set delete_link = item.getFormURL() ~ '?delete_document&documents_id=' ~ document['item']['id'] ~ '&' ~ fk ~ '=' ~ item.fields['id'] %}
+
+         {% set post_figure_content %}
+            <div class="col-auto">
+               <div class="list-group-item-actions d-flex flex-column">
+                  {% if document['item']['_can_edit'] %}
+                     <a href="{{ 'Document'|itemtype_form_path(document['item']['id']) }}"
+                        class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
+                        data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="ti ti-edit"></i>
+                     </a>
+                  {% endif %}
+
+                  {% if document['item']['_can_delete'] %}
+                     <a href="{{ delete_link }}"
+                        class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Delete permanently') }}"
+                        data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="ti ti-trash"></i>
+                     </a>
+                  {% endif %}
+               </div>
+            </div>
+         {% endset %}
+
+         {% if document['_is_image'] %}
+            {% set imgs = imgs|merge([{
+               'title': '',
+               'thumbnail_src': docpath ~ '&context=timeline',
+               'thumbnail_w': 'auto',
+               'thumbnail_h': 'auto',
+               'src': docpath,
+               'w': document['_size'][0],
+               'h': document['_size'][1],
+               'img_class': 'shadow ',
+               'gallery_item_class': 'list-group-item border-0 d-flex',
+               'post_figure_content': post_figure_content
+            }]) %}
+         {% else %}
+            {% set video_html %}
+               <span class="d-flex justify-content-center align-items-center mt-5">
+                  <video controls="controls" width="90%" src="{{ docpath }}"></video>
+               </span>
+            {% endset %}
+            {% set imgs = imgs|merge([{
+               'title': '',
+               '_video': true,
+               'html': video_html,
+               'img_class': 'shadow',
+               'gallery_item_class': 'list-group-item border-0 d-flex',
+               'post_figure_content': post_figure_content
+            }]) %}
+         {% endif %}
+      {% endfor %}
+      {% include 'components/photoswipe.html.twig' with {
+         'imgs': imgs,
+         'gallery_type': 'horizontal',
+         'controls': {'close': true, 'share': true, 'fullscreen': true, 'zoom': true}
+      } %}
+   {% endif %}
+
+   {% for document in other_docs %}
+      <li class="list-group-item border-0">
+         {{ include('components/itilobject/timeline/form_document_item.html.twig', {
+            'form_mode': 'view',
+            'entry_i': document['item'],
+         }) }}
+      </li>
+   {% endfor %}
+</ul>

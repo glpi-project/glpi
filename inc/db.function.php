@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,23 +17,24 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+    die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -40,10 +43,11 @@ if (!defined('GLPI_ROOT')) {
  * @param $table string table name
  *
  * @return string field name used for a foreign key to the parameter table
-**/
-function getForeignKeyFieldForTable($table) {
-   $dbu = new DbUtils();
-   return $dbu->getForeignKeyFieldForTable($table);
+ **/
+function getForeignKeyFieldForTable($table)
+{
+    $dbu = new DbUtils();
+    return $dbu->getForeignKeyFieldForTable($table);
 }
 
 
@@ -55,10 +59,11 @@ function getForeignKeyFieldForTable($table) {
  * @param $field string field name
  *
  * @return boolean
-**/
-function isForeignKeyField($field) {
-   $dbu = new DbUtils();
-   return $dbu->isForeignKeyField($field);
+ **/
+function isForeignKeyField($field)
+{
+    $dbu = new DbUtils();
+    return $dbu->isForeignKeyField($field);
 }
 
 
@@ -68,9 +73,10 @@ function isForeignKeyField($field) {
  * @param $itemtype string itemtype
  *
  * @return string field name used for a foreign key to the parameter itemtype
-**/
-function getForeignKeyFieldForItemType($itemtype) {
-   return getForeignKeyFieldForTable(getTableForItemType($itemtype));
+ **/
+function getForeignKeyFieldForItemType($itemtype)
+{
+    return getForeignKeyFieldForTable(getTableForItemType($itemtype));
 }
 
 
@@ -80,10 +86,11 @@ function getForeignKeyFieldForItemType($itemtype) {
  * @param $fkname   string   foreign key name
  *
  * @return string table name corresponding to a foreign key name
-**/
-function getTableNameForForeignKeyField($fkname) {
-   $dbu = new DbUtils();
-   return $dbu->getTableNameForForeignKeyField($fkname);
+ **/
+function getTableNameForForeignKeyField($fkname)
+{
+    $dbu = new DbUtils();
+    return $dbu->getTableNameForForeignKeyField($fkname);
 }
 
 
@@ -93,10 +100,11 @@ function getTableNameForForeignKeyField($fkname) {
  * @param $table string table name
  *
  * @return string itemtype corresponding to a table name parameter
-**/
-function getItemTypeForTable($table) {
-   $dbu = new DbUtils();
-   return $dbu->getItemTypeForTable($table);
+ **/
+function getItemTypeForTable($table)
+{
+    $dbu = new DbUtils();
+    return $dbu->getItemTypeForTable($table);
 }
 
 /**
@@ -106,9 +114,10 @@ function getItemTypeForTable($table) {
  *
  * @return string ItemType name for the fkname parameter
  */
-function getItemtypeForForeignKeyField($fkname) {
-   $dbu = new DbUtils();
-   return $dbu->getItemtypeForForeignKeyField($fkname);
+function getItemtypeForForeignKeyField($fkname)
+{
+    $dbu = new DbUtils();
+    return $dbu->getItemtypeForForeignKeyField($fkname);
 }
 
 /**
@@ -117,10 +126,11 @@ function getItemtypeForForeignKeyField($fkname) {
  * @param $itemtype   string   itemtype
  *
  * @return string table name corresponding to the itemtype  parameter
-**/
-function getTableForItemType($itemtype) {
-   $dbu = new DbUtils();
-   return $dbu->getTableForItemType($itemtype);
+ **/
+function getTableForItemType($itemtype)
+{
+    $dbu = new DbUtils();
+    return $dbu->getTableForItemType($itemtype);
 }
 
 
@@ -132,10 +142,11 @@ function getTableForItemType($itemtype) {
  * @param $itemtype   string   itemtype
  *
  * @return CommonDBTM|boolean itemtype object or false if class does not exists
-**/
-function getItemForItemtype($itemtype) {
-   $dbu = new DbUtils();
-   return $dbu->getItemForItemtype($itemtype);
+ **/
+function getItemForItemtype($itemtype)
+{
+    $dbu = new DbUtils();
+    return $dbu->getItemForItemtype($itemtype);
 }
 
 
@@ -145,10 +156,11 @@ function getItemForItemtype($itemtype) {
  * @param $string   string   input string
  *
  * @return string plural of the parameter string
-**/
-function getPlural($string) {
-   $dbu = new DbUtils();
-   return $dbu->getPlural($string);
+ **/
+function getPlural($string)
+{
+    $dbu = new DbUtils();
+    return $dbu->getPlural($string);
 }
 
 
@@ -158,10 +170,11 @@ function getPlural($string) {
  * @param $string   string   input string
  *
  * @return string singular of the parameter string
-**/
-function getSingular($string) {
-   $dbu = new DbUtils();
-   return $dbu->getSingular($string);
+ **/
+function getSingular($string)
+{
+    $dbu = new DbUtils();
+    return $dbu->getSingular($string);
 }
 
 
@@ -172,10 +185,11 @@ function getSingular($string) {
  * @param array        $condition condition to use (default [])
  *
  * @return int nb of elements in table
-**/
-function countElementsInTable($table, $condition = []) {
-   $dbu = new DbUtils();
-   return $dbu->countElementsInTable($table, $condition);
+ **/
+function countElementsInTable($table, $condition = [])
+{
+    $dbu = new DbUtils();
+    return $dbu->countElementsInTable($table, $condition);
 }
 
 /**
@@ -186,10 +200,11 @@ function countElementsInTable($table, $condition = []) {
  * @param array        $condition condition to use (default [])
  *
  * @return int nb of elements in table
-**/
-function countDistinctElementsInTable($table, $field, $condition = []) {
-   $dbu = new DbUtils();
-   return $dbu->countDistinctElementsInTable($table, $field, $condition);
+ **/
+function countDistinctElementsInTable($table, $field, $condition = [])
+{
+    $dbu = new DbUtils();
+    return $dbu->countDistinctElementsInTable($table, $field, $condition);
 }
 
 /**
@@ -199,10 +214,11 @@ function countDistinctElementsInTable($table, $field, $condition = []) {
  * @param array  $condition additional criteria, defaults to []
  *
  * @return int nb of elements in table
-**/
-function countElementsInTableForMyEntities($table, $condition = []) {
-   $dbu = new DbUtils();
-   return $dbu->countElementsInTableForMyEntities($table, $condition);
+ **/
+function countElementsInTableForMyEntities($table, $condition = [])
+{
+    $dbu = new DbUtils();
+    return $dbu->countElementsInTableForMyEntities($table, $condition);
 }
 
 
@@ -215,10 +231,11 @@ function countElementsInTableForMyEntities($table, $condition = []) {
  * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
  * @return int nb of elements in table
-**/
-function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true) {
-   $dbu = new DbUtils();
-   return $dbu->countElementsInTableForEntity($table, $entity, $condition, $recursive);
+ **/
+function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true)
+{
+    $dbu = new DbUtils();
+    return $dbu->countElementsInTableForEntity($table, $entity, $condition, $recursive);
 }
 
 /**
@@ -233,10 +250,11 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
  * @return array containing all the datas
  *
  * @since 9.5.0
-**/
-function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '') {
-   $dbu = new DbUtils();
-   return $dbu->getAllDataFromTable($table, $criteria, $usecache, $order);
+ **/
+function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
+{
+    $dbu = new DbUtils();
+    return $dbu->getAllDataFromTable($table, $criteria, $usecache, $order);
 }
 /**
  * Get the Name of the element of a Dropdown Tree table
@@ -249,29 +267,32 @@ function getAllDataFromTable($table, $criteria = [], $usecache = false, $order =
  * @return string : name of the element
  *
  * @see getTreeValueCompleteName()
-**/
-function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true) {
-   $dbu = new DbUtils();
-   return $dbu->getTreeLeafValueName($table, $ID, $withcomment, $translate);
+ **/
+function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
+{
+    $dbu = new DbUtils();
+    return $dbu->getTreeLeafValueName($table, $ID, $withcomment, $translate);
 }
 
 
 /**
  * Get completename of a Dropdown Tree table
  *
- * @param $table        string   Dropdown Tree table
- * @param $ID           integer  ID of the element
- * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
- * @param $translate    boolean  (true by default)
- * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
+ * @param string  $table          Dropdown Tree table
+ * @param integer $ID            ID of the element
+ * @param boolean $withcomment   1 if you want to give the array with the comments (false by default)
+ * @param boolean $translate     (true by default)
+ * @param boolean $tooltip       (true by default) returns a tooltip, else returns only 'comment'
+ * @param string  $default       default value returned when item not exists
  *
  * @return string : completename of the element
  *
  * @see getTreeLeafValueName()
-**/
-function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
-   $dbu = new DbUtils();
-   return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip);
+ **/
+function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
+{
+    $dbu = new DbUtils();
+    return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip, $default);
 }
 
 
@@ -285,10 +306,11 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  * @param $level        integer  current level of recursion (default 0)
  *
  * @return string name
-**/
-function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
-   $dbu = new DbUtils();
-   return $dbu->getTreeValueName($table, $ID, $wholename, $level);
+ **/
+function getTreeValueName($table, $ID, $wholename = "", $level = 0)
+{
+    $dbu = new DbUtils();
+    return $dbu->getTreeValueName($table, $ID, $wholename, $level);
 }
 
 
@@ -299,10 +321,11 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
  * @param array|string $items_id The IDs of the items
  *
  * @return array of IDs of the ancestors
-**/
-function getAncestorsOf($table, $items_id) {
-   $dbu = new DbUtils();
-   return $dbu->getAncestorsOf($table, $items_id);
+ **/
+function getAncestorsOf($table, $items_id)
+{
+    $dbu = new DbUtils();
+    return $dbu->getAncestorsOf($table, $items_id);
 }
 
 
@@ -313,10 +336,11 @@ function getAncestorsOf($table, $items_id) {
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons
-**/
-function getSonsOf($table, $IDf) {
-   $dbu = new DbUtils();
-   return $dbu->getSonsOf($table, $IDf);
+ **/
+function getSonsOf($table, $IDf)
+{
+    $dbu = new DbUtils();
+    return $dbu->getSonsOf($table, $IDf);
 }
 
 
@@ -329,10 +353,11 @@ function getSonsOf($table, $IDf) {
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons and the ancestors
-**/
-function getSonsAndAncestorsOf($table, $IDf) {
-   $dbu = new DbUtils();
-   return $dbu->getSonsAndAncestorsOf($table, $IDf);
+ **/
+function getSonsAndAncestorsOf($table, $IDf)
+{
+    $dbu = new DbUtils();
+    return $dbu->getSonsAndAncestorsOf($table, $IDf);
 }
 
 
@@ -343,10 +368,11 @@ function getSonsAndAncestorsOf($table, $IDf) {
  * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons
-**/
-function getTreeForItem($table, $IDf) {
-   $dbu = new DbUtils();
-   return $dbu->getTreeForItem($table, $IDf);
+ **/
+function getTreeForItem($table, $IDf)
+{
+    $dbu = new DbUtils();
+    return $dbu->getTreeForItem($table, $IDf);
 }
 
 
@@ -357,10 +383,11 @@ function getTreeForItem($table, $IDf) {
  * @param integer $root root of the tree
  *
  * @return array list of items in the tree
-**/
-function contructTreeFromList($list, $root) {
-   $dbu = new DbUtils();
-   return $dbu->constructTreeFromList($list, $root);
+ **/
+function contructTreeFromList($list, $root)
+{
+    $dbu = new DbUtils();
+    return $dbu->constructTreeFromList($list, $root);
 }
 
 
@@ -371,10 +398,11 @@ function contructTreeFromList($list, $root) {
  * @param integer $parent root of the tree (default =0)
  *
  * @return array list of items in the tree
-**/
-function contructListFromTree($tree, $parent = 0) {
-   $dbu = new DbUtils();
-   return $dbu->constructListFromTree($tree, $parent);
+ **/
+function contructListFromTree($tree, $parent = 0)
+{
+    $dbu = new DbUtils();
+    return $dbu->constructListFromTree($tree, $parent);
 }
 
 
@@ -384,10 +412,11 @@ function contructListFromTree($tree, $parent = 0) {
  * @param $table : dropdown tree table to compute
  *
  * @return void
-**/
-function regenerateTreeCompleteName($table) {
-   $dbu = new DbUtils();
-   return $dbu->regenerateTreeCompleteName($table);
+ **/
+function regenerateTreeCompleteName($table)
+{
+    $dbu = new DbUtils();
+    return $dbu->regenerateTreeCompleteName($table);
 }
 
 
@@ -403,10 +432,11 @@ function regenerateTreeCompleteName($table) {
  *@param $force_config   boolean force order and id_visible to use common config (false by default)
  *
  *@return string : formatted username
-**/
-function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false) {
-   $dbu = new DbUtils();
-   return $dbu->formatUserName($ID, $login, $realname, $firstname, $link, $cut, $force_config);
+ **/
+function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
+{
+    $dbu = new DbUtils();
+    return $dbu->formatUserName($ID, $login, $realname, $firstname, $link, $cut, $force_config);
 }
 
 
@@ -416,12 +446,14 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
  *@param $ID   integer  ID of the user.
  *@param $link integer  1 = Show link to user.form.php 2 = return array with comments and link
  *                      (default =0)
+ *@param $disable_anon   bool  disable anonymization of username.
  *
  *@return string : username string (realname if not empty and name if realname is empty).
-**/
-function getUserName($ID, $link = 0) {
-   $dbu = new DbUtils();
-   return $dbu->getUserName($ID, $link);
+ **/
+function getUserName($ID, $link = 0, $disable_anon = false)
+{
+    $dbu = new DbUtils();
+    return $dbu->getUserName($ID, $link, $disable_anon);
 }
 
 
@@ -432,10 +464,26 @@ function getUserName($ID, $link = 0) {
  * @param $field  string  name of the index
  *
  * @return boolean : index exists ?
-**/
-function isIndex($table, $field) {
-   $dbu = new DbUtils();
-   return $dbu->isIndex($table, $field);
+ **/
+function isIndex($table, $field)
+{
+    $dbu = new DbUtils();
+    return $dbu->isIndex($table, $field);
+}
+
+
+/**
+ * Determine if a foreign key exists in database
+ *
+ * @param string $table
+ * @param string $keyname
+ *
+ * @return boolean
+ */
+function isForeignKeyContraint($table, $keyname)
+{
+    $dbu = new DbUtils();
+    return $dbu->isForeignKeyContraint($table, $keyname);
 }
 
 
@@ -450,9 +498,10 @@ function isIndex($table, $field) {
  *
  * @return string new auto string
  */
-function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
-   $dbu = new DbUtils();
-   return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
+function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1)
+{
+    $dbu = new DbUtils();
+    return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
 }
 
 
@@ -460,10 +509,11 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
  * Close active DB connections
  *
  * @return void
-**/
-function closeDBConnections() {
-   $dbu = new DbUtils();
-   return $dbu->closeDBConnections();
+ **/
+function closeDBConnections()
+{
+    $dbu = new DbUtils();
+    return $dbu->closeDBConnections();
 }
 
 /**
@@ -474,10 +524,11 @@ function closeDBConnections() {
  * @param string $end    end date
  *
  * @return string
-**/
-function getDateCriteria($field, $begin, $end) {
-   $dbu = new DbUtils();
-   return $dbu->getDateCriteria($field, $begin, $end);
+ **/
+function getDateCriteria($field, $begin, $end)
+{
+    $dbu = new DbUtils();
+    return $dbu->getDateCriteria($field, $begin, $end);
 }
 
 /**
@@ -486,10 +537,11 @@ function getDateCriteria($field, $begin, $end) {
  * @param $TAB Array to export / encode (one level depth)
  *
  * @return string containing encoded array
-**/
-function exportArrayToDB($TAB) {
-   $dbu = new DbUtils();
-   return $dbu->exportArrayToDB($TAB);
+ **/
+function exportArrayToDB($TAB)
+{
+    $dbu = new DbUtils();
+    return $dbu->exportArrayToDB($TAB);
 }
 
 
@@ -500,9 +552,10 @@ function exportArrayToDB($TAB) {
  *
  * @return array containing datas
  */
-function importArrayFromDB($DATA) {
-   $dbu = new DbUtils();
-   return $dbu->importArrayFromDB($DATA);
+function importArrayFromDB($DATA)
+{
+    $dbu = new DbUtils();
+    return $dbu->importArrayFromDB($DATA);
 }
 
 
@@ -512,10 +565,11 @@ function importArrayFromDB($DATA) {
  * @param $time datetime: time
  *
  * @return  array
-**/
-function get_hour_from_sql($time) {
-   $dbu = new DbUtils();
-   return $dbu->getHourFromSql($time);
+ **/
+function get_hour_from_sql($time)
+{
+    $dbu = new DbUtils();
+    return $dbu->getHourFromSql($time);
 }
 
 
@@ -525,9 +579,10 @@ function get_hour_from_sql($time) {
  *
  * @return array the $RELATION array
  */
-function getDbRelations() {
-   $dbu = new DbUtils();
-   return $dbu->getDbRelations();
+function getDbRelations()
+{
+    $dbu = new DbUtils();
+    return $dbu->getDbRelations();
 }
 
 
@@ -548,17 +603,23 @@ function getDbRelations() {
  *
  * @return string the WHERE clause to restrict
  */
-function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "", $value = '',
-                                    $is_recursive = false, $complete_request = false) {
-   $dbu = new DbUtils();
-   return $dbu->getEntitiesRestrictRequest(
-      $separator,
-      $table,
-      $field,
-      $value,
-      $is_recursive,
-      $complete_request
-   );
+function getEntitiesRestrictRequest(
+    $separator = "AND",
+    $table = "",
+    $field = "",
+    $value = '',
+    $is_recursive = false,
+    $complete_request = false
+) {
+    $dbu = new DbUtils();
+    return $dbu->getEntitiesRestrictRequest(
+        $separator,
+        $table,
+        $field,
+        $value,
+        $is_recursive,
+        $complete_request
+    );
 }
 
 
@@ -580,21 +641,26 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  *
  * @return array of criteria
  */
-function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
-                                     $is_recursive = false, $complete_request = false) {
-   $dbu = new DbUtils();
-   $res = $dbu->getEntitiesRestrictCriteria(
-      $table,
-      $field,
-      $value,
-      $is_recursive,
-      $complete_request
-   );
+function getEntitiesRestrictCriteria(
+    $table = '',
+    $field = '',
+    $value = '',
+    $is_recursive = false,
+    $complete_request = false
+) {
+    $dbu = new DbUtils();
+    $res = $dbu->getEntitiesRestrictCriteria(
+        $table,
+        $field,
+        $value,
+        $is_recursive,
+        $complete_request
+    );
 
    // Add another layer to the array to prevent losing duplicates keys if the
    // result of the function is merged with another array
-   if (count($res)) {
-      $res = [crc32(serialize($res)) => $res];
-   }
-   return $res;
+    if (count($res)) {
+        $res = [crc32(serialize($res)) => $res];
+    }
+    return $res;
 }

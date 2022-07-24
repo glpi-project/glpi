@@ -1,0 +1,72 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+/**
+ * default to generate [2-11] columns as 1 (oneColumnMode) and 12 (default) are in the main css
+ * Copyright (c) 2021 Alain Dumesny - see GridStack root license
+ */
+
+$gridstack-columns-start: 2 !default;
+$gridstack-columns: 100 !default;
+
+@mixin grid-stack-items($columns) {
+    .grid-stack.grid-stack-#{$columns} {
+        > .grid-stack-item {
+            min-width: 100% / $columns;
+
+            @for $i from 1 through $columns {
+                &[gs-w="#{$i}"] {
+                    width: (100% / $columns) * $i;
+                }
+                &[gs-x="#{$i}"] {
+                    left: (100% / $columns) * $i;
+                }
+                &[gs-min-w="#{$i}"] {
+                    min-width: (100% / $columns) * $i;
+                }
+                &[gs-max-w="#{$i}"] {
+                    max-width: (100% / $columns) * $i;
+                }
+            }
+        }
+    }
+}
+
+@for $j from $gridstack-columns-start through $gridstack-columns {
+    @include grid-stack-items($j);
+}
+
+/* Fix responsive width */
+.grid-stack.grid-stack-1 > .grid-stack-item {
+    width: 100% !important;
+}

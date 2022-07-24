@@ -1,0 +1,177 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.itil-object {
+    .status-recall {
+        display: none;
+    }
+
+    @include media-breakpoint-down(sm) {
+        margin-bottom: 55px; // .itil-footer height
+    }
+
+    @include media-breakpoint-up(sm) {
+        height: calc(100vh - 187px);
+
+        .itil-left-side,
+        .itil-right-side {
+            overflow-y: auto;
+            transition: all 400ms ease;
+        }
+
+        .itil-left-side {
+            height: 100%;
+            border-top: 0 !important;
+            left: 0;
+        }
+
+        .itil-right-side {
+            height: calc(100% + 4px);
+            position: relative;
+            border: 0;
+            border-left: 1px solid $border-color;
+
+            .accordion-item {
+                background: none;
+
+                .accordion-button {
+                    background-color: $accordion-button-bg;
+                }
+            }
+
+            #heading-main-item .accordion-button.collapsed {
+                .status-recall {
+                    display: inline-block;
+                }
+
+                .item-icon {
+                    display: none;
+                }
+            }
+
+            .switch-panel-width {
+                display: none;
+            }
+        }
+    }
+
+    // fix entity and sla badge long display
+    .badge.itil-badge {
+        white-space: normal;
+        line-height: inherit;
+        height: auto;
+        text-align: left;
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: left;
+        gap: 0.5rem;
+        text-transform: none;
+        overflow: inherit;
+
+        .badge {
+            text-transform: none;
+            margin: calc(-0.25rem + 1px) -0.25rem;
+        }
+    }
+}
+
+#itil-object-container {
+    @include media-breakpoint-up(sm) {
+        &.right-expanded {
+            .itil-footer {
+                .collapse-panel {
+                    display: none;
+                }
+            }
+        }
+
+        &.right-collapsed {
+            .itil-left-side {
+                width: calc(100% - 90px);
+            }
+
+            .itil-right-side {
+                overflow: hidden;
+                width: 90px;
+
+                #itil-data { // accordion
+                    .item-title {
+                        display: none;
+                    }
+
+                    .accordion-collapse {
+                        display: none;
+                    }
+
+                    .accordion-button::after {
+                        display: none;
+                    }
+                }
+
+                .switch-panel-width {
+                    display: inline-block;
+                }
+            }
+
+            .itil-footer {
+                .timeline-buttons {
+                    flex: 1 1 auto;
+                }
+
+                .form-buttons {
+                    flex: inherit;
+                }
+
+                .switch-panel-width,
+                .collapse-panel {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+.horizontal-layout {
+    .itil-object {
+        @include media-breakpoint-up(sm) {
+            height: calc(100vh - 257px);
+        }
+    }
+}
+
+#itil-object-container ~ #debugajax {
+    position: fixed;
+    bottom: 10px;
+    left: 45%;
+}

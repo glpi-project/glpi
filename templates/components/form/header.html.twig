@@ -1,0 +1,167 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set target       = params['target'] ?? item.getFormURL() %}
+{% set canedit      = params['canedit'] ?? true %}
+{% set withtemplate = params['withtemplate'] ?? '' %}
+{% set rand         = random() %}
+{% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
+{% set friendlyname = params['friendlyname'] ?? item.getHeaderName() %}
+{% set no_id        = params['noid'] ?? false %}
+{% set id           = item.fields['id'] ?? -1 %}
+{% set formoptions  = params['formoptions'] ?? '' %}
+
+{% set entity_id = 0 %}
+{% set entity_name = '' %}
+{% if item.isEntityAssign() %}
+   {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
+      {% set entity_id = null %}
+   {% else %}
+      {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
+   {% endif %}
+
+   {% if is_multi_entities_mode() %}
+      {% set entity_name = get_item_name('Entity', item.getEntityID()) %}
+   {% endif %}
+{% endif %}
+
+{% if item.canEdit(item.fields['id']) %}
+<form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
+      action="{{ path('/front/massiveaction.php') }}" data-submit-once>
+   <div id="massive_container_{{ rand }}"></div>
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+</form>
+
+<form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
+   <input type="hidden" name="entities_id" value="{{ entity_id }}" />
+   {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
+      <input type="hidden" name="_in_modal" value="1"/>
+   {% endif %}
+{% endif %}
+   <div id="mainformtable">
+      {% set template_name = item.fields['template_name']|verbatim_value %}
+      {% if withtemplate == 2 and not item.isNewItem() %}
+         <input type="hidden" name="template_name" value="{{ template_name }}" />
+         {% set nametype = __('Created from the template %s')|format(template_name) %}
+      {% elseif withtemplate == 1 %}
+         <input type="hidden" name="is_template" value="1" />
+      {% elseif item.isNewItem() %}
+         {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
+      {% else %}
+         {% if noid == false and (session('glpiis_ids_visible') or nametype|length == 0) %}
+            {% set nametype = __('%1$s - %2$s')|format(nametype, item.fields['id']) %}
+         {% endif %}
+      {% endif %}
+
+      {% if no_header is not defined or no_header == false %}
+         <div class="card-header main-header d-flex flex-wrap mx-n2 mt-n2 align-items-stretch">
+            {% if withtemplate == 1 %}
+               <input type="text" class="form-control ms-4 mb-2" placeholder="{{ __('Template name') }}"
+                  name="template_name" id="textfield_template_name{{ rand }}"
+                  value="{{ template_name }}" />
+            {% endif %}
+            <h3 class="card-title d-flex align-items-center ps-4">
+               {% set icon = item.getIcon() %}
+               {% if icon|length > 0 %}
+                  <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+                     <i class="{{ icon }} fa-2x"></i>
+                  </div>
+               {% endif %}
+               <span>
+               {% if item.id > 0 %}
+                  {{ nametype }} - {{ friendlyname }}
+               {% else %}
+                  {{ nametype }}
+               {% endif %}
+               </span>
+               {% if header_toolbar %}
+                  <div class="d-inline-block toolbar ms-2">
+                     {% for raw_element in header_toolbar %}
+                        {{ raw_element|raw }}
+                     {% endfor %}
+                  </div>
+               {% endif %}
+            </h3>
+
+            {% set single_actions_ms_auto = true %}
+            {% if item.isEntityAssign() and is_multi_entities_mode() and item is not instanceof('Entity') %}
+               {% set single_actions_ms_auto = false %}
+               <span class="badge entity-name mx-1 px-2 ms-auto align-items-center" title="{{ entity_name }}">
+                  <i class="ti ti-stack me-2"></i>
+                  {{ entity_name }}
+               </span>
+
+               {% if item.maybeRecursive() %}
+                  <span class="badge is_recursive-toggle mx-1 px-2 align-items-center">
+                     <label class="form-check d-flex align-items-center mb-0">
+                        {% set disabled = canedit == false %}
+                        {% set comment  = __('Change visibility in child entities.') %}
+
+                        {% if item is instanceof('CommonDBChild') %}
+                           {% set comment  = __('Can՛t change this attribute. It՛s inherited from its parent.') %}
+                           {% set disabled = true %}
+                        {% elseif not item.can(id, 'recursive') %}
+                           {% set comment  = __('You are not allowed to change the visibility flag for child entities.') %}
+                           {% set disabled = true %}
+                        {% elseif not item.canUnrecurs() %}
+                           {% set comment  = __('Flag change forbidden. Linked items found.') %}
+                           {% set disabled = true %}
+                        {% endif %}
+
+                        {% if not disabled %}<input type="hidden" name="is_recursive" value="0" />{% endif %}
+                        <input class="form-check-input" type="checkbox" name="is_recursive" value="1"
+                              {% if item.isRecursive() %}checked="checked"{% endif %}
+                              {% if disabled %}disabled="disabled"{% endif %} />
+                        {% if item is instanceof('CommonDBChild') and item.isNewItem() and item.isRecursive() %}
+                            {# Send value on hidden field to ensure creation will use inherited recursivity on CommonDBChild #}
+                            <input type="hidden" name="is_recursive" value="1" />
+                        {% endif %}
+                        <span class="form-check-label mb-0 mx-2">
+                           {{ __('Child entities') }}
+                           <i class="fas fa-info ms-1" title="{{ comment }}"></i>
+                        </span>
+                     </label>
+                  </span>
+               {% endif %}
+            {% endif %}
+
+            {{ include('components/form/single-action.html.twig') }}
+         </div>
+      {% endif %}
+
+      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+      {# todo modal message #}
+      {% if app.request.request('in_modal') == true %}
+      <input type="hidden" name="_no_message_link" value="1" />
+      {% endif %}

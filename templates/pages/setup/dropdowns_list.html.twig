@@ -1,0 +1,132 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set grid_items = [] %}
+
+{% set nb_opt = optgroup|length %}
+{% for label, dropdown in optgroup %}
+   {% set card_id = 'dropdowns_list_' ~ random() %}
+   {% set card_html %}
+      <div class="card">
+         <div class="accordion accordion-flush">
+            <div class="accordion-item">
+               <h2 class="accordion-header">
+                  <button class="accordion-button {{ nb_opt > 1 ? "collapsed" : "" }}" type="button"
+                     data-bs-toggle="collapse" data-bs-target="#{{ card_id }}" aria-expanded="true" aria-controls="collapseOne">
+                     {{ label }}
+                  </button>
+               </h2>
+               <div id="{{ card_id }}" class="accordion-collapse {{ nb_opt > 1 ? "collapse" : "" }}" style="transition: none">
+                  <div class="list-group list-group-flush list-group-hoverable">
+                     {% for itemtype, dropdown_label in dropdown %}
+                        {% set is_entity_assign = itemtype|itemtype_class.isEntityAssign() %}
+                        <a class="list-group-item list-group-item-action {{ is_entity_assign ? '' : 'dropdown-no-entity' }}"
+                           href="{{ itemtype|itemtype_search_path }}">
+                           <div class="row">
+                              <div class="col-auto">
+                                 <i class="fa-fw {{ itemtype|itemtype_icon }}"></i>
+                              </div>
+                              <div class="col text-truncate">
+                                 {{ dropdown_label }}
+                              </div>
+                              <div class="col-1 text-muted">
+                                 {% if is_entity_assign %}
+                                    <i class="{{ 'Entity'|itemtype_icon }} fa-sm"
+                                       data-bs-toggle="tooltip"
+                                       title="{{ __('Dropdown with entity management') }}"></i>
+                                 {% endif %}
+                              </div>
+                           </div>
+                        </a>
+                     {% endfor %}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   {% endset %}
+
+   {% set grid_items = grid_items|merge([
+      card_html
+   ]) %}
+{% endfor %}
+
+
+<div class="container-fluid text-start mb-4 dropdowns-list">
+   <div class="input-icon mb-3">
+      <input class="form-control" placeholder="filter dropdowns" id="filter-dropdown" />
+      <span class="input-icon-addon">
+         <i class="fas fa-search"></i>
+      </span>
+   </div>
+
+   {{ include('components/masonry_grid.html.twig', {
+      'grid_items': grid_items,
+      'grid_item_class': 'col-lg-6 col-xl-4 col-xxl-3',
+   }, with_context = false) }}
+</div>
+
+<script>
+$(function () {
+   var timerid;
+   $('#filter-dropdown').on('input',function() {
+      var input_value = $(this).val();
+
+      clearTimeout(timerid);
+
+      // reset state
+      $('.dropdowns-list .collapse').removeClass('show');
+      $('.dropdowns-list .masonry_grid').trigger("layout:refresh");
+      $('.dropdowns-list .list-group-item').show();
+      $('.dropdowns-list .accordion-collapse').removeClass('show')
+      $('.dropdowns-list .accordion-button').addClass('collapsed')
+
+      if (input_value.length > 0) {
+         timerid = setTimeout(function() {
+            $('.dropdowns-list .list-group-item:not(:icontains('+input_value+'))').hide();
+            $('.dropdowns-list .list-group-item:icontains('+input_value+')')
+               .closest('.accordion-collapse').addClass('show')
+               .siblings('.accordion-header')
+                  .children('.accordion-button').removeClass('collapsed');
+
+            $('.dropdowns-list .masonry_grid').trigger("layout:refresh");
+
+         }, 500);
+      }
+   })
+
+   $('.dropdowns-list .collapse').on('shown.bs.collapse hidden.bs.collapse', function() {
+      $('.dropdowns-list .masonry_grid').trigger("layout:refresh");
+   })
+});
+</script>

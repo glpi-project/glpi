@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,220 +17,151 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '7.2.5') < 0) {
-   die('PHP >= 7.2.5 required');
+if (
+    version_compare(PHP_VERSION, '7.4.0', '<') ||
+    version_compare(PHP_VERSION, '8.2.0', '>=')
+) {
+    die('PHP 7.4.0 - 8.2.0 (exclusive) required');
 }
 
-
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
-include (GLPI_ROOT . "/inc/based_config.php");
+include(GLPI_ROOT . "/inc/based_config.php");
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
 // If config_db doesn't exist -> start installation
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   Html::redirect("install/install.php");
-   die();
+    if (file_exists(GLPI_ROOT . '/install/install.php')) {
+        Html::redirect("install/install.php");
+    } else {
+        // Init session (required by header display logic)
+        Session::setPath();
+        Session::start();
+        Session::loadLanguage('', false);
+        // Prevent inclusion of debug informations in footer, as they are based on vars that are not initialized here.
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
+        // no translation
+        $title_text        = 'GLPI seems to not be configured properly.';
+        $missing_conf_text = sprintf('Database configuration file "%s" is missing.', GLPI_CONFIG_DIR . '/config_db.php');
+        $hint_text         = 'You have to either restart the install process, either restore this file.';
+
+        Html::nullHeader('Missing configuration');
+        echo '<div class="container-fluid mb-4">';
+        echo '<div class="row justify-content-center">';
+        echo '<div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">';
+        echo '<h2>' . $title_text . '</h2>';
+        echo '<p class="mt-2 mb-n2 alert alert-warning">';
+        echo $missing_conf_text;
+        echo ' ';
+        echo $hint_text;
+        echo '</p>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        Html::nullFooter();
+    }
+    die();
 } else {
-   include (GLPI_ROOT . "/inc/includes.php");
-   $_SESSION["glpicookietest"] = 'testcookie';
+    include(GLPI_ROOT . "/inc/includes.php");
+    $_SESSION["glpicookietest"] = 'testcookie';
 
-   // For compatibility reason
-   if (isset($_GET["noCAS"])) {
-      $_GET["noAUTO"] = $_GET["noCAS"];
-   }
+    //Try to detect GLPI agent calls
+    $rawdata = file_get_contents("php://input");
+    if (!empty($rawdata) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        include_once(GLPI_ROOT . '/front/inventory.php');
+        die();
+    }
 
-   if (!isset($_GET["noAUTO"])) {
-      Auth::redirectIfAuthenticated();
-   }
-   Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"])?$_GET["redirect"]:"");
+    // For compatibility reason
+    if (isset($_GET["noCAS"])) {
+        $_GET["noAUTO"] = $_GET["noCAS"];
+    }
 
-   // Send UTF8 Headers
-   header("Content-Type: text/html; charset=UTF-8");
+    if (!isset($_GET["noAUTO"])) {
+        Auth::redirectIfAuthenticated();
+    }
+    Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"]) ? $_GET["redirect"] : "");
 
-   // Start the page
-   echo "<!DOCTYPE html>\n";
-   echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\" class='loginpage'>";
-   echo '<head><title>'.__('GLPI - Authentication').'</title>'."\n";
-   echo '<meta charset="utf-8"/>'."\n";
-   echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
-   echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].
-          '/pics/favicon.ico" />';
+    $theme = $_SESSION['glpipalette'] ?? 'auror';
 
-   // auto desktop / mobile viewport
-   echo "<meta name='viewport' content='width=device-width, initial-scale=1'/>";
+    $errors = "";
+    if (isset($_GET['error']) && isset($_GET['redirect'])) {
+        switch ($_GET['error']) {
+            case 1: // cookie error
+                $errors .= __('You must accept cookies to reach this application');
+                break;
 
-   // Appel CSS
-   echo Html::scss('css/styles');
-   if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-      echo Html::scss('css/highcontrast');
-   }
-   $theme = isset($_SESSION['glpipalette']) ? $_SESSION['glpipalette'] : 'auror';
-   echo Html::scss('css/palettes/' . $theme);
-   // external libs CSS
-   echo Html::css('public/lib/base.css');
+            case 2: // GLPI_SESSION_DIR not writable
+                $errors .= __('Checking write permissions for session files');
+                break;
 
-   // Custom CSS for root entity
-   $entity = new Entity();
-   $entity->getFromDB('0');
-   echo $entity->getCustomCssTag();
+            case 3:
+                $errors .= __('Invalid use of session ID');
+                break;
+        }
+    }
 
-   // CFG
-   echo Html::getCoreVariablesForJavascript();
+    // redirect to ticket
+    if (isset($_GET["redirect"])) {
+        Toolbox::manageRedirect($_GET["redirect"]);
+    }
 
-   echo Html::script("public/lib/base.js");
-   echo Html::script("public/lib/fuzzy.js");
-   echo Html::script('js/common.js');
-
-   echo "</head>";
-
-   echo "<body>";
-   echo "<div id='firstboxlogin'>";
-   echo "<h1 id='logo_login'><img src='".$CFG_GLPI['root_doc']."/pics/login_logo_glpi.png' alt='GLPI' title='GLPI' /></h1>";
-   echo "<div id='text-login'>";
-   echo nl2br(Toolbox::unclean_html_cross_side_scripting_deep($CFG_GLPI['text_login']));
-   echo "</div>";
-
-   echo "<div id='boxlogin'>";
-   echo "<form action='".$CFG_GLPI["root_doc"]."/front/login.php' method='post'>";
-
-   $_SESSION['namfield'] = $namfield = uniqid('fielda');
-   $_SESSION['pwdfield'] = $pwdfield = uniqid('fieldb');
-   $_SESSION['rmbfield'] = $rmbfield = uniqid('fieldc');
-
-   // Other CAS
-   if (isset($_GET["noAUTO"])) {
-      echo "<input type='hidden' name='noAUTO' value='1' />";
-   }
-   // redirect to ticket
-   if (isset($_GET["redirect"])) {
-      Toolbox::manageRedirect($_GET["redirect"]);
-      echo '<input type="hidden" name="redirect" value="'.Html::entities_deep($_GET['redirect']).'"/>';
-   }
-   echo '<p class="login_input" id="login_input_name">
-         <label for="login_name" class="sr-only">'.__('Login').'</label>
-         <input type="text" name="'.$namfield.'" id="login_name" required="required"
-                placeholder="'.__('Login').'" autofocus="autofocus" />
-         </p>';
-   echo '<p class="login_input" id="login_input_password">
-         <label for="login_password" class="sr-only">'.__('Password').'</label>
-         <input type="password" name="'.$pwdfield.'" id="login_password" required="required"
-                placeholder="'.__('Password').'"  />
-         </p>';
-
-   if (GLPI_DEMO_MODE) {
-      //lang selector
-      echo '<p class="login_input" id="login_lang">';
-      Dropdown::showLanguages(
-         'language', [
-            'display_emptychoice'   => true,
-            'emptylabel'            => __('Default (from user profile)'),
-            'width'                 => '100%'
-         ]
-      );
-      echo '</p>';
-   }
-
-   // Add dropdown for auth (local, LDAPxxx, LDAPyyy, imap...)
-   if ($CFG_GLPI['display_login_source']) {
-      Auth::dropdownLogin();
-   }
-
-   if ($CFG_GLPI["login_remember_time"]) {
-      echo '<p class="login_input">
-            <label for="login_remember">
-                   <input type="checkbox" name="'.$rmbfield.'" id="login_remember"
-                   '.($CFG_GLPI['login_remember_default']?'checked="checked"':'').' />
-            '.__('Remember me').'</label>
-            </p>';
-   }
-   echo '<p class="login_input">
-         <input type="submit" name="submit" value="'._sx('button', 'Post').'" class="submit" />
-         </p>';
-
-   if ($CFG_GLPI["notifications_mailing"]
-      && countElementsInTable(
-         'glpi_notifications', [
-            'itemtype'  => 'User',
-            'event'     => 'passwordforget',
-            'is_active' => 1
-         ])
-      ) {
-      echo '<a id="forget" href="front/lostpassword.php?lostpassword=1">'.
-             __('Forgotten password?').'</a>';
-   }
-   Html::closeForm();
-
-   $js = "$(function() {
-      $('#login_name').focus();
-   });";
-   echo Html::scriptBlock($js);
-
-   echo "</div>";  // end login box
-
-
-   echo "<div class='error'>";
-   echo "<noscript><p>";
-   echo __('You must activate the JavaScript function of your browser');
-   echo "</p></noscript>";
-
-   if (isset($_GET['error']) && isset($_GET['redirect'])) {
-      switch ($_GET['error']) {
-         case 1 : // cookie error
-            echo __('You must accept cookies to reach this application');
-            break;
-
-         case 2 : // GLPI_SESSION_DIR not writable
-            echo __('Checking write permissions for session files');
-            break;
-
-         case 3 :
-            echo __('Invalid use of session ID');
-            break;
-      }
-   }
-   echo "</div>";
-
-   // Display FAQ is enable
-   if ($CFG_GLPI["use_public_faq"]) {
-      echo '<div id="box-faq">'.
-            '<a href="front/helpdesk.faq.php">[ '.__('Access to the Frequently Asked Questions').' ]';
-      echo '</a></div>';
-   }
-
-   echo "<div id='display-login'>";
-   Plugin::doHook('display_login');
-   echo "</div>";
-
-
-   echo "</div>"; // end contenu login
-
-   echo "<div id='footer-login' class='home'>" . Html::getCopyrightMessage(false) . "</div>";
-
+    TemplateRenderer::getInstance()->display('pages/login.html.twig', [
+        'card_bg_width'       => true,
+        'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+        'title'               => __('Authentication'),
+        'noAuto'              => $_GET["noAUTO"] ?? 0,
+        'redirect'            => Html::entities_deep($_GET['redirect'] ?? ""),
+        'text_login'          => $CFG_GLPI['text_login'],
+        'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
+        'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),
+        'rmbfield'            => ($_SESSION['rmbfield'] = uniqid('fieldc')),
+        'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
+                              && countElementsInTable('glpi_notifications', [
+                                  'itemtype'  => 'User',
+                                  'event'     => 'passwordforget',
+                                  'is_active' => 1
+                              ]),
+        'languages_dropdown'  => Dropdown::showLanguages('language', [
+            'display'             => false,
+            'display_emptychoice' => true,
+            'emptylabel'          => __('Default (from user profile)'),
+            'width'               => '100%'
+        ]),
+        'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
+                               || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
+                               || $CFG_GLPI["use_public_faq"],
+        'auth_dropdown_login' => Auth::dropdownLogin(false),
+        'copyright_message'   => Html::getCopyrightMessage(false),
+        'errors'              => $errors
+    ]);
 }
 // call cron
 if (!GLPI_DEMO_MODE) {
-   CronTask::callCronForce();
+    CronTask::callCronForce();
 }
 
 echo "</body></html>";

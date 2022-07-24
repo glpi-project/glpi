@@ -1,0 +1,63 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if saved_searches|length == 0 %}
+   <div class="alert alert-info" role="alert">
+      {{ __('You have not recorded any saved searches yet') }}
+   </div>
+{% endif %}
+
+{% for search in saved_searches %}
+   <div class="savedsearches-item list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
+         data-id="{{ search['id'] }}">
+      <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
+         class="d-block saved-searches-link text-truncate">
+         {{ search['name']|verbatim_value }}
+      </a>
+      <div class="{{ search['is_default'] > 0 ? '' : 'list-group-item-actions' }} ms-auto default-ctrl">
+         <i class="{{ search['is_default'] > 0 ? 'fas' : 'far' }} fa-star fa-xs mark-default me-1"
+            title="{{ search['is_default'] > 0 ? __('Default search') : __('mark as default') }}"
+            data-bs-toggle="tooltip" data-bs-placement="right"
+            role="button"></i>
+      </div>
+      <div class="d-flex flex-nowrap align-items-center">
+         {% if search['is_private'] == 1 %}
+         <i class="ti ti-lock fa-xs text-muted me-1" title="{{ __('private') }}"
+            data-bs-toggle="tooltip" data-bs-placement="right"></i>
+         {% endif %}
+         <span class="badge">
+            {{ search['count']|raw }}
+         </span>
+      </div>
+   </div>
+{% endfor %}

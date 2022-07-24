@@ -24,6 +24,10 @@
 * [Add item(s)](#add-items)
 * [Update item(s)](#update-items)
 * [Delete item(s)](#delete-items)
+* [Get available massive actions for an itemtype](#get-available-massive-actions-for-an-itemtype)
+* [Get available massive actions for an item](#get-available-massive-actions-for-an-item)
+* [Get massive action parameters](#get-massive-action-parameters)
+* [Apply massive action](#apply-massive-action)
 * [Special cases](#special-cases)
 * [Errors](#errors)
 * [Servers configuration](#servers-configuration)
@@ -179,7 +183,7 @@ $ curl -X GET \
 
 ## Lost password
 
-This endpoint allows to request password recovery and password reset. This endpoint works under the following 
+This endpoint allows to request password recovery and password reset. This endpoint works under the following
 conditions:
 * GLPI has notifications enabled
 * the email address of the user belongs to a user account.
@@ -504,8 +508,8 @@ $ curl -X GET \
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
   * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
   * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
-  * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
-  * *with_infocoms*: Retrieve financial and administrative informations. Optional.
+  * *with_networkports*: Retrieve all network connections and advanced information. Optionnal.
+  * *with_infocoms*: Retrieve financial and administrative information. Optional.
   * *with_contracts*: Retrieve associated contracts. Optional.
   * *with_documents*: Retrieve associated external documents. Optional.
   * *with_tickets*: Retrieve associated ITIL tickets. Optional.
@@ -599,12 +603,13 @@ Note: To download a document see [Download a document file](#download-a-document
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show relation of item in a links attribute. Optional.
   * *only_id* (default: false): keep only id keys in returned data. Optional.
-  * *range* (default: 0-50):  a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200. Optional.
+  * *range* (default: 0-49):  a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-199. Optional.
   * *sort* (default 1): name of the field to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
   * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
   * *is_deleted* (default: false): Return deleted element. Optional.
   * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "id". Optional.
+  * *with_networkports*: Retrieve all network connections and advanced information. Optionnal.
 * **Returns**:
   * 200 (OK) with items data.
   * 206 (PARTIAL CONTENT) with items data defined by range.
@@ -624,7 +629,7 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/Computer/?expand_dropdowns=true'
 
 < 206 OK
-< Content-Range: 0-50/200
+< Content-Range: 0-49/200
 < Accept-Range: 990
 < [
    {
@@ -707,7 +712,7 @@ $ curl -X GET \
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show item's relations in a links attribute. Optional.
   * *only_id* (default: false): keep only id keys in returned data. Optional.
-  * *range* (default: 0-50): a string with a couple of number for start and end of pagination separated by a '-' char. Ex: 150-200. Optional.
+  * *range* (default: 0-49): a string with a couple of number for start and end of pagination separated by a '-' char. Ex: 150-199. Optional.
   * *sort* (default 1): id of the "searchoption" to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
   * *add_keys_names*: Retrieve friendly names. Array containing fkey(s) and/or "id". Optional.
@@ -729,7 +734,7 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/User/2/Log'
 
 < 200 OK
-< Content-Range: 0-50/200
+< Content-Range: 0-49/200
 < Accept-Range: 990
 < [
    {
@@ -780,8 +785,8 @@ $ curl -X GET \
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
   * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
   * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
-  * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
-  * *with_infocoms*: Retrieve financial and administrative informations. Optional.
+  * *with_networkports*: Retrieve all network connections and advanced information. Optionnal.
+  * *with_infocoms*: Retrieve financial and administrative information. Optional.
   * *with_contracts*: Retrieve associated contracts. Optional.
   * *with_documents*: Retrieve associated external documents. Optional.
   * *with_tickets*: Retrieve associated ITIL tickets. Optional.
@@ -806,7 +811,7 @@ $ curl -X GET \
 'http://path/to/glpi/apirest.php/getMultipleItems?items\[0\]\[itemtype\]\=User&items\[0\]\[items_id\]\=2&items\[1\]\[itemtype\]\=Entity&items\[1\]\[items_id\]\=0'
 
 < 200 OK
-< Content-Range: 0-50/200
+< Content-Range: 0-49/200
 < Accept-Range: 990
 < [{
    "id": 2,
@@ -942,7 +947,7 @@ $ curl -X GET \
       ```
 
   * *metacriteria* (optional): array of meta-criterion objects to filter search. Optional.
-                                 A meta search is a link with another itemtype (ex: Computer with softwares).  
+                                 A meta search is a link with another itemtype (ex: Computer with software).
       **Deprecated: Now criteria support meta flag, you should use it instead direct metacriteria option.**
 
       Each meta-criterion object must provide:
@@ -977,7 +982,7 @@ $ curl -X GET \
 
   * *sort* (default 1): id of the searchoption to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
-  * *range* (default 0-50): a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200.
+  * *range* (default 0-49): a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-199.
                              Optional.
   * *forcedisplay*: array of columns to display (default empty = use display preferences and searched criteria).
                      Some columns will be always presents (1: id, 2: name, 80: Entity).
@@ -1219,6 +1224,336 @@ $ curl -X DELETE \
 [{"16":true, "message": ""},{"17":false, "message": "Item not found"}]
 ```
 
+## Get available massive actions for an itemtype
+
+* **URL**: apirest.php/getMassiveActions/:itemtype/
+* **Description**: Show the availables massive actions for a given itemtype.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (query string)
+  * *is_deleted* (default false): Show specific actions for items in the trashbin.
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActions/Computer'
+
+< 200 OK
+[
+  {
+    "key": "MassiveAction:update",
+    "label": "Update"
+  },
+  {
+    "key": "MassiveAction:clone",
+    "label": "Clone"
+  },
+  {
+    "key": "Infocom:activate",
+    "label": "Enable the financial and administrative information"
+  },
+  {
+    "key": "MassiveAction:delete",
+    "label": "Put in trashbin"
+  },
+  {
+    "key": "MassiveAction:add_transfer_list",
+    "label": "Add to transfer list"
+  },
+  {
+    "key": "Appliance:add_item",
+    "label": "Associate to an appliance"
+  },
+  {
+    "key": "Item_OperatingSystem:update",
+    "label": "Operating systems"
+  },
+  {
+    "key": "Computer_Item:add",
+    "label": "Connect"
+  },
+  {
+    "key": "Item_SoftwareVersion:add",
+    "label": "Install"
+  },
+  {
+    "key": "KnowbaseItem_Item:add",
+    "label": "Link knowledgebase article"
+  },
+  {
+    "key": "Document_Item:add",
+    "label": "Add a document"
+  },
+  {
+    "key": "Document_Item:remove",
+    "label": "Remove a document"
+  },
+  {
+    "key": "Contract_Item:add",
+    "label": "Add a contract"
+  },
+  {
+    "key": "Contract_Item:remove",
+    "label": "Remove a contract"
+  },
+  {
+    "key": "MassiveAction:amend_comment",
+    "label": "Amend comment"
+  },
+  {
+    "key": "MassiveAction:add_note",
+    "label": "Add note"
+  },
+  {
+    "key": "Lock:unlock",
+    "label": "Unlock components"
+  }
+]
+
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActions/Computer?is_deleted=1'
+
+< 200 OK
+[
+  {
+    "key": "MassiveAction:purge_item_but_devices",
+    "label": "Delete permanently but keep devices"
+  },
+  {
+    "key": "MassiveAction:purge",
+    "label": "Delete permanently and remove devices"
+  },
+  {
+    "key": "MassiveAction:restore",
+    "label": "Restore"
+  },
+  {
+    "key": "Lock:unlock",
+    "label": "Unlock components"
+  }
+]
+```
+
+## Get available massive actions for an item
+
+* **URL**: apirest.php/getMassiveActions/:itemtype/:id
+* **Description**: Show the availables massive actions for a given item.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (query string)
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActions/Computer/3'
+
+< 200 OK
+[
+  {
+    "key": "MassiveAction:update",
+    "label": "Update"
+  },
+  {
+    "key": "MassiveAction:clone",
+    "label": "Clone"
+  },
+  {
+    "key": "Infocom:activate",
+    "label": "Enable the financial and administrative information"
+  },
+  {
+    "key": "MassiveAction:delete",
+    "label": "Put in trashbin"
+  },
+  {
+    "key": "MassiveAction:add_transfer_list",
+    "label": "Add to transfer list"
+  },
+  {
+    "key": "Appliance:add_item",
+    "label": "Associate to an appliance"
+  },
+  {
+    "key": "Item_OperatingSystem:update",
+    "label": "Operating systems"
+  },
+  {
+    "key": "Computer_Item:add",
+    "label": "Connect"
+  },
+  {
+    "key": "Item_SoftwareVersion:add",
+    "label": "Install"
+  },
+  {
+    "key": "KnowbaseItem_Item:add",
+    "label": "Link knowledgebase article"
+  },
+  {
+    "key": "Document_Item:add",
+    "label": "Add a document"
+  },
+  {
+    "key": "Document_Item:remove",
+    "label": "Remove a document"
+  },
+  {
+    "key": "Contract_Item:add",
+    "label": "Add a contract"
+  },
+  {
+    "key": "Contract_Item:remove",
+    "label": "Remove a contract"
+  },
+  {
+    "key": "MassiveAction:amend_comment",
+    "label": "Amend comment"
+  },
+  {
+    "key": "MassiveAction:add_note",
+    "label": "Add note"
+  },
+  {
+    "key": "Lock:unlock",
+    "label": "Unlock components"
+  }
+]
+
+
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActions/Computer/4'
+
+< 200 OK
+[
+  {
+    "key": "MassiveAction:purge_item_but_devices",
+    "label": "Delete permanently but keep devices"
+  },
+  {
+    "key": "MassiveAction:purge",
+    "label": "Delete permanently and remove devices"
+  },
+  {
+    "key": "MassiveAction:restore",
+    "label": "Restore"
+  },
+  {
+    "key": "Lock:unlock",
+    "label": "Unlock components"
+  }
+]
+```
+
+## Get massive action parameters
+
+* **URL**: apirest.php/getMassiveActionParameters/:itemtype/
+* **Description**: Show the availables parameters for a given massive action.
+  * Warning: experimental endpoint, some required parameters may be missing from the returned content.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (query string)
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActionParameters/Computer/MassiveAction:add_note'
+
+< 200 OK
+[
+  {
+    "name": "add_note",
+    "type": "text"
+  }
+]
+
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMassiveActionParameters/Computer/Contract_Item:add'
+
+< 200 OK
+[
+  {
+    "name": "peer_contracts_id",
+    "type": "dropdown"
+  }
+]
+```
+
+## Apply massive action
+
+* **URL**: apirest.php/applyMassiveAction/:itemtype/
+* **Description**: Run the given massive action
+* **Method**: POST
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI API configuration. Optional.
+* **Parameters**: (json payload)
+  * *ids* items to execute the action on. Mandatory.
+  * *specific action parameters* some actions require specific parameters to run. You can check them through the 'getMassiveActionParameters' endpoint.
+* **Returns**:
+  * 200 (OK) All items were processed.
+  * 207 (Multi-Status) Not all items were successfully processed.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+  * 422 (Unprocessable Entity) All items failed to be processed.
+
+Example usage (CURL):
+
+```bash
+$ curl -X POST \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-d '{"ids": [2, 3],	"input": {"amendment": "newtext"}}'
+'http://path/to/glpi/apirest.php/applyMassiveAction/Computer/MassiveAction:amend_comment'
+
+< 200 OK
+{
+  "ok": 2,
+  "ko": 0,
+  "noright": 0,
+  "messages": []
+}
+```
+
 ## Special cases
 
 ### Upload a document file
@@ -1435,6 +1770,16 @@ Check the GLPI logs files (in files/_logs directory).
 Some of the objects you want to delete triggers an error, maybe a missing field or rights.
 You'll find with this error, a collection of results.
 
+### ERROR_MASSIVEACTION_KEY
+
+Missing or invalid massive action key.
+Run 'getMassiveActions' endpoint to see available keys.
+
+### ERROR_MASSIVEACTION_NO_IDS
+
+No ids supplied when trying to run a massive action.
+
+
 ## Servers configuration
 
 By default, you can use <http://path/to/glpi/apirest.php> without any additional configuration.
@@ -1459,7 +1804,7 @@ You need to uncomment (removing #) theses lines:
 By enabling URL rewriting, you could use API with this URL : <http://path/to/glpi/api/>.
 You need also to enable rewrite module in apache httpd and permit GLPI's .htaccess to override server configuration (see AllowOverride directive).
 
-**Note for apache+fpm users:**  
+**Note for apache+fpm users:**
 
 You may have difficulties to pass Authorization header in this configuration.
 You have two options :

@@ -1,0 +1,61 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set enable_anonymization = enable_anonymization ?? false %}
+{% set avatar_size = avatar_size ?? "avatar-md" %}
+{% set anonymized = enable_anonymization and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED') %}
+{% set user = get_item('User', users_id) %}
+{% set with_link = with_link ?? true %}
+{% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
+{% if user_thumbnail == null and not entity_config('display_users_initials', session('glpiactive_entity')) %}
+    {% set user_thumbnail = user.getPicturePath(enable_anonymization) %}
+{% endif %}
+
+{% if with_link and not anonymized %}
+   <a href="{{ user.getLinkURL() }}" class="d-flex align-items-center">
+{% endif %}
+
+<span class="avatar {{ avatar_size }} rounded"
+      style="{% if user_thumbnail is not null %}background-image: url({{ user_thumbnail }}); {% endif %}background-color: {{ user.getUserInitialsBgColor() }}">
+   {% if user_thumbnail is null %}
+         {{ user.getUserInitials(enable_anonymization) }}
+   {% endif %}
+</span>
+
+{% if with_link and not anonymized %}
+   {% if display_login %}
+      <span class="ms-2">{{ user.fields['name'] }}</span>
+   {% endif %}
+
+   </a>
+{% endif %}

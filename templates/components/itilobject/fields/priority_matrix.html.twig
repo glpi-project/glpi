@@ -1,0 +1,116 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set rand = random() %}
+
+{% set urgency_options = field_options|merge({
+   'disabled': (not (canupdate or can_requester))
+}) %}
+{% if field_options.fields_template.isMandatoryField('urgency') %}
+   {% set urgency_options = urgency_options|merge({
+      'required': true,
+   }) %}
+{% endif %}
+
+{{ fields.field(
+   'urgency',
+   item.dropdownUrgency({
+      'value': item.fields['urgency'],
+      'width': '100%',
+      'display': false,
+      'rand': rand,
+   }|merge(urgency_options)),
+   __('Urgency'),
+   field_options
+) }}
+
+{% set impact_options = field_options %}
+{% if field_options.fields_template.isMandatoryField('impact') %}
+   {% set impact_options = impact_options|merge({
+      'required': true,
+   }) %}
+{% endif %}
+
+{{ fields.field(
+   'impact',
+   item.dropdownImpact({
+      'value': item.fields['impact'],
+      'width': '100%',
+      'display': false,
+      'rand': rand,
+   }|merge(impact_options)),
+   __('Impact'),
+   field_options
+) }}
+
+{% set priority_options = field_options|merge({
+   'disabled': (not canpriority),
+   'withmajor': true
+}) %}
+{% if field_options.fields_template.isMandatoryField('priority') %}
+   {% set priority_options = priority_options|merge({
+      'required': true,
+   }) %}
+{% endif %}
+
+{{ fields.field(
+   'priority',
+   item.dropdownPriority({
+      'value': item.fields['priority'],
+      'width': '100%',
+      'display': false,
+      'rand': rand,
+   }|merge(field_options|merge(priority_options))),
+   __('Priority'),
+   field_options
+) }}
+
+<script type="text/javascript">
+$(function() {
+   $('#dropdown_urgency{{ rand }}, #dropdown_impact{{ rand }}').on('change.select2', function (e) {
+      $.ajax({
+         url: "{{ path('/ajax/priority.php') }}",
+         datatype: 'json',
+         data: {
+            'urgency': $('#dropdown_urgency{{ rand }}').select2('data')[0].id ?? 0,
+            'impact':  $('#dropdown_impact{{ rand }}').select2('data')[0].id ?? 0,
+            'getJson': true,
+         }
+      }).done(function(data) {
+         $('#dropdown_priority{{ rand }}').val(data.priority);
+         $('#dropdown_priority{{ rand }}').trigger('change');
+      });
+   })
+});
+</script>

@@ -1,0 +1,72 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% if canupdate %}
+   {% set status_field %}
+      {{ item.dropdownStatus({
+         'value': item.input['status']|default(item.fields['status']),
+         'value_calculation': item.fields['status'],
+         'showtype': 'allowed',
+         'width': '100%',
+         'display': false
+      }|merge(field_options))|raw }}
+
+      {% set validation_class = item.getValidationClassInstance() %}
+      {% if validation_class is not null %}
+         {{ validation_class.alertValidation(item, 'status') }}
+      {% endif %}
+   {% endset %}
+{% else %}
+   {% set field_options = field_options|merge({'center': true}) %}
+   {% set status_field %}
+      {{ item.getStatusIcon(item.fields['status'])|raw }}
+      {{ item.getStatus(item.fields['status']) }}
+
+      {% if item.canReopen() %}
+         <a href="{{ item.getLinkURL() }}&amp;_openfollowup=1"
+            class="btn btn-ghost-secondary">
+            <i class="far fa-folder-open"></i>
+            <span>{{ __('Reopen') }}</span>
+         </a>
+      {% endif %}
+   {% endset %}
+{% endif %}
+
+{{ fields.field(
+   'status',
+   status_field,
+   __('Status'),
+   field_options
+) }}

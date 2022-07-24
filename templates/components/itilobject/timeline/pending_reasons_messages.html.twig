@@ -1,0 +1,62 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set pending_reason_item_parent = call("PendingReason_Item::getForItem", [item]) %}
+{% set pending_item = call(entry['type'] ~ "::getById", [entry_i['id']]) %}
+{% set pending_reason_item = pending_item ? call("PendingReason_Item::getForItem", [pending_item]) : false %}
+{% set pending_reason = pending_reason_item ? call("PendingReason::getById", [pending_reason_item.fields['pendingreasons_id']]) : false %}
+
+{% if pending_reason  %}
+   <span class="badge bg-blue-lt">
+      <i class="fas fa-pause me-1"></i>
+      {{ __("Pending: %s")|format(pending_reason.getLink())|raw }}
+
+      {% if call("PendingReason_Item::isLastPendingForItem", [
+         item,
+         pending_item
+      ]) %}
+         {% set next_bump = pending_reason_item_parent.getNextFollowupDate() %}
+         {% if next_bump %}
+
+            <i class="fas fa-clock ms-2" title="{{ __("Next automatic follow-up scheduled on %s")|format(call("Html::convDate", [next_bump])) }}"
+               data-bs-toggle="tooltip"></i>
+         {% endif %}
+
+         {% set resolve = pending_reason_item_parent.getAutoResolvedate() %}
+         {% if resolve %}
+            <i class="fas fa-stop ms-2" title="{{ __("Automatic resolution scheduled on %s")|format(call("Html::convDate", [next_bump])) }}"
+               data-bs-toggle="tooltip"></i>
+         {% endif %}
+      {% endif %}
+   </span>
+{% endif %}

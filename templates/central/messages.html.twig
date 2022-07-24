@@ -1,0 +1,65 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="message-area">
+   {% if messages.errors is defined and messages.errors|length > 0 %}
+      <div class="alert alert-important alert-danger d-flex" role="alert">
+         <i class="fas fa-3x fa-exclamation-triangle"></i>
+         <ul>
+            {% for error in messages.errors %}
+               <li>{{ error|raw }}</li>
+            {% endfor %}
+         </ul>
+      </div>
+   {% endif %}
+   {% if messages.warnings is defined and messages.warnings|length > 0 %}
+      <div class="alert alert-important alert-warning d-flex" role="alert">
+         <i class="fas fa-3x fa-exclamation-triangle"></i>
+         <ul>
+            {% for warning in messages.warnings %}
+               <li>{{ warning|raw }}</li>
+            {% endfor %}
+         </ul>
+      </div>
+   {% endif %}
+   {% if messages.infos is defined and messages.infos|length > 0 %}
+      <div class="alert alert-important alert-info d-flex" role="alert">
+         <i class="fas fa-3x fa-info-circle"></i>
+         <ul>
+            {% for info in messages.infos %}
+               <li>{{ info|raw }}</li>
+            {% endfor %}
+         </ul>
+      </div>
+   {% endif %}
+</div>

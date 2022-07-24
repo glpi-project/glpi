@@ -1,0 +1,80 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if additional_params is not defined %}
+   {% set additional_params = '' %}
+{% else %}
+   {% if additional_params|length > 0 and not (additional_params starts with '&') %}
+      {% set additional_params = '&' ~ additional_params %}
+   {% endif %}
+{% endif %}
+
+{% if not no_onchange %}
+   {% set href = "location.href='" ~ href ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
+   {% if is_tab is defined and is_tab == true %}
+      {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
+   {% endif %}
+{% endif %}
+
+{% set options = [] %}
+{% for i in range(5, 19, 5) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(20, 49, 10) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(50, 249, 50) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(250, 999, 250) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(1000, 4999, 1000) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% for i in range(5000, 10000, 5000) %}
+   {% set options = options|merge([i]) %}
+{% endfor %}
+{% set options = options|merge([9999999]) %}
+{% set max = php_config('max_input_vars') %}
+{% if max > 10 %}
+   {% set options = options|merge([max - 10]) %}
+{% endif %}
+<select class="form-select form-select-sm mx-1 d-inline-block w-auto {{ select_class|default('') }}"
+        {% if not no_onchange %}onChange="{{ href }}"{% endif %}>
+   {% for value in options|sort %}
+      <option value="{{ value }}" {{ value == user_pref('list_limit') ? 'selected' : '' }}>
+         {{ value }}
+      </option>
+   {% endfor %}
+</select>

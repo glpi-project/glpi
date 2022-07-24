@@ -1,0 +1,108 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set target      = item.getFormURL() %}
+{% set is_new_item = (item.fields['id'] == 0) %}
+{% set show_form   = no_form is not defined or true %}
+
+{% set field_options = {
+   'is_horizontal': false,
+   'full_width': true,
+   'fields_template': itiltemplate,
+   'disabled': (not (canupdate or can_requester)),
+} %}
+
+{% if show_form %}
+<form method="post" action="{{ target }}" {{ formoptions }} enctype="multipart/form-data" data-submit-once>
+{% endif %}
+   <div class="row flex-column">
+      {% if not item.isNewItem() %}
+        {% set recipient = item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : session('glpiID') %}
+        {{ fields.dropdownField(
+            'User',
+            'users_id_recipient',
+            recipient,
+            __('By'),
+            field_options|merge({
+                maxlenght: 255,
+                entity: item.fields['entities_id'],
+                right: 'all',
+            })
+        ) }}
+      {% endif %}
+
+      {{ fields.textField(
+         'name',
+         item.fields['name'],
+         __('Title'),
+         field_options|merge({
+             maxlenght: 255,
+         })
+      ) }}
+
+      {% set uploads = [] %}
+      {% if item.input._content is defined %}
+         {% set uploads = uploads|merge({'_content': item.input._content, '_tag_content': item.input._tag_content}) %}
+      {% endif %}
+      {% if item.input._filename is defined %}
+         {% set uploads = uploads|merge({'_filename': item.input._filename, '_tag_filename': item.input._tag_filename}) %}
+      {% endif %}
+
+      {{ fields.textareaField(
+         'content',
+         item.fields['content'],
+         __('Description'),
+         field_options|merge({
+            'enable_richtext': true,
+            'enable_fileupload': true,
+            'enable_mentions': true,
+            'uploads': uploads,
+            'add_field_class': 'col-12 itil-textarea-content',
+         })
+      ) }}
+   </div>
+
+   {% if not is_new_item and show_form and not params['template_preview'] %}
+      <div class="d-flex card-footer mx-n3 mb-n3">
+         <button class="btn btn-primary me-2" type="submit" name="update">
+            <i class="far fa-save"></i>
+            <span>{{ _x('button', 'Save') }}</span>
+         </button>
+      </div>
+
+      <input type="hidden" name="id" value="{{ item.fields['id'] }}" />
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+   </form>
+   {% endif %}

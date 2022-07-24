@@ -1,0 +1,67 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'layout/page_card_notlogged.html.twig' %}
+
+{% block content_block %}
+<div class="flex-fill d-flex align-items-center justify-content-center">
+   <div class="container-tight py-6">
+      <div class="empty">
+         <i class="fas fa-tools fa-3x mb-3"></i>
+
+         <p class="empty-title">{{ __('Temporarily down for maintenance') }}</p>
+
+         <p class="empty-subtitle text-muted">
+            {{ __('Sorry for the inconvenience but we’re performing some maintenance at the moment. We’ll be back online shortly!') }}
+         </p>
+
+         {% if maintenance_text|length %}
+            <div class="alert alert-warning mt-4">
+               {{ maintenance_text }}
+            </div>
+         {% endif %}
+         <div class="empty-action">
+            <a href="{{ index_path() }}" class="btn btn-primary">
+               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewbox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <line x1="5" y1="12" x2="11" y2="18"></line>
+                  <line x1="5" y1="12" x2="11" y2="6"></line>
+               </svg>
+               {{ __('Take me home') }}
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}

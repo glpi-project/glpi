@@ -1,0 +1,159 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set filters_buttons = {
+   'description': {
+      'title': __('Description'),
+      'icon': item.getIcon(),
+      'itemtype': 'ITILContent',
+      'checked': true,
+   },
+   'followups': {
+      'title': _n('Followup', 'Followups', get_plural_number()),
+      'icon': 'ti ti-message-circle',
+      'itemtype': 'ITILFollowup',
+      'checked': true,
+   },
+   'tasks': {
+      'title': _n('Task', 'Tasks', get_plural_number()),
+      'icon': 'ti ti-checkbox',
+      'itemtype': 'ITILTask',
+      'checked': true,
+   },
+   'documents': {
+      'title': _n('Document', 'Documents', get_plural_number()),
+      'icon': 'ti ti-paperclip',
+      'itemtype': 'Document_Item',
+      'checked': true,
+   },
+   'validations': {
+      'title': _n('Validation', 'Validations', get_plural_number()),
+      'icon': 'ti ti-thumb-up',
+      'itemtype': 'ITILValidation',
+      'checked': true,
+   },
+   'solutions': {
+      'title': _n('Solution', 'Solutions', get_plural_number()),
+      'icon': 'ti ti-check',
+      'itemtype': 'ITILSolution',
+      'checked': true,
+   },
+} %}
+
+{% if get_current_interface() == 'central' %}
+   {% set filters_buttons = filters_buttons|merge({
+      'logs': {
+         'title': __('Historical'),
+         'icon': 'fas fa-history',
+         'itemtype': 'Log',
+         'checked': false,
+      },
+   }) %}
+{% endif %}
+
+<div class="filter-timeline d-none d-md-block float-end mt-n2 position-relative">
+   <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Timeline filter') }}">
+      <button type="button"
+            class="btn btn-sm btn-icon btn-ghost-secondary open-timeline-filter-popover"
+            data-bs-toggle="collapse"
+            data-bs-target="#filter-timeline-popover"
+            data-bs-trigger="click">
+         <i class="ti ti-filter"></i>
+      </button>
+   </span>
+
+   <div class="filter-timeline-popover collapse position-absolute bottom-100 end-0 text-nowrap"
+        id="filter-timeline-popover">
+      <div class="card pt-2">
+         <div class="list-group list-group-flush">
+            {% for filter_key, filter_button in filters_buttons %}
+               <li class="list-group-item list-group-item-action py-1">
+                  <div class="form-check form-switch trigger-filter {{ filter_button['itemtype'] }}" role="button">
+                     <input class="form-check-input" type="checkbox" id="timeline-filter-{{ filter_key }}"
+                           autocomplete="off"
+                           {{ filter_button['checked'] ? 'checked' : '' }}
+                           data-itemtype="{{ filter_button['itemtype'] }}" />
+                     <label class="form-check-label" for="timeline-filter-{{ filter_key }}" role="button">
+                        <i class="{{ filter_button['icon'] }} ms-2"></i>
+                        {{ filter_button['title'] }}
+                     </label>
+                  </div>
+               </li>
+            {% endfor %}
+         </div>
+      </div>
+   </div>
+
+   {% if get_current_interface() == 'central' %}
+      <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View TODO list') }}">
+         <button type="button"
+               class="btn btn-sm btn-icon btn-ghost-secondary view-timeline-todo-list me-1">
+            <i class="fas fa-tasks"></i>
+         </button>
+      </span>
+   {% endif %}
+</div>
+
+<script type="text/javascript">
+$(function() {
+   $(document).on("click", ".filter-timeline-popover .trigger-filter", function() {
+      var timeline       = $('#itil-object-container .itil-timeline');
+      var timeline_items = timeline.find(".timeline-item");
+
+      timeline_items.addClass('d-none');
+      $('.filter-timeline-popover .trigger-filter input[type=checkbox]').each(function() {
+         if(!$(this).is(':checked')) {
+            return;
+         }
+         var itemtype = $(this).data('itemtype');
+         timeline_items.filter("."+itemtype).removeClass('d-none');
+      });
+   });
+
+   $(document).on("click", ".view-timeline-todo-list", function() {
+      $('body').toggleClass('timeline-todo-list');
+   });
+
+   $(document).mouseup(function(e) {
+      var container = $("#filter-timeline-popover");
+
+      // if the target of the click isn't the container nor a descendant of the container
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+         var mycollapse = bootstrap.Collapse.getInstance(container[0]);
+         if (mycollapse !== null) {
+            mycollapse.hide();
+         }
+      }
+   });
+});
+</script>

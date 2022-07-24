@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -36,30 +39,32 @@ use DbTestCase;
 
 /* Test for inc/dbutils.class.php */
 
-class QueryParam extends DbTestCase {
+class QueryParam extends DbTestCase
+{
+    protected function dataParams()
+    {
 
-   protected function dataParams() {
+        return [
+            [null, '?'],
+            ['', '?'],
+            ['?', '?'],
+            ['myparam', ':myparam'],
+            [':myparam', ':myparam']
+        ];
+    }
 
-      return [
-         [null, '?'],
-         ['', '?'],
-         ['?', '?'],
-         ['myparam', ':myparam'],
-         [':myparam', ':myparam']
-      ];
-   }
+    /**
+     * @dataProvider dataParams
+     */
+    public function testQueryParam($value, $expected)
+    {
+        $qpa = new \QueryParam($value);
+        $this->string($qpa->getValue())->isIdenticalTo($expected);
+    }
 
-   /**
-    * @dataProvider dataParams
-    */
-   public function testQueryParam($value, $expected) {
-      $qpa = new \QueryParam($value);
-      $this->string($qpa->getValue())->isIdenticalTo($expected);
-   }
-
-   public function testEmptyQueryParam() {
-      $qpa = new \QueryParam();
-      $this->string($qpa->getValue())->isIdenticalTo('?');
-   }
-
+    public function testEmptyQueryParam()
+    {
+        $qpa = new \QueryParam();
+        $this->string($qpa->getValue())->isIdenticalTo('?');
+    }
 }

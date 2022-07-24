@@ -1,0 +1,89 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set validation = item.getValidationClassInstance() %}
+
+{% if validation is not null %}
+   {% set create_right_val = constant('CREATE') %}
+   {% set validation_right = 'validate' %}
+   {% if item.getType() == 'Ticket' %}
+      {% if params['type'] == constant('Ticket::INCIDENT_TYPE') %}
+         {% set create_right_val = constant('TicketValidation::CREATEINCIDENT') %}
+         {% set validation_right = 'validate_incident' %}
+      {% elseif params['type'] == constant('Ticket::DEMAND_TYPE') %}
+         {% set create_right_val = constant('TicketValidation::CREATEREQUEST') %}
+         {% set validation_right = 'validate_request' %}
+      {% endif %}
+   {% endif %}
+   {% set can_create = has_profile_right(get_static(validation, 'rightname'), create_right_val) %}
+
+   {% if item.isNewItem() %}
+      {% if can_create %}
+         {% set required = {} %}
+         {% if field_options.fields_template.isMandatoryField('_add_validation') %}
+            {% set required = {
+               'required': true,
+            } %}
+         {% endif %}
+
+         {{ fields.field(
+            '_add_validation',
+            validation.dropdownValidator({
+               'name': 'users_id_validate',
+               'entity': item.fields['entities_id'],
+               'right': validation_right,
+               'users_id_validate': params['users_id_validate'],
+               'display': false,
+               'disabled': (not canupdate),
+            }|merge(required)),
+            __('Approval request'),
+            field_options
+         ) }}
+
+         <input type="hidden" name="_add_validation" value="{{ params['_add_validation'] }}" />
+      {% endif %}
+   {% else %}
+        {% if not itiltemplate.isHiddenField('global_validation') %}
+            {{ fields.htmlField(
+                'global_validation',
+                call('TicketValidation::getStatus', [item.fields['global_validation'], true]),
+                "CommonITILValidation"|itemtype_name,
+                {
+                    'full_width': true,
+                }
+            ) }}
+        {% endif %}
+   {% endif %}
+{% endif %}

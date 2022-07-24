@@ -1,0 +1,76 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<span class="badge text-wrap d-none d-md-block">
+   {% set date_span %}
+      <span title="{{ date_creation|formatted_datetime }}"
+            data-bs-toggle="tooltip" data-bs-placement="bottom">
+         <i class="far fa-clock me-1"></i>{{ date_creation|relative_datetime }}
+      </span>
+   {% endset %}
+
+   {% if users_id > 0 %}
+      {% set creator_span %}
+         {{ include('components/user/link_with_tooltip.html.twig', {
+            'users_id': users_id,
+            'enable_anonymization': anonym_user
+         }, with_context = false) }}
+      {% endset %}
+
+      {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
+   {% else %}
+      {{ __('Created: %1$s')|format(date_span)|raw }}
+   {% endif %}
+</span>
+
+{% if users_id_editor > 0 and date_creation != date_mod %}
+   <span class="badge text-wrap ms-1 d-none d-md-block">
+      {% set date_span %}
+         <span title="{{ date_mod|formatted_datetime }}"
+               data-bs-toggle="tooltip" data-bs-placement="bottom">
+            <i class="far fa-clock me-1"></i>{{ date_mod|relative_datetime }}
+         </span>
+      {% endset %}
+
+      {% set is_current_editor = (users_id_editor == session('glpiID')) %}
+      {% set anonym_editor = (get_current_interface() == 'helpdesk' and not is_current_editor and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
+      {% set editor_span %}
+         {{ include('components/user/link_with_tooltip.html.twig', {
+            'users_id': users_id_editor,
+            'enable_anonymization': anonym_editor
+         }, with_context = false) }}
+      {% endset %}
+
+      {{ __('Last update: %1$s by %2$s')|format(date_span, editor_span)|raw }}
+   </span>
+{% endif %}

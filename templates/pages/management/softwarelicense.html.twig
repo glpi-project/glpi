@@ -1,0 +1,105 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block form_fields %}
+   {{ fields.dropdownField(
+      'Software',
+      'softwares_id',
+      item.fields['softwares_id'],
+      "Software"|itemtype_name,
+      {
+         'entity': item.fields['entities_id'],
+         'condition': {
+            'is_template': 0,
+            'is_deleted': 0,
+         },
+         'on_change': 'this.form.submit()'
+      }
+   ) }}
+
+   {{ fields.nullField() }}
+
+   {{ parent() }}
+{% endblock %}
+
+{% block more_fields %}
+   {% set field %}
+      {% do call('SoftwareVersion::dropdownForOneSoftware', [{
+         'name': 'softwareversions_id_use',
+         'softwares_id': item.fields['softwares_id'],
+         'value': item.fields['softwareversions_id_use'],
+         'width': '100%',
+      }]) %}
+   {% endset %}
+   {{ fields.field('softwareversions_id_use', field, __('Version in use')) }}
+
+   {% set field %}
+      {% do call('SoftwareVersion::dropdownForOneSoftware', [{
+      'name': 'softwareversions_id_buy',
+      'softwares_id': item.fields['softwares_id'],
+      'value': item.fields['softwareversions_id_buy'],
+      'width': '100%',
+      }]) %}
+   {% endset %}
+   {{ fields.field('softwareversions_id_buy', field, __('Purchase version')) }}
+
+   {% set validity_msg = null %}
+   {% if item_type == 'SoftwareLicense' %}
+      {% set validity_msg %}
+         {% if item.fields['is_valid'] %}
+            <span class="green">{{ _x('adjective', 'Valid') }}</span>
+         {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
+            <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
+         {% else %}
+            <span class="red">{{ _x('adjective', 'Invalid') }}</span>
+         {% endif %}
+      {% endset %}
+   {% endif %}
+   {{ fields.numberField('number', item.fields['number'], _x('quantity', 'Number'), {
+      'min': 1,
+      'max': 10000,
+      'step': 1,
+      'toadd': {'-1': __('Unlimited')},
+      'add_field_html': validity_msg
+   }) }}
+
+   {{ fields.dropdownYesNo('allow_overquota', item.fields['allow_overquota'], __('Allow Over-Quota')) }}
+
+   {{ fields.datetimeField('expire', item.fields['expire'], __('Expiration'), {
+      'helper': __('On search engine, use "Expiration contains NULL" to search licenses with no expiration date')
+   }) }}
+{% endblock %}

@@ -1,0 +1,171 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="mx-n2 mb-4">
+   <table class="table table-hover card-table">
+      <thead>
+         <tr class="border-top">
+            <th colspan="{{ number_columns }}">
+               <h4>{{ title }}</h4>
+            </th>
+         </tr>
+         <tr>
+            <th>{{ param['first_cell']|raw }}</th>
+            {% for col_name, column in columns %}
+               {% set col_id = call('Html::cleanId', ['col_label_' ~ col_name ~ '_' ~ param['rand']]) %}
+               <th id="{{ col_id }}">
+                  {% if column is not iterable %}
+                     {{ column }}
+                  {% else %}
+                     {% if column['short'] is defined and column['long'] is defined %}
+                        {{ column['short'] }}
+                        {% do call('Html::showToolTip', [column['long'], {'applyto': col_id}]) %}
+                     {% else %}
+                        {{ column['label'] }}
+                     {% endif %}
+                  {% endif %}
+               </th>
+            {% endfor %}
+
+            {% if param['row_check_all'] %}
+               {% set col_id = call('Html::cleanId', ['col_of_table_' ~ param['rand']]) %}
+               <th id="{{ col_id }}">
+                  {{ __('Select/unselect all') }}
+               </th>
+            {% endif %}
+         </tr>
+      </thead>
+      <tbody>
+         {% for row_name, row in rows %}
+            <tr>
+               {% if row is not iterable %}
+                  <td colspan="{{ number_columns }}">{{ row }}</td>
+               {% else %}
+                  {% set row_id = call('Html::cleanId', ['row_label_' ~ row_name ~ '_' ~ param['rand']]) %}
+                  <td class="{{ row['class'] }}" id="{{ row_id }}">
+                     {{ row['label'] ?? '&nbsp;' }}
+                  </td>
+
+                  {% for col_name, column in columns %}
+                     {% set content = row['columns'][col_name] %}
+                     <td>
+                        {% if content is iterable and content['checked'] is defined %}
+                           {% if content['readonly'] is not defined %}
+                              {% set content = content|merge({'readonly': false}) %}
+                           {% endif %}
+                           {% set content = content|merge({
+                              'name': row_name ~ '[' ~ col_name ~ ']',
+                              'id': call('Html::cleanId', ['cb_' ~ row_name ~ '_' ~ col_name ~ '_' ~ param['rand']])
+                           }) %}
+                           {% set massive_tags = [] %}
+                           {% if param['row_check_all'] %}
+                              {% set massive_tags = massive_tags|merge([
+                                 'row_' ~ row_name ~ '_' ~ param['rand'],
+                              ]) %}
+                           {% endif %}
+                           {% if param['col_check_all'] %}
+                              {% set massive_tags = massive_tags|merge([
+                                 'col_' ~ col_name ~ '_' ~ param['rand'],
+                              ]) %}
+                           {% endif %}
+                           {% if param['row_check_all'] and param['col_check_all'] %}
+                              {% set massive_tags = massive_tags|merge([
+                                 'table_' ~ param['rand'],
+                              ]) %}
+                           {% endif %}
+                           {% set content = content|merge({
+                              'massive_tags': massive_tags
+                           }) %}
+                           {% do call('Html::showCheckbox', [content]) %}
+
+                        {% else %}
+                           {% if content is not iterable %}
+                              {{ content }}
+                           {% endif %}
+                        {% endif %}
+                     </td>
+                  {% endfor %}
+
+                  {% if param['row_check_all'] %}
+                     <td>
+                        {% do call('Html::showCheckbox', [{
+                           'title': __('Check/uncheck all'),
+                           'criterion': {
+                              'tag_for_massive': 'row_' ~ row_name ~ '_' ~ param['rand']
+                           },
+                           'massive_tags': 'table_' ~ param['rand'],
+                           'id': call('Html::cleanId', ['cb_checkall_row_' ~ row_name ~ '_' ~ param['rand']]),
+                           'checked': (nb_cb_per_row[row_name]['checked'] >= (nb_cb_per_row[row_name]['total'])),
+                        }]) %}
+                     </td>
+                  {% endif %}
+               {% endif %}
+            </tr>
+         {% endfor %}
+
+         {% if param['col_check_all'] %}
+            <tr>
+               <td>{{ __('Select/unselect all') }}</td>
+               {% for col_name, column in columns %}
+                  <td>
+                     {% if nb_cb_per_col[col_name]['total'] >= 2 %}
+                        {% do call('Html::showCheckbox', [{
+                           'title': __('Check/uncheck all'),
+                           'criterion': {
+                              'tag_for_massive': 'col_' ~ col_name ~ '_' ~ param['rand']
+                           },
+                           'massive_tags': 'table_' ~ param['rand'],
+                           'id': call('Html::cleanId', ['cb_checkall_col_' ~ col_name ~ param['rand']]),
+                           'checked': (nb_cb_per_col[col_name]['checked'] >= (nb_cb_per_col[col_name]['total'])),
+                        }]) %}
+                     {% endif %}
+                  </td>
+               {% endfor %}
+
+               {% if param['row_check_all'] %}
+                  <td>
+                     {% do call('Html::showCheckbox', [{
+                        'title': __('Check/uncheck all'),
+                        'criterion': {
+                           'tag_for_massive': 'table_' ~ param['rand']
+                        },
+                        'massive_tags': '',
+                        'id': call('Html::cleanId', ['cb_checkall_table_' ~ param['rand']]),
+                     }]) %}
+                  </td>
+               {% endif %}
+            </tr>
+         {% endif %}
+      </tbody>
+   </table>
+</div>

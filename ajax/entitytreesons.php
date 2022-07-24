@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,108 +17,103 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 $AJAX_INCLUDE = 1;
 
-include ("../inc/includes.php");
+include("../inc/includes.php");
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_GET['node'])) {
-   $nodes = [];
+/** @global array $CFG_GLPI */
 
-   // Get ancestors of current entity
-   $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
-
-   // Root node
-   if ($_GET['node'] == -1) {
-      foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
-         $ID                           = $entity['id'];
-         $is_recursive                 = $entity['is_recursive'];
-
-         $path = [
-            // append r for root nodes, id are uniques in jstree.
-            // so, in case of presence of this id in subtree of other nodes,
-            // it will be removed from root nodes
-            'id'   => $ID.'r',
-            'text' => Dropdown::getDropdownName("glpi_entities", $ID)
-         ];
-
-         if ($is_recursive) {
-            $result2 = $DB->request([
-               'FROM'   => 'glpi_entities',
-               'COUNT'  => 'cpt',
-               'WHERE'  => ['entities_id' => $ID]
-            ]);
-            $result2 = $result2->next();
-            if ($result2['cpt'] > 0) {
-               $path['children'] = true;
-               //apend a i tag (one of shortest tags) to have the is_recursive link
-               $path['text'].= '<i/>';
-               if (isset($ancestors[$ID])) {
-                  $path['state']['opened'] = 'true';
-               }
-            }
-         }
-         $nodes[] = $path;
-      }
-   } else { // standard node
-      $node_id = preg_replace('/r$/', '', $_GET['node']);
-      $iterator = $DB->request([
-         'SELECT' => [
-            'ent.id',
-            'ent.name',
-            'ent.sons_cache',
-            'COUNT'  => 'sub_entities.id AS nb_subs'
-         ],
-         'FROM'   => 'glpi_entities AS ent',
-         'LEFT JOIN' => [
-            'glpi_entities AS sub_entities'  => [
-               'ON'  => [
-                  'sub_entities' => 'entities_id',
-                  'ent'          => 'id'
-               ]
-            ]
-         ],
-         'WHERE'     => ['ent.entities_id' => $node_id],
-         'GROUPBY'   => ['ent.id', 'ent.name', 'ent.sons_cache'],
-         'ORDERBY'   => 'name'
-      ]);
-
-      while ($row = $iterator->next()) {
-         $path = [
-            'id'   => $row['id'],
-            'text' => $row['name']
-         ];
-
-         if ($row['nb_subs'] > 0) {
-            //apend a i tag (one of shortest tags) to have the is_recursive link
-            $path['text'].= '<i/>';
-            $path['children'] = true;
-
-            if (isset($ancestors[$row['id']])) {
-               $path['state']['opened'] = 'true';
-            }
-         }
-         $nodes[] = $path;
-      }
-   }
-   echo json_encode($nodes);
+$base_path = $CFG_GLPI['root_doc'] . "/front/central.php";
+if (Session::getCurrentInterface() == 'helpdesk') {
+    $base_path = $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php";
 }
+
+$ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+
+$ckey    = 'entity_selector';
+$subckey = sha1(json_encode($_SESSION['glpiactiveprofile']['entities']));
+$all_entitiestree = $GLPI_CACHE->get($ckey, []);
+
+/* calculates the tree to save it in the cache if it is not already there */
+if (!array_key_exists($subckey, $all_entitiestree)) {
+    $entitiestree = [];
+    foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
+        $default_entity_id = $default_entity['id'];
+
+        $entitytree  = $default_entity['is_recursive'] ? getTreeForItem('glpi_entities', $default_entity_id) : [$default_entity['id'] => $default_entity];
+        $adapt_tree = static function (&$entities) use (&$adapt_tree, $base_path) {
+            foreach ($entities as $entities_id => &$entity) {
+                $entity['key']   = $entities_id;
+
+                $title = "<a href='$base_path?active_entity={$entities_id}'>{$entity['name']}</a>";
+                $entity['title'] = $title;
+                unset($entity['name']);
+
+                if (isset($entity['tree']) && count($entity['tree']) > 0) {
+                    $entity['folder'] = true;
+
+                    $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
+                <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __('+ sub-entities') . "'></i>
+                </a>";
+
+                    $children = $adapt_tree($entity['tree']);
+                    $entity['children'] = array_values($children);
+                }
+
+                unset($entity['tree']);
+            }
+
+            return $entities;
+        };
+        $adapt_tree($entitytree);
+
+        $entitiestree = array_merge($entitiestree, $entitytree);
+    }
+
+    $all_entitiestree[$subckey] = $entitiestree;
+    $GLPI_CACHE->set($ckey, $all_entitiestree);
+}
+
+/* scans the tree to select the active entity */
+$entitiestree = [];
+$entitytree = $all_entitiestree[$subckey];
+$select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
+    foreach ($entities as &$entity) {
+        if (isset($ancestors[$entity['key']])) {
+            $entity['expanded'] = 'true';
+        }
+        if ($entity['key'] == $_SESSION['glpiactive_entity']) {
+            $entity['selected'] = 'true';
+        }
+        if (isset($entity['children'])) {
+            $select_tree($entity['children']);
+        }
+    }
+    return $entities;
+};
+$select_tree($entitytree);
+$entitiestree = array_merge($entitiestree, $entitytree);
+
+echo json_encode($entitiestree);
+exit;

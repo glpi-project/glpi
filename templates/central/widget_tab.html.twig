@@ -1,0 +1,81 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+<table class="tab_cadre_central">
+   {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
+</table>
+
+<div id="home-dashboard{{ rand }}" class="container-fluid">
+   {% set grid_items = [] %}
+   {% for card in cards %}
+      {% set card_html %}
+         <div class="card">
+            <div class="card-body p-0">
+              <div class="lazy-widget" data-itemtype="{{ card.itemtype }}" data-widget="{{ card.widget }}"
+                 data-params="{{ card.params|default({})|json_encode }}">
+              </div>
+            </div>
+         </div>
+      {% endset %}
+
+      {% set grid_items = grid_items|merge([
+         card_html
+      ]) %}
+   {% endfor %}
+
+   {{ include('components/masonry_grid.html.twig', {
+      'grid_items': grid_items,
+   }, with_context = false) }}
+
+   <script>
+   $(function () {
+      $('#home-dashboard{{ rand }} .lazy-widget').each(function() {
+         const this_obj = $(this);
+         const params = {
+            'itemtype': this_obj.data('itemtype'),
+            'widget': this_obj.data('widget'),
+            'params': this_obj.data('params')
+         };
+         this_obj.html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+            .load('{{ path('/ajax/central.php') }}', params, function(response, status, xhr) {
+               if (status === 'error' || !response) {
+                   window.msnry.remove(this_obj.closest('.grid-item'));
+               }
+
+               window.msnry.layout();
+            });
+      });
+   });
+   </script>
+</div>

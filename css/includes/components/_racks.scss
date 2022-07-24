@@ -1,0 +1,639 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.grid-stack .grid-stack-item {
+    z-index: 3;
+    opacity: 1;
+}
+
+.clear_picture .grid-stack .grid-stack-item {
+    .grid-stack-item-content,
+    &::after {
+        background: none !important;
+    }
+}
+
+.grid-stack-item {
+    /** should be erased by lib, defined for case without lib **/
+    &:not(.lock-bottom) .grid-stack-item-content {
+        font-size: 11px;
+        text-align: center;
+        overflow: hidden;
+        cursor: move;
+
+        /* fallback */
+        cursor: grab;
+
+        &:active {
+            cursor: move;
+
+            /* fallback */
+            cursor: grabbing;
+        }
+    }
+}
+
+.grid-stack-item-content a {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.clear_text:not(.clear_picture) .grid-stack .grid-stack-item .itemrack_name {
+    display: none;
+}
+
+#viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content {
+    .itemrack_name {
+        background-color: rgba(255, 255, 255, 65%);
+        color: #000 !important;
+    }
+
+    .rel-link {
+        opacity: 0.6;
+    }
+}
+
+.grid-stack-item-content {
+    .rel-link {
+        position: absolute;
+        right: 3px;
+        bottom: 3px;
+        opacity: 0;
+
+        a i.fa {
+            color: #000;
+        }
+    }
+
+    &:hover .rel-link {
+        opacity: 0.8;
+    }
+}
+
+.grid-stack {
+    .grid-stack-item {
+        .grid-stack-item-content,
+        .placeholder-content {
+            left: 0;
+            right: 0;
+        }
+    }
+
+    .grid-stack-placeholder > .placeholder-content {
+        border: 1px dashed #bcbf33;
+        background-color: rgba(229, 245, 105, 50%);
+    }
+}
+
+#viewgraph table.outbound {
+    width: 400px;
+    margin-bottom: 20px;
+}
+
+div#viewgraph table.outbound td div {
+    padding: 0;
+
+    .grid-stack-item-content {
+        box-shadow: none;
+    }
+}
+
+ul.indexes {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 0.7em;
+    color: silver;
+    float: left;
+}
+
+.cell_add {
+    box-sizing: border-box;
+    display: block;
+    opacity: 0;
+    z-index: 2;
+    position: relative;
+
+    &::after {
+        content: "\2b";
+        left: 45%;
+        color: grey;
+        top: 1px;
+        font: 1em var(--fa-font-solid);
+        position: absolute;
+    }
+
+    &:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+}
+
+.grid-room {
+    box-sizing: content-box;
+    margin: 10px 0 10px 10px;
+    float: left;
+    padding: 15px 0 0 15px;
+
+    *,
+    ::before,
+    ::after {
+        box-sizing: content-box;
+    }
+
+    .blueprint {
+        margin-left: 15px;
+        width: calc(100% - 16px);
+    }
+
+    .racks_add {
+        border: 1px solid $table-border-color;
+        border-width: 0 1px 1px 0;
+        background-size: var(--dcroom-grid-cellw) var(--dcroom-grid-cellh);
+        background-image:
+            linear-gradient(
+                to right,
+                $table-border-color 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                to bottom,
+                $table-border-color 1px,
+                transparent 1px
+            );
+        margin-left: 15px;
+
+        .cell_add {
+            height: var(--dcroom-grid-cellh);
+            width: var(--dcroom-grid-cellw);
+            float: left;
+
+            &::after {
+                left: 15px;
+                top: 10px;
+            }
+        }
+    }
+
+    .grid-stack {
+        float: left;
+    }
+
+    .grid-stack-item {
+        border: 1px solid rgb(68, 68, 68);
+        box-sizing: border-box;
+
+        &::after {
+            position: absolute;
+            content: " ";
+            background-color: rgba(3, 2, 2, 30%);
+        }
+
+        &.room_orientation_1::after {
+            // NORTH
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        &.room_orientation_2::after {
+            // EAST
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        &.room_orientation_3::after {
+            // SOUTH
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        &.room_orientation_4::after {
+            // WEST
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .grid-stack-item-content {
+            padding-top: 4px;
+        }
+
+        &.lock-bottom {
+            display: none;
+        }
+    }
+
+    ul.indexes {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        font-size: 0.7em;
+        color: $table-color;
+        float: left;
+
+        &.indexes-x {
+            width: 100%;
+            float: none;
+            height: 15px;
+            padding-left: 15px;
+
+            li {
+                float: left;
+                width: var(--dcroom-grid-cellw);
+            }
+        }
+
+        &.indexes-y {
+            width: 15px;
+
+            li {
+                height: var(--dcroom-grid-cellh);
+                line-height: calc(var(--dcroom-grid-cellh) + 1px);
+            }
+        }
+    }
+}
+
+.clear_blueprint .grid-room .blueprint {
+    background: none !important;
+}
+
+.clear_grid .grid-room {
+    ul.indexes {
+        visibility: hidden;
+    }
+
+    .racks_add {
+        background-image: none;
+    }
+}
+
+#viewgraph {
+    .rooms a {
+        &.fa {
+            color: $table-color;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 0.5em;
+
+            &:link {
+                color: $table-color;
+                position: absolute;
+                right: 0;
+                top: 0;
+                padding: 0.5em;
+            }
+        }
+
+        .fa {
+            color: $table-color;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 0.5em;
+        }
+
+        &.itemlink .fa {
+            right: 1.2em;
+        }
+    }
+
+    table.rooms {
+        th,
+        td {
+            height: 5em;
+        }
+
+        th {
+            color: $table-head-color;
+            background-color: steelblue;
+        }
+
+        td {
+            border-left: 1px solid $table-head-border-color;
+
+            div {
+                border: none !important;
+                position: relative;
+                z-index: 10;
+                color: white;
+                height: 100%;
+                display: flex;
+                padding: 0 1%;
+                flex-direction: column;
+                justify-content: center;
+                max-height: 5em;
+
+                /** Fix height when dragging */
+                &.rack-add {
+                    color: #e0e0e0;
+
+                    &:hover {
+                        background-color: rgba(0, 128, 0, 50%);
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*** Racks ***/
+
+.racks_row {
+    width: 100%;
+}
+
+.racks_col {
+    margin-left: 2px;
+    float: left;
+    position: relative;
+
+    &:not(:last-child) {
+        margin-right: 40px;
+    }
+}
+
+.rack_side {
+    float: left;
+    text-align: center;
+    background: $table-bg;
+    border: 1px solid $table-border-color;
+    color: $table-color;
+    padding-top: 18px;
+}
+
+.racks_col h2 {
+    font-size: 14px;
+    font-weight: bold;
+    color: $table-head-color;
+    background-color: $table-head-bg;
+    height: 30px;
+    margin: 0;
+    padding: 5px 0;
+    text-align: center;
+}
+
+.racks_add {
+    position: absolute;
+    display: block;
+    width: 100%;
+    z-index: 2;
+}
+
+.grid-rack {
+    *,
+    ::before,
+    ::after {
+        box-sizing: content-box;
+    }
+
+    .racks_add {
+        .cell_add {
+            height: 20px;
+            margin-bottom: 1px;
+            width: 100%;
+        }
+    }
+
+    width: 217px;
+    background:
+        $table-bg repeating-linear-gradient(
+            transparent,
+            transparent 21px,
+            $table-striped-bg 21px,
+            $table-striped-bg 42px
+        );
+    z-index: 1;
+    border: 1px solid $table-border-color;
+    float: left;
+}
+
+.virtual_pdu_space {
+    height: 20px;
+    clear: both;
+}
+
+.side_pdus_float {
+    float: left;
+    min-height: 100%;
+    width: 20px;
+}
+
+.side_pdus.side_pdus_nofloat {
+    clear: left;
+    margin: 0 2px 2px;
+}
+
+.side_pdus_nofloat .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+    cursor: initial;
+}
+
+.side_pdus {
+    background-color: $table-striped-bg;
+    margin: 0 1px;
+
+    .grid-stack-item:not(.lock-bottom) {
+        background-color: #ff9d1f;
+        overflow: hidden;
+    }
+}
+
+.side_pdus_float {
+    .grid-stack-item {
+        .grid-stack-item-content {
+            border: 0 solid rgba(4, 4, 4, 40%);
+            border-width: 4px 1px;
+
+            .rotated_text {
+                transform: rotate(-90deg);
+                transform-origin: bottom left;
+                position: absolute;
+                bottom: 25px;
+                left: 15px;
+                white-space: nowrap;
+            }
+        }
+
+        .item_rack_icon {
+            position: absolute;
+            bottom: 1px;
+            left: 0;
+        }
+    }
+
+    .grid-stack-item-content .rel-link {
+        left: 3px;
+        top: 3px;
+        bottom: unset;
+        right: unset;
+    }
+
+    .grid-stack-item::after {
+        content: "";
+        position: absolute;
+        height: 20px;
+        bottom: 4px;
+        left: 20px;
+        z-index: -1;
+        transform: rotate(-90deg);
+        transform-origin: bottom left;
+    }
+}
+
+.side_pdus_nofloat .grid-stack-item .grid-stack-item-content,
+.grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+    position: relative;
+    color: #2c3e50;
+    border: 0 solid rgba(4, 4, 4, 40%);
+    border-width: 1px 4px;
+    box-shadow: 1px 1px 5px 0 #656565;
+    height: 100%;
+}
+
+#viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .grid-stack-item-content {
+    border-color: rgba(4, 4, 4, 25%);
+    border-width: 0 4px;
+}
+
+.grid-rack .grid-stack-item {
+    &.reserved .grid-stack-item-content {
+        border: 1px solid #ff7c24;
+        box-shadow: none;
+
+        a.itemrack_name {
+            color: #7f4723 !important;
+        }
+    }
+
+    &.item_rear {
+        background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 15%), rgba(0, 0, 0, 15%) 10px, rgba(59, 59, 59, 15%) 10px, rgba(59, 59, 59, 15%) 20px);
+    }
+
+    &.reserved {
+        background: repeating-linear-gradient(115deg, #ff8a3c, #ff8a3c 30px, #ffd7bc 30px, #ffd7bc 60px);
+    }
+}
+
+.grid-stack-item .item_rack_icon {
+    float: left;
+    opacity: 0.6;
+    padding: 3px 0 0 2px;
+    font-size: 14px;
+}
+
+#viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .item_rack_icon {
+    display: none;
+}
+
+.rack_tipcontent {
+    span {
+        display: block;
+    }
+
+    label {
+        font-weight: bold;
+        margin-right: 3px;
+    }
+}
+
+.grid-rack .grid-stack-item.lock-bottom {
+    background: $table-bg;
+    width: 101% !important;
+    margin: 0 -1px;
+}
+
+.racks_row ul.indexes li {
+    height: 20px;
+    width: 20px;
+    margin-bottom: 1px;
+    box-sizing: border-box;
+    line-height: 20px;
+}
+
+.rack_side_block {
+    width: 200px;
+    border: 1px solid $table-border-color;
+    background-color: $table-head-bg;
+    color: $table-head-color;
+    text-align: left;
+    font-size: 11px;
+    margin-bottom: 20px;
+}
+
+.rack_side_block_content {
+    padding: 10px 5px;
+}
+
+.rack_side_block {
+    h3 {
+        color: $table-color;
+        margin: 0;
+        font-size: 11px;
+        font-weight: bold;
+    }
+}
+
+.rack_side_block_content i {
+    margin: 0 3px;
+}
+
+div#viewgraph .rack_side_block .pdu_list {
+    background: none;
+
+    td {
+        text-align: left;
+        border: 1px solid rgba(0, 0, 0, 20%);
+        padding: 0 3px;
+    }
+}
+
+.pdu_list {
+    .rack_position {
+        width: 20px;
+    }
+
+    i.fa {
+        color: rgba(0, 0, 0, 60%);
+    }
+}

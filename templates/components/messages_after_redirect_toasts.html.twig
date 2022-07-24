@@ -1,0 +1,93 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set messages = pull_messages() %}
+
+{% set toasts_html %}
+    {% if messages|length %}
+        {% for type, message in messages %}
+            {% set message = message|join('<br />') %}
+            {% set class = '' %}
+            {% set title = '' %}
+            {% if type == constant('ERROR') %}
+                {% set class = 'bg-danger text-white' %}
+                {% set title = __('Error') %}
+            {% elseif type == constant('WARNING') %}
+                {% set class = 'bg-warning text-white' %}
+                {% set title = __('Warning') %}
+            {% else %}
+                {% set class = 'bg-info text-white' %}
+                {% set title = _n('Information', 'Informations', 1) %}
+            {% endif %}
+
+            <div class="toast animate__animated animate__tada animate__delay-2s animate__slow" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header {{ class }} ">
+                    <strong class="me-auto">{{ title }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ message|raw }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endset %}
+
+{% if display_container %}
+    <div class="toast-container bottom-0 end-0 p-3 messages_after_redirect" id="messages_after_redirect">
+        {{ toasts_html }}
+
+        <script type="text/javascript">
+        var initMessagesAfterRedirectToasts = function() {
+            var toastElList = [].slice.call(document.querySelectorAll('#messages_after_redirect .toast:not(.show)'));
+            var toastList = toastElList.map(function (toastEl) {
+                var toast = new bootstrap.Toast(toastEl, {
+                    delay: 10000,
+                })
+                toast.show()
+
+                $(toastEl).on('hidden.bs.toast', function () {
+                    $(toastEl).remove();
+                });
+
+                return toast;
+            });
+        }
+        $(function() {
+            initMessagesAfterRedirectToasts();
+        });
+        </script>
+    </div>
+{% else %}
+    {{ toasts_html }}
+{% endif %}

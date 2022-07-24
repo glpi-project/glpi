@@ -1,0 +1,74 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+$is-dark: false !default;
+
+@import "base";
+@import "mixins/badges_fixes";
+@import "global-variables";
+@import "highcontrast";
+@import "components/asset-form";
+@import "components/buttons-group";
+@import "components/documentation";
+@import "components/debug-panel";
+@import "components/fileupload";
+@import "components/flatpickr";
+@import "components/floating-buttons";
+@import "components/fuzzy";
+@import "components/global-menu";
+@import "components/kanban";
+@import "components/browser_tree";
+@import "components/mini-tabs";
+@import "components/networkport";
+@import "components/pictures";
+@import "components/racks";
+@import "components/richtext";
+@import "components/rules";
+@import "components/saved-searches";
+@import "components/scrollbars";
+@import "components/search_input";
+@import "components/select2";
+@import "components/tabs";
+@import "components/itilobject/footer";
+@import "components/itilobject/layout";
+@import "components/itilobject/timeline";
+@import "components/itilobject/actors";
+@import "components/itilobject/dates_timelines";
+@import "components/itilobject/status";
+@import "components/setup/dropdowns_list";
+@import "pages/search";
+@import "../legacy/includes/inputs";
+@import "../legacy/includes/styles";
+@import "../legacy/includes/planning";
+@import "../legacy/includes/impact";
+@import "../legacy/includes/responsive_fixes";

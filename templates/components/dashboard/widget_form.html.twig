@@ -1,0 +1,145 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set field_options = {
+   'full_width': true,
+} %}
+
+{% set rand = random() %}
+
+<form class="display-widget-form">
+
+   <input type="hidden" name="gridstack_id" value="{{ gridstack_id }}" />
+   <input type="hidden" name="old_id" value="{{ old_id }}" />
+   <input type="hidden" name="x" value="{{ x }}" />
+   <input type="hidden" name="y" value="{{ y }}" />
+   <input type="hidden" name="width" value="{{ width }}" />
+   <input type="hidden" name="height" value="{{ height }}" />
+   <input type="hidden" name="card_options" value="{{ card_options|json_encode(constant('JSON_HEX_QUOT')) }}" />
+
+   {{ fields.colorField(
+      'color',
+      color,
+      __('Background color'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField(
+      'card_id',
+      card_id,
+      list_cards,
+      __('Data'),
+      field_options|merge({
+         'display_emptychoice': not edit
+      })
+   ) }}
+
+   {# display widget list #}
+   {% set widgets_list %}
+      <div class="widget-list">
+         {% for key, current in widget_types %}
+            {% set selected = key == widgettype %}
+            {% set w_displayed = edit and card['widgettype'] is defined and key in card['widgettype'] %}
+
+            <input type="radio"
+                  {% if selected %}checked="checked"{% endif %}
+                  class="widget-select" id="widgettype_{{ key }}_{{ rand }}"
+                  name="widgettype"
+                  value="{{ key }}" />
+               <label for="widgettype_{{ key }}_{{ rand }}"
+                      {% if w_displayed %}style="display: inline-block;"{% endif %}>
+                  <div>{{ current['label'] }}</div>
+                  <img src="{{ current['image'] }}" />
+               </label>
+         {% endfor %}
+      </div>
+   {% endset %}
+
+   {% set displayed = edit %}
+   <div class="widgettype_field" {% if not displayed %}style="display: none;"{% endif %}>
+      {{ fields.field(
+         '',
+         widgets_list,
+         __('Widget'),
+         field_options
+      ) }}
+   </div>
+
+   {# display checkbox to use gradient palette or not #}
+   {% set gradient_displayed = edit and widget_def['gradient']|default(false) %}
+   <div class="gradient_field" {% if not gradient_displayed %}style="display: none;"{% endif %}>
+      {{ fields.checkboxField(
+         'use_gradient',
+         use_gradient,
+         __('Use gradient palette'),
+         field_options
+      ) }}
+   </div>
+
+   {# display checkbox to use point label or not #}
+   {% set point_labels_displayed = edit and widget_def['pointlbl']|default(false) %}
+   <div class="pointlbl_field" {% if not point_labels_displayed %}style="display: none;"{% endif %}>
+      {{ fields.checkboxField(
+         'point_labels',
+         point_labels,
+         __('Display value labels on points/bars'),
+         field_options
+      ) }}
+   </div>
+
+   {# show limit #}
+   {% set limit_displayed = edit and widget_def['limit']|default(false) %}
+   <div class="limit_field" {% if not limit_displayed %}style="display: none;"{% endif %}>
+      {{ fields.numberField(
+         'limit',
+         limit,
+         __('Limit number of data'),
+         field_options
+      ) }}
+   </div>
+
+   <div class="modal-footer">
+      <button type="submit" class="btn btn-primary {{ edit ? 'edit-widget' : 'add-widget' }}">
+         {% if edit %}
+            <i class="far fa-save"></i>
+            <span>{{ _x('button', 'Update') }}</span>
+         {% else %}
+            <i class="fas fa-plus"></i>
+            <span>{{ _x('button', 'Add') }}</span>
+         {% endif %}
+      </button>
+   </div>
+
+</form>

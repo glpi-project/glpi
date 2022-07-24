@@ -1,0 +1,146 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set searchform_id = data['searchform_id']|default('search_' ~ rand) %}
+
+<div class="table-responsive-lg">
+   <table class="search-results table card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "table-striped" }}"
+          id="{{ searchform_id }}">
+      <thead>
+         <tr {% if count == 0 %}style="display: none;"{% endif %}>
+            {% if showmassiveactions %}
+            <th style="width: 30px;">
+               <div>
+                  <input class="form-check-input" type="checkbox" id="checkall_{{ rand }}"
+                        value="" aria-label="{{ __('Check all as') }}"
+                        onclick="checkAsCheckboxes(this, '{{ searchform_id }}');" />
+               </div>
+            </th>
+            {% endif %}
+
+            {% set sorts = data['search']['sort'] %}
+
+            {% for col in data['data']['cols'] %}
+               {# construct header link (for sorting) #}
+               {% set linkto = '' %}
+               {% set so_no_sort = col['searchopt']['nosort'] ?? false %}
+               {% set meta = col['meta'] ?? false %}
+               {% set sort_order = 'nosort' %}
+               {% set sort_num = '' %}
+               {% set can_sort = not meta and not no_sort and not so_no_sort %}
+               {% if can_sort %}
+                  {% for sort_opt in sorts %}
+                     {% if sort_opt == col['id'] %}
+                        {% set sort_order = data['search']['order'][loop.index0]|default('ASC') %}
+                        {% set sort_num = loop.index %}
+                     {% endif %}
+                  {% endfor %}
+               {% endif %}
+
+               {% set col_name = col['name'] %}
+               {# prefix by group name (corresponding to optgroup in dropdown) if exists #}
+               {% if col['groupname'] is defined %}
+                  {% set groupname = (col['groupname']['name'] ?? col['groupname']) %}
+                  {% set col_name = __('%1$s - %2$s')|format(groupname, col['name']) %}
+               {% endif %}
+
+               {# Not main itemtype, prefix col_name by secondary itemtype #}
+               {% if not itemtype == col['itemtype'] %}
+                  {% set col_name = __('%1$s - %2$s')|format(col['itemtype']|itemtype_name, col_name) %}
+               {% endif %}
+
+               <th data-searchopt-id="{{ col['id'] }}" {% if not can_sort %}data-nosort="true"{% endif %} data-sort-order="{{ sort_order }}"
+                  {% if sort_num is not empty %}data-sort-num="{{ sort_num - 1 }}"{% endif %}>
+                  {% set sort_icon = sort_order == 'ASC' ? 'fas fa-sort-up' : (sort_order == 'DESC' ? 'fas fa-sort-down' : '') %}
+                  {{ col_name }}
+                  {% if can_sort %}
+                     <span class="sort-indicator"><i class="{{ sort_icon }}"></i><span class="sort-num">{{ sorts|length > 1 ? sort_num : '' }}</span></span>
+                  {% endif %}
+               </th>
+            {% endfor %}
+
+            {# display itemtype in AllAssets #}
+            {% if union_search_type[itemtype] is defined %}
+               <th>
+                  {{ __('Item type') }}
+               </th>
+            {% endif %}
+         </tr>
+      </thead>
+      <tbody>
+         {% if count == 0 %}
+            <tr>
+               <td colspan="{{ data['data']['cols']|length }}">
+                  <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">
+                     {{ __('No item found') }}
+                  </div>
+               </td>
+            </tr>
+         {% else %}
+            {% for rowkey, row in data['data']['rows'] %}
+               <tr>
+                  {% if showmassiveactions %}
+                  <td>
+                     <div>
+                        {# disable massiveaction checkbox for some specific cases #}
+                        {% if itemtype == 'Entity' and not has_access_to_entity(row['id']) %}
+                        {% elseif itemtype == 'User' and not can_view_all_entities() and not has_access_to_user_entities(row['id']) %}
+                        {% elseif item is instanceof('CommonDBTM') and item.maybeRecursive() and not has_access_to_entity(row['entities_id'])  %}
+                        {% else %}
+                           {% set checked = session('glpimassiveactionselected')[itemtype][row['id']] ?? false %}
+                           <input class="form-check-input" type="checkbox" data-glpicore-ma-tags="common"
+                              value="1" aria-label="" {% if checked %}checked="checked"{% endif %}
+                              name="item[{{ row['TYPE'] ?? itemtype }}][{{ row['id'] }}]" />
+                        {% endif %}
+                     </div>
+                  </td>
+                  {% endif %}
+
+                  {% for col in data['data']['cols'] %}
+                     {% set colkey = col['itemtype'] ~ '_' ~ col['id'] %}
+                     {# showItem function returns "<td ...>...</td>" #}
+                     {{ showItem(0, row[colkey]['displayname'], 0, 0, call('Search::displayConfigItem', [itemtype, col['id'], row]))|raw }}
+                  {% endfor %}
+
+                  {# display itemtype in AllAssets #}
+                  {% if union_search_type[itemtype] is defined %}
+                     <td>
+                        {{ row['TYPE']|itemtype_name }}
+                     </td>
+                  {% endif %}
+               </tr>
+            {% endfor %}
+         {% endif %}
+      </tbody>
+   </table>
+</div>

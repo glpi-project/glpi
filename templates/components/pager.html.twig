@@ -1,0 +1,132 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if additional_params is not defined %}
+    {% set additional_params = "" %}
+{% else %}
+    {% if additional_params|length > 0 and not (additional_params starts with '&') %}
+        {% set additional_params = "&" ~ additional_params %}
+    {% endif %}
+{% endif %}
+
+{% set href = href ~ "&start=%start%" ~ additional_params %}
+{% if is_tab is defined and is_tab == true %}
+   {% set href = "javascript:reloadTab('start=%start%" ~ additional_params ~ "');" %}
+{% endif %}
+{% if limit is not defined %}
+    {% set limit = user_pref('list_limit') %}
+{% endif %}
+
+{% set forward = start + limit %}
+{% set end = count - limit %}
+{% set current_start = start + 1 %}
+{% set current_end = current_start + limit - 1 %}
+{% if current_end > count %}
+    {% set current_end = count %}
+{% endif %}
+
+{% set back = start - limit %}
+{% if current_start - list_limit <= 0 %}
+   {% set back = 0 %}
+{% endif %}
+
+{% set nb_pages = (count / limit)|round(0, 'ceil') %}
+{% set current_page = ((current_start - 1) / limit)|round(0, 'ceil') + 1 %}
+
+{# limit the number of adjacents links displayed #}
+{% set adjacents = 2 %}
+{% set skip_adjacents = false %}
+
+<div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-between mb-2 search-pager">
+    {% set limitdropdown = include('components/dropdown/limit.html.twig', {
+        'no_onchange': fluid_search|default(false),
+        'select_class': 'search-limit-dropdown',
+    }) %}
+    <span class="search-limit d-none d-md-block">
+        {{ __('%s rows / page')|format(limitdropdown)|raw }}
+    </span>
+    <span class="search-limit d-block d-md-none">
+        {{ limitdropdown|raw }}
+    </span>
+    <p class="m-0 text-muted d-none d-md-block page-infos">
+        {{ __('Showing %s to %s of %s rows')|format(current_start, current_end, count) }}
+    </p>
+    <p class="m-0 text-muted d-block d-md-none text-nowrap ms-2 page-infos">
+        {{ __('%s-%s/%s')|format(current_start, current_end, count) }}
+    </p>
+
+    <ul class="pagination m-0 mt-sm-2 mt-md-0">
+        {% if nb_pages > 1 %}
+            {% set is_first_page = start == 0 %}
+            {% set is_last_page = forward >= count %}
+
+            <li class="page-item {% if is_first_page %}disabled{% endif %}">
+                <a class="page-link page-link-start" href="{{ href|replace({'%start%': 0}) }}" title="{{ __('Start') }}" data-start="0" {% if is_first_page %}aria-disabled="true"{% endif %}>
+                    <i class="ti ti-chevrons-left"></i>
+                </a>
+            </li>
+            <li class="page-item {% if is_first_page %}disabled{% endif %}">
+                <a class="page-link page-link-prev" href="{{ href|replace({'%start%': back}) }}" title="{{ __('Previous') }}" data-start="{{ back }}" {% if is_first_page %}aria-disabled="true"{% endif %}>
+                    <i class="ti ti-chevron-left"></i>
+                </a>
+            </li>
+            {% for page in range(1, nb_pages) %}
+                {% if current_page - adjacents <= page and current_page + adjacents >= page %}
+                    {% set page_start = (page - 1) * limit %}
+                    <li class="d-none d-sm-block page-item {% if page == current_page %}active selected{% endif %}">
+                    <a class="page-link page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
+                    </li>
+                    {% if current_page + adjacents == page %}
+                    {% set skip_adjacents = false %}
+                    {% endif %}
+                {% elseif skip_adjacents == false %}
+                    {% set skip_adjacents = true %}
+                    <li class="d-none d-sm-block page-item disabled">
+                    <a class="page-link" href="#" aria-disabled="true">...</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            <li class="page-item {% if is_last_page %}disabled{% endif %}">
+                <a class="page-link page-link-next" href="{{ href|replace({'%start%': forward}) }}" title="{{ __('Next') }}" data-start="{{ forward }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
+                    <i class="ti ti-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item {% if is_last_page %}disabled{% endif %}">
+                <a class="page-link page-link-last" href="{{ href|replace({'%start%': end}) }}" title="{{ __('End') }}" data-start="{{ end }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
+                    <i class="ti ti-chevrons-right"></i>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>

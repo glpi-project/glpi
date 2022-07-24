@@ -1,0 +1,253 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+@if $is-dark {
+    $picker-text-color: $light;
+    $picker-bg: $dark-mode-darken;
+} @else {
+    $picker-text-color: $dark;
+    $picker-bg: $card-bg;
+}
+
+$picker-color-accent: rgba($link-color, 0.5) !default;
+$date-hover-bg: rgba($picker-color-accent, 0.4);
+$date-selection-bg: rgba($picker-color-accent, 0.3);
+$date-selection-fg: $picker-text-color;
+$picker-border-color: $card-border-color;
+$picker-shadow-color: rgba($picker-text-color, 0.04);
+$picker-text-faded-color: rgba($picker-text-color, 0.3);
+
+/* stylelint-disable property-no-vendor-prefix */
+body {
+    .flatpickr-calendar {
+        background: $picker-bg;
+        -webkit-box-shadow: 1px 0 0 $picker-shadow-color, -1px 0 0 $picker-shadow-color, 0 1px 0 $picker-shadow-color, 0 -1px 0 $picker-shadow-color, 0 3px 13px $picker-shadow-color;
+        box-shadow: 1px 0 0 $picker-shadow-color, -1px 0 0 $picker-shadow-color, 0 1px 0 $picker-shadow-color, 0 -1px 0 $picker-shadow-color, 0 3px 13px $picker-shadow-color;
+    }
+
+    .flatpickr-calendar.multiMonth .flatpickr-days .dayContainer:nth-child(n+2) .flatpickr-day.inRange:nth-child(7n+1) {
+        -webkit-box-shadow: -2px 0 0 $picker-shadow-color, 5px 0 0 $picker-shadow-color;
+        box-shadow: -2px 0 0 $picker-shadow-color, 5px 0 0 $picker-shadow-color;
+    }
+
+    .flatpickr-calendar.hasTime .flatpickr-time {
+        border-top: 1px solid $picker-border-color;
+    }
+
+    .flatpickr-calendar.arrowTop::before {
+        border-bottom-color: $picker-border-color;
+    }
+
+    .flatpickr-calendar.arrowTop::after {
+        border-bottom-color: $picker-bg;
+    }
+
+    .flatpickr-calendar.arrowBottom::before {
+        border-top-color: $picker-border-color;
+    }
+
+    .flatpickr-calendar.arrowBottom::after {
+        border-top-color: $picker-bg;
+    }
+
+    .flatpickr-months .flatpickr-month {
+        background: $picker-bg;
+        color: $picker-text-color;
+        fill: $picker-text-color;
+    }
+
+    .flatpickr-months .flatpickr-prev-month,
+    .flatpickr-months .flatpickr-next-month {
+        color: $picker-text-color;
+        fill: $picker-text-color;
+    }
+
+    .flatpickr-months .flatpickr-prev-month:hover,
+    .flatpickr-months .flatpickr-next-month:hover {
+        color: $picker-text-color;
+    }
+
+    .flatpickr-months .flatpickr-prev-month:hover svg,
+    .flatpickr-months .flatpickr-next-month:hover svg {
+        fill: $picker-color-accent;
+    }
+
+    .numInputWrapper:hover {
+        background: transparent;
+    }
+
+    .flatpickr-current-month span.cur-month:hover {
+        background: transparent;
+    }
+
+    .flatpickr-current-month .numInputWrapper span.arrowUp::after {
+        border-bottom-color: $picker-text-color;
+    }
+
+    .flatpickr-current-month .numInputWrapper span.arrowDown::after {
+        border-top-color: $picker-text-color;
+    }
+
+    .flatpickr-current-month .flatpickr-monthDropdown-months {
+        background: $picker-bg;
+    }
+
+    .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
+        background: transparent;
+    }
+
+    .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
+        background-color: $picker-bg;
+    }
+
+    span.flatpickr-weekday {
+        background: $picker-bg;
+        color: $picker-text-color;
+    }
+
+    .dayContainer + .dayContainer {
+        -webkit-box-shadow: -1px 0 0 $picker-shadow-color;
+        box-shadow: -1px 0 0 $picker-shadow-color;
+    }
+
+    .flatpickr-day {
+        color: $picker-text-color;
+    }
+
+    .flatpickr-day.inRange,
+    .flatpickr-day.prevMonthDay.inRange,
+    .flatpickr-day.nextMonthDay.inRange,
+    .flatpickr-day.today.inRange,
+    .flatpickr-day.prevMonthDay.today.inRange,
+    .flatpickr-day.nextMonthDay.today.inRange,
+    .flatpickr-day:hover,
+    .flatpickr-day.prevMonthDay:hover,
+    .flatpickr-day.nextMonthDay:hover,
+    .flatpickr-day:focus,
+    .flatpickr-day.prevMonthDay:focus,
+    .flatpickr-day.nextMonthDay:focus {
+        background: $date-hover-bg;
+        border-color: $date-hover-bg;
+    }
+
+    .flatpickr-day.today {
+        border-color: $picker-text-color;
+    }
+
+    .flatpickr-day.today:hover,
+    .flatpickr-day.today:focus {
+        border-color: $picker-text-color;
+        background: $picker-text-color;
+        color: $picker-bg;
+    }
+
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange,
+    .flatpickr-day.selected.inRange,
+    .flatpickr-day.startRange.inRange,
+    .flatpickr-day.endRange.inRange,
+    .flatpickr-day.selected:focus,
+    .flatpickr-day.startRange:focus,
+    .flatpickr-day.endRange:focus,
+    .flatpickr-day.selected:hover,
+    .flatpickr-day.startRange:hover,
+    .flatpickr-day.endRange:hover,
+    .flatpickr-day.selected.prevMonthDay,
+    .flatpickr-day.startRange.prevMonthDay,
+    .flatpickr-day.endRange.prevMonthDay,
+    .flatpickr-day.selected.nextMonthDay,
+    .flatpickr-day.startRange.nextMonthDay,
+    .flatpickr-day.endRange.nextMonthDay {
+        background: $date-selection-bg;
+        color: $date-selection-fg;
+        border-color: $date-selection-bg;
+    }
+
+    .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n+1)),
+    .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n+1)),
+    .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n+1)) {
+        -webkit-box-shadow: -10px 0 0 $date-selection-bg;
+        box-shadow: -10px 0 0 $date-selection-bg;
+    }
+
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover,
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay,
+    .flatpickr-day.notAllowed,
+    .flatpickr-day.notAllowed.prevMonthDay,
+    .flatpickr-day.notAllowed.nextMonthDay {
+        color: $picker-text-faded-color;
+    }
+
+    .flatpickr-day.inRange {
+        -webkit-box-shadow: -5px 0 0 $date-hover-bg, 5px 0 0 $date-hover-bg;
+        box-shadow: -5px 0 0 $date-hover-bg, 5px 0 0 $date-hover-bg;
+    }
+
+    .flatpickr-day.week.selected {
+        -webkit-box-shadow: -5px 0 0 $date-selection-bg, 5px 0 0 $date-selection-bg;
+        box-shadow: -5px 0 0 $date-selection-bg, 5px 0 0 $date-selection-bg;
+    }
+
+    .flatpickr-weekwrapper .flatpickr-weeks {
+        -webkit-box-shadow: 1px 0 0 $picker-shadow-color;
+        box-shadow: 1px 0 0 $picker-shadow-color;
+    }
+
+    .flatpickr-time .numInputWrapper span.arrowUp::after {
+        border-bottom-color: $picker-text-color;
+    }
+
+    .flatpickr-time .numInputWrapper span.arrowDown::after {
+        border-top-color: $picker-text-color;
+    }
+
+    .flatpickr-time input {
+        color: $picker-text-color;
+    }
+
+    .flatpickr-time .flatpickr-time-separator,
+    .flatpickr-time .flatpickr-am-pm {
+        color: $picker-text-color;
+    }
+
+    .flatpickr-time input:hover,
+    .flatpickr-time .flatpickr-am-pm:hover,
+    .flatpickr-time input:focus,
+    .flatpickr-time .flatpickr-am-pm:focus {
+        background: transparent;
+    }
+}
+/* stylelint-enable property-no-vendor-prefix */

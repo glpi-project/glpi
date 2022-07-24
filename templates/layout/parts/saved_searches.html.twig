@@ -1,0 +1,227 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set global_pinned = user_pref('savedsearches_pinned', true) %}
+{% set pinned = (global_pinned[itemtype] ?? '0') == '1' %}
+{% set clean_itemtype = itemtype|lower|u.replace('\\', '_') %}
+{% set rand = random() %}
+
+<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? 'pinned' : 'd-none' }} saved-searches-panel {{ clean_itemtype }}"
+     id="saved-searches-panel-{{ rand }}">
+   <div class="card-header d-flex flex-nowrap pe-0 align-items-center text-muted">
+      <i class="ti ti-star"></i>&nbsp;
+      <span class="text-truncate">
+         {{ _n('Saved search', 'Saved searches', 2) }}
+      </span>
+
+      <li class="ms-auto btn-list me-1 flex-nowrap">
+         <a href="{{ path('front/savedsearch.php') }}" class="btn btn-sm btn-icon btn-ghost-secondary"
+            data-bs-toggle="tooltip" data-bs-placement="bottom"
+            title="{{ __('Manage all saved searches') }}">
+            <i class="ti ti-settings"></i>
+         </a>
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel"
+                 data-bs-toggle="tooltip" data-bs-placement="bottom"
+                 title="{{ __('Pin this panel for the current page') }}">
+            <i class="ti ti-pinned"></i>
+         </button>
+         <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel"
+                 data-bs-toggle="tooltip" data-bs-placement="bottom"
+                 title="{{ __('Close the panel') }}">
+            <i class="ti ti-x"></i>
+         </button>
+      </li>
+   </div>
+
+   <div class="saved-searches-tabs">
+      <ul class="nav nav-tabs border-0" data-bs-toggle="tabs">
+         <li class="nav-item">
+            <a class="nav-link active" data-bs-target="#itemtype-filtered" data-bs-toggle="tab"
+               href="{{ path('ajax/savedsearch.php?action=display_mine&itemtype=' ~ itemtype) }}">
+               {{ itemtype|itemtype_name }}
+            </a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" data-bs-target="#all-savedsearches" data-bs-toggle="tab"
+               href="{{ path('ajax/savedsearch.php?action=display_mine&inverse=true&itemtype=' ~ itemtype) }}">
+               {{ __('Others') }}
+            </a>
+         </li>
+      </ul>
+      <div class="saved-searches-panel-content tab-content">
+         <div class="list-group list-group-flush list-group-hoverable saved-searches-panel-lists tab-pane show active" id="itemtype-filtered">
+            <i class="fas fa-spinner fa-spin m-3"></i>
+         </div>
+
+         <div class="list-group list-group-flush list-group-hoverable saved-searches-panel-lists tab-pane" id="all-savedsearches">
+            <i class="fas fa-spinner fa-spin m-3"></i>
+         </div>
+      </div>
+   </div>
+
+   <div class="card-footer">
+      <div class="input-group input-group-flat filter_savedsearch">
+         <input type="text" class="form-control form-control-sm"
+                placeholder="{{ __('Filter list') }}" />
+         <span class="input-group-text">
+            <a href="#" class="link-secondary clear-text" role="button" title="Clear search">
+               <i class="ti ti-x fa-xs"></i>
+            </a>
+         </span>
+      </div>
+   </div>
+</div>
+
+<script type="text/javascript">
+$(function() {
+   // init tabs
+   $('#saved-searches-panel-{{ rand }} a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+      e.preventDefault();
+
+      var tablink = $(this);
+      var url     = tablink.attr('href');
+      var target  = tablink.attr('data-bs-target');
+      var index   = tablink.closest('.nav-item').index();
+
+      $.get(url, function(data) {
+         $(target).html(data);
+
+         displayAjaxMessageAfterRedirect();
+      });
+   });
+   // load initial tab
+   $('#saved-searches-panel-{{ rand }} a[data-bs-target]:first').trigger('shown.bs.tab');
+
+   // toggle panel
+   $(document).on('click', '.show-saved-searches', function() {
+      var clean_itemtype = $(this).data('itemtype').toLowerCase().replace('\\', '_');
+      $(".saved-searches-panel." + clean_itemtype)
+         .toggleClass('d-none')
+         .toggleClass('responsive-toggle');
+   });
+
+   // close panel
+   $(document).on('click', '.close-saved-searches-panel', function() {
+      $(this).closest(".saved-searches-panel")
+         .addClass('d-none')
+         .toggleClass('responsive-toggle');
+   });
+
+   // set default to a list
+   $(document).on('click', '.mark-default', function() {
+      var line = $(this).closest('.search-line');
+      var list = line.closest('.saved-searches-panel-lists');
+      var id   = line.data('id');
+      var set  = $(this).hasClass('fas') ? 0 : 1;
+
+      list.find(".search-line .mark-default")
+          .removeClass('fas')
+          .addClass('far')
+          .parent()
+            .addClass('list-item-actions');
+
+      if (set) {
+         $(this)
+            .removeClass('far')
+            .addClass('fas')
+            .parent()
+               .removeClass('list-item-actions');
+      }
+
+      $.ajax({
+         url: CFG_GLPI.root_doc + '/ajax/savedsearch.php',
+         type: 'GET',
+         data: {
+            mark_default: set,
+            id: id,
+         }
+      });
+   });
+
+   // pin panel on the left
+   $(document).on('click', '.pin-saved-searches-panel', function(e) {
+      e.preventDefault();
+      var pin_button = $(this);
+
+      $.ajax({
+         url: CFG_GLPI.root_doc + '/ajax/pin_savedsearches.php',
+         type: 'POST',
+         data: {
+            itemtype: '{{ itemtype }}'
+         },
+         success: function(data) {
+            if (data.success === true) {
+               pin_button.closest(".saved-searches-panel").toggleClass('pinned');
+            }
+         }
+      });
+   });
+
+   // filter list
+   $(document).on('keyup', '.filter_savedsearch input', function(key) {
+      var _this = $(this);
+      typewatch(function () {
+         var searchtext = _this.val() + '';
+         var searchparts = searchtext.toLowerCase().split(/\s+/);
+         var _rows = _this
+            .closest('.card-footer')
+            .siblings('.saved-searches-tabs')
+            .find('.saved-searches-panel-content .savedsearches-item');
+         _rows.each(function() {
+            var _row = $(this);
+            var rowtext = _row.text().toLowerCase();
+
+            var show = true;
+
+            for (var i = 0; i < searchparts.length; i++) {
+               if (rowtext.indexOf(searchparts[i]) == -1) {
+                  show = false;
+                  break;
+               }
+            }
+
+            if (show) {
+               _row.toggleClass('d-none', false);
+            } else {
+               _row.toggleClass('d-none', true);
+            }
+         });
+      }, 250);
+   });
+
+   // clear list
+   $(document).on('click', '.filter_savedsearch .clear-text', function() {
+      $(this).closest('.filter_savedsearch').find('input').val("").trigger('keyup');
+   });
+});
+</script>

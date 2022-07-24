@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,23 +17,24 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 $AJAX_INCLUDE = 1;
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
@@ -39,43 +42,45 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-$mailcollector = new MailCollector;
+/** @global array $_UREQUEST */
+
+$mailcollector = new MailCollector();
 
 if (isset($_REQUEST['action'])) {
-   switch ($_REQUEST['action']) {
-      case "getFoldersList":
-         // Load config if already exists
-         // Necessary if password is not updated
-         if (array_key_exists('id', $_REQUEST)) {
-            $mailcollector->getFromDB($_REQUEST['id']);
-         }
-
-         // Update fields with input values
-         $input = $_REQUEST;
-         if (array_key_exists('passwd', $input)) {
-            // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-            $input['passwd'] = $_UREQUEST['passwd'];
-         }
-         $input['login'] = stripslashes($input['login']);
-
-         if (isset($input["passwd"])) {
-            if (empty($input["passwd"])) {
-               unset($input["passwd"]);
-            } else {
-               $input["passwd"] = Toolbox::sodiumEncrypt($input["passwd"]);
+    switch ($_REQUEST['action']) {
+        case "getFoldersList":
+           // Load config if already exists
+           // Necessary if password is not updated
+            if (array_key_exists('id', $_REQUEST)) {
+                $mailcollector->getFromDB($_REQUEST['id']);
             }
-         }
 
-         if (isset($input['mail_server']) && !empty($input['mail_server'])) {
-            $input["host"] = Toolbox::constructMailServerConfig($input);
-         }
+           // Update fields with input values
+            $input = $_REQUEST;
+            if (array_key_exists('passwd', $input)) {
+               // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+                $input['passwd'] = $_UREQUEST['passwd'];
+            }
+            $input['login'] = stripslashes($input['login']);
 
-         if (!isset($input['errors'])) {
-            $input['errors'] = 0;
-         }
+            if (isset($input["passwd"])) {
+                if (empty($input["passwd"])) {
+                    unset($input["passwd"]);
+                } else {
+                    $input["passwd"] = (new GLPIKey())->encrypt($input["passwd"]);
+                }
+            }
 
-         $mailcollector->fields = array_merge($mailcollector->fields, $input);
-         echo $mailcollector->displayFoldersList($_REQUEST['input_id']);
-         break;
-   }
+            if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+                $input["host"] = Toolbox::constructMailServerConfig($input);
+            }
+
+            if (!isset($input['errors'])) {
+                $input['errors'] = 0;
+            }
+
+            $mailcollector->fields = array_merge($mailcollector->fields, $input);
+            $mailcollector->displayFoldersList($_REQUEST['input_id']);
+            break;
+    }
 }

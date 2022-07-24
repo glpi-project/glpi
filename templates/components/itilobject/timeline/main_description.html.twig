@@ -1,0 +1,96 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set users_id = (item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : 0) %}
+{% set entry_rand = random() %}
+
+<div class="timeline-item mb-3 ITILContent"
+     data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
+   <div class="row">
+      <div class="col-auto d-flex flex-column ">
+         {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context = false) }}
+      </div>
+      <div class="col-12 col-sm">
+         <span class="mt-2 timeline-content left card">
+            <div class="card-body">
+               <div class="d-flex timeline-header">
+                  <div class="d-flex creator">
+                     {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
+                        'users_id': users_id,
+                        'date_creation': item.fields['date_creation'],
+                        'date_mod': item.fields['date_mod'],
+                        'users_id_editor': item.fields['users_id_lastupdater'],
+                        'anonym_user': anonym_user,
+                     }, with_context = false) }}
+                  </div>
+
+                  {% if canupdate %}
+                    <div class="dropdown ms-auto timeline-item-buttons">
+                        <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas ti ti-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
+                            <li><a class="dropdown-item edit-timeline-item" href="#">
+                            <i class="fa-fw ti ti-edit"></i>
+                            <span>{{ __('Edit') }}</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                  {% endif %}
+
+                  <button class="btn btn-sm btn-ghost-secondary close-edit-content d-none ms-auto">
+                     <i class="ti ti-x"></i>
+                  </button>
+               </div>
+
+               <div class="read-only-content">
+                  {% if not itiltemplate.isHiddenField('name') %}
+                     <div class="card-title card-header mx-n3 mt-n3">
+                        {{ item.fields['name']|verbatim_value }}
+                     </div>
+                  {% endif %}
+                  {% if not itiltemplate.isHiddenField('content') %}
+                     {{ item.fields['content']|enhanced_html({
+                        'user_mentions': true,
+                        'images_gallery': true
+                     }) }}
+                  {% endif %}
+               </div>
+               <div class="edit-content collapse">
+                  <div class="ajax-content"></div>
+               </div>
+            </div>
+         </span>
+      </div>
+   </div>
+</div>

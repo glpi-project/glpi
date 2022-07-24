@@ -1,0 +1,106 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<input type="hidden" name="_link[tickets_id_1]" value="{{ item.fields['id'] }}" />
+
+{% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
+{% if linked_tickets|length %}
+<div class="card">
+   <div class="list-group list-group-flush list-group-hoverable">
+      {% for id, linked in linked_tickets %}
+      {% set new_ticket = get_item('Ticket', linked['tickets_id']) %}
+      <div class="list-group-item">
+         <div class="row">
+            <div class="col-auto">
+               {{ call('Ticket_Ticket::getLinkName', [
+                  linked['link'],
+                  linked['tickets_id_1'] is defined,
+                  true
+               ])|raw }}
+            </div>
+            <div class="col text-truncate">
+               <a href="{{ 'Ticket'|itemtype_form_path(linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
+                  {{ new_ticket.getStatusIcon(new_ticket.fields['status'])|raw }}
+                  <span title="{{ new_ticket.fields['name']|verbatim_value }}" data-bs-toggle="tooltip">
+                     {{ new_ticket.fields['name']|verbatim_value }}
+                  </span>
+                  ({{ new_ticket.fields['id'] }})
+               </a>
+            </div>
+
+            {% if canupdate %}
+               <div class="col-auto">
+                  <button type="submit"
+                          form="linked_tickets_{{ main_rand }}"
+                          name="id"
+                          value="{{ id }}"
+                          class="btn btn-sm btn-ghost-danger"
+                          title="{{ _x('button', 'Delete permanently') }}"
+                          data-bs-toggle="tooltip">
+                     <i class="fas fa-unlink"></i>
+                  </button>
+               </div>
+            {% endif %}
+         </div>
+      </div>
+      {% endfor %}
+   </div>
+</div>
+{% endif %}
+
+{% if canupdate and not params['template_preview'] %}
+   {% set has_pending_link = params['_link']['tickets_id_2']|length > 0 %}
+   <div class="mt-2">
+      <button class="btn btn-sm btn-ghost-secondary {{ has_pending_link ? 'd-none' : '' }}" type="button"
+               data-bs-toggle="collapse" data-bs-target="#link_ticket_dropdowns"
+               aria-expanded="false" aria-controls="link_ticket_dropdowns" onclick="$(this).hide();">
+         <i class="fas fa-plus"></i>
+         <span>{{ __('Add') }}</span>
+      </button>
+
+      <span class="collapse {{ has_pending_link ? "show" : "" }}" id="link_ticket_dropdowns">
+         {{ ticket_ticket.dropdownLinks(
+            '_link[link]',
+            params['_link']['link'] ?? ''
+         ) }}
+
+         {{ item.dropdown({
+            'name': '_link[tickets_id_2]',
+            'used': [item.fields['id']],
+            'displaywith': ['id'],
+            'display': false,
+            'value': params['_link']['tickets_id_2'] ?? '',
+         })|raw }}
+      </span>
+   </div>
+{% endif %}

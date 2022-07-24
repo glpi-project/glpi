@@ -1,0 +1,66 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<!DOCTYPE html>
+<html lang="{{ lang }}" {% if high_contrast %}data-high-contrast="1"{% endif %}>
+<head>
+   <title>{{ title }} - GLPI</title>
+
+   <meta charset="utf-8" />
+
+   {# prevent IE to turn into compatible mode... #}
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+   {# auto desktop / mobile viewport #}
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+   <meta property="glpi:csrf_token" content="{{ csrf_token(true) }}" />
+
+   {% for css_file in css_files %}
+      <link rel="stylesheet" type="text/css" href="{{ css_path(css_file.path, css_file.options ?? []) }}" />
+   {% endfor %}
+
+   {{ custom_css() }}
+
+   <link rel="shortcut icon" type="images/x-icon" href="{{ asset_path('/pics/favicon.ico') }}" />
+
+   {% for js_file in js_files %}
+      <script type="text/javascript" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
+   {% endfor %}
+
+   {% for js_file in js_modules %}
+      <script type="module" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
+   {% endfor %}
+
+   {{ locales_js() }}
+</head>

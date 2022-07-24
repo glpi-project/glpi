@@ -1,54 +1,101 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
+
+LOG_FILE="./tests/files/_log/migration.log"
+mkdir -p $(dirname "$LOG_FILE")
 
 bin/console glpi:database:configure \
-  --config-dir=./tests --no-interaction --ansi \
-  --reconfigure --db-name=glpitest-9.5.3 --db-host=db --db-user=root --use-utf8mb4 \
-  --log-deprecation-warnings
-
-# Force ROW_FORMAT=DYNAMIC to prevent tests MySQL 5.6 and MariaDB 10.1 databases
-# failure on indexes creation for varchar(255) fields.
-## Result will depend on DB server/version, we just expect that command will not fail.
-bin/console glpi:migration:dynamic_row_format --config-dir=./tests --ansi --no-interaction
+  --config-dir=./tests/config --no-interaction --ansi \
+  --reconfigure --db-name=glpitest-9.5 --db-host=db --db-user=root \
+  --strict-configuration
 
 # Execute update
 ## First run should do the migration (with no warnings).
-## TODO Remove the --force option when schema version will be updated in define.php
-bin/console glpi:database:update --config-dir=./tests --ansi --no-interaction --allow-unstable --force | tee ~/migration.log
-if [[ -n $(grep "Warning\|No migration needed." ~/migration.log) ]];
+bin/console glpi:database:update --config-dir=./tests/config --ansi --no-interaction --allow-unstable | tee $LOG_FILE
+if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:database:update command FAILED" && exit 1;
 fi
 ## Second run should do nothing.
-bin/console glpi:database:update --config-dir=./tests --ansi --no-interaction --allow-unstable | tee ~/migration.log
-if [[ -z $(grep "No migration needed." ~/migration.log) ]];
+bin/console glpi:database:update --config-dir=./tests/config --ansi --no-interaction --allow-unstable | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:database:update command FAILED" && exit 1;
 fi
-## Check DB
-bin/console glpi:database:check --config-dir=./tests --ansi --no-interaction --ignore-utf8mb4-migration
+## Check DB schema integrity (do not check additionnal migrations)
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction
 
 # Execute myisam_to_innodb migration
 ## First run should do nothing.
-bin/console glpi:migration:myisam_to_innodb --config-dir=./tests --ansi --no-interaction | tee ~/migration.log
-if [[ -z $(grep "No migration needed." ~/migration.log) ]];
+bin/console glpi:migration:myisam_to_innodb --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:migration:myisam_to_innodb command FAILED" && exit 1;
 fi
+## Check DB schema integrity (including myisam_to_innodb migration)
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --check-innodb-migration
 
 # Execute timestamps migration
 ## First run should do nothing.
-bin/console glpi:migration:timestamps --config-dir=./tests --ansi --no-interaction | tee ~/migration.log
-if [[ -z $(grep "No migration needed." ~/migration.log) ]];
+bin/console glpi:migration:timestamps --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:migration:timestamps command FAILED" && exit 1;
 fi
+## Check DB schema integrity (including timestamps migration)
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --check-timestamps-migration
+
+# Execute dynamic_row_format migration
+## Result will depend on DB server/version, we just expect that command will not fail.
+bin/console glpi:migration:dynamic_row_format --config-dir=./tests/config --ansi --no-interaction
+## Check DB schema integrity (including dynamic_row_format migration)
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --check-dynamic-row-format-migration
 
 # Execute utf8mb4 migration
 ## First run should do the migration (with no warnings).
-bin/console glpi:migration:utf8mb4 --config-dir=./tests --ansi --no-interaction | tee ~/migration.log
-if [[ -n $(grep "Warning\|No migration needed." ~/migration.log) ]];
+bin/console glpi:migration:utf8mb4 --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:migration:utf8mb4 command FAILED" && exit 1;
 fi
 ## Second run should do nothing.
-bin/console glpi:migration:utf8mb4 --config-dir=./tests --ansi --no-interaction | tee ~/migration.log
-if [[ -z $(grep "No migration needed." ~/migration.log) ]];
+bin/console glpi:migration:utf8mb4 --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console glpi:migration:utf8mb4 command FAILED" && exit 1;
 fi
-# Check DB
-bin/console glpi:database:check --config-dir=./tests --ansi --no-interaction
+## Check DB schema integrity (including utf8mb4 migration)
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --check-utf8mb4-migration
+
+# Execute unsigned keys migration
+## First run should do the migration (with no warnings).
+bin/console glpi:migration:unsigned_keys --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -n $(grep "Warning\|No migration needed." $LOG_FILE) ]];
+  then echo "bin/console glpi:migration:unsigned_keys command FAILED" && exit 1;
+fi
+## Second run should do nothing.
+bin/console glpi:migration:unsigned_keys --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
+  then echo "bin/console glpi:migration:unsigned_keys command FAILED" && exit 1;
+fi
+## Check DB schema integrity (including unsigned keys migration)
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --check-unsigned-keys-migration
+
+# Complete DB check
+bin/console glpi:database:check_schema_integrity \
+  --config-dir=./tests/config --ansi --no-interaction \
+  --check-all-migrations
+tests/bin/test-data-sanitization --ansi --no-interaction
+
+# Check updated data
+bin/console glpi:database:configure \
+  --config-dir=./tests/config --no-interaction --ansi \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root \
+  --strict-configuration
+mkdir -p ./tests/files/_cache
+tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest-9.5 --ansi --no-interaction

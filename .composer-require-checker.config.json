@@ -2,11 +2,11 @@
   "php-core-extensions": [
     "core", "standard",
 
-    "ctype", "dom", "date", "fileinfo", "filter", "iconv", "json", "libxml", "pcre", "reflection", "session", "simplexml", "spl", "xml",
+    "dom", "date", "fileinfo", "filter", "json", "libxml", "pcre", "reflection", "session", "simplexml", "spl", "xml",
 
-    "curl", "gd", "intl", "mbstring", "mysqli", "zlib",
+    "curl", "gd", "intl", "mysqli", "zlib",
 
-    "apcu", "exif", "ldap", "pcntl", "xmlrpc", "zip"
+    "exif", "ldap", "pcntl", "xmlrpc", "zip"
   ],
   "symbol-whitelist": [
     "// PHP symbols",
@@ -18,32 +18,32 @@
     "// Missing constant in Alpine Linux",
     "GLOB_BRACE",
 
+    "// PHP 8.1 symbols",
+    "Ldap\\Connection",
+
     "// GLPI config classes",
     "DB", "DBSlave",
 
     "// GLPI base constants (they are not detected as they are dynamically declared)",
     "GLPI_AJAX_DASHBOARD", "GLPI_ALLOW_IFRAME_IN_RICH_TEXT", "GLPI_CALDAV_IMPORT_STATE", "GLPI_CACHE_DIR",
+    "GLPI_MARKETPLACE_ALLOW_OVERRIDE", "GLPI_MARKETPLACE_MANUAL_DOWNLOADS",
     "GLPI_CRON_DIR", "GLPI_CSRF_EXPIRES", "GLPI_CSRF_MAX_TOKENS", "GLPI_DEMO_MODE",
-    "GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE", "GLPI_DOC_DIR", "GLPI_DUMP_DIR", "GLPI_FORCE_EMPTY_SQL_MODE",
+    "GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE", "GLPI_DOC_DIR", "GLPI_DUMP_DIR",
     "GLPI_GRAPH_DIR", "GLPI_IDOR_EXPIRES", "GLPI_INSTALL_MODE", "GLPI_INVENTORY_DIR", "GLPI_LOCAL_I18N_DIR",
     "GLPI_LOCK_DIR", "GLPI_LOG_DIR", "GLPI_MARKETPLACE_DIR", "GLPI_MARKETPLACE_PLUGINS_API_URI",
     "GLPI_MARKETPLACE_PRERELEASES", "GLPI_NETWORK_REGISTRATION_API_URL", "GLPI_NETWORK_MAIL",
     "GLPI_NETWORK_SERVICES", "GLPI_PICTURE_DIR", "GLPI_PLUGIN_DOC_DIR", "GLPI_RSS_DIR", "GLPI_SESSION_DIR",
     "GLPI_TELEMETRY_URI", "GLPI_TMP_DIR", "GLPI_UPLOAD_DIR", "GLPI_USE_CSRF_CHECK", "GLPI_USE_IDOR_CHECK",
-    "GLPI_USER_AGENT_EXTRA_COMMENTS",
+    "GLPI_USER_AGENT_EXTRA_COMMENTS", "GLPI_VAR_DIR", "GLPI_CENTRAL_WARNINGS",
 
     "// GLPI optionnal constants",
     "GLPI_FORCE_MAIL", "GLPI_LOG_LVL",
 
     "// GLPI test suite specific functions",
     "GLPI_SQL_DEBUG",
-    "GlpitestPHPerror", "GlpitestPHPnotice", "GlpitestPHPwarning", "GlpitestSQLError",
 
     "// apache function",
     "getallheaders",
-
-    "// LDAP extension function removed in PHP 8.0",
-    "ldap_control_paged_result", "ldap_control_paged_result_response",
 
     "// OPCache extension (not installed on testing env)",
     "opcache_get_status", "opcache_invalidate", "opcache_reset",
@@ -58,10 +58,17 @@
     "CAS_VERSION_2_0", "phpCAS",
 
     "// paragonie/sodium_compat library",
-    "sodium_crypto_aead_chacha20poly1305_ietf_keygen", "SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES", "sodium_crypto_aead_xchacha20poly1305_ietf_encrypt", "sodium_crypto_aead_xchacha20poly1305_ietf_decrypt",
+    "SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES", "SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES", "sodium_crypto_aead_xchacha20poly1305_ietf_decrypt", "sodium_crypto_aead_xchacha20poly1305_ietf_encrypt", "sodium_crypto_aead_chacha20poly1305_ietf_keygen",
 
     "//xhprof",
-    "XHPROF_FLAGS_NO_BUILTINS", "XHPROF_FLAGS_CPU", "XHPROF_FLAGS_MEMORY"
+    "XHPROF_FLAGS_NO_BUILTINS", "XHPROF_FLAGS_CPU", "XHPROF_FLAGS_MEMORY",
+
+    "//brotli compression",
+    "brotli_uncompress",
+    "brotli_compress",
+
+    "// composer autoloader",
+    "Composer\\Autoload\\ClassLoader"
   ],
   "scan-files": [
     "ajax/**/*.php",
@@ -69,6 +76,7 @@
     "front/**/*.php",
     "inc/**/*.php",
     "install/**/*.php",
+    "src/**/*.php",
     "/*.php"
   ]
 }

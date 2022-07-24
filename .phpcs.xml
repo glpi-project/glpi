@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ruleset>
+    <file>.</file>
+    <exclude-pattern>/.git/</exclude-pattern>
+    <exclude-pattern type="relative">^config/</exclude-pattern>
+    <exclude-pattern type="relative">^files/</exclude-pattern>
+    <exclude-pattern type="relative">^lib/</exclude-pattern>
+    <exclude-pattern type="relative">^marketplace/</exclude-pattern>
+    <exclude-pattern type="relative">^node_modules/</exclude-pattern>
+    <exclude-pattern type="relative">^plugins/</exclude-pattern>
+    <exclude-pattern type="relative">^tests/config/</exclude-pattern>
+    <exclude-pattern type="relative">^tests/files/</exclude-pattern>
+    <exclude-pattern type="relative">^vendor/</exclude-pattern>
+
+    <arg name="warning-severity" value="0" />
+    <arg value="p" />
+    <ini name="memory_limit" value="512M" />
+    <arg name="colors" />
+    <arg name="extensions" value="php" />
+
+    <rule ref="PSR12">
+       <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
+       <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
+       <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
+    </rule>
+
+    <rule ref="Generic.Arrays.ArrayIndent"></rule>
+</ruleset>

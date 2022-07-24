@@ -1,0 +1,79 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/modals_macros.html.twig' as modals %}
+
+{% if rights is not defined %}
+   {% set rights = {
+      'create_item': false,
+      'delete_item': false,
+      'create_column': false,
+      'modify_view': false,
+      'order_card': false,
+      'create_card_limited_columns': [0],
+   } %}
+{% endif %}
+
+<div id="kanban" class="kanban"></div>
+{{ modals.modal('', '', {
+   'id': 'kanban-modal'
+}) }}
+
+{% for supported_itemtype, info in supported_itemtypes %}
+   <template id="kanban-teammember-item-dropdown-{{ supported_itemtype }}">
+      {{ fields.dropdownArrayField('role', null, info.team_roles, __('Role')) }}
+      {{ fields.dropdownItemsFromItemtypes('add-teammember', '', {
+         'itemtypes': info.team_itemtypes
+      }) }}
+   </template>
+{% endfor %}
+
+<script>
+   $(function(){
+      // Create Kanban
+      var kanban = new GLPIKanban({
+         element: "#{{ kanban_id|default('kanban') }}",
+         rights: {{ rights|json_encode|raw }},
+         supported_itemtypes: {{ supported_itemtypes|json_encode|raw }},
+         max_team_images: 3,
+         column_field: {{ column_field|json_encode|raw }},
+         background_refresh_interval: {{ background_refresh_interval|default(session('glpirefresh_views')) }},
+         item: {{ item|json_encode|raw }},
+         supported_filters: {{ supported_filters|json_encode|raw }},
+         display_initials: {{ entity_config('display_users_initials', session('glpiactive_entity')) }},
+      });
+      // Create kanban elements and add data
+      kanban.init();
+   });
+</script>

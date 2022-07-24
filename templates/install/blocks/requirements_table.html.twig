@@ -1,0 +1,77 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<table class="table tab_check">
+   <thead>
+      <tr>
+         <th>{{ __('Test done') }}</th>
+         <th>{{ __('Results') }}</th>
+      </tr>
+   </thead>
+   <tbody>
+      {% for requirement in requirements %}
+         {% if not requirement.isOutOfContext() %}
+            <tr class="tab_bg_1">
+               <td class="text-start">
+                  {% if requirement.isOptional() %}
+                     <span class="badge bg-secondary">{{ __('Suggested') }}</span>
+                  {% else %}
+                     <span class="badge bg-warning">{{ __('Required') }}</span>
+                  {% endif %}
+                  <strong>{{ requirement.getTitle() }}</strong>
+                  {% set description = requirement.getDescription() %}
+                  {% if description is not empty %}
+                      <br />
+                      <em>{{ requirement.getDescription() }}</em>
+                  {% endif %}
+                  {% if not requirement.isValidated() %}
+                      {% for message in requirement.getValidationMessages() %}
+                          <br />
+                          <strong><em class="{{ not requirement.isOptional() ? 'red' : 'missing' }}">{{ message }}</em></strong>
+                      {% endfor %}
+                  {% endif %}
+               </td>
+               <td class="{{ requirement.isMissing() and not requirement.isOptional() ? 'red' : '' }}">
+                  <span data-bs-toggle="popover"
+                        data-bs-placement="right"
+                        data-bs-html="true"
+                        data-bs-custom-class="validation-messages"
+                        data-bs-content="{{ requirement.getValidationMessages()|join('<br />') }}">
+                     <i class="{{ requirement.isValidated() ? 'fas fa-check' : (requirement.isOptional() ? 'fas fa-exclamation-triangle' : 'ti ti-x') }}"></i>
+                  </span>
+               </td>
+            </tr>
+         {% endif %}
+      {% endfor %}
+   </tbody>
+</table>

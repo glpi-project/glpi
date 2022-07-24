@@ -1,0 +1,75 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro link_or_text(value, anchor_class = '') %}
+   {% if value.link is defined %}
+      <a class="{{ anchor_class }}" href="{{ value.link }}">
+   {% endif %}
+         <span>
+            {% if value.icon is defined %}
+               <i class="{{ value.icon }}"></i>
+            {% endif %}
+            {{ value.text }}
+         </span>
+         {% if value.count is defined %}
+            <span class="badge bg-secondary">{{ value.count }}</span>
+         {% endif %}
+   {% if value.link is defined %}
+      </a>
+   {% endif %}
+{% endmacro %}
+
+<div class="card">
+   <div class="card-body">
+      <div class="card-title d-flex justify-content-between">
+         {{ _self.link_or_text(title) }}
+
+         {% if title.button is defined %}
+            {{ _self.link_or_text(title.button, 'btn btn-sm btn-outline-secondary') }}
+         {% endif %}
+      </div>
+
+      {% if subtitle is defined %}
+         <div class="card-subtitle">
+            {{ _self.link_or_text(subtitle) }}
+         </div>
+      {% endif %}
+   </div>
+
+
+   <ul class="list-group list-group-flush">
+      {% for item in items %}
+         {{ _self.link_or_text(item, 'list-group-item list-group-item-action d-flex justify-content-between align-items-center') }}
+      {% endfor %}
+   </ul>
+</div>

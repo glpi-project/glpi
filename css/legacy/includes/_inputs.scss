@@ -1,0 +1,117 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+ textarea:not(.form-control), input:not(.submit):not(.form-control):not([type=submit]):not([type=color]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):not(.tox-textfield) {
+   color: $body-color;
+   background-color: $input-bg;
+   background-clip: padding-box;
+   border: $input-border-width solid $input-border-color;
+   border-radius: $input-border-radius;
+   padding: $input-btn-padding-y $input-btn-padding-x;
+
+   &:focus {
+      color: $input-focus-color;
+      background-color: $input-focus-bg;
+      border-color: $input-focus-border-color;
+   }
+
+   &:required:not(:valid) {
+      border: 1px rgba(255, 0, 0, 0.6) solid !important;
+      border-left-width: 3px !important;
+   }
+}
+
+select:not(.form-select) {
+   font-size: $form-select-font-size;
+   color: $form-select-color;
+   background-color: $form-select-bg;
+   background-image: escape-svg($form-select-indicator);
+   background-repeat: no-repeat;
+   background-position: $form-select-bg-position;
+   background-size: $form-select-bg-size;
+   appearance: none;
+   border: $form-select-border-width solid $form-select-border-color;
+   border-radius: $form-select-border-radius;
+   padding: $form-select-padding-y $form-select-indicator-padding $form-select-padding-y $form-select-padding-x;
+
+   &:focus {
+      border-color: $form-select-focus-border-color;
+      outline: 0;
+   }
+
+   &[multiple],
+   &[size]:not([size="1"]) {
+     padding-right: $form-select-padding-x;
+     background-image: none;
+   }
+
+   &:disabled {
+     color: $form-select-disabled-color;
+     background-color: $form-select-disabled-bg;
+     border-color: $form-select-disabled-border-color;
+   }
+}
+
+input.submit,
+.vsubmit {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   white-space: nowrap;
+   background-color: $primary;
+   color: color-contrast($primary);
+   border: $btn-border-width solid $border-color-dark-transparent;
+   border-radius: $btn-border-radius;
+   font-family: $btn-font-family;
+   font-weight: $btn-font-weight;
+   line-height: $btn-line-height;
+   padding: $btn-padding-y $btn-padding-x;
+
+   &:hover {
+      background: theme-color-darker($primary);
+      border-color: $primary;
+   }
+
+   &.disabled {
+      cursor: not-allowed;
+   }
+
+   &:focus:not([disabled]):not(.disabled) {
+      border-color: $primary;
+   }
+}
+
+.form-control.warn {
+   border-color: rgb(255, 0, 0) !important;
+   background-color: rgba(255, 0, 0, 0.1) !important;
+}

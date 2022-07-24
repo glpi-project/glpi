@@ -1,0 +1,165 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if item.isDynamic() != false %}
+<div class="card m-n2 border-0 shadow-none">
+   <div class="card-header">
+      <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+         <i class="fas fa-cloud-download-alt"></i>
+      </div>
+      <h4 class="card-title ps-4">
+         {{ __('Inventory information') }}
+      </h4>
+      {% set inventory_filename = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryFileName(false) : null %}
+      {% if inventory_filename is not null %}
+         <a href="{{ path('front/document.send.php?file=_inventory/' ~ inventory_filename) }}"
+            class="btn btn-sm btn-secondary ms-auto" target="_blank"
+            data-bs-toggle="tooltip" data-bs-placement="right"
+            title="{{ __('Download "%1$s" inventory file')|format(get_item_name(item)) }}">
+            <i class="fas fa-download"></i>
+         </a>
+      {% else %}
+         <span class="ms-auto" title="{{ __('Inventory file missing') }}">
+            <i class="fas fa-ban"></i>
+            <span class="visually-hidden">{{ __('Inventory file missing') }}</span>
+         </span>
+      {% endif %}
+   </div>
+   {% set agent = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryAgent() : null %}
+   {% if agent is not null %}
+      <div class="card-body row">
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ agent.getTypeName() }}</label>
+            <span>
+               <i class="{{ agent.getIcon() }}"></i>
+               {{ get_item_link(agent) }}
+            </span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Useragent') }}</label>
+            <span>{{ agent.fields['useragent']|verbatim_value }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Inventory tag') }}</label>
+            <span>{{ agent.fields['tag']|verbatim_value }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Last inventory') }}</label>
+            <span>{{ agent.fields['last_contact']|formatted_datetime }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >
+               {{ __('Agent status') }}
+               <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Ask agent about its current status') }}"></i>
+            </label>
+            <span id='agent_status'>{{ __('Unknown') }}</span>
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >
+               {{ __('Request inventory') }}
+               <i id="update-inventory" class="fas fa-sync" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
+            </label>
+            <span id='inventory_status'>{{ __('Unknown') }}</span>
+         </div>
+      </div>
+
+      <script>
+      $(function () {
+         $('#update-status').on('click', function() {
+            var icon = $(this);
+            icon.addClass('fa-spin');
+            $.ajax({
+               type: 'POST',
+               url: '{{ path('/ajax/agent.php') }}',
+               timeout: 30000, // 30 seconds timeout
+               dataType: 'json',
+               data: {
+                  action: '{{ constant('Agent::ACTION_STATUS') }}',
+                  id: '{{ agent.fields['id'] }}'
+               },
+               success: function(json) {
+                  $('#agent_status').html(json.answer);
+               },
+               complete: function() {
+                  icon.removeClass('fa-spin');
+               }
+            });
+         });
+
+         $('#update-inventory').on('click', function() {
+            var icon = $(this);
+            icon.addClass("fa-spin");
+            $.ajax({
+               type: 'POST',
+               url: '{{ path('/ajax/agent.php') }}',
+               timeout: 30000, // 30 seconds timeout
+               dataType: 'json',
+               data: {
+                  action: '{{ constant('Agent::ACTION_INVENTORY') }}',
+                  id: '{{ agent.fields['id'] }}'
+               },
+               success: function(json) {
+                  $('#inventory_status').html(json.answer);
+               },
+               complete: function() {
+                  icon.removeClass('fa-spin');
+               }
+            });
+         });
+      });
+      </script>
+   {% endif %}
+
+   {% if item.isField('is_dynamic') and (item.getType() == 'NetworkEquipment' or item.getType() == 'Printer') %}
+      <div class="card-body row">
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('SNMP Credential') }}</label>
+            <span>{{ get_item_link(item.getSNMPCredential()) }} </span>
+         </div>
+         <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Last inventory') }}</label>
+            <span>{{ item.fields['last_inventory_update']|formatted_datetime }}</span>
+         </div>
+      </div>
+   {% endif %}
+
+   {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
+      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
+   {% endif %}
+</div>
+{% endif %}

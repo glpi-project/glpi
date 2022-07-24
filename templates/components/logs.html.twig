@@ -1,0 +1,145 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% if total_number < 1 %}
+   <div class="alert alert-info">
+      {{ __('No historical') }}
+   </div>
+{% else %}
+
+   {{ include('components/pager.html.twig', {count: filtered_number}) }}
+   <div class="table-responsive">
+   <table class="table table-hover">
+      <thead>
+         <tr>
+            <th>{{ __('ID') }}</th>
+            <th>{{ _n('Date', 'Dates', 1) }}</th>
+            <th>{{ 'User'|itemtype_name }}</th>
+            <th>{{ _n('Field', 'Fields', 1) }}</th>
+            <th>{{ _x('name', 'Update') }}</th>
+            <th>
+               <span class="float-end log-toolbar mb-0">
+                  <button class="btn btn-sm show_log_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
+                     <i class="fas fa-filter"></i>
+                     <span class="d-none d-xl-block">{{ __('Filter') }}</span>
+                  </button>
+                  <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-icon btn-outline-secondary">
+                     <i class="fas fa-file-download"></i>
+                     <span class="d-none d-xl-block">{{ __('Export') }}</span>
+                  </a>
+               </span>
+            </th>
+         </tr>
+
+         {% if filters|length > 0  %}
+         <tr class="log_history_filter_row">
+            <td>
+               <input type="hidden" name="filters[active]" value="1" />
+               <input type="hidden" name="items_id" value="{{ items_id }}" />
+            </td>
+            <td>
+               {{ fields.dateField(
+                  'filters[date]',
+                  filters['date'],
+                  '',
+                  {
+                     no_label: true,
+                     full_width: true,
+                     mb: '',
+                  },
+               ) }}
+            </td>
+            <td>
+               <select name="filters[users_names][]" class="form-select logs-filter-select-mulitple" multiple>
+                  {% for value, username in user_names %}
+                     <option value="{{ value|verbatim_value }}" {{ filters['users_names'] is defined and value in filters['users_names'] ? 'selected' : '' }}>
+                        {{ username|verbatim_value }}
+                     </option>
+                  {% endfor %}
+               </select>
+            </td>
+            <td>
+               <select name="filters[affected_fields][]" class="form-select logs-filter-select-mulitple" multiple>
+                  {% for value, field in affected_fields %}
+                     <option value="{{ value }}" {{ filters['affected_fields'] is defined and value in filters['affected_fields'] ? 'selected' : '' }}>
+                        {{ field }}
+                     </option>
+                  {% endfor %}
+               </select>
+            </td>
+            <td colspan="2">
+               <select name="filters[linked_actions][]" class="form-select logs-filter-select-mulitple" multiple>
+                  {% for value, action in linked_actions %}
+                     <option value="{{ value }}" {{ filters['linked_actions'] is defined and value in filters['linked_actions'] ? 'selected' : '' }}>
+                        {{ action }}
+                     </option>
+                  {% endfor %}
+               </select>
+            </td>
+         </tr>
+         {% endif %}
+
+      </thead>
+      <tbody>
+      {% if filtered_number < 1 %}
+         <tr><td colspan="6">{{ __('No historical matching your filters') }}</td></tr>
+      {% else %}
+         {% for entry in logs %}
+            <tr>
+               <td>{{ entry['id'] }}</td>
+               <td>{{ entry['date_mod'] }}</td>
+               <td>{{ entry['user_name']|verbatim_value }}</td>
+               <td>{{ entry['field']|verbatim_value }}</td>
+               <td colspan="2" style="width: 60%">{{ entry['change']|raw }}</td>
+            </tr>
+         {% endfor %}
+      {% endif %}
+      </tbody>
+   </table>
+   </div>{# .table-responsive #}
+
+   {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
+   <div class="ms-auto d-inline-flex align-items-center d-none d-md-block mb-2">
+      {{ __('Show %s entries')|format(limitdropdown)|raw }}
+   </div>
+{% endif %}
+
+
+
+<script type="text/javascript">
+$(function() {
+   $('.logs-filter-select-mulitple').select2();
+});
+</script>

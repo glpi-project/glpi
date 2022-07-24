@@ -1,0 +1,86 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% if item.isSolved() and item.canApprove() and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::CLOSED')) %}
+<div class="timeline-item mb-3">
+   <div class="row">
+      <div class="col-auto d-none d-md-block">
+         {{ include('components/user/picture.html.twig', {'users_id': session('glpiID')}, with_context = false) }}
+      </div>
+      <div class="col">
+         <div class="row timeline-content t-left card mt-4">
+            <form name="form" method="post" action="{{ 'ItilFollowup'|itemtype_form_path }}" data-submit-once>
+
+               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+               <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+               <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+               <input type="hidden" name="requesttypes_id" value="{{ item.fields['id'] }}" />
+
+               <div class="card-header">
+                  {{ __('Approval of the solution') }}
+               </div>
+               <div class="card-body">
+                  {{ fields.textareaField(
+                     'content',
+                     '',
+                     __('Comments'),
+                     {
+                        'full_width': true,
+                        'helper': __('Optional when approved'),
+                        'enable_richtext': true,
+                        'enable_fileupload': true,
+                        'enable_mentions': true,
+                        'is_horizontal': false,
+                     }
+                  ) }}
+               </div>
+
+               <div class="card-footer">
+                  <button class="btn btn-icon btn-outline-danger me-2" name="add_reopen">
+                     <i class="ti ti-x"></i>
+                     <span>{{ __('Refuse') }}</span>
+                  </button>
+
+                  <button class="btn btn-icon btn-outline-success" name="add_close">
+                     <i class="ti ti-check"></i>
+                     <span>{{ __('Approve') }}</span>
+                  </button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+{% endif %}

@@ -1,0 +1,169 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+$is-dark: false !default;
+
+@import "palettes/defaults";
+@import "includes/palette_light";
+@import "includes/base";
+@import "includes/global-variables";
+@import "includes/components/select2";
+
+/*  ############# Definition des styles de l'install et de l'update ############# */
+
+body {
+    background-color: #1b2f62;
+}
+
+#principal {
+    width: 760px;
+    text-align: center;
+    margin: auto;
+    padding: 40px;
+    color: #fff;
+}
+
+a {
+    color: #fec95c;
+    font-weight: bold;
+}
+
+#bloc {
+    width: 760px;
+    margin: 0 auto;
+    text-align: left;
+    position: relative;
+    padding: 10px;
+    background: #3a5693;
+}
+
+#logo_bloc {
+    position: absolute;
+    top: -25px;
+    padding: 0;
+    margin: 0;
+    width: 145px;
+    height: 80px;
+    background: url("../pics/login_logo_glpi.png")  no-repeat;
+}
+
+p {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.tab_check {
+    padding: 10px;
+    background-color: #fff;
+    color: #000;
+}
+
+.tab_check th {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.tab_check td {
+    font-size: 12px;
+    border-bottom: 1px solid #bbb;
+}
+
+.tab_check td i.fas,
+.tab_check td i.fa-solid {
+    font-size: 12px;
+    margin-right: 3px;
+}
+
+.tab_check td i.fa-check {
+    color: #008e2c;
+}
+
+.tab_check td i.fa-exclamation-triangle {
+    color: #ffa500;
+}
+
+.red {
+    color: red;
+}
+
+.migred {
+    color: white;
+    background-color: red;
+}
+
+.green {
+    color: green;
+}
+
+h2 {
+    text-align: center;
+    color: #fec95c;
+}
+
+h3 {
+    text-align: center;
+}
+
+.block {
+    display: inline-block;
+    width: 300px;
+    color: #000;
+}
+
+.license-container {
+    width: 575px;
+
+    textarea {
+        color: rgb(32, 32, 32);
+        margin: 20px auto;
+        white-space: pre-line;
+    }
+}
+
+.alert:not(.alert-important) {
+    color: #000;
+}
+
+/** Tabler override for install **/
+.form-selectgroup-boxes .form-selectgroup-label {
+    color: 000;
+}
+
+.form-control {
+    color: rgb(32, 32, 32) !important;
+}
+
+.popover.validation-messages {
+    max-width: none;
+    white-space: nowrap;
+}

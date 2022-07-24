@@ -1,0 +1,130 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
+<h3>{{ __('Test of the connection at the database') }}</h3>
+
+{% if host|length == 0 or user|length == 0 or link.connect_error %}
+
+   {{ alerts.alert_danger(
+      __("Can't connect to the database"),
+      __('The server answered: %s')|format(link.connect_error)
+   ) }}
+
+   <form action="install.php" method="post" class="d-inline" data-submit-once>
+      <button type="submit" name="submit" class="btn btn-warning">
+         <i class="fas fa-chevron-left me-1 fa-2x alert-icon"></i>
+         {{ __("Back") }}
+      </button>
+
+      <input type="hidden" name="update" value="{{ update }}">
+      <input type="hidden" name="install" value="Etape_1">
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+{% else %}
+   {{ alerts.alert_success(
+      __('Database connection successful'),
+   ) }}
+
+   {% if not engine_requirement.isValidated() %}
+      {{ alerts.alert_danger(
+         __('Database engine is not supported.'),
+         engine_requirement.getValidationMessages()
+      ) }}
+   {% endif %}
+
+   {% if not config_requirement.isValidated() %}
+      {{ alerts.alert_danger(
+         __('Database configuration is not supported.'),
+         config_requirement.getValidationMessages()
+      ) }}
+   {% endif %}
+
+   {% if engine_requirement.isValidated() and config_requirement.isValidated() %}
+      <div class="container mt-4">
+         <form action='install.php' method='post'>
+            <div class="mb-3">
+               <h3>
+                  {{ update == "no" ? __('Please select a database:') : __('Please select a database to update:') }}
+               </h3>
+               <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+                  {% if update == "no" %}
+                     <label class="form-selectgroup-item flex-fill">
+                        <input type="radio" name="databasename" value="0" class="form-selectgroup-input" checked="checked">
+                        <div class="form-selectgroup-label d-flex align-items-center p-3">
+                           <div class="me-3">
+                              <span class="form-selectgroup-check"></span>
+                           </div>
+                           <div>
+                              <label for="new_db" class="form-label">
+                                 {{ __('Create a new database or use an existing one:') }}
+                              </label>
+                              <input type="text" name="newdatabasename" id="new_db" class="form-control" autofocus>
+                           </div>
+                        </div>
+                     </label>
+                  {% endif %}
+
+                  {% for database in databases %}
+                     <label class="form-selectgroup-item flex-fill">
+                        <input type="radio" name="databasename" value="{{ database }}" class="form-selectgroup-input">
+                        <div class="form-selectgroup-label d-flex align-items-center p-3">
+                           <div class="me-3">
+                              <span class="form-selectgroup-check"></span>
+                           </div>
+                           <div>
+                              {{ database }}
+                           </div>
+                        </div>
+                     </label>
+                  {% endfor %}
+               </div>
+            </div>
+
+            <button type="submit" name="submit" class="btn btn-primary">
+               {{ __("Continue") }}
+               <i class="fas fa-chevron-right ms-1"></i>
+            </button>
+
+            {% if update == "no" %}
+               <input type="hidden" name="install" value="Etape_3">
+            {% else %}
+               <input type="hidden" name="install" value="update_1">
+            {% endif %}
+
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+         </form>
+      </div>
+   {% endif %}
+{% endif %}

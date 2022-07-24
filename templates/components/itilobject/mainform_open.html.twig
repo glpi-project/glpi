@@ -1,0 +1,107 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set enctype = item.isNewItem() ? 'multipart/form-data' : 'application/x-www-form-urlencoded' %}
+{% set new_cls = item.isNewItem() ? 'new-itil-object' : '' %}
+
+{% set form_path = item.getFormURL() %}
+{% if not item.isNewItem %}
+   {% set form_path = form_path ~ '?id=' ~ item.fields['id'] %}
+{% endif %}
+
+{% if selfservice %}
+   {% set form_path = path('front/tracking.injector.php') %}
+{% endif %}
+
+{% set track_changes = 'true' %}
+{% if item.isNewItem %}
+   {% set track_changes = 'false' %}
+{% endif %}
+
+<form method="POST" action="{{ form_path }}" enctype="{{ enctype }}"
+      data-track-changes="{{ track_changes }}" id="itil-form" class="{{ new_cls }}" data-submit-once>
+   <input type="hidden" name="id" value="{{ item.fields['id'] ?? 0 }}" />
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+   <input type="hidden" name="_skip_default_actor" value="1" />
+
+   {% if itiltemplate_key is defined %}
+      <input type="hidden" name="{{ itiltemplate_key }}" value="{{ itiltemplate.fields['id'] }}" />
+   {% endif %}
+   {% if predefined_fields is defined %}
+      <input type="hidden" name="_predefined_fields" value="{{ predefined_fields }}" />
+   {% endif %}
+
+   {% if selfservice %}
+      <input type="hidden" name="_from_helpdesk" value="1" />
+      {# TODO default requesttype #}
+   {% endif %}
+
+   {% if params['tickets_id'] is defined or params['_tickets_id'] is defined %}
+      <input type="hidden" name="_tickets_id" value="{{ params['tickets_id'] ?? params['_tickets_id'] }}" />
+   {% endif %}
+
+   {% if params['problems_id'] is defined or params['_problems_id'] is defined %}
+      <input type="hidden" name="_problems_id" value="{{ params['problems_id'] ?? params['_problems_id'] }}" />
+   {% endif %}
+
+   {% if params['_add_fromitem'] is defined %}
+      <input type="hidden" name="_from_items_id" value="{{ params['_from_items_id'] ?? 0 }}" />
+      <input type="hidden" name="_from_itemtype" value="{{ params['_from_itemtype'] ?? '' }}" />
+   {% endif %}
+
+   {% if params['_promoted_fup_id'] is defined and params['_promoted_fup_id'] > 0 %}
+      <input type="hidden" name="_promoted_fup_id" value="{{ params['_promoted_fup_id'] }}" />
+   {% endif %}
+   {% if params['_promoted_task_id'] is defined and params['_promoted_task_id'] > 0 %}
+      <input type="hidden" name="_promoted_task_id" value="{{ params['_promoted_task_id'] }}" />
+   {% endif %}
+   {% if params['_skip_promoted_fields'] is defined and params['_skip_promoted_fields'] > 0 %}
+      <input type="hidden" name="_skip_promoted_fields" value="{{ params['_skip_promoted_fields'] }}" />
+   {% endif %}
+
+   {# Ticket specific: created from project task, need to keep track of task id #}
+   {% if params['_projecttasks_id'] is defined and params['_projecttasks_id'] > 0 %}
+      <input type="hidden" name="_projecttasks_id" value="{{ params['_projecttasks_id'] }}" />
+   {% endif %}
+
+   {% if params['_tasktemplates_id'] is defined and params['_tasktemplates_id']|length > 0 %}
+      {% for tasktemplate_id in params['_tasktemplates_id'] %}
+         <input type="hidden" name="_tasktemplates_id[]" value="{{ tasktemplate_id }}" />
+      {% endfor %}
+   {% endif %}
+
+   {% if params['_hidden_fields'] is defined and params['_hidden_fields']|length > 0 %}
+      {% for field_name, field_value in params['_hidden_fields'] %}
+         <input type="hidden" name="{{ field_name }}" value="{{ field_value }}" />
+      {% endfor %}
+   {% endif %}

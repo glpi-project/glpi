@@ -1,8 +1,10 @@
+/config/cache.php
 /config/config_db*
 /config/glpi.key
 /config/glpicrypt.key
 /config/local_define.php
 /tests/config_db*
+/tests/cache.php
 /marketplace/
 /plugins/
 /files/
@@ -20,6 +22,7 @@ phpunit.xml
 /tests/code-coverage/
 /tests/coverage-*/
 /tests/files/
+/tests/.env
 /tests/glpicrypt.key
 /config/based_config.php
 /config/config.php
@@ -29,7 +32,7 @@ phpunit.xml
 /**/*.min.css
 /css_compiled/
 /css/compiled/
-!/css/tiny_mce/**/*.min.css
+/css/lib/
 /**/*.min.js
 /node_modules/
 .package.hash
@@ -37,3 +40,4 @@ phpunit.xml
 /public/lib/
 /tests/web/error.log
 /inventory-vendors/*.json
+/locales/*.mo

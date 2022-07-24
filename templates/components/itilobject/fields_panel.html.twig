@@ -1,0 +1,467 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set field_options = {
+   'full_width': true,
+   'fields_template': itiltemplate,
+   'disabled': (not canupdate),
+   'add_field_class': (is_expanded ? 'col-sm-6' : ''),
+} %}
+
+{% set itil_layout    = user_pref('itil_layout', true) %}
+{% set headers_states = itil_layout['items'] %}
+
+<div class="accordion open accordion-flush" id="itil-data">
+   {% set main_show = headers_states['item-main'] is not defined or headers_states['item-main'] == "true" ? true : false %}
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="heading-main-item">
+         <button class="accordion-button {{ main_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#item-main" aria-expanded="true" aria-controls="ticket-main">
+            <i class="ti ti-alert-circle me-1 item-icon"></i>
+            <span class='status-recall'>
+                {{ item.getStatusIcon(item.fields['status'])|raw }}
+            </span>
+            <span class="item-title">
+                {{ item.getTypeName(1) }}
+            </span>
+         </button>
+      </h2>
+      <div id="item-main" class="accordion-collapse collapse {{ main_show ? "show" : "" }}" aria-labelledby="heading-main-item">
+         <div class="accordion-body row m-0 mt-n2">
+
+            {{ call_plugin_hook('pre_item_form', {"item": item, 'options': params}) }}
+
+            {% if is_multi_entities_mode() %}
+               {% if item.isNewItem() %}
+                  {{ fields.dropdownField(
+                     'Entity',
+                     'entities_id',
+                     item.fields['entities_id'],
+                     _n('Entity', 'Entities', 1),
+                     field_options|merge({
+                        'entity': userentities,
+                        'on_change': 'this.form.submit()',
+                     })
+                  ) }}
+               {% else %}
+                  {% set entity_html %}
+                     {{ call('Entity::badgeCompletename', [
+                        get_item_name('Entity', item.fields['entities_id'])
+                     ])|raw }}
+                  {% endset %}
+
+                  {{ fields.field(
+                     '',
+                     entity_html,
+                     _n('Entity', 'Entities', 1),
+                     field_options|merge({
+                        'add_field_class': 'd-flex align-items-center',
+                     })
+                  ) }}
+               {% endif %}
+
+               {% if item.isField('is_recursive') %}
+                  {{ fields.dropdownYesNo(
+                     'is_recursive',
+                     item.fields['is_recursive'],
+                     __('Child entities'),
+                     field_options
+                  ) }}
+               {% endif %}
+            {% endif %}
+
+            {{ fields.datetimeField(
+               'date',
+               item.fields['date'],
+               __('Opening date'),
+               field_options
+            ) }}
+
+            {% if item.getType() != 'Ticket' %}
+               {{ fields.datetimeField(
+                  'time_to_resolve',
+                  item.fields['time_to_resolve'],
+                  __('Time to resolve'),
+                  field_options
+               ) }}
+            {% endif %}
+
+            {% if item.isSolved(true) %}
+               {{ fields.datetimeField(
+               'solvedate',
+               item.fields['solvedate'],
+               __('Resolution date'),
+               field_options
+            ) }}
+            {% endif %}
+
+            {% if item.isClosed() %}
+               {{ fields.datetimeField(
+               'closedate',
+               item.fields['closedate'],
+               __('Close date'),
+               field_options
+            ) }}
+            {% endif %}
+
+            {% if item.getType() == 'Ticket' %}
+               {% set type_params = {
+                  'value': item.fields['type'],
+                  'width': '100%',
+                  'display': false
+               }|merge(field_options) %}
+               {% if item.isNewItem() %}
+                  {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
+               {% else %}
+                  {% set type_params = type_params|merge({'on_change': 'reloadCategory()',}) %}
+               {% endif %}
+               {{ fields.field(
+                  'type',
+                  item.dropdownType('type', type_params),
+                  _n('Type', 'Types', 1),
+                  field_options
+               ) }}
+            {% endif %}
+
+            {% set cat_params = field_options|merge({
+               'entity': item.fields['entities_id'],
+               'disabled': (not (canupdate or can_requester)),
+            }) %}
+            {% if item.isNewItem() %}
+               {% set cat_params = cat_params|merge({
+                  'on_change': 'this.form.submit()',
+               }) %}
+            {% endif %}
+            {% if not item.isNewItem() and itiltemplate.isMandatoryField('itilcategories_id') and item.fields['itilcategories_id'] > 0 %}
+               {% set cat_params = cat_params|merge({
+                  'display_emptychoice': false
+               }) %}
+            {% endif %}
+            {% if item.getType() == 'Ticket' %}
+               {% if item.fields['type'] == constant('Ticket::INCIDENT_TYPE') %}
+                  {% set cat_params = cat_params|merge({'condition': {'is_incident': 1}}) %}
+               {% elseif item.fields['type'] == constant('Ticket::DEMAND_TYPE') %}
+                  {% set cat_params = cat_params|merge({'condition': {'is_request': 1}}) %}
+               {% endif %}
+            {% elseif item.getType() == 'Problem' %}
+               {% set cat_params = cat_params|merge({'condition': {'is_problem': 1}}) %}
+            {% elseif item.getType() == 'Change' %}
+               {% set cat_params = cat_params|merge({'condition': {'is_change': 1}}) %}
+            {% endif %}
+            <span id="category_block_{{ rand }}">
+            {{ fields.dropdownField(
+               'ITILCategory',
+               'itilcategories_id',
+               item.fields['itilcategories_id'],
+               _n('Category', 'Categories', 1),
+               cat_params
+            ) }}
+            </span>
+
+            {{ include('components/itilobject/fields/status.html.twig') }}
+
+            {% if item.isField('requesttypes_id') %}
+               {{ fields.dropdownField(
+                  'RequestType',
+                  'requesttypes_id',
+                  item.fields['requesttypes_id'],
+                  'RequestType'|itemtype_name,
+                  field_options|merge({
+                     'condition': {
+                        'is_active': 1,
+                        'is_ticketheader': 1
+                     }
+                  })
+               ) }}
+            {% endif %}
+
+            {{ include('components/itilobject/fields/priority_matrix.html.twig') }}
+
+            {% if item.isField('locations_id') %}
+               {{ fields.dropdownField(
+                  'Location',
+                  'locations_id',
+                  item.fields['locations_id'],
+                  'Location'|itemtype_name,
+                  field_options|merge({
+                     'hide_if_no_elements': true
+                  })
+               ) }}
+            {% endif %}
+
+            {% if item.isNewItem() and item.getType() == 'Ticket' %}
+               {{ fields.dropdownField(
+                  'Contract',
+                  '_contracts_id',
+                  params['_contracts_id']|default(0),
+                  'Contract'|itemtype_name,
+                  field_options|merge({
+                     'entity': item.fields['entities_id'],
+                     'width': '100%',
+                     'hide_if_no_elements': true
+                  })
+               ) }}
+            {% endif %}
+
+            {% if item.getType() != 'Ticket' or item.isNewItem() %}
+               {{ fields.dropdownTimestampField(
+                  'actiontime',
+                  item.fields['actiontime'],
+                  __('Total duration'),
+                  field_options
+               ) }}
+            {% endif %}
+
+            {{ include('components/itilobject/fields/global_validation.html.twig') }}
+
+            {{ call_plugin_hook('post_item_form', {"item": item, 'options': params}) }}
+         </div>
+      </div>
+   </div>
+
+   {% set actors_show = headers_states['actors'] is not defined or headers_states['actors'] == "true" ? true : false %}
+   <div class="accordion-item">
+      <h2 class="accordion-header" id="heading-actor" title="{{ __('Actors') }}" data-bs-toggle="tooltip">
+         <button class="accordion-button {{ actors_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
+            <i class="ti ti-users me-1"></i>
+            <span class="item-title">
+                {{ __('Actors') }}
+            </span>
+            <span class="badge bg-secondary ms-2">
+               {{ item.countActors() }}
+            </span>
+         </button>
+      </h2>
+      <div id="actors" class="accordion-collapse collapse {{ actors_show ? "show" : "" }}" aria-labelledby="heading-actor">
+         <div class="accordion-body accordion-actors row m-0 mt-n2">
+            {{ include('components/itilobject/actors/main.html.twig') }}
+         </div>
+      </div>
+   </div>
+
+   {% if item_ticket is defined and item_ticket is not null %}
+      {% set items_show = headers_states['items'] is not defined or headers_states['items'] == "true" ? true : false %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="items-heading" title="{{ _n('Item', 'Items', get_plural_number()) }}" data-bs-toggle="tooltip">
+            <button class="accordion-button {{ items_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#items" aria-expanded="true" aria-controls="items">
+               <i class="ti ti-package me-1"></i>
+               <span class="item-title">
+                    {{ _n('Item', 'Items', get_plural_number()) }}
+                </span>
+               <span class="item-counter badge bg-secondary ms-2"></span>
+               {% if itiltemplate.isMandatoryField('items_id') %}
+                  <span class="required">*</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="items" class="accordion-collapse collapse {{ items_show ? "show" : "" }}" aria-labelledby="items-heading">
+            <div class="accordion-body accordion-items row m-0 mt-n2">
+               {{ item_ticket.itemAddForm(item, params|default({})) }}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
+   {% if item.getType() == 'Ticket' %}
+      {% set nb_la = (item.fields['slas_id_tto'] > 0 ? 1 : 0) + (item.fields['slas_id_ttr'] > 0 ? 1 : 0) + (item.fields['olas_id_tto'] > 0 ? 1 : 0) + (item.fields['olas_id_ttr'] > 0 ? 1 : 0) %}
+      {% set servicelevels_show = headers_states['service-levels'] is defined and headers_states['service-levels'] == "true" ? true : false %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="service-levels-heading" title="{{ _n('Service level', 'Service levels', get_plural_number()) }}" data-bs-toggle="tooltip">
+            <button class="accordion-button {{ servicelevels_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
+               <i class="ti ti-alarm me-1"></i>
+               <span class="item-title">
+                    {{ _n('Service level', 'Service levels', get_plural_number()) }}
+               </span>
+               {% if nb_la > 0 %}
+                  <span class="badge bg-secondary ms-2">{{ nb_la }}</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="service-levels" class="accordion-collapse collapse {{ servicelevels_show ? "show" : "" }}" aria-labelledby="service-levels-heading">
+            <div class="accordion-body row m-0 mt-n2">
+               {{ include('components/itilobject/service_levels.html.twig') }}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
+   {% if item.getType() in ['Problem', 'Change'] %}
+      {% set analysis_fields = {
+         'impactcontent': __('Impacts'),
+         'causecontent': __('Causes'),
+         'symptomcontent': __('Symptoms'),
+         'controlistcontent': __('Control list'),
+      } %}
+
+      {% set nb_analysis = 0 %}
+      {% for analysis_field, label in analysis_fields %}
+         {% if item.isField(analysis_field) and item.fields[analysis_field]|trim|length > 0 %}
+            {% set nb_analysis = nb_analysis + 1 %}
+         {% endif %}
+      {% endfor %}
+      {% set analysis_show = headers_states['analysis'] is defined and headers_states['analysis'] == "true" ? true : false %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="analysis-heading" title="{{ __("Analysis") }}" data-bs-toggle="tooltip">
+            <button class="accordion-button {{ analysis_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#analysis" aria-expanded="true" aria-controls="analysis">
+               <i class="ti ti-eyeglass me-1"></i>
+               <span class="item-title">
+                    {{ __("Analysis") }}
+               </span>
+               {% if nb_analysis > 0 %}
+                  <span class="badge bg-secondary ms-2">{{ nb_analysis }}</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="analysis" class="accordion-collapse collapse {{ analysis_show ? "show" : "" }}" aria-labelledby="analysis-heading">
+            <div class="accordion-body row m-0 mt-n2">
+               {% for analysis_field, label in analysis_fields %}
+                  {% if item.isField(analysis_field) %}
+                     {{ fields.textareaField(
+                        analysis_field,
+                        item.fields[analysis_field],
+                        label,
+                        field_options|merge({
+                           'enable_richtext': true,
+                           'is_horizontal': false,
+                        })
+                     ) }}
+                  {% endif %}
+               {% endfor %}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
+   {% if item.getType() == 'Change' %}
+      {% set plans_fields = {
+         'rolloutplancontent': __('Deployment plan'),
+         'backoutplancontent': __('Backup plan'),
+         'checklistcontent': __('Checklist'),
+      } %}
+
+      {% set nb_plans = 0 %}
+      {% for plans_field, label in plans_fields %}
+         {% if item.isField(plans_field) and item.fields[plans_field]|trim|length > 0 %}
+            {% set nb_plans = nb_plans + 1 %}
+         {% endif %}
+      {% endfor %}
+
+      {% set plans_show = headers_states['plans'] is defined and headers_states['plans'] == "true" ? true : false %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="plans-heading" title="{{ __("Plans") }}" data-bs-toggle="tooltip">
+            <button class="accordion-button {{ plans_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#plans" aria-expanded="true" aria-controls="plans">
+               <i class="ti ti-checkup-list me-1"></i>
+               <span class="item-title">
+                    {{ __("Plans") }}
+               </span>
+               {% if nb_plans > 0 %}
+                  <span class="badge bg-secondary ms-2">{{ nb_plans }}</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="plans" class="accordion-collapse collapse {{ plans_show ? "show" : "" }}" aria-labelledby="plans-heading">
+            <div class="accordion-body row m-0 mt-n2">
+               {% for plans_field, label in plans_fields %}
+                  {% if item.isField(plans_field) %}
+                     {{ fields.textareaField(
+                        plans_field,
+                        item.fields[plans_field],
+                        label,
+                        field_options|merge({
+                           'enable_richtext': true,
+                           'is_horizontal': false,
+                        })
+                     ) }}
+                  {% endif %}
+               {% endfor %}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
+   {% if ticket_ticket %}
+      {% set linked_tickets_show = headers_states['linked_tickets'] is defined and headers_states['linked_tickets'] == "true" ? true : false %}
+      <div class="accordion-item">
+         <h2 class="accordion-header" id="linked_tickets-heading" title="{{ 'Ticket_Ticket'|itemtype_name(nb_linked_tickets) }}" data-bs-toggle="tooltip">
+            <button class="accordion-button {{ linked_tickets_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
+               <i class="ti ti-link me-1"></i>
+               {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
+               {% set nb_linked_tickets = linked_tickets|length %}
+               {% if item.isNewItem() and params['_link']['tickets_id_2'] > 0 %}
+                  {% set nb_linked_tickets = 1 %}
+               {% endif %}
+               <span class="item-title">
+                    {{ 'Ticket_Ticket'|itemtype_name(nb_linked_tickets) }}
+               </span>
+               {% if nb_linked_tickets > 0 %}
+                  <span class="badge bg-secondary ms-2">{{ nb_linked_tickets }}</span>
+               {% endif %}
+            </button>
+         </h2>
+         <div id="linked_tickets" class="accordion-collapse collapse {{ linked_tickets_show ? "show" : "" }}" aria-labelledby="linked_tickets-heading">
+            <div class="accordion-body">
+               {{ include('components/itilobject/linked_tickets.html.twig') }}
+            </div>
+         </div>
+      </div>
+   {% endif %}
+
+    <span class="d-none d-md-block">
+        <button type="button" class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2">
+            <i class="fas fa-caret-left"></i>
+        </button>
+    </span>
+</div>
+
+<script type="text/javascript">
+$(function() {
+   if ($(window).width() < 768) { // medium breakpoint (Todo check if it's possible to get bootstrap breakpoints withint javascript)
+      $('#itil-data .accordion-collapse').each(function() {
+         $(this).removeClass('show');
+      })
+   }
+});
+
+var reloadCategory = function() {
+    var type = $('[name=type]').val();
+
+    $('#category_block_{{ rand }} .field-container').load(
+        '{{ path("ajax/dropdownTicketCategories.php") }}',
+        {
+            'type': type,
+            'entity_restrict': {{ item.fields['entities_id'] }},
+            'value': {{ item.fields['itilcategories_id'] }},
+        }
+    );
+};
+</script>

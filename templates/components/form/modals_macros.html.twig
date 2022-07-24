@@ -1,0 +1,91 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro confirm(modal_title = '', modal_body = '', options = {}) %}
+   {% set options = {
+      'buttons': {
+         'cancel': {
+            'label': options['cancel_label']|default(_x('button', 'Cancel')),
+            'event': options['cancel_event']|default('')
+         },
+         'confirm': {
+            'label': options['confirm_label']|default(_x('button', 'Ok')),
+            'event': options['confirm_event']|default(''),
+            'class': 'ms-auto'
+         }
+      },
+   }|merge(options) %}
+
+   {{ _self.modal(modal_title, modal_body, options) }}
+{% endmacro %}
+
+{% macro modal(modal_title, modal_body, options = {}) %}
+   {% set rand = random() %}
+   {% set options = {
+      'id': 'modal' ~ rand,
+      'rand': rand,
+      'buttons': [],
+      'modal_classes': ''
+   }|merge(options) %}
+
+   <div class="modal fade {{ options.modal_classes }}" id="{{ options.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title">{{ modal_title }}</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></button>
+            </div>
+            <div class="modal-body overflow-auto">
+               {{ modal_body|raw }}
+            </div>
+            <div class="modal-footer">
+               {% for button in options['buttons'] %}
+                  <button type="button" class="btn {{ options['primary'] ? 'btn-primary' : 'btn-outline-secondary' }} {{ button['class']|default('') }}"
+                          id="{{ button['id']|default(options.id ~ '_btn_' ~ (loop.index0)) }}" data-bs-dismiss="modal">
+                     {{ button['label']|default('')|raw }}
+                  </button>
+               {% endfor %}
+            </div>
+         </div>
+      </div>
+   </div>
+   <script>
+      $(function () {
+         {% for button in options['buttons'] %}
+         $('#{{ options.id }}').on('click', '#{{ button['id']|default(options.id ~ '_btn_' ~ (loop.index0)) }}', function (event) {
+            {{ (button['event']|default('return true;'))|raw }}
+         });
+         {% endfor %}
+      });
+   </script>
+{% endmacro %}

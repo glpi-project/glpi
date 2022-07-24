@@ -1,13 +1,15 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -15,22 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("reports", READ);
 
@@ -43,36 +46,38 @@ Report::title();
 echo "<form name='form' method='post' action='report.contract.list.php'>";
 
 echo "<table class='tab_cadre_fixe' >";
-echo "<tr><th colspan='4'>".__('Hardware under contract')." </th></tr>";
+echo "<tr><th colspan='4'>" . __('Hardware under contract') . " </th></tr>";
 
 // 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
-echo "<td class='center' width='20%'>". __('Item type')."</td>";
+echo "<td class='center' width='20%'>" . __('Item type') . "</td>";
 echo "<td width='30%'>";
 $values = [0 => __('All')];
 foreach ($CFG_GLPI["contract_types"] as $itemtype) {
-   if ($item = getItemForItemtype($itemtype)) {
-      $values[$itemtype] = $item->getTypeName();
-   }
+    if ($item = getItemForItemtype($itemtype)) {
+        $values[$itemtype] = $item->getTypeName();
+    }
 }
 Dropdown::showFromArray('item_type', $values, ['value'    => 0,
-                                                   'multiple' => true]);
+    'multiple' => true
+]);
 echo "</td> ";
 
-echo "<td class='center' width='20%'>". _n('Date', 'Dates', 1)."</td>";
+echo "<td class='center' width='20%'>" . _n('Date', 'Dates', 1) . "</td>";
 echo "<td width='30%'>";
 $y      = date("Y");
 $values = [ 0 => __('All')];
-for ($i=($y-10); $i<($y+10); $i++) {
-   $values[$i] = $i;
+for ($i = ($y - 10); $i < ($y + 10); $i++) {
+    $values[$i] = $i;
 }
 Dropdown::showFromArray('year', $values, ['value'    => $y,
-                                              'multiple' => true]);
+    'multiple' => true
+]);
 
 echo "</td></tr>";
 
 echo "<tr><td class='tab_bg_1 center' colspan='4'>";
-echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'></td></tr>";
+echo "<input type='submit' value=\"" . __s('Display report') . "\" class='btn btn-primary'></td></tr>";
 
 echo "</table>";
 Html::closeForm();

@@ -1,0 +1,158 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set withtemplate = params['withtemplate'] ?? '' %}
+{% set candel       = params['candel'] ?? true %}
+{% set canedit      = params['canedit'] ?? true %}
+{% set id           = item.fields['id'] ?? -1 %}
+
+         <div class="row">
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+         </div>
+
+{% if canedit or item.canEdit(item.fields['id']) %}
+      <div class="card-body mx-n2 mb-4 border-top d-flex flex-row-reverse align-items-start flex-wrap">
+         {% if withtemplate|length > 0 or item.isNewID(id) %}
+            {% if id <= 0 or withtemplate == 2 %}
+               <button class="btn btn-primary me-2" type="submit" name="add" value="1">
+                  <i class="fas fa-plus"></i>
+                  <span>{{ _x('button', 'Add') }}</span>
+               </button>
+            {% else %}
+               <button class="btn btn-primary me-2" type="submit" name="update" value="1">
+                  <i class="far fa-save"></i>
+                  <span>{{ _x('button', 'Save') }}</span>
+               </button>
+            {% endif %}
+         {% else %}
+            {% if candel and not item.can(id, constant('DELETE')) and not item.can(id, constant('PURGE')) %}
+               {% set candel = false %}
+            {% endif %}
+
+            {% if canedit and item.can(id, constant('UPDATE')) %}
+               <button class="btn btn-primary me-2" type="submit" name="update" value="1">
+                  <i class="far fa-save"></i>
+                  <span>{{ _x('button', 'Save') }}</span>
+               </button>
+            {% endif %}
+
+            {% if candel %}
+               {% if item.isDeleted() %}
+                  {% if item.can(id, constant('DELETE')) %}
+                     <button class="btn btn-outline-secondary me-2" type="submit"
+                             name="restore" value="1">
+                        <i class="ti ti-trash-off"></i>
+                        <span>{{ _x('button', 'Restore') }}</span>
+                     </button>
+                  {% endif %}
+
+                  {% if item.can(id, constant('PURGE')) %}
+                    {% set item_devices = call('Item_Devices::getConcernedItems') %}
+                    {% set show_keep_devices = item.getType() in item_devices %}
+
+                    {% set span_cls = "" %}
+                    {% if show_keep_devices %}
+                        {% set span_cls = "border border-danger d-flex align-items-start flex-wrap p-1 px-2 me-2" %}
+                    {% endif %}
+
+                     <span class="{{ span_cls }}">
+                        <button class="btn btn-danger me-2" type="submit" name="purge"
+                              value="1"
+                              onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                           <i class="ti ti-trash"></i>
+                           <span>{{ _x('button', 'Delete permanently') }}</span>
+                        </button>
+                        {% if show_keep_devices %}
+                            <span class="mt-2">
+                                <label class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="keep_devices" value="1" />
+                                    <span class="form-check-label text-danger">
+                                        {{ __('Keep the devices while deleting this item') }}
+                                    </span>
+                                </label>
+                            </span>
+                        {% endif %}
+                     <span>
+                  {% endif %}
+               {% else %}
+                  {% if (not item.maybeDeleted() or item.useDeletedToLockIfDynamic()) %}
+                     {% if item.can(id, constant('PURGE')) %}
+                        <button class="btn btn-outline-danger me-2" type="submit" name="purge"
+                                onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
+                                value="1">
+                           <i class="ti ti-trash"></i>
+                           <span>{{ _x('button', 'Delete permanently') }}</span>
+                        </button>
+                     {% endif %}
+                  {% elseif not item.isDeleted() and item.can(id, constant('DELETE')) %}
+                     <button class="btn btn-outline-warning me-2" type="submit"
+                             name="delete" value="1">
+                        <i class="ti ti-trash"></i>
+                        <span>{{ _x('button', 'Put in trashbin') }}</span>
+                     </button>
+                  {% endif %}
+               {% endif %}
+            {% endif %}
+
+            {% if item.isField('date_mod') %}
+               <input type="hidden" name="_read_date_mod" value="{{ item.fields['date_mod'] }}" />
+            {% endif %}
+         {% endif %}
+
+         {% if not item.isNewID(id) %}
+            <input type="hidden" name="id" value="{{ id }}" />
+         {% endif %}
+
+         {% if canedit and params['addbuttons']|length > 0 %}
+            {% for key, val in params['addbuttons'] %}
+               <button class="btn btn-outline-secondary me-2" type="submit" name="{{ key }}" value="1">
+                  {% if val is iterable %}
+                     {% if val.icon is defined %}
+                        <i class="{{ val.icon }}"></i>
+                     {% endif %}
+                     <span>{{ val.text|default('') }}</span>
+                  {% else %}
+                     {{ val }}
+                  {% endif %}
+               </button>
+            {% endfor %}
+         {% endif %}
+
+      </div>
+
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+   </div> {# #mainformtable #}
+</form> {# [name=asset_form] #}
+{% else %}
+   </div> {# #mainformtable #}
+{% endif %}
