@@ -2258,7 +2258,7 @@ class RuleImportAsset extends Rule
         if ($with_plugins && isset($PLUGIN_HOOKS['add_rules'])) {
             $ria = new self();
             foreach ($PLUGIN_HOOKS['add_rules'] as $plugin => $val) {
-                if (!Plugin::isPluginLoaded($plugin)) {
+                if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
                 $rules = array_merge(
