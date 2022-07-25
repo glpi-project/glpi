@@ -239,7 +239,8 @@ class APIRest extends APIBaseClass
          ->contains('content-type')
          ->contains('accept')
          ->contains('session-token')
-         ->contains('authorization');
+         ->contains('authorization')
+         ->contains('app-token');
     }
 
     /**
