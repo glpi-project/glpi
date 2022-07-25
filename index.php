@@ -44,6 +44,7 @@ if (
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
@@ -127,7 +128,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     // redirect to ticket
     if (isset($_GET["redirect"])) {
         global $_UGET;
-        Toolbox::manageRedirect($_UGET["redirect"]);
+        Toolbox::manageRedirect(Sanitizer::unsanitize($_GET["redirect"]));
     }
 
     TemplateRenderer::getInstance()->display('pages/login.html.twig', [
