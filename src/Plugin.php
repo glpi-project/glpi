@@ -1104,13 +1104,7 @@ class Plugin extends CommonDBTM
      */
     public function isInstalled($directory)
     {
-
-        if ($this->isPluginLoaded($directory)) {
-           // If plugin is loaded, it is because it is installed and active. No need to query DB on this case.
-            return true;
-        }
-
-       // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
+        // If plugin is not loaded, check on DB as plugins may have not been loaded yet.
         if ($this->getFromDBbyDir($directory)) {
             return in_array($this->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED])
             && $this->isLoadable($directory);
