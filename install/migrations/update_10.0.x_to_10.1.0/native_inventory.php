@@ -45,7 +45,7 @@ if (isset($inventory_config['stale_agents_action'])) {
     $stale_agents_clean = (int)$inventory_config['stale_agents_action'] === 0;
     // stale_agents_status with -1 = No Change. If the status was set previously, but then the action changed to clean, the status value would not have been changed.
     // We want to reset the status to -1, so that it doesn't change the status unexpectedly.
-    $stale_agents_status = $stale_agents_status = (!$stale_agents_clean && isset($inventory_config['stale_agents_status'])) ? $inventory_config['stale_agents_status'] : -1;
+    $stale_agents_status = (!$stale_agents_clean && isset($inventory_config['stale_agents_status'])) ? $inventory_config['stale_agents_status'] : -1;
 
     // New inventory config values
     $new_inventory_config = [
