@@ -3239,7 +3239,8 @@ HTML;
             ]
         );
         echo "</td></tr>";
-        echo "<input type='hidden' name='id' value='1'>";
+        $config_id = self::getConfigIDForContext('core');
+        echo "<input type='hidden' name='id' value='{$config_id}'>";
 
         echo "<tr class='tab_bg_1'><th colspan='4'>" . __("General") . "</th></tr>";
         echo "<tr class='tab_bg_1'><td class='center'>" . __("Add/update relation between items") .

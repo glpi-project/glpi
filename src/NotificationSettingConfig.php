@@ -46,10 +46,11 @@ class NotificationSettingConfig extends CommonDBTM
 
     public function update(array $input, $history = 1, $options = [])
     {
+        $config_id = Config::getConfigIDForContext('core');
         if (isset($input['use_notifications'])) {
             $config = new Config();
             $tmp = [
-                'id'                 => 1,
+                'id'                 => $config_id,
                 'use_notifications'  => $input['use_notifications']
             ];
             $config->update($tmp);
@@ -66,7 +67,7 @@ class NotificationSettingConfig extends CommonDBTM
         foreach ($input as $k => $v) {
             if (substr($k, 0, strlen('notifications_')) === 'notifications_') {
                 $tmp = [
-                    'id'  => 1,
+                    'id' => $config_id,
                     $k    => $v
                 ];
                 $config->update($tmp);
