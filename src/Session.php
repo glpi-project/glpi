@@ -960,7 +960,7 @@ class Session
             UPDATENOTE => 'UPDATENOTE',
             UNLOCK => 'UNLOCK',
         ];
-        if (in_array($right, $rights, true)) {
+        if (array_key_exists($right, $rights)) {
             return $rights[$right];
         }
         return "unknown right name";
