@@ -695,7 +695,7 @@ class Agent extends CommonDBTM
         /** @phpstan-var array{item_action: bool, callback: callable(?Agent, array, ?CommonDBTM):bool}[] $actions_to_apply */
         $actions_to_apply = [];
         $need_item = false;
-        if (isset($config['stale_agents_status']) && $config['stale_agents_status'] >= 0) {
+        if (isset($config['stale_agents_status']) && (int) $config['stale_agents_status'] >= 0) {
             // 0 = none, -1 or other negative = no change
             $need_item = true;
             $actions_to_apply[] = [
@@ -750,9 +750,7 @@ class Agent extends CommonDBTM
         // Run all actions, with the clean action running last
         foreach ($actions_to_apply as $action) {
             // Run the action
-            if (!$action['callback']($agent, $config, $item)) {
-                return false;
-            }
+            $action['callback']($agent, $config, $item);
         }
         return true;
     }

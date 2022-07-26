@@ -390,6 +390,16 @@ class Agent extends DbTestCase
                 'name' => 'stale_agents_clean'
             ]
         );
+        $DB->updateOrInsert(
+            \Config::getTable(),
+            [
+                'name' => 'stale_agents_status',
+                'value' => -1
+            ],
+            [
+                'name' => 'stale_agents_status'
+            ]
+        );
 
         // Force run the cleanup cron task (direct call the function)
         $crontask = new \CronTask();
@@ -503,7 +513,7 @@ class Agent extends DbTestCase
                 'name' => 'stale_agents_status'
             ]
         );
-        // Should return true even if the agent has an invalid item
+
         $this->boolean(\Agent::cronCleanoldagents($crontask))->isTrue();
         if ($items_id > 0) {
             $item->getFromDB($items_id);
