@@ -723,9 +723,8 @@ class Agent extends CommonDBTM
                         );
                         continue;
                     }
-                    if ($action['item_action']) {
-                        $need_item = true;
-                    }
+                    // Assume plugins always need the item
+                    $need_item = true;
                     $actions_to_apply[] = $action['action_callback'];
                 }
             }
