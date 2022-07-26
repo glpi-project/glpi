@@ -3994,10 +3994,10 @@ JAVASCRIPT;
                 'alternative_email' => ['']
             ],
             '_groups_id_observer'       => 0,
-            // FIXME Use new format
             '_link'                     => [
-                'tickets_id_2' => '',
-                'link'         => ''
+                'itemtype_1' => Ticket::class,
+                'items_id_1' => 0,
+                'link'       => ''
             ],
             '_suppliers_id_assign'      => 0,
             '_suppliers_id_assign_notif' => ['use_notification'  => [$default_use_notif],
