@@ -35,15 +35,23 @@
 
 namespace tests\units;
 
+use CommonITILActor;
 use CommonITILValidation;
 use DbTestCase;
+use Generator;
 use Glpi\Toolbox\Sanitizer;
+use Group;
+use Group_Ticket;
 use Group_User;
+use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
+use Rule;
 use RuleAction;
 use RuleCriteria;
+use SingletonRuleList;
 use TaskTemplate;
+use Ticket;
 use Toolbox;
 
 abstract class RuleCommonITILObject extends DbTestCase
@@ -2126,5 +2134,289 @@ abstract class RuleCommonITILObject extends DbTestCase
         // Check that the rule was executed
         $this->boolean($itil->getFromDB($itil_id))->isTrue();
         $this->integer($itil->fields['impact'])->isEqualTo(2);
+    }
+
+    /**
+     * Data provider for testAction
+     * @see $this->testAction() for details of the expected parameters
+     *
+     * @return Generator
+     */
+    protected function testActionProvider(): Generator
+    {
+        // Test 'regex_result' action on the ticket category
+        $category = $this->createItem(ITILCategory::getType(), [
+            'name' => 'Category from regex'
+        ]);
+        yield [
+            'criteria' => [
+                'condition' => Rule::REGEX_MATCH,
+                'field'     => 'name',
+                'pattern'   => '/(.*)/',
+            ],
+            'action' => [
+                'action_type' => 'regex_result',
+                'field'       => 'itilcategories_id',
+                'value'       => '#0'
+            ],
+            'control_test_value' => 'Test_title_no_match',
+            'real_test_value'    => 'Category from regex',
+            'expected_value'     => $category->fields['id'],
+        ];
+
+        // Test 'regex_result' action on the ticket requester group
+        $requester_group = $this->createItem(Group::getType(), [
+            'name' => 'Requester group from regex'
+        ]);
+        yield [
+            'criteria' => [
+                'condition' => Rule::REGEX_MATCH,
+                'field'     => 'name',
+                'pattern'   => '/(.*)/',
+            ],
+            'action' => [
+                'action_type'    => 'regex_result',
+                'field'          => '_groups_id_requester',
+                'value'          => '#0',
+                'field_specific' => function ($ticket) {
+                    // Can't read '_groups_id_requester' from group field, need
+                    // to fetch it from the Group_Ticket table
+                    $groups = (new Group_Ticket())->find([
+                        'type' => CommonITILActor::REQUESTER,
+                        'tickets_id' => $ticket->fields['id'],
+                    ]);
+                    if (count($groups) == 1) {
+                        return array_pop($groups)['groups_id'];
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            'control_test_value' => 'Test_title_no_match',
+            'real_test_value'    => 'Requester group from regex',
+            'expected_value'     => $requester_group->fields['id'],
+        ];
+
+        // Test 'regex_result' action on the ticket observer group
+        $observer_group = $this->createItem(Group::getType(), [
+            'name' => 'Observer group from regex'
+        ]);
+        yield [
+            'criteria' => [
+                'condition' => Rule::REGEX_MATCH,
+                'field'     => 'name',
+                'pattern'   => '/(.*)/',
+            ],
+            'action' => [
+                'action_type'    => 'regex_result',
+                'field'          => '_groups_id_observer',
+                'value'          => '#0',
+                'field_specific' => function ($ticket) {
+                    // Can't read '_groups_id_requester' from group field, need
+                    // to fetch it from the Group_Ticket table
+                    $groups = (new Group_Ticket())->find([
+                        'type' => CommonITILActor::OBSERVER,
+                        'tickets_id' => $ticket->fields['id'],
+                    ]);
+                    if (count($groups) == 1) {
+                        return array_pop($groups)['groups_id'];
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            'control_test_value' => 'Test_title_no_match',
+            'real_test_value'    => 'Observer group from regex',
+            'expected_value'     => $observer_group->fields['id'],
+        ];
+
+        // Test 'regex_result' action on the ticket assigned group
+        $tech_group = $this->createItem(Group::getType(), [
+            'name' => 'Tech group from regex'
+        ]);
+        yield [
+            'criteria' => [
+                'condition' => Rule::REGEX_MATCH,
+                'field'     => 'name',
+                'pattern'   => '/(.*)/',
+            ],
+            'action' => [
+                'action_type'    => 'regex_result',
+                'field'          => '_groups_id_assign',
+                'value'          => '#0',
+                'field_specific' => function ($ticket) {
+                    // Can't read '_groups_id_requester' from group field, need
+                    // to fetch it from the Group_Ticket table
+                    $groups = (new Group_Ticket())->find([
+                        'type' => CommonITILActor::ASSIGN,
+                        'tickets_id' => $ticket->fields['id'],
+                    ]);
+                    if (count($groups) == 1) {
+                        return array_pop($groups)['groups_id'];
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            'control_test_value' => 'Test_title_no_match',
+            'real_test_value'    => 'Tech group from regex',
+            'expected_value'     => $tech_group->fields['id'],
+        ];
+    }
+
+    /**
+     * Function used by $this->testAction(), get the result of a test:
+     * - If the action field is a "simple field" part of the ticket table like
+     *  the category or the description then we can read its value from $item
+     * - If the action field is more complex like an assigned group or user, we
+     *  will run a specific function supplied in $action that will fetch the
+     *  value from the database
+     *
+     * @param array  $action Action details, supplied by the data provider
+     * @param Ticket $item   Test subject
+     */
+    protected function testActionGetTestResultValue(array $action, Ticket $item)
+    {
+        if (isset($action['field_specific'])) {
+            $value = $action['field_specific']($item);
+        } else {
+            $value = $item->fields[$action['field']];
+        }
+
+        return $value;
+    }
+
+    /**
+     * Test a given ticket rule
+     *
+     * @dataprovider testActionProvider
+     *
+     * @param array  $criteria           Details of the rule criteria:
+     *                                    - condition
+     *                                    - field
+     *                                    - pattern
+     * @param array  $action             Details of the rule action:
+     *                                    - action_type
+     *                                    - field
+     *                                    - value
+     *                                    - field_specific (optionnal, will
+     *                                     contain a callback to handle fields
+     *                                     that are no part of the ticket table,
+     *                                     like assigned groups for exemple)
+     * @param string $control_test_value A control value for the criteria.
+     *                                   This value is not expected to trigger
+     *                                   the rule
+     * @param string $real_test_value    The test value value for the criteria.
+     *                                   This value is expected to trigger the
+     *                                   rule
+     * @param string $expected_value     Expected value if the test succeed.
+     *
+     * @return void
+     */
+    public function testAction(
+        array $criteria,
+        array $action,
+        string $control_test_value,
+        string $real_test_value,
+        string $expected_value
+    ): void {
+        global $DB;
+
+        $this->login();
+
+        // Disable all others rules before running the test
+        $DB->update(Rule::getTable(), ['is_active' => false], [
+            'sub_type' => "RuleAsset"
+        ]);
+        $active_rules = countElementsInTable(Rule::getTable(), [
+            'is_active' => true,
+            'sub_type'  => "RuleAsset",
+        ]);
+        $this->integer($active_rules)->isEqualTo(0);
+
+        // Create the rule
+        $rule_ticket = $this->createItem(\RuleTicket::getType(), [
+            'name'      => 'testLastInventoryUpdateCriteria',
+            'match'     => 'AND',
+            'is_active' => true,
+            'sub_type'  => 'RuleTicket',
+            'condition' => \RuleTicket::ONADD | \RuleTicket::ONUPDATE,
+        ]);
+
+        // Add the condition
+        $this->createItem(RuleCriteria::getType(), [
+            'rules_id'  => $rule_ticket->getID(),
+            'criteria'  => $criteria['field'],
+            'condition' => $criteria['condition'],
+            'pattern'   => $criteria['pattern'],
+        ]);
+
+        // Add the action
+        $this->createItem(RuleAction::getType(), [
+            'rules_id'    => $rule_ticket->getID(),
+            'action_type' => $action['action_type'],
+            'field'       => $action['field'],
+            'value'       => $action['value'],
+        ]);
+
+        // Reset rule cache
+        SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+        SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+
+        // First, test the rule on item creation
+        // We will create two items, the first one should NOT trigger the rule
+        // (control test) and the second should trigger the rule.
+
+        // Create the control test subject
+        $control_item = $this->createItem(Ticket::getType(), [
+            'name' => $control_test_value,
+            'content' => 'testAction',
+        ]);
+
+        // Verify that the test subject didn't trigger the rule
+        $this->variable($this->testActionGetTestResultValue(
+            $action,
+            $control_item
+        ))->isNotEqualTo($expected_value);
+
+        // Create the real test subject
+        $real_item = $this->createItem(Ticket::getType(), [
+            'name' => $real_test_value,
+            'content' => 'testAction',
+        ]);
+
+        // Verify that the test subject did trigger the rule
+        $this->variable($this->testActionGetTestResultValue(
+            $action,
+            $real_item
+        ))->isEqualTo($expected_value);
+
+        // Second step, test the rule on item update
+        // We will create the item with the control test value, expecting it to
+        // not match the rule, then update it to the real value
+
+        // Create the test subject
+        $item = $this->createItem(Ticket::getType(), [
+            'name'    => $control_test_value,
+            'content' => 'testAction',
+        ]);
+
+        // Verify that the test subject didn't trigger the rule
+        $this->variable($this->testActionGetTestResultValue(
+            $action,
+            $item
+        ))->isNotEqualTo($expected_value);
+
+        // Updatea the test subject to the value expected by the rule
+        $this->updateItem(Ticket::getType(), $item->fields['id'], [
+            'name' => $real_test_value,
+        ]);
+        $item->getFromDb($item->fields['id']);
+
+        // Verify that the test subject did trigger the rule
+        $this->variable($this->testActionGetTestResultValue(
+            $action,
+            $item
+        ))->isEqualTo($expected_value);
     }
 }
