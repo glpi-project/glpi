@@ -76,7 +76,7 @@
    }
 ]) %}
 
-{% set isEmpty = true %}
+{% set is_empty = true %}
 
 {% for la_field in la_fields %}
    {% set rand = random() %}
@@ -84,7 +84,7 @@
    {% set la_displayed = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField(la_field.lafieldname) %}
 
    {% if date_displayed or la_displayed %}
-      {% set isEmpty = false %}
+      {% set is_empty = false %}
       {% set la_html %}
          {% if la_field.la.getDataForTicket(item.fields['id'], la_field.type) %}
             {% if date_displayed %}
@@ -235,8 +235,8 @@
    {% endif %}
 {% endfor %}
 
-{% if isEmpty %}
+{% if is_empty %}
    <script type="text/javascript">
-      $('#service-levels-heading').closest('.accordion-item').hide();
+      /$('#service-levels-heading').closest('.accordion-item').hide();
    </script>
 {% endif %}
