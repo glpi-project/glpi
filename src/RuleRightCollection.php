@@ -216,8 +216,8 @@ class RuleRightCollection extends RuleCollection
      *
      * @see RuleCollection::prepareInputDataForProcess()
      *
-     * @param $input  input datas
-     * @param $params extra parameters given
+     * @param array $input  input datas
+     * @param array $params extra parameters given
      *
      * @return an array of attributes
      **/
@@ -228,32 +228,35 @@ class RuleRightCollection extends RuleCollection
             $groups = $input;
         }
 
+        // Some of the rule criteria is uppercase, but most other rule criterias are lowercase only
+        $params_lower = array_change_key_case($params, CASE_LOWER);
+
        //common parameters
         $rule_parameters = [
-            'TYPE'       => $params["type"] ?? "",
-            'LOGIN'      => $params["login"] ?? "",
-            'MAIL_EMAIL' => $params["email"] ?? $params["mail_email"] ?? "",
+            'TYPE'       => $params_lower["type"] ?? "",
+            'LOGIN'      => $params_lower["login"] ?? "",
+            'MAIL_EMAIL' => $params_lower["email"] ?? $params_lower["mail_email"] ?? "",
             '_groups_id' => $groups
         ];
 
        //IMAP/POP login method
-        if ($params["type"] == Auth::MAIL) {
-            $rule_parameters["MAIL_SERVER"] = $params["mail_server"] ?? "";
+        if ($params_lower["type"] == Auth::MAIL) {
+            $rule_parameters["MAIL_SERVER"] = $params_lower["mail_server"] ?? "";
         }
 
        //LDAP type method
-        if ($params["type"] == Auth::LDAP) {
+        if ($params_lower["type"] == Auth::LDAP) {
            //Get all the field to retrieve to be able to process rule matching
             $rule_fields = $this->getFieldsToLookFor();
 
            //Get all the datas we need from ldap to process the rules
             $sz         = @ldap_read(
-                $params["connection"],
-                $params["userdn"],
+                $params_lower["connection"],
+                $params_lower["userdn"],
                 "objectClass=*",
                 $rule_fields
             );
-            $rule_input = AuthLDAP::get_entries_clean($params["connection"], $sz);
+            $rule_input = AuthLDAP::get_entries_clean($params_lower["connection"], $sz);
 
             if (count($rule_input)) {
                 $rule_input = $rule_input[0];
@@ -262,7 +265,7 @@ class RuleRightCollection extends RuleCollection
                 foreach ($fields as $field) {
                     switch (Toolbox::strtoupper($field)) {
                         case "LDAP_SERVER":
-                            $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
+                            $rule_parameters["LDAP_SERVER"] = $params_lower["ldap_server"];
                             break;
 
                         default: // ldap criteria (added by user)
