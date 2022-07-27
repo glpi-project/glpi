@@ -6307,6 +6307,14 @@ JAVASCRIPT;
             }
         }
 
+        $html_output = in_array(
+            self::$output_type,
+            [
+                self::HTML_OUTPUT,
+                self::GLOBAL_SEARCH, // For a global search, output will be done in HTML context
+            ]
+        );
+
         if (isset($so["table"])) {
             $table     = $so["table"];
             $field     = $so["field"];
@@ -6988,7 +6996,7 @@ JAVASCRIPT;
                     return "";
 
                 case 'glpi_ticketsatisfactions.satisfaction':
-                    if (self::$output_type == self::HTML_OUTPUT) {
+                    if ($html_output) {
                         return TicketSatisfaction::displaySatisfaction($data[$ID][0]['name']);
                     }
                     break;
@@ -7009,20 +7017,20 @@ JAVASCRIPT;
                     return Cartridge::getCount(
                         $data["id"],
                         $data[$ID][0]['alarm_threshold'],
-                        self::$output_type != self::HTML_OUTPUT
+                        !$html_output
                     );
 
                 case 'glpi_printers._virtual':
                     return Cartridge::getCountForPrinter(
                         $data["id"],
-                        self::$output_type != self::HTML_OUTPUT
+                        !$html_output
                     );
 
                 case 'glpi_consumableitems._virtual':
                     return Consumable::getCount(
                         $data["id"],
                         $data[$ID][0]['alarm_threshold'],
-                        self::$output_type != self::HTML_OUTPUT
+                        !$html_output
                     );
 
                 case 'glpi_links._virtual':
@@ -7164,10 +7172,9 @@ JAVASCRIPT;
                             }
                             $count_display++;
 
+                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output);
 
-                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, self::$output_type == self::HTML_OUTPUT);
-
-                            if (self::$output_type == self::HTML_OUTPUT && (Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
+                            if ($html_output && (Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                                 $rand = mt_rand();
                                 $popup_params = [
                                     'display'       => false,
