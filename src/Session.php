@@ -310,6 +310,8 @@ class Session
     {
         global $AJAX_INCLUDE;
 
+        $_SESSION['glpilistitems'][$itemtype] = [];
+
         if (isset($AJAX_INCLUDE)) {
             return;
         }
@@ -327,7 +329,6 @@ class Session
         }
 
         $_SESSION['glpilisttitle'][$itemtype] = $title;
-        $_SESSION['glpilistitems'][$itemtype] = [];
         $_SESSION['glpilisturl'][$itemtype]   = $url;
     }
 
