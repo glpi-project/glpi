@@ -570,7 +570,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'field'              => 'content',
             'name'               => __('Description'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -1696,11 +1697,20 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         );
         echo "</td></tr>\n";
 
+        $rand = mt_rand();
+
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Description') . "</td>";
         echo "<td colspan='3'>";
-        echo "<textarea id='content' name='content' cols='90' rows='6'>" . $this->fields["content"] .
-           "</textarea>";
+        Html::textarea([
+            'name' => 'content',
+            'value' => RichText::getSafeHtml($this->fields['content'], true),
+            'rows' => 6,
+            'cols' => 90,
+            'editor_id' => 'content' . $rand,
+            'enable_richtext' => true,
+            'enable_fileupload' => false
+        ]);
         echo "</td>";
         echo "</tr>\n";
 
