@@ -36,7 +36,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Inventory\Conf;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
@@ -682,12 +682,86 @@ class Agent extends CommonDBTM
     }
 
     /**
+     * Clean and do other defined actions on an agent or related item
+     * @param Agent $agent The agent to clean
+     * @param array $config Array containing the agent clean config
+     * @return bool True if successful
+     */
+    private static function cleanAgent(Agent $agent, array $config): bool
+    {
+        global $PLUGIN_HOOKS;
+
+        // Actions to apply to the agent or item
+        /** @phpstan-var array{item_action: bool, callback: callable(?Agent, array, ?CommonDBTM):bool}[] $actions_to_apply */
+        $actions_to_apply = [];
+        $need_item = false;
+        if (isset($config['stale_agents_status']) && (int) $config['stale_agents_status'] >= 0) {
+            // 0 = none, -1 or other negative = no change
+            $need_item = true;
+            $actions_to_apply[] = [
+                'item_action' => true,
+                'callback' => static function (?Agent $agent, array $config, ?CommonDBTM $item): bool {
+                    return $item !== null && $item->update([
+                        'id' => $item->fields['id'],
+                        'states_id' => $config['stale_agents_status']
+                    ]);
+                }
+            ];
+        }
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
+        /**
+         * @var string $plugin
+         * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+         */
+        foreach ($plugin_actions as $plugin => $actions) {
+            if (is_array($actions) && Plugin::isPluginActive($plugin)) {
+                foreach ($actions as $action) {
+                    if (!is_callable($action['action_callback'] ?? null)) {
+                        trigger_error(
+                            sprintf('Invalid plugin "%s" action callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                            E_USER_WARNING
+                        );
+                        continue;
+                    }
+                    // Assume plugins always need the item
+                    $need_item = true;
+                    $actions_to_apply[] = $action['action_callback'];
+                }
+            }
+        }
+        if (isset($config['stale_agents_clean']) && $config['stale_agents_clean']) {
+            $actions_to_apply[] = [
+                'item_action' => false,
+                'callback' => static function (?Agent $agent, array $config, ?CommonDBTM $item): bool {
+                    return $agent !== null && $agent->delete(['id' => $agent->fields['id']]);
+                }
+            ];
+        }
+        $item = null;
+
+        // If an action to apply needs the item
+        if ($need_item) {
+            $item = is_a($agent->fields['itemtype'], CommonDBTM::class, true) ? new $agent->fields['itemtype']() : null;
+            if ($item !== null && $item->getFromDB($agent->fields['items_id']) === false) {
+                $item = null;
+            }
+        }
+
+        // Run all actions, with the clean action running last
+        foreach ($actions_to_apply as $action) {
+            // Run the action
+            $action['callback']($agent, $config, $item);
+        }
+        return true;
+    }
+
+    /**
      * Cron task: clean and do other defined actions when agent not have been contacted
      * the server since xx days
      *
      * @global object $DB
      * @param object $task
-     * @return boolean true if successful, otherwise false
+     * @return boolean true if at least partially successful, otherwise false
      * @copyright 2010-2022 by the FusionInventory Development Team.
      */
     public static function cronCleanoldagents($task = null)
@@ -702,6 +776,7 @@ class Agent extends CommonDBTM
         }
 
         $iterator = $DB->request([
+            'SELECT' => ['id'],
             'FROM' => self::getTable(),
             'WHERE' => [
                 'last_contact' => ['<', new QueryExpression("date_add(now(), interval -" . $retention_time . " day)")]
@@ -710,30 +785,13 @@ class Agent extends CommonDBTM
 
         $cron_status = false;
         if (count($iterator)) {
-            $action = (int)($config['stale_agents_action'] ?? Conf::STALE_AGENT_ACTION_CLEAN);
-            if ($action === Conf::STALE_AGENT_ACTION_CLEAN) {
-                //delete agents
-                $agent = new self();
-                foreach ($iterator as $data) {
-                    $agent->delete($data);
+            $agent = new self();
+            foreach ($iterator as $data) {
+                $agent->getFromDB($data['id']);
+                $result = self::cleanAgent($agent, $config);
+                if ($result) {
                     $task->addVolume(1);
                     $cron_status = true;
-                }
-            } else if ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['stale_agents_status'])) {
-                //change status of agents linked assets
-                foreach ($iterator as $data) {
-                    $itemtype = $data['itemtype'];
-                    if (is_subclass_of($itemtype, CommonDBTM::class)) {
-                        $item = new $itemtype();
-                        if ($item->getFromDB($data['items_id'])) {
-                            $item->update([
-                                'id' => $data['items_id'],
-                                'states_id' => $config['agents_status']
-                            ]);
-                            $task->addVolume(1);
-                            $cron_status = true;
-                        }
-                    }
                 }
             }
         }

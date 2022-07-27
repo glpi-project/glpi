@@ -52,6 +52,7 @@ use DeviceSoundCard;
 use Dropdown;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use Monitor;
@@ -133,12 +134,20 @@ class Conf extends CommonGLPI
         'import_printer'                 => 1,
         'import_peripheral'              => 1,
         'stale_agents_delay'             => 0,
-        'stale_agents_action'            => 0,
+        'stale_agents_clean'             => 1,
         'stale_agents_status'            => 0,
     ];
 
+    /**
+     * @var int
+     * @deprecated 10.1.0 No effect
+     */
     public const STALE_AGENT_ACTION_CLEAN = 0;
 
+    /**
+     * @var int
+     * @deprecated 10.1.0 No effect
+     */
     public const STALE_AGENT_ACTION_STATUS = 1;
 
     /**
@@ -274,7 +283,8 @@ class Conf extends CommonGLPI
     /**
      * Get possible actions for stale agents
      *
-     * @return string
+     * @return array
+     * @deprecated 10.1.0 No effect
      */
     public static function getStaleAgentActions(): array
     {
@@ -330,7 +340,7 @@ class Conf extends CommonGLPI
      **/
     public function showConfigForm()
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $config = \Config::getConfigurationValues('inventory');
         $canedit = \Config::canUpdate();
@@ -822,52 +832,70 @@ class Conf extends CommonGLPI
             ]
         );
         echo "</td>";
-        echo "<td>" . _n('Action', 'Actions', 1) . "</td>";
+        echo "<td>" . __('Clean agent') . "</td>";
         echo "<td width='20%'>";
         //action
-        $rand = Dropdown::showFromArray(
-            'stale_agents_action',
-            self::getStaleAgentActions(),
-            [
-                'value' => $config['stale_agents_action'] ?? self::STALE_AGENT_ACTION_CLEAN,
-                'on_change' => 'changestatus();',
-            ]
-        );
-        //if action == action_status => show blocation else hide blocaction
-        echo Html::scriptBlock("
-         function changestatus() {
-            if ($('#dropdown_stale_agents_action$rand').val() != 0) {
-               $('#blocaction1').show();
-               $('#blocaction2').show();
-            } else {
-               $('#blocaction1').hide();
-               $('#blocaction2').hide();
-            }
-         }
-         changestatus();
-
-      ");
+        Dropdown::showYesNo('stale_agents_clean', $config['stale_agents_clean'] ?? 0);
         echo "</td>";
         echo "</tr>";
         //blocaction with status
-        echo "<tr class='tab_bg_1'><td colspan=2></td>";
+        echo "<tr class='tab_bg_1'>";
         echo "<td>";
-        echo "<span id='blocaction1' style='display:none'>";
         echo __('Change the status');
-        echo "</span>";
         echo "</td>";
         echo "<td width='20%'>";
-        echo "<span id='blocaction2' style='display:none'>";
         State::dropdown(
             [
                 'name'   => 'stale_agents_status',
                 'value'  => $config['stale_agents_status'] ?? -1,
-                'entity' => $_SESSION['glpiactive_entity']
+                'entity' => $_SESSION['glpiactive_entity'],
+                'toadd'  => [-1 => __('No change')]
             ]
         );
-        echo "</span>";
         echo "</td>";
-        echo "</tr>";
+
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG];
+        $odd = true;
+        $in_row = true;
+        /**
+         * @var string $plugin
+         * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+         */
+        foreach ($plugin_actions as $plugin => $actions) {
+            if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
+                foreach ($actions as $action) {
+                    if (!is_callable($action['render_callback'] ?? null)) {
+                        trigger_error(
+                            sprintf('Invalid plugin "%s" render callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                            E_USER_WARNING
+                        );
+                        continue;
+                    }
+
+                    if (!$odd) {
+                        echo "<tr class='tab_bg_1'>";
+                    }
+                    $field = $action['render_callback']($config);
+                    if (!empty($field)) {
+                        echo "<td>";
+                        echo $action['label'] ?? '';
+                        echo "</td>";
+                        echo "<td width='20%'>";
+                        echo $field;
+                        echo "</td>";
+
+                        if ($odd) {
+                            echo "</tr>";
+                            $in_row = false;
+                        }
+                        $odd = !$odd;
+                    }
+                }
+            }
+        }
+        if ($in_row) {
+            echo "</tr>";
+        }
 
         if ($canedit) {
             echo "<tr class='tab_bg_2'>";
@@ -897,7 +925,11 @@ class Conf extends CommonGLPI
         $defaults = self::$defaults;
         unset($values['_glpi_csrf_token']);
 
-        $unknown = array_diff_key($values, $defaults);
+        $ext_configs = array_filter($values, static function ($k, $v) {
+            return str_starts_with($v, '_');
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $unknown = array_diff_key($values, $defaults, $ext_configs);
         if (count($unknown)) {
             $msg = sprintf(
                 __('Some properties are not known: %1$s'),
@@ -914,6 +946,7 @@ class Conf extends CommonGLPI
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
         }
+        $to_process = array_merge($to_process, $ext_configs);
         \Config::setConfigurationValues('inventory', $to_process);
         $this->currents = $to_process;
         return true;

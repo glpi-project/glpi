@@ -3118,16 +3118,19 @@ HTML;
                     'name'      => $name
                 ])
             ) {
-                $input = ['id'      => $config->getID(),
-                    'context' => $context,
-                    'value'   => $value
+                $input = [
+                    'id'        => $config->getID(),
+                    'name'      => $name,
+                    'context'   => $context,
+                    'value'     => $value
                 ];
 
                 $config->update($input);
             } else {
-                $input = ['context' => $context,
-                    'name'    => $name,
-                    'value'   => $value
+                $input = [
+                    'context'   => $context,
+                    'name'      => $name,
+                    'value'     => $value
                 ];
 
                 $config->add($input);
