@@ -6333,6 +6333,8 @@ class CommonDBTM extends CommonGLPI
         $id = (int) $id;
         $item = new static();
 
+        $menus = is_array($menus) ? $menus : [];
+
         // Check current interface
         $interface = Session::getCurrentInterface();
         if (isset($menus[Session::getCurrentInterface()])) {
