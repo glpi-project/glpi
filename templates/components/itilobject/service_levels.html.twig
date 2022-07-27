@@ -76,6 +76,7 @@
    }
 ]) %}
 
+{% set isEmpty = true %}
 
 {% for la_field in la_fields %}
    {% set rand = random() %}
@@ -83,6 +84,7 @@
    {% set la_displayed = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField(la_field.lafieldname) %}
 
    {% if date_displayed or la_displayed %}
+      {% set isEmpty = false %}
       {% set la_html %}
          {% if la_field.la.getDataForTicket(item.fields['id'], la_field.type) %}
             {% if date_displayed %}
@@ -232,3 +234,9 @@
       ) }}
    {% endif %}
 {% endfor %}
+
+{% if isEmpty %}
+   <script type="text/javascript">
+      $('#service-levels-heading').closest('.accordion-item').hide();
+   </script>
+{% endif %}
