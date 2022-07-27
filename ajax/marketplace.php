@@ -111,8 +111,8 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     }
 } else if (($_GET["action"] ?? null) == "getPagination") {
     echo MarketplaceView::getPaginationHtml(
-        (int) ($_GET['page'] ?? 1),
-        (int) ($_GET['total'] ?? 1),
+        (int) $_GET['page'],
+        (int) $_GET['total'],
         true
     );
 }
