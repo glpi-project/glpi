@@ -275,6 +275,8 @@ class View extends CommonGLPI
             return;
         }
 
+        $nb_plugins = 0;
+
         $api     = self::getAPI();
         $plugins = $api->getPaginatedPlugins(
             $force,
@@ -282,14 +284,9 @@ class View extends CommonGLPI
             $string_filter,
             $page,
             self::COL_PAGE,
-            $sort
+            $sort,
+            $nb_plugins
         );
-
-        if (strlen($string_filter) > 0) {
-            $nb_plugins = count($plugins);
-        } else {
-            $nb_plugins = $api->getNbPlugins($tag_filter);
-        }
 
         header("X-GLPI-Marketplace-Total: $nb_plugins");
         self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort, $api->isListTruncated());
