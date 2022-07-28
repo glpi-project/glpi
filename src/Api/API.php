@@ -1027,6 +1027,9 @@ abstract class API
             );
         }
 
+        // Decode HTML
+        $fields = array_map(fn ($f) => is_string($f) ? html_entity_decode($f) : $f, $fields);
+
         return $fields;
     }
 
@@ -1295,6 +1298,9 @@ abstract class API
                     ];
                 }
             }
+
+            // Decode HTML
+            $fields = array_map(fn ($f) => is_string($f) ? html_entity_decode($f) : $f, $fields);
         }
        // Break reference
         unset($fields);
