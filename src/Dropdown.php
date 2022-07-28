@@ -367,7 +367,7 @@ class Dropdown
 
            // KB links
             if (
-                $item->isField('knowbaseitemcategories_id') && Session::haveRight('knowbase', READ)
+                $item->isField('knowbaseitemcategories_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
                 && method_exists($item, 'getLinks')
             ) {
                 $paramskblinks = [
@@ -384,6 +384,9 @@ class Dropdown
                     $paramskblinks,
                     false
                 );
+                if ($item->fields['knowbaseitemcategories_id'] != $params['value']) {
+                    $item->getFromDB($params['value']);
+                }
                 $icons .= "<span id='$kblink_id'>";
                 $icons .= '&nbsp;' . $item->getLinks();
                 $icons .= "</span>";

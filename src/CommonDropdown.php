@@ -920,15 +920,19 @@ abstract class CommonDropdown extends CommonDBTM
         ) {
             $title = __s('FAQ');
 
+            $condition = [
+                KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
+            ];
+
             if (Session::getCurrentInterface() == 'central') {
                 $title = __s('Knowledge base');
+            } else {
+                $condition[KnowbaseItem::getTable() . '.is_faq'] = 1;
             }
 
             $rand = mt_rand();
             $kbitem = new KnowbaseItem();
-            $found_kbitem = $kbitem->find([
-                KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
-            ]);
+            $found_kbitem = $kbitem->find($condition);
 
             if (count($found_kbitem)) {
                 $kbitem->getFromDB(reset($found_kbitem)['id']);
@@ -961,9 +965,7 @@ abstract class CommonDropdown extends CommonDBTM
                         'value'     => reset($found_kbitem)['id'],
                         'display'   => false,
                         'rand'      => $rand,
-                        'condition' => [
-                            KnowbaseItem::getTable() . '.id' => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
-                        ],
+                        'condition' => $condition,
                         'on_change' => "getKnowbaseItemAnswer$rand()"
                     ]);
                     $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
