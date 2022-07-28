@@ -1722,6 +1722,16 @@ class Session
         $lang             = $_SESSION['glpilanguage'];
         $session_use_mode = $_SESSION['glpi_use_mode'];
 
+        $impersonator_info = [
+            'id'                            => $impersonator_id,
+            'glpiname'                      => $impersonator,
+            'glpilanguage'                  => $lang,
+            'glpi_use_mode'                 => $session_use_mode,
+            'glpiactive_entity'             => $_SESSION['glpiactive_entity'],
+            'glpiactive_entity_recursive'   => $_SESSION['glpiactive_entity_recursive'],
+            'profiles_id'                   => $_SESSION['glpiactiveprofile']['id'],
+        ];
+
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
@@ -1733,6 +1743,7 @@ class Session
         Session::loadLanguage();
 
         $_SESSION['impersonator_id'] = $impersonator_id;
+        $_SESSION['impersonator_info'] = $impersonator_info;
 
         Event::log(0, "system", 3, "Impersonate", sprintf(
             __('%1$s starts impersonating user %2$s'),
@@ -1762,11 +1773,22 @@ class Session
 
        //store user which was impersonated by another user
         $impersonate_user = $_SESSION['glpiname'];
+        $impersonator_info = $_SESSION['impersonator_info'] ?? [];
 
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
         Session::init($auth);
+
+        // Restore previous user values
+        if (!empty($impersonator_info)) {
+            // Basic values
+            $_SESSION['glpilanguage'] = $impersonator_info['glpilanguage'];
+            $_SESSION['glpi_use_mode'] = $impersonator_info['glpi_use_mode'];
+            // Restore profile/entity
+            self::changeProfile($impersonator_info['profiles_id']);
+            self::changeActiveEntities($impersonator_info['glpiactive_entity'], $impersonator_info['glpiactive_entity_recursive']);
+        }
 
         Event::log(0, "system", 3, "Impersonate", sprintf(
             __('%1$s stops impersonating user %2$s'),
