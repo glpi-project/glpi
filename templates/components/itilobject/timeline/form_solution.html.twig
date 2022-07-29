@@ -168,7 +168,7 @@
                      {{ fields.dropdownField(
                         'SolutionType',
                         'solutiontypes_id',
-                        0,
+                        subitem.fields['solutiontypes_id'] ?? 0,
                         sol_type_lbl,
                         {
                            'full_width': true,
