@@ -4815,7 +4815,8 @@ HTML;
 
                 foreach ($item_iterator as $data) {
                     $cansee = $item->can($data["id"], READ);
-                    $link   = $data["name"];
+                    // Not all item types have a name
+                    $link   = $data["name"] ?? null;
                     if ($cansee) {
                         $link_item = $item::getFormURLWithID($data['id']);
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
