@@ -279,6 +279,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     {
         global $CFG_GLPI;
 
+        $this->input = $this->addFiles($this->input, [
+            'force_update'  => true,
+            'name'          => 'content',
+        ]);
+
         if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
            // Auto-calculate was toggled. Force recalculation of this and parents
             self::recalculatePercentDone($this->getID());
@@ -305,6 +310,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     public function post_addItem()
     {
         global $CFG_GLPI;
+
+        $this->input = $this->addFiles($this->input, [
+            'force_update'  => true,
+            'name'          => 'content',
+        ]);
 
        // Update parent percent_done
         if (isset($this->fields['projects_id']) && $this->fields['projects_id'] > 0) {
