@@ -83,7 +83,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         $this->data['##savedsearch.id##']        = $savedsearch->getID();
         $this->data['##savedsearch.count##']     = (int)$options['data']['totalcount'];
         $this->data['##savedsearch.type##']      = $savedsearch->getField('itemtype');
-        $url = rawurlencode($savedsearch::getSearchURL(false) . "%3Faction=load%26id=" . $savedsearch->getID());
+        $url = rawurlencode($savedsearch::getSearchURL(false) . "?action=load&id=" . $savedsearch->getID());
         $this->data['##savedsearch.url##']       = $this->formatURL($options['additionnaloption']['usertype'], $url);
 
         $this->getTags();
