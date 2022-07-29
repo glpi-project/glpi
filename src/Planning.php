@@ -781,7 +781,7 @@ class Planning extends CommonGLPI
     public static function getPaletteColor($palette_name = 'bg', $color_index = 0)
     {
         if ($palette = self::getPalette($palette_name)) {
-            if ($color_index > count($palette)) {
+            if ($color_index >= count($palette)) {
                 $color_index = $color_index % count($palette);
             }
 
