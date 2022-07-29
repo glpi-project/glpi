@@ -420,7 +420,7 @@ class NotificationTemplate extends CommonDBTM
 
        //Now process IF statements
         $string = self::processIf($string, $cleandata);
-        $string = strtr($string, $cleandata);
+        $string = str_ireplace(array_keys($cleandata), array_values($cleandata), $string);
 
         return $string;
     }
