@@ -384,7 +384,9 @@ class Dropdown
                     $paramskblinks,
                     false
                 );
-                if ($item->fields['knowbaseitemcategories_id'] != $params['value']) {
+                // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,
+                //  as the profile does not have rights to ITILCategory to initialise it before.
+                if ($item->isNewItem()) {
                     $item->getFromDB($params['value']);
                 }
                 $icons .= "<span id='$kblink_id'>";
