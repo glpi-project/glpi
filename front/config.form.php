@@ -89,7 +89,6 @@ if (!empty($_POST['reset_translation_cache'])) {
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 
-$config_id = $_POST['id'];
-Config::displayFullPageForItem($config_id, ["config", "config"], [
+Config::displayFullPageForItem($_POST['id'], ["config", "config"], [
     'formoptions'  => "data-track-changes=true"
 ]);
