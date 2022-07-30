@@ -46,7 +46,7 @@ if (isset($_GET['check_version'])) {
 }
 
 $config = new Config();
-$_POST['id'] = 1;
+$_POST['id'] = Config::getConfigIDForContext('core');
 if (!empty($_POST["update_auth"])) {
     $config->update($_POST);
     Html::back();
@@ -89,7 +89,7 @@ if (!empty($_POST['reset_translation_cache'])) {
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 
-$config_id = Config::getConfigIDForContext('core');
+$config_id = $_POST['id'];
 Config::displayFullPageForItem($config_id, ["config", "config"], [
     'formoptions'  => "data-track-changes=true"
 ]);
