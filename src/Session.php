@@ -316,14 +316,16 @@ class Session
         if (empty($title)) {
             $title = __('List');
         }
-        $url = '';
+        if ($url === null) {
+            $url = '';
 
-        if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                $url = $_SERVER['HTTP_REFERER'];
+            if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
+                if (isset($_SERVER['HTTP_REFERER'])) {
+                    $url = $_SERVER['HTTP_REFERER'];
+                }
+            } else {
+                $url = $_SERVER['REQUEST_URI'];
             }
-        } else {
-            $url = $_SERVER['REQUEST_URI'];
         }
 
         $_SESSION['glpilisttitle'][$itemtype] = $title;
