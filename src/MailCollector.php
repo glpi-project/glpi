@@ -911,9 +911,12 @@ class MailCollector extends CommonDBTM
                         } else {
                             $rejinput['reason'] = NotImportedEmail::MATCH_NO_RULE;
                         }
-                        $refused++;
-                        $rejected->add($rejinput);
-                        $delete[$uid] =  self::REFUSED_FOLDER;
+                        if (!empty($rejinput['to'])) {
+                            $rejected->add($rejinput);
+                        } else {
+                            $refused++;
+                            $delete[$uid] =  self::REFUSED_FOLDER;
+                        }
                     }
 
                   // Clean mail author used for notification settings
