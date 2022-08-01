@@ -1734,7 +1734,7 @@ class Search extends DbTestCase
         ];
         $data = $this->doSearch('Computer', $search_params);
 
-        $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(9);
 
         $displaypref = new \DisplayPreference();
         $input = [
