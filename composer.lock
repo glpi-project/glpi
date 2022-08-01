@@ -5164,16 +5164,16 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "1.1.5",
+            "version": "1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
-                "reference": "96860e2e4d33fec08449ec1c17a87bfc5c0d7b22"
+                "reference": "876ab148b4a56e266266bec506301fa1263e0c0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/96860e2e4d33fec08449ec1c17a87bfc5c0d7b22",
-                "reference": "96860e2e4d33fec08449ec1c17a87bfc5c0d7b22",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/876ab148b4a56e266266bec506301fa1263e0c0d",
+                "reference": "876ab148b4a56e266266bec506301fa1263e0c0d",
                 "shasum": ""
             },
             "require": {
@@ -5181,6 +5181,7 @@
                 "php": ">=5.5.0"
             },
             "replace": {
+                "pclzip/pclzip": "2.8.2",
                 "wapmorgan/cam": "1.0.2"
             },
             "require-dev": {
@@ -5188,19 +5189,19 @@
                 "symfony/console": "~v3.4.47|~v4.4.42|~5.4|~6.1"
             },
             "suggest": {
-                "alchemy/zippy": "ZIP, TAR, GZIP, BZIP2 support (with combinations) via console programs",
-                "bin-ncompress": "TAR.Z support via console program",
-                "ext-bz2": "BZ2 and TAR.BZ2 (BZIP2) support",
-                "ext-phar": "TAR support",
-                "ext-rar": "RAR support",
-                "ext-xz": "XZ and TAR.XZ (LZMA) support",
-                "ext-zip": "ZIP support",
-                "ext-zlib": "GZ and TAR.GZ (GZIP) support",
-                "gemorroj/archive7z": "7ZIP (and a lot of formats) support via console program",
-                "pear/archive_tar": "another TAR support (plain php)",
-                "phpclasses/php-iso-file": "ISO support (plain php)",
+                "alchemy/zippy": "[utility + bridge] ZIP, TAR, GZIP, BZIP2 support (with combinations) via console programs",
+                "bin-ncompress": "[utility] TAR.Z support via console program",
+                "ext-bz2": "[extension] BZ2 (BZIP2) support",
+                "ext-phar": "[extension] TAR/ZIP support",
+                "ext-rar": "[extension] RAR support",
+                "ext-xz": "[extension] XZ (LZMA) support",
+                "ext-zip": "[extension] ZIP support",
+                "ext-zlib": "[extension] GZ (GZIP) support",
+                "gemorroj/archive7z": "[utility + bridge] 7ZIP (and a lot of other formats) support via console program",
+                "pear/archive_tar": "[pure php] another TAR support",
+                "phpclasses/php-iso-file": "[pure php] ISO support",
                 "symfony/console": "Requirement for cam (Console Archive Manager)",
-                "wapmorgan/cab-archive": "CAB support (plain php)"
+                "wapmorgan/cab-archive": "[pure php] CAB support"
             },
             "bin": [
                 "bin/cam"
@@ -5256,9 +5257,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wapmorgan/UnifiedArchive/issues",
-                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.5"
+                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.7"
             },
-            "time": "2022-06-28T12:40:09+00:00"
+            "time": "2022-07-30T23:26:11+00:00"
         },
         {
             "name": "webmozart/assert",
