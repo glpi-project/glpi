@@ -1287,7 +1287,8 @@ class APIRest extends APIBaseClass
      *
      * @return void
      */
-    public function testReturnSanitizedContentFunctional(): void {
+    public function testReturnSanitizedContentFunctional(): void
+    {
         // Get computer with encoded comment
         $computers_id = getItemByTypeName(
             "Computer",
