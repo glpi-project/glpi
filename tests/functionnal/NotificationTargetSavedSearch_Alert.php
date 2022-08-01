@@ -87,6 +87,9 @@ class NotificationTargetSavedSearch_Alert extends DbTestCase
         ]);
 
         // Host may change so only check the end of the URL
-        $this->boolean(str_ends_with($target->data['##savedsearch.url##'], '/index.php?redirect=/front/savedsearch.php%3Faction=load%26id=1&noAUTO=1'))->isTrue();
+        global $CFG_GLPI;
+        $expected_redirect = '%2Ffront%2Fsavedsearch.php%3Faction%3Dload%26id%3D' . $saved_searches_id;
+        $this->string($target->data['##savedsearch.url##'])
+            ->isEqualTo($CFG_GLPI['url_base'] . '/index.php?redirect=' . $expected_redirect . '&noAUTO=1');
     }
 }
