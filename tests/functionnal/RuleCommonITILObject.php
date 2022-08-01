@@ -2336,7 +2336,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Create the rule
         $rule_ticket = $this->createItem(\RuleTicket::getType(), [
-            'name'      => 'testLastInventoryUpdateCriteria',
+            'name'      => __FUNCTION__,
             'match'     => 'AND',
             'is_active' => true,
             'sub_type'  => 'RuleTicket',
