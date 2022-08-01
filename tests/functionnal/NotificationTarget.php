@@ -357,4 +357,50 @@ class NotificationTarget extends DbTestCase
         $output = \NotificationTarget::getInstanceClass($itemtype);
         $this->string($output)->isEqualTo($class);
     }
+
+    protected function testFormatUrlProvider(): iterable
+    {
+        global $CFG_GLPI;
+
+        // No URL returned for anonymous user
+        yield [
+            'usertype' => \NotificationTarget::ANONYMOUS_USER,
+            'redirect' => 'Ticket_24',
+            'expected' => '',
+        ];
+
+        // GLPI user, `noAUTO=1` parameter added
+        yield [
+            'usertype' => \NotificationTarget::GLPI_USER,
+            'redirect' => 'Ticket_24',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24&noAUTO=1',
+        ];
+        yield [
+            'usertype' => \NotificationTarget::GLPI_USER,
+            'redirect' => '/front/test.php?param=test&value=foo bar',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar&noAUTO=1',
+        ];
+
+        // External user, no `noAUTO` parameter
+        yield [
+            'usertype' => \NotificationTarget::EXTERNAL_USER,
+            'redirect' => 'Ticket_24',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24',
+        ];
+        yield [
+            'usertype' => \NotificationTarget::EXTERNAL_USER,
+            'redirect' => '/front/test.php?param=test&value=foo bar',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
+        ];
+    }
+
+    /**
+     * @dataProvider testFormatUrlProvider
+     */
+    public function testFormatUrl(int $usertype, string $redirect, string $expected): void
+    {
+        $this->newTestedInstance();
+
+        $this->string($this->testedInstance->formatUrl($usertype, $redirect))->isEqualTo($expected);
+    }
 }
