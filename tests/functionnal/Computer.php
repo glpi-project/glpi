@@ -367,7 +367,7 @@ class Computer extends DbTestCase
             }
         )->error()
          ->withType(E_USER_WARNING)
-         ->withMessage('getFromDBByCrit expects to get one result, 8 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".')
+         ->withMessage('getFromDBByCrit expects to get one result, 9 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".')
          ->exists();
     }
 
