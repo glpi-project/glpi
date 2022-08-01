@@ -1087,7 +1087,7 @@ class Plugin extends CommonDBTM
      */
     public function isLoadable($directory)
     {
-        return !empty($this->getInformationsFromDirectory($directory));
+        return !empty($this->getInformationsFromDirectory($directory, false));
     }
 
 
@@ -1605,23 +1605,26 @@ class Plugin extends CommonDBTM
      */
     public static function getPluginFilesVersion(string $key): ?string
     {
-        return (new self())->getInformationsFromDirectory($key)['version'] ?? null;
+        return (new self())->getInformationsFromDirectory($key, false)['version'] ?? null;
     }
 
     /**
      * Returns plugin information from directory.
      *
      * @param string $directory
+     * @param bool $with_lang
      *
      * @return array
      */
-    public function getInformationsFromDirectory($directory)
+    public function getInformationsFromDirectory($directory, bool $with_lang = true)
     {
         if (!$this->loadPluginSetupFile($directory)) {
             return [];
         }
 
-        self::loadLang($directory);
+        if ($with_lang) {
+            self::loadLang($directory);
+        }
         return Toolbox::addslashes_deep(self::getInfo($directory));
     }
 

@@ -142,6 +142,11 @@ class Hooks
     const HELPDESK_MENU_ENTRY = 'helpdesk_menu_entry';
     const HELPDESK_MENU_ENTRY_ICON = 'helpdesk_menu_entry_icon';
 
+    // Dashboard hooks
+    const DASHBOARD_CARDS   = 'dashboard_cards';
+    const DASHBOARD_FILTERS = 'dashboard_filters';
+    const DASHBOARD_TYPES   = 'dashboard_types';
+
     /**
      * Get file hooks
      *

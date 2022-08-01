@@ -329,7 +329,7 @@ class Problem extends CommonITILObject
 
     public function post_addItem()
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         parent::post_addItem();
 
@@ -369,20 +369,7 @@ class Problem extends CommonITILObject
             }
         }
 
-       // Processing Email
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-           // Clean reload of the problem
-            $this->getFromDB($this->fields['id']);
-
-            $type = "new";
-            if (
-                isset($this->fields["status"])
-                && in_array($this->input["status"], $this->getSolvedStatusArray())
-            ) {
-                $type = "solved";
-            }
-            NotificationEvent::raiseEvent($type, $this);
-        }
+        $this->handleNewItemNotifications();
 
         if (
             isset($this->input['_from_items_id'])

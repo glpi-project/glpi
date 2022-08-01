@@ -320,7 +320,7 @@ class Toolbox
             'comment'            => 1, // 1: remove HTML comments (and do not display their contents)
             'cdata'              => 1, // 1: remove CDATA sections (and do not display their contents)
             'direct_list_nest'   => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
-            'schemes'            => '*: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet, notes',
+            'schemes'            => 'href: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet, notes; *: file, http, https',
             'no_deprecated_attr' => 0, // 0: do not transform deprecated HTML attributes
         ];
         if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {

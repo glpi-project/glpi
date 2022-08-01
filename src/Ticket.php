@@ -1863,8 +1863,6 @@ class Ticket extends CommonITILObject
 
     public function post_addItem()
     {
-        global $CFG_GLPI;
-
        // Log this event
         $username = 'anonymous';
         if (isset($_SESSION["glpiname"])) {
@@ -2016,17 +2014,7 @@ class Ticket extends CommonITILObject
 
         parent::post_addItem();
 
-       // Processing Email
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-           // Clean reload of the ticket
-            $this->getFromDB($this->fields['id']);
-
-            $type = "new";
-            if (isset($this->fields["status"]) && ($this->fields["status"] == self::SOLVED)) {
-                $type = "solved";
-            }
-            NotificationEvent::raiseEvent($type, $this);
-        }
+        $this->handleNewItemNotifications();
     }
 
 
@@ -4853,8 +4841,7 @@ JAVASCRIPT;
                     $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
                     $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
                     $row['values'][] = [
-                        'class'   => 'priority_block',
-                        'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
+                        'content' => "<div class='priority_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>"
                     ];
 
                     $requesters = [];

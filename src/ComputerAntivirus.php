@@ -153,7 +153,8 @@ class ComputerAntivirus extends CommonDBChild
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'jointype'           => 'child'
-            ]
+            ],
+            'searchtype'         => ['contains'],
         ];
 
         $tab[] = [

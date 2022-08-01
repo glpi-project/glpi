@@ -36,7 +36,6 @@
    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
 </table>
 
-{{ include('central/messages.html.twig', {'messages': messages}) }}
 <div id="home-dashboard{{ rand }}" class="container-fluid">
    {% set grid_items = [] %}
    {% for card in cards %}

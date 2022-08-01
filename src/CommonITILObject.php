@@ -172,7 +172,11 @@ abstract class CommonITILObject extends CommonDBTM
             // we don't want to trigger it on form reload
             // at first load, the key _skip_default_actor is not present (can only be present after a submit)
             if (!isset($params['_skip_default_actor'])) {
-                $users_id_default = $this->getDefaultActor($actortype);
+                // $params['_users_id_' . $actortypestring] corresponds to value defined by static::getDefaultValues()
+                // fallback to static::getDefaultActor() value if empty
+                $users_id_default = array_key_exists('_users_id_' . $actortypestring, $params) && $params['_users_id_' . $actortypestring] > 0
+                    ? $params['_users_id_' . $actortypestring]
+                    : $this->getDefaultActor($actortype);
                 if ($users_id_default > 0) {
                     $userobj  = new User();
                     if ($userobj->getFromDB($users_id_default)) {
@@ -7969,6 +7973,30 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
+     * Handle notifications to be sent after item creation.
+     *
+     * @return void
+     */
+    public function handleNewItemNotifications(): void
+    {
+        global $CFG_GLPI;
+
+        if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
+            $this->getFromDB($this->fields['id']); // Reload item to get actual status
+
+            NotificationEvent::raiseEvent('new', $this);
+
+            $status = $this->fields['status'] ?? null;
+            if (in_array($status, $this->getSolvedStatusArray())) {
+                NotificationEvent::raiseEvent('solved', $this);
+            }
+            if (in_array($status, $this->getClosedStatusArray())) {
+                NotificationEvent::raiseEvent('closed', $this);
+            }
+        }
+    }
+
+    /**
      * Manage Validation add from input (form and rules)
      *
      * @param array $input
@@ -8855,7 +8883,7 @@ abstract class CommonITILObject extends CommonDBTM
             $itemtype = $item['_itemtype'];
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
-                'title'           => Html::link($item['name'], $itemtype::getFormURLWithID($item['id'])),
+                'title'           => '<span class="pointer">' . $item['name'] . '</span>',
                 'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true), 100),
                 'is_deleted'      => $item['is_deleted'] ?? false,
             ];
