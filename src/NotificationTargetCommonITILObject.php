@@ -1153,6 +1153,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $data['actors']                = [];
 
         $data["##$objettype.authors##"] = '';
+        $data['authors']                = [];
         if ($item->countUsers(CommonITILActor::REQUESTER)) {
             $users = [];
             foreach ($item->getUsers(CommonITILActor::REQUESTER) as $tmpusr) {
@@ -1165,46 +1166,45 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $users[] = $user_tmp->getName();
 
                     $tmp = [];
-                    $tmp['##actor.itemtype##']   = User::class;
-                    $tmp['##actor.actortype##']  = CommonITILActor::REQUESTER;
-                    $tmp['##actor.id##']         = $uid;
-                    $tmp['##actor.name##']       = $user_tmp->getName();
+                    $tmp['##author.id##']         = $uid;
+                    $tmp['##author.name##']       = $user_tmp->getName();
 
                     if ($user_tmp->getField('locations_id')) {
-                        $tmp['##actor.location##']
+                        $tmp['##author.location##']
                                     = Dropdown::getDropdownName(
                                         'glpi_locations',
                                         $user_tmp->getField('locations_id')
                                     );
                     } else {
-                        $tmp['##actor.location##'] = '';
+                        $tmp['##author.location##'] = '';
                     }
 
                     if ($user_tmp->getField('usertitles_id')) {
-                         $tmp['##actor.title##']
+                         $tmp['##author.title##']
                                    = Dropdown::getDropdownName(
                                        'glpi_usertitles',
                                        $user_tmp->getField('usertitles_id')
                                    );
                     } else {
-                        $tmp['##actor.title##'] = '';
+                        $tmp['##author.title##'] = '';
                     }
 
                     if ($user_tmp->getField('usercategories_id')) {
-                        $tmp['##actor.category##']
+                        $tmp['##author.category##']
                                  = Dropdown::getDropdownName(
                                      'glpi_usercategories',
                                      $user_tmp->getField('usercategories_id')
                                  );
                     } else {
-                        $tmp['##actor.category##'] = '';
+                        $tmp['##author.category##'] = '';
                     }
 
-                    $tmp['##actor.email##']  = $user_tmp->getDefaultEmail();
-                    $tmp['##actor.mobile##'] = $user_tmp->getField('mobile');
-                    $tmp['##actor.phone##']  = $user_tmp->getField('phone');
-                    $tmp['##actor.phone2##'] = $user_tmp->getField('phone2');
-                    $data['actors'][]       = $tmp;
+                    $tmp['##author.email##']  = $user_tmp->getDefaultEmail();
+                    $tmp['##author.mobile##'] = $user_tmp->getField('mobile');
+                    $tmp['##author.phone##']  = $user_tmp->getField('phone');
+                    $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
+                    $data['authors'][]        = $tmp;
+                    $data['actors'][]         = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'actor');
                 } else {
                     // Anonymous users only in xxx.authors, not in authors
                     $users[] = $tmpusr['alternative_email'];
@@ -1214,6 +1214,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         $data["##$objettype.suppliers##"] = '';
+        $data['suppliers'] = [];
         if ($item->countSuppliers(CommonITILActor::ASSIGN)) {
             $suppliers = [];
             foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $tmpspplier) {
@@ -1226,32 +1227,31 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $suppliers[] = $supplier->getName();
 
                     $tmp = [];
-                    $tmp['##actor.itemtype##']  = Supplier::class;
-                    $tmp['##actor.actortype##'] = CommonITILActor::ASSIGN;
-                    $tmp['##actor.id##']        = $sid;
-                    $tmp['##actor.name##']      = $supplier->getName();
-                    $tmp['##actor.email##']     = $supplier->getField('email');
-                    $tmp['##actor.phone##']     = $supplier->getField('phonenumber');
-                    $tmp['##actor.fax##']       = $supplier->getField('fax');
-                    $tmp['##actor.website##']   = $supplier->getField('website');
-                    $tmp['##actor.email##']     = $supplier->getField('email');
-                    $tmp['##actor.address##']   = $supplier->getField('address');
-                    $tmp['##actor.postcode##']  = $supplier->getField('postcode');
-                    $tmp['##actor.town##']      = $supplier->getField('town');
-                    $tmp['##actor.state##']     = $supplier->getField('state');
-                    $tmp['##actor.country##']   = $supplier->getField('country');
-                    $tmp['##actor.comments##']  = $supplier->getField('comment');
+                    $tmp['##supplier.id##']        = $sid;
+                    $tmp['##supplier.name##']      = $supplier->getName();
+                    $tmp['##supplier.email##']     = $supplier->getField('email');
+                    $tmp['##supplier.phone##']     = $supplier->getField('phonenumber');
+                    $tmp['##supplier.fax##']       = $supplier->getField('fax');
+                    $tmp['##supplier.website##']   = $supplier->getField('website');
+                    $tmp['##supplier.email##']     = $supplier->getField('email');
+                    $tmp['##supplier.address##']   = $supplier->getField('address');
+                    $tmp['##supplier.postcode##']  = $supplier->getField('postcode');
+                    $tmp['##supplier.town##']      = $supplier->getField('town');
+                    $tmp['##supplier.state##']     = $supplier->getField('state');
+                    $tmp['##supplier.country##']   = $supplier->getField('country');
+                    $tmp['##supplier.comments##']  = $supplier->getField('comment');
 
-                    $tmp['##actor.type##'] = '';
+                    $tmp['##supplier.type##'] = '';
                     if ($supplier->getField('suppliertypes_id')) {
-                        $tmp['##actor.type##']
+                        $tmp['##supplier.type##']
                         = Dropdown::getDropdownName(
                             'glpi_suppliertypes',
                             $supplier->getField('suppliertypes_id')
                         );
                     }
 
-                    $data['actors'][] = $tmp;
+                    $data['suppliers'][] = $tmp;
+                    $data['actors'][]    = self::getActorData($supplier, CommonITILActor::ASSIGN, 'actor');
                 }
             }
             $data["##$objettype.suppliers##"] = implode(', ', $suppliers);
@@ -1291,45 +1291,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     } else {
                         $users[$uid] = $user_tmp->getName();
                     }
-                    $tmp['##actor.itemtype##']  = User::class;
-                    $tmp['##actor.actortype##'] = CommonITILActor::ASSIGN;
-                    $tmp['##actor.email##']     = $user_tmp->getDefaultEmail();
-                    $tmp['##actor.mobile##']    = $user_tmp->getField('mobile');
-                    $tmp['##actor.phone##']     = $user_tmp->getField('phone');
-                    $tmp['##actor.phone2##']    = $user_tmp->getField('phone2');
-                    if ($user_tmp->getField('usercategories_id')) {
-                        $tmp['##actor.category##']
-                                 = Dropdown::getDropdownName(
-                                     'glpi_usercategories',
-                                     $user_tmp->getField('usercategories_id')
-                                 );
-                    } else {
-                        $tmp['##actor.category##'] = '';
-                    }
-                    if ($user_tmp->getField('locations_id')) {
-                        $tmp['##actor.location##']
-                                    = Dropdown::getDropdownName(
-                                        'glpi_locations',
-                                        $user_tmp->getField('locations_id')
-                                    );
-                        $location = new Location();
-                        if ($location->getFromDB($user_tmp->getField('locations_id'))) {
-                            $tmp['##actor.address##'] = $location->getField('address');
-                            $tmp['##actor.postcode##'] = $location->getField('postcode');
-                            $tmp['##actor.town##'] = $location->getField('town');
-                        } else {
-                            $tmp['##actor.address##'] = '';
-                            $tmp['##actor.postcode##'] = '';
-                            $tmp['##actor.town##'] = '';
-                        }
-                    } else {
-                        $tmp['##actor.location##'] = '';
-                        $tmp['##actor.address##'] = '';
-                        $tmp['##actor.postcode##'] = '';
-                        $tmp['##actor.town##'] = '';
-                    }
 
-                    $data['actors'][] = $tmp;
+                    $data['actors'][] = self::getActorData($user_tmp, CommonITILActor::ASSIGN, 'actor');
                 }
             }
             $data["##$objettype.assigntousers##"] = implode(', ', $users);
@@ -1355,19 +1318,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $gid          = $tmp['groups_id'];
                 $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
 
-                $tmp = [];
-                $tmp['##actor.itemtype##']   = Group::class;
-                $tmp['##actor.actortype##']  = CommonITILActor::REQUESTER;
-                $tmp['##actor.id##']         = $gid;
-                $tmp['##actor.name##']       = Dropdown::getDropdownName('glpi_groups', $gid);
-                $tmp['##actor.location##']   = '';
-                $tmp['##actor.title##']      = '';
-                $tmp['##actor.category##']   = '';
-                $tmp['##actor.email##']      = '';
-                $tmp['##actor.mobile##']     = '';
-                $tmp['##actor.phone##']      = '';
-                $tmp['##actor.phone2##']     = '';
-                $data['actors'][]            = $tmp;
+                $group_tmp = new group();
+                if ($group_tmp->getFromDB($gid)) {
+                    $data['actors'][] = self::getActorData($group_tmp, CommonITILActor::REQUESTER, 'actor');
+                }
             }
             $data["##$objettype.groups##"] = implode(', ', $groups);
         }
@@ -1379,19 +1333,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $gid          = $tmp['groups_id'];
                 $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
 
-                $tmp = [];
-                $tmp['##actor.itemtype##']   = Group::class;
-                $tmp['##actor.actortype##']  = CommonITILActor::OBSERVER;
-                $tmp['##actor.id##']         = $gid;
-                $tmp['##actor.name##']       = Dropdown::getDropdownName('glpi_groups', $gid);
-                $tmp['##actor.location##']   = '';
-                $tmp['##actor.title##']      = '';
-                $tmp['##actor.category##']   = '';
-                $tmp['##actor.email##']      = '';
-                $tmp['##actor.mobile##']     = '';
-                $tmp['##actor.phone##']      = '';
-                $tmp['##actor.phone2##']     = '';
-                $data['actors'][]            = $tmp;
+                $group_tmp = new group();
+                if ($group_tmp->getFromDB($gid)) {
+                    $data['actors'][] = self::getActorData($group_tmp, CommonITILActor::OBSERVER, 'actor');
+                }
             }
             $data["##$objettype.observergroups##"] = implode(', ', $groups);
         }
@@ -1407,47 +1352,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     && $user_tmp->getFromDB($uid)
                 ) {
                     $users[] = $user_tmp->getName();
-                    $tmp = [];
-                    $tmp['##actor.itemtype##']   = User::class;
-                    $tmp['##actor.actortype##']  = CommonITILActor::OBSERVER;
-                    $tmp['##actor.id##']         = $uid;
-                    $tmp['##actor.name##']       = $user_tmp->getName();
 
-                    if ($user_tmp->getField('locations_id')) {
-                        $tmp['##actor.location##']
-                                    = Dropdown::getDropdownName(
-                                        'glpi_locations',
-                                        $user_tmp->getField('locations_id')
-                                    );
-                    } else {
-                        $tmp['##actor.location##'] = '';
-                    }
-
-                    if ($user_tmp->getField('usertitles_id')) {
-                         $tmp['##actor.title##']
-                                   = Dropdown::getDropdownName(
-                                       'glpi_usertitles',
-                                       $user_tmp->getField('usertitles_id')
-                                   );
-                    } else {
-                        $tmp['##actor.title##'] = '';
-                    }
-
-                    if ($user_tmp->getField('usercategories_id')) {
-                        $tmp['##actor.category##']
-                                 = Dropdown::getDropdownName(
-                                     'glpi_usercategories',
-                                     $user_tmp->getField('usercategories_id')
-                                 );
-                    } else {
-                        $tmp['##actor.category##'] = '';
-                    }
-
-                    $tmp['##actor.email##']  = $user_tmp->getDefaultEmail();
-                    $tmp['##actor.mobile##'] = $user_tmp->getField('mobile');
-                    $tmp['##actor.phone##']  = $user_tmp->getField('phone');
-                    $tmp['##actor.phone2##'] = $user_tmp->getField('phone2');
-                    $data['actors'][]       = $tmp;
+                    $data['actors'][] = self::getActorData($user_tmp, CommonITILActor::OBSERVER, 'actor');
                 } else {
                     $users[] = $tmp['alternative_email'];
                 }
@@ -1462,19 +1368,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $gid          = $tmp['groups_id'];
                 $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
 
-                $tmp = [];
-                $tmp['##actor.itemtype##']   = Group::class;
-                $tmp['##actor.actortype##']  = CommonITILActor::ASSIGN;
-                $tmp['##actor.id##']         = $gid;
-                $tmp['##actor.name##']       = Dropdown::getDropdownName('glpi_groups', $gid);
-                $tmp['##actor.location##']   = '';
-                $tmp['##actor.title##']      = '';
-                $tmp['##actor.category##']   = '';
-                $tmp['##actor.email##']      = '';
-                $tmp['##actor.mobile##']     = '';
-                $tmp['##actor.phone##']      = '';
-                $tmp['##actor.phone2##']     = '';
-                $data['actors'][]            = $tmp;
+                $group_tmp = new group();
+                if ($group_tmp->getFromDB($gid)) {
+                    $data['actors'][] = self::getActorData($group_tmp, CommonITILActor::ASSIGN, 'actor');
+                }
             }
             $data["##$objettype.assigntogroups##"] = implode(', ', $groups);
         }
@@ -1804,6 +1701,96 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return $data;
     }
 
+    protected function getActorData(CommonDBTM $actor, int $actortype, string $key_prefix): array
+    {
+        $data = [
+            sprintf('##%s.itemtype', $key_prefix)  => get_class($actor),
+            sprintf('##%s.actortype', $key_prefix) => $actortype,
+            sprintf('##%s.id', $key_prefix)        => $actor->getID(),
+            sprintf('##%s.name', $key_prefix)      => '',
+            sprintf('##%s.location', $key_prefix)  => '',
+            sprintf('##%s.title', $key_prefix)     => '',
+            sprintf('##%s.category', $key_prefix)  => '',
+            sprintf('##%s.email', $key_prefix)     => '',
+            sprintf('##%s.mobile', $key_prefix)    => '',
+            sprintf('##%s.phone', $key_prefix)     => '',
+            sprintf('##%s.phone2', $key_prefix)    => '',
+            sprintf('##%s.fax', $key_prefix)       => '',
+            sprintf('##%s.website', $key_prefix)   => '',
+            sprintf('##%s.address', $key_prefix)   => '',
+            sprintf('##%s.postcode', $key_prefix)  => '',
+            sprintf('##%s.town', $key_prefix)      => '',
+            sprintf('##%s.state', $key_prefix)     => '',
+            sprintf('##%s.country', $key_prefix)   => '',
+            sprintf('##%s.comments', $key_prefix)  => '',
+            sprintf('##%s.type', $key_prefix)      => '',
+        ];
+        switch (get_class($actor)) {
+            case User::class:
+                $data[sprintf('##%s.name', $key_prefix)] = $actor->getName();
+                
+                if ($actor->getField('locations_id')) {
+                    $data[sprintf('##%s.location', $key_prefix)]
+                                = Dropdown::getDropdownName(
+                                    'glpi_locations',
+                                    $actor->getField('locations_id')
+                                );
+                    $location = new Location();
+                    if ($location->getFromDB($actor->getField('locations_id'))) {
+                        $data[sprintf('##%s.address', $key_prefix)]  = $location->getField('address');
+                        $data[sprintf('##%s.postcode', $key_prefix)] = $location->getField('postcode');
+                        $data[sprintf('##%s.town', $key_prefix)]     = $location->getField('town');
+                    }
+                }
+
+                if ($actor->getField('usertitles_id')) {
+                    $data[sprintf('##%s.title', $key_prefix)]
+                               = Dropdown::getDropdownName(
+                                   'glpi_usertitles',
+                                   $actor->getField('usertitles_id')
+                               );
+                }
+                
+                if ($actor->getField('usercategories_id')) {
+                    $data[sprintf('##%s.category', $key_prefix)]
+                               = Dropdown::getDropdownName(
+                                   'glpi_usercategories',
+                                   $actor->getField('usercategories_id')
+                               );
+                }
+                
+                $data[sprintf('##%s.email', $key_prefix)]      = $actor->getDefaultEmail();
+                $data[sprintf('##%s.mobile', $key_prefix)]     = $actor->getField('mobile');
+                $data[sprintf('##%s.phone', $key_prefix)]      = $actor->getField('phone');
+                $data[sprintf('##%s.phone2', $key_prefix)]     = $actor->getField('phone2');
+                break;
+            case Group::class:
+                $data[sprintf('##%s.name', $key_prefix)]       = Dropdown::getDropdownName('glpi_groups', $actor->getID());
+                break;
+            case Supplier::class:
+                $data[sprintf('##%s.name', $key_prefix)]       = $actor->getName();
+                $data[sprintf('##%s.email', $key_prefix)]      = $actor->getField('email');
+                $data[sprintf('##%s.phone', $key_prefix)]      = $actor->getField('phonenumber');
+                $data[sprintf('##%s.fax', $key_prefix)]        = $actor->getField('fax');
+                $data[sprintf('##%s.website', $key_prefix)]    = $actor->getField('website');
+                $data[sprintf('##%s.address', $key_prefix)]    = $actor->getField('address');
+                $data[sprintf('##%s.postcode', $key_prefix)]   = $actor->getField('postcode');
+                $data[sprintf('##%s.town', $key_prefix)]       = $actor->getField('town');
+                $data[sprintf('##%s.state', $key_prefix)]      = $actor->getField('state');
+                $data[sprintf('##%s.country', $key_prefix)]    = $actor->getField('country');
+                $data[sprintf('##%s.comments', $key_prefix)]   = $actor->getField('comment');
+                if ($actor->getField('suppliertypes_id')) {
+                    $data[sprintf('##%s.type##', $key_prefix)] 
+                               = Dropdown::getDropdownName(
+                                   'glpi_suppliertypes',
+                                   $actor->getField('suppliertypes_id')
+                               );
+                }
+                break;
+        }
+        return $data;
+    }
+
     public function getTags()
     {
 
@@ -1857,14 +1844,26 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.openbyuser'            => __('Writer'),
             $objettype . '.lastupdater'           => __('Last updater'),
             $objettype . '.assigntousers'         => __('Assigned to technicians'),
-            'assigntousers.phone'                 => Phone::getTypeName(1),
-            'assigntousers.phone2'                => __('Phone 2'),
-            'assigntousers.mobile'                => __('Mobile phone'),
-            'assigntousers.category'              => _n('Category', 'Categories', 1),
-            'assigntousers.location'              => __('User location'),
-            'assigntousers.address'               => __('Address'),
-            'assigntousers.postcode'              => __('Postal code'),
-            'assigntousers.town'                  => __('City'),
+            'actors.itemtype'  => __('Internal type'),
+            'actors.actortype' => __('Actor type'),
+            'actors.id'        => __('ID'),
+            'actors.name'      => __('Name'),
+            'actors.location'  => __('User location'),
+            'actors.title'     => _x('person', 'Title'),
+            'actors.category'  => _n('Category', 'Categories', 1),
+            'actors.email'     => _n('Email', 'Emails', 1),
+            'actors.mobile'    => __('Mobile phone'),
+            'actors.phone'     => Phone::getTypeName(1),
+            'actors.phone2'    => __('Phone 2'),
+            'actors.fax'       => __('Fax'),
+            'actors.website'   => __('Website'),
+            'actors.address'   => __('Address'),
+            'actors.postcode'  => __('Postal code'),
+            'actors.town'      => __('City'),
+            'actors.state'     => _x('location', 'State'),
+            'actors.country'   => __('Country'),
+            'actors.comments'  => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'actors.type'      => SupplierType::getTypeName(1),
             $objettype . '.assigntosupplier'      => __('Assigned to a supplier'),
             $objettype . '.groups'                => _n(
                 'Requester group',
@@ -2028,7 +2027,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
             'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
             'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
-            'assigntousers' => __('Assigned to technicians'),
+            'actors' => __('Actors'),
             'timelineitems' => sprintf(__('Processing %1$s'), strtolower($objettype))
         ];
 
