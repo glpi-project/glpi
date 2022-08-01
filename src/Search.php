@@ -1765,7 +1765,7 @@ class Search
         $prehref = $search['target'] . (strpos($search['target'], "?") !== false ? "&" : "?");
         $href    = $prehref . $parameters;
 
-        Session::initNavigateListItems($data['itemtype']);
+        Session::initNavigateListItems($data['itemtype'], '', $href);
 
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
             'data'                => $data,

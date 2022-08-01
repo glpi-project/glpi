@@ -306,13 +306,11 @@ class Session
      * @param string $itemtype Device type
      * @param string $title    List title (default '')
      **/
-    public static function initNavigateListItems($itemtype, $title = "")
+    public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
         global $AJAX_INCLUDE;
 
-        $_SESSION['glpilistitems'][$itemtype] = [];
-
-        if (isset($AJAX_INCLUDE)) {
+        if (isset($AJAX_INCLUDE) && ($url === null)) {
             return;
         }
         if (empty($title)) {
@@ -329,6 +327,7 @@ class Session
         }
 
         $_SESSION['glpilisttitle'][$itemtype] = $title;
+        $_SESSION['glpilistitems'][$itemtype] = [];
         $_SESSION['glpilisturl'][$itemtype]   = $url;
     }
 
