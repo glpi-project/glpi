@@ -101,7 +101,7 @@ function loadDataset()
    // Unit test data definition
     $data = [
       // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.7',
+        '_version' => '4.8',
 
       // Type => array of entries
         'Entity' => [
@@ -146,6 +146,10 @@ function loadDataset()
             ], [
                 'name'        => '_test_pc22',
                 'entities_id' => '_test_child_2',
+            ], [
+                'name'        => '_test_pc_with_encoded_comment',
+                'entities_id' => '_test_root_entity',
+                'comment'     => '&#60;&#62;', // "&#60;" => "<", "&#62;" => ">"
             ]
         ], 'ComputerModel' => [
             [

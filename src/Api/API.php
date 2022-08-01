@@ -1028,7 +1028,12 @@ abstract class API
         }
 
         // Decode HTML
-        $fields = array_map(fn ($f) => is_string($f) ? html_entity_decode($f) : $f, $fields);
+        if (!$this->returnSanitizedContent()) {
+            $fields = array_map(
+                fn ($f) => is_string($f) ? html_entity_decode($f) : $f,
+                $fields
+            );
+        }
 
         return $fields;
     }
@@ -1300,7 +1305,12 @@ abstract class API
             }
 
             // Decode HTML
-            $fields = array_map(fn ($f) => is_string($f) ? html_entity_decode($f) : $f, $fields);
+            if (!$this->returnSanitizedContent()) {
+                $fields = array_map(
+                    fn ($f) => is_string($f) ? html_entity_decode($f) : $f,
+                    $fields
+                );
+            }
         }
        // Break reference
         unset($fields);
@@ -3361,5 +3371,15 @@ abstract class API
             "changeActiveEntities",
             "changeActiveProfile",
         ];
+    }
+
+    /**
+     * Will the API content be sanitized ?
+     *
+     * @return bool
+     */
+    public function returnSanitizedContent(): bool
+    {
+        return true;
     }
 }
