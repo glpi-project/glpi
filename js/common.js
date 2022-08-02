@@ -980,7 +980,7 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        var color_badge = `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
+        color_badge += `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
     }
 
     return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
