@@ -1642,26 +1642,29 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     protected function getActorData(CommonDBTM $actor, int $actortype, string $key_prefix): array
     {
         $data = [
-            sprintf('##%s.itemtype##', $key_prefix)  => get_class($actor),
-            sprintf('##%s.actortype##', $key_prefix) => $actortype,
-            sprintf('##%s.id##', $key_prefix)        => $actor->getID(),
-            sprintf('##%s.name##', $key_prefix)      => '',
-            sprintf('##%s.location##', $key_prefix)  => '',
-            sprintf('##%s.title##', $key_prefix)     => '',
-            sprintf('##%s.category##', $key_prefix)  => '',
-            sprintf('##%s.email##', $key_prefix)     => '',
-            sprintf('##%s.mobile##', $key_prefix)    => '',
-            sprintf('##%s.phone##', $key_prefix)     => '',
-            sprintf('##%s.phone2##', $key_prefix)    => '',
-            sprintf('##%s.fax##', $key_prefix)       => '',
-            sprintf('##%s.website##', $key_prefix)   => '',
-            sprintf('##%s.address##', $key_prefix)   => '',
-            sprintf('##%s.postcode##', $key_prefix)  => '',
-            sprintf('##%s.town##', $key_prefix)      => '',
-            sprintf('##%s.state##', $key_prefix)     => '',
-            sprintf('##%s.country##', $key_prefix)   => '',
-            sprintf('##%s.comments##', $key_prefix)  => '',
-            sprintf('##%s.type##', $key_prefix)      => '',
+            sprintf('##%s.itemtype##', $key_prefix)     => get_class($actor),
+            sprintf('##%s.actortype##', $key_prefix)    => $actortype,
+            sprintf('##%s.id##', $key_prefix)           => $actor->getID(),
+            sprintf('##%s.name##', $key_prefix)         => '',
+            sprintf('##%s.location##', $key_prefix)     => '',
+            sprintf('##%s.title##', $key_prefix)        => '',
+            sprintf('##%s.usertitle##', $key_prefix)    => '',
+            sprintf('##%s.category##', $key_prefix)     => '',
+            sprintf('##%s.usercategory##', $key_prefix) => '',
+            sprintf('##%s.email##', $key_prefix)        => '',
+            sprintf('##%s.mobile##', $key_prefix)       => '',
+            sprintf('##%s.phone##', $key_prefix)        => '',
+            sprintf('##%s.phone2##', $key_prefix)       => '',
+            sprintf('##%s.fax##', $key_prefix)          => '',
+            sprintf('##%s.website##', $key_prefix)      => '',
+            sprintf('##%s.address##', $key_prefix)      => '',
+            sprintf('##%s.postcode##', $key_prefix)     => '',
+            sprintf('##%s.town##', $key_prefix)         => '',
+            sprintf('##%s.state##', $key_prefix)        => '',
+            sprintf('##%s.country##', $key_prefix)      => '',
+            sprintf('##%s.comments##', $key_prefix)     => '',
+            sprintf('##%s.type##', $key_prefix)         => '',
+            sprintf('##%s.suppliertype##', $key_prefix) => '',
         ];
         switch (get_class($actor)) {
             case User::class:
@@ -1687,10 +1690,20 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                                    'glpi_usertitles',
                                    $actor->getField('usertitles_id')
                                );
+                    $data[sprintf('##%s.usertitle##', $key_prefix)]
+                               = Dropdown::getDropdownName(
+                                   'glpi_usertitles',
+                                   $actor->getField('usertitles_id')
+                               );
                 }
                 
                 if ($actor->getField('usercategories_id')) {
                     $data[sprintf('##%s.category##', $key_prefix)]
+                               = Dropdown::getDropdownName(
+                                   'glpi_usercategories',
+                                   $actor->getField('usercategories_id')
+                               );
+                    $data[sprintf('##%s.usercategory##', $key_prefix)]
                                = Dropdown::getDropdownName(
                                    'glpi_usercategories',
                                    $actor->getField('usercategories_id')
@@ -1719,6 +1732,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data[sprintf('##%s.comments##', $key_prefix)]   = $actor->getField('comment');
                 if ($actor->getField('suppliertypes_id')) {
                     $data[sprintf('##%s.type##', $key_prefix)] 
+                               = Dropdown::getDropdownName(
+                                   'glpi_suppliertypes',
+                                   $actor->getField('suppliertypes_id')
+                               );
+                    $data[sprintf('##%s.suppliertype##', $key_prefix)] 
                                = Dropdown::getDropdownName(
                                    'glpi_suppliertypes',
                                    $actor->getField('suppliertypes_id')
@@ -1782,26 +1800,26 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.openbyuser'            => __('Writer'),
             $objettype . '.lastupdater'           => __('Last updater'),
             $objettype . '.assigntousers'         => __('Assigned to technicians'),
-            'actors.itemtype'  => __('Internal type'),
-            'actors.actortype' => __('Actor type'),
-            'actors.id'        => __('ID'),
-            'actors.name'      => __('Name'),
-            'actors.location'  => __('User location'),
-            'actors.title'     => _x('person', 'Title'),
-            'actors.category'  => _n('Category', 'Categories', 1),
-            'actors.email'     => _n('Email', 'Emails', 1),
-            'actors.mobile'    => __('Mobile phone'),
-            'actors.phone'     => Phone::getTypeName(1),
-            'actors.phone2'    => __('Phone 2'),
-            'actors.fax'       => __('Fax'),
-            'actors.website'   => __('Website'),
-            'actors.address'   => __('Address'),
-            'actors.postcode'  => __('Postal code'),
-            'actors.town'      => __('City'),
-            'actors.state'     => _x('location', 'State'),
-            'actors.country'   => __('Country'),
-            'actors.comments'  => _n('Comment', 'Comments', Session::getPluralNumber()),
-            'actors.type'      => SupplierType::getTypeName(1),
+            'actors.itemtype'     => __('Internal type'),
+            'actors.actortype'    => __('Actor type'),
+            'actors.id'           => __('ID'),
+            'actors.name'         => __('Name'),
+            'actors.location'     => __('User location'),
+            'actors.usertitle'    => _x('person', 'Title'),
+            'actors.usercategory' => _n('Category', 'Categories', 1),
+            'actors.email'        => _n('Email', 'Emails', 1),
+            'actors.mobile'       => __('Mobile phone'),
+            'actors.phone'        => Phone::getTypeName(1),
+            'actors.phone2'       => __('Phone 2'),
+            'actors.fax'          => __('Fax'),
+            'actors.website'      => __('Website'),
+            'actors.address'      => __('Address'),
+            'actors.postcode'     => __('Postal code'),
+            'actors.town'         => __('City'),
+            'actors.state'        => _x('location', 'State'),
+            'actors.country'      => __('Country'),
+            'actors.comments'     => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'actors.suppliertype' => SupplierType::getTypeName(1),
             $objettype . '.assigntosupplier'      => __('Assigned to a supplier'),
             $objettype . '.groups'                => _n(
                 'Requester group',
