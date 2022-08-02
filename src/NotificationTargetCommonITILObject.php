@@ -1669,7 +1669,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         switch (get_class($actor)) {
             case User::class:
                 $data[sprintf('##%s.name##', $key_prefix)] = $actor->getName();
-                
+
                 if ($actor->getField('locations_id')) {
                     $data[sprintf('##%s.location##', $key_prefix)]
                                 = Dropdown::getDropdownName(
@@ -1696,7 +1696,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                                    $actor->getField('usertitles_id')
                                );
                 }
-                
+
                 if ($actor->getField('usercategories_id')) {
                     $data[sprintf('##%s.category##', $key_prefix)]
                                = Dropdown::getDropdownName(
@@ -1709,7 +1709,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                                    $actor->getField('usercategories_id')
                                );
                 }
-                
+
                 $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getDefaultEmail();
                 $data[sprintf('##%s.mobile##', $key_prefix)]     = $actor->getField('mobile');
                 $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phone');
@@ -1731,12 +1731,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data[sprintf('##%s.country##', $key_prefix)]    = $actor->getField('country');
                 $data[sprintf('##%s.comments##', $key_prefix)]   = $actor->getField('comment');
                 if ($actor->getField('suppliertypes_id')) {
-                    $data[sprintf('##%s.type##', $key_prefix)] 
+                    $data[sprintf('##%s.type##', $key_prefix)]
                                = Dropdown::getDropdownName(
                                    'glpi_suppliertypes',
                                    $actor->getField('suppliertypes_id')
                                );
-                    $data[sprintf('##%s.suppliertype##', $key_prefix)] 
+                    $data[sprintf('##%s.suppliertype##', $key_prefix)]
                                = Dropdown::getDropdownName(
                                    'glpi_suppliertypes',
                                    $actor->getField('suppliertypes_id')
