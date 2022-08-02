@@ -36,6 +36,7 @@
 // Needed for signal handler
 declare(ticks=1);
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 
 /**
@@ -571,130 +572,13 @@ class CronTask extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
-
         if (!Config::canView() || !$this->getFromDB($ID)) {
             return false;
         }
         $options['candel'] = false;
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td class ='b'>";
-        $name = $this->fields["name"];
-        if ($isplug = isPluginItemType($this->fields["itemtype"])) {
-            $name = sprintf(__('%1$s - %2$s'), $isplug["plugin"], $name);
-        }
-        echo $name . "</td>";
-        echo "<td rowspan='6' class='middle right'>" . __('Comments') . "</td>";
-        echo "<td class='center middle' rowspan='6'>";
-        echo "<textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Description') . "</td><td>";
-        echo $this->getDescription($ID);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Run frequency') . "</td><td>";
-        Dropdown::showFrequency('frequency', $this->fields["frequency"]);
-        echo "</td></tr>";
-
-        $tmpstate = $this->fields["state"];
-        echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
-        if (
-            is_file(GLPI_CRON_DIR . '/' . $this->fields["name"] . '.lock')
-            || is_file(GLPI_CRON_DIR . '/all.lock')
-        ) {
-            echo "<span class='b'>" . __('System lock') . "</span><br>";
-            $tmpstate = self::STATE_DISABLE;
-        }
-
-        if ($isplug) {
-            $plug = new Plugin();
-            if (!$plug->isActivated($isplug["plugin"])) {
-                echo "<span class='b'>" . __('Disabled plugin') . "</span><br>";
-                $tmpstate = self::STATE_DISABLE;
-            }
-        }
-
-        if ($this->fields["state"] == self::STATE_RUNNING) {
-            echo "<span class='b'>" . $this->getStateName(self::STATE_RUNNING) . "</span>";
-        } else {
-            self::dropdownState('state', $this->fields["state"]);
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Run mode') . "</td><td>";
-        $modes = [];
-        if ($this->fields['allowmode'] & self::MODE_INTERNAL) {
-            $modes[self::MODE_INTERNAL] = self::getModeName(self::MODE_INTERNAL);
-        }
-        if ($this->fields['allowmode'] & self::MODE_EXTERNAL) {
-            $modes[self::MODE_EXTERNAL] = self::getModeName(self::MODE_EXTERNAL);
-        }
-        Dropdown::showFromArray('mode', $modes, ['value' => $this->fields['mode']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Run period') . "</td><td>";
-        Dropdown::showNumber('hourmin', ['value' => $this->fields['hourmin'],
-            'min'   => 0,
-            'max'   => 24
-        ]);
-        echo "&nbsp;->&nbsp;";
-        Dropdown::showNumber('hourmax', ['value' => $this->fields['hourmax'],
-            'min'   => 0,
-            'max'   => 24
-        ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __('Number of days this action logs are stored') . "</td><td>";
-        Dropdown::showNumber('logs_lifetime', ['value' => $this->fields['logs_lifetime'],
-            'min'   => 10,
-            'max'   => 360,
-            'step'  => 10,
-            'toadd' => [0 => __('Infinite')]
-        ]);
-        echo "</td><td>" . __('Last run') . "</td><td>";
 
         if (empty($this->fields['lastrun'])) {
-            echo __('Never');
-        } else {
-            echo Html::convDateTime($this->fields['lastrun']);
-            echo "&nbsp;";
-            Html::showSimpleForm(
-                static::getFormURL(),
-                'resetdate',
-                __('Blank'),
-                ['id' => $ID],
-                'fa-times-circle'
-            );
-        }
-        echo "</td></tr>";
-
-        $label = $this->getParameterDescription();
-        echo "<tr class='tab_bg_1'><td>";
-        if (empty($label)) {
-            echo "&nbsp;</td><td>&nbsp;";
-        } else {
-            echo $label . "&nbsp;</td><td>";
-            Dropdown::showNumber('param', ['value' => $this->fields['param'],
-                'min'   => 0,
-                'max'   => 10000
-            ]);
-        }
-        echo "</td><td>" . __('Next run') . "</td><td>";
-
-        if ($tmpstate == self::STATE_RUNNING) {
-            $launch = false;
-        } else {
-            $launch = $this->fields['allowmode'] & self::MODE_INTERNAL;
-        }
-
-        if ($tmpstate != self::STATE_WAITING) {
-            echo $this->getStateName($tmpstate);
-        } else if (empty($this->fields['lastrun'])) {
-            echo __('As soon as possible');
+            $next_run_display = __('As soon as possible');
         } else {
             $next = strtotime($this->fields['lastrun']) + $this->fields['frequency'];
             $h    = date('H', $next);
@@ -707,14 +591,14 @@ class CronTask extends CommonDBTM
                 ($deb < $fin)
                 && ($h < $deb)
             ) {
-                $disp = date('Y-m-d', $next) . " $deb:00:00";
-                $next = strtotime($disp);
+                $next_run_display = date('Y-m-d', $next) . " $deb:00:00";
+                $next = strtotime($next_run_display);
             } else if (
                 ($deb < $fin)
                     && ($h >= $this->fields['hourmax'])
             ) {
-                $disp = date('Y-m-d', $next + DAY_TIMESTAMP) . " $deb:00:00";
-                $next = strtotime($disp);
+                $next_run_display = date('Y-m-d', $next + DAY_TIMESTAMP) . " $deb:00:00";
+                $next = strtotime($next_run_display);
             }
 
             if (
@@ -722,44 +606,28 @@ class CronTask extends CommonDBTM
                 && ($h < $deb)
                 && ($h >= $fin)
             ) {
-                $disp = date('Y-m-d', $next) . " $deb:00:00";
-                $next = strtotime($disp);
+                $next_run_display = date('Y-m-d', $next) . " $deb:00:00";
+                $next = strtotime($next_run_display);
             } else {
-                $disp = date("Y-m-d H:i:s", $next);
+                $next_run_display = date("Y-m-d H:i:s", $next);
             }
 
             if ($next < time()) {
-                echo __('As soon as possible') . '<br>(' . Html::convDateTime($disp) . ') ';
+                $next_run_display = __('As soon as possible') . '<br>(' . Html::convDateTime($next_run_display) . ') ';
             } else {
-                echo Html::convDateTime($disp);
+                $next_run_display = Html::convDateTime($next_run_display);
             }
         }
 
-        if (isset($CFG_GLPI['maintenance_mode']) && $CFG_GLPI['maintenance_mode']) {
-            echo "<div class='warning'>" .
-              __('Maintenance mode enabled, running tasks is disabled') .
-              "</div>";
-        } else if ($launch) {
-            echo "&nbsp;";
-            Html::showSimpleForm(
-                static::getFormURL(),
-                ['execute' => $this->fields['name']],
-                __('Execute')
-            );
-        }
-        if ($tmpstate == self::STATE_RUNNING) {
-            Html::showSimpleForm(
-                static::getFormURL(),
-                'resetstate',
-                __('Blank'),
-                ['id' => $ID],
-                'fa-times-circle'
-            );
-        }
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
-
+        TemplateRenderer::getInstance()->display('pages/setup/crontask/crontask.html.twig', [
+            'item' => $this,
+            'params' => $options,
+            'plugin_info' => isPluginItemType($this->fields["itemtype"]),
+            'item_meta' => [
+                'next_run_display' => $next_run_display ?? __('As soon as possible'),
+                'param_description' => $this->getParameterDescription()
+            ]
+        ]);
         return true;
     }
 
@@ -1175,10 +1043,6 @@ class CronTask extends CommonDBTM
     {
         global $DB;
 
-        echo "<br><div class='center'>";
-        echo "<table class='tab_cadre'>";
-        echo "<tr><th colspan='2'>&nbsp;" . __('Statistics') . "</th></tr>\n";
-
         $nbstart = countElementsInTable(
             'glpi_crontasklogs',
             ['crontasks_id' => $this->fields['id'],
@@ -1198,21 +1062,22 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        echo "<tr class='tab_bg_2'><td>" . __('Run count') . "</td><td class='right'>";
-        if ($nbstart == $nbstop) {
-            echo $nbstart;
-        } else {
-           // This should not appen => task crash ?
-           //TRANS: %s is the number of starts
-            printf(_n('%s start', '%s starts', $nbstart), $nbstart);
-            echo "<br>";
-           //TRANS: %s is the number of stops
-            printf(_n('%s stop', '%s stops', $nbstop), $nbstop);
-            echo "<br>";
-           //TRANS: %s is the number of errors
-            printf(_n('%s error', '%s errors', $nberror), $nberror);
-        }
-        echo "</td></tr>";
+        $stats = [
+            'runs' => [
+                'starts'    => $nbstart,
+                'stops'     => $nbstop,
+                'errors'    => $nberror,
+            ],
+            'datemin'       => 0,
+            'elapsedmin'    => 0,
+            'elapsedmax'    => 0,
+            'elapsedavg'    => 0,
+            'elapsedtot'    => 0,
+            'volmin'        => 0,
+            'volmax'        => 0,
+            'volavg'        => 0,
+            'voltot'        => 0,
+        ];
 
         if ($nbstop) {
             $data = $DB->request([
@@ -1242,72 +1107,23 @@ class CronTask extends CommonDBTM
                 ]
             ])->current();
 
-            echo "<tr class='tab_bg_1'><td>" . __('Start date') . "</td>";
-            echo "<td class='right'>" . Html::convDateTime($data['datemin']) . "</td></tr>";
-
-            echo "<tr class='tab_bg_2'><td>" . __('Minimal time') . "</td>";
-            echo "<td class='right'>" . sprintf(
-                _n('%s second', '%s seconds', $data['elapsedmin']),
-                number_format($data['elapsedmin'], 2)
-            );
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'><td>" . __('Maximal time') . "</td>";
-            echo "<td class='right'>" . sprintf(
-                _n('%s second', '%s seconds', $data['elapsedmax']),
-                number_format($data['elapsedmax'], 2)
-            );
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_2'><td>" . __('Average time') . "</td>";
-            echo "<td class='right b'>" . sprintf(
-                _n('%s second', '%s seconds', $data['elapsedavg']),
-                number_format($data['elapsedavg'], 2)
-            );
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'><td>" . __('Total duration') . "</td>";
-            echo "<td class='right'>" . sprintf(
-                _n('%s second', '%s seconds', $data['elapsedtot']),
-                number_format($data['elapsedtot'], 2)
-            );
-            echo "</td></tr>";
+            $stats['datemin'] = $data['datemin'];
+            $stats['elapsedmin'] = $data['elapsedmin'];
+            $stats['elapsedmax'] = $data['elapsedmax'];
+            $stats['elapsedavg'] = $data['elapsedavg'];
+            $stats['elapsedtot'] = $data['elapsedtot'];
 
             if ($data['voltot'] > 0) {
-                echo "<tr class='tab_bg_2'><td>" . __('Minimal count') . "</td>";
-                echo "<td class='right'>" . sprintf(
-                    _n('%s item', '%s items', $data['volmin']),
-                    $data['volmin']
-                ) . "</td></tr>";
-
-                 echo "<tr class='tab_bg_1'><td>" . __('Maximal count') . "</td>";
-                 echo "<td class='right'>" . sprintf(
-                     _n('%s item', '%s items', $data['volmax']),
-                     $data['volmax']
-                 ) . "</td></tr>";
-
-                 echo "<tr class='tab_bg_2'><td>" . __('Average count') . "</td>";
-                 echo "<td class='right b'>" . sprintf(
-                     _n('%s item', '%s items', $data['volavg']),
-                     number_format($data['volavg'], 2)
-                 ) .
-                   "</td></tr>";
-
-                 echo "<tr class='tab_bg_1'><td>" . __('Total count') . "</td>";
-                 echo "<td class='right'>" . sprintf(
-                     _n('%s item', '%s items', $data['voltot']),
-                     $data['voltot']
-                 ) . "</td></tr>";
-
-                 echo "<tr class='tab_bg_2'><td>" . __('Average speed') . "</td>";
-                 echo "<td class='left'>" . sprintf(
-                     __('%s items/sec'),
-                     number_format($data['voltot'] / $data['elapsedtot'], 2)
-                 );
-                 echo "</td></tr>";
+                $stats['volmin'] = $data['volmin'];
+                $stats['volmax'] = $data['volmax'];
+                $stats['volavg'] = $data['volavg'];
+                $stats['voltot'] = $data['voltot'];
             }
         }
-        echo "</table></div>";
+
+        TemplateRenderer::getInstance()->display('pages/setup/crontask/statistics.html.twig', [
+            'stats' => $stats
+        ]);
     }
 
 
