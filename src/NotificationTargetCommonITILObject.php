@@ -1165,46 +1165,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 ) {
                     $users[] = $user_tmp->getName();
 
-                    $tmp = [];
-                    $tmp['##author.id##']         = $uid;
-                    $tmp['##author.name##']       = $user_tmp->getName();
-
-                    if ($user_tmp->getField('locations_id')) {
-                        $tmp['##author.location##']
-                                    = Dropdown::getDropdownName(
-                                        'glpi_locations',
-                                        $user_tmp->getField('locations_id')
-                                    );
-                    } else {
-                        $tmp['##author.location##'] = '';
-                    }
-
-                    if ($user_tmp->getField('usertitles_id')) {
-                         $tmp['##author.title##']
-                                   = Dropdown::getDropdownName(
-                                       'glpi_usertitles',
-                                       $user_tmp->getField('usertitles_id')
-                                   );
-                    } else {
-                        $tmp['##author.title##'] = '';
-                    }
-
-                    if ($user_tmp->getField('usercategories_id')) {
-                        $tmp['##author.category##']
-                                 = Dropdown::getDropdownName(
-                                     'glpi_usercategories',
-                                     $user_tmp->getField('usercategories_id')
-                                 );
-                    } else {
-                        $tmp['##author.category##'] = '';
-                    }
-
-                    $tmp['##author.email##']  = $user_tmp->getDefaultEmail();
-                    $tmp['##author.mobile##'] = $user_tmp->getField('mobile');
-                    $tmp['##author.phone##']  = $user_tmp->getField('phone');
-                    $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
-                    $data['authors'][]        = $tmp;
-                    $data['actors'][]         = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'actor');
+                    $data['authors'][] = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'author');
+                    $data['actors'][]  = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'actor');
                 } else {
                     // Anonymous users only in xxx.authors, not in authors
                     $users[] = $tmpusr['alternative_email'];
@@ -1226,31 +1188,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 ) {
                     $suppliers[] = $supplier->getName();
 
-                    $tmp = [];
-                    $tmp['##supplier.id##']        = $sid;
-                    $tmp['##supplier.name##']      = $supplier->getName();
-                    $tmp['##supplier.email##']     = $supplier->getField('email');
-                    $tmp['##supplier.phone##']     = $supplier->getField('phonenumber');
-                    $tmp['##supplier.fax##']       = $supplier->getField('fax');
-                    $tmp['##supplier.website##']   = $supplier->getField('website');
-                    $tmp['##supplier.email##']     = $supplier->getField('email');
-                    $tmp['##supplier.address##']   = $supplier->getField('address');
-                    $tmp['##supplier.postcode##']  = $supplier->getField('postcode');
-                    $tmp['##supplier.town##']      = $supplier->getField('town');
-                    $tmp['##supplier.state##']     = $supplier->getField('state');
-                    $tmp['##supplier.country##']   = $supplier->getField('country');
-                    $tmp['##supplier.comments##']  = $supplier->getField('comment');
-
-                    $tmp['##supplier.type##'] = '';
-                    if ($supplier->getField('suppliertypes_id')) {
-                        $tmp['##supplier.type##']
-                        = Dropdown::getDropdownName(
-                            'glpi_suppliertypes',
-                            $supplier->getField('suppliertypes_id')
-                        );
-                    }
-
-                    $data['suppliers'][] = $tmp;
+                    $data['suppliers'][] = self::getActorData($supplier, CommonITILActor::ASSIGN, 'supplier');
                     $data['actors'][]    = self::getActorData($supplier, CommonITILActor::ASSIGN, 'actor');
                 }
             }
