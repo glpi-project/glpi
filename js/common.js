@@ -891,7 +891,7 @@ var templateSelection = function (selection) {
 
 var templateItilStatus = function(option) {
     if (option === false) {
-        // option is false when element does not match searched terms
+        // Option is false when element does not match searched terms
         return null;
     }
     var status = option.id || 0;
@@ -946,6 +946,11 @@ var templateItilStatus = function(option) {
 };
 
 var templateValidation = function(option) {
+    if (option === false) {
+        // Option is false when element does not match searched terms
+        return null;
+    }
+
     var status = option.id || 0;
 
     var classes = "";
@@ -965,10 +970,18 @@ var templateValidation = function(option) {
 };
 
 var templateItilPriority = function(option) {
+    if (option === false) {
+        // Option is false when element does not match searched terms
+        return null;
+    }
+
     var priority = option.id || 0;
     var priority_color = CFG_GLPI['priority_'+priority] || "";
+    var color_badge = "";
 
-    var color_badge = `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
+    if (priority_color.length > 0) {
+        var color_badge = `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
+    }
 
     return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
 };
