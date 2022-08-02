@@ -536,8 +536,9 @@ class Toolbox extends DbTestCase
             $item->fields['id'] = mt_rand(1, 50);
 
             $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
-            if ($item instanceof \CommonITILObject) {
-                $img_url .= '&' . $item->getForeignKeyField() . '=' . $item->fields['id'];
+            if ($item instanceof \CommonDBTM) {
+                $img_url .= '&itemtype=' . $item->getType();
+                $img_url .= '&items_id=' . $item->fields['id'];
             }
 
             $data[] = [
@@ -622,7 +623,8 @@ class Toolbox extends DbTestCase
         $item->fields['id'] = mt_rand(1, 50);
 
         $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
-        $img_url .= '&tickets_id=' . $item->fields['id'];
+        $img_url .= '&itemtype=' . $item->getType();
+        $img_url .= '&items_id=' . $item->fields['id'];
 
         return [
             [
@@ -727,7 +729,9 @@ class Toolbox extends DbTestCase
         $content_text    = '';
         $expected_result = '';
         foreach ($doc_data as $doc_id => $doc) {
-            $expected_url    = '/front/document.send.php?docid=' . $doc_id . '&tickets_id=' . $item->fields['id'];
+            $expected_url    = '/front/document.send.php?docid=' . $doc_id;
+            $expected_url    .= '&itemtype=' . $item->getType();
+            $expected_url    .= '&items_id=' . $item->fields['id'];
             $content_text    .= '<img id="' . $doc['tag'] . '" width="10" height="10" />';
             $expected_result .= '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $doc['tag'] . '" width="10" src="' . $expected_url . '" /></a>';
         }
@@ -779,9 +783,13 @@ class Toolbox extends DbTestCase
         $this->integer((int)$doc_id_2)->isGreaterThan(0);
 
         $content_text    = '<img id="' . $img_tag . '" width="10" height="10" />';
-        $expected_url_1    = '/front/document.send.php?docid=' . $doc_id_1 . '&tickets_id=' . $item->fields['id'];
+        $expected_url_1    = '/front/document.send.php?docid=' . $doc_id_1;
+        $expected_url_1     .= '&itemtype=' . $item->getType();
+        $expected_url_1     .= '&items_id=' . $item->fields['id'];
         $expected_result_1 = '<a href="' . $expected_url_1 . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url_1 . '" /></a>';
-        $expected_url_2    = '/front/document.send.php?docid=' . $doc_id_2 . '&tickets_id=' . $item->fields['id'];
+        $expected_url_2    = '/front/document.send.php?docid=' . $doc_id_2;
+        $expected_url_2     .= '&itemtype=' . $item->getType();
+        $expected_url_2     .= '&items_id=' . $item->fields['id'];
         $expected_result_2 = '<a href="' . $expected_url_2 . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url_2 . '" /></a>';
 
 
@@ -833,7 +841,9 @@ class Toolbox extends DbTestCase
 
         $content_text     = '<img id="' . $img_tag . '" width="10" height="10" />';
         $content_text    .= $content_text;
-        $expected_url     = '/front/document.send.php?docid=' . $doc_id . '&tickets_id=' . $item->fields['id'];
+        $expected_url     = '/front/document.send.php?docid=' . $doc_id;
+        $expected_url    .= '&itemtype=' . $item->getType();
+        $expected_url    .= '&items_id=' . $item->fields['id'];
         $expected_result  = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
         $expected_result .= $expected_result;
 
