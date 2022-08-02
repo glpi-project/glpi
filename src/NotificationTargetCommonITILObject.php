@@ -1704,47 +1704,47 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     protected function getActorData(CommonDBTM $actor, int $actortype, string $key_prefix): array
     {
         $data = [
-            sprintf('##%s.itemtype', $key_prefix)  => get_class($actor),
-            sprintf('##%s.actortype', $key_prefix) => $actortype,
-            sprintf('##%s.id', $key_prefix)        => $actor->getID(),
-            sprintf('##%s.name', $key_prefix)      => '',
-            sprintf('##%s.location', $key_prefix)  => '',
-            sprintf('##%s.title', $key_prefix)     => '',
-            sprintf('##%s.category', $key_prefix)  => '',
-            sprintf('##%s.email', $key_prefix)     => '',
-            sprintf('##%s.mobile', $key_prefix)    => '',
-            sprintf('##%s.phone', $key_prefix)     => '',
-            sprintf('##%s.phone2', $key_prefix)    => '',
-            sprintf('##%s.fax', $key_prefix)       => '',
-            sprintf('##%s.website', $key_prefix)   => '',
-            sprintf('##%s.address', $key_prefix)   => '',
-            sprintf('##%s.postcode', $key_prefix)  => '',
-            sprintf('##%s.town', $key_prefix)      => '',
-            sprintf('##%s.state', $key_prefix)     => '',
-            sprintf('##%s.country', $key_prefix)   => '',
-            sprintf('##%s.comments', $key_prefix)  => '',
-            sprintf('##%s.type', $key_prefix)      => '',
+            sprintf('##%s.itemtype##', $key_prefix)  => get_class($actor),
+            sprintf('##%s.actortype##', $key_prefix) => $actortype,
+            sprintf('##%s.id##', $key_prefix)        => $actor->getID(),
+            sprintf('##%s.name##', $key_prefix)      => '',
+            sprintf('##%s.location##', $key_prefix)  => '',
+            sprintf('##%s.title##', $key_prefix)     => '',
+            sprintf('##%s.category##', $key_prefix)  => '',
+            sprintf('##%s.email##', $key_prefix)     => '',
+            sprintf('##%s.mobile##', $key_prefix)    => '',
+            sprintf('##%s.phone##', $key_prefix)     => '',
+            sprintf('##%s.phone2##', $key_prefix)    => '',
+            sprintf('##%s.fax##', $key_prefix)       => '',
+            sprintf('##%s.website##', $key_prefix)   => '',
+            sprintf('##%s.address##', $key_prefix)   => '',
+            sprintf('##%s.postcode##', $key_prefix)  => '',
+            sprintf('##%s.town##', $key_prefix)      => '',
+            sprintf('##%s.state##', $key_prefix)     => '',
+            sprintf('##%s.country##', $key_prefix)   => '',
+            sprintf('##%s.comments##', $key_prefix)  => '',
+            sprintf('##%s.type##', $key_prefix)      => '',
         ];
         switch (get_class($actor)) {
             case User::class:
-                $data[sprintf('##%s.name', $key_prefix)] = $actor->getName();
+                $data[sprintf('##%s.name##', $key_prefix)] = $actor->getName();
                 
                 if ($actor->getField('locations_id')) {
-                    $data[sprintf('##%s.location', $key_prefix)]
+                    $data[sprintf('##%s.location##', $key_prefix)]
                                 = Dropdown::getDropdownName(
                                     'glpi_locations',
                                     $actor->getField('locations_id')
                                 );
                     $location = new Location();
                     if ($location->getFromDB($actor->getField('locations_id'))) {
-                        $data[sprintf('##%s.address', $key_prefix)]  = $location->getField('address');
-                        $data[sprintf('##%s.postcode', $key_prefix)] = $location->getField('postcode');
-                        $data[sprintf('##%s.town', $key_prefix)]     = $location->getField('town');
+                        $data[sprintf('##%s.address##', $key_prefix)]  = $location->getField('address');
+                        $data[sprintf('##%s.postcode##', $key_prefix)] = $location->getField('postcode');
+                        $data[sprintf('##%s.town##', $key_prefix)]     = $location->getField('town');
                     }
                 }
 
                 if ($actor->getField('usertitles_id')) {
-                    $data[sprintf('##%s.title', $key_prefix)]
+                    $data[sprintf('##%s.title##', $key_prefix)]
                                = Dropdown::getDropdownName(
                                    'glpi_usertitles',
                                    $actor->getField('usertitles_id')
@@ -1752,33 +1752,33 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 }
                 
                 if ($actor->getField('usercategories_id')) {
-                    $data[sprintf('##%s.category', $key_prefix)]
+                    $data[sprintf('##%s.category##', $key_prefix)]
                                = Dropdown::getDropdownName(
                                    'glpi_usercategories',
                                    $actor->getField('usercategories_id')
                                );
                 }
                 
-                $data[sprintf('##%s.email', $key_prefix)]      = $actor->getDefaultEmail();
-                $data[sprintf('##%s.mobile', $key_prefix)]     = $actor->getField('mobile');
-                $data[sprintf('##%s.phone', $key_prefix)]      = $actor->getField('phone');
-                $data[sprintf('##%s.phone2', $key_prefix)]     = $actor->getField('phone2');
+                $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getDefaultEmail();
+                $data[sprintf('##%s.mobile##', $key_prefix)]     = $actor->getField('mobile');
+                $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phone');
+                $data[sprintf('##%s.phone2##', $key_prefix)]     = $actor->getField('phone2');
                 break;
             case Group::class:
-                $data[sprintf('##%s.name', $key_prefix)]       = Dropdown::getDropdownName('glpi_groups', $actor->getID());
+                $data[sprintf('##%s.name##', $key_prefix)]       = Dropdown::getDropdownName('glpi_groups', $actor->getID());
                 break;
             case Supplier::class:
-                $data[sprintf('##%s.name', $key_prefix)]       = $actor->getName();
-                $data[sprintf('##%s.email', $key_prefix)]      = $actor->getField('email');
-                $data[sprintf('##%s.phone', $key_prefix)]      = $actor->getField('phonenumber');
-                $data[sprintf('##%s.fax', $key_prefix)]        = $actor->getField('fax');
-                $data[sprintf('##%s.website', $key_prefix)]    = $actor->getField('website');
-                $data[sprintf('##%s.address', $key_prefix)]    = $actor->getField('address');
-                $data[sprintf('##%s.postcode', $key_prefix)]   = $actor->getField('postcode');
-                $data[sprintf('##%s.town', $key_prefix)]       = $actor->getField('town');
-                $data[sprintf('##%s.state', $key_prefix)]      = $actor->getField('state');
-                $data[sprintf('##%s.country', $key_prefix)]    = $actor->getField('country');
-                $data[sprintf('##%s.comments', $key_prefix)]   = $actor->getField('comment');
+                $data[sprintf('##%s.name##', $key_prefix)]       = $actor->getName();
+                $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getField('email');
+                $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phonenumber');
+                $data[sprintf('##%s.fax##', $key_prefix)]        = $actor->getField('fax');
+                $data[sprintf('##%s.website##', $key_prefix)]    = $actor->getField('website');
+                $data[sprintf('##%s.address##', $key_prefix)]    = $actor->getField('address');
+                $data[sprintf('##%s.postcode##', $key_prefix)]   = $actor->getField('postcode');
+                $data[sprintf('##%s.town##', $key_prefix)]       = $actor->getField('town');
+                $data[sprintf('##%s.state##', $key_prefix)]      = $actor->getField('state');
+                $data[sprintf('##%s.country##', $key_prefix)]    = $actor->getField('country');
+                $data[sprintf('##%s.comments##', $key_prefix)]   = $actor->getField('comment');
                 if ($actor->getField('suppliertypes_id')) {
                     $data[sprintf('##%s.type##', $key_prefix)] 
                                = Dropdown::getDropdownName(
