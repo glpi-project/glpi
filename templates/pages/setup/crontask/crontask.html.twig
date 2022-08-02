@@ -42,6 +42,7 @@
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
    {% set field_options = {} %}
+   {% set can_execute = item.canEdit(item.fields['id']) %}
 
    <div class="card-body d-flex flex-wrap">
       <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
@@ -90,7 +91,7 @@
                               no_label: true,
                               field_class: ''
                            }) }}
-                           <span class="mx-2 text-nowrap">-></span>
+                           <span class="mx-2 text-nowrap">-&gt;</span>
                            {{ fields.dropdownNumberField('hourmax', item.fields['hourmax'], null, {
                               min: 0,
                               max: 24,
@@ -126,12 +127,12 @@
                               {{ __('Never') }}
                            {% else %}
                               {{ item.fields['lastrun']|formatted_datetime }}
-                              <form action="{{ 'CronTask'|itemtype_form_path }}" method="post">
-                                 {# ID and CSRF token fields submitted from the parent form #}
+                              {% if can_execute %}
+                                 {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
                                  <button class="btn btn-icon border-0" type="submit" name="resetdate" title="{{ __('Blank') }}">
                                     <i class="fas fa-times-circle me-1"></i>
                                  </button>
-                              </form>
+                              {% endif %}
                            {% endif %}
                         {% endset %}
                         {{ fields.htmlField('last_run', last_run_field, __('Last run')) }}
@@ -148,22 +149,17 @@
                               <div class="alert alert-warning">
                                  {{ __('Maintenance mode enabled, running tasks is disabled') }}
                               </div>
-                           {% elseif launch %}
-                              <form action="{{ 'CronTask'|itemtype_form_path }}" method="post">
-                                 {# CSRF token field submitted from the parent form #}
-                                 <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">{{ __('Execute') }}</button>
-                              </form>
+                           {% elseif can_execute and launch %}
+                              {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                              <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">{{ __('Execute') }}</button>
                            {% endif %}
 
-                           {% if item.fields['state'] == constant('CronTask::STATE_RUNNING') %}
-                              <form action="{{ 'CronTask'|itemtype_form_path }}" method="post">
-                                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-                                 <input type="hidden" name="id" value="{{ item.getID() }}"/>
-                                 <button class="btn btn-primary" type="submit" name="resetstate">
-                                    <i class="fas fa-times-circle me-1"></i>
-                                    {{ __('Blank') }}
-                                 </button>
-                              </form>
+                           {% if can_execute and item.fields['state'] == constant('CronTask::STATE_RUNNING') %}
+                              {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                              <button class="btn btn-primary" type="submit" name="resetstate">
+                                 <i class="fas fa-times-circle me-1"></i>
+                                 {{ __('Blank') }}
+                              </button>
                            {% endif %}
                         {% endset %}
                         {{ fields.htmlField('next_run', next_run_field, __('Next run')) }}

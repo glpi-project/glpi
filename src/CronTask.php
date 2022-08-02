@@ -572,8 +572,6 @@ class CronTask extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
-
         if (!Config::canView() || !$this->getFromDB($ID)) {
             return false;
         }
@@ -1110,17 +1108,16 @@ class CronTask extends CommonDBTM
             ])->current();
 
             $stats['datemin'] = $data['datemin'];
-            $stats['elapsedmin'] = number_format($data['elapsedmin'], 2);
-            $stats['elapsedmax'] = number_format($data['elapsedmax'], 2);
-            $stats['elapsedavg'] = number_format($data['elapsedavg'], 2);
-            $stats['elapsedtot'] = number_format($data['elapsedtot'], 2);
+            $stats['elapsedmin'] = $data['elapsedmin'];
+            $stats['elapsedmax'] = $data['elapsedmax'];
+            $stats['elapsedavg'] = $data['elapsedavg'];
+            $stats['elapsedtot'] = $data['elapsedtot'];
 
             if ($data['voltot'] > 0) {
                 $stats['volmin'] = $data['volmin'];
                 $stats['volmax'] = $data['volmax'];
-                $stats['volavg'] = number_format($data['volavg'], 2);
+                $stats['volavg'] = $data['volavg'];
                 $stats['voltot'] = $data['voltot'];
-                $stats['speedavg'] = number_format($data['voltot'] / $data['elapsedtot'], 2);
             }
         }
 
