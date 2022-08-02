@@ -367,6 +367,14 @@ if (typeof tinyMCE != 'undefined') {
                             if (/^image\/.+/.test(file.type) === false) {
                                 return; //only process images
                             }
+
+                            // In Firefox, when fetching a `blob://` URI genrated by a unique file pasting,
+                            // `response.blob()` returns a `File`, instead of a `Blob`, with a read-only `name` property.
+                            // So, to be able to force file.name, it have to be converted into a `Blob`.
+                            if (file instanceof File) {
+                                file = new Blob([file], {type: file.type});
+                            }
+
                             const ext = file.type.replace('image/', '');
                             file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + ext;
                             uploaded_images.push(
