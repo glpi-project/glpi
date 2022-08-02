@@ -890,12 +890,11 @@ var templateSelection = function (selection) {
 };
 
 var templateItilStatus = function(option) {
-    var status = option.id || 0;
-
-    // Only show valid items
-    if (option.text == undefined) {
+    if (option === false) {
+        // option is false when element does not match searched terms
         return null;
     }
+    var status = option.id || 0;
 
     var classes = "";
     switch (parseInt(status)) {
