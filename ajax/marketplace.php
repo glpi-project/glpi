@@ -101,7 +101,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
                 true,
                 $_GET['tag'] ?? "",
                 $_GET['filter'] ?? "",
-                $_GET['page'] ?? 1,
+                (int) ($_GET['page'] ?? 1),
                 $_GET['sort'] ?? "sort-alpha-asc"
             );
             break;
@@ -111,8 +111,8 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     }
 } else if (($_GET["action"] ?? null) == "getPagination") {
     echo MarketplaceView::getPaginationHtml(
-        $_GET['page'] ?? 1,
-        $_GET['total'] ?? 1,
+        (int) $_GET['page'],
+        (int) $_GET['total'],
         true
     );
 }
