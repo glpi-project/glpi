@@ -4120,6 +4120,8 @@ CREATE TABLE `glpi_locations` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `alias` varchar(255) DEFAULT NULL,
   `locations_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `comment` text,

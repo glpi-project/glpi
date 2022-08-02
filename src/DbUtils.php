@@ -1253,7 +1253,9 @@ final class DbUtils
                 [
                     "$table.address",
                     "$table.town",
-                    "$table.country"
+                    "$table.country",
+                    "$table.code",
+                    "$table.alias"
                 ]
             );
         }
@@ -1278,10 +1280,20 @@ final class DbUtils
                     $name
                 );
                 if ($table == Location::getTable()) {
-                     $acomment = '';
-                     $address = $result['address'];
-                     $town    = $result['town'];
-                     $country = $result['country'];
+                    $acomment = '';
+                    $address = $result['address'];
+                    $town    = $result['town'];
+                    $country = $result['country'];
+                    $code    = $result['code'];
+                    $alias   = $result['alias'];
+                    if (!empty($code)) {
+                        $name .= ' - ' . $code;
+                        $comment .= "<span class='b'>" . __('Code:') . "</span> " . $code . "<br/>";
+                    }
+                    if (!empty($alias)) {
+                        $name = $alias;
+                        $comment .= "<span class='b'>" . __('Alias:') . "</span> " . $alias . "<br/>";
+                    }
                     if (!empty($address)) {
                         $acomment .= $address;
                     }
