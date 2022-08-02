@@ -892,6 +892,11 @@ var templateSelection = function (selection) {
 var templateItilStatus = function(option) {
     var status = option.id || 0;
 
+    // Only show valid items
+    if (option.text == undefined) {
+        return null;
+    }
+
     var classes = "";
     switch (parseInt(status)) {
         case 1 :
