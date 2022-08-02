@@ -1256,7 +1256,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $gid          = $tmp['groups_id'];
                 $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
 
-                $group_tmp = new group();
+                $group_tmp = new Group();
                 if ($group_tmp->getFromDB($gid)) {
                     $data['actors'][] = self::getActorData($group_tmp, CommonITILActor::REQUESTER, 'actor');
                 }
@@ -1271,7 +1271,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $gid          = $tmp['groups_id'];
                 $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
 
-                $group_tmp = new group();
+                $group_tmp = new Group();
                 if ($group_tmp->getFromDB($gid)) {
                     $data['actors'][] = self::getActorData($group_tmp, CommonITILActor::OBSERVER, 'actor');
                 }
@@ -1306,7 +1306,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $gid          = $tmp['groups_id'];
                 $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
 
-                $group_tmp = new group();
+                $group_tmp = new Group();
                 if ($group_tmp->getFromDB($gid)) {
                     $data['actors'][] = self::getActorData($group_tmp, CommonITILActor::ASSIGN, 'actor');
                 }
