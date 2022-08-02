@@ -1554,6 +1554,7 @@ abstract class CommonITILValidation extends CommonDBChild
         $params = [
             'prefix'            => null,
             'id'                => 0,
+            'parent'            => null,
             'entity'            => $_SESSION['glpiactive_entity'],
             'right'             => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
             'groups_id'         => 0,
@@ -1580,11 +1581,25 @@ abstract class CommonITILValidation extends CommonDBChild
         $validatortype_name = array_key_exists('name', $params)
             ? 'validatortype' // legacy behaviour, remove it in GLPI 11.0
             : $params['prefix'] . '[validatortype]';
-        $out = Dropdown::showFromArray($validatortype_name, [
+
+        // Build list of available dropdown items
+        $requester_user = $params['parent']->getPrimaryRequesterUser();
+        if ($requester_user !== null) {
+            $supervisor_user = User::getById($requester_user->fields['users_id_supervisor']);
+        }
+        $validators = [
             'User'       => User::getTypeName(1),
             'Group_User' => __('Group user(s)'),
             'Group'      => Group::getTypeName(1),
-        ], [
+        ];
+        if (is_object($supervisor_user)) {
+            $validators['requester_supervisor'] =  sprintf(
+                __('Responsible of %s (%s)'),
+                $requester_user->getFriendlyName(),
+                $supervisor_user->getFriendlyName()
+            );
+        }
+        $out = Dropdown::showFromArray($validatortype_name, $validators, [
             'value'               => $validatortype,
             'display_emptychoice' => true,
             'display'             => false,
@@ -1877,5 +1892,31 @@ HTML;
     public static function getAllValidationStatusArray()
     {
         return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $input
+     * @return bool|int
+     */
+    public function addRequesterResponsible($input) {
+        global $DB;
+
+        $itemtype = $input['itemtype'];
+        if (!is_subclass_of($itemtype, CommonItilObject::class)) {
+            return false;
+        }
+        $itemUserClass = (new $itemtype)->userlinkclass;
+        $itemUserTable = (new DbUtils())->getTableForItemType($itemUserClass);
+        $fk = $itemtype::getForeignKeyField();
+        $DB->request([
+            'FROM' => $itemUserTable,
+            'WHERE' => [
+                $fk => $input[$fk],
+                'users_id' => ['>', 0],
+                'type' => CommonITILActor::REQUESTER,
+            ]
+        ]);
     }
 }

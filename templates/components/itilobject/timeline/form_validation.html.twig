@@ -204,6 +204,7 @@
                     {{ fields.field(
                         '_add_validation',
                         subitem.dropdownValidator({
+                            'parent': item,
                             'entity': item.fields['entities_id'],
                             'itemtype_target': subitem.fields['itemtype_target'],
                             'items_id_target': subitem.fields['items_id_target'] ?? '',

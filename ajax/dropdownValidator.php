@@ -80,6 +80,31 @@ if (isset($_POST["validatortype"])) {
     }
 
     switch (strtolower($_POST['validatortype'])) {
+        case 'requester_supervisor':
+            // find the supervisor of the requester of the ITIL object
+            $user_id = 0;
+            $itilValidationObjectType = $_POST['validation_class'];
+            if (!class_exists($itilValidationObjectType)) {
+                // Invalid class
+                break;
+            }
+            $itilObjectType = $itilValidationObjectType::$itemtype;
+            $itilObject = $itilObjectType::getById($_POST['parent']['fields']['id']);
+            $requester_user = $itilObject->getPrimaryRequesterUser();
+            if ($requester_user === null) {
+                // No requester user found
+                break;
+            }
+            $supervisor_user = User::getById($requester_user->fields['users_id_supervisor']);
+            if (!is_object($supervisor_user)) {
+                // No supervisor for the requester user
+                break;
+            }
+            $user_id = $supervisor_user->getID();
+            echo Html::hidden($itemtype_name, ['value' => 'User']);
+            echo Html::hidden($items_id_name, ['value' => $user_id]);
+            break;
+
         case 'user':
             User::dropdown([
                 'name'   => $items_id_name,

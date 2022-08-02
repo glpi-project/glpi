@@ -5565,4 +5565,92 @@ HTML
             $this->boolean($found)->isTrue(json_encode($expected_actor));
         }
     }
+
+    public function providerGetPrimaryRequesterUser()
+    {
+        $this->login();
+        $entity_id = 0;
+
+        $ticket = new \Ticket();
+        yield [
+            'ticket' => $ticket,
+            'expected' => null,
+        ];
+
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_skip_auto_assign' => true,
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => null,
+        ];
+
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_actors'           => [
+                'requester'       => [
+                    [
+                        'itemtype'        => \User::class,
+                        'items_id'        => $_SESSION['glpiID'],
+                        'use_notification'=> 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => $_SESSION['glpiID'],
+        ];
+
+        $glpi_user = new \User();
+        $glpi_user->getFromDBbyName('glpi');
+        $normal_user = new \User();
+        $normal_user->getFromDBbyName('normal');
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_actors'           => [
+                'requester'       => [
+                    [
+                        'itemtype'        => \User::class,
+                        'items_id'        => $normal_user->getID(),
+                        'use_notification'=> 0,
+                        'alternative_email' => '',
+                    ], [
+                        'itemtype'        => \User::class,
+                        'items_id'        => $glpi_user->getID(),
+                        'use_notification'=> 0,
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => $normal_user->getID(),
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetPrimaryRequesterUser
+     */
+    public function testGetPrimaryRequesterUser($ticket, $expected)
+    {
+        $output = $ticket->getPrimaryRequesterUser();
+        if ($expected === null) {
+            $this->variable($output)->isNull();
+        } else {
+            $this->integer($output->getID())->isEqualTo($expected);
+        }
+    }
 }

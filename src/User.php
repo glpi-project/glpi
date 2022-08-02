@@ -438,11 +438,23 @@ class User extends CommonDBTM
 
         $this->dropPictureFiles($this->fields['picture']);
 
-       // Ticket rules use various _users_id_*
+        // Ticket rules use various _users_id_*
         Rule::cleanForItemAction($this, '_users_id%');
         Rule::cleanForItemCriteria($this, '_users_id%');
 
-       // Alert does not extends CommonDBConnexity
+        // Users having the deleted user as supervisor
+        $rows = self::find([
+            'users_id_supervisor' => $this->fields['id']
+        ]);
+        $supervisedUser = new User();
+        foreach ($rows as $row) {
+            $supervisedUser->update([
+                'id' => $row['id'],
+                'users_id_supervisor' => 0,
+            ]);
+        }
+
+        // Alert does not extends CommonDBConnexity
         $alert = new Alert();
         $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
     }
