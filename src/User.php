@@ -627,6 +627,14 @@ class User extends CommonDBTM
      */
     public function getFromDBbyToken($token, $field = 'personal_token')
     {
+        if (!is_string($token)) {
+            trigger_error(
+                sprintf('Unexpected token value received: "string" expected, received "%s".', gettype($token)),
+                E_USER_WARNING
+            );
+            return false;
+        }
+
         $fields = ['personal_token', 'api_token'];
         if (!in_array($field, $fields)) {
             trigger_error(
