@@ -34,9 +34,10 @@
 {% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] %}
 {% set lists_itemtype = menu[sector]['content'][item]['options'][option]['lists_itemtype'] ?? menu[sector]['content'][item]['lists_itemtype'] %}
 
-{% set itemlinks = item ?? item  %}
-{% if  lists_itemtype is defined %}
+{% if lists_itemtype is defined and lists_itemtype is not null %}
    {% set itemlinks = lists_itemtype  %}
+{% else %}
+   {% set itemlinks = item  %}
 {% endif %}
 
 {# @TODO  border-start is not implemented in current boostrap beta (remove border-left when done)  #}
