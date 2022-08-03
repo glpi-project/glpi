@@ -66,6 +66,8 @@ abstract class CommonITILObject extends CommonDBTM
 
     public $deduplicate_queued_notifications = false;
 
+    protected static $showTitleInNavigationHeader = true;
+
     const MATRIX_FIELD         = '';
     const URGENCY_MASK_FIELD   = '';
     const IMPACT_MASK_FIELD    = '';
