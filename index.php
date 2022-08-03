@@ -44,6 +44,7 @@ if (
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
@@ -103,12 +104,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     if (!isset($_GET["noAUTO"])) {
         Auth::redirectIfAuthenticated();
     }
-    Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"]) ? $_GET["redirect"] : "");
+
+    $redirect = array_key_exists('redirect', $_GET) ? Sanitizer::unsanitize($_GET['redirect']) : '';
+
+    Auth::checkAlternateAuthSystems(true, $redirect);
 
     $theme = $_SESSION['glpipalette'] ?? 'auror';
 
     $errors = "";
-    if (isset($_GET['error']) && isset($_GET['redirect'])) {
+    if (isset($_GET['error']) && $redirect !== '') {
         switch ($_GET['error']) {
             case 1: // cookie error
                 $errors .= __('You must accept cookies to reach this application');
@@ -125,8 +129,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     }
 
     // redirect to ticket
-    if (isset($_GET["redirect"])) {
-        Toolbox::manageRedirect($_GET["redirect"]);
+    if ($redirect !== '') {
+        Toolbox::manageRedirect($redirect);
     }
 
     TemplateRenderer::getInstance()->display('pages/login.html.twig', [
@@ -134,7 +138,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
         'title'               => __('Authentication'),
         'noAuto'              => $_GET["noAUTO"] ?? 0,
-        'redirect'            => Html::entities_deep($_GET['redirect'] ?? ""),
+        'redirect'            => $redirect,
         'text_login'          => $CFG_GLPI['text_login'],
         'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
         'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),

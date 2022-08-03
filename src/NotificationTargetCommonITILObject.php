@@ -1480,7 +1480,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["documents"] = [];
             $addtodownloadurl   = '';
             if ($item->getType() == 'Ticket') {
-                 $addtodownloadurl = "%2526tickets_id=" . $item->fields['id'];
+                 $addtodownloadurl = "&tickets_id=" . $item->fields['id'];
             }
             foreach ($iterator as $row) {
                 $tmp                      = [];
