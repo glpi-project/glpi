@@ -32,6 +32,12 @@
  #}
 
 {% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] %}
+{% set lists_itemtype = menu[sector]['content'][item]['options'][option]['lists_itemtype'] ?? menu[sector]['content'][item]['lists_itemtype'] %}
+
+{% set itemlinks = item ?? item  %}
+{% if  lists_itemtype is defined %}
+   {% set itemlinks = lists_itemtype  %}
+{% endif %}
 
 {# @TODO  border-start is not implemented in current boostrap beta (remove border-left when done)  #}
 <ul class="nav navbar-nav border-start border-left ps-1 ps-sm-2 flex-row">
@@ -57,7 +63,7 @@
 {% if links['lists'] is defined %}
 <li class="nav-item">
    <a href="#" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2 show-saved-searches"
-      data-itemtype="{{ item }}" title="{{ __('Lists') }}">
+      data-itemtype="{{ itemlinks }}" title="{{ __('Lists') }}">
       <i class="ti ti-star"></i>
       <span class="d-none d-xxl-block">{{ __('Lists') }}</span>
    </a>
