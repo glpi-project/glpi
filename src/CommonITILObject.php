@@ -6759,7 +6759,8 @@ abstract class CommonITILObject extends CommonDBTM
 
                 $item = $document_obj->fields;
                 $item['date'] = $date;
-                // #1476 - set date_mod and owner to attachment ones
+                // #1476 - set date_creation, date_mod and owner to attachment ones
+                $item['date_creation'] = $date;
                 $item['date_mod'] = $document_item['date_mod'];
                 $item['users_id'] = $document_item['users_id'];
                 $item['documents_item_id'] = $document_item['id'];
