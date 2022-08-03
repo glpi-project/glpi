@@ -1606,8 +1606,9 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $location_id = $input['locations_id'] ?? 0;
+        $location_id = (int)$location_id;
         if ($location_id) {
-            $input['locations_id_code'] = Location::getById($location_id)->fields['code'];
+            $input['_locations_code'] = Location::getById($location_id)->fields['code'];
         }
 
         if (isset($input["document"]) && ($input["document"] > 0)) {
@@ -2458,8 +2459,9 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $location_id = $input['locations_id'] ?? 0;
+        $location_id = (int)$location_id;
         if ($location_id) {
-            $input['locations_id_code'] = Location::getById($location_id)->fields['code'];
+            $input['_locations_code'] = Location::getById($location_id)->fields['code'];
         }
 
         $canpriority = true;

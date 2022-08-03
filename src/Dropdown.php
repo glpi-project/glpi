@@ -2666,12 +2666,17 @@ class Dropdown
                     $search = Search::makeTextSearchValue($post['searchText']);
 
                     $swhere = [
-                        "OR" => [
-                            "$table.completename" => ['LIKE', $search],
-                            "$table.code"         => ['LIKE', $search],
-                            "$table.alias"        => ['LIKE', $search],
-                        ]
+                        "$table.completename" => ['LIKE', $search],
                     ];
+                    if ($table == Location::getTable()) {
+                        $swhere = [
+                            "OR" => [
+                                "$table.completename" => ['LIKE', $search],
+                                "$table.code"         => ['LIKE', $search],
+                                "$table.alias"        => ['LIKE', $search],
+                            ]
+                        ];
+                    }
                     if (Session::haveTranslations($post['itemtype'], 'completename')) {
                         $swhere["namet.value"] = ['LIKE', $search];
                     }
