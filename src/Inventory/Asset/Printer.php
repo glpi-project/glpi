@@ -128,7 +128,6 @@ class Printer extends NetworkEquipment
                 unset($val->credentials);
             }
 
-
             $res_rule = $rulecollection->processAllRules(['name' => $val->name]);
             if (
                 (!isset($res_rule['_ignore_ocs_import']) || $res_rule['_ignore_ocs_import'] != "1")
@@ -139,6 +138,8 @@ class Printer extends NetworkEquipment
                 }
                 if (isset($res_rule['manufacturer'])) {
                     $val->manufacturers_id = $res_rule['manufacturer'];
+                    $known_key = md5('manufacturers_id' . $res_rule['manufacturer']);
+                    $this->known_links[$known_key] = $res_rule['manufacturer'];
                 }
 
                 if (isset($this->extra_data['pagecounters'])) {
@@ -214,7 +215,7 @@ class Printer extends NetworkEquipment
                    // add printer
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $printer->add(Toolbox::addslashes_deep((array)$val));
+                    $items_id = $printer->add(Toolbox::addslashes_deep($this->handleInput($val)));
                 } else {
                     $items_id = $data['found_inventories'][0];
                 }

@@ -65,7 +65,7 @@ class Bios extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": 1}'
+                'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": "BIOS"}'
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -81,7 +81,7 @@ class Bios extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": 1}'
+                'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": "BIOS"}'
             ]
         ];
     }
@@ -172,7 +172,7 @@ class Bios extends AbstractInventoryAsset
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
-       //create manually a computer, with a bios
+        //create manually a computer, with a bios
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
@@ -200,18 +200,18 @@ class Bios extends AbstractInventoryAsset
             $this->variable($firmware['is_dynamic'])->isEqualTo(0);
         }
 
-       //computer inventory knows bios
+        //computer inventory knows bios
         $this->doInventory($xml_source, true);
 
-       //we still have 1 bios linked to the computer
+        //we still have 1 bios linked to the computer
         $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($firmwares))->isIdenticalTo(1);
 
-       //bios present in the inventory source is now dynamic
+        //bios present in the inventory source is now dynamic
         $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($firmwares))->isIdenticalTo(1);
 
-       //Redo inventory, but with modified firmware => will create a new one
+        //Redo inventory, but with modified firmware => will create a new one
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -237,15 +237,15 @@ class Bios extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have one firmware
+        //we still have one firmware
         $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($firmwares))->isIdenticalTo(1);
 
-       //bios present in the inventory source is still dynamic
+        //bios present in the inventory source is still dynamic
         $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($firmwares))->isIdenticalTo(1);
 
-       //"original" firmware has been removed
+        //"original" firmware has been removed
         $this->boolean($item_bios->getFromDB($item_bios_id))->isFalse();
     }
 }

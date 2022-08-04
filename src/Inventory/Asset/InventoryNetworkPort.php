@@ -281,7 +281,7 @@ trait InventoryNetworkPort
      * Add a network name into database
      *
      * @param integer $items_id Port id
-     * @param string  $name     Network name name
+     * @param string  $name     Network name
      *
      * @return integer
      */
@@ -441,7 +441,7 @@ trait InventoryNetworkPort
                         $netname_id = $this->addNetworkName($keydb);
                     }
 
-                   //Handle ipaddresses
+                    //Handle ipaddresses
                     $db_addresses = [];
                     $iterator = $DB->request([
                         'SELECT' => ['id', 'name'],
@@ -469,7 +469,7 @@ trait InventoryNetworkPort
 
                     if (!$this->isMainPartial() && count($db_addresses) && count($ips)) {
                         $ipaddress = new IPAddress();
-                       //deleted IP addresses
+                        //deleted IP addresses
                         foreach (array_keys($db_addresses) as $id_ipa) {
                             $ipaddress->delete(['id' => $id_ipa], true);
                         }
@@ -493,7 +493,7 @@ trait InventoryNetworkPort
             }
         }
 
-       //delete remaining network ports, if any
+        //delete remaining network ports, if any
         if (!$this->isMainPartial() && count($db_ports)) {
             foreach ($db_ports as $netpid => $netpdata) {
                 if ($netpdata['name'] != 'management') { //prevent removing internal management port

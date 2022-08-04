@@ -968,7 +968,7 @@ class Printer extends AbstractInventoryAsset
         ]);
         $this->integer($rule_id)->isGreaterThan(0);
 
-       // Add criteria
+        // Add criteria
         $rule = $rulecollection->getRuleClass();
         $rulecriteria = new \RuleCriteria(get_class($rule));
         $this->integer(
@@ -980,7 +980,7 @@ class Printer extends AbstractInventoryAsset
             ])
         )->isGreaterThan(0);
 
-       // Add action
+        // Add action
         $ruleaction = new \RuleAction(get_class($rule));
         $this->integer(
             $ruleaction->add([
@@ -991,7 +991,7 @@ class Printer extends AbstractInventoryAsset
             ])
         )->isGreaterThan(0);
 
-       // Add action
+        // Add action
         $ruleaction = new \RuleAction(get_class($rule));
         $this->integer(
             $ruleaction->add([
@@ -1002,7 +1002,7 @@ class Printer extends AbstractInventoryAsset
             ])
         )->isGreaterThan(0);
 
-       // Add action
+        // Add action
         $ruleaction = new \RuleAction(get_class($rule));
         $ruleaction->add([
             'rules_id' => $rule_id,
@@ -1043,7 +1043,7 @@ class Printer extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory with two printers, "HP Deskjet 2540" renamed by rules
+        //computer inventory with two printers, "HP Deskjet 2540" renamed by rules
         $inventory = $this->doInventory($xml_source, true);
 
         //check for expected logs

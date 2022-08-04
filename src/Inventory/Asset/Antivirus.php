@@ -122,7 +122,7 @@ class Antivirus extends InventoryAsset
             foreach ($db_antivirus as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($compare == $arraydb) {
-                    $input = (array)$val + [
+                    $input = $this->handleInput($val) + [
                         'id'           => $keydb
                     ];
                     $computerAntivirus->update(Toolbox::addslashes_deep($input));
@@ -145,7 +145,7 @@ class Antivirus extends InventoryAsset
             foreach ($value as $val) {
                 $val->computers_id = $this->item->fields['id'];
                 $val->is_dynamic = 1;
-                $computerAntivirus->add(Toolbox::addslashes_deep((array)$val));
+                $computerAntivirus->add(Toolbox::addslashes_deep($this->handleInput($val)));
             }
         }
     }

@@ -103,8 +103,6 @@ class DatabaseInstance extends InventoryAsset
 
     public function handle()
     {
-        global $DB;
-
         $rule = new RuleImportAssetCollection();
         $value = $this->data;
         $instance = new GDatabaseInstance();
@@ -128,7 +126,7 @@ class DatabaseInstance extends InventoryAsset
 
             if (isset($data['found_inventories'])) {
                 $databases = $val->databases ?? [];
-                $input = (array)$val;
+                $input = $this->handleInput($val);
 
                 $items_id = null;
                 $itemtype = 'DatabaseInstance';
@@ -149,7 +147,7 @@ class DatabaseInstance extends InventoryAsset
                     $instance->update(Toolbox::addslashes_deep($input));
 
                     $existing_databases = $instance->getDatabases();
-                   //update databases, relying on name
+                    //update databases, relying on name
                     foreach ($existing_databases as $dbkey => $existing_database) {
                         foreach ($databases as $key => $database) {
                             if ($existing_database['name'] == $database->name) {
@@ -165,7 +163,7 @@ class DatabaseInstance extends InventoryAsset
                         }
                     }
 
-                   //cleanup associated databases
+                    //cleanup associated databases
                     if (count($existing_databases)) {
                         foreach ($existing_databases as $dbkey => $existing_database) {
                             $odatabase->delete(['id' => $dbkey]);
@@ -173,7 +171,7 @@ class DatabaseInstance extends InventoryAsset
                     }
                 }
 
-               //create new databases
+                //create new databases
                 foreach ($databases as $database) {
                     $dbinput = (array)$database;
                     $dbinput += [
