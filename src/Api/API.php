@@ -1845,8 +1845,15 @@ abstract class API
                     if ($new_id === false) {
                         $failed++;
                     }
+
+                    $message = $this->getGlpiLastMessage();
+                    if (!$this->returnSanitizedContent()) {
+                        // Message may contains the created item name, which may
+                        // contains some encoded html
+                        $message = html_entity_decode($message);
+                    }
                     $current_res = ['id'      => $new_id,
-                        'message' => $this->getGlpiLastMessage()
+                        'message' => $message
                     ];
                 }
 
@@ -2330,7 +2337,7 @@ abstract class API
     /**
      * Get last message added in $_SESSION by Session::addMessageAfterRedirect
      *
-     * @return array  of messages
+     * @return string Last message
      */
     private function getGlpiLastMessage()
     {
