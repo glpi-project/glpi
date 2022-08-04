@@ -159,7 +159,7 @@ class Volume extends InventoryAsset
             foreach ($db_itemdisk as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($db_elt == $arraydb) {
-                    $input = (array)$val + [
+                    $input = $this->handleInput($val) + [
                         'id'           => $keydb,
                     ];
                     $itemDisk->update(Toolbox::addslashes_deep($input));
@@ -181,7 +181,7 @@ class Volume extends InventoryAsset
         }
         if (count($value)) {
             foreach ($value as $val) {
-                $input = (array)$val + [
+                $input = $this->handleInput($val) + [
                     'items_id'     => $this->item->fields['id'],
                     'itemtype'     => $this->item->getType()
                 ];

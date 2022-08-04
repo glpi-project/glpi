@@ -658,7 +658,7 @@ abstract class MainAsset extends InventoryAsset
         $this->handleLinks();
 
         if ($items_id == 0) {
-            $input = (array)$val;
+            $input = $this->handleInput($val);
             unset($input['ap_port']);
             unset($input['firmware']);
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
@@ -673,7 +673,6 @@ abstract class MainAsset extends InventoryAsset
             $this->agent->fields['items_id'] = $items_id;
             $this->agent->fields['entities_id'] = $entities_id;
         }
-
 
         //check for any old agent to remove
         $agent = new \Agent();
@@ -736,7 +735,7 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-        $input = (array)$val;
+        $input = $this->handleInput($val);
         $this->item->update(Toolbox::addslashes_deep($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
