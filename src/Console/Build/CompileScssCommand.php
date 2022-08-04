@@ -175,10 +175,17 @@ class CompileScssCommand extends Command
      */
     private function getLicenceHeaderString(): string
     {
-       // Extract header lines
-        $lines = file(GLPI_ROOT . '/tools/HEADER');
+        // Extract header lines
+        $header_file = GLPI_ROOT . '/tools/HEADER';
 
-       // Add * prefix on all lines
+        if (!file_exists($header_file)) {
+            // Production build, there is no tools/HEADER file
+            return "";
+        }
+
+        $lines = file($header_file);
+
+        // Add * prefix on all lines
         $lines = array_map(
             function ($line) {
                 $line_prefix = ' * ';
@@ -187,7 +194,7 @@ class CompileScssCommand extends Command
             $lines
         );
 
-       // Surround by opening and closing lines
+        // Surround by opening and closing lines
         $lines = array_merge(["/**\n"], $lines, [" */\n\n"]);
 
         return implode($lines);
