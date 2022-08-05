@@ -39,6 +39,7 @@
 class Profile extends CommonDBTM
 {
     use \Glpi\Features\Clonable;
+
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
