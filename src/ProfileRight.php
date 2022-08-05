@@ -45,6 +45,34 @@ class ProfileRight extends CommonDBChild
     public static $items_id = 'profiles_id'; // Field name
     public $dohistory       = true;
 
+    public function clone(array $override_input = [], bool $history = true)
+    {
+        global $DB;
+
+        if ($DB->isSlave()) {
+            return false;
+        }
+        $new_item = new static();
+        $input = Toolbox::addslashes_deep($this->fields);
+        $input['profiles_id'] = $override_input['profiles_id'];
+        unset($input['id']);
+
+        $input = $new_item->prepareInputForClone($input);
+
+        $result = $DB->updateOrInsert(static::getTable(), $input, [
+            'name' => $input['name'],
+            'profiles_id' => $input['profiles_id'],
+        ]);
+        if ($result !== false) {
+            $new_item->getFromDBByCrit([
+                'name' => $input['name'],
+                'profiles_id' => $input['profiles_id'],
+            ]);
+            $new_item->post_clone($this, $history);
+        }
+
+        return $new_item->fields['id'];
+    }
 
     /**
      * Get possible rights

@@ -38,6 +38,7 @@
  **/
 class Profile extends CommonDBTM
 {
+    use \Glpi\Features\Clonable;
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
@@ -119,7 +120,6 @@ class Profile extends CommonDBTM
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
-        $forbidden[] = 'clone';
         return $forbidden;
     }
 
@@ -303,6 +303,13 @@ class Profile extends CommonDBTM
        // PROFILES and UNIQUE_PROFILE in RuleMailcollector
         Rule::cleanForItemCriteria($this, 'PROFILES');
         Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            ProfileRight::class
+        ];
     }
 
 
