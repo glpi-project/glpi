@@ -98,6 +98,13 @@ class Plugin extends CommonDBTM
     public static $rightname = 'config';
 
     /**
+     * Indicates whether plugin states have been checked.
+     *
+     * @var boolean
+     */
+    private static $plugins_state_checked = false;
+
+    /**
      * Activated plugin list
      *
      * @var string[]
@@ -202,11 +209,13 @@ class Plugin extends CommonDBTM
     {
         global $DB;
 
+        self::$plugins_state_checked = false;
         self::$activated_plugins = [];
         self::$loaded_plugins = [];
 
         if (!isset($DB) || !$DB->connected) {
             // Cannot init plugins list if DB is not connected
+            self::$plugins_state_checked = true;
             return;
         }
 
@@ -461,6 +470,8 @@ class Plugin extends CommonDBTM
             }
             $this->checkPluginState($directory);
         }
+
+        self::$plugins_state_checked = true;
     }
 
 
@@ -1035,6 +1046,16 @@ class Plugin extends CommonDBTM
      */
     public function isActivated($directory)
     {
+        if (!self::$plugins_state_checked) {
+            // Plugins are not actually loaded/activated before plugins state checks,
+            // and so $activated_plugins will be empty.
+            // In this case, plugins states have to be fetched from DB.
+            $self = new self();
+            return $self->getFromDBbyDir($directory)
+                && $self->fields['state'] == self::ACTIVATED
+                && $self->isLoadable($directory);
+        }
+
         // Make a lowercase comparison, as sometime this function is called based on
         // extraction of plugin name from a classname, which does not use same naming rules than directories.
         $activated_plugins = array_map('strtolower', self::$activated_plugins);
