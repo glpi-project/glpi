@@ -138,7 +138,7 @@ class DeviceFirmware extends CommonDevice
             'id'                 => '1314',
             'table'              => 'glpi_devicefirmwares',
             'field'              => 'version',
-            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Version')),
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Version', 'Versions', 1)),
             'forcegroupby'       => true,
             'usehaving'          => true,
             'massiveaction'      => false,
@@ -155,7 +155,7 @@ class DeviceFirmware extends CommonDevice
             'id'                 => '1315',
             'table'              => 'glpi_devicefirmwaretypes',
             'field'              => 'name',
-            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Type')),
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Type', 'Types', 1)),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -175,7 +175,7 @@ class DeviceFirmware extends CommonDevice
             'id'                 => '1316',
             'table'              => 'glpi_devicefirmwaremodels',
             'field'              => 'name',
-            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Model')),
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Model', 'Models', 1)),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
