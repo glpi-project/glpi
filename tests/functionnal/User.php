@@ -166,12 +166,21 @@ class User extends \DbTestCase {
       $this->array($user2->fields)->isIdenticalTo($user->fields);
 
       $this->exception(
-         function () use ($uid) {
-            $this->testedInstance->getFromDBbyToken($uid, 'my_field');
+         function () {
+            $this->testedInstance->getFromDBbyToken('1485dd60301311eda2610242ac12000249aef69a', 'my_field');
          }
       )
          ->isInstanceOf('RuntimeException')
          ->message->contains('User::getFromDBbyToken() can only be called with $field parameter with theses values: \'personal_token\', \'api_token\'');
+
+      $this->when(
+         function() use ($user) {
+            $this->testedInstance->getFromDBbyToken(['REGEX', '.*'], 'api_token');
+         }
+      )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage('Unexpected token value received: "string" expected, received "array".')
+         ->exists();
    }
 
    public function testPrepareInputForAdd() {
