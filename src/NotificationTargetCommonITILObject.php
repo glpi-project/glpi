@@ -1358,9 +1358,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                  // Check if the author need to be anonymized
                 if ($are_names_anonymized && ITILFollowup::getById($followup['id'])->isFromSupportAgent()) {
                     $tmp['##followup.author##'] = User::getAnonymizedNameForUser(
-                         $followup['users_id'],
-                         $item->fields['entities_id']
-                     );
+                        $followup['users_id'],
+                        $item->fields['entities_id']
+                    );
                 } else {
                     $tmp['##followup.author##'] = getUserName($followup['users_id']);
                 }
@@ -1670,16 +1670,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 if ($actor->fields['usertitles_id'] > 0) {
                     $data[sprintf('##%s.usertitle##', $key_prefix)] = Dropdown::getDropdownName(
-                       'glpi_usertitles',
-                       $actor->fields['usertitles_id']
-                   );
+                        'glpi_usertitles',
+                        $actor->fields['usertitles_id']
+                    );
                 }
 
                 if ($actor->fields['usercategories_id'] > 0) {
                     $data[sprintf('##%s.usercategory##', $key_prefix)] = Dropdown::getDropdownName(
-                       'glpi_usercategories',
-                       $actor->fields['usercategories_id']
-                   );
+                        'glpi_usercategories',
+                        $actor->fields['usercategories_id']
+                    );
                 }
 
                 $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getDefaultEmail();
