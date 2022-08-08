@@ -6636,7 +6636,7 @@ JAVASCRIPT;
       }
 
       // transfer core variables to javascript side
-      echo self::getCoreVariablesForJavascript(true);
+      echo self::getCoreVariablesForJavascript(Session::getLoginUserID() !== false);
 
       // Some Javascript-Functions which we may need later
       echo Html::script('js/common.js');
