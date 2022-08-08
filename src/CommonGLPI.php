@@ -1051,7 +1051,9 @@ class CommonGLPI implements CommonGLPIInterface
 
             if (static::$showTitleInNavigationHeader) {
                 echo "<h3 class='navigationheader-title strong d-flex align-items-center'>";
-                echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
+                if (method_exists($this, getStatusIcon) && $this->isField('status')) {
+                    echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
+                }
                 echo $this->getNameID([
                     'forceid' => $this instanceof CommonITILObject
                 ]);
