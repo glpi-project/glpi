@@ -262,6 +262,71 @@ class Dropdown extends DbTestCase
         ];
         $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true, true, false);
         $this->array($ret)->isIdenticalTo($expected);
+
+        ///////////
+        // Location
+        $location = getItemByTypeName('Location', '_location01');
+        $expected = $location->getName();
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => $location->getName(),
+            'comment' => "<span class='b'>Complete name</span>: _location01<br>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _location01"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with code only:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation02');
+        $expected = "_location02 &#62; _sublocation02 - code_sublocation02";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "_location02 &#62; _sublocation02 - code_sublocation02",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &#62; _sublocation02<br>" .
+                        "<span class='b'>Code:</span> code_sublocation02<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation02"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with alias only:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation03');
+        $expected = "alias_sublocation03";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "alias_sublocation03",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &#62; _sublocation03<br>" .
+                        "<span class='b'>Alias:</span> alias_sublocation03<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation03"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
+
+        //Location with alias and code:
+        $location = getItemByTypeName('Location', '_location02 > _sublocation04');
+        $expected = "alias_sublocation04";
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
+        $this->string($ret)->isIdenticalTo($expected);
+
+         // test of return with comments
+        $expected = [
+            'name'    => "alias_sublocation04",
+            'comment' => "<span class='b'>Complete name</span>: _location02 &#62; _sublocation04<br>" .
+                        "<span class='b'>Code:</span> code_sublocation04<br/>" .
+                        "<span class='b'>Alias:</span> alias_sublocation04<br/>" .
+                        "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation04"
+        ];
+        $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);
+        $this->array($ret)->isIdenticalTo($expected);
     }
 
     public function dataGetValueWithUnit()
@@ -1337,7 +1402,7 @@ class Dropdown extends DbTestCase
         $values = (array)json_decode($values);
 
         $this->array($values)
-         ->integer['count']->isEqualTo(2)
+         ->integer['count']->isEqualTo(3)
          ->array['results']
             ->hasSize(2);
 
@@ -1350,7 +1415,7 @@ class Dropdown extends DbTestCase
         $values = (array)json_decode($values);
 
         $this->array($values)
-         ->integer['count']->isEqualTo(2)
+         ->integer['count']->isEqualTo(3)
          ->array['results']
             ->hasSize(2);
 
