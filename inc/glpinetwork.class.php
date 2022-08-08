@@ -100,7 +100,7 @@ class GLPINetwork extends CommonGLPI {
             echo "<td>";
             echo "<div class=' " . (($informations['is_valid'] && $informations['subscription']['is_running'] ?? false) ? 'ok' : 'red') . "'> ";
             echo "<i class='fa fa-info-circle'></i>";
-            echo $informations['validation_message'];
+            echo Html::entities_deep($informations['validation_message']);
             echo "</div>";
             echo "</td>";
             echo "</tr>";
@@ -108,12 +108,12 @@ class GLPINetwork extends CommonGLPI {
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Subscription') . "</td>";
-         echo "<td>" . ($informations['subscription'] !== null ? $informations['subscription']['title'] : __('Unknown')) . "</td>";
+         echo "<td>" . ($informations['subscription'] !== null ? Html::entities_deep($informations['subscription']['title']) : __('Unknown')) . "</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Registered by') . "</td>";
-         echo "<td>" . ($informations['owner'] !== null ? $informations['owner']['name'] : __('Unknown')) . "</td>";
+         echo "<td>" . ($informations['owner'] !== null ? Html::entities_deep($informations['owner']['name']) : __('Unknown')) . "</td>";
          echo "</tr>";
       }
 
