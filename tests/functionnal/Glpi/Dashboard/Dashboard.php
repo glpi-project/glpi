@@ -303,7 +303,7 @@ class Dashboard extends DbTestCase
         ];
 
         $_SESSION['glpiactiveentities'] = [];
-        $_SESSION['glpiprofiles'] = [];
+        $_SESSION['glpiactiveprofile'] = ['id' => 1];
         $_SESSION['glpigroups'] = [];
         $_SESSION['glpiID'] = 1;
 
@@ -313,10 +313,10 @@ class Dashboard extends DbTestCase
         $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
 
         $_SESSION['glpiactiveentities'] = [];
-        $_SESSION['glpiprofiles'] = [3 => 3];
+        $_SESSION['glpiactiveprofile'] = ['id' => 3];
         $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
 
-        $_SESSION['glpiprofiles'] = [];
+        $_SESSION['glpiactiveprofile'] = ['id' => 1];
         $_SESSION['glpiID'] = 2;
         $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
 
