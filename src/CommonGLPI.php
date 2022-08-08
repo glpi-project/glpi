@@ -44,7 +44,6 @@ class CommonGLPI implements CommonGLPIInterface
 {
     /**
      * Show the title of the item in the navigation header ?
-     * Must implement getStatusIcon()
      */
     protected static $showTitleInNavigationHeader = false;
 
