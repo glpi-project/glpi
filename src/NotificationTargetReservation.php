@@ -211,14 +211,6 @@ class NotificationTargetReservation extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
-
-    /**
-     * Get item associated with the object on which the event was raised
-     *
-     * @param string $event (default '')
-     *
-     * @return the object associated with the itemtype
-     **/
     public function getObjectItem($event = '')
     {
 
