@@ -34,7 +34,8 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
+    define('GLPI_ROOT', dirname(__FILE__, 2));
+    //die("Sorry. You can't access this file directly");
 }
 
 // Notice problem  for date function :

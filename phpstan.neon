@@ -1,0 +1,14 @@
+parameters:
+    level: 0
+    bootstrapFiles:
+        - inc/based_config.php
+    paths:
+        - src
+    scanDirectories:
+        - inc
+    ignoreErrors:
+        - '/Call to static method \w+\(\) on an unknown class phpCAS/'
+        - '/Class Ldap\\Connection not found/'
+        - '/Instantiated class (DB|DBSlave) not found/'
+        - '/Instantiated class XHProfRuns_Default not found/'
+        - '/\w+ has been replaced by \w+/'
