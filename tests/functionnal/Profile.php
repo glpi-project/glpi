@@ -209,7 +209,7 @@ class Profile extends DbTestCase
             'name' => __FUNCTION__,
         ]);
         $this->integer($clone_profiles_id)->isGreaterThan(0);
-        $cloned_profile->getFromDB($clone_profiles_id);
+        $this->boolean($cloned_profile->getFromDB($clone_profiles_id))->isTrue();
 
         // Verify the original profile still references the source profile
         $this->integer($profile->fields['id'])->isEqualTo(3);
@@ -237,7 +237,7 @@ class Profile extends DbTestCase
         foreach ($rights_iterator as $right) {
             $rights[$right['profiles_id']][$right['name']] = $right['rights'];
         }
-        $this->integer(count($rights[$clone_profiles_id]))->isGreaterThanOrEqualTo(count($rights[3]));
+        $this->integer(count($rights[$clone_profiles_id]))->isEqualTo(count($rights[3]));
 
         foreach ($rights[3] as $right => $value) {
             $this->integer($rights[$clone_profiles_id][$right])->isEqualTo($value);

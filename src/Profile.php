@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * Profile class
  **/
@@ -515,7 +517,7 @@ class Profile extends CommonDBTM
 
         $other_array_fields = ['ticket_status', 'problem_status', 'change_status'];
         foreach ($other_array_fields as $array_field) {
-            if (isset($input[$array_field])) {
+            if (isset($input[$array_field]) && is_array($input[$array_field])) {
                 $input[$array_field] = exportArrayToDB($input[$array_field]);
             }
         }
@@ -528,7 +530,7 @@ class Profile extends CommonDBTM
         $input_arrays = ['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'];
         foreach ($input_arrays as $array_field) {
             if (isset($input[$array_field])) {
-                $input[$array_field] = importArrayFromDB(Toolbox::stripslashes_deep($input[$array_field]));
+                $input[$array_field] = importArrayFromDB(Sanitizer::dbUnescape($input[$array_field]));
             }
         }
         return $input;
