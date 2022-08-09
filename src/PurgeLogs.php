@@ -424,6 +424,8 @@ class PurgeLogs extends CommonDBTM
         } else if ($month == Config::KEEP_ALL) {
             return false;
         }
+
+        return false; // Unknown value, keep all by default
     }
 
     /**
