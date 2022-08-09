@@ -51,21 +51,48 @@ if (!isset($_GET["itemtype"])) {
 }
 
 $socket = new Socket();
-if (isset($_POST["add"]) && !isset($_POST["execute_multi"])) {
+if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["execute_multi"])) {
     $socket->check(-1, CREATE, $_POST);
 
-    if ($socket->add($_POST)) {
-        Event::log(
-            $_POST['items_id'],
-            $_POST['itemtype'],
-            4,
-            "socket",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a socket'), $_SESSION["glpiname"])
-        );
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($socket->getLinkURL());
+    if (!isset($_POST["execute_multi"])) {
+        if ($socket->add($_POST)) {
+            Event::log(
+                $_POST['items_id'],
+                $_POST['itemtype'],
+                4,
+                "socket",
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a socket'), $_SESSION["glpiname"])
+            );
+            if ($_SESSION['glpibackcreated']) {
+                Html::redirect($socket->getLinkURL());
+            }
         }
+    } else {
+        $initialName = $_POST["name"];
+        $wiring_side = $_POST["wiring_side"];
+
+        for ($i = $_POST["_from"]; $i <= $_POST["_to"]; $i++) {
+            $_POST["name"] = $_POST["_before"] . $initialName . $i . $_POST["_after"];
+            $_POST["position"] =  $i;
+
+            //create REAR and FRONT if needed
+            if ($wiring_side == Socket::BOTH) {
+                $_POST["wiring_side"] = Socket::REAR ;
+                $socket->add($_POST);
+                $_POST["wiring_side"] = Socket::FRONT ;
+                $socket->add($_POST);
+            } else {
+                $socket->add($_POST);
+            }
+        }
+        Event::log(
+            0,
+            "socket",
+            5,
+            "setup",
+            sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"])
+        );
     }
     Html::back();
 } else if (isset($_POST["purge"])) {
@@ -94,39 +121,6 @@ if (isset($_POST["add"]) && !isset($_POST["execute_multi"])) {
             //TRANS: %s is the user login
             sprintf(__('%s updates a socket'), $_SESSION["glpiname"])
         );
-    }
-    Html::back();
-} else if (isset($_POST["execute_multi"])) {
-    $socket->check(-1, CREATE, $_POST);
-
-    for ($i = $_POST["_from"]; $i <= $_POST["_to"]; $i++) {
-        $_POST["name"] = $_POST["_before"] . $i . $_POST["_after"];
-        $_POST["position"] =  $i;
-        $socket->add($_POST);
-    }
-    Event::log(
-        0,
-        "socket",
-        5,
-        "setup",
-        sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"])
-    );
-    Html::back();
-} else if (isset($_POST["execute_single"])) {
-    $socket->check(-1, CREATE, $_POST);
-
-    if ($socket->add($_POST)) {
-        Event::log(
-            $_POST['items_id'],
-            $_POST['itemtype'],
-            4,
-            "socket",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a socket'), $_SESSION["glpiname"])
-        );
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($socket->getLinkURL());
-        }
     }
     Html::back();
 } else {

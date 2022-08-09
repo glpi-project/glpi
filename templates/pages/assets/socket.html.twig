@@ -53,12 +53,18 @@
     {{ fields.nullField() }}
    {% endif %}
 
+   {% set full = false %}
+   {% if params['several'] is defined %}
+      {% set full = true %}
+   {% endif %}
+
    {% set wiring_side %}
       {% do call('Glpi\\Socket::dropdownWiringSide', [
          'wiring_side',
          {
             'value': item.fields['wiring_side'],
-         }
+         },
+         full
       ]) %}
    {% endset %}
    {{ fields.htmlField(

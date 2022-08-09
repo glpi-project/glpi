@@ -65,6 +65,7 @@ class Socket extends CommonDBChild
 
     const REAR    = 1;
     const FRONT   = 2;
+    const BOTH    = 3;
 
     public function canCreateItem()
     {
@@ -284,7 +285,7 @@ class Socket extends CommonDBChild
      *    - display
      * @return string ID of the select
      **/
-    public static function dropdownWiringSide($name, $options = [])
+    public static function dropdownWiringSide($name, $options = [], $full = false)
     {
         $params = [
             'value'     => 0,
@@ -297,7 +298,7 @@ class Socket extends CommonDBChild
             }
         }
 
-        return Dropdown::showFromArray($name, self::getSides(), $params);
+        return Dropdown::showFromArray($name, self::getSides($full), $params);
     }
 
 
@@ -305,12 +306,18 @@ class Socket extends CommonDBChild
      * Get sides
      * @return array Array of types
      **/
-    public static function getSides()
+    public static function getSides($full = false)
     {
-        return [
+        $data =  [
             self::REAR   => __('Rear'),
             self::FRONT  => __('Front'),
         ];
+
+        if ($full) {
+            $data[self::BOTH] =  __('Create both');
+        }
+
+        return $data;
     }
 
 
