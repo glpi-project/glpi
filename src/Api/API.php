@@ -1030,7 +1030,7 @@ abstract class API
         // Decode HTML
         if (!$this->returnSanitizedContent()) {
             $fields = array_map(
-                fn ($f) => is_string($f) ? html_entity_decode($f) : $f,
+                fn ($f) => is_string($f) ? Sanitizer::decodeHtmlSpecialChars($f) : $f,
                 $fields
             );
         }
@@ -1307,7 +1307,7 @@ abstract class API
             // Decode HTML
             if (!$this->returnSanitizedContent()) {
                 $fields = array_map(
-                    fn ($f) => is_string($f) ? html_entity_decode($f) : $f,
+                    fn ($f) => is_string($f) ? Sanitizer::decodeHtmlSpecialChars($f) : $f,
                     $fields
                 );
             }
@@ -1850,7 +1850,7 @@ abstract class API
                     if (!$this->returnSanitizedContent()) {
                         // Message may contains the created item name, which may
                         // contains some encoded html
-                        $message = html_entity_decode($message);
+                        $message = Sanitizer::decodeHtmlSpecialChars($message);
                     }
                     $current_res = ['id'      => $new_id,
                         'message' => $message
