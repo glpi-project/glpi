@@ -243,6 +243,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ]
             ]
         ];
+        return false;
     }
 
 

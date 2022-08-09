@@ -80,11 +80,6 @@ class NetworkEquipment extends CommonDBTM
     }
 
 
-    /**
-     * @see CommonGLPI::getAdditionalMenuOptions()
-     *
-     * @since 0.85
-     **/
     public static function getAdditionalMenuOptions()
     {
 

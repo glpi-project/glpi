@@ -7052,12 +7052,6 @@ abstract class CommonITILObject extends CommonDBTM
         return $this;
     }
 
-
-    /**
-     * @see CommonGLPI::getAdditionalMenuOptions()
-     *
-     * @since 0.85
-     **/
     public static function getAdditionalMenuOptions()
     {
         $tplclass = self::getTemplateClass();

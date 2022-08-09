@@ -828,6 +828,7 @@ class Domain extends CommonDBTM
                 ]
             ];
         }
+        return false;
     }
 
     public function getCanonicalName()

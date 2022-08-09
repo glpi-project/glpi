@@ -162,6 +162,7 @@ class Planning extends CommonGLPI
                 ]
             ];
         }
+        return false;
     }
 
 

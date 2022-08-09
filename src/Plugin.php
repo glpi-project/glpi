@@ -181,6 +181,7 @@ class Plugin extends CommonDBTM
                 ]
             ];
         }
+        return false;
     }
 
 

@@ -50,19 +50,16 @@ class Group extends CommonTreeDropdown
         return _n('Group', 'Groups', $nb);
     }
 
-
-    /**
-     * @see CommonGLPI::getAdditionalMenuOptions()
-     *
-     * @since 0.85
-     **/
     public static function getAdditionalMenuOptions()
     {
 
         if (Session::haveRight('user', User::UPDATEAUTHENT)) {
-            $options['ldap']['title'] = AuthLDAP::getTypeName(Session::getPluralNumber());
-            $options['ldap']['page']  = "/front/ldap.group.php";
-            return $options;
+            return [
+                'ldap' => [
+                    'title' => AuthLDAP::getTypeName(Session::getPluralNumber()),
+                    'page'  => '/front/ldap.group.php',
+                ],
+            ];
         }
         return false;
     }

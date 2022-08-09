@@ -522,5 +522,6 @@ class Database extends CommonDBChild
                 ]
             ];
         }
+        return false;
     }
 }

@@ -47,18 +47,17 @@ class MigrationCleaner extends CommonGLPI
     }
 
 
-    /**
-     * @see CommonGLPI::getAdditionalMenuOptions()
-     **/
     public static function getAdditionalMenuOptions()
     {
 
         if (static::canView()) {
-            $options['networkportmigration']['title']  = NetworkPortMigration::getTypeName(Session::getPluralNumber());
-            $options['networkportmigration']['page']   = NetworkPortMigration::getSearchURL(false);
-            $options['networkportmigration']['search'] = NetworkPortMigration::getSearchURL(false);
-
-            return $options;
+            return [
+                'networkportmigration' => [
+                    'title'  => NetworkPortMigration::getTypeName(Session::getPluralNumber()),
+                    'page'   => NetworkPortMigration::getSearchURL(false),
+                    'search' => NetworkPortMigration::getSearchURL(false),
+                ],
+            ];
         }
         return false;
     }
