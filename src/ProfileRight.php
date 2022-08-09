@@ -47,6 +47,12 @@ class ProfileRight extends CommonDBChild
     public static $items_id = 'profiles_id'; // Field name
     public $dohistory       = true;
 
+    /**
+     * {@inheritDoc}
+     * @note Unlike the default implementation, this one handles the fact that some or all profile rights
+     *       are already in the DB (but set to 0) when the cloned profile is created.
+     *       Therefore, we need to use update or insert DB queries rather than `CommonDBTM::add`.
+     */
     public function clone(array $override_input = [], bool $history = true)
     {
         global $DB;
