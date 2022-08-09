@@ -2904,387 +2904,387 @@ JAVASCRIPT;
         ) {
             return false;
         }
-        if ($this->getFromDB($ID)) {
-            $rand     = mt_rand();
-            $authtype = $this->getAuthMethodsByID();
+        if (!$this->getFromDB($ID)) {
+            return false;
+        }
+        $rand     = mt_rand();
+        $authtype = $this->getAuthMethodsByID();
 
-            $extauth  = !(($this->fields["authtype"] == Auth::DB_GLPI)
-                       || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
-                           && !empty($this->fields["password"])));
+        $extauth  = !(($this->fields["authtype"] == Auth::DB_GLPI)
+                    || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
+                        && !empty($this->fields["password"])));
 
-            echo "<div class='center'>";
-            echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='" . $target . "' autocomplete='off'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . sprintf(__('%1$s: %2$s'), __('Login'), $this->fields["name"]);
-            echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields["id"] . "'>";
-            echo "</th></tr>";
+        echo "<div class='center'>";
+        echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='" . $target . "' autocomplete='off'>";
+        echo "<table class='tab_cadre_fixe'>";
+        echo "<tr><th colspan='4'>" . sprintf(__('%1$s: %2$s'), __('Login'), $this->fields["name"]);
+        echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
+        echo "<input type='hidden' name='id' value='" . $this->fields["id"] . "'>";
+        echo "</th></tr>";
 
-            $surnamerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td><td>";
+        $surnamerand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __('Surname') . "</label></td><td>";
 
-            if (
-                $extauth
-                && isset($authtype['realname_field'])
-                && !empty($authtype['realname_field'])
-            ) {
-                echo $this->fields["realname"];
-            } else {
-                echo Html::input(
-                    'realname',
-                    [
-                        'value' => $this->fields['realname'],
-                        'id'    => "textfield_realname$surnamerand",
-                    ]
-                );
-            }
+        if (
+            $extauth
+            && isset($authtype['realname_field'])
+            && !empty($authtype['realname_field'])
+        ) {
+            echo $this->fields["realname"];
+        } else {
+            echo Html::input(
+                'realname',
+                [
+                    'value' => $this->fields['realname'],
+                    'id'    => "textfield_realname$surnamerand",
+                ]
+            );
+        }
+        echo "</td>";
+
+        if (!empty($this->fields["name"])) {
+            echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
+            echo "<td rowspan='7'>";
+            echo self::getPictureForUser($ID);
+
+            echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
+
+            echo "&nbsp;";
+            Html::showCheckbox(['name' => '_blank_picture', 'title' => __('Clear')]);
+            echo "&nbsp;" . __('Clear');
+
             echo "</td>";
+            echo "</tr>";
+        }
 
-            if (!empty($this->fields["name"])) {
-                echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
-                echo "<td rowspan='7'>";
-                echo self::getPictureForUser($ID);
+        $firstnamerand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
+        if (
+            $extauth
+            && isset($authtype['firstname_field'])
+            && !empty($authtype['firstname_field'])
+        ) {
+            echo $this->fields["firstname"];
+        } else {
+            echo Html::input(
+                'firstname',
+                [
+                    'value' => $this->fields['firstname'],
+                    'id'    => "textfield_firstname$firstnamerand",
+                ]
+            );
+        }
+        echo "</td></tr>";
 
-                echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
-
-                echo "&nbsp;";
-                Html::showCheckbox(['name' => '_blank_picture', 'title' => __('Clear')]);
-                echo "&nbsp;" . __('Clear');
-
-                echo "</td>";
-                echo "</tr>";
-            }
-
-            $firstnamerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __('First name') . "</label></td><td>";
-            if (
-                $extauth
-                && isset($authtype['firstname_field'])
-                && !empty($authtype['firstname_field'])
-            ) {
-                echo $this->fields["firstname"];
+        if (
+            $extauth
+            && $this->fields['auths_id']
+            && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id'])
+        ) {
+            echo "<tr class='tab_bg_1'><td>" . __('Synchronization field') . "</td><td>";
+            if (empty($this->fields['sync_field'])) {
+                echo Dropdown::EMPTY_VALUE;
             } else {
-                echo Html::input(
-                    'firstname',
-                    [
-                        'value' => $this->fields['firstname'],
-                        'id'    => "textfield_firstname$firstnamerand",
-                    ]
-                );
+                echo $this->fields['sync_field'];
             }
             echo "</td></tr>";
+        } else {
+            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+        }
 
-            if (
-                $extauth
-                && $this->fields['auths_id']
-                && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id'])
-            ) {
-                echo "<tr class='tab_bg_1'><td>" . __('Synchronization field') . "</td><td>";
-                if (empty($this->fields['sync_field'])) {
-                    echo Dropdown::EMPTY_VALUE;
-                } else {
-                    echo $this->fields['sync_field'];
-                }
-                echo "</td></tr>";
-            } else {
-                echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+        echo "<tr class='tab_bg_1'>";
+
+        if (!GLPI_DEMO_MODE) {
+            $langrand = mt_rand();
+            echo "<td><label for='dropdown_language$langrand'>" . __('Language') . "</label></td><td>";
+            // Language is stored as null in DB if value is same as the global config.
+            $language = $this->fields["language"];
+            if (null === $this->fields["language"]) {
+                $language = $CFG_GLPI['language'];
             }
+            Dropdown::showLanguages(
+                "language",
+                [
+                    'rand'  => $langrand,
+                    'value' => $language,
+                ]
+            );
+            echo "</td>";
+        } else {
+            echo "<td colspan='2'>&nbsp;</td>";
+        }
+        echo "</tr>";
+
+        //do some rights verification
+        if (
+            !$extauth
+            && Session::haveRight("password_update", "1")
+        ) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='password'>" . __('Password') . "</label></td>";
+            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'>";
+            echo "</td>";
+            echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
-
-            if (!GLPI_DEMO_MODE) {
-                $langrand = mt_rand();
-                echo "<td><label for='dropdown_language$langrand'>" . __('Language') . "</label></td><td>";
-               // Language is stored as null in DB if value is same as the global config.
-                $language = $this->fields["language"];
-                if (null === $this->fields["language"]) {
-                    $language = $CFG_GLPI['language'];
-                }
-                Dropdown::showLanguages(
-                    "language",
-                    [
-                        'rand'  => $langrand,
-                        'value' => $language,
-                    ]
-                );
-                echo "</td>";
-            } else {
-                echo "<td colspan='2'>&nbsp;</td>";
-            }
-            echo "</tr>";
-
-           //do some rights verification
-            if (
-                !$extauth
-                && Session::haveRight("password_update", "1")
-            ) {
-                echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='password'>" . __('Password') . "</label></td>";
-                echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'>";
-                echo "</td>";
-                echo "</tr>";
-
-                echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-                echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password' class='form-control'>";
-                echo "</td></tr>";
-
-                if ($CFG_GLPI["use_password_security"]) {
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<td rowspan='2'>";
-                    echo __('Password security policy');
-                    echo "</td>";
-                    echo "<td rowspan='2'>";
-                    Config::displayPasswordSecurityChecks();
-                    echo "</td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
-                echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
-                echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
-            }
-
-            if ($DB->use_timezones || Session::haveRight("config", READ)) {
-                echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
-                if ($DB->use_timezones) {
-                    $timezones = $DB->getTimezones();
-                    Dropdown::showFromArray(
-                        'timezone',
-                        $timezones,
-                        [
-                            'value'                 => $this->fields["timezone"],
-                            'display_emptychoice'   => true,
-                            'emptylabel'            => __('Use server configuration')
-                        ]
-                    );
-                } else if (Session::haveRight("config", READ)) {
-                   // Display a warning but only if user is more or less an admin
-                    echo __('Timezone usage has not been activated.')
-                    . ' '
-                    . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
-                }
-                echo "</td>";
-                if (
-                    $extauth
-                    || !Session::haveRight("password_update", "1")
-                ) {
-                    echo "<td colspan='2'></td>";
-                }
-                echo "</tr>";
-            }
-
-            $phonerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  Phone::getTypeName(1) . "</label></td><td>";
-
-            if (
-                $extauth
-                && isset($authtype['phone_field']) && !empty($authtype['phone_field'])
-            ) {
-                echo $this->fields["phone"];
-            } else {
-                echo Html::input(
-                    'phone',
-                    [
-                        'value' => $this->fields['phone'],
-                        'id'    => "textfield_phone$phonerand",
-                    ]
-                );
-            }
-            echo "</td>";
-            echo "<td class='top'>" . _n('Email', 'Emails', Session::getPluralNumber());
-            UserEmail::showAddEmailButton($this);
-            echo "</td><td>";
-            UserEmail::showForUser($this);
-            echo "</td>";
-            echo "</tr>";
-
-            $mobilerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_mobile$mobilerand'>" . __('Mobile phone') . "</label></td><td>";
-
-            if (
-                $extauth
-                && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])
-            ) {
-                echo $this->fields["mobile"];
-            } else {
-                echo Html::input(
-                    'mobile',
-                    [
-                        'value' => $this->fields['mobile'],
-                        'id'    => "textfield_mobile$mobilerand",
-                    ]
-                );
-            }
-            echo "</td>";
-
-            if (count($_SESSION['glpiprofiles']) > 1) {
-                $profilerand = mt_rand();
-                echo "<td><label for='dropdown_profiles_id$profilerand'>" . __('Default profile') . "</label></td><td>";
-
-                $options = Dropdown::getDropdownArrayNames(
-                    'glpi_profiles',
-                    Profile_User::getUserProfiles($this->fields['id'])
-                );
-                Dropdown::showFromArray(
-                    "profiles_id",
-                    $options,
-                    ['value'               => $this->fields["profiles_id"],
-                        'rand'                => $profilerand,
-                        'display_emptychoice' => true
-                    ]
-                );
-                echo "</td>";
-            } else {
-                echo "<td colspan='2'>&nbsp;</td>";
-            }
-            echo "</tr>";
-
-            $phone2rand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
-
-            if (
-                $extauth
-                && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])
-            ) {
-                echo $this->fields["phone2"];
-            } else {
-                echo Html::input(
-                    'phone2',
-                    [
-                        'value' => $this->fields['phone2'],
-                        'id'    => "textfield_phone2$phone2rand",
-                    ]
-                );
-            }
-            echo "</td>";
-
-            $entities = $this->getEntities();
-            if (
-                !GLPI_DEMO_MODE
-                && (count($_SESSION['glpiactiveentities']) > 1)
-            ) {
-                $entrand = mt_rand();
-                echo "<td><label for='dropdown_entities_id$entrand'>" . __('Default entity') . "</td><td>";
-                Entity::dropdown(['value'  => $this->fields['entities_id'],
-                    'rand'   => $entrand,
-                    'entity' => $entities
-                ]);
-            } else {
-                echo "<td colspan='2'>&nbsp;";
-            }
+            echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
+            echo "<td><input type='password' name='password2' id='password2' value='' size='30' autocomplete='new-password' class='form-control'>";
             echo "</td></tr>";
 
-            $admnumrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _x('user', 'Administrative number') . "</label></td><td>";
-            if (
-                $extauth
-                && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])
-            ) {
-                echo $this->fields["registration_number"];
-            } else {
-                echo Html::input(
-                    'registration_number',
+            if ($CFG_GLPI["use_password_security"]) {
+                echo "<tr class='tab_bg_1'>";
+                echo "<td rowspan='2'>";
+                echo __('Password security policy');
+                echo "</td>";
+                echo "<td rowspan='2'>";
+                Config::displayPasswordSecurityChecks();
+                echo "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+            echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+        }
+
+        if ($DB->use_timezones || Session::haveRight("config", READ)) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
+            if ($DB->use_timezones) {
+                $timezones = $DB->getTimezones();
+                Dropdown::showFromArray(
+                    'timezone',
+                    $timezones,
                     [
-                        'value' => $this->fields['registration_number'],
-                        'id'    => "textfield_registration_number$admnumrand",
+                        'value'                 => $this->fields["timezone"],
+                        'display_emptychoice'   => true,
+                        'emptylabel'            => __('Use server configuration')
                     ]
                 );
+            } else if (Session::haveRight("config", READ)) {
+                // Display a warning but only if user is more or less an admin
+                echo __('Timezone usage has not been activated.')
+                . ' '
+                . sprintf(__('Run the "php bin/console %1$s" command to activate it.'), 'glpi:database:enable_timezones');
             }
-            echo "</td><td colspan='2'></td></tr>";
+            echo "</td>";
+            if (
+                $extauth
+                || !Session::haveRight("password_update", "1")
+            ) {
+                echo "<td colspan='2'></td>";
+            }
+            echo "</tr>";
+        }
 
-            $locrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . Location::getTypeName(1) . "</label></td><td>";
-            Location::dropdown(['value'  => $this->fields['locations_id'],
-                'rand'   => $locrand,
+        $phonerand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  Phone::getTypeName(1) . "</label></td><td>";
+
+        if (
+            $extauth
+            && isset($authtype['phone_field']) && !empty($authtype['phone_field'])
+        ) {
+            echo $this->fields["phone"];
+        } else {
+            echo Html::input(
+                'phone',
+                [
+                    'value' => $this->fields['phone'],
+                    'id'    => "textfield_phone$phonerand",
+                ]
+            );
+        }
+        echo "</td>";
+        echo "<td class='top'>" . _n('Email', 'Emails', Session::getPluralNumber());
+        UserEmail::showAddEmailButton($this);
+        echo "</td><td>";
+        UserEmail::showForUser($this);
+        echo "</td>";
+        echo "</tr>";
+
+        $mobilerand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='textfield_mobile$mobilerand'>" . __('Mobile phone') . "</label></td><td>";
+
+        if (
+            $extauth
+            && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])
+        ) {
+            echo $this->fields["mobile"];
+        } else {
+            echo Html::input(
+                'mobile',
+                [
+                    'value' => $this->fields['mobile'],
+                    'id'    => "textfield_mobile$mobilerand",
+                ]
+            );
+        }
+        echo "</td>";
+
+        if (count($_SESSION['glpiprofiles']) > 1) {
+            $profilerand = mt_rand();
+            echo "<td><label for='dropdown_profiles_id$profilerand'>" . __('Default profile') . "</label></td><td>";
+
+            $options = Dropdown::getDropdownArrayNames(
+                'glpi_profiles',
+                Profile_User::getUserProfiles($this->fields['id'])
+            );
+            Dropdown::showFromArray(
+                "profiles_id",
+                $options,
+                ['value'               => $this->fields["profiles_id"],
+                    'rand'                => $profilerand,
+                    'display_emptychoice' => true
+                ]
+            );
+            echo "</td>";
+        } else {
+            echo "<td colspan='2'>&nbsp;</td>";
+        }
+        echo "</tr>";
+
+        $phone2rand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
+
+        if (
+            $extauth
+            && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])
+        ) {
+            echo $this->fields["phone2"];
+        } else {
+            echo Html::input(
+                'phone2',
+                [
+                    'value' => $this->fields['phone2'],
+                    'id'    => "textfield_phone2$phone2rand",
+                ]
+            );
+        }
+        echo "</td>";
+
+        $entities = $this->getEntities();
+        if (
+            !GLPI_DEMO_MODE
+            && (count($_SESSION['glpiactiveentities']) > 1)
+        ) {
+            $entrand = mt_rand();
+            echo "<td><label for='dropdown_entities_id$entrand'>" . __('Default entity') . "</td><td>";
+            Entity::dropdown(['value'  => $this->fields['entities_id'],
+                'rand'   => $entrand,
                 'entity' => $entities
             ]);
+        } else {
+            echo "<td colspan='2'>&nbsp;";
+        }
+        echo "</td></tr>";
 
-            if (Config::canUpdate()) {
-                $moderand = mt_rand();
-                echo "<td><label for='dropdown_use_mode$moderand'>" . __('Use GLPI in mode') . "</label></td><td>";
-                $modes = [
-                    Session::NORMAL_MODE => __('Normal'),
-                    Session::DEBUG_MODE  => __('Debug'),
-                ];
-                Dropdown::showFromArray('use_mode', $modes, ['value' => $this->fields["use_mode"], 'rand' => $moderand]);
-            } else {
-                echo "<td colspan='2'>&nbsp;";
-            }
-            echo "</td></tr>";
+        $admnumrand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _x('user', 'Administrative number') . "</label></td><td>";
+        if (
+            $extauth
+            && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])
+        ) {
+            echo $this->fields["registration_number"];
+        } else {
+            echo Html::input(
+                'registration_number',
+                [
+                    'value' => $this->fields['registration_number'],
+                    'id'    => "textfield_registration_number$admnumrand",
+                ]
+            );
+        }
+        echo "</td><td colspan='2'></td></tr>";
 
-            if (
-                Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
-                && Session::getCurrentInterface() == "central"
-            ) {
-                echo "<tr class='tab_bg_1'>";
-                echo "<td><label for='nickname$rand'> " . __('Nickname') . "</label></td>";
-                echo "<td>";
-                echo Html::input('nickname', [
-                    'value' => $this->fields['nickname']
-                ]);
-                echo "</td>";
-                echo "</tr>";
-            }
+        $locrand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . Location::getTypeName(1) . "</label></td><td>";
+        Location::dropdown(['value'  => $this->fields['locations_id'],
+            'rand'   => $locrand,
+            'entity' => $entities
+        ]);
 
-            echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
+        if (Config::canUpdate()) {
+            $moderand = mt_rand();
+            echo "<td><label for='dropdown_use_mode$moderand'>" . __('Use GLPI in mode') . "</label></td><td>";
+            $modes = [
+                Session::NORMAL_MODE => __('Normal'),
+                Session::DEBUG_MODE  => __('Debug'),
+            ];
+            Dropdown::showFromArray('use_mode', $modes, ['value' => $this->fields["use_mode"], 'rand' => $moderand]);
+        } else {
+            echo "<td colspan='2'>&nbsp;";
+        }
+        echo "</td></tr>";
 
-            echo "<tr class='tab_bg_1'><td>";
-            echo __("Personal token");
-            echo "</td><td colspan='2'>";
+        if (
+            Entity::getAnonymizeConfig() == Entity::ANONYMIZE_USE_NICKNAME
+            && Session::getCurrentInterface() == "central"
+        ) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='nickname$rand'> " . __('Nickname') . "</label></td>";
+            echo "<td>";
+            echo Html::input('nickname', [
+                'value' => $this->fields['nickname']
+            ]);
+            echo "</td>";
+            echo "</tr>";
+        }
 
-            if (!empty($this->fields["personal_token"])) {
-                echo "<div class='copy_to_clipboard_wrapper'>";
-                echo Html::input('_personal_token', [
-                    'value'    => $this->fields["personal_token"],
-                    'style'    => 'width:90%'
-                ]);
+        echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Remote access keys') . "</th></tr>";
+
+        echo "<tr class='tab_bg_1'><td>";
+        echo __("Personal token");
+        echo "</td><td colspan='2'>";
+
+        if (!empty($this->fields["personal_token"])) {
+            echo "<div class='copy_to_clipboard_wrapper'>";
+            echo Html::input('_personal_token', [
+                'value'    => $this->fields["personal_token"],
+                'style'    => 'width:90%'
+            ]);
+            echo "</div>";
+            echo "(" . sprintf(
+                __('generated on %s'),
+                Html::convDateTime($this->fields["personal_token_date"])
+            ) . ")";
+        }
+        echo "</td><td>";
+        Html::showCheckbox(['name'  => '_reset_personal_token',
+            'title' => __('Regenerate')
+        ]);
+        echo "&nbsp;&nbsp;" . __('Regenerate');
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'><td>";
+        echo __("API token");
+        echo "</td><td colspan='2'>";
+        if (!empty($this->fields["api_token"])) {
+            echo "<div class='copy_to_clipboard_wrapper'>";
+            echo Html::input('_api_token', [
+                'value'    => $this->fields["api_token"],
+                'style'    => 'width:90%'
+            ]);
                 echo "</div>";
                 echo "(" . sprintf(
                     __('generated on %s'),
-                    Html::convDateTime($this->fields["personal_token_date"])
+                    Html::convDateTime($this->fields["api_token_date"])
                 ) . ")";
-            }
-            echo "</td><td>";
-            Html::showCheckbox(['name'  => '_reset_personal_token',
-                'title' => __('Regenerate')
-            ]);
-            echo "&nbsp;&nbsp;" . __('Regenerate');
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
-            echo __("API token");
-            echo "</td><td colspan='2'>";
-            if (!empty($this->fields["api_token"])) {
-                echo "<div class='copy_to_clipboard_wrapper'>";
-                echo Html::input('_api_token', [
-                    'value'    => $this->fields["api_token"],
-                    'style'    => 'width:90%'
-                ]);
-                 echo "</div>";
-                 echo "(" . sprintf(
-                     __('generated on %s'),
-                     Html::convDateTime($this->fields["api_token_date"])
-                 ) . ")";
-            }
-            echo "</td><td>";
-            Html::showCheckbox(['name'  => '_reset_api_token',
-                'title' => __('Regenerate')
-            ]);
-            echo "&nbsp;&nbsp;" . __('Regenerate');
-            echo "</td></tr>";
-
-            echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-            return true;
         }
-        return false;
+        echo "</td><td>";
+        Html::showCheckbox(['name'  => '_reset_api_token',
+            'title' => __('Regenerate')
+        ]);
+        echo "&nbsp;&nbsp;" . __('Regenerate');
+        echo "</td></tr>";
+
+        echo "<tr><td class='tab_bg_2 center' colspan='4'>";
+        echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
+        echo "</td></tr>";
+
+        echo "</table>";
+        Html::closeForm();
+        echo "</div>";
+        return true;
     }
 
 
