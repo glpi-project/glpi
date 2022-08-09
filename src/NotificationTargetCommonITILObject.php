@@ -393,7 +393,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addRecipientAddress()
     {
-        return $this->addUserByField("users_id_recipient");
+        $this->addUserByField("users_id_recipient");
     }
 
 
