@@ -2257,6 +2257,10 @@ class RuleTicket extends DbTestCase
         string $pattern,
         string $header
     ) {
+        // clean right singleton
+        \SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+
         $this->login();
 
         $ruleticket = new \RuleTicket();

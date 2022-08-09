@@ -661,9 +661,9 @@ class RuleTicket extends Rule
         $criterias['_reply-to']['table']                      = '';
         $criterias['_reply-to']['type']                       = 'text';
 
-        $criterias['_in_reply-to']['name']                    = __('In-Reply-To email header');
-        $criterias['_in_reply-to']['table']                   = '';
-        $criterias['_in_reply-to']['type']                    = 'text';
+        $criterias['_in-reply-to']['name']                    = __('In-Reply-To email header');
+        $criterias['_in-reply-to']['table']                   = '';
+        $criterias['_in-reply-to']['type']                    = 'text';
 
         $criterias['_to']['name']                             = __('To email header');
         $criterias['_to']['table']                            = '';
