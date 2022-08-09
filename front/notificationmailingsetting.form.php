@@ -53,4 +53,5 @@ if (isset($_POST["test_smtp_send"])) {
 }
 
 $menus = ["config", "notification", "config"];
-NotificationMailingSetting::displayFullPageForItem(1, $menus);
+$config_id = Config::getConfigIDForContext('core');
+NotificationMailingSetting::displayFullPageForItem($config_id, $menus);
