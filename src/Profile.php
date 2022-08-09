@@ -3424,7 +3424,7 @@ class Profile extends CommonDBTM
      * @param $itemtype   string   itemtype
      * @param $interface  string   (default 'central')
      *
-     * @return rights
+     * @return array
      **/
     public static function getRightsFor($itemtype, $interface = 'central')
     {
@@ -3433,6 +3433,8 @@ class Profile extends CommonDBTM
             $item = new $itemtype();
             return $item->getRights($interface);
         }
+
+        return [];
     }
 
 
