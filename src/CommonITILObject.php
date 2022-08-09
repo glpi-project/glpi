@@ -9155,6 +9155,7 @@ abstract class CommonITILObject extends CommonDBTM
                             }
                         }
                         if ($found === false) {
+                            $input_key = $get_input_key($existing['itemtype'], $actor_type);
                             $input[sprintf('%s_deleted', $input_key)][] = $existing;
                         }
                     }
