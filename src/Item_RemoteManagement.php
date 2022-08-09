@@ -359,7 +359,7 @@ class Item_RemoteManagement extends CommonDBChild
             self::ANYDESK => 'AnyDesk',
             self::MESHCENTRAL => 'MeshCentral',
             self::SUPREMO => 'SupRemo',
-            self::RUSTDESK => 'RustDesk'
+            self::RUSTDESK => 'RustDesk',
         ];
         echo "<td>";
         echo Dropdown::showFromArray(
