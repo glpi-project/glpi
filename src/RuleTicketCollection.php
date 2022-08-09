@@ -108,10 +108,36 @@ class RuleTicketCollection extends RuleCollection
     public function prepareInputDataForProcess($input, $params)
     {
 
-       // Pass x-priority header if exists
+        // Pass x-priority header if exists
         if (isset($input['_head']['x-priority'])) {
             $input['_x-priority'] = $input['_head']['x-priority'];
         }
+
+        // Pass From header if exists
+        if (isset($input['_head']['from'])) {
+            $input['_from'] = $input['_head']['from'];
+        }
+
+        // Pass Subject header if exists
+        if (isset($input['_head']['subject'])) {
+            $input['_subject'] = $input['_head']['subject'];
+        }
+
+        // Pass Reply-To header if exists
+        if (isset($input['_head']['reply-to'])) {
+            $input['_reply-to'] = $input['_head']['reply-to'];
+        }
+
+        // Pass In-Reply-To header if exists
+        if (isset($input['_head']['in-reply-to'])) {
+            $input['_in-reply-to'] = $input['_head']['in-reply-to'];
+        }
+
+        // Pass To header if exists
+        if (isset($input['_head']['to'])) {
+            $input['_to'] = $input['_head']['to'];
+        }
+
         $input['_groups_id_of_requester'] = [];
        // Get groups of users
         if (isset($input['_users_id_requester'])) {

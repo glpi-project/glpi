@@ -649,6 +649,26 @@ class RuleTicket extends Rule
         $criterias['_x-priority']['table']                    = '';
         $criterias['_x-priority']['type']                     = 'text';
 
+        $criterias['_from']['name']                           = __('From email header');
+        $criterias['_from']['table']                          = '';
+        $criterias['_from']['type']                           = 'text';
+
+        $criterias['_subject']['name']                        = __('Subject email header');
+        $criterias['_subject']['table']                       = '';
+        $criterias['_subject']['type']                        = 'text';
+
+        $criterias['_reply-to']['name']                       = __('Reply-To email header');
+        $criterias['_reply-to']['table']                      = '';
+        $criterias['_reply-to']['type']                       = 'text';
+
+        $criterias['_in_reply-to']['name']                    = __('In-Reply-To email header');
+        $criterias['_in_reply-to']['table']                   = '';
+        $criterias['_in_reply-to']['type']                    = 'text';
+
+        $criterias['_to']['name']                             = __('To email header');
+        $criterias['_to']['table']                            = '';
+        $criterias['_to']['type']                             = 'text';
+
         $criterias['slas_id_ttr']['table']                    = 'glpi_slas';
         $criterias['slas_id_ttr']['field']                    = 'name';
         $criterias['slas_id_ttr']['name']                     = sprintf(
