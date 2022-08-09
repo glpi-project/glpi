@@ -380,7 +380,7 @@ abstract class RuleCommonITILObject extends Rule
                             $this->regex_results
                         );
 
-                        // Keep weird default value that will not match anything
+                        // Keep weird legacy default value that will not match anything
                         if (empty($regex_values)) {
                             $regex_values[] = $action->fields["value"];
                         }
