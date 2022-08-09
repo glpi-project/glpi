@@ -4,19 +4,19 @@
 
 Please note that current repository is about GLPI core only. All related plugins are the responsibility of their respective owners and all requests must be done on their own systems.
 
-**Please write only in english!**
+**Please write only in English!**
 
 ## Bugs
 
-Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesionnal services](http://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).
+Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesional services](http://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).
 
 If you found a bug, the first steps to do are:
-- check if you're using the latest version, and if not, upgrade to see if problem is not yet solved,
-- search in already existing tickets to see if someone else already report the issue.
+- check if you're using the latest version, and if not, upgrade to see if the problem remains unsolved,
+- search in already existing tickets to see if someone else already reported the issue.
 
-If the last release does not solve the issue and there is no existing ticket, create one using the bug report template. Be sure you provide all requested details, log entries, and whatever may be usefull to understand and reproduce the issue.
+If the last release does not solve the issue and there are no existing tickets, create one using the bug report template. Be sure you provide all requested details, log entries, and whatever may be useful to understand and reproduce the issue.
 
-If developpers are not able to reproduce the issue, it may not be fixed.
+If developers are not able to reproduce the issue, it may not be fixed.
 
 ## Features
 
@@ -28,7 +28,7 @@ If you're just asking for something to be added without doing it yourself, pleas
 
 You have a question on GLPI usage, or want to know what are the capabilities.
 
-Current repository is not the right place for that. You may try to aks your question on [the forums](https://forum.glpi-project.org), on the mailing lists, on telegram channels, ...
+Current repository is not the right place for that. You may try to ask your question on [the forums](https://forum.glpi-project.org), on the mailing lists, on telegram channels, ...
 
 ## Coding
 
