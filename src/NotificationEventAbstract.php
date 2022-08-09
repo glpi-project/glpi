@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class NotificationEventAbstract
+abstract class NotificationEventAbstract implements NotificationEventInterface
 {
     /**
      * Raise an ajax notification event
