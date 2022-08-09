@@ -812,8 +812,6 @@ class Socket extends CommonDBChild
      **/
     public static function showForLocation($item)
     {
-        Toolbox::deprecated();
-
         global $DB;
 
         $ID       = $item->getField('id');
