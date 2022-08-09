@@ -192,8 +192,8 @@ class Socket extends CommonDBChild
     {
 
         $itemtype = null;
-        if (isset($options['itemtype']) && !empty($options['itemtype'])) {
-            $itemtype = $options['itemtype'];
+        if (isset($options['from_itemtype']) && !empty($options['from_itemtype'])) {
+            $itemtype = $options['from_itemtype'];
         } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
         } else {
@@ -206,7 +206,7 @@ class Socket extends CommonDBChild
             $item->getFromDB($this->fields['items_id']);
         } else {
             $this->check(-1, CREATE, $options);
-            $item->getFromDB($options['items_id']);
+            $item->getFromDB($options['from_items_id']);
         }
 
         TemplateRenderer::getInstance()->display('pages/assets/socket.html.twig', [
@@ -691,20 +691,23 @@ class Socket extends CommonDBChild
         if ($item->getID() && self::canCreate()) {
             echo "<div class='firstbloc'>";
             echo "\n<form method='get' action='" . Socket::getFormURL() . "'>\n";
-            echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>\n";
-            echo "<input type='hidden' name='itemtype' value='" . $item->getType() . "'>\n";
+            echo "<input type='hidden' name='_from_items_id' value='" . $item->getID() . "'>\n";
+            echo "<input type='hidden' name='_from_itemtype' value='" . $item->getType() . "'>\n";
             echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
             echo "<tr class='tab_bg_2'>";
             echo "<td class='tab_bg_2 center'>";
             echo "<td>\n";
-            echo "<input type='submit' name='add_several' value=\"" . __('New socket for this item...') . "\" class='btn btn-primary'>\n";
+
+            echo "<button class='btn btn-primary' type='submit' name='_add_fromitem'>";
+            echo "<span>" . __('New socket for this item...') . "</span>";
+            echo "</button>";
+
             echo "</td>";
             echo "<td>\n";
             echo __('Add several sockets');
             echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
             echo "</tr></table></div>\n";
-            Html::closeForm();
-            echo "</div>";
+            echo "</form></div>";
         }
 
         $iterator = $DB->request([
