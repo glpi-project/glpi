@@ -2220,8 +2220,43 @@ class RuleTicket extends DbTestCase
         ))->isEqualTo(2);
     }
 
-    public function testHeaderCriteria(): void
+    protected function testMailHeaderCriteriaProvider()
     {
+        return [
+            [
+                "pattern"  => 'pattern_priority',
+                "header"   => 'x-priority',
+            ],
+            [
+                "pattern"  => 'pattern_from',
+                "header"   => 'from',
+            ],
+            [
+                "pattern"  => 'pattern_to',
+                "header"   => 'to',
+            ],
+            [
+                "pattern"  => 'pattern_reply-to',
+                "header"   => 'reply-to',
+            ],
+            [
+                "pattern"  => 'pattern_in-reply-to',
+                "header"   => 'in-reply-to',
+            ],
+            [
+                "pattern"  => 'pattern_subject',
+                "header"   => 'subject',
+            ],
+        ];
+    }
+
+    /**
+     * @dataprovider testMailHeaderCriteriaProvider
+     */
+    public function testMailHeaderCriteria(
+        string $pattern,
+        string $header
+    ) {
         $this->login();
 
         $ruleticket = new \RuleTicket();
@@ -2229,7 +2264,7 @@ class RuleTicket extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
-            'name'         => 'test x-priority',
+            'name'         => 'test ' . $header,
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -2240,9 +2275,9 @@ class RuleTicket extends DbTestCase
 
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
-            'criteria'  => '_x-priority',
+            'criteria'  => "_" . $header,
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => '1',
+            'pattern'   => $pattern,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -2255,13 +2290,12 @@ class RuleTicket extends DbTestCase
         ]);
         $this->checkInput($ruleaction, $action_id, $action_input);
 
-        // Create ticket with "x-priority" = 1 in "_head" property
         $ticket = new \Ticket();
         $tickets_id = $ticket->add([
-            'name'              => 'test x-priority header',
-            'content'           => 'test x-priority header',
+            'name'              => 'test ' . $header . ' header',
+            'content'           => 'test ' . $header . ' header',
             '_head'             => [
-                'x-priority' => '1'
+                $header => $pattern
             ]
         ]);
 
@@ -2269,12 +2303,12 @@ class RuleTicket extends DbTestCase
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
         $this->integer($ticket->fields['priority'])->isEqualTo(5);
 
-        // Retest ticket with different x-priority
+        // Retest ticket with different header
         $tickets_id = $ticket->add([
-            'name'              => 'test x-priority header',
-            'content'           => 'test x-priority header',
+            'name'              => 'test ' . $header . ' header',
+            'content'           => 'test ' . $header . ' header',
             '_head'             => [
-                'x-priority' => '2'
+                $header => 'header_foo_bar'
             ]
         ]);
 
