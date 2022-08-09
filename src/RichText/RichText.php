@@ -103,7 +103,8 @@ final class RichText
         string $content,
         bool $keep_presentation = true,
         bool $compact = false,
-        bool $encode_output_entities = false
+        bool $encode_output_entities = false,
+        bool $preserve_case = false
     ): string {
         global $CFG_GLPI;
 
@@ -123,7 +124,18 @@ final class RichText
                 );
             }
 
-            $html = new Html2Text($content, $options);
+            $options['preserve_case'] = $preserve_case;
+
+            $html = new class ($content, $options) extends Html2Text {
+                protected function toupper($str)
+                {
+                    if ($this->options['preserve_case'] === true) {
+                        return $str;
+                    }
+
+                    return parent::toupper($str);
+                }
+            };
             $content = $html->getText();
         } else {
            // Remove HTML tags using htmLawed
