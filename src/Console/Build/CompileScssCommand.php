@@ -119,8 +119,6 @@ class CompileScssCommand extends Command
             }
         }
 
-        $licence_header = $this->getLicenceHeaderString();
-
         foreach ($files as $file) {
             $output->writeln(
                 '<comment>' . sprintf('Processing "%s".', $file) . '</comment>',
@@ -133,14 +131,6 @@ class CompileScssCommand extends Command
                     'file'    => $file,
                     'nocache' => true,
                 ]
-            );
-
-            // Insert licence header after the "@charset" directive.
-            $css = preg_replace(
-                '/^(@charset [^;]+;)/',
-                '$0' . PHP_EOL . $licence_header,
-                $css,
-                1
             );
 
             if ($dry_run) {
@@ -166,37 +156,5 @@ class CompileScssCommand extends Command
         }
 
         return 0; // Success
-    }
-
-    /**
-     * Get lincence header string.
-     *
-     * @return string
-     */
-    private function getLicenceHeaderString(): string
-    {
-        // Extract header lines
-        $header_file = GLPI_ROOT . '/tools/HEADER';
-
-        if (!file_exists($header_file)) {
-            // Production build, there is no tools/HEADER file
-            return "";
-        }
-
-        $lines = file($header_file);
-
-        // Add * prefix on all lines
-        $lines = array_map(
-            function ($line) {
-                $line_prefix = ' * ';
-                return (preg_match('/^\s+$/', $line) ? rtrim($line_prefix) : $line_prefix) . $line;
-            },
-            $lines
-        );
-
-        // Surround by opening and closing lines
-        $lines = array_merge(["/**\n"], $lines, [" */\n\n"]);
-
-        return implode($lines);
     }
 }
