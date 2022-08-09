@@ -3592,7 +3592,7 @@ class Profile extends CommonDBTM
      *             'display'
      *             'check_method'  method used to check the right
      *
-     * @return content if !display
+     * @return string|void Return generated content if `display` parameter is true.
      **/
     public static function getLinearRightChoice(array $elements, array $options = [])
     {
