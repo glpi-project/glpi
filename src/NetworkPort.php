@@ -1747,8 +1747,8 @@ class NetworkPort extends CommonDBChild
             || ($item->getType() == 'NetworkPort')
         ) {
             self::showForItem($item, $withtemplate);
-            return true;
         }
+        return true;
     }
 
 

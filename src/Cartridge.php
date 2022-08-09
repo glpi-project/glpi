@@ -1380,14 +1380,15 @@ class Cartridge extends CommonDBRelation
                 $info->showForPrinter($item);
                 self::showForPrinter($item);
                 self::showForPrinter($item, 1);
-                return true;
+                break;
 
             case 'CartridgeItem':
                 self::showAddForm($item);
                 self::showForCartridgeItem($item);
                 self::showForCartridgeItem($item, 1);
-                return true;
+                break;
         }
+        return true;
     }
 
     public function getRights($interface = 'central')

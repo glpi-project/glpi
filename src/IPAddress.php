@@ -318,6 +318,7 @@ class IPAddress extends CommonDBChild
                 self::showForItem($item, $withtemplate);
                 break;
         }
+        return true;
     }
 
 

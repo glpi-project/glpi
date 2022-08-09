@@ -48,6 +48,7 @@ class GLPINetwork extends CommonGLPI
             $glpiNetwork = new self();
             $glpiNetwork->showForConfig();
         }
+        return true;
     }
 
     public static function showForConfig()

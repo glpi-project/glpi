@@ -323,11 +323,13 @@ class Document_Item extends CommonDBRelation
                         self::showForItem($item, $withtemplate);
                         break;
                 }
-                return true;
+                break;
 
             default:
                 self::showForitem($item, $withtemplate);
+                break;
         }
+        return true;
     }
 
 

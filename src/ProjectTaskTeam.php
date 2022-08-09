@@ -106,8 +106,10 @@ class ProjectTaskTeam extends CommonDBRelation
         switch ($item->getType()) {
             case 'ProjectTask':
                 $item->showTeam($item);
-                return true;
+                break;
         }
+
+        return true;
     }
 
     public function post_addItem()
