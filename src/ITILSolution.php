@@ -62,7 +62,7 @@ class ITILSolution extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->isNewItem()) {
-            return;
+            return '';
         }
         if ($item->maySolve()) {
             $nb    = 0;
@@ -72,6 +72,7 @@ class ITILSolution extends CommonDBChild
             }
             return self::createTabEntry($title, $nb);
         }
+        return '';
     }
 
     public static function canView()
