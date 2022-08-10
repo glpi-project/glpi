@@ -904,6 +904,8 @@ class Migration
             }
             $DB->insertOrDie('glpi_ruleactions', $values);
         }
+
+        return $rid;
     }
 
 
