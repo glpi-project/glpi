@@ -989,12 +989,15 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * This method aims to sanitize the completename value in display context.
      *
-     * @param string $completename
+     * @param string|null $completename
      *
-     * @return string
+     * @return string|null
      */
-    public static function sanitizeSeparatorInCompletename(string $completename): string
+    public static function sanitizeSeparatorInCompletename(?string $completename): ?string
     {
+        if (empty($completename)) {
+            return $completename;
+        }
         $separator = ' > ';
         return implode(Sanitizer::sanitize($separator), explode($separator, $completename));
     }

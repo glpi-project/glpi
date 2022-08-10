@@ -50,13 +50,18 @@ class CommonTreeDropdown extends DbTestCase
             'completename' => 'Root > &#60;ext&#62; Child 1 > Child 2', // "Root" > "<ext> Child 1" > "Child 2"
             'expected'     => 'Root &#62; &#60;ext&#62; Child 1 &#62; Child 2',
         ];
+
+        yield [
+            'completename' => null,
+            'expected'     => null,
+        ];
     }
 
     /**
      * @dataProvider completenameProvider
      */
-    public function testSanitizeSeparatorInCompletename(string $completename, string $expected)
+    public function testSanitizeSeparatorInCompletename(?string $completename, ?string $expected)
     {
-        $this->string(\CommonTreeDropdown::sanitizeSeparatorInCompletename($completename))->isEqualTo($expected);
+        $this->variable(\CommonTreeDropdown::sanitizeSeparatorInCompletename($completename))->isIdenticalTo($expected);
     }
 }
