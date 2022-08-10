@@ -1211,11 +1211,11 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
     /**
      * Override title function to display the link to reinitialisation of the network tree
+     *
+     * @FIXME Deprecate this method in GLPI 10.1. It is not used anymore.
      **/
     public function title()
     {
-        parent::title();
-
         if (
             Session::haveRight('internet', UPDATE)
             && Session::canViewAllEntities()
