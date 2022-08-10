@@ -1385,7 +1385,7 @@ class Impact extends CommonGLPI
      *
      * @since 9.5
      *
-     * @return bool true if the node was missing, else false
+     * @return void
      *
      * @throws InvalidArgumentException
      */
