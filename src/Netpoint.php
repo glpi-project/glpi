@@ -99,10 +99,4 @@ class Netpoint extends Socket
        //Copy input to match new format
         return parent::prepareInputForUpdate($input);
     }
-
-    public function post_getFromDB()
-    {
-       //Copy fields to match new format
-        return parent::post_getFromDB();
-    }
 }
