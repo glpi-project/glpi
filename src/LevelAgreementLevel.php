@@ -45,6 +45,19 @@ abstract class LevelAgreementLevel extends RuleTicket
     public static $rightname            = 'slm';
 
     /**
+     * LevelAgreement parent class.
+     * Have to be redefined by concrete class.
+     * @var string
+     */
+    protected static $parentclass;
+    /**
+     * LevelAgreement parent class foreign key.
+     * Have to be redefined by concrete class.
+     * @var string
+     */
+    protected static $fkparent;
+
+    /**
      * Constructor
      **/
     public function __construct()
