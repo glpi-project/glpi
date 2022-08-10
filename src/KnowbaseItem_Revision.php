@@ -311,7 +311,7 @@ class KnowbaseItem_Revision extends CommonDBTM
      *
      * @param KnowbaseItem $item Knowledge base item
      *
-     * @return boolean
+     * @return integer|boolean ID of the revision created, or false on error
      */
     public function createNew(KnowbaseItem $item)
     {
@@ -323,7 +323,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         $this->fields['date'] = $item->fields['date_mod'];
         $this->fields['revision'] = $this->getNewRevision();
         $this->fields['users_id'] = $item->fields['users_id'];
-        $this->addToDB();
+        return $this->addToDB();
     }
 
     /**
