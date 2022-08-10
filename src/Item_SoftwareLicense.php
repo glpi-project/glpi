@@ -1046,7 +1046,7 @@ JAVASCRIPT;
      *
      * @param integer $softwares_id Software ID
      *
-     * @return void
+     * @return int
      **/
     public static function countLicenses($softwares_id)
     {
