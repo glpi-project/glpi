@@ -1096,7 +1096,7 @@ class Migration
      *
      * @since 9.2
      *
-     * @return boolean
+     * @return void
      */
     private function storeConfig()
     {
