@@ -43,6 +43,7 @@ use Dropdown;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Lockedfield;
+use NetworkEquipment;
 use RefusedEquipment;
 use RuleImportAssetCollection;
 use RuleImportEntityCollection;
@@ -706,7 +707,8 @@ abstract class MainAsset extends InventoryAsset
             $_SESSION['glpiactive_entity']         = $entities_id;
         }
 
-        if ($this->is_discovery === true && !$this->isNew()) {
+        if ($this->is_discovery === true && !$this->isNew() && $itemtype == NetworkEquipment::getType()) {
+            //do not update from network discoveries (only for NetworkEquipement)
             //prevents discoveries to remove all ports, IPs and so on found with network inventory
             //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
             $input = $this->handleInput($val);
