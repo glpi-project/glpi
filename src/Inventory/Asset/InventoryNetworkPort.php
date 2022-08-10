@@ -618,7 +618,6 @@ trait InventoryNetworkPort
      */
     private function handleDeletesManagementPorts()
     {
-        Toolbox::logError("try to delete PM for ". $this->itemtype . " - " . $this->items_id);
         if (method_exists($this, 'getManagementPorts')) {
             if (empty($this->getManagementPorts())) {
                 //remove all port management ports
