@@ -7420,7 +7420,7 @@ HTML;
                             $out .= $data[$ID][$k]['trans'];
                         } else {
                             $value = $data[$ID][$k]['name'];
-                            $out .= $value !== null && $so['field'] === 'completename'
+                            $out .= $so['field'] === 'completename'
                                 ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
                                 : $value;
                         }
