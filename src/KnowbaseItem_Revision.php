@@ -327,11 +327,11 @@ class KnowbaseItem_Revision extends CommonDBTM
     }
 
     /**
-     * Populate and create a new revision from KnowbaseItem information
+     * Populate and create a new revision from KnowbaseItemTranslation information
      *
      * @param KnowbaseItemTranslation $item Knowledge base item translation
      *
-     * @return boolean
+     * @return integer|boolean ID of the revision created, or false on error
      */
     public function createNewTranslated(KnowbaseItemTranslation $item)
     {
@@ -344,7 +344,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         $this->fields['language'] = $item->fields['language'];
         $this->fields['revision'] = $this->getNewRevision();
         $this->fields['users_id'] = $item->fields['users_id'];
-        $this->addToDB();
+        return $this->addToDB();
     }
 
     /**
