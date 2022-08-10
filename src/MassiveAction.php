@@ -1393,7 +1393,7 @@ class MassiveAction
 
     /**
      * Process the specific massive actions for severl itemtypes
-     * @return array of the results for the actions
+     * @return void
      **/
     public function processForSeveralItemtypes()
     {
