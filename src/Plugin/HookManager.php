@@ -49,6 +49,8 @@ class HookManager
      */
     public function enableCSRF(): void
     {
+        global $PLUGIN_HOOKS;
+
         $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->plugin] = true;
     }
 
