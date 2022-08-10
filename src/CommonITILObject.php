@@ -7017,14 +7017,18 @@ abstract class CommonITILObject extends CommonDBTM
             class_exists($validation_class) && $params['with_validations']
             && ($validation_class::canView() || $params['bypass_rights'])
         ) {
-            $valitation_obj   = new $validation_class();
-            $validations = $valitation_obj->find([$foreignKey => $this->getID()]);
+            $validation_obj   = new $validation_class();
+            $validations = $validation_obj->find([$foreignKey => $this->getID()]);
             foreach ($validations as $validations_id => $validation) {
-                /** @var CommonITILValidation $valitation_obj */
-                $valitation_obj->getFromDB($validations_id);
-                $canedit = $valitation_obj->can($validations_id, UPDATE);
-                $cananswer = $valitation_obj->isCurrentUserValidationTarget(true) && ((int) $validation['status'] === CommonITILValidation::WAITING);
-                $request_key = $valitation_obj::getType() . '_' . $validations_id
+
+                /** @var CommonITILValidation $validation_obj */
+                $canedit = $validation_obj->can($validations_id, UPDATE);
+                $cananswer = ($validation_obj->canValidate($this->getID())
+                              && $validation['status'] == CommonITILValidation::WAITING);
+                $user = new User();
+                $user->getFromDB($validation['users_id_validate']);
+
+                $request_key = $validation_obj::getType() . '_' . $validations_id
                     . (empty($validation['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
 
                 $content = __('Validation request');
@@ -7060,7 +7064,7 @@ abstract class CommonITILObject extends CommonDBTM
                 ];
 
                 if (!empty($validation['validation_date'])) {
-                    $timeline[$valitation_obj::getType() . "_" . $validations_id] = [
+                    $timeline[$validation_obj::getType() . "_" . $validations_id] = [
                         'type' => $validation_class,
                         'item' => [
                             'id'        => $validations_id,
@@ -9883,18 +9887,21 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Get the first requester user
      *
-     * @return User the first user added as a requester or 0 if no requester found
+     * @return null|User the first user added as a requester or 0 if no requester found
      */
-    public function getPrimaryRequesterUser(): User {
+    public function getPrimaryRequesterUser(): ?User
+    {
         if (!isset($this->fields['id']) || $this->isNewID($this->fields['id'])) {
             return null;
         }
 
         $user_link = new $this->userlinkclass();
-        $rows = $user_link->find([
+        $rows = $user_link->find(
+            [
                 static::getForeignKeyField() => $this->fields['id'],
                 'type' => CommonITILActor::REQUESTER,
-            ], [
+            ],
+            [
                 'id ASC'
             ],
             1

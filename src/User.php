@@ -272,10 +272,11 @@ class User extends CommonDBTM
 
         switch ($item->getType()) {
             case __CLASS__:
+                /** @var User $item */
                 $item->showItems($tabnum == 2);
                 return true;
 
-            case 'Preference':
+            case Preference::class:
                 $user = new self();
                 $user->showMyForm(
                     $CFG_GLPI['root_doc'] . "/front/preference.php",
@@ -3905,7 +3906,23 @@ JAVASCRIPT;
             ]
         ];
 
-       // add objectlock search options
+        $tab[] = [
+            'id'                => 130,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_start_date',
+            'name'              => __('Substitution start date'),
+            'datatype'          => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'                => 131,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_end_date',
+            'name'              => __('Substitution end date'),
+            'datatype'          => 'datetime',
+        ];
+
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;

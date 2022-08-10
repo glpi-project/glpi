@@ -839,14 +839,15 @@ CREATE TABLE `glpi_changevalidations` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `changes_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_validate` int unsigned NOT NULL DEFAULT '0',
-  `itemtype_target` varchar(255) NOT NULL,
-  `items_id_target` int unsigned NOT NULL DEFAULT '0',
+  `itemtype_target` varchar(255) NOT NULL COMMENT 'itemtype in charge of the validation',
+  `items_id_target` int unsigned NOT NULL DEFAULT '0' COMMENT 'items id in charge of the validation',
   `comment_submission` text,
   `comment_validation` text,
   `status` int NOT NULL DEFAULT '2',
   `submission_date` timestamp NULL DEFAULT NULL,
   `validation_date` timestamp NULL DEFAULT NULL,
   `timeline_position` tinyint NOT NULL DEFAULT '0',
+  `users_id_actual_validate` int unsigned NOT NULL DEFAULT '0',
   `last_reminder_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
@@ -856,6 +857,7 @@ CREATE TABLE `glpi_changevalidations` (
   KEY `item_target` (`itemtype_target`,`items_id_target`),
   KEY `changes_id` (`changes_id`),
   KEY `submission_date` (`submission_date`),
+  KEY `users_id_actual_validate` (`users_id_actual_validate`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7508,14 +7510,15 @@ CREATE TABLE `glpi_ticketvalidations` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `tickets_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_validate` int unsigned NOT NULL DEFAULT '0',
-  `itemtype_target` varchar(255) NOT NULL,
-  `items_id_target` int unsigned NOT NULL DEFAULT '0',
+  `itemtype_target` varchar(255) NOT NULL COMMENT 'itemtype in charge of the validation',
+  `items_id_target` int unsigned NOT NULL DEFAULT '0' COMMENT 'items id in charge of the validation',
   `comment_submission` text,
   `comment_validation` text,
   `status` int NOT NULL DEFAULT '2',
   `submission_date` timestamp NULL DEFAULT NULL,
   `validation_date` timestamp NULL DEFAULT NULL,
   `timeline_position` tinyint NOT NULL DEFAULT '0',
+  `users_id_actual_validate` int unsigned NOT NULL DEFAULT '0',
   `last_reminder_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
@@ -7524,6 +7527,7 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `item_target` (`itemtype_target`,`items_id_target`),
   KEY `tickets_id` (`tickets_id`),
   KEY `submission_date` (`submission_date`),
+  KEY `users_id_actual_validate` (`users_id_actual_validate`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7710,6 +7714,8 @@ CREATE TABLE `glpi_users` (
   `default_dashboard_mini_ticket` varchar(100) DEFAULT NULL,
   `default_central_tab` tinyint DEFAULT '0',
   `nickname` varchar(255) DEFAULT NULL,
+  `substitution_end_date` timestamp NULL DEFAULT NULL,
+  `substitution_start_date` timestamp NULL DEFAULT NULL,
   `toast_location` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
@@ -7732,7 +7738,9 @@ CREATE TABLE `glpi_users` (
   KEY `groups_id` (`groups_id`),
   KEY `users_id_supervisor` (`users_id_supervisor`),
   KEY `auths_id` (`auths_id`),
-  KEY `default_requesttypes_id` (`default_requesttypes_id`)
+  KEY `default_requesttypes_id` (`default_requesttypes_id`),
+  KEY `substitution_end_date` (`substitution_end_date`),
+  KEY `substitution_start_date` (`substitution_start_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -9357,3 +9365,12 @@ CREATE TABLE `glpi_changesatisfactions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
+
+DROP TABLE IF EXISTS `glpi_validatorsubstitutes`;
+CREATE TABLE `glpi_validatorsubstitutes` (
+	`id` int unsigned NOT NULL AUTO_INCREMENT,
+	`users_id` int unsigned  NOT NULL DEFAULT '0' COMMENT 'Delegator user',
+	`users_id_substitute` int unsigned  NOT NULL DEFAULT '0' COMMENT 'Substitute user',
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `users_id_users_id_substitute` (`users_id`, `users_id_substitute`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
