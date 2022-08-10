@@ -452,8 +452,8 @@ class Migration
                 }
                 return true;
             }
-            return false;
         }
+        return false;
     }
 
 
