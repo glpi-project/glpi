@@ -313,16 +313,16 @@ class Dropdown extends DbTestCase
 
         //Location with alias and code:
         $location = getItemByTypeName('Location', '_location02 > _sublocation04');
-        $expected = "alias_sublocation04";
+        $expected = "alias_sublocation04 - code_sublocation04";
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID());
         $this->string($ret)->isIdenticalTo($expected);
 
          // test of return with comments
         $expected = [
-            'name'    => "alias_sublocation04",
+            'name'    => "alias_sublocation04 - code_sublocation04",
             'comment' => "<span class='b'>Complete name</span>: _location02 &#62; _sublocation04<br>" .
-                        "<span class='b'>Code:</span> code_sublocation04<br/>" .
                         "<span class='b'>Alias:</span> alias_sublocation04<br/>" .
+                        "<span class='b'>Code:</span> code_sublocation04<br/>" .
                         "<span class='b'>&nbsp;Comments&nbsp;</span>Comment for location _sublocation04"
         ];
         $ret = \Dropdown::getDropdownName('glpi_locations', $location->getID(), true);

@@ -2986,7 +2986,8 @@ class Dropdown
                         if (isset($data['alias']) && !empty($data['alias'])) {
                             $outputval = $data['alias'];
                             $title     = $data['alias'];
-                        } elseif (isset($data['code']) && !empty($data['code'])) {
+                        }
+                        if (isset($data['code']) && !empty($data['code'])) {
                             $outputval .= ' - ' . $data['code'];
                             $title     .= ' - ' . $data['code'];
                         }
