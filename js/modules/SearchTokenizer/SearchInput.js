@@ -579,10 +579,10 @@ export default class SearchInput {
         this.displayed_input.find('.search-input-tag').each((i, node) => {
             const n = $(node);
             if (n.data('token') !== undefined) {
-                raw_input += n.data('token').raw;
+                raw_input += n.data('token').raw + ' ';
             }
         });
-        return raw_input;
+        return raw_input.trim();
     }
 
     refreshPopover() {
