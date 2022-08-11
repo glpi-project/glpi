@@ -239,9 +239,8 @@ class Cartridge extends InventoryAsset
         foreach ($value as $k => $val) {
             foreach ($db_cartridges as $keydb => $arraydb) {
                 if ($k == $arraydb['property']) {
-                    $input = (array)$val + [
-                        'id'           => $keydb
-                    ];
+                    $input['value'] = $val;
+                    $input['id'] = $keydb;
                     $cartinfo->update(Toolbox::addslashes_deep($input), false);
                     unset($value->$k);
                     unset($db_cartridges[$keydb]);
