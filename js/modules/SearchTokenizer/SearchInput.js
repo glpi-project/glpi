@@ -486,9 +486,9 @@ export default class SearchInput {
             tag.removeClass('search-input-tag');
             tag.addClass('search-input-tag-input');
             tag.attr('contenteditable', 'true');
-            const v = tag.text().trim();
+            const token = tag.data('token');
             tag.empty();
-            tag.text(v);
+            tag.text(token.raw);
             tag.focus();
             // place cursor at end of the tag text
             this.placeCaretAtEndOfNode(tag.get(0));
@@ -575,7 +575,14 @@ export default class SearchInput {
     }
 
     getRawInput() {
-        return this.displayed_input.get(0).textContent;
+        let raw_input = '';
+        this.displayed_input.find('.search-input-tag').each((i, node) => {
+            const n = $(node);
+            if (n.data('token') !== undefined) {
+                raw_input += n.data('token').raw;
+            }
+        });
+        return raw_input;
     }
 
     refreshPopover() {
