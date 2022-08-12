@@ -887,7 +887,8 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @return bool
      **/
-    public function isGroup(int $type, int $groups_id): bool
+    // FIXME add params typehint in GLPI 10.1
+    public function isGroup($type, $groups_id): bool
     {
         if (isset($this->groups[$type])) {
             foreach ($this->groups[$type] as $data) {
