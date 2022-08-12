@@ -149,8 +149,17 @@
     }
 
     body.navbar-collapsed {
+        .trigger-fuzzy {
+            border: 0px;
+            font-size: 1em;
+        }
+
+        #navbar-menu .nav-link {
+            padding: 0.58rem 1.5rem !important;
+        }
+
+
         .navbar-brand {
-            padding: 0.4rem !important;
             margin: 0 calc(-1 * var(--tblr-gutter-x, 1.5rem)) 0.5rem;
             width: calc(100% + var(--tblr-gutter-x, 1.5rem) * 2);
 
@@ -231,7 +240,7 @@
                                 border-left: 3px solid transparent;
 
                                 &.active {
-                                    background-color: lighten($mainmenu-bg, 5%);
+                                    background-color: lighten($mainmenu-bg, 55%);
                                     border-left-color: $primary;
                                 }
                             }
