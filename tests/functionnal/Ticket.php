@@ -4945,11 +4945,11 @@ HTML
 
         // Test reopen as a member of a requester group
         $ticket = $this->createItem('Ticket', [
-            'name'                => 'testNeedReopen requester group',
-            'content'             => 'testNeedReopen requester group',
-            '_users_id_requester' => $postonly_id,
-            '_groups_id_requester'=> $requester_group->getID(),
-            '_users_id_assign'    => $tech_id,
+            'name'                 => 'testNeedReopen requester group',
+            'content'              => 'testNeedReopen requester group',
+            '_users_id_requester'  => $postonly_id,
+            '_groups_id_requester' => $requester_group->getID(),
+            '_users_id_assign'     => $tech_id,
         ]);
 
         $this->updateItem('Ticket', $ticket->getID(), [
