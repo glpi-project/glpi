@@ -130,7 +130,7 @@ class Cartridge extends AbstractInventoryAsset
         $agent->getEmpty();
         $asset->setAgent($agent);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
 
@@ -147,6 +147,31 @@ class Cartridge extends AbstractInventoryAsset
         $this->array($result)
          ->string['property']->isIdenticalTo('tonerblack')
          ->string['value']->isIdenticalTo('71');
+
+        //test level changed
+        $json = json_decode($data);
+        $json->content->cartridges[0]->tonerblack = 60;
+
+        $asset = new \Glpi\Inventory\Asset\Cartridge($printer, $json->content->cartridges);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode('{"tonerblack":"60"}'));
+
+        //handle
+        $asset->handleLinks();
+        $asset->handle();
+
+        global $DB;
+        $iterator = $DB->request([
+            'FROM'   => \Printer_CartridgeInfo::getTable(),
+            'WHERE'  => ['printers_id' => $printers_id]
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(1);
+
+        $result = $iterator->current();
+        $this->array($result)
+            ->string['property']->isIdenticalTo('tonerblack')
+            ->string['value']->isIdenticalTo('60');
 
         //test Printer_CartridgeInfo removal
         $this->boolean($printer->delete(['id' => $printers_id], true))->isTrue();
