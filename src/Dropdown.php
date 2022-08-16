@@ -2671,6 +2671,15 @@ class Dropdown
                     $swhere = [
                         "$table.completename" => ['LIKE', $search],
                     ];
+                    if ($table == Location::getTable()) {
+                        $swhere = [
+                            "OR" => [
+                                "$table.completename" => ['LIKE', $search],
+                                "$table.code"         => ['LIKE', $search],
+                                "$table.alias"        => ['LIKE', $search],
+                            ]
+                        ];
+                    }
                     if (Session::haveTranslations($post['itemtype'], 'completename')) {
                         $swhere["namet.value"] = ['LIKE', $search];
                     }
@@ -2976,6 +2985,15 @@ class Dropdown
                         }
 
                         $title = CommonTreeDropdown::sanitizeSeparatorInCompletename($title);
+
+                        if (isset($data['alias']) && !empty($data['alias'])) {
+                            $outputval = $data['alias'];
+                            $title     = $data['alias'];
+                        }
+                        if (isset($data['code']) && !empty($data['code'])) {
+                            $outputval .= ' - ' . $data['code'];
+                            $title     .= ' - ' . $data['code'];
+                        }
 
                         $selection_text = $title;
 

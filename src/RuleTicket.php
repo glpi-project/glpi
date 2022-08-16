@@ -177,6 +177,10 @@ class RuleTicket extends RuleCommonITILObject
         $criterias['locations_id']['linkfield']               = 'locations_id';
         $criterias['locations_id']['type']                    = 'dropdown';
 
+        $criterias['_locations_code']['table']              = 'glpi_locations';
+        $criterias['_locations_code']['field']              = 'code';
+        $criterias['_locations_code']['name']               = __('Location code');
+
         return $criterias;
     }
 

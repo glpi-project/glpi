@@ -53,6 +53,16 @@ class Location extends CommonTreeDropdown
 
         return [
             [
+                'name'  => 'code',
+                'label' => __('Code'),
+                'type'  => 'text',
+                'list'  => true
+            ], [
+                'name'  => 'alias',
+                'label' => __('Alias'),
+                'type'  => 'text',
+                'list'  => true
+            ], [
                 'name'  => $this->getForeignKeyField(),
                 'label' => __('As child of'),
                 'type'  => 'parent',
@@ -176,6 +186,24 @@ class Location extends CommonTreeDropdown
             'table'              => 'glpi_locations',
             'field'              => 'country',
             'name'               => __('Country'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
+        $tab[] = [
+            'id'                 => '106',
+            'table'              => 'glpi_locations',
+            'field'              => 'code',
+            'name'               => __('Location code'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
+        $tab[] = [
+            'id'                 => '107',
+            'table'              => 'glpi_locations',
+            'field'              => 'alias',
+            'name'               => __('Location alias'),
             'massiveaction'      => false,
             'datatype'           => 'string'
         ];
@@ -339,6 +367,22 @@ class Location extends CommonTreeDropdown
             'table'              => 'glpi_locations',
             'field'              => 'country',
             'name'               => __('Country'),
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '106',
+            'table'              => 'glpi_locations',
+            'field'              => 'code',
+            'name'               => __('Location code'),
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '107',
+            'table'              => 'glpi_locations',
+            'field'              => 'alias',
+            'name'               => __('Location alias'),
             'datatype'           => 'string',
         ];
 

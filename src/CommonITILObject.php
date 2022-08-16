@@ -1609,6 +1609,12 @@ abstract class CommonITILObject extends CommonDBTM
             $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
         }
 
+        $location_id = $input['locations_id'] ?? 0;
+        $location_id = (int)$location_id;
+        if ($location_id > 0 && ($location = Location::getById($location_id)) !== false) {
+            $input['_locations_code'] = $location->fields['code'];
+        }
+
         if (isset($input["document"]) && ($input["document"] > 0)) {
             $doc = new Document();
             if ($doc->getFromDB($input["document"])) {
@@ -2454,6 +2460,12 @@ abstract class CommonITILObject extends CommonDBTM
         $cat_id = $input['itilcategories_id'] ?? 0;
         if ($cat_id) {
             $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
+        }
+
+        $location_id = $input['locations_id'] ?? 0;
+        $location_id = (int)$location_id;
+        if ($location_id > 0 && ($location = Location::getById($location_id)) !== false) {
+            $input['_locations_code'] = $location->fields['code'];
         }
 
         $canpriority = true;
