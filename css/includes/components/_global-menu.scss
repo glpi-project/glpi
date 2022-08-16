@@ -65,6 +65,14 @@
     }
 }
 
+.navbar-vertical {
+    .trigger-fuzzy {
+        border: 0;
+        font-size: 1em;
+        font-weight: 400;
+    }
+}
+
 .sidebar {
     & ~ .navbar {
         z-index: $zindex-fixed;
@@ -149,11 +157,6 @@
     }
 
     body.navbar-collapsed {
-        .trigger-fuzzy {
-            border: 0;
-            font-size: 1em;
-        }
-
         #navbar-menu .nav-link {
             padding: 0.58rem 1.5rem !important;
         }
