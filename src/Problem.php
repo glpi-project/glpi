@@ -364,7 +364,7 @@ class Problem extends CommonITILObject
                      unset($row['tickets_id']);
                      unset($row['id']);
                      $row['problems_id'] = $this->fields['id'];
-                     $assoc->add(Toolbox::addslashes_deep($row));
+                     $assoc->add($row);
                 }
             }
         }

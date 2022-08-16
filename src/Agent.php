@@ -457,7 +457,6 @@ class Agent extends CommonDBTM
             return 0;
         }
 
-        $input = Toolbox::addslashes_deep($input);
         if ($aid) {
             $input['id'] = $aid;
             // We should not update itemtype in db if not an expected one

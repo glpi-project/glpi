@@ -2716,7 +2716,7 @@ class Entity extends CommonTreeDropdown
      * @since 0.84 (before in entitydata.class)
      *
      * @param string $field
-     * @param string $value  must be addslashes
+     * @param string $value
      **/
     private static function getEntityIDByField($field, $value)
     {

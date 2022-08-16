@@ -1693,7 +1693,7 @@ class User extends CommonDBTM
                         $group_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_groups',
-                            'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($v[$i]['ou'])]
+                            'WHERE'  => ['ldap_group_dn' => $v[$i]['ou']]
                         ]);
 
                         foreach ($group_iterator as $group) {
@@ -1714,7 +1714,7 @@ class User extends CommonDBTM
                     ) {
                         unset($v[$i][$field]['count']);
                         $lgroups = [];
-                        foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
+                        foreach ($v[$i][$field] as $lgroup) {
                             $lgroups[] = [
                                 new \QueryExpression($DB->quoteValue($lgroup) .
                                              " LIKE " .
@@ -1785,7 +1785,7 @@ class User extends CommonDBTM
                 $iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_groups',
-                    'WHERE'  => ['ldap_group_dn' => Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]])]
+                    'WHERE'  => ['ldap_group_dn' => $result[$ldap_method["group_member_field"]]]
                 ]);
 
                 foreach ($iterator as $group) {
@@ -1841,7 +1841,7 @@ class User extends CommonDBTM
             }
 
            //Store user's dn
-            $this->fields['user_dn']    = addslashes($userdn);
+            $this->fields['user_dn']    = $userdn;
            //Store date_sync
             $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
            // Empty array to ensure than syncDynamicEmails will be done
@@ -1872,7 +1872,6 @@ class User extends CommonDBTM
                             $this->fields[$k] = "";
                     }
                 } else {
-                    $val = Toolbox::addslashes_deep($val);
                     switch ($k) {
                         case "email1":
                         case "email2":
@@ -1882,7 +1881,7 @@ class User extends CommonDBTM
                             if (!empty($v[0][$e])) {
                                 foreach ($v[0][$e] as $km => $m) {
                                     if (!preg_match('/count/', $km)) {
-                                         $this->fields["_emails"][] = addslashes($m);
+                                         $this->fields["_emails"][] = $m;
                                     }
                                 }
                                 // Only get them once if duplicated
@@ -4853,12 +4852,10 @@ JAVASCRIPT;
                     $changes = [
                         0,
                         '',
-                        addslashes(
-                            sprintf(
-                                __('%1$s: %2$s'),
-                                __('Update authentification method to'),
-                                Auth::getMethodName($authtype, $server)
-                            )
+                        sprintf(
+                            __('%1$s: %2$s'),
+                            __('Update authentification method to'),
+                            Auth::getMethodName($authtype, $server)
                         )
                     ];
                     Log::history($ID, __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
@@ -5368,13 +5365,9 @@ JAVASCRIPT;
      *
      * @return integer
      */
-    public static function getIdByField($field, $value, $escape = true)
+    public static function getIdByField($field, $value)
     {
         global $DB;
-
-        if ($escape) {
-            $value = addslashes($value);
-        }
 
         $iterator = $DB->request([
             'SELECT' => 'id',

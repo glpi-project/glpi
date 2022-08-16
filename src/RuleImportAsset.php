@@ -819,10 +819,10 @@ class RuleImportAsset extends Rule
 
                 case 'model':
                     $modelclass = $itemtype . 'Model';
-                    $options    = ['manufacturer' => addslashes($input['manufacturer'])];
+                    $options    = ['manufacturer' => $input['manufacturer']];
                     $mid        = Dropdown::importExternal(
                         $modelclass,
-                        addslashes($input['model']),
+                        $input['model'],
                         -1,
                         $options,
                         '',
@@ -834,7 +834,7 @@ class RuleImportAsset extends Rule
                 case 'manufacturer':
                     $mid = Dropdown::importExternal(
                         'Manufacturer',
-                        addslashes($input['manufacturer']),
+                        $input['manufacturer'],
                         -1,
                         [],
                         '',

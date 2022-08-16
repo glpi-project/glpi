@@ -610,9 +610,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         if ($feed = self::getRSSFeed($input['url'])) {
             $input['have_error'] = 0;
-            $input['name']       = addslashes($feed->get_title());
+            $input['name']       = $feed->get_title();
             if (empty($input['comment'])) {
-                $input['comment'] = addslashes($feed->get_description());
+                $input['comment'] = $feed->get_description();
             }
         } else {
             $input['have_error'] = 1;
@@ -637,9 +637,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             && isset($input['url'])
             && ($feed = self::getRSSFeed($input['url']))
         ) {
-            $input['name'] = addslashes($feed->get_title());
+            $input['name'] = $feed->get_title();
             if (empty($input['comment'])) {
-                $input['comment'] = addslashes($feed->get_description());
+                $input['comment'] = $feed->get_description();
             }
         }
         return $input;

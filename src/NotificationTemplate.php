@@ -212,7 +212,7 @@ class NotificationTemplate extends CommonDBTM
             'name'       => $name,
             'value'     => $value,
             'comment'   => 1,
-            'condition' => ['itemtype' => addslashes($itemtype)]
+            'condition' => ['itemtype' => $itemtype]
         ]);
     }
 
