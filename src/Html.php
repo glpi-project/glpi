@@ -583,7 +583,7 @@ class Html
      *
      * @return void
      **/
-    public static function displayNotFoundError()
+    public static function displayNotFoundError(string $additional_info = '')
     {
         global $CFG_GLPI, $HEADER_LOADED;
 
@@ -599,6 +599,15 @@ class Html
         echo "<div class='center'><br><br>";
         echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'>";
         echo "<br><br><span class='b'>" . __('Item not found') . "</span></div>";
+        $requested_url = $_SERVER['REQUEST_URI'] ?? 'Unknown';
+        $user_id = Session::getLoginUserID() ?? 'Anonymous';
+        $internal_message = "User ID: $user_id tried to access a non-existent item $requested_url. Additional information: $additional_info\n";
+        $internal_message .= "\tStack Trace:\n";
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        foreach ($backtrace as $frame) {
+            $internal_message .= "\t\t" . $frame['file'] . ':' . $frame['line'] . ' ' . $frame['function'] . '()' . "\n";
+        }
+        Toolbox::logInFile('access-errors', $internal_message);
         self::nullFooter();
         exit();
     }
