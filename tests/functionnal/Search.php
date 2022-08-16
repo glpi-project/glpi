@@ -1734,7 +1734,7 @@ class Search extends DbTestCase
         ];
         $data = $this->doSearch('Computer', $search_params);
 
-        $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(9);
 
         $displaypref = new \DisplayPreference();
         $input = [
@@ -1746,7 +1746,7 @@ class Search extends DbTestCase
 
         $data = $this->doSearch('Computer', $search_params);
 
-        $this->integer($data['data']['totalcount'])->isIdenticalTo(8);
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(9);
     }
 
     public function testSearchWithMultipleFkeysOnSameTable()
@@ -1982,6 +1982,7 @@ class Search extends DbTestCase
                     'as_map'       => 0,
                 ],
                 'expected' => [
+                    '_test_pc_with_encoded_comment',
                     '_test_pc01',
                     '_test_pc02',
                     '_test_pc03',

@@ -405,11 +405,11 @@ class DbUtils extends DbTestCase
     protected function dataCountMyEntities()
     {
         return [
-            ['_test_root_entity', true, 'glpi_computers', [], 8],
+            ['_test_root_entity', true, 'glpi_computers', [], 9],
             ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc11'], 1],
             ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc01'], 1],
 
-            ['_test_root_entity', false, 'glpi_computers', [], 3],
+            ['_test_root_entity', false, 'glpi_computers', [], 4],
             ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc11'], 0],
             ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc01'], 1],
 
@@ -444,7 +444,7 @@ class DbUtils extends DbTestCase
     protected function dataCountEntities()
     {
         return [
-            ['_test_root_entity', 'glpi_computers', [], 3],
+            ['_test_root_entity', 'glpi_computers', [], 4],
             ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc11'], 0],
             ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc01'], 1],
 
