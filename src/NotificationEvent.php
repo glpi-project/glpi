@@ -127,7 +127,7 @@ class NotificationEvent extends CommonDBTM
            //Foreach notification
             $notifications = Notification::getNotificationsByEventAndType(
                 $event,
-                addslashes($item->getType()),
+                $item->getType(),
                 $notificationtarget->getEntity()
             );
 

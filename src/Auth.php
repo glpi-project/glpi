@@ -771,7 +771,7 @@ class Auth extends CommonGLPI
                 // Used for log when login process failed
                 $login_name                        = $this->user->fields['name'];
                 $this->auth_succeded               = true;
-                $this->user_present                = $this->user->getFromDBbyName(addslashes($login_name));
+                $this->user_present                = $this->user->getFromDBbyName($login_name);
                 $this->extauth                     = 1;
                 $user_dn                           = false;
 
@@ -903,7 +903,7 @@ class Auth extends CommonGLPI
                     || $this->user->fields["authtype"] == $this::DB_GLPI
                 ) {
                     $this->auth_succeded = $this->connection_db(
-                        addslashes($login_name),
+                        $login_name,
                         $login_password
                     );
                 }
@@ -925,7 +925,7 @@ class Auth extends CommonGLPI
                             );
                             if ($this->ldap_connection !== false && (!$this->auth_succeded && !$this->user_found)) {
                                 $search_params = [
-                                    'name'     => addslashes($login_name),
+                                    'name'     => $login_name,
                                     'authtype' => $this::LDAP
                                 ];
                                 if (!empty($login_auth)) {

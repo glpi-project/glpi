@@ -1607,7 +1607,8 @@ abstract class API
                         return __("Forbidden field ID in search criteria");
                     }
 
-                  // Escape value to prevent SQL injection
+                    // Escape value to prevent SQL injection
+                    // FIXME: still relevant? Not sure how this is used.
                     $criterion['value'] = Toolbox::addslashes_deep($criterion['value']);
                 }
 
@@ -2166,7 +2167,6 @@ abstract class API
 
         $user = new User();
         if (!isset($params['password_forget_token'])) {
-            $email = Toolbox::addslashes_deep($params['email']);
             try {
                 $user->forgetPassword($email);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
@@ -2178,9 +2178,9 @@ abstract class API
         } else {
             $password = isset($params['password']) ? $params['password'] : '';
             $input = [
-                'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
-                'password'                 => Toolbox::addslashes_deep($password),
-                'password2'                => Toolbox::addslashes_deep($password),
+                'password_forget_token'    => $params['password_forget_token'],
+                'password'                 => $password,
+                'password2'                => $password,
             ];
             try {
                 $user->updateForgottenPassword($input);

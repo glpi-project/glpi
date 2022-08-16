@@ -330,7 +330,7 @@ class DropdownTranslation extends CommonDBChild
             $tmp['items_id']          = $input['items_id'];
             $tmp['itemtype']          = $input['itemtype'];
             $tmp['field']             = 'completename';
-            $tmp['value']             = addslashes($completename);
+            $tmp['value']             = $completename;
             $tmp['language']          = $input['language'];
             $tmp['_no_completename']  = true;
             if ($completenames_id) {
@@ -748,7 +748,7 @@ class DropdownTranslation extends CommonDBChild
             'SELECT' => ['id'],
             'FROM'   => getTableForItemType($itemtype),
             'WHERE'  => [
-                $field   => Toolbox::addslashes_deep($value)
+                $field   => $value
             ]
         ]);
         if (count($iterator) > 0) {

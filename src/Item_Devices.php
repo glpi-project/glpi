@@ -534,7 +534,7 @@ class Item_Devices extends CommonDBRelation
             ]);
 
             foreach ($iterator as $row) {
-                 $input = Toolbox::addslashes_deep($row);
+                 $input = $row;
                  $item = new $link_type();
                  $item->getFromDB($input['id']);
                  $res[] = $item;

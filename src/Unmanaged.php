@@ -301,14 +301,13 @@ class Unmanaged extends CommonDBTM
         //do not keep Unmanaged ID
         unset($asset_data['id']);
 
-        $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
 
         foreach ($iterator_np as $row) {
             $row += [
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $netport->update(Toolbox::addslashes_deep($row));
+            $netport->update($row);
         }
 
         foreach ($iterator_rml as $row) {

@@ -193,7 +193,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $track->check($id, READ);
-    $input = array_merge(Toolbox::addslashes_deep($track->fields), [
+    $input = array_merge($track->fields, [
         'id' => $id,
         '_itil_' . $_POST['actortype'] => [
             '_type' => "user",
@@ -222,7 +222,7 @@ if (isset($_POST["add"])) {
             'documents_id' => $doc->getID()
         ]);
         foreach ($found_document_items as $item) {
-            $document_item->delete(Toolbox::addslashes_deep($item), true);
+            $document_item->delete($item, true);
         }
     }
     Html::back();
