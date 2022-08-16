@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * Profile class
  *
@@ -45,6 +47,40 @@ class ProfileRight extends CommonDBChild
     public static $items_id = 'profiles_id'; // Field name
     public $dohistory       = true;
 
+    /**
+     * {@inheritDoc}
+     * @note Unlike the default implementation, this one handles the fact that some or all profile rights
+     *       are already in the DB (but set to 0) when the cloned profile is created.
+     *       Therefore, we need to use update or insert DB queries rather than `CommonDBTM::add`.
+     */
+    public function clone(array $override_input = [], bool $history = true)
+    {
+        global $DB;
+
+        if ($DB->isSlave()) {
+            return false;
+        }
+        $new_item = new static();
+        $input = Sanitizer::dbEscapeRecursive($this->fields);
+        $input['profiles_id'] = $override_input['profiles_id'];
+        unset($input['id']);
+
+        $input = $new_item->prepareInputForClone($input);
+
+        $result = $DB->updateOrInsert(static::getTable(), $input, [
+            'name' => $input['name'],
+            'profiles_id' => $input['profiles_id'],
+        ]);
+        if ($result !== false) {
+            $new_item->getFromDBByCrit([
+                'name' => $input['name'],
+                'profiles_id' => $input['profiles_id'],
+            ]);
+            $new_item->post_clone($this, $history);
+        }
+
+        return $new_item->fields['id'];
+    }
 
     /**
      * Get possible rights

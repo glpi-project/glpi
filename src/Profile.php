@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * Profile class
  **/
 class Profile extends CommonDBTM
 {
+    use \Glpi\Features\Clonable;
+
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
@@ -119,7 +123,6 @@ class Profile extends CommonDBTM
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
-        $forbidden[] = 'clone';
         return $forbidden;
     }
 
@@ -303,6 +306,13 @@ class Profile extends CommonDBTM
        // PROFILES and UNIQUE_PROFILE in RuleMailcollector
         Rule::cleanForItemCriteria($this, 'PROFILES');
         Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            ProfileRight::class
+        ];
     }
 
 
@@ -505,9 +515,26 @@ class Profile extends CommonDBTM
             $input["ticket_status"] = exportArrayToDB($cycle);
         }
 
+        $other_array_fields = ['ticket_status', 'problem_status', 'change_status'];
+        foreach ($other_array_fields as $array_field) {
+            if (isset($input[$array_field]) && is_array($input[$array_field])) {
+                $input[$array_field] = exportArrayToDB($input[$array_field]);
+            }
+        }
+
         return $input;
     }
 
+    public function prepareInputForClone($input)
+    {
+        $input_arrays = ['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'];
+        foreach ($input_arrays as $array_field) {
+            if (isset($input[$array_field])) {
+                $input[$array_field] = importArrayFromDB(Sanitizer::dbUnescape($input[$array_field]));
+            }
+        }
+        return $input;
+    }
 
     /**
      * Unset unused rights for helpdesk

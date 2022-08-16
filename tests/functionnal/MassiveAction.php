@@ -93,8 +93,8 @@ class MassiveAction extends DbTestCase
             ], [
                 'itemtype'     => 'Profile',
                 'items_id'     => 'Super-Admin',
-                'allcount'     => 2,
-                'singlecount'  => 1
+                'allcount'     => 3,
+                'singlecount'  => 2
             ]
         ];
     }
