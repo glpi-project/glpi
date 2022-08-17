@@ -415,7 +415,7 @@ final class RichText
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
             $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail'>";
+            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy'>";
             $out .= "</a>";
             $out .= "</figure>";
         }
