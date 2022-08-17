@@ -40,10 +40,12 @@ use Auth;
 use Blacklist;
 use CommonDBTM;
 use Dropdown;
+use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Lockedfield;
 use NetworkEquipment;
+use Printer;
 use RefusedEquipment;
 use RuleImportAssetCollection;
 use RuleImportEntityCollection;
@@ -707,9 +709,8 @@ abstract class MainAsset extends InventoryAsset
             $_SESSION['glpiactive_entity']         = $entities_id;
         }
 
-        if ($this->is_discovery === true && !$this->isNew() && $itemtype == NetworkEquipment::getType()) {
-            //do not update from network discoveries (only for NetworkEquipement)
-            //prevents discoveries to remove all ports, IPs and so on found with network inventory
+        if ($this->is_discovery === true && !$this->isNew()) {
+
             //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
             $input = $this->handleInput($val);
             $this->item->update(['id' => $input['id'],
@@ -719,7 +720,22 @@ abstract class MainAsset extends InventoryAsset
                 'is_dynamic'            => true
             ]);
 
-            return;
+
+            //do not update NetworkEquipment from network discoveries
+            //prevents discoveries to remove all ports, IPs and so on found with network inventory
+            if ($itemtype == NetworkEquipment::getType()) {
+                return;
+            }
+
+
+            //update Printer from network discoveries only when printer IP has changed
+            //prevents discoveries to remove all ports, IPs found with network inventory
+            if (
+                $itemtype == Printer::getType()
+                && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
+            ) {
+                return;
+            }
         }
 
         //Ports are handled a different way on network equipments
