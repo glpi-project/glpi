@@ -3027,8 +3027,9 @@ HTML;
         } else {
            // multiple rows = 0.85+ config
             $values = [];
+            $allowed_context = ['core', 'inventory'];
             foreach ($iterator as $row) {
-                if ('core' !== $row['context']) {
+                if (!in_array($row['context'], $allowed_context)) {
                     continue;
                 }
                 $values[$row['name']] = $row['value'];
