@@ -35,7 +35,10 @@
    {% set date_span %}
       <span title="{{ date_creation|formatted_datetime }}"
             data-bs-toggle="tooltip" data-bs-placement="bottom">
-         <i class="far fa-clock me-1"></i>{{ date_creation|relative_datetime }}
+         <i class="far fa-clock me-1"></i>
+         <a href="#{{ anchor }}">
+            {{ date_creation|relative_datetime }}
+         </a>
       </span>
    {% endset %}
 
