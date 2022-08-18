@@ -637,8 +637,8 @@ class Search
         $to_add_view = array_diff($p['sort'], $data['toview']);
         array_push($data['toview'], ...$to_add_view);
 
-       // Special case for Ticket : put ID in front
-        if ($itemtype == 'Ticket') {
+       // Special case for CommonITILObjects : put ID in front
+        if (is_a($itemtype,'CommonITILObject',true)) {
             array_unshift($data['toview'], 2);
         }
 
