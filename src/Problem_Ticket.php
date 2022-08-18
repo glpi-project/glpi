@@ -418,7 +418,8 @@ class Problem_Ticket extends CommonDBRelation
             Problem::dropdown([
                 'used'      => $used,
                 'entity'    => $ticket->getEntityID(),
-                'condition' => Problem::getOpenCriteria()
+                'condition' => Problem::getOpenCriteria(),
+                'displaywith' => ['id'],
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
