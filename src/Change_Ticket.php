@@ -413,6 +413,7 @@ class Change_Ticket extends CommonDBRelation
             Change::dropdown([
                 'used'      => $used,
                 'entity'    => $ticket->getEntityID(),
+                'displaywith' => ['id'],
                 'condition' => Change::getOpenCriteria(),
             ]);
             echo "</td><td class='center'>";
