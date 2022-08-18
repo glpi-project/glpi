@@ -638,7 +638,7 @@ class Search
         array_push($data['toview'], ...$to_add_view);
 
        // Special case for CommonITILObjects : put ID in front
-        if (is_a($itemtype,'CommonITILObject',true)) {
+        if (is_a($itemtype, CommonITILObject::class, true)) {
             array_unshift($data['toview'], 2);
         }
 
