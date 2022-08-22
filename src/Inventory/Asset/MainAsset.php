@@ -707,8 +707,15 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if ($this->is_discovery === true && !$this->isNew()) {
-            //do not update from network discoveries
             //prevents discoveries to remove all ports, IPs and so on found with network inventory
+            //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
+            $input = $this->handleInput($val);
+            $this->item->update(['id' => $input['id'],
+                'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
+                'last_inventory_update' => $input['last_inventory_update'],
+                'snmpcredentials_id'    => $input['snmpcredentials_id']
+            ]);
+
             return;
         }
 
