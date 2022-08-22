@@ -1163,8 +1163,8 @@ class Ticket extends CommonITILObject
                             $input[$input_key] = [$input[$input_key]];
                         }
                         if (!in_array($actor[$field], $deleted_actors)) {
-                           $input[$input_key][]             = $actor[$field];
-                           $tocleanafterrules[$input_key][] = $actor[$field];
+                            $input[$input_key][]             = $actor[$field];
+                            $tocleanafterrules[$input_key][] = $actor[$field];
                         }
                     }
                 }
