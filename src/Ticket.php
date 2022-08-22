@@ -1147,7 +1147,7 @@ class Ticket extends CommonITILObject
                 $field = getForeignKeyFieldForItemType($actor_itemtype);
                 $input_key = '_' . $field . '_' . $t;
                 $deleted_key = $input_key . '_deleted';
-                $deleted_actors = array_key_existst($deleted_key, $input) && is_array($input[$deleted_key]) ? array_column($input[$deleted_key], 'items_id') : [];
+                $deleted_actors = array_key_exists($deleted_key, $input) && is_array($input[$deleted_key]) ? array_column($input[$deleted_key], 'items_id') : [];
                 foreach ($actors as $actor) {
                     if (
                         !isset($input[$input_key])
