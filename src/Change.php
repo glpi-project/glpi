@@ -156,6 +156,7 @@ class Change extends CommonITILObject
                  || $this->isAllowedStatus($this->fields['status'], self::EVALUATION));
     }
 
+
     public function canMassiveAction($action, $field, $value)
     {
 
@@ -172,6 +173,7 @@ class Change extends CommonITILObject
         }
         return true;
     }
+
 
     public function prepareInputForAdd($input)
     {
