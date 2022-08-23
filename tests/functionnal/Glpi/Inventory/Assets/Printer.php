@@ -135,7 +135,7 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802,
         ]);
 
-       //no managmenet port (network_device->ips same as network_port->ips)
+       //no management port (network_device->ips same as network_port->ips)
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
         $this->array($main->getManagementPorts())->hasSize(0);
 
