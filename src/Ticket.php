@@ -3904,6 +3904,17 @@ JAVASCRIPT;
         // Restore saved values and override $this->fields
         $this->restoreSavedValues($options['_saved']);
 
+        // Populate $options with defaults
+        foreach ($default_values as $name => $value) {
+            if (!isset($options[$name])) {
+                if (isset($options['_saved'][$name])) {
+                    $options[$name] = $options['_saved'][$name];
+                } else {
+                    $options[$name] = $value;
+                }
+            }
+        }
+
        // Check category / type validity
         if ($options['itilcategories_id']) {
             $cat = new ITILCategory();
@@ -3952,6 +3963,7 @@ JAVASCRIPT;
             'selfservice'             => true,
             'item'                    => $this,
             'params'                  => $options,
+            'entities_id'             => $options['entities_id'],
             'itiltemplate_key'        => self::getTemplateFormFieldName(),
             'itiltemplate'            => $tt,
             'delegating'              => $delegating,
