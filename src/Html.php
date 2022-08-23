@@ -3800,7 +3800,7 @@ JS;
     /**
      * Init the Editor System to a textarea
      *
-     * @param string  $name          name of the html textarea to use
+     * @param string  $id            id of the html textarea to use
      * @param string  $rand          rand of the html textarea to use (if empty no image paste system)(default '')
      * @param boolean $display       display or get js script (true by default)
      * @param boolean $readonly      editor will be readonly or not
@@ -3810,7 +3810,7 @@ JS;
      *    integer if param display=true
      *    string if param display=false (HTML code)
      **/
-    public static function initEditorSystem($name, $rand = '', $display = true, $readonly = false, $enable_images = true)
+    public static function initEditorSystem($id, $rand = '', $display = true, $readonly = false, $enable_images = true)
     {
         global $CFG_GLPI, $DB;
 
@@ -3877,7 +3877,7 @@ JS;
             // init editor
             tinyMCE.init(Object.assign({
                branding: false,
-               selector: '#{$name}',
+               selector: '#{$id}',
 
                plugins: {$pluginsjs},
 
@@ -3920,11 +3920,11 @@ JS;
 
                setup: function(editor) {
                   // "required" state handling
-                  if ($('#$name').attr('required') == 'required') {
-                     $('#$name').removeAttr('required'); // Necessary to bypass browser validation
+                  if ($('#$id').attr('required') == 'required') {
+                     $('#$id').removeAttr('required'); // Necessary to bypass browser validation
 
                      editor.on('submit', function (e) {
-                        if ($('#$name').val() == '') {
+                        if ($('#$id').val() == '') {
                            alert(__('The description field is mandatory'));
                            e.preventDefault();
 
@@ -3935,14 +3935,14 @@ JS;
                      });
                      editor.on('keyup', function (e) {
                         editor.save();
-                        if ($('#$name').val() == '') {
+                        if ($('#$id').val() == '') {
                            $(editor.container).addClass('required');
                         } else {
                            $(editor.container).removeClass('required');
                         }
                      });
                      editor.on('init', function (e) {
-                        if (strip_tags($('#$name').val()) == '') {
+                        if (strip_tags($('#$id').val()) == '') {
                            $(editor.container).addClass('required');
                         }
                      });
@@ -3962,7 +3962,7 @@ JS;
                   // ctrl + enter submit the parent form
                   editor.addShortcut('ctrl+13', 'submit', function() {
                      editor.save();
-                     submitparentForm($('#$name'));
+                     submitparentForm($('#$id'));
                   });
                }
             }, {$language_opts}));
