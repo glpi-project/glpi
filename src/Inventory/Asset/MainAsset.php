@@ -710,29 +710,25 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if ($this->is_discovery === true && !$this->isNew()) {
-            //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
-            $input = $this->handleInput($val);
-            $this->item->update(['id' => $input['id'],
-                'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
-                'last_inventory_update' => $input['last_inventory_update'],
-                'snmpcredentials_id'    => $input['snmpcredentials_id'],
-                'is_dynamic'            => true
-            ]);
-
-
-            //do not update NetworkEquipment from network discoveries
-            //prevents discoveries to remove all ports, IPs and so on found with network inventory
-            if ($itemtype == NetworkEquipment::getType()) {
-                return;
-            }
-
-
-            //update Printer from network discoveries only when printer IP has changed
-            //prevents discoveries to remove all ports, IPs found with network inventory
+            //if NetworkEquipement
+            //Or printer that has not changed its IP
+            //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
             if (
+                $itemtype == NetworkEquipment::getType()
+                ||
+                (
                 $itemtype == Printer::getType()
                 && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
+                )
             ) {
+                //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
+                $input = $this->handleInput($val);
+                $this->item->update(['id' => $input['id'],
+                    'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
+                    'last_inventory_update' => $input['last_inventory_update'],
+                    'snmpcredentials_id'    => $input['snmpcredentials_id'],
+                    'is_dynamic'            => true
+                ]);
                 return;
             }
         }
