@@ -710,7 +710,6 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if ($this->is_discovery === true && !$this->isNew()) {
-
             //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
             $input = $this->handleInput($val);
             $this->item->update(['id' => $input['id'],
