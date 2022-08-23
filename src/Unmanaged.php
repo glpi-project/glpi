@@ -56,6 +56,7 @@ class Unmanaged extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addStandardTab('NetworkPort', $ong, $options)
+         ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
         return $ong;
     }
