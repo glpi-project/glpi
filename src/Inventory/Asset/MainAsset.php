@@ -713,7 +713,8 @@ abstract class MainAsset extends InventoryAsset
             $this->item->update(['id' => $input['id'],
                 'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                 'last_inventory_update' => $input['last_inventory_update'],
-                'snmpcredentials_id'    => $input['snmpcredentials_id']
+                'snmpcredentials_id'    => $input['snmpcredentials_id'],
+                'is_dynamic'            => true
             ]);
 
             return;
