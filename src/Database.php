@@ -523,4 +523,9 @@ class Database extends CommonDBChild
             ];
         }
     }
+
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
 }
