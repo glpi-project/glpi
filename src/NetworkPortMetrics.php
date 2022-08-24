@@ -167,7 +167,7 @@ class NetworkPortMetrics extends CommonDBChild
                 'labels' => $labels,
                 'series' => array_values($bytes_series),
             ],
-            'label' => __('Input/Output bytes'),
+            'label' => __('Input/Output megabytes'),
             'icon'  => $params['icon'],
             'color' => '#ffffff',
             'distributed' => false
