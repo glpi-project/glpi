@@ -43,6 +43,7 @@ use IPNetwork;
 use Item_DeviceNetworkCard;
 use NetworkName;
 use NetworkPort;
+use NetworkPortAggregate;
 use QueryParam;
 use Toolbox;
 use Unmanaged;
@@ -117,6 +118,7 @@ trait InventoryNetworkPort
         $this->handleIpNetworks();
         $this->handleUpdates();
         $this->handleCreates();
+        $this->handleDeletesManagementPorts();
         if (method_exists($this, 'handleAggregations')) {
             $this->handleAggregations();
         }
@@ -606,6 +608,27 @@ trait InventoryNetworkPort
                 $this->handleInstantiation($type, $port, $netports_id, false);
             }
             $this->portCreated($port, $netports_id);
+        }
+    }
+
+    /**
+     * Delete Management Ports if needed
+     *
+     * @return void
+     */
+    private function handleDeletesManagementPorts()
+    {
+        if (method_exists($this, 'getManagementPorts')) {
+            if (empty($this->getManagementPorts())) {
+                //remove all port management ports
+                $networkport = new NetworkPort();
+                $networkport->deleteByCriteria([
+                    "itemtype"           => $this->itemtype,
+                    "items_id"           => $this->items_id,
+                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "name"               => "Management"
+                ], 1);
+            }
         }
     }
 
