@@ -82,46 +82,6 @@ class RuleTicket extends RuleCommonITILObject
                             $output['locations_id'] = $output['_locations_id_of_item'];
                         }
                         break;
-
-                    case 'regex_result':
-                        // Get each regex values
-                        $regex_values = array_map(
-                            fn ($regex_result) => RuleAction::getRegexResultById(
-                                $action->fields["value"],
-                                $regex_result
-                            ),
-                            $this->regex_results
-                        );
-
-                        // Get field
-                        $field = $action->fields["field"];
-
-                        // Handle each fields
-                        if ($field == "type") {
-                            foreach ($regex_values as $regex_value) {
-                                // Get defined ticket types
-                                // Note that these types are translated to the
-                                // current user language, which mean the rule
-                                // will only work for one language...
-                                // For example, if the regex value is "Request"
-                                // and the logged in user is french then "Request"
-                                // wont match "Demande" and the rule wont work
-                                // As far as I known, they are no workaround
-                                // for this and it should be considered a
-                                // limitation of the rule engine when working
-                                // with regex results
-                                $types = Ticket::getTypes();
-
-                                // Stop at the first valid type found
-                                $result = array_search($regex_value, $types);
-                                if ($result !== false) {
-                                    $output['type'] = $result;
-                                    break;
-                                }
-                            }
-                        }
-
-                        break;
                 }
             }
         }
@@ -229,7 +189,6 @@ class RuleTicket extends RuleCommonITILObject
         $actions['type']['name']                              = _n('Type', 'Types', 1);
         $actions['type']['table']                             = 'glpi_tickets';
         $actions['type']['type']                              = 'dropdown_tickettype';
-        $actions['type']['force_actions']                     = ['assign', 'regex_result'];
 
         $actions['slas_id_ttr']['table']                      = 'glpi_slas';
         $actions['slas_id_ttr']['field']                      = 'name';

@@ -37,9 +37,6 @@ namespace tests\units;
 
 use Contract;
 use ContractType;
-use Generator;
-use Rule;
-use Ticket;
 use Ticket_Contract;
 
 // Force import because of atoum autoloader not working
@@ -535,27 +532,5 @@ class RuleTicket extends RuleCommonITILObject
         ]);
         $ticket->getFromDB($tickets_id);
         $this->integer($ticket->fields['locations_id'])->isEqualTo($locations_id);
-    }
-
-    protected function testActionProvider(): Generator
-    {
-        yield from parent::testActionProvider();
-
-        // Test 'regex_result' action on the ticket type
-        yield [
-            'criteria' => [
-                'condition' => Rule::REGEX_MATCH,
-                'field'     => 'name',
-                'pattern'   => '/(.*)/',
-            ],
-            'action' => [
-                'action_type' => 'regex_result',
-                'field'       => 'type',
-                'value'       => '#0'
-            ],
-            'control_test_value' => 'Test_title_no_match',
-            'real_test_value'    => 'Request',
-            'expected_value'     => Ticket::DEMAND_TYPE,
-        ];
     }
 }
