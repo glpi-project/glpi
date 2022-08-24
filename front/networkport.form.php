@@ -151,6 +151,7 @@ if (isset($_POST["add"])) {
         $_GET["instantiation_type"] = "";
     }
 
-    $menus = ['assets'];
+    $menus[0] = 'assets';
+    $menus[1] = 'networkport';
     NetworkPort::displayFullPageForItem($_GET["id"], $menus, $_GET);
 }

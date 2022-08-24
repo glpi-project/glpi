@@ -142,27 +142,24 @@ class NetworkPortMetrics extends CommonDBChild
         $bytes_series = [];
         $errors_series = [];
         $labels = [];
-        $i = 0;
         foreach ($raw_metrics as $metrics) {
             $date = new \DateTime($metrics['date']);
             $labels[] = $date->format(__('Y-m-d'));
-            unset($metrics['id'], $metrics['date'], $metrics[static::$items_id]);
+            unset($metrics['id'], $metrics['date'], $metrics['date_creation'], $metrics['date_mod'], $metrics[static::$items_id]);
 
             $bytes_metrics = $metrics;
             unset($bytes_metrics['ifinerrors'], $bytes_metrics['ifouterrors']);
             foreach ($bytes_metrics as $key => $value) {
                 $bytes_series[$key]['name'] = $this->getLabelFor($key);
-                $bytes_series[$key]['data'][] = $value;
+                $bytes_series[$key]['data'][] = round($value / 1024 / 1024, 0); //convert bytes to megabytes
             }
 
             $errors_metrics = $metrics;
             unset($errors_metrics['ifinbytes'], $errors_metrics['ifoutbytes']);
             foreach ($errors_metrics as $key => $value) {
                 $errors_series[$key]['name'] = $this->getLabelFor($key);
-                $errors_series[$key]['data'][] = $value;
+                $errors_series[$key]['data'][] = round($value / 1024 / 1024, 0); //convert bytes to megabytes
             }
-
-            ++$i;
         }
 
         $bytes_bar_conf = [
@@ -176,9 +173,8 @@ class NetworkPortMetrics extends CommonDBChild
             'distributed' => false
         ];
 
-       //display graph
-        Html::requireJs('charts');
-        echo "<div class='dashboard netports_metrics bytes'>";
+       //display bytes graph
+        echo "<div class='netports_metrics bytes'>";
         echo Widget::multipleLines($bytes_bar_conf);
         echo "</div>";
 
@@ -193,8 +189,10 @@ class NetworkPortMetrics extends CommonDBChild
             'distributed' => false
         ];
 
-       //display graph
-        echo "<div class='dashboard netports_metrics'>";
+        echo "</br>";
+
+       //display error graph
+        echo "<div class='netports_metrics'>";
         echo Widget::multipleLines($errors_bar_conf);
         echo "</div>";
     }
@@ -203,9 +201,9 @@ class NetworkPortMetrics extends CommonDBChild
     {
         switch ($key) {
             case 'ifinbytes':
-                return __('Input bytes');
+                return __('Input megabytes');
             case 'ifoutbytes':
-                return __('Output bytes');
+                return __('Output megabytes');
             case 'ifinerrors':
                 return __('Input errors');
             case 'ifouterrors':
