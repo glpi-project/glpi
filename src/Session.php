@@ -1641,6 +1641,13 @@ class Session
     {
         global $DB;
 
+        $is_super_admin = self::haveRight(Config::$rightname, UPDATE);
+
+        // Stop here if the user can't impersonate (doesn't have the right + isn't admin)
+        if (!self::haveRight('user', User::IMPERSONATE) && !$is_super_admin) {
+            return false;
+        }
+
         if (
             $user_id <= 0 || self::getLoginUserID() == $user_id
             || (self::isImpersonateActive() && self::getImpersonatorId() == $user_id)
@@ -1663,16 +1670,11 @@ class Session
             return false;
         }
 
-        if (self::haveRight(Config::$rightname, UPDATE)) {
+        if ($is_super_admin) {
             return true; // User can impersonate anyone
         }
 
         // Check if user can impersonate lower-privileged users (or same level)
-        if (!self::haveRight('user', User::IMPERSONATE)) {
-            $message = __("You do not have the right to impersonate users.");
-            return false;
-        }
-
         // Get all less-privileged (or equivalent) profiles than current one
         $criteria = Profile::getUnderActiveProfileRestrictCriteria();
         $iterator = $DB->request([
