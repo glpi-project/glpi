@@ -1513,20 +1513,14 @@ JAVASCRIPT;
             })";
         }
 
-        $height = "calc(100% - 1px)";
         $legend_options = "";
         if ($p['legend']) {
-            $height = "calc(100% - 40px)";
             $legend_options = "
             Chartist.plugins.legend(),";
         }
 
         $html = <<<HTML
       <style>
-         /** fix chrome resizing height when animating svg (don't know why) **/
-      #{$chart_id} .ct-chart-line {
-         min-height: $height;
-      }
 
       #{$chart_id} {
          background-color: {$p['color']};
@@ -1564,11 +1558,13 @@ JAVASCRIPT;
       {$palette_style}
       </style>
 
-      <div class="card g-chart $class"
-           id="{$chart_id}">
-         <div class="chart ct-chart"></div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}"></i>
+      <div>
+          <div class="card g-chart $class"
+               id="{$chart_id}">
+             <div class="chart ct-chart"></div>
+             <span class="main-label">{$p['label']}</span>
+             <i class="main-icon {$p['icon']}"></i>
+          </div>
       </div>
 HTML;
 
@@ -1585,7 +1581,6 @@ HTML;
             series: {$json_series},
          }, {
             width: '100%',
-            height: '{$height}',
             fullWidth: true,
             chartPadding: {
                right: 40
