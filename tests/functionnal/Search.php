@@ -43,6 +43,9 @@ use Ticket;
 
 /* Test for inc/search.class.php */
 
+/**
+ * @engine isolate
+ */
 class Search extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
@@ -1032,8 +1035,7 @@ class Search extends DbTestCase
                         ON (`glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `glpi_projectteams`.`items_id`
                         AND `glpi_projectteams`.`itemtype` = 'Contact'
                          )"
-            ]
-            ],
+            ]],
             'special_fk' => [[
                 'itemtype'           => 'Computer',
                 'table'              => \User::getTable(),
@@ -1043,8 +1045,7 @@ class Search extends DbTestCase
                 'meta_type'          => null,
                 'joinparams'         => [],
                 'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id` )"
-            ]
-            ],
+            ]],
             'regular_fk' => [[
                 'itemtype'           => 'Computer',
                 'table'              => \User::getTable(),
@@ -1054,8 +1055,45 @@ class Search extends DbTestCase
                 'meta_type'          => null,
                 'joinparams'         => [],
                 'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id` )"
-            ]
-            ],
+            ]],
+
+            'linkfield in beforejoin' => [[
+                'itemtype'           => 'Ticket',
+                'table'              => 'glpi_validatorsubstitutes',
+                'field'              => 'name',
+                'linkfield'          => 'validatorsubstitutes_id',
+                'meta'               => false,
+                'meta_type'          => null,
+                'joinparams'         => [
+                    'beforejoin'         => [
+                        'table'          => 'glpi_validatorsubstitutes',
+                        'joinparams'         => [
+                            'jointype'           => 'child',
+                            'beforejoin'         => [
+                                'table'              => \User::getTable(),
+                                'linkfield'          => 'users_id_validate',
+                                'joinparams'             => [
+                                    'beforejoin'             => [
+                                        'table'                  => \TicketValidation::getTable(),
+                                        'joinparams'                 => [
+                                            'jointype'                   => 'child',
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                    ]
+                ],
+                // This is a real use case. Ensure the LEFT JOIN chain uses consistent table names (see glpi_users_users_id_validate)
+                'sql' => "LEFT JOIN `glpi_ticketvalidations` "
+                . "ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id` )"
+                . "LEFT JOIN `glpi_users` AS `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4` "
+                . "ON (`glpi_ticketvalidations`.`users_id_validate` = `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` ) "
+                . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632` "
+                . "ON (`glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id` )"
+                . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48` "
+                . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id` )"
+            ]],
         ];
     }
 
