@@ -928,7 +928,7 @@ class NetworkPortInstantiation extends CommonDBChild
                         _x('button', 'Disconnect'),
                         ['id' => $relations_id],
                         'fa-unlink netport',
-                        'class="btn btn-sm btn-danger"'
+                        'class="btn btn-sm btn-outline-danger"'
                     );
                 }
             } else {
