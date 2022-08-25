@@ -269,23 +269,47 @@ final class RichText
     public static function getEnhancedHtml(?string $content, array $params = []): string
     {
         $p = [
-            'images_gallery'           => false,
-            'user_mentions'            => true,
+            'images_gallery' => false,
+            'user_mentions'  => true,
+            'images_lazy'    => true,
         ];
         $p = array_replace($p, $params);
 
        // Sanitize content first (security and to decode HTML entities)
         $content = self::getSafeHtml($content);
 
-        if (isset($p['user_mentions'])) {
+        if ($p['user_mentions']) {
             $content = UserMention::refreshUserMentionsHtmlToDisplay($content);
         }
 
-        if (isset($p['images_gallery'])) {
+        if ($p['images_lazy']) {
+            $content = self::loadImagesLazy($content);
+        }
+
+        if ($p['images_gallery']) {
             $content = self::replaceImagesByGallery($content);
         }
 
         return $content;
+    }
+
+
+    /**
+     * insert `loading="lazy" into img tag
+     *
+     * @since 10.0.3
+     *
+     * @param string  $content
+     *
+     * @return string
+     */
+    private static function loadImagesLazy(string $content): string
+    {
+       return preg_replace(
+            '/<img([\w\W]+?)\/+>/',
+            '<img$1 loading="lazy">',
+            $content
+        );
     }
 
     /**
