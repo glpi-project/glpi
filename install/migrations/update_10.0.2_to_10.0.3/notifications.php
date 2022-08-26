@@ -46,7 +46,6 @@ $iterator = $DB->request([
     'FROM'   => 'glpi_notifications',
     'WHERE'  => [
         'itemtype' => $itil_types,
-        'event'    => 'assign_group',
     ],
 ]);
 
@@ -63,17 +62,25 @@ foreach ($iterator as $notification) {
         $targets[$target['id']] = $target['items_id'];
     }
     $removed_item_group = false;
+    $found_assigned_group = false;
     foreach ($targets as $target_id => $target) {
-        if ((int) $target['items_id'] === Notification::ITEM_TECH_GROUP_IN_CHARGE) {
+        if (
+            (int) $target['items_id'] === Notification::ITEM_TECH_GROUP_IN_CHARGE
+            || (int) $target['items_id'] === Notification::ITEM_TECH_IN_CHARGE
+            || (int) $target['items_id'] === Notification::ITEM_USER
+        ) {
             $DB->deleteOrDie('glpi_notificationtargets', [
                 'id' => $target['id'],
             ]);
-            $removed_item_group = true;
-            unset($targets[$target_id]);
+            if ((int) $target['items_id'] === Notification::ITEM_TECH_GROUP_IN_CHARGE) {
+                $removed_item_group = true;
+            };
+        }
+        if ((int) $target['items_id'] === Notification::ASSIGN_GROUP) {
+            $found_assigned_group = true;
         }
     }
-    // If no targets remain, add a new one with items_id = Notification::ASSIGN_GROUP
-    if (count($targets) === 0) {
+    if ($notification['event'] === 'assign_group' && $removed_item_group && !$found_assigned_group) {
         $DB->insertOrDie('glpi_notificationtargets', [
             'notifications_id'  => $notification['id'],
             'type'              => Notification::USER_TYPE,
