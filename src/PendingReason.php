@@ -179,6 +179,12 @@ class PendingReason extends CommonDropdown
     public static function getFollowupFrequencyValues(): array
     {
         return [
+            DAY_TIMESTAMP      => __("Every day"),
+            2 * DAY_TIMESTAMP  => __("Every two days"),
+            3 * DAY_TIMESTAMP  => __("Every three days"),
+            4 * DAY_TIMESTAMP  => __("Every four days"),
+            5 * DAY_TIMESTAMP  => __("Every five days"),
+            6 * DAY_TIMESTAMP  => __("Every six days"),
             WEEK_TIMESTAMP     => __("Every week"),
             2 * WEEK_TIMESTAMP => __("Every two weeks"),
             3 * WEEK_TIMESTAMP => __("Every three weeks"),
