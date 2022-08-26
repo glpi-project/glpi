@@ -95,6 +95,12 @@ class AuthLDAP extends CommonDBTM
     const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
 
     /**
+     * Deleted user strategy: disable user and withdraw groups.
+     * @var integer
+     */
+    const DELETED_USER_DISABLEANDDELETEGROUPS = 5;
+
+    /**
      * Restored user strategy: Make no change to GLPI user
      * @var integer
      * @since 10.0.0
@@ -4020,6 +4026,7 @@ class AuthLDAP extends CommonDBTM
             self::DELETED_USER_WITHDRAWDYNINFO           => __('Withdraw dynamic authorizations and groups'),
             self::DELETED_USER_DISABLE                   => __('Disable'),
             self::DELETED_USER_DISABLEANDWITHDRAWDYNINFO => __('Disable') . ' + ' . __('Withdraw dynamic authorizations and groups'),
+            self::DELETED_USER_DISABLEANDDELETEGROUPS => __('Disable') . ' + ' . __('Withdraw groups'),
         ];
     }
 
