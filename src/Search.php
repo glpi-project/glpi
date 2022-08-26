@@ -3687,7 +3687,7 @@ JAVASCRIPT;
                    //FIXME glpi_networkequipments.ip seems like a dead case
                     case "glpi_networkequipments.ip":
                     case "glpi_ipaddresses.name":
-                        $criterion = "INET_ATON(`$table$addtable`.`$field`) $order";
+                        $criterion = "INET6_ATON(`$table$addtable`.`$field`) $order";
                         break;
                 }
             }
