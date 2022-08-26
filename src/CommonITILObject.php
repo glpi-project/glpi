@@ -350,6 +350,39 @@ abstract class CommonITILObject extends CommonDBTM
         return $actors;
     }
 
+    /**
+     * Restores input, restores saved values, then sets the default options for any that are missing.
+     * @param integer $ID The item ID
+     * @param array $options ITIL Object options array passed to showFormXXXX functions. This is passed by reference and will be modified by this function.
+     * @param ?array $overriden_defaults If specified, these values will be used as the defaults instead of the ones from the {@link getDefaultValues()} function.
+     * @return void
+     * @see getDefaultOptions()
+     * @see restoreInput()
+     * @see restoreSavedValues()
+     */
+    protected function restoreInputAndDefaults($ID, array &$options, ?array $overriden_defaults = null): void
+    {
+        $default_values = $overriden_defaults ?? static::getDefaultValues();
+
+        // Restore saved value or override with page parameter
+        $options['_saved'] = $this->restoreInput();
+
+        // Restore saved values and override $this->fields
+        $this->restoreSavedValues($options['_saved']);
+
+        // Set default options
+        if (static::isNewID($ID)) {
+            foreach ($default_values as $key => $val) {
+                if (!isset($options[$key])) {
+                    if (isset($options['_saved'][$key])) {
+                        $options[$key] = $options['_saved'][$key];
+                    } else {
+                        $options[$key] = $val;
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * @param $ID
@@ -361,26 +394,7 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
 
-        $default_values = static::getDefaultValues();
-
-        // Restore saved value or override with page parameter
-        $options['_saved'] = $this->restoreInput();
-
-        // Restore saved values and override $this->fields
-        $this->restoreSavedValues($options['_saved']);
-
-        // Set default options
-        if (!$ID) {
-            foreach ($default_values as $key => $val) {
-                if (!isset($options[$key])) {
-                    if (isset($options['_saved'][$key])) {
-                        $options[$key] = $options['_saved'][$key];
-                    } else {
-                        $options[$key] = $val;
-                    }
-                }
-            }
-        }
+        $this->restoreInputAndDefaults($ID, $options);
 
         $this->initForm($ID, $options);
 
@@ -414,7 +428,7 @@ abstract class CommonITILObject extends CommonDBTM
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
         );
 
-        $predefined_fields = $this->setPredefinedFields($tt, $options, $default_values);
+        $predefined_fields = $this->setPredefinedFields($tt, $options, self::getDefaultValues());
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                    => $this,
