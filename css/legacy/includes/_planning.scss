@@ -108,6 +108,11 @@
                text-overflow: ellipsis;
                display: inline-block;
                white-space: nowrap;
+
+               > i {
+                  color: $warning;
+                  float: right;
+               }
             }
 
             .filter-icon {
