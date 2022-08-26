@@ -1403,6 +1403,10 @@ class Toolbox {
       //parse github releases (get last version number)
       $error = "";
       $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error);
+      if (empty($json_gh_releases)) {
+         return $error;
+      }
+
       $all_gh_releases = json_decode($json_gh_releases, true);
       $released_tags = [];
       foreach ($all_gh_releases as $release) {
@@ -1644,6 +1648,32 @@ class Toolbox {
       return $out;
    }
 
+   /**
+    * Check an url is safe.
+    * Used to mitigate SSRF exploits.
+    *
+    * @since 9.5.8
+    *
+    * @param string    $url        URL to check
+    * @param array     $allowlist  Allowlist (regex array)
+    *
+    * @return bool
+    */
+   public static function isUrlSafe(string $url, array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST): bool {
+      foreach ($allowlist as $allow_regex) {
+         $result = preg_match($allow_regex, $url);
+         if ($result === false) {
+            trigger_error(
+               sprintf('Unable to validate URL safeness. Following regex is probably invalid: "%s".', $allow_regex),
+               E_USER_WARNING
+            );
+         } else if ($result === 1) {
+            return true;
+         }
+      }
+
+      return false;
+   }
 
    /**
     * Get a web page. Use proxy if configured
@@ -1655,7 +1685,8 @@ class Toolbox {
     * @return string content of the page (or empty)
    **/
    static function getURLContent ($url, &$msgerr = null, $rec = 0) {
-      $content = self::callCurl($url);
+      $curl_error = null;
+      $content = self::callCurl($url, [], $msgerr, $curl_error, true);
       return $content;
    }
 
@@ -1669,8 +1700,17 @@ class Toolbox {
     *
     * @return string
     */
-   public static function callCurl($url, array $eopts = [], &$msgerr = null, &$curl_error = null) {
+   public static function callCurl($url, array $eopts = [], &$msgerr = null, &$curl_error = null, bool $check_url_safeness = false) {
       global $CFG_GLPI;
+
+      if ($check_url_safeness && !Toolbox::isUrlSafe($url)) {
+         $msgerr = sprintf(
+            __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
+            $url
+         );
+         trigger_error(sprintf('Unsafe URL "%s" fetching has been blocked.', $url), E_USER_NOTICE);
+         return '';
+      }
 
       $content = "";
       $taburl  = parse_url($url);

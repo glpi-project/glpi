@@ -46,6 +46,14 @@ define(
    ]
 );
 
+define(
+    'GLPI_SERVERSIDE_URL_ALLOWLIST',
+    [
+        '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // default allowlist entry
+        '/^file:\/\/.*\.ics$/', // calendar mockups
+    ]
+);
+
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 

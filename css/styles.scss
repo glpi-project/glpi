@@ -2360,6 +2360,11 @@ a.icon_nav_move {
             text-overflow: ellipsis;
             display: inline-block;
             white-space: nowrap;
+
+            > i {
+               color: #ffa500;
+               margin-left: 5px;
+            }
          }
 
          .filter-icon {

@@ -581,6 +581,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
+      if (!$this->checkUrlInput($input['url'])) {
+         return false;
+      }
 
       if ($feed = self::getRSSFeed($input['url'])) {
          $input['have_error'] = 0;
@@ -605,6 +608,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForUpdate($input) {
+      if (array_key_exists('url', $input) && !$this->checkUrlInput($input['url'])) {
+         return false;
+      }
 
       if (empty($input['name'])
           && isset($input['url'])
@@ -617,6 +623,22 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       return $input;
    }
 
+   /**
+    * Check URL given in input.
+    * @param string $url
+    * @return bool
+    */
+   private function checkUrlInput(string $url): bool {
+      if (parse_url($url) === false) {
+         Session::addMessageAfterRedirect(__('Feed URL is invalid.'), false, ERROR);
+         return false;
+      } else if (!Toolbox::isUrlSafe($url)) {
+         Session::addMessageAfterRedirect(sprintf(__('URL "%s" is not allowed by your administrator.'), $url), false, ERROR);
+         return false;
+      }
+
+      return true;
+   }
 
    function pre_updateInDB() {
 
@@ -730,7 +752,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Error retrieving RSS feed')."</td>";
       echo "<td>";
-      echo Dropdown::getYesNo($this->fields['have_error']);
+      if ($this->fields['have_error'] && !Toolbox::isUrlSafe($this->fields['url'])) {
+         echo sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url']);
+      } else {
+         echo Dropdown::getYesNo($this->fields['have_error']);
+      }
       echo "</td>";
       if ($this->fields['have_error']) {
          echo "<td>".__('RSS feeds found');
@@ -780,12 +806,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
       if (!$this->canViewItem()) {
          return false;
       }
-      $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
       echo "<div class='firstbloc'>";
-      if (!$feed || $feed->error()) {
-         echo __('Error retrieving RSS feed');
-         $this->setError(true);
-      } else {
+      if ($feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate'])) {
          $this->setError(false);
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
@@ -812,6 +834,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          }
          echo "</table>";
 
+      } else {
+         echo !Toolbox::isUrlSafe($this->fields['url'])
+            ? sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url'])
+            : __('Error retrieving RSS feed');
+         $this->setError(true);
       }
       echo "</div>";
    }
@@ -823,6 +850,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
     * @return nothin
     **/
    function showDiscoveredFeeds() {
+      if (!Toolbox::isUrlSafe($this->fields['url'])) {
+         return;
+      }
 
       $feed = new SimplePie();
       $feed->set_cache_location(GLPI_RSS_DIR);
@@ -863,6 +893,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
    **/
    static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP) {
       global $CFG_GLPI;
+
+      if (!Toolbox::isUrlSafe($url)) {
+         return false;
+      }
 
       $feed = new SimplePie();
       $feed->set_cache_location(GLPI_RSS_DIR);

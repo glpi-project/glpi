@@ -256,11 +256,21 @@ final class StatusChecker {
                $url .= ':'. (int)$CFG_GLPI['cas_port'];
             }
             $url .= '/'.$CFG_GLPI['cas_uri'];
-            $data = Toolbox::getURLContent($url);
-            if (!empty($data)) {
-               $status['status'] = self::STATUS_OK;
+            if (Toolbox::isUrlSafe($url)) {
+               $data = Toolbox::getURLContent($url);
+               if (!empty($data)) {
+                  $status['status'] = self::STATUS_OK;
+               } else {
+                  $status['status'] = self::STATUS_PROBLEM;
+               }
             } else {
-               $status['status'] = self::STATUS_PROBLEM;
+               $status['status'] = self::STATUS_NO_DATA;
+               if (!$public_only) {
+                  $status['status_msg'] = sprintf(
+                     __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
+                     $url
+                  );
+               }
             }
          }
       }
