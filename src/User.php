@@ -5072,6 +5072,12 @@ HTML;
                 Profile_User::deleteRights($users_id, true);
                 Group_User::deleteGroups($users_id, true);
                 break;
+
+            case AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS:
+                $tmp['is_active'] = 0;
+                $myuser->update($tmp);
+                Group_User::deleteGroups($users_id, true);
+                break;
         }
        /*
        $changes[0] = '0';
