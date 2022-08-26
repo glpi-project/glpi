@@ -466,7 +466,7 @@ class Item_Ticket extends CommonItilObject_Item
 
                 $prem = true;
                 foreach ($iterator as $data) {
-                    $name = $data["name"];
+                    $name = $data["name"] ?? '';
                     if (
                         $_SESSION["glpiis_ids_visible"]
                         || empty($data["name"])

@@ -173,7 +173,7 @@ class Change_Item extends CommonItilObject_Item
                 $prem = true;
                 foreach ($iterator as $data) {
                     $link     = $itemtype::getFormURLWithID($data['id']);
-                    $linkname = $data["name"];
+                    $linkname = $data["name"] ?? '';
                     if (
                         $_SESSION["glpiis_ids_visible"]
                         || empty($data["name"])
