@@ -42,7 +42,7 @@ use Glpi\Toolbox\Sanitizer;
 
 $itil_types = ['Ticket', 'Change', 'Problem'];
 $iterator = $DB->request([
-    'SELECT' => ['id'],
+    'SELECT' => ['id', 'event'],
     'FROM'   => 'glpi_notifications',
     'WHERE'  => [
         'itemtype' => $itil_types,
@@ -74,7 +74,7 @@ foreach ($iterator as $notification) {
             ]);
             if ((int) $target['items_id'] === Notification::ITEM_TECH_GROUP_IN_CHARGE) {
                 $removed_item_group = true;
-            };
+            }
         }
         if ((int) $target['items_id'] === Notification::ASSIGN_GROUP) {
             $found_assigned_group = true;
