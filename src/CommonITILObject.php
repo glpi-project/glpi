@@ -355,12 +355,13 @@ abstract class CommonITILObject extends CommonDBTM
      * @param integer $ID The item ID
      * @param array $options ITIL Object options array passed to showFormXXXX functions. This is passed by reference and will be modified by this function.
      * @param ?array $overriden_defaults If specified, these values will be used as the defaults instead of the ones from the {@link getDefaultValues()} function.
+     * @param bool $force_set_defaults If true, the defaults are set for missing options even if the item is not new.
      * @return void
      * @see getDefaultOptions()
      * @see restoreInput()
      * @see restoreSavedValues()
      */
-    protected function restoreInputAndDefaults($ID, array &$options, ?array $overriden_defaults = null): void
+    protected function restoreInputAndDefaults($ID, array &$options, ?array $overriden_defaults = null, bool $force_set_defaults = false): void
     {
         $default_values = $overriden_defaults ?? static::getDefaultValues();
 
@@ -371,7 +372,7 @@ abstract class CommonITILObject extends CommonDBTM
         $this->restoreSavedValues($options['_saved']);
 
         // Set default options
-        if (static::isNewID($ID)) {
+        if ($force_set_defaults || static::isNewID($ID)) {
             foreach ($default_values as $key => $val) {
                 if (!isset($options[$key])) {
                     if (isset($options['_saved'][$key])) {

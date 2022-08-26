@@ -3898,7 +3898,7 @@ JAVASCRIPT;
             $options['name'] = str_replace($order, $replace, $options['name']);
         }
 
-        $this->restoreInputAndDefaults($ID, $options, $default_values);
+        $this->restoreInputAndDefaults($ID, $options, $default_values, true);
 
        // Check category / type validity
         if ($options['itilcategories_id']) {
@@ -4139,7 +4139,7 @@ JAVASCRIPT;
             $options['entities_id'] = $item->fields['entities_id'];
         }
 
-        $this->restoreInputAndDefaults($ID, $options);
+        $this->restoreInputAndDefaults($ID, $options, null, true);
 
         if (isset($options['content'])) {
             $order              = ["\\'", '\\"', "\\\\"];
