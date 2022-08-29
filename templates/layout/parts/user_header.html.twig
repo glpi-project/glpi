@@ -82,7 +82,14 @@
                   {% endif %}
                {% endif %}
 
-               {# @TODO Saved searches panel #}
+               {% if not anonymous %}
+                  {% if has_itemtype_right('SavedSearch', constant('READ')) %}
+                     <a href="{{ path('/front/savedsearch.php') }}" class="dropdown-item" title="{{ 'SavedSearch'|itemtype_name }}">
+                        <i class="ti ti-bookmarks"></i>
+                        {{ 'SavedSearch'|itemtype_name }}
+                     </a>
+                  {% endif %}
+               {% endif %}
 
                <div class="dropdown-item">
                   <i class="ti fa-fw ti-language"></i>
