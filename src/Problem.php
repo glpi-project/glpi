@@ -158,7 +158,6 @@ class Problem extends CommonITILObject
                  || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
     }
 
-   
     public function canMassiveAction($action, $field, $value)
     {
 
@@ -176,7 +175,6 @@ class Problem extends CommonITILObject
         return true;
     }
 
-   
     public function pre_deleteItem()
     {
         global $CFG_GLPI;
