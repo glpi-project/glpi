@@ -1101,11 +1101,11 @@ class Search extends DbTestCase
          // Simple Hard-coded cases
             [
                 'IPAddress', 1, 'ASC',
-                ' ORDER BY INET_ATON(`glpi_ipaddresses`.`name`) ASC '
+                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC '
             ],
             [
                 'IPAddress', 1, 'DESC',
-                ' ORDER BY INET_ATON(`glpi_ipaddresses`.`name`) DESC '
+                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC '
             ],
             [
                 'User', 1, 'ASC',
@@ -1165,7 +1165,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'ASC'
                     ]
-                ], ' ORDER BY INET_ATON(`glpi_ipaddresses`.`name`) ASC '
+                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC '
             ],
             [
                 'IPAddress',
@@ -1174,7 +1174,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'DESC'
                     ]
-                ], ' ORDER BY INET_ATON(`glpi_ipaddresses`.`name`) DESC '
+                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC '
             ],
             [
                 'User',
