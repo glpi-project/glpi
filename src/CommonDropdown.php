@@ -216,7 +216,7 @@ abstract class CommonDropdown extends CommonDBTM
         ?string $title = null,
         ?array $menus = null
     ): void {
-        if (is_null($menus)) {
+        if (empty($menus)) {
             $dropdown = new static();
 
             $menus = [
