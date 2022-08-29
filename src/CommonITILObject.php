@@ -6737,7 +6737,6 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->getAssociatedDocumentsCriteria($params['bypass_rights']),
                 'timeline_position'  => ['>', self::NO_TIMELINE]
             ]);
-            $can_view_documents = Document::canView();
             foreach ($document_items as $document_item) {
                 $document_obj->getFromDB($document_item['documents_id']);
 
@@ -6752,8 +6751,8 @@ abstract class CommonITILObject extends CommonDBTM
                 $item['documents_item_id'] = $document_item['id'];
 
                 $item['timeline_position'] = $document_item['timeline_position'];
-                $item['_can_edit'] = $can_view_documents && $document_obj->canUpdateItem();
-                $item['_can_delete'] = $can_view_documents && $document_obj->canDeleteItem() && $canupdate_parent;
+                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
+                $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem() && $canupdate_parent;
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
                 if ($document_item['itemtype'] == static::getType()) {
