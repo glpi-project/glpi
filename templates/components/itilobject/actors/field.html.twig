@@ -329,6 +329,13 @@
             return openNotifyModal(event);
          }
       }, {capture: true})
+
+      {% if itiltemplate.isHiddenField('_users_id_' ~ actortype) %}
+         $(".actor_entry[data-itemtype=\"User\"][data-actortype=\"{{ actortype }}\"]").parent().css("display", "none");
+      {% endif %}
+      {% if itiltemplate.isHiddenField('_groups_id_' ~ actortype) %}
+         $(".actor_entry[data-itemtype=\"Group\"][data-actortype=\"{{ actortype }}\"]").parent().css("display", "none");
+      {% endif %}
    });
    </script>
 {% endif %}
