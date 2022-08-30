@@ -295,11 +295,6 @@ class Ticket extends CommonITILObject
         switch ($action) {
             case 'update':
                 switch ($field) {
-                    case 'status':
-                        if (!self::isAllowedStatus($this->fields['status'], $value)) {
-                            return false;
-                        }
-                        break;
                     case 'itilcategories_id':
                         $cat = new ITILCategory();
                         if ($cat->getFromDB($value)) {
@@ -322,7 +317,7 @@ class Ticket extends CommonITILObject
                 }
                 break;
         }
-        return true;
+        parent::canMassiveAction($action, $field, $value);
     }
 
     /**
