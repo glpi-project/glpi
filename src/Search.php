@@ -6960,9 +6960,10 @@ JAVASCRIPT;
                             $out,
                             Html::showToolTip(
                                 RichText::getEnhancedHtml($data[$ID][0]['content']),
-                                ['applyto' => $itemtype .
-                                                                                $data[$ID][0]['id'],
-                                    'display' => false
+                                [
+                                    'applyto'        => $itemtype . $data[$ID][0]['id'],
+                                    'display'        => false,
+                                    'images_gallery' => false, // don't show photoswipe gallery in tooltips
                                 ]
                             )
                         );
