@@ -157,24 +157,6 @@ class Change extends CommonITILObject
     }
 
 
-    public function canMassiveAction($action, $field, $value)
-    {
-
-        switch ($action) {
-            case 'update':
-                switch ($field) {
-                    case 'status':
-                        if (!self::isAllowedStatus($this->fields['status'], $value)) {
-                            return false;
-                        }
-                        break;
-                }
-                break;
-        }
-        return true;
-    }
-
-
     public function prepareInputForAdd($input)
     {
         $input =  parent::prepareInputForAdd($input);
