@@ -305,7 +305,7 @@ final class RichText
      */
     private static function loadImagesLazy(string $content): string
     {
-       return preg_replace(
+        return preg_replace(
             '/<img([\w\W]+?)\/+>/',
             '<img$1 loading="lazy">',
             $content
