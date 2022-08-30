@@ -317,7 +317,7 @@ class Ticket extends CommonITILObject
                 }
                 break;
         }
-        parent::canMassiveAction($action, $field, $value);
+        return parent::canMassiveAction($action, $field, $value);
     }
 
     /**
