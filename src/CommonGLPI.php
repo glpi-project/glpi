@@ -1155,7 +1155,11 @@ class CommonGLPI implements CommonGLPIInterface
 
        // try to lock object
        // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
-        ObjectLock::manageObjectLock(get_class($this), $options);
+        $lock_options = $options;
+        if (isset($_GET['id'])) {
+            $lock_options['id'] = $_GET['id'];
+        }
+        ObjectLock::manageObjectLock(get_class($this), $lock_options);
 
        // manage custom options passed to tabs
         if (isset($_REQUEST['tab_params']) && is_array($_REQUEST['tab_params'])) {
