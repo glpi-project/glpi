@@ -1,0 +1,9 @@
+$break_s_screen: 1400px;
+
+// Fix last label wrapping on the X-axis
+// See https://github.com/chartist-js/chartist/issues/557#issuecomment-169358908
+@media screen and (min-width: $break_s_screen) {
+    .printer_barchart .ct-label.ct-horizontal {
+        white-space: nowrap;
+    }
+}
