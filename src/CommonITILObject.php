@@ -756,7 +756,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'update':
                 switch ($field) {
                     case 'status':
-                        if (!self::isAllowedStatus($this->fields['status'], $value)) {
+                        if (!static::isAllowedStatus($this->fields['status'], $value)) {
                             return false;
                         }
                         break;
