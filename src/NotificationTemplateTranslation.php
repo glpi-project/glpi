@@ -34,7 +34,6 @@
  */
 
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * NotificationTemplateTranslation Class
@@ -275,15 +274,8 @@ class NotificationTemplateTranslation extends CommonDBChild
      */
     public static function cleanContentHtml(array $input)
     {
-
-       // Unsanitize
-        $txt = Sanitizer::unsanitize($input['content_html']);
-
        // Get as text plain text
         $txt = RichText::getTextFromHtml($txt, true, false, false, true);
-
-       // Sanitize result
-        $txt = Sanitizer::sanitize($txt);
 
         if (!$txt) {
            // No HTML (nothing to display)

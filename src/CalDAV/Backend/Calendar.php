@@ -38,7 +38,6 @@ namespace Glpi\CalDAV\Backend;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Node\Property;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
-use Glpi\Toolbox\Sanitizer;
 use Ramsey\Uuid\Uuid;
 use Sabre\CalDAV\Backend\AbstractBackend;
 use Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet;
@@ -336,8 +335,6 @@ class Calendar extends AbstractBackend
            // Generate a new UUID if none exists.
             $input['uuid'] = Uuid::uuid4();
         }
-
-        $input = Sanitizer::sanitize($input);
 
         if ($item->isNewItem()) {
            // Auto set entities_id if exists and not set
