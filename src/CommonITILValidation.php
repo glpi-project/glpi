@@ -1538,7 +1538,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'id'                 => '59',
             'table'              => 'glpi_users',
             'field'              => 'name',
-            'linkfield'          => 'users_id_validate',
+            'linkfield'          => 'items_id_target',
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
             'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
@@ -1548,7 +1548,10 @@ abstract class CommonITILValidation extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => static::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
+                        'jointype'           => 'child',
+                        'condition'          => [
+                            'NEWTABLE.itemtype_target' => User::class,
+                        ]
                     ]
                 ]
             ]
@@ -1608,6 +1611,96 @@ abstract class CommonITILValidation extends CommonDBChild
                         ]
                     ]
                 ],
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '196',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'items_id_target',
+            'name'               => __('Approver group'),
+            'datatype'           => 'itemlink',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => [
+                            'NEWTABLE.itemtype_target' => Group::class,
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '197',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'linkfield'          => 'users_id_substitute',
+            'name'               => __('Substitute of a member of approver group'),
+            'datatype'           => 'itemlink',
+            'right'              => (static::$itemtype == 'Ticket' ?
+                ['validate_request', 'validate_incident'] :
+                'validate'
+            ),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'          => ValidatorSubstitute::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => [
+                            [
+                                'OR' => [
+                                    [
+                                        'REFTABLE.substitution_start_date' => null,
+                                    ], [
+                                        'REFTABLE.substitution_start_date' => ['<=', $_SESSION['glpi_currenttime']],
+                                    ],
+                                ],
+                            ], [
+                                'OR' => [
+                                    [
+                                        'REFTABLE.substitution_end_date' => null,
+                                    ], [
+                                        'REFTABLE.substitution_end_date' => ['>=', $_SESSION['glpi_currenttime']],
+                                    ],
+                                ],
+                            ]
+                        ],
+                        'beforejoin'         => [
+                            'table'          => User::getTable(),
+                            'joinparams'         => [
+                                'beforejoin'         => [
+                                    'table'          => Group_User::getTable(),
+                                    'joinparams'         => [
+                                        'jointype'           => 'child',
+                                        'beforejoin'         => [
+                                            'table'              => Group::getTable(),
+                                            'linkfield'          => 'items_id_target',
+                                            'joinparams'         => [
+                                                'condition'          => [
+                                                    'REFTABLE.itemtype_target' => Group::class,
+                                                ],
+                                                'beforejoin'         => [
+                                                    'table'              => static::getTable(),
+                                                    'joinparams'         => [
+                                                        'jointype'           => 'child',
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
             ]
         ];
 
