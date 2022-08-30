@@ -3931,6 +3931,8 @@ class Dropdown
 
     public static function getDropdownActors($post, $json = true)
     {
+        global $CFG_GLPI;
+
         if (!Session::validateIDOR($post)) {
             return;
         }
@@ -3947,6 +3949,7 @@ class Dropdown
             'itiltemplate_class' => 'TicketTemplate',
             'itiltemplates_id'   => 0,
             'returned_itemtypes' => ['User', 'Group', 'Supplier'],
+            'limit'              => $CFG_GLPI['dropdown_max'],
         ];
         $post = array_merge($defaults, $post);
 
@@ -3976,7 +3979,7 @@ class Dropdown
                 $post['used'],
                 $post['searchText'],
                 0,
-                -1,
+                (int) $post['limit'],
                 $post['inactive_deleted'],
             );
             foreach ($users_iterator as $ID => $user) {
