@@ -614,26 +614,24 @@ abstract class CommonDropdown extends CommonDBTM
         echo "<form action='$target' method='post'>";
         echo "<table class='tab_cadre'><tr><td>";
 
+        $replacement_options = [
+            'name' => '_replace_by'
+        ];
+        if (!$this instanceof Entity) {
+            $replacement_options['entity'] = $this->getEntityID();
+        }
         if ($this instanceof CommonTreeDropdown) {
            // TreeDropdown => default replacement is parent
             $fk = $this->getForeignKeyField();
-            Dropdown::show(
-                getItemTypeForTable($this->getTable()),
-                ['name'   => '_replace_by',
-                    'value'  => $this->fields[$fk],
-                    'entity' => $this->getEntityID(),
-                    'used'   => getSonsOf($this->getTable(), $ID),
-                ]
-            );
+            $replacement_options['value'] = $this->fields[$fk];
+            $replacement_options['used']  = getSonsOf($this->getTable(), $ID);
         } else {
-            Dropdown::show(
-                getItemTypeForTable($this->getTable()),
-                ['name'   => '_replace_by',
-                    'entity' => $this->getEntityID(),
-                    'used'   => [$ID]
-                ]
-            );
+            $replacement_options['used'] = [$ID];
         }
+        Dropdown::show(
+            getItemTypeForTable($this->getTable()),
+            $replacement_options
+        );
         echo "<input type='hidden' name='id' value='$ID' />";
         echo "<input type='hidden' name='itemtype' value='" . $this->getType() . "' />";
         echo "</td><td>";
