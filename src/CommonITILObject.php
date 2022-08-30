@@ -749,6 +749,24 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
+    public function canMassiveAction($action, $field, $value)
+    {
+
+        switch ($action) {
+            case 'update':
+                switch ($field) {
+                    case 'status':
+                        if (!self::isAllowedStatus($this->fields['status'], $value)) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+        }
+        return true;
+    }
+
+
     /**
      * Do the current ItilObject need to be reopened by a requester answer
      *
