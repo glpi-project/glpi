@@ -800,7 +800,8 @@ class Domain extends CommonDBTM
     public static function getAdditionalMenuLinks()
     {
         $links = [];
-        if (static::canView()) {
+        $can_manage_records = count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
+        if (static::canView() && $can_manage_records) {
             $rooms = "<i class='fa fa-clipboard-list pointer' title=\"" . DomainRecord::getTypeName(Session::getPluralNumber()) . "\"></i>
             <span class='d-none d-xxl-block ps-1'>
                " . DomainRecord::getTypeName(Session::getPluralNumber()) . "
@@ -815,7 +816,8 @@ class Domain extends CommonDBTM
 
     public static function getAdditionalMenuOptions()
     {
-        if (static::canView()) {
+        $can_manage_records = count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
+        if (static::canView() && $can_manage_records) {
             return [
                 'domainrecord' => [
                     'icon'  => DomainRecord::getIcon(),
