@@ -233,6 +233,7 @@
             url: '{{ path('/ajax/actors.php') }}',
             datatype: 'json',
             type: 'POST',
+            delay:250,
             data: function (params) {
                var is_new_item = {{ item.isNewItem() ? "true" : "false" }};
                return {
