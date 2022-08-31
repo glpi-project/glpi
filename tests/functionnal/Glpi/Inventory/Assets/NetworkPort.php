@@ -358,369 +358,369 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
     public function testNetworkPortMetrics()
     {
-      $networkport = new \NetworkPort();
-      $networkmetric = new \NetworkPortMetrics();
-      $networkequipment = new \NetworkEquipment();
+        $networkport = new \NetworkPort();
+        $networkmetric = new \NetworkPortMetrics();
+        $networkequipment = new \NetworkEquipment();
 
-      //First step : import NetworkEquipement with only one NetworkPort (Ethernet)
-      //check metrics data (only one)
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-      <REQUEST>
-        <CONTENT>
-          <DEVICE>
-            <COMPONENTS>
-              <COMPONENT>
-                <CONTAINEDININDEX>0</CONTAINEDININDEX>
-                <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
-                <FIRMWARE>12.2(58)SE1</FIRMWARE>
-                <FRU>2</FRU>
-                <INDEX>1001</INDEX>
-                <MODEL>WS-C2960-24TC-L</MODEL>
-                <NAME>1</NAME>
-                <REVISION>V05</REVISION>
-                <SERIAL>FOC1247X5DX</SERIAL>
-                <TYPE>chassis</TYPE>
+        //First step : import NetworkEquipement with only one NetworkPort (Ethernet)
+        //check metrics data (only one)
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <COMPONENTS>
+                <COMPONENT>
+                  <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                  <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
+                  <FIRMWARE>12.2(58)SE1</FIRMWARE>
+                  <FRU>2</FRU>
+                  <INDEX>1001</INDEX>
+                  <MODEL>WS-C2960-24TC-L</MODEL>
+                  <NAME>1</NAME>
+                  <REVISION>V05</REVISION>
+                  <SERIAL>FOC1247X5DX</SERIAL>
+                  <TYPE>chassis</TYPE>
+                  <VERSION>12.2(58)SE1</VERSION>
+                </COMPONENT>
+                <COMPONENT>
+                  <CONTAINEDININDEX>1001</CONTAINEDININDEX>
+                  <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
+                  <FRU>2</FRU>
+                  <INDEX>1002</INDEX>
+                  <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
+                  <TYPE>module</TYPE>
+                </COMPONENT>
+              </COMPONENTS>
+              <FIRMWARES>
+                <DESCRIPTION>device firmware</DESCRIPTION>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <NAME>Catalyst 2960-24TC</NAME>
+                <TYPE>device</TYPE>
                 <VERSION>12.2(58)SE1</VERSION>
-              </COMPONENT>
-              <COMPONENT>
-                <CONTAINEDININDEX>1001</CONTAINEDININDEX>
-                <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
-                <FRU>2</FRU>
-                <INDEX>1002</INDEX>
-                <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
-                <TYPE>module</TYPE>
-              </COMPONENT>
-            </COMPONENTS>
-            <FIRMWARES>
-              <DESCRIPTION>device firmware</DESCRIPTION>
-              <MANUFACTURER>Cisco</MANUFACTURER>
-              <NAME>Catalyst 2960-24TC</NAME>
-              <TYPE>device</TYPE>
-              <VERSION>12.2(58)SE1</VERSION>
-            </FIRMWARES>
-            <INFO>
-              <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
-      Technical Support: http://www.cisco.com/techsupport
-      Copyright (c) 1986-2011 by Cisco Systems, Inc.
-      Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
-              <FIRMWARE>12.2(58)SE1</FIRMWARE>
-              <ID>0</ID>
-              <IPS>
-                <IP>192.168.1.27</IP>
-              </IPS>
-              <MAC>00:24:13:ea:a7:00</MAC>
-              <MANUFACTURER>Cisco</MANUFACTURER>
-              <MODEL>Catalyst 2960-24TC</MODEL>
-              <NAME>CB-27.example.com</NAME>
-              <SERIAL>FOC1247X5DX</SERIAL>
-              <TYPE>NETWORKING</TYPE>
-              <UPTIME>38 days, 4:05:41.99</UPTIME>
-            </INFO>
-            <PORTS>
-              <PORT>
-                <IFALIAS>pixin-int1-inside</IFALIAS>
-                <IFDESCR>FastEthernet0/1</IFDESCR>
-                <IFINERRORS>0</IFINERRORS>
-                <IFINOCTETS>3559673658</IFINOCTETS>
-                <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
-                <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
-                <IFMTU>1500</IFMTU>
-                <IFNAME>Fa0/1</IFNAME>
-                <IFNUMBER>10001</IFNUMBER>
-                <IFOUTERRORS>0</IFOUTERRORS>
-                <IFOUTOCTETS>3257789612</IFOUTOCTETS>
-                <IFPORTDUPLEX>2</IFPORTDUPLEX>
-                <IFSPEED>100000000</IFSPEED>
-                <IFSTATUS>1</IFSTATUS>
-                <IFTYPE>6</IFTYPE>
-                <MAC>00:24:13:ea:a7:01</MAC>
-              </PORT>
-            </PORTS>
-          </DEVICE>
-          <MODULEVERSION>5.1</MODULEVERSION>
-          <PROCESSNUMBER>1</PROCESSNUMBER>
-        </CONTENT>
-        <DEVICEID>foo</DEVICEID>
-        <QUERY>SNMPQUERY</QUERY>
-      </REQUEST>";
-
-      //networkequipement inventory
-      $inventory = $this->doInventory($xml_source, true);
-
-      //check networkequipement
-      $networkquipement_id = $inventory->getItem()->fields['id'];
-      $this->integer($networkquipement_id)->isGreaterThan(0);
-
-      //get networkport
-      $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
-      ->isTrue();
-
-      //get networkport metric
-      $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id']]))
-      ->isTrue();
-
-      $db_input = $networkmetric->fields;
-      unset($db_input['date_creation']);
-      unset($db_input['date_mod']);
-      unset($db_input['id']);
-
-      $expected_input = [
-        "date"            => date('Y-m-d'),
-        "ifinbytes"       => 3559673658,
-        "ifinerrors"      => 0,
-        "ifoutbytes"      => 3257789612,
-        "ifouterrors"     => 0,
-        "networkports_id" => $networkport->fields['id'],
-      ];
-      $this->array($db_input)->isIdenticalTo($expected_input);
-
-      //change 'date' to yesterday to get new metric after reimport (2nd step)
-      $currentDate = new DateTime(date('Y-m-d'));
-      $yesterdayTime = $currentDate->sub(new DateInterval('P1D'));
-      $yesterday = $yesterdayTime->format('Y-m-d');
-      $networkmetric->fields['date'] = $yesterday;
-
-      $this->boolean($networkmetric->update($networkmetric->fields))->isTrue();
-      $this->string($networkmetric->fields['date'])->isIdenticalTo($yesterday);
-
-      //Second step : import NetworkEquipement again but with new metrics
-      //check metrics data for today
-      $xml_source_with_new_metrics = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-      <REQUEST>
-        <CONTENT>
-          <DEVICE>
-            <COMPONENTS>
-              <COMPONENT>
-                <CONTAINEDININDEX>0</CONTAINEDININDEX>
-                <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
+              </FIRMWARES>
+              <INFO>
+                <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
+        Technical Support: http://www.cisco.com/techsupport
+        Copyright (c) 1986-2011 by Cisco Systems, Inc.
+        Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
                 <FIRMWARE>12.2(58)SE1</FIRMWARE>
-                <FRU>2</FRU>
-                <INDEX>1001</INDEX>
-                <MODEL>WS-C2960-24TC-L</MODEL>
-                <NAME>1</NAME>
-                <REVISION>V05</REVISION>
+                <ID>0</ID>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
                 <SERIAL>FOC1247X5DX</SERIAL>
-                <TYPE>chassis</TYPE>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>38 days, 4:05:41.99</UPTIME>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFALIAS>pixin-int1-inside</IFALIAS>
+                  <IFDESCR>FastEthernet0/1</IFDESCR>
+                  <IFINERRORS>0</IFINERRORS>
+                  <IFINOCTETS>3559673658</IFINOCTETS>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
+                  <IFMTU>1500</IFMTU>
+                  <IFNAME>Fa0/1</IFNAME>
+                  <IFNUMBER>10001</IFNUMBER>
+                  <IFOUTERRORS>0</IFOUTERRORS>
+                  <IFOUTOCTETS>3257789612</IFOUTOCTETS>
+                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
+                  <IFSPEED>100000000</IFSPEED>
+                  <IFSTATUS>1</IFSTATUS>
+                  <IFTYPE>6</IFTYPE>
+                  <MAC>00:24:13:ea:a7:01</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check networkequipement
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->integer($networkquipement_id)->isGreaterThan(0);
+
+        //get networkport
+        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
+        ->isTrue();
+
+        //get networkport metric
+        $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id']]))
+        ->isTrue();
+
+        $db_input = $networkmetric->fields;
+        unset($db_input['date_creation']);
+        unset($db_input['date_mod']);
+        unset($db_input['id']);
+
+        $expected_input = [
+          "date"            => date('Y-m-d'),
+          "ifinbytes"       => 3559673658,
+          "ifinerrors"      => 0,
+          "ifoutbytes"      => 3257789612,
+          "ifouterrors"     => 0,
+          "networkports_id" => $networkport->fields['id'],
+        ];
+        $this->array($db_input)->isIdenticalTo($expected_input);
+
+        //change 'date' to yesterday to get new metric after reimport (2nd step)
+        $currentDate = new DateTime(date('Y-m-d'));
+        $yesterdayTime = $currentDate->sub(new DateInterval('P1D'));
+        $yesterday = $yesterdayTime->format('Y-m-d');
+        $networkmetric->fields['date'] = $yesterday;
+
+        $this->boolean($networkmetric->update($networkmetric->fields))->isTrue();
+        $this->string($networkmetric->fields['date'])->isIdenticalTo($yesterday);
+
+        //Second step : import NetworkEquipement again but with new metrics
+        //check metrics data for today
+        $xml_source_with_new_metrics = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <COMPONENTS>
+                <COMPONENT>
+                  <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                  <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
+                  <FIRMWARE>12.2(58)SE1</FIRMWARE>
+                  <FRU>2</FRU>
+                  <INDEX>1001</INDEX>
+                  <MODEL>WS-C2960-24TC-L</MODEL>
+                  <NAME>1</NAME>
+                  <REVISION>V05</REVISION>
+                  <SERIAL>FOC1247X5DX</SERIAL>
+                  <TYPE>chassis</TYPE>
+                  <VERSION>12.2(58)SE1</VERSION>
+                </COMPONENT>
+                <COMPONENT>
+                  <CONTAINEDININDEX>1001</CONTAINEDININDEX>
+                  <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
+                  <FRU>2</FRU>
+                  <INDEX>1002</INDEX>
+                  <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
+                  <TYPE>module</TYPE>
+                </COMPONENT>
+              </COMPONENTS>
+              <FIRMWARES>
+                <DESCRIPTION>device firmware</DESCRIPTION>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <NAME>Catalyst 2960-24TC</NAME>
+                <TYPE>device</TYPE>
                 <VERSION>12.2(58)SE1</VERSION>
-              </COMPONENT>
-              <COMPONENT>
-                <CONTAINEDININDEX>1001</CONTAINEDININDEX>
-                <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
-                <FRU>2</FRU>
-                <INDEX>1002</INDEX>
-                <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
-                <TYPE>module</TYPE>
-              </COMPONENT>
-            </COMPONENTS>
-            <FIRMWARES>
-              <DESCRIPTION>device firmware</DESCRIPTION>
-              <MANUFACTURER>Cisco</MANUFACTURER>
-              <NAME>Catalyst 2960-24TC</NAME>
-              <TYPE>device</TYPE>
-              <VERSION>12.2(58)SE1</VERSION>
-            </FIRMWARES>
-            <INFO>
-              <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
-      Technical Support: http://www.cisco.com/techsupport
-      Copyright (c) 1986-2011 by Cisco Systems, Inc.
-      Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
-              <FIRMWARE>12.2(58)SE1</FIRMWARE>
-              <ID>0</ID>
-              <IPS>
-                <IP>192.168.1.27</IP>
-              </IPS>
-              <MAC>00:24:13:ea:a7:00</MAC>
-              <MANUFACTURER>Cisco</MANUFACTURER>
-              <MODEL>Catalyst 2960-24TC</MODEL>
-              <NAME>CB-27.example.com</NAME>
-              <SERIAL>FOC1247X5DX</SERIAL>
-              <TYPE>NETWORKING</TYPE>
-              <UPTIME>38 days, 4:05:41.99</UPTIME>
-            </INFO>
-            <PORTS>
-              <PORT>
-                <IFALIAS>pixin-int1-inside</IFALIAS>
-                <IFDESCR>FastEthernet0/1</IFDESCR>
-                <IFINERRORS>0</IFINERRORS>
-                <IFINOCTETS>7059673658</IFINOCTETS>
-                <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
-                <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
-                <IFMTU>1500</IFMTU>
-                <IFNAME>Fa0/1</IFNAME>
-                <IFNUMBER>10001</IFNUMBER>
-                <IFOUTERRORS>0</IFOUTERRORS>
-                <IFOUTOCTETS>6457789612</IFOUTOCTETS>
-                <IFPORTDUPLEX>2</IFPORTDUPLEX>
-                <IFSPEED>100000000</IFSPEED>
-                <IFSTATUS>1</IFSTATUS>
-                <IFTYPE>6</IFTYPE>
-                <MAC>00:24:13:ea:a7:01</MAC>
-              </PORT>
-            </PORTS>
-          </DEVICE>
-          <MODULEVERSION>5.1</MODULEVERSION>
-          <PROCESSNUMBER>1</PROCESSNUMBER>
-        </CONTENT>
-        <DEVICEID>foo</DEVICEID>
-        <QUERY>SNMPQUERY</QUERY>
-      </REQUEST>";
-
-      //networkequipement inventory
-      $inventory = $this->doInventory($xml_source_with_new_metrics, true);
-
-      $networkquipement_id = $inventory->getItem()->fields['id'];
-      $this->integer($networkquipement_id)->isGreaterThan(0);
-
-      //get networkEquipement
-      $this->boolean($networkequipment->getFromDB($networkquipement_id))->isTrue();
-
-      //get networkport
-      $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
-      ->isTrue();
-
-      //now we have two metrics, one for yesterday and one for today
-      $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
-      $this->array($metrics)
-         ->hasSize(2);
-
-      //get networkport metric for today
-      $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id'], "date" => date('Y-m-d')]))
-      ->isTrue();
-
-      $db_input = $networkmetric->fields;
-      unset($db_input['date_creation']);
-      unset($db_input['date_mod']);
-      unset($db_input['id']);
-
-      //check metrics data
-      $expected_input = [
-        "date"            => date('Y-m-d'),
-        "ifinbytes"       => 7059673658,
-        "ifinerrors"      => 0,
-        "ifoutbytes"      => 6457789612,
-        "ifouterrors"     => 0,
-        "networkports_id" => $networkport->fields['id'],
-      ];
-      $this->array($db_input)->isIdenticalTo($expected_input);
-
-      //THird step : import NetworkEquipement again but with new metrics
-      //check that the previous data are updated
-      $xml_source_with_new_metrics = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-      <REQUEST>
-        <CONTENT>
-          <DEVICE>
-            <COMPONENTS>
-              <COMPONENT>
-                <CONTAINEDININDEX>0</CONTAINEDININDEX>
-                <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
+              </FIRMWARES>
+              <INFO>
+                <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
+        Technical Support: http://www.cisco.com/techsupport
+        Copyright (c) 1986-2011 by Cisco Systems, Inc.
+        Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
                 <FIRMWARE>12.2(58)SE1</FIRMWARE>
-                <FRU>2</FRU>
-                <INDEX>1001</INDEX>
-                <MODEL>WS-C2960-24TC-L</MODEL>
-                <NAME>1</NAME>
-                <REVISION>V05</REVISION>
+                <ID>0</ID>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
                 <SERIAL>FOC1247X5DX</SERIAL>
-                <TYPE>chassis</TYPE>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>38 days, 4:05:41.99</UPTIME>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFALIAS>pixin-int1-inside</IFALIAS>
+                  <IFDESCR>FastEthernet0/1</IFDESCR>
+                  <IFINERRORS>0</IFINERRORS>
+                  <IFINOCTETS>7059673658</IFINOCTETS>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
+                  <IFMTU>1500</IFMTU>
+                  <IFNAME>Fa0/1</IFNAME>
+                  <IFNUMBER>10001</IFNUMBER>
+                  <IFOUTERRORS>0</IFOUTERRORS>
+                  <IFOUTOCTETS>6457789612</IFOUTOCTETS>
+                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
+                  <IFSPEED>100000000</IFSPEED>
+                  <IFSTATUS>1</IFSTATUS>
+                  <IFTYPE>6</IFTYPE>
+                  <MAC>00:24:13:ea:a7:01</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source_with_new_metrics, true);
+
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->integer($networkquipement_id)->isGreaterThan(0);
+
+        //get networkEquipement
+        $this->boolean($networkequipment->getFromDB($networkquipement_id))->isTrue();
+
+        //get networkport
+        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
+        ->isTrue();
+
+        //now we have two metrics, one for yesterday and one for today
+        $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
+        $this->array($metrics)
+          ->hasSize(2);
+
+        //get networkport metric for today
+        $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id'], "date" => date('Y-m-d')]))
+        ->isTrue();
+
+        $db_input = $networkmetric->fields;
+        unset($db_input['date_creation']);
+        unset($db_input['date_mod']);
+        unset($db_input['id']);
+
+        //check metrics data
+        $expected_input = [
+          "date"            => date('Y-m-d'),
+          "ifinbytes"       => 7059673658,
+          "ifinerrors"      => 0,
+          "ifoutbytes"      => 6457789612,
+          "ifouterrors"     => 0,
+          "networkports_id" => $networkport->fields['id'],
+        ];
+        $this->array($db_input)->isIdenticalTo($expected_input);
+
+        //THird step : import NetworkEquipement again but with new metrics
+        //check that the previous data are updated
+        $xml_source_with_new_metrics = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <COMPONENTS>
+                <COMPONENT>
+                  <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                  <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
+                  <FIRMWARE>12.2(58)SE1</FIRMWARE>
+                  <FRU>2</FRU>
+                  <INDEX>1001</INDEX>
+                  <MODEL>WS-C2960-24TC-L</MODEL>
+                  <NAME>1</NAME>
+                  <REVISION>V05</REVISION>
+                  <SERIAL>FOC1247X5DX</SERIAL>
+                  <TYPE>chassis</TYPE>
+                  <VERSION>12.2(58)SE1</VERSION>
+                </COMPONENT>
+                <COMPONENT>
+                  <CONTAINEDININDEX>1001</CONTAINEDININDEX>
+                  <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
+                  <FRU>2</FRU>
+                  <INDEX>1002</INDEX>
+                  <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
+                  <TYPE>module</TYPE>
+                </COMPONENT>
+              </COMPONENTS>
+              <FIRMWARES>
+                <DESCRIPTION>device firmware</DESCRIPTION>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <NAME>Catalyst 2960-24TC</NAME>
+                <TYPE>device</TYPE>
                 <VERSION>12.2(58)SE1</VERSION>
-              </COMPONENT>
-              <COMPONENT>
-                <CONTAINEDININDEX>1001</CONTAINEDININDEX>
-                <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
-                <FRU>2</FRU>
-                <INDEX>1002</INDEX>
-                <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
-                <TYPE>module</TYPE>
-              </COMPONENT>
-            </COMPONENTS>
-            <FIRMWARES>
-              <DESCRIPTION>device firmware</DESCRIPTION>
-              <MANUFACTURER>Cisco</MANUFACTURER>
-              <NAME>Catalyst 2960-24TC</NAME>
-              <TYPE>device</TYPE>
-              <VERSION>12.2(58)SE1</VERSION>
-            </FIRMWARES>
-            <INFO>
-              <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
-      Technical Support: http://www.cisco.com/techsupport
-      Copyright (c) 1986-2011 by Cisco Systems, Inc.
-      Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
-              <FIRMWARE>12.2(58)SE1</FIRMWARE>
-              <ID>0</ID>
-              <IPS>
-                <IP>192.168.1.27</IP>
-              </IPS>
-              <MAC>00:24:13:ea:a7:00</MAC>
-              <MANUFACTURER>Cisco</MANUFACTURER>
-              <MODEL>Catalyst 2960-24TC</MODEL>
-              <NAME>CB-27.example.com</NAME>
-              <SERIAL>FOC1247X5DX</SERIAL>
-              <TYPE>NETWORKING</TYPE>
-              <UPTIME>38 days, 4:05:41.99</UPTIME>
-            </INFO>
-            <PORTS>
-              <PORT>
-                <IFALIAS>pixin-int1-inside</IFALIAS>
-                <IFDESCR>FastEthernet0/1</IFDESCR>
-                <IFINERRORS>0</IFINERRORS>
-                <IFINOCTETS>8059673658</IFINOCTETS>
-                <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
-                <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
-                <IFMTU>1500</IFMTU>
-                <IFNAME>Fa0/1</IFNAME>
-                <IFNUMBER>10001</IFNUMBER>
-                <IFOUTERRORS>0</IFOUTERRORS>
-                <IFOUTOCTETS>7457789612</IFOUTOCTETS>
-                <IFPORTDUPLEX>2</IFPORTDUPLEX>
-                <IFSPEED>100000000</IFSPEED>
-                <IFSTATUS>1</IFSTATUS>
-                <IFTYPE>6</IFTYPE>
-                <MAC>00:24:13:ea:a7:01</MAC>
-              </PORT>
-            </PORTS>
-          </DEVICE>
-          <MODULEVERSION>5.1</MODULEVERSION>
-          <PROCESSNUMBER>1</PROCESSNUMBER>
-        </CONTENT>
-        <DEVICEID>foo</DEVICEID>
-        <QUERY>SNMPQUERY</QUERY>
-      </REQUEST>";
+              </FIRMWARES>
+              <INFO>
+                <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
+        Technical Support: http://www.cisco.com/techsupport
+        Copyright (c) 1986-2011 by Cisco Systems, Inc.
+        Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
+                <FIRMWARE>12.2(58)SE1</FIRMWARE>
+                <ID>0</ID>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
+                <SERIAL>FOC1247X5DX</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>38 days, 4:05:41.99</UPTIME>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFALIAS>pixin-int1-inside</IFALIAS>
+                  <IFDESCR>FastEthernet0/1</IFDESCR>
+                  <IFINERRORS>0</IFINERRORS>
+                  <IFINOCTETS>8059673658</IFINOCTETS>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
+                  <IFMTU>1500</IFMTU>
+                  <IFNAME>Fa0/1</IFNAME>
+                  <IFNUMBER>10001</IFNUMBER>
+                  <IFOUTERRORS>0</IFOUTERRORS>
+                  <IFOUTOCTETS>7457789612</IFOUTOCTETS>
+                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
+                  <IFSPEED>100000000</IFSPEED>
+                  <IFSTATUS>1</IFSTATUS>
+                  <IFTYPE>6</IFTYPE>
+                  <MAC>00:24:13:ea:a7:01</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
 
-      //networkequipement inventory
-      $inventory = $this->doInventory($xml_source_with_new_metrics, true);
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source_with_new_metrics, true);
 
-      $networkquipement_id = $inventory->getItem()->fields['id'];
-      $this->integer($networkquipement_id)->isGreaterThan(0);
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->integer($networkquipement_id)->isGreaterThan(0);
 
-      //get networkEquipement
-      $this->boolean($networkequipment->getFromDB($networkquipement_id))->isTrue();
+        //get networkEquipement
+        $this->boolean($networkequipment->getFromDB($networkquipement_id))->isTrue();
 
-      //get networkport
-      $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
-      ->isTrue();
+        //get networkport
+        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
+        ->isTrue();
 
-      //now we have two metrics, one for yesterday and one for today
-      $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
-      $this->array($metrics)
-         ->hasSize(2);
+        //now we have two metrics, one for yesterday and one for today
+        $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
+        $this->array($metrics)
+          ->hasSize(2);
 
-      //get networkport metric for today
-      $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id'], "date" => date('Y-m-d')]))
-      ->isTrue();
+        //get networkport metric for today
+        $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id'], "date" => date('Y-m-d')]))
+        ->isTrue();
 
-      $db_input = $networkmetric->fields;
-      unset($db_input['date_creation']);
-      unset($db_input['date_mod']);
-      unset($db_input['id']);
+        $db_input = $networkmetric->fields;
+        unset($db_input['date_creation']);
+        unset($db_input['date_mod']);
+        unset($db_input['id']);
 
-      //check metrics data
-      $expected_input = [
-        "date"            => date('Y-m-d'),
-        "ifinbytes"       => 8059673658,
-        "ifinerrors"      => 0,
-        "ifoutbytes"      => 7457789612,
-        "ifouterrors"     => 0,
-        "networkports_id" => $networkport->fields['id'],
-      ];
-      $this->array($db_input)->isIdenticalTo($expected_input);
+        //check metrics data
+        $expected_input = [
+          "date"            => date('Y-m-d'),
+          "ifinbytes"       => 8059673658,
+          "ifinerrors"      => 0,
+          "ifoutbytes"      => 7457789612,
+          "ifouterrors"     => 0,
+          "networkports_id" => $networkport->fields['id'],
+        ];
+        $this->array($db_input)->isIdenticalTo($expected_input);
     }
 }
