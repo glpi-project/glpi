@@ -854,7 +854,7 @@ class Conf extends CommonGLPI
         );
         echo "</td>";
 
-        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG];
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
         $odd = true;
         $in_row = true;
         /**
