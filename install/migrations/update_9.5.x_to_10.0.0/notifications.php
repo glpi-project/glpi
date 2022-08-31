@@ -94,7 +94,7 @@ foreach ($notifications as $notification) {
             $DB->buildUpdate(
                 'glpi_notificationtemplatetranslations',
                 [
-                    'content_html' => $notification['content_html'],
+                    'content_html' => Sanitizer::encodeHtmlSpecialChars($notification['content_html']),
                 ],
                 [
                     'id' => $notification['id'],
