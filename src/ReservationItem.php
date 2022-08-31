@@ -992,30 +992,38 @@ class ReservationItem extends CommonDBChild
 
         if ($post['idtable'] && class_exists($post['idtable'])) {
             $itemtype = $post['idtable'];
+            $itemtype_obj = new $itemtype();
 
             $item_table = $itemtype::getTable();
             $resi_table = ReservationItem::getTable();
-            $result = $DB->request([
-                'SELECT' => [
-                    "$resi_table.id",
-                    "$item_table.name"
-                ],
-                'FROM' => $item_table,
-                'INNER JOIN' => [
-                    $resi_table => [
-                        'ON' => [
-                            $resi_table => 'items_id',
-                            $item_table => 'id',
-                            ['AND' => ["$resi_table.itemtype" => $itemtype]],
+
+            $criteria = [
+                    'SELECT' => [
+                        "$resi_table.id",
+                        "$item_table.name"
+                    ],
+                    'FROM' => $item_table,
+                    'INNER JOIN' => [
+                        $resi_table => [
+                            'ON' => [
+                                $resi_table => 'items_id',
+                                $item_table => 'id',
+                                ['AND' => ["$resi_table.itemtype" => $itemtype]],
+                            ]
                         ]
+                    ],
+                    'WHERE' => [
+                        "$resi_table.is_active"   => 1,
+                        "$item_table.is_deleted"  => 0,
                     ]
-                ],
-                'WHERE' => [
-                    "$resi_table.is_active"   => 1,
-                    "$item_table.is_deleted"  => 0,
-                    "$item_table.is_template" => 0
-                ]
-            ]);
+                ];
+
+            if ($itemtype_obj->maybeTemplate()) {
+                $criteria['WHERE']["$item_table.is_template"] = 0;
+            }
+
+            $result = $DB->request($criteria);
+
             if ($result->count() == 0) {
                  echo __('No reservable item!');
             } else {
