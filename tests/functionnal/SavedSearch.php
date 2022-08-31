@@ -79,4 +79,70 @@ class SavedSearch extends DbTestCase
         $this->string(\SavedSearch::addVisibilityRestrict())
          ->isIdenticalTo("((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR `glpi_savedsearches`.`is_private` = '0')");
     }
+
+    public function testGetMine()
+    {
+        global $DB;
+        // needs a user
+        // let's use TU_USER
+        $this->login();
+        $uid =  getItemByTypeName('User', TU_USER, true);
+
+        // now add a bookmark on Ticket view
+        $bk = new \SavedSearch();
+        $this->boolean(
+            (bool)$bk->add([
+                'name'         => 'public',
+                'type'         => 1,
+                'itemtype'     => 'Ticket',
+                'users_id'     => $uid,
+                'is_private'   => 0,
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+            ])
+        )->isTrue();
+
+        $this->boolean(
+            (bool)$bk->add([
+                'name'         => 'private',
+                'type'         => 1,
+                'itemtype'     => 'Ticket',
+                'users_id'     => $uid,
+                'is_private'   => 1,
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+            ])
+        )->isTrue();
+        $this->integer(count($bk->getMine()))->isEqualTo(2);
+
+        //add public saved searches read right for normal profile
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 1],
+            [
+                'profiles_id'  => 2,
+                'name'         => 'bookmark_public'
+            ]
+        );
+        //ACLs have changed: login again.
+        $this->login('normal', 'normal');
+
+        $this->integer(count($bk->getMine('Ticket')))->isEqualTo(1);
+
+        //reset rights
+        $DB->update(
+            'glpi_profilerights',
+            ['rights' => 0],
+            [
+                'profiles_id'  => 2,
+                'name'         => 'bookmark_public'
+            ]
+        );
+        //ACLs have changed: login again.
+        $this->login('normal', 'normal');
+
+        $this->integer(count($bk->getMine('Ticket')))->isEqualTo(0);
+    }
 }
