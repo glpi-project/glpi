@@ -798,23 +798,23 @@ abstract class CommonITILValidation extends CommonDBChild
                     [
                         'OR' => [
                             [
-                                User::getTable() . '.substitution_start_date' => null,
+                                User::getTableField('substitution_start_date')  => null,
                             ],
                             [
-                                User::getTable() . '.substitution_start_date' => ['<=', $_SESSION['glpi_currenttime']],
+                                User::getTableField('substitution_start_date')  => ['<=', $_SESSION['glpi_currenttime']],
                             ],
                         ],
                     ], [
                         'OR' => [
                             [
-                                User::getTable() . '.substitution_end_date' => null,
+                                User::getTableField('substitution_end_date') => null,
                             ],
                             [
-                                User::getTable() . '.substitution_end_date' => ['>=', $_SESSION['glpi_currenttime']],
+                                User::getTableField('substitution_end_date') => ['>=', $_SESSION['glpi_currenttime']],
                             ],
                         ],
                     ],
-                    ValidatorSubstitute::getTable() . '.users_id_substitute' => $users_id,
+                    ValidatorSubstitute::getTableField('users_id_substitute')  => $users_id,
                 ],
             ]
         ];
@@ -1545,13 +1545,13 @@ abstract class CommonITILValidation extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
+                'condition'          => [
+                    'REFTABLE.itemtype_target' => User::class,
+                ],
                 'beforejoin'         => [
                     'table'              => static::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => [
-                            'NEWTABLE.itemtype_target' => User::class,
-                        ]
                     ]
                 ]
             ]
@@ -1576,6 +1576,8 @@ abstract class CommonITILValidation extends CommonDBChild
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'condition'          => [
+                            // same condition on search option 197, but with swapped expression
+                            // This workarounds identical complex join ID if a search ise both search options 195 and 197
                             [
                                 'OR' => [
                                     [
@@ -1598,13 +1600,13 @@ abstract class CommonITILValidation extends CommonDBChild
                             'table'              => User::getTable(),
                             'linkfield'          => 'items_id_target',
                             'joinparams'             => [
+                                'condition'                  => [
+                                    'REFTABLE.itemtype_target' => User::class,
+                                ],
                                 'beforejoin'             => [
                                     'table'                  => static::getTable(),
                                     'joinparams'                 => [
                                         'jointype'                   => 'child',
-                                        'condition'          => [
-                                            'NEWTABLE.itemtype_target' => User::class,
-                                        ]
                                     ]
                                 ]
                             ]
@@ -1624,13 +1626,13 @@ abstract class CommonITILValidation extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
+                'condition'          => [
+                    'REFTABLE.itemtype_target' => Group::class,
+                ],
                 'beforejoin'         => [
                     'table'              => static::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => [
-                            'NEWTABLE.itemtype_target' => Group::class,
-                        ]
                     ]
                 ]
             ]
@@ -1638,7 +1640,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $tab[] = [
             'id'                 => '197',
-            'table'              => 'glpi_users',
+            'table'              => User::getTable(),
             'field'              => 'name',
             'linkfield'          => 'users_id_substitute',
             'name'               => __('Substitute of a member of approver group'),
@@ -1655,20 +1657,22 @@ abstract class CommonITILValidation extends CommonDBChild
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'condition'          => [
+                            // same condition on search option 195, but with swapped expression
+                            // This workarounds identical complex join ID if a search ise both search options 195 and 197
                             [
-                                'OR' => [
-                                    [
-                                        'REFTABLE.substitution_start_date' => null,
-                                    ], [
-                                        'REFTABLE.substitution_start_date' => ['<=', $_SESSION['glpi_currenttime']],
-                                    ],
-                                ],
-                            ], [
                                 'OR' => [
                                     [
                                         'REFTABLE.substitution_end_date' => null,
                                     ], [
                                         'REFTABLE.substitution_end_date' => ['>=', $_SESSION['glpi_currenttime']],
+                                    ],
+                                ],
+                            ], [
+                                'OR' => [
+                                    [
+                                        'REFTABLE.substitution_start_date' => null,
+                                    ], [
+                                        'REFTABLE.substitution_start_date' => ['<=', $_SESSION['glpi_currenttime']],
                                     ],
                                 ],
                             ]
