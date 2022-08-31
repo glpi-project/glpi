@@ -362,6 +362,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $networkmetric = new \NetworkPortMetrics();
         $networkequipment = new \NetworkEquipment();
 
+        $ifinbytes  = 3559673658;
+        $ifoutbytes = 3257789612;
+
         //First step : import NetworkEquipement with only one NetworkPort (Ethernet)
         //check metrics data (only one)
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -421,14 +424,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                   <IFALIAS>pixin-int1-inside</IFALIAS>
                   <IFDESCR>FastEthernet0/1</IFDESCR>
                   <IFINERRORS>0</IFINERRORS>
-                  <IFINOCTETS>3559673658</IFINOCTETS>
+                  <IFINOCTETS>$ifinbytes</IFINOCTETS>
                   <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
                   <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
                   <IFMTU>1500</IFMTU>
                   <IFNAME>Fa0/1</IFNAME>
                   <IFNUMBER>10001</IFNUMBER>
                   <IFOUTERRORS>0</IFOUTERRORS>
-                  <IFOUTOCTETS>3257789612</IFOUTOCTETS>
+                  <IFOUTOCTETS>$ifoutbytes</IFOUTOCTETS>
                   <IFPORTDUPLEX>2</IFPORTDUPLEX>
                   <IFSPEED>100000000</IFSPEED>
                   <IFSTATUS>1</IFSTATUS>
@@ -466,9 +469,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $expected_input = [
           "date"            => date('Y-m-d'),
-          "ifinbytes"       => 3559673658,
+          "ifinbytes"       => $ifinbytes,
           "ifinerrors"      => 0,
-          "ifoutbytes"      => 3257789612,
+          "ifoutbytes"      => $ifoutbytes,
           "ifouterrors"     => 0,
           "networkports_id" => $networkport->fields['id'],
         ];
@@ -485,88 +488,17 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         //Second step : import NetworkEquipement again but with new metrics
         //check metrics data for today
-        $xml_source_with_new_metrics = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-        <REQUEST>
-          <CONTENT>
-            <DEVICE>
-              <COMPONENTS>
-                <COMPONENT>
-                  <CONTAINEDININDEX>0</CONTAINEDININDEX>
-                  <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
-                  <FIRMWARE>12.2(58)SE1</FIRMWARE>
-                  <FRU>2</FRU>
-                  <INDEX>1001</INDEX>
-                  <MODEL>WS-C2960-24TC-L</MODEL>
-                  <NAME>1</NAME>
-                  <REVISION>V05</REVISION>
-                  <SERIAL>FOC1247X5DX</SERIAL>
-                  <TYPE>chassis</TYPE>
-                  <VERSION>12.2(58)SE1</VERSION>
-                </COMPONENT>
-                <COMPONENT>
-                  <CONTAINEDININDEX>1001</CONTAINEDININDEX>
-                  <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
-                  <FRU>2</FRU>
-                  <INDEX>1002</INDEX>
-                  <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
-                  <TYPE>module</TYPE>
-                </COMPONENT>
-              </COMPONENTS>
-              <FIRMWARES>
-                <DESCRIPTION>device firmware</DESCRIPTION>
-                <MANUFACTURER>Cisco</MANUFACTURER>
-                <NAME>Catalyst 2960-24TC</NAME>
-                <TYPE>device</TYPE>
-                <VERSION>12.2(58)SE1</VERSION>
-              </FIRMWARES>
-              <INFO>
-                <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
-        Technical Support: http://www.cisco.com/techsupport
-        Copyright (c) 1986-2011 by Cisco Systems, Inc.
-        Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
-                <FIRMWARE>12.2(58)SE1</FIRMWARE>
-                <ID>0</ID>
-                <IPS>
-                  <IP>192.168.1.27</IP>
-                </IPS>
-                <MAC>00:24:13:ea:a7:00</MAC>
-                <MANUFACTURER>Cisco</MANUFACTURER>
-                <MODEL>Catalyst 2960-24TC</MODEL>
-                <NAME>CB-27.example.com</NAME>
-                <SERIAL>FOC1247X5DX</SERIAL>
-                <TYPE>NETWORKING</TYPE>
-                <UPTIME>38 days, 4:05:41.99</UPTIME>
-              </INFO>
-              <PORTS>
-                <PORT>
-                  <IFALIAS>pixin-int1-inside</IFALIAS>
-                  <IFDESCR>FastEthernet0/1</IFDESCR>
-                  <IFINERRORS>0</IFINERRORS>
-                  <IFINOCTETS>7059673658</IFINOCTETS>
-                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
-                  <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
-                  <IFMTU>1500</IFMTU>
-                  <IFNAME>Fa0/1</IFNAME>
-                  <IFNUMBER>10001</IFNUMBER>
-                  <IFOUTERRORS>0</IFOUTERRORS>
-                  <IFOUTOCTETS>6457789612</IFOUTOCTETS>
-                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
-                  <IFSPEED>100000000</IFSPEED>
-                  <IFSTATUS>1</IFSTATUS>
-                  <IFTYPE>6</IFTYPE>
-                  <MAC>00:24:13:ea:a7:01</MAC>
-                </PORT>
-              </PORTS>
-            </DEVICE>
-            <MODULEVERSION>5.1</MODULEVERSION>
-            <PROCESSNUMBER>1</PROCESSNUMBER>
-          </CONTENT>
-          <DEVICEID>foo</DEVICEID>
-          <QUERY>SNMPQUERY</QUERY>
-        </REQUEST>";
+        $old_ifinbytes = $ifinbytes;
+        $old_ifoutbytes = $ifoutbytes;
+
+        $ifinbytes  = 7059673658;
+        $ifoutbytes = 6457789612;
+
+        $xml_source = str_replace($old_ifinbytes, $ifinbytes, $xml_source);
+        $xml_source = str_replace($old_ifoutbytes, $ifoutbytes, $xml_source);
 
         //networkequipement inventory
-        $inventory = $this->doInventory($xml_source_with_new_metrics, true);
+        $inventory = $this->doInventory($xml_source, true);
 
         $networkquipement_id = $inventory->getItem()->fields['id'];
         $this->integer($networkquipement_id)->isGreaterThan(0);
@@ -595,9 +527,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //check metrics data
         $expected_input = [
           "date"            => date('Y-m-d'),
-          "ifinbytes"       => 7059673658,
+          "ifinbytes"       => $ifinbytes,
           "ifinerrors"      => 0,
-          "ifoutbytes"      => 6457789612,
+          "ifoutbytes"      => $ifoutbytes,
           "ifouterrors"     => 0,
           "networkports_id" => $networkport->fields['id'],
         ];
@@ -605,88 +537,18 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         //THird step : import NetworkEquipement again but with new metrics
         //check that the previous data are updated
-        $xml_source_with_new_metrics = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-        <REQUEST>
-          <CONTENT>
-            <DEVICE>
-              <COMPONENTS>
-                <COMPONENT>
-                  <CONTAINEDININDEX>0</CONTAINEDININDEX>
-                  <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
-                  <FIRMWARE>12.2(58)SE1</FIRMWARE>
-                  <FRU>2</FRU>
-                  <INDEX>1001</INDEX>
-                  <MODEL>WS-C2960-24TC-L</MODEL>
-                  <NAME>1</NAME>
-                  <REVISION>V05</REVISION>
-                  <SERIAL>FOC1247X5DX</SERIAL>
-                  <TYPE>chassis</TYPE>
-                  <VERSION>12.2(58)SE1</VERSION>
-                </COMPONENT>
-                <COMPONENT>
-                  <CONTAINEDININDEX>1001</CONTAINEDININDEX>
-                  <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
-                  <FRU>2</FRU>
-                  <INDEX>1002</INDEX>
-                  <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
-                  <TYPE>module</TYPE>
-                </COMPONENT>
-              </COMPONENTS>
-              <FIRMWARES>
-                <DESCRIPTION>device firmware</DESCRIPTION>
-                <MANUFACTURER>Cisco</MANUFACTURER>
-                <NAME>Catalyst 2960-24TC</NAME>
-                <TYPE>device</TYPE>
-                <VERSION>12.2(58)SE1</VERSION>
-              </FIRMWARES>
-              <INFO>
-                <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
-        Technical Support: http://www.cisco.com/techsupport
-        Copyright (c) 1986-2011 by Cisco Systems, Inc.
-        Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
-                <FIRMWARE>12.2(58)SE1</FIRMWARE>
-                <ID>0</ID>
-                <IPS>
-                  <IP>192.168.1.27</IP>
-                </IPS>
-                <MAC>00:24:13:ea:a7:00</MAC>
-                <MANUFACTURER>Cisco</MANUFACTURER>
-                <MODEL>Catalyst 2960-24TC</MODEL>
-                <NAME>CB-27.example.com</NAME>
-                <SERIAL>FOC1247X5DX</SERIAL>
-                <TYPE>NETWORKING</TYPE>
-                <UPTIME>38 days, 4:05:41.99</UPTIME>
-              </INFO>
-              <PORTS>
-                <PORT>
-                  <IFALIAS>pixin-int1-inside</IFALIAS>
-                  <IFDESCR>FastEthernet0/1</IFDESCR>
-                  <IFINERRORS>0</IFINERRORS>
-                  <IFINOCTETS>8059673658</IFINOCTETS>
-                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
-                  <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
-                  <IFMTU>1500</IFMTU>
-                  <IFNAME>Fa0/1</IFNAME>
-                  <IFNUMBER>10001</IFNUMBER>
-                  <IFOUTERRORS>0</IFOUTERRORS>
-                  <IFOUTOCTETS>7457789612</IFOUTOCTETS>
-                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
-                  <IFSPEED>100000000</IFSPEED>
-                  <IFSTATUS>1</IFSTATUS>
-                  <IFTYPE>6</IFTYPE>
-                  <MAC>00:24:13:ea:a7:01</MAC>
-                </PORT>
-              </PORTS>
-            </DEVICE>
-            <MODULEVERSION>5.1</MODULEVERSION>
-            <PROCESSNUMBER>1</PROCESSNUMBER>
-          </CONTENT>
-          <DEVICEID>foo</DEVICEID>
-          <QUERY>SNMPQUERY</QUERY>
-        </REQUEST>";
+
+        $old_ifinbytes = $ifinbytes;
+        $old_ifoutbytes = $ifoutbytes;
+
+        $ifinbytes  = 8059673658;
+        $ifoutbytes = 7457789612;
+
+        $xml_source = str_replace($old_ifinbytes, $ifinbytes, $xml_source);
+        $xml_source = str_replace($old_ifoutbytes, $ifoutbytes, $xml_source);
 
         //networkequipement inventory
-        $inventory = $this->doInventory($xml_source_with_new_metrics, true);
+        $inventory = $this->doInventory($xml_source, true);
 
         $networkquipement_id = $inventory->getItem()->fields['id'];
         $this->integer($networkquipement_id)->isGreaterThan(0);
@@ -715,9 +577,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //check metrics data
         $expected_input = [
           "date"            => date('Y-m-d'),
-          "ifinbytes"       => 8059673658,
+          "ifinbytes"       => $ifinbytes,
           "ifinerrors"      => 0,
-          "ifoutbytes"      => 7457789612,
+          "ifoutbytes"      => $ifoutbytes,
           "ifouterrors"     => 0,
           "networkports_id" => $networkport->fields['id'],
         ];
