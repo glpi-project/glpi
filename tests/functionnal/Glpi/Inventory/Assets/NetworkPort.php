@@ -468,12 +468,12 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         unset($db_input['id']);
 
         $expected_input = [
-          "date"            => date('Y-m-d'),
-          "ifinbytes"       => $ifinbytes,
-          "ifinerrors"      => 0,
-          "ifoutbytes"      => $ifoutbytes,
-          "ifouterrors"     => 0,
-          "networkports_id" => $networkport->fields['id'],
+            "date"            => date('Y-m-d'),
+            "ifinbytes"       => $ifinbytes,
+            "ifinerrors"      => 0,
+            "ifoutbytes"      => $ifoutbytes,
+            "ifouterrors"     => 0,
+            "networkports_id" => $networkport->fields['id'],
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
 
@@ -526,12 +526,12 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         //check metrics data
         $expected_input = [
-          "date"            => date('Y-m-d'),
-          "ifinbytes"       => $ifinbytes,
-          "ifinerrors"      => 0,
-          "ifoutbytes"      => $ifoutbytes,
-          "ifouterrors"     => 0,
-          "networkports_id" => $networkport->fields['id'],
+            "date"            => date('Y-m-d'),
+            "ifinbytes"       => $ifinbytes,
+            "ifinerrors"      => 0,
+            "ifoutbytes"      => $ifoutbytes,
+            "ifouterrors"     => 0,
+            "networkports_id" => $networkport->fields['id'],
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
 
@@ -576,12 +576,12 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         //check metrics data
         $expected_input = [
-          "date"            => date('Y-m-d'),
-          "ifinbytes"       => $ifinbytes,
-          "ifinerrors"      => 0,
-          "ifoutbytes"      => $ifoutbytes,
-          "ifouterrors"     => 0,
-          "networkports_id" => $networkport->fields['id'],
+            "date"            => date('Y-m-d'),
+            "ifinbytes"       => $ifinbytes,
+            "ifinerrors"      => 0,
+            "ifoutbytes"      => $ifoutbytes,
+            "ifouterrors"     => 0,
+            "networkports_id" => $networkport->fields['id'],
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
     }
