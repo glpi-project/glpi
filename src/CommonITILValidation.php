@@ -765,6 +765,21 @@ abstract class CommonITILValidation extends CommonDBChild
         $row = $DB->request([
             'FROM'   => static::getTable(),
             'COUNT'  => 'cpt',
+            'LEFT JOIN' => [
+                ValidatorSubstitute::getTable() => [
+                    'FKEY' => [
+                        ValidatorSubstitute::getTable() => 'users_id',
+                        static::getTable() => 'items_id_target',
+                    ],
+                    ['AND' => ['itemtype_target' => User::class]]
+                ],
+                User::getTable() => [
+                    'FKEY' => [
+                        ValidatorSubstitute::getTable() => 'users_id',
+                        User::getTable() => 'id',
+                    ],
+                ],
+            ],
             'WHERE'  => [
                 'status' => self::WAITING,
                 static::getTargetCriteriaForUser($users_id)
@@ -1401,16 +1416,13 @@ abstract class CommonITILValidation extends CommonDBChild
         ];
 
         $tab[] = [
-            'id'                 => '8',
+            'id'                 => '9',
             'table'              => 'glpi_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_actual_validate',
             'name'               => __('Actual approver'),
             'datatype'           => 'itemlink',
-            'right'              => [
-                'validate_request',
-                'validate_incident'
-            ]
+            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
         ];
 
         return $tab;
