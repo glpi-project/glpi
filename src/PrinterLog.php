@@ -180,8 +180,9 @@ class PrinterLog extends CommonDBChild
             unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
 
             foreach ($metrics as $key => $value) {
-                if ($value > 0) {
-                    $series[$key]['name'] = $this->getLabelFor($key);
+                $label = $this->getLabelFor($key);
+                if ($label && $value > 0) {
+                    $series[$key]['name'] = $label;
                     $series[$key]['data'][] = $value;
                 }
             }
@@ -204,7 +205,15 @@ class PrinterLog extends CommonDBChild
         echo "</div>";
     }
 
-    private function getLabelFor($key)
+    /**
+     * Get the label for a given column of glpi_printerlogs.
+     * To be used when displaying the printed pages graph.
+     *
+     * @param string $key
+     *
+     * @return null|string null if the key didn't match any valid field
+     */
+    private function getLabelFor($key): ?string
     {
         switch ($key) {
             case 'total_pages':
@@ -232,5 +241,7 @@ class PrinterLog extends CommonDBChild
             case 'faxed':
                 return __('Fax');
         }
+
+        return null;
     }
 }
