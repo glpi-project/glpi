@@ -45,6 +45,9 @@ if (
     $CFG_GLPI["ssovariables_id"] > 0
     && strlen($CFG_GLPI['ssologout_url']) > 0
 ) {
+    Session::destroy();
+    //Remove cookie to allow new login
+    Auth::setRememberMeCookie('');
     Html::redirect($CFG_GLPI["ssologout_url"]);
 }
 
