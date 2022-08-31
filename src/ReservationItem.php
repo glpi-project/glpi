@@ -998,25 +998,25 @@ class ReservationItem extends CommonDBChild
             $resi_table = ReservationItem::getTable();
 
             $criteria = [
-                    'SELECT' => [
-                        "$resi_table.id",
-                        "$item_table.name"
-                    ],
-                    'FROM' => $item_table,
-                    'INNER JOIN' => [
-                        $resi_table => [
-                            'ON' => [
-                                $resi_table => 'items_id',
-                                $item_table => 'id',
-                                ['AND' => ["$resi_table.itemtype" => $itemtype]],
-                            ]
+                'SELECT' => [
+                    "$resi_table.id",
+                    "$item_table.name"
+                ],
+                'FROM' => $item_table,
+                'INNER JOIN' => [
+                    $resi_table => [
+                        'ON' => [
+                            $resi_table => 'items_id',
+                            $item_table => 'id',
+                            ['AND' => ["$resi_table.itemtype" => $itemtype]],
                         ]
-                    ],
-                    'WHERE' => [
-                        "$resi_table.is_active"   => 1,
-                        "$item_table.is_deleted"  => 0,
                     ]
-                ];
+                ],
+                'WHERE' => [
+                    "$resi_table.is_active"   => 1,
+                    "$item_table.is_deleted"  => 0,
+                ]
+            ];
 
             if ($itemtype_obj->maybeTemplate()) {
                 $criteria['WHERE']["$item_table.is_template"] = 0;
