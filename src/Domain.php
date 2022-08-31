@@ -797,11 +797,15 @@ class Domain extends CommonDBTM
         return $used;
     }
 
+    public static function canManageRecords()
+    {
+        return static::canView() && count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
+    }
+
     public static function getAdditionalMenuLinks()
     {
         $links = [];
-        $can_manage_records = count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
-        if (static::canView() && $can_manage_records) {
+        if (static::canManageRecords()) {
             $rooms = "<i class='fa fa-clipboard-list pointer' title=\"" . DomainRecord::getTypeName(Session::getPluralNumber()) . "\"></i>
             <span class='d-none d-xxl-block ps-1'>
                " . DomainRecord::getTypeName(Session::getPluralNumber()) . "
@@ -817,7 +821,7 @@ class Domain extends CommonDBTM
     public static function getAdditionalMenuOptions()
     {
         $can_manage_records = count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
-        if (static::canView() && $can_manage_records) {
+        if (static::canManageRecords()) {
             return [
                 'domainrecord' => [
                     'icon'  => DomainRecord::getIcon(),
