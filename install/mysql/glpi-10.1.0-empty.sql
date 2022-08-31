@@ -9372,5 +9372,6 @@ CREATE TABLE `glpi_validatorsubstitutes` (
 	`users_id` int unsigned  NOT NULL DEFAULT '0' COMMENT 'Delegator user',
 	`users_id_substitute` int unsigned  NOT NULL DEFAULT '0' COMMENT 'Substitute user',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `users_id_users_id_substitute` (`users_id`, `users_id_substitute`)
+	UNIQUE KEY `users_id_users_id_substitute` (`users_id`, `users_id_substitute`),
+  KEY `users_id_substitute` (`users_id_substitute`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

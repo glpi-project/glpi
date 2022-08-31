@@ -48,7 +48,8 @@ if (!$DB->tableExists('glpi_validatorsubstitutes')) {
         `users_id` int {$default_key_sign}  NOT NULL DEFAULT '0' COMMENT 'Delegator user',
         `users_id_substitute` int {$default_key_sign}  NOT NULL DEFAULT '0' COMMENT 'Substitute user',
         PRIMARY KEY (`id`),
-        UNIQUE KEY `users_id_users_id_substitute` (`users_id`, `users_id_substitute`)
+        UNIQUE KEY `users_id_users_id_substitute` (`users_id`, `users_id_substitute`),
+        KEY `users_id_substitute` (`users_id_substitute`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "add table glpi_validatorsubstitutes");
 }
