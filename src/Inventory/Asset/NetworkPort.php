@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
+use NetworkPort as GlobalNetworkPort;
 use NetworkPortType;
 use QueryParam;
 use RuleImportAssetCollection;
@@ -443,6 +444,21 @@ class NetworkPort extends InventoryAsset
         }
     }
 
+    private function handleMetrics(\stdClass $port, int $netports_id)
+    {
+        $input = (array)$port;
+        //only update networkport metric if needed
+        if (isset($input['ifinbytes'], $input['ifoutbytes'], $input['ifinerrors'], $input['ifouterrors'])) {
+            $netport = new GlobalNetworkPort();
+            $input_db['id'] = $netports_id;
+            $input_db['ifinbytes']   = $input['ifinbytes'];
+            $input_db['ifoutbytes']  = $input['ifoutbytes'];
+            $input_db['ifinerrors']  = $input['ifinerrors'];
+            $input_db['ifouterrors'] = $input['ifouterrors'];
+            $netport->update($input_db);
+        }
+    }
+
     private function prepareAggregations(\stdClass $port, int $netports_id)
     {
         if (!property_exists($port, 'logical_number')) {
@@ -525,6 +541,7 @@ class NetworkPort extends InventoryAsset
         $this->handleConnections($port, $netports_id);
         $this->handleVlans($port, $netports_id);
         $this->prepareAggregations($port, $netports_id);
+        $this->handleMetrics($port, $netports_id);
     }
 
     /**
