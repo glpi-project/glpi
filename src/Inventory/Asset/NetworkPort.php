@@ -448,12 +448,7 @@ class NetworkPort extends InventoryAsset
     {
         $input = (array)$port;
         //only update networkport metric if needed
-        if (
-            isset($input['ifinbytes'])
-            && isset($input['ifoutbytes'])
-            && isset($input['ifinerrors'])
-            && isset($input['ifouterrors'])
-        ) {
+        if (isset($input['ifinbytes'], $input['ifoutbytes'], $input['ifinerrors'], $input['ifouterrors'])) {
             $netport = new GlobalNetworkPort();
             $input_db['id'] = $netports_id;
             $input_db['ifinbytes']   = $input['ifinbytes'];
