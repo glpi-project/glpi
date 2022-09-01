@@ -371,59 +371,108 @@ abstract class RuleCommonITILObject extends Rule
                         break;
 
                     case 'regex_result':
-                        if ($action->fields["field"] == "_affect_itilcategory_by_code") {
-                            if (isset($this->regex_results[0])) {
-                                $regexvalue = RuleAction::getRegexResultById(
-                                    $action->fields["value"],
-                                    $this->regex_results[0]
-                                );
-                            } else {
-                                $regexvalue = $action->fields["value"];
-                            }
+                        // Get each regex values
+                        $regex_values = array_map(
+                            fn ($regex_result) => RuleAction::getRegexResultById(
+                                $action->fields["value"],
+                                $regex_result
+                            ),
+                            $this->regex_results
+                        );
 
-                            if (!is_null($regexvalue)) {
-                                $target_itilcategory = ITILCategory::getITILCategoryIDByCode($regexvalue);
+                        // Keep weird legacy default value that will not match anything
+                        if (empty($regex_values)) {
+                            $regex_values[] = $action->fields["value"];
+                        }
+
+                        // Get field
+                        $field = $action->fields["field"];
+
+                        // Handle each fields
+                        if ($field == "_affect_itilcategory_by_code") {
+                            $regex_value = $regex_values[0];
+
+                            if (!is_null($regex_value)) {
+                                $target_itilcategory = ITILCategory::getITILCategoryIDByCode($regex_value);
                                 if ($target_itilcategory != -1) {
                                     $output["itilcategories_id"] = $target_itilcategory;
                                 }
                             }
-                        } else if ($action->fields["field"] == "_groups_id_requester") {
-                            foreach ($this->regex_results as $regex_result) {
-                                $regexvalue          = RuleAction::getRegexResultById(
-                                    $action->fields["value"],
-                                    $regex_result
-                                );
+                        } elseif ($field == "_groups_id_requester") {
+                            foreach ($regex_values as $regex_value) {
+                                // Search group by name
                                 $group = new Group();
-                                if (
-                                    $group->getFromDBByCrit(["name" => $regexvalue,
-                                        "is_requester" => true
-                                    ])
-                                ) {
+                                $result = $group->getFromDBByCrit([
+                                    "name" => $regex_value,
+                                    "is_requester" => true
+                                ]);
+
+                                // Add groups found for each regex
+                                if ($result) {
                                     $output['_additional_groups_requesters'][$group->getID()] = $group->getID();
                                 }
                             }
-                        }
+                        } elseif ($field == "_groups_id_assign") {
+                            foreach ($regex_values as $regex_value) {
+                                // Search group by name
+                                $group = new Group();
+                                $result = $group->getFromDBByCrit([
+                                    "name" => $regex_value,
+                                    "is_assign" => true
+                                ]);
 
-                        if ($action->fields["field"] == "assign_appliance") {
-                            if (isset($this->regex_results[0])) {
-                                $regexvalue = RuleAction::getRegexResultById(
-                                    $action->fields["value"],
-                                    $this->regex_results[0]
-                                );
-                            } else {
-                                $regexvalue = $action->fields["value"];
+                                // Add groups found for each regex
+                                if ($result) {
+                                    $output['_additional_groups_assigns'][$group->getID()] = $group->getID();
+                                }
                             }
+                        } elseif ($field == "_groups_id_observer") {
+                            foreach ($regex_values as $regex_value) {
+                                // Search group by name
+                                $group = new Group();
+                                $result = $group->getFromDBByCrit([
+                                    "name" => $regex_value,
+                                    "is_watcher" => true
+                                ]);
 
-                            if (!is_null($regexvalue)) {
+                                // Add groups found for each regex
+                                if ($result) {
+                                    $output['_additional_groups_observers'][$group->getID()] = $group->getID();
+                                }
+                            }
+                        } elseif ($field == "assign_appliance") {
+                            $regex_value = $regex_values[0];
+
+                            if (!is_null($regex_value)) {
                                 $appliances = new Appliance();
-                                $target_appliances = $appliances->find(["name" => $regexvalue, "is_helpdesk_visible" => true]);
+                                $target_appliances = $appliances->find([
+                                    "name" => $regex_value,
+                                    "is_helpdesk_visible" => true
+                                ]);
 
-                                if ((!array_key_exists("items_id", $output) || $output['items_id'] == '0') && count($target_appliances) > 0) {
+                                if (
+                                    (!array_key_exists("items_id", $output) || $output['items_id'] == '0')
+                                    && count($target_appliances) > 0
+                                ) {
                                     $output["items_id"] = [];
                                 }
 
                                 foreach ($target_appliances as $value) {
                                     $output["items_id"][Appliance::getType()][] = $value['id'];
+                                }
+                            }
+                        } elseif ($field == "itilcategories_id") {
+                            foreach ($regex_values as $regex_value) {
+                                // Search category by name
+                                $category = new ITILCategory();
+                                $result = $category->getFromDBByCrit([
+                                    "name" => $regex_value,
+                                ]);
+
+                                // Stop at the first valid category found
+                                if ($result) {
+                                    $output['itilcategories_id'] = $category->getID();
+                                    break;
                                 }
                             }
                         }
@@ -610,6 +659,7 @@ abstract class RuleCommonITILObject extends Rule
         $actions['itilcategories_id']['name']                       = _n('Category', 'Categories', 1);
         $actions['itilcategories_id']['type']                       = 'dropdown';
         $actions['itilcategories_id']['table']                      = 'glpi_itilcategories';
+        $actions['itilcategories_id']['force_actions']              = ['assign', 'regex_result'];
 
         $actions['_affect_itilcategory_by_code']['name']            = __('ITIL category from code');
         $actions['_affect_itilcategory_by_code']['type']            = 'text';
@@ -643,7 +693,7 @@ abstract class RuleCommonITILObject extends Rule
         $actions['_groups_id_assign']['name']                       = __('Technician group');
         $actions['_groups_id_assign']['type']                       = 'dropdown';
         $actions['_groups_id_assign']['condition']                  = ['is_assign' => 1];
-        $actions['_groups_id_assign']['force_actions']              = ['assign', 'append'];
+        $actions['_groups_id_assign']['force_actions']              = ['assign', 'append', 'regex_result'];
         $actions['_groups_id_assign']['permitseveral']              = ['append'];
         $actions['_groups_id_assign']['appendto']                   = '_additional_groups_assigns';
 
@@ -668,7 +718,7 @@ abstract class RuleCommonITILObject extends Rule
         $actions['_groups_id_observer']['name']                     = _n('Watcher group', 'Watcher groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
         $actions['_groups_id_observer']['condition']                = ['is_watcher' => 1];
-        $actions['_groups_id_observer']['force_actions']            = ['assign', 'append'];
+        $actions['_groups_id_observer']['force_actions']            = ['assign', 'append', 'regex_result'];
         $actions['_groups_id_observer']['permitseveral']            = ['append'];
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
 
