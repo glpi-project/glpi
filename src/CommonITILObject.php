@@ -779,11 +779,23 @@ abstract class CommonITILObject extends CommonDBTM
         $my_id    = Session::getLoginUserID();
         $my_groups = $_SESSION["glpigroups"] ?? [];
 
+        // Compute requester groups
+        $requester_groups = array_filter(
+            $my_groups,
+            fn($group) => $this->isGroup(CommonITILActor::REQUESTER, $group)
+        );
+
+        // Compute assigned groups
+        $assigned_groups = array_filter(
+            $my_groups,
+            fn($group) => $this->isGroup(CommonITILActor::ASSIGN, $group)
+        );
+
         $ami_requester       = $this->isUser(CommonITILActor::REQUESTER, $my_id);
-        $ami_requester_group = $this->isGroup(CommonITILActor::REQUESTER, $my_groups);
+        $ami_requester_group = count($requester_groups) > 0;
 
         $ami_assignee        = $this->isUser(CommonITILActor::ASSIGN, $my_id);
-        $ami_assignee_group  = $this->isGroup(CommonITILActor::ASSIGN, $my_groups);
+        $ami_assignee_group  = count($assigned_groups) > 0;
 
         return in_array($this->fields["status"], static::getReopenableStatusArray())
             && ($ami_requester || $ami_requester_group)
@@ -890,14 +902,14 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Is a group linked to the object ?
      *
-     * @param integer $type      type to search (see constants)
-     * @param integer $groups_id group ID
+     * @param int $type      type to search (see constants)
+     * @param int $groups_id group ID
      *
-     * @return boolean
+     * @return bool
      **/
-    public function isGroup($type, $groups_id)
+    // FIXME add params typehint in GLPI 10.1
+    public function isGroup($type, $groups_id): bool
     {
-
         if (isset($this->groups[$type])) {
             foreach ($this->groups[$type] as $data) {
                 if ($data['groups_id'] == $groups_id) {
