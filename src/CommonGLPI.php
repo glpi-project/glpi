@@ -454,6 +454,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $menu['page']            = static::getSearchURL(false);
                 $menu['links']['search'] = static::getSearchURL(false);
                 $menu['links']['lists']  = "";
+                $menu['lists_itemtype']  = static::getType();
                 $menu['icon']            = static::getIcon();
 
                 if (
