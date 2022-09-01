@@ -362,8 +362,10 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $networkmetric = new \NetworkPortMetrics();
         $networkequipment = new \NetworkEquipment();
 
-        $ifinbytes  = 3559673658;
-        $ifoutbytes = 3257789612;
+        $ifinbytes    = 3559673658;
+        $ifoutbytes   = 3257789612;
+        $ifouterrors  = 2316546841;
+        $ifinerrors   = 8974561231;
 
         //First step : import NetworkEquipement with only one NetworkPort (Ethernet)
         //check metrics data (only one)
@@ -423,14 +425,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 <PORT>
                   <IFALIAS>pixin-int1-inside</IFALIAS>
                   <IFDESCR>FastEthernet0/1</IFDESCR>
-                  <IFINERRORS>0</IFINERRORS>
+                  <IFINERRORS>$ifinerrors</IFINERRORS>
                   <IFINOCTETS>$ifinbytes</IFINOCTETS>
                   <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
                   <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
                   <IFMTU>1500</IFMTU>
                   <IFNAME>Fa0/1</IFNAME>
                   <IFNUMBER>10001</IFNUMBER>
-                  <IFOUTERRORS>0</IFOUTERRORS>
+                  <IFOUTERRORS>$ifouterrors</IFOUTERRORS>
                   <IFOUTOCTETS>$ifoutbytes</IFOUTOCTETS>
                   <IFPORTDUPLEX>2</IFPORTDUPLEX>
                   <IFSPEED>100000000</IFSPEED>
@@ -470,9 +472,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $expected_input = [
             "date"            => date('Y-m-d'),
             "ifinbytes"       => $ifinbytes,
-            "ifinerrors"      => 0,
+            "ifinerrors"      => $ifinerrors,
             "ifoutbytes"      => $ifoutbytes,
-            "ifouterrors"     => 0,
+            "ifouterrors"     => $ifouterrors,
             "networkports_id" => $networkport->fields['id'],
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
@@ -488,14 +490,20 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         //Second step : import NetworkEquipement again but with new metrics
         //check metrics data for today
-        $old_ifinbytes = $ifinbytes;
-        $old_ifoutbytes = $ifoutbytes;
+        $old_ifinbytes    = $ifinbytes;
+        $old_ifoutbytes   = $ifoutbytes;
+        $old_ifinerrors   = $ifinerrors;
+        $old_ifouterrors  = $ifouterrors;
 
-        $ifinbytes  = 7059673658;
-        $ifoutbytes = 6457789612;
+        $ifinbytes    = 7059673658;
+        $ifoutbytes   = 6457789612;
+        $ifinerrors   = 7894567922;
+        $ifouterrors  = 1423578578;
 
         $xml_source = str_replace($old_ifinbytes, $ifinbytes, $xml_source);
         $xml_source = str_replace($old_ifoutbytes, $ifoutbytes, $xml_source);
+        $xml_source = str_replace($old_ifinerrors, $ifinerrors, $xml_source);
+        $xml_source = str_replace($old_ifouterrors, $ifouterrors, $xml_source);
 
         //networkequipement inventory
         $inventory = $this->doInventory($xml_source, true);
@@ -528,24 +536,30 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $expected_input = [
             "date"            => date('Y-m-d'),
             "ifinbytes"       => $ifinbytes,
-            "ifinerrors"      => 0,
+            "ifinerrors"      => $ifinerrors,
             "ifoutbytes"      => $ifoutbytes,
-            "ifouterrors"     => 0,
+            "ifouterrors"     => $ifouterrors,
             "networkports_id" => $networkport->fields['id'],
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
 
-        //THird step : import NetworkEquipement again but with new metrics
+        //Third step : import NetworkEquipement again but with new metrics
         //check that the previous data are updated
 
-        $old_ifinbytes = $ifinbytes;
-        $old_ifoutbytes = $ifoutbytes;
+        $old_ifinbytes    = $ifinbytes;
+        $old_ifoutbytes   = $ifoutbytes;
+        $old_ifinerrors   = $ifinerrors;
+        $old_ifouterrors  = $ifouterrors;
 
-        $ifinbytes  = 8059673658;
-        $ifoutbytes = 7457789612;
+        $ifinbytes    = 8059673658;
+        $ifoutbytes   = 7457789612;
+        $ifinerrors   = 7894561232;
+        $ifouterrors  = 4521358975;
 
         $xml_source = str_replace($old_ifinbytes, $ifinbytes, $xml_source);
         $xml_source = str_replace($old_ifoutbytes, $ifoutbytes, $xml_source);
+        $xml_source = str_replace($old_ifinerrors, $ifinerrors, $xml_source);
+        $xml_source = str_replace($old_ifouterrors, $ifouterrors, $xml_source);
 
         //networkequipement inventory
         $inventory = $this->doInventory($xml_source, true);
@@ -560,7 +574,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
         ->isTrue();
 
-        //now we have two metrics, one for yesterday and one for today
+        //we still have two metrics, but today metrics are updated
         $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
         $this->array($metrics)
           ->hasSize(2);
@@ -578,9 +592,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $expected_input = [
             "date"            => date('Y-m-d'),
             "ifinbytes"       => $ifinbytes,
-            "ifinerrors"      => 0,
+            "ifinerrors"      => $ifinerrors,
             "ifoutbytes"      => $ifoutbytes,
-            "ifouterrors"     => 0,
+            "ifouterrors"     => $ifouterrors,
             "networkports_id" => $networkport->fields['id'],
         ];
         $this->array($db_input)->isIdenticalTo($expected_input);
