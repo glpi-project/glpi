@@ -324,8 +324,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
@@ -417,8 +417,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
@@ -469,8 +469,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
@@ -517,8 +517,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
@@ -560,8 +560,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
    `id` int NOT NULL AUTO_INCREMENT,
    `name` varchar(255) NOT NULL,
@@ -600,8 +600,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
    `id` int NOT NULL AUTO_INCREMENT,
    `name` varchar(255) NOT NULL,
@@ -655,8 +655,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -747,8 +747,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
@@ -987,8 +987,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
@@ -1058,8 +1058,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
@@ -1135,8 +1135,8 @@ SQL,
                 'differences'    => [
                     'type' => 'altered_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `table_{$table_increment}` (
    `id` int NOT NULL AUTO_INCREMENT,
@@ -1416,8 +1416,8 @@ SQL,
                 "glpi_{$table_prefix}missingtable" => [
                     'type' => 'missing_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
 -CREATE TABLE `glpi_{$table_prefix}missingtable` (
 -  `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -1431,8 +1431,8 @@ DIFF,
                 "glpi_{$table_prefix}unknowntable" => [
                     'type' => 'unknown_table',
                     'diff' => <<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
 +CREATE TABLE `glpi_{$table_prefix}unknowntable` (
 +  `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -1455,7 +1455,7 @@ DIFF,
         }
     }
 
-    public function testImactContextsPositionsDefaultValueHack()
+    public function testImpactContextsPositionsDefaultValueHack()
     {
         // Schema contained in GLPI 9.5.0 database installation file
         $schema_sql_from_950 = <<<SQL
@@ -1616,8 +1616,8 @@ SQL
                 );
             };
             $this->string($this->testedInstance->getDiff('glpi_impactcontexts', $schema_sql_from_1001))->isEqualTo(<<<DIFF
---- Original
-+++ New
+--- Expected database schema
++++ Current database schema
 @@ @@
  CREATE TABLE `glpi_impactcontexts` (
    `id` int unsigned NOT NULL AUTO_INCREMENT,

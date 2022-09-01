@@ -39,6 +39,7 @@ use DBmysql;
 use Glpi\Toolbox\VersionParser;
 use RuntimeException;
 use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
  * @since 10.0.0
@@ -120,6 +121,13 @@ class DatabaseSchemaIntegrityChecker
     private $normalized = [];
 
     /**
+     * Differ instance.
+     *
+     * @var Differ
+     */
+    private $differ;
+
+    /**
      * @param DBmysql $db                                 DB instance.
      * @param bool $strict                                Ignore differences that has no effect on application (columns and keys order for instance).
      * @param bool $ignore_innodb_migration               Do not check tokens related to migration from "MyISAM" to "InnoDB".
@@ -144,6 +152,16 @@ class DatabaseSchemaIntegrityChecker
         $this->ignore_timestamps_migration = $ignore_timestamps_migration;
         $this->ignore_unsigned_keys_migration = $ignore_unsigned_keys_migration;
         $this->ignore_utf8mb4_migration = $ignore_utf8mb4_migration;
+
+        $this->differ = new Differ(
+            new UnifiedDiffOutputBuilder(
+                sprintf(
+                    "--- %s\n+++ %s\n",
+                    __('Expected database schema'),
+                    __('Current database schema')
+                )
+            )
+        );
     }
 
     /**
@@ -178,8 +196,7 @@ class DatabaseSchemaIntegrityChecker
             return '';
         }
 
-        $differ = new Differ();
-        return $differ->diff(
+        return $this->differ->diff(
             $proper_create_table_sql,
             $effective_create_table_sql
         );
@@ -238,7 +255,6 @@ class DatabaseSchemaIntegrityChecker
 
         $this->db->clearSchemaCache(); // Ensure fetched table list is up-to-date
 
-        $differ = new Differ();
         $result = [];
 
         foreach ($schema as $table_name => $create_table_sql) {
@@ -247,7 +263,7 @@ class DatabaseSchemaIntegrityChecker
             if (!$this->db->tableExists($table_name)) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_MISSING_TABLE,
-                    'diff' => $differ->diff($create_table_sql, '')
+                    'diff' => $this->differ->diff($create_table_sql, '')
                 ];
                 continue;
             }
@@ -256,7 +272,7 @@ class DatabaseSchemaIntegrityChecker
             if ($create_table_sql !== $effective_create_table_sql) {
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_ALTERED_TABLE,
-                    'diff' => $differ->diff($create_table_sql, $effective_create_table_sql)
+                    'diff' => $this->differ->diff($create_table_sql, $effective_create_table_sql)
                 ];
             }
         }
@@ -290,7 +306,7 @@ class DatabaseSchemaIntegrityChecker
                 $effective_create_table_sql = $this->getNomalizedSql($this->getEffectiveCreateTableSql($table_name));
                 $result[$table_name] = [
                     'type' => self::RESULT_TYPE_UNKNOWN_TABLE,
-                    'diff' => $differ->diff('', $effective_create_table_sql)
+                    'diff' => $this->differ->diff('', $effective_create_table_sql)
                 ];
             }
         }
