@@ -3999,10 +3999,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
     public function testImportRefusedFromAssetRules()
     {
-
         $rule = new \Rule();
 
-       //prepares needed rules id
+        //prepares needed rules id
         $this->boolean(
             $rule->getFromDBByCrit(['name' => 'Computer constraint (name)'])
         )->isTrue();
@@ -4490,6 +4489,96 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ->string['ram']->isIdenticalTo('4096')
             ->string['uuid']->isIdenticalTo('487dfdb542a4bfb23670b8d4e76d8b6886c2ed35')
         ;
+    }
+
+    public function testRuleRefuseImportVirtualMachines()
+    {
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+
+        $count_vms = count($json->content->virtualmachines);
+        $this->integer($count_vms)->isIdenticalTo(6);
+
+        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_computers = countElementsInTable(\Computer::getTable());
+
+        //change config to import vms as computers
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
+        $this->logout();
+
+        //IMPORT rule to refuse "db" virtual machine
+        $criteria = [
+            [
+                'condition' => 0,
+                'criteria'  => 'itemtype',
+                'pattern'   => 'Computer',
+            ], [
+                'condition' => \RuleImportAsset::PATTERN_IS,
+                'criteria'  => 'name',
+                'pattern'   => 'db'
+            ]
+        ];
+        $action = [
+            'action_type' => 'assign',
+            'field'       => '_ignore_import',
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT
+        ];
+        $rule = new \RuleImportAsset();
+        $collection = new \RuleImportAssetCollection();
+        $rulecriteria = new \RuleCriteria();
+
+        $input = [
+            'is_active' => 1,
+            'name'      => 'Refuse one VM creation',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportAsset',
+        ];
+
+        $rules_id = $rule->add($input);
+        $this->integer($rules_id)->isGreaterThan(0);
+        $this->boolean($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE))->isTrue();
+
+        // Add criteria
+        foreach ($criteria as $crit) {
+            $input = [
+                'rules_id'  => $rules_id,
+                'criteria'  => $crit['criteria'],
+                'pattern'   => $crit['pattern'],
+                'condition' => $crit['condition'],
+            ];
+            $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
+        }
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => $action['action_type'],
+            'field'       => $action['field'],
+            'value'       => $action['value'],
+        ];
+        $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+        $inventory = $this->doInventory($json);
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(4)
+            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory');
+
+        global $DB;
+
+        //check created vms
+        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($count_vms);
+
+        //check we add main computer and one computer per vm
+        //one does not have an uuid, so no computer is created.
+        ++$nb_computers;
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 2);
     }
 
     public function testImportDatabases()
