@@ -508,16 +508,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //networkequipement inventory
         $inventory = $this->doInventory($xml_source, true);
 
-        $networkquipement_id = $inventory->getItem()->fields['id'];
-        $this->integer($networkquipement_id)->isGreaterThan(0);
-
-        //get networkEquipement
-        $this->boolean($networkequipment->getFromDB($networkquipement_id))->isTrue();
-
-        //get networkport
-        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
-        ->isTrue();
-
         //now we have two metrics, one for yesterday and one for today
         $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
         $this->array($metrics)
@@ -564,15 +554,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //networkequipement inventory
         $inventory = $this->doInventory($xml_source, true);
 
-        $networkquipement_id = $inventory->getItem()->fields['id'];
-        $this->integer($networkquipement_id)->isGreaterThan(0);
-
-        //get networkEquipement
-        $this->boolean($networkequipment->getFromDB($networkquipement_id))->isTrue();
-
-        //get networkport
-        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
-        ->isTrue();
 
         //we still have two metrics, but today metrics are updated
         $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
