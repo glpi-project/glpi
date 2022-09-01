@@ -6375,6 +6375,9 @@ class CommonDBTM extends CommonGLPI
             static::displayHelpdeskHeader($title, $menus);
         }
 
+        if (!isset($options['id'])) {
+            $options['id'] = $id;
+        }
         // Show item
         $options['loaded'] = true;
         $item->display($options);
