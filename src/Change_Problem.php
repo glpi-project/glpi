@@ -172,6 +172,7 @@ class Change_Problem extends CommonDBRelation
                 'used'        => $used,
                 'entity'      => $problem->getEntityID(),
                 'entity_sons' => $problem->isRecursive(),
+                'displaywith' => ['id'],
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -293,7 +294,8 @@ class Change_Problem extends CommonDBRelation
             Problem::dropdown([
                 'used'   => $used,
                 'entity' => $change->getEntityID(),
-                'condition' => Problem::getOpenCriteria()
+                'condition' => Problem::getOpenCriteria(),
+                'displaywith' => ['id'],
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
