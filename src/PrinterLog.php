@@ -196,7 +196,9 @@ class PrinterLog extends CommonDBChild
             'label' => $params['label'],
             'icon'  => $params['icon'],
             'color' => '#ffffff',
-            'distributed' => false
+            'distributed' => false,
+            'show_points' => false,
+            'line_width'  => 2,
         ];
 
        //display graph

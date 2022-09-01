@@ -38,6 +38,8 @@ namespace Glpi\Dashboard;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Html;
+use Laminas\Json\Expr as Json_Expr;
+use Laminas\Json\Json;
 use Mexitek\PHPColors\Color;
 use Michelf\MarkdownExtra;
 use Plugin;
@@ -52,6 +54,42 @@ use Toolbox;
 class Widget
 {
     public static $animation_duration = 1000; // in millseconds
+
+    public static $palette_10 = [
+        "#4e79a7",
+        "#f28e2c",
+        "#e15759",
+        "#76b7b2",
+        "#59a14f",
+        "#edc949",
+        "#af7aa1",
+        "#ff9da7",
+        "#9c755f",
+        "#bab0ab",
+    ];
+
+    public static $palette_20 = [
+        '#1f77b4',
+        '#aec7e8',
+        '#ff7f0e',
+        '#ffbb78',
+        '#2ca02c',
+        '#98df8a',
+        '#d62728',
+        '#ff9896',
+        '#9467bd',
+        '#c5b0d5',
+        '#8c564b',
+        '#c49c94',
+        '#e377c2',
+        '#f7b6d2',
+        '#7f7f7f',
+        '#c7c7c7',
+        '#bcbd22',
+        '#dbdb8d',
+        '#17becf',
+        '#9edae5',
+    ];
 
 
     /**
@@ -72,6 +110,8 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/pie.png',
                 'gradient' => true,
                 'limit'    => true,
+                'legend'   => true,
+                'labels'   => true,
                 'width'    => 3,
                 'height'   => 3,
             ],
@@ -81,6 +121,8 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/donut.png',
                 'gradient' => true,
                 'limit'    => true,
+                'legend'   => true,
+                'labels'   => true,
                 'width'    => 3,
                 'height'   => 3,
             ],
@@ -90,6 +132,8 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/halfpie.png',
                 'gradient' => true,
                 'limit'    => true,
+                'legend'   => true,
+                'labels'   => true,
                 'width'    => 3,
                 'height'   => 2,
             ],
@@ -99,6 +143,8 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/halfdonut.png',
                 'gradient' => true,
                 'limit'    => true,
+                'legend'   => true,
+                'labels'   => true,
                 'width'    => 3,
                 'height'   => 2,
             ],
@@ -109,6 +155,7 @@ class Widget
                 'gradient' => true,
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 4,
                 'height'   => 3,
             ],
@@ -118,6 +165,7 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/line.png',
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 4,
                 'height'   => 3,
             ],
@@ -128,6 +176,7 @@ class Widget
                 'gradient' => true,
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 4,
                 'height'   => 3,
             ],
@@ -137,6 +186,7 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/area.png',
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 4,
                 'height'   => 3,
             ],
@@ -147,6 +197,7 @@ class Widget
                 'gradient' => true,
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 5,
                 'height'   => 3,
             ],
@@ -157,6 +208,7 @@ class Widget
                 'gradient' => true,
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 5,
                 'height'   => 3,
             ],
@@ -167,6 +219,7 @@ class Widget
                 'gradient' => true,
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 5,
                 'height'   => 3,
             ],
@@ -177,6 +230,7 @@ class Widget
                 'gradient' => true,
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 4,
                 'height'   => 3,
             ],
@@ -187,6 +241,7 @@ class Widget
                 'gradient' => true,
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 4,
                 'height'   => 3,
             ],
@@ -197,6 +252,7 @@ class Widget
                 'gradient' => true,
                 'limit'    => true,
                 'pointlbl' => true,
+                'legend'   => true,
                 'width'    => 3,
                 'height'   => 4,
             ],
@@ -518,6 +574,8 @@ HTML;
             'alt'          => '',
             'color'        => '',
             'icon'         => '',
+            'legend'       => false,
+            'labels'       => false,
             'donut'        => false,
             'half'         => false,
             'use_gradient' => false,
@@ -559,49 +617,24 @@ HTML;
 
         $nb_series = min($p['limit'], count($p['data']));
 
-        $palette_style = "";
-        if ($p['use_gradient']) {
-            $palette_style = self::getCssGradientPalette(
-                $p['color'],
-                $nb_series,
-                ".dashboard #{$chart_id}",
-                false
-            );
-        }
-
         $html = <<<HTML
-      <style>
-         #{$chart_id} {
-            background-color: {$p['color']};
-            color: {$fg_color}
-         }
+        <style>
+            #{$chart_id} {
+                background-color: {$p['color']};
+                color: {$fg_color}
+            }
 
-         .theme-dark #{$chart_id} {
-            background-color: {$dark_bg_color};
-            color: {$dark_fg_color};
-         }
-
-         #{$chart_id} .ct-label {
-            fill: {$fg_color};
-            color: {$fg_color};
-         }
-
-         .theme-dark #{$chart_id} .ct-label {
-            fill: {$dark_fg_color};
-            color: {$dark_fg_color};
-         }
-
-         {$palette_style}
-      </style>
-      <div>
-         <div class="card g-chart {$class}"
-            id="{$chart_id}">
+            .theme-dark #{$chart_id} {
+                background-color: {$dark_bg_color};
+                color: {$dark_fg_color};
+            }
+        </style>
+        <div class="card g-chart {$class}" id="{$chart_id}">
             <div class="chart ct-chart">{$no_data_html}</div>
             <span class="main-label">{$p['label']}</span>
             <i class="main-icon {$p['icon']}"></i>
-         </div>
-      </div>
-HTML;
+        </div>
+        HTML;
 
         if ($nodata) {
             return $html;
@@ -616,156 +649,141 @@ HTML;
 
             $labels[] = $entry['label'];
             $series[] = [
-                'meta'  => $entry['label'],
+                'name'  => $entry['label'],
                 'value' => $entry['number'],
                 'url'   => $entry['url'],
             ];
         }
-        $total_txt = Toolbox::shortenNumber($total, 1, false);
 
         $labels = json_encode($labels);
-        $series = json_encode($series);
 
-        $chartPadding = 4;
-        $height_divider = 1;
-        $half_opts = "";
-        if ($p['half']) {
-            $half_opts = "
-            startAngle: 270,
-            total: " . ($total * 2) . ",
-         ";
-            $chartPadding = 9;
-            $height_divider = 2;
+        $colors = self::getDefaultPalette($nb_series);
+        if ($p['use_gradient']) {
+            $palette = self::getGradientPalette(
+                $p['color'],
+                $nb_series,
+                ".dashboard #{$chart_id}",
+                false
+            );
+            $colors = $palette['colors'];
         }
 
-        $donut_opts = "
-         showLabel: false,
-      ";
+        $options = [
+            'animationDuration' => self::$animation_duration,
+            'tooltip'           => [
+                'trigger'      => 'item',
+                'appendToBody' => true,
+            ],
+            'toolbox' => [
+                'show'    => false,
+                'feature' => [
+                    'dataView'    => [
+                        'show'     => true,
+                        'readOnly' => true,
+                        'title'    => __('View data'),
+                    ],
+                    'saveAsImage' => [
+                        'show'  => true,
+                        'title' => __('Save as image'),
+                    ]
+                ],
+            ],
+            'series' => [
+                [
+                    'type'              => 'pie',
+                    'color'             => $colors,
+                    'avoidLabelOverlap' => true,
+                    'data'              => $series,
+                    'radius'            => '80%',
+                    'selectedMode'      => 'single',
+                    'selectedOffset'    => 10,
+                    'startAngle'        => 180,
+                    'label'             => [
+                        'show'  => false,
+                        'color' => $fg_color,
+                        'edgeDistance' => '25%',
+                    ],
+                    'labelLine'         => [
+                        'showAbove' => true,
+                    ],
+                ]
+            ]
+        ];
+
+        if ($p['legend']) {
+            $options['legend'] = [
+                'show' => true,
+                'left' => 'left',
+            ];
+        }
+
         if ($p['donut']) {
-            $donut_opts = "
-            donutSolid: true,
-            showLabel: true,
-            labelInterpolationFnc: function(value) {
-               return '{$total_txt}';
-            },
-         ";
+            $options['series'][0]['radius'] = ['50%', '95%'];
+            $options['series'][0]['itemStyle'] = [
+                'borderRadius' => 2,
+                'borderColor'  => 'rgba(255, 255, 255, 0.5)',
+                'borderWidth'  => 2,
+            ];
+
+            // append total to center of donut
+            $options['title'] = [
+                'text'      => Toolbox::shortenNumber($total, 1, false),
+                'left'      => 'center',
+                'top'       => 'center',
+                'textStyle' => [
+                    'color'      => $fg_color,
+                    'fontWeight' => 'lighter',
+                ],
+            ];
+
+            if ($p['legend']) {
+                $options['series'][0]['radius'] = ['30%', '60%'];
+            }
         }
 
-        $donut  = $p['donut'] ? 'true' : 'false';
-        $animation_duration = self::$animation_duration;
+        if ($p['labels']) {
+            $options['series'][0]['label']['show'] = true;
+            $options['series'][0]['radius'] = '60%';
+
+            if ($p['donut']) {
+                $options['series'][0]['radius'] = ['30%', '60%'];
+            }
+        }
+
+        if ($p['half']) {
+            $options['series'][0]['center'] = ['50%', '100%'];
+            $options['series'][0]['data'][] = [
+                'name'  => '',
+                'value' => $total,
+            ];
+        }
+
+        $options_json = Json::encode(
+            $options,
+            false,
+            ['enableJsonExprFinder' => true]
+        );
 
         $js = <<<JAVASCRIPT
-      $(function () {
-         var chart = new Chartist.Pie('#{$chart_id} .chart', {
-            labels: {$labels},
-            series: {$series},
-         }, {
-            width: 'calc(100% - 5px)',
-            chartPadding: {$chartPadding},
-            donut: {$donut},
-            $donut_opts
-            $half_opts
-            donutWidth: '50%',
-            plugins: [
-               Chartist.plugins.tooltip({
-                  appendToBody: true,
-                  class: 'dashboard-tooltip'
-               })
-            ]
-         });
+        $(function () {
+            var myChart = echarts.init($('#$chart_id .chart')[0]);
+            myChart.setOption($options_json);
+            myChart
+                .on('click', function (params) {
+                    const data_url = _.get(params, 'data.url', '');
+                    if (data_url.length > 0) {
+                        window.location.href = data_url;
+                    }
+                });
 
-
-         chart.on('draw', function(data) {
-            // animate
-            if (data.type === 'slice') {
-               // set url redirecting on slice
-               var url = _.get(data, 'series.url') || "";
-               if (url.length > 0) {
-                  data.element.attr({
-                     'data-clickable': true
-                  });
-                  data.element._node.onclick = function() {
-                     if (!Dashboard.edit_mode) {
-                        window.location = url;
-                     }
-                  }
-               }
-
-               // Get the total path length in order to use for dash array animation
-               var pathLength = data.element._node.getTotalLength();
-
-               // Set a dasharray that matches the path length as prerequisite to animate dashoffset
-               data.element.attr({
-                  'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
-               });
-
-               // Create animation definition while also assigning an ID to the animation for later sync usage
-               var animationDefinition = {
-                  'stroke-dashoffset': {
-                     id: 'anim' + data.index,
-                     dur: {$animation_duration},
-                     from: -pathLength + 'px',
-                     to:  '0px',
-                     easing: Chartist.Svg.Easing.easeOutQuint,
-                     // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
-                     fill: 'freeze'
-                  }
-               };
-
-               // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
-               data.element.attr({
-                  'stroke-dashoffset': -pathLength + 'px'
-               });
-
-               // We can't use guided mode as the animations need to rely on setting begin manually
-               // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
-               data.element.animate(animationDefinition, false);
-            }
-
-            // donut center label
-            if (data.type === 'label') {
-               if (data.index === 0) {
-                  var width = data.element.root().width() / 2;
-                  var height = data.element.root().height() / 2;
-                  var fontsize = ((height / {$height_divider}) / (1.3 * "{$total_txt}".length));
-                  data.element.attr({
-                     dx: width,
-                     dy: height - ($chartPadding / 2),
-                     'style': 'font-size: '+fontsize,
-                  });
-
-                  // apend real total
-                  var text = new Chartist.Svg('title');
-                  text.text("{$total}");
-                  data.element.append(text);
-               } else {
-                  data.element.remove();
-               }
-            }
-
-            // fade others bars on one mouseouver
-            chart.on('created', function(bar) {
-               $('#{$chart_id} .ct-series')
-                  .mouseover(function() {
-                     $(this).parent().children().addClass('disable-animation');
-                     $(this).addClass('mouseover');
-                     $(this).siblings()
-                        .addClass('notmouseover');
-
-                     $('#{$chart_id} .ct-label')
-                        .addClass('fade');
-                  })
-                  .mouseout(function() {
-                     $(this).removeClass('mouseover');
-                     $(this).siblings()
-                        .removeClass('notmouseover');
-
-                     $('#{$chart_id} .ct-label')
-                        .removeClass('fade');
-                  });
-            });
-         });
-      });
+            $('#$chart_id .chart')
+                .on('mouseover', function (params) {
+                    myChart.setOption({'toolbox': {'show': true}});
+                })
+                .on('mouseout', function (params) {
+                    myChart.setOption({'toolbox': {'show': false}});
+                });
+        });
 JAVASCRIPT;
         $js = \Html::scriptBlock($js);
 
@@ -858,7 +876,7 @@ JAVASCRIPT;
             ];
         }
 
-       // chartist bar graphs are always multiple lines
+       // simple bar graphs are always multiple lines
         if (!$params['distributed']) {
             $series = [$series];
         }
@@ -964,7 +982,7 @@ JAVASCRIPT;
      * - string 'icon': font awesome class to display an icon side of the label
      * - string 'id': unique dom identifier
      * - bool   'horizontal': do we want an horizontal chart
-     * - bool   'distributed': do we want a distributed chart (see https://gionkunz.github.io/chartist-js/examples.html#example-bar-distributed-series)
+     * - bool   'distributed': do we want a distributed chart
      * - bool   'legend': do we display a legend for the graph
      * - bool   'stacked': do we display multiple bart stacked or grouped
      * - bool   'use_gradient': gradient or generic palette
@@ -1001,17 +1019,19 @@ JAVASCRIPT;
         $p = array_merge($defaults, $params);
 
         $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
-        $nb_series = count($series);
+        $chart_id = 'chart_' . $p['cache_key'];
+
         $nb_labels = min($p['limit'], count($labels));
+
         if ($p['distributed']) {
             array_splice($labels, $nb_labels);
         } else {
             array_splice($labels, 0, -$nb_labels);
         }
         if ($p['multiple']) {
-            foreach ($series as &$serie) {
-                if (isset($serie['data'])) {
-                    array_splice($serie['data'], 0, -$nb_labels);
+            foreach ($series as &$tmp_serie) {
+                if (isset($tmp_serie['data'])) {
+                    array_splice($tmp_serie['data'], 0, -$nb_labels);
                 }
             }
         } else {
@@ -1020,20 +1040,71 @@ JAVASCRIPT;
             } else {
                 array_splice($series[0], 0, -$nb_labels);
             }
+            $series = [
+                [
+                    'data' => $series,
+                ]
+            ];
         }
 
-        $json_labels = json_encode($labels);
-        $json_series = json_encode($series);
+        $nb_series = count($series);
+        $palette = self::getDefaultPalette($nb_series);
+        if ($p['use_gradient']) {
+            $nb_colors = $p['distributed'] ? $nb_labels : $nb_series;
+            $palette = self::getGradientPalette(
+                $p['color'],
+                $nb_colors,
+                "#{$chart_id}"
+            )['colors'];
+        }
+        $palette_json = json_encode($palette);
+
+        $echarts_series = [];
+        $serie_i = 0;
+        foreach ($series as $value) {
+            $serie = [
+                'name'            => $value['name'] ?? "",
+                'type'            => 'bar',
+                'color'           => $palette[$serie_i],
+                'data'            => $value['data'],
+                'legendHoverLink' => true,
+            ];
+
+            if ($p['distributed']) {
+                $serie['itemStyle']['color'] = new Json_Expr(<<<JAVASCRIPT
+                function(param) {
+                    return {$palette_json}[param.dataIndex];
+                }
+                JAVASCRIPT);
+            }
+
+            if ($p['stacked']) {
+                $serie['stack'] = 'total';
+            }
+
+            if ($p['point_labels']) {
+                $serie['label'] = [
+                    'show'      => true,
+                    'overflow'  => 'truncate',
+                    'formatter' => new Json_Expr(<<<JAVASCRIPT
+                        function(param) {
+                            return param.data.value == 0 ? '': param.data.value;
+                        }
+                    JAVASCRIPT),
+                    'color'    => $p['stacked'] ? '#000' : 'inherit',
+                    'position' => $p['horizontal']
+                        ? 'right'
+                        : ($p['stacked'] ? 'insideTop' : 'top'),
+                ];
+            }
+
+            $echarts_series[] = $serie;
+            $serie_i++;
+        }
 
         $fg_color        = Toolbox::getFgColor($p['color']);
-        $line_color      = Toolbox::getFgColor($p['color'], 10);
         $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
-        $dark_line_color = Toolbox::getFgColor($p['color'], 90);
-
-        $animation_duration = self::$animation_duration;
-
-        $chart_id = 'chart_' . $p['cache_key'];
 
         $class = "bar";
         $class .= $p['horizontal'] ? " horizontal" : "";
@@ -1041,12 +1112,6 @@ JAVASCRIPT;
         $class .= $nb_series <= 10 ? " tab10" : "";
         $class .= $nb_series > 10 ? " tab20" : "";
         $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
-
-        $palette_style = "";
-        if ($p['use_gradient']) {
-            $nb_gradients = $p['distributed'] ? $nb_labels : $nb_series;
-            $palette_style = self::getCssGradientPalette($p['color'], $nb_gradients, "#{$chart_id}");
-        }
 
         $nodata = isset($p['data']['nodata']) && $p['data']['nodata']
                 || count($series) == 0;
@@ -1057,271 +1122,141 @@ JAVASCRIPT;
             <span>";
         }
 
-        $legend_options = "";
-        if ($p['legend']) {
-            $legend_options = "
-            Chartist.plugins.legend(),";
-        }
-
         $html = <<<HTML
-      <style>
-      #{$chart_id} {
-         background-color: {$p['color']};
-         color: {$fg_color}
-      }
+            <style>
+            #{$chart_id} {
+                background-color: {$p['color']};
+                color: {$fg_color}
+            }
 
-      .theme-dark #{$chart_id} {
-         background-color: {$dark_bg_color};
-         color: {$dark_fg_color};
-      }
+            .theme-dark #{$chart_id} {
+                background-color: {$dark_bg_color};
+                color: {$dark_fg_color};
+            }
+            </style>
 
-      #{$chart_id} .ct-label {
-         color: {$fg_color};
-      }
+            <div class="card g-chart $class" id="{$chart_id}">
+                <div class="chart ct-chart">$no_data_html</div>
+                <span class="main-label">{$p['label']}</span>
+                <i class="main-icon {$p['icon']}"></i>
+            </div>
+        HTML;
 
-      .theme-dark #{$chart_id} .ct-label {
-         color: {$dark_fg_color};
-      }
+        $options = [
+            'animationDuration' => self::$animation_duration,
+            'tooltip'           => [
+                'trigger'      => 'axis',
+                'appendToBody' => true,
+                'axisPointer'  => [
+                    'type' => 'shadow'
+                ],
+            ],
+            'grid'              => [
+                'left'         => '20',
+                'right'        => $p['horizontal'] ? '40' : '25',
+                'bottom'       => '20',
+                'top'          => $p['legend'] ? '40' : '20',
+                'containLabel' => true,
+            ],
+            'toolbox' => [
+                'show'    => false,
+                'feature' => [
+                    'dataView'    => [
+                        'show'     => true,
+                        'readOnly' => true,
+                        'title'    => __('View data'),
+                    ],
+                    'saveAsImage' => [
+                        'show'  => true,
+                        'title' => __('Save as image'),
+                    ]
+                ]
+            ],
+            'series' => $echarts_series,
+            'xAxis'  => [
+                'type' => 'category',
+                'data' => $labels,
+                'splitLine' => [
+                    'lineStyle' => [
+                        'type' => 'dashed'
+                    ],
+                    'show' => true,
+                ],
+            ],
+            'yAxis' => [
+                'type' => 'value',
+                'splitLine' => [
+                    'lineStyle' => [
+                        'type' => 'dashed'
+                    ],
+                    'show' => true,
+                ],
+            ]
+        ];
 
-      #{$chart_id} .ct-grid {
-         stroke: {$line_color};
-      }
-
-      .theme-dark #{$chart_id} .ct-grid {
-         stroke: {$dark_line_color};
-      }
-
-      {$palette_style}
-      </style>
-
-      <div>
-         <div class="card g-chart $class"
-               id="{$chart_id}">
-            <div class="chart ct-chart">$no_data_html</div>
-            <span class="main-label">{$p['label']}</span>
-            <i class="main-icon {$p['icon']}"></i>
-         </div>
-      </div>
-HTML;
-
-        $horizontal_options = "";
-        $vertical_options   = "";
-        $is_horizontal      = "false";
         if ($p['horizontal']) {
-            $is_horizontal = "true";
-            $horizontal_options = "
-            horizontalBars: true,
-            axisY: {
-               offset: 100
-            },
-            axisX: {
-               onlyInteger: true
-            },
-         ";
-        } else {
-            $vertical_options = "
-            axisX: {
-               offset: 50,
-            },
-            axisY: {
-               onlyInteger: true
-            },
-         ";
+            $options['xAxis'] = array_merge($options['xAxis'], [
+                'type' => 'value',
+                'axisLabel' => [
+                    'formatter' => new Json_Expr(<<<JAVASCRIPT
+                        function (value) {
+                            if (value < 1e3) {
+                                return value;
+                            } else if (value < 1e6) {
+                                return value / 1e3 + "K";
+                            } else {
+                                return value / 1e6 + "M";
+                            }
+                        }
+                    JAVASCRIPT),
+                ]
+            ]);
+            $options['yAxis'] = array_merge($options['yAxis'], [
+                'type' => 'category',
+                'data' => $labels,
+                'axisLabel' => [
+                    'overflow' => 'truncate',
+                    'width'    => 100,
+                    'rotate'   => 30,
+                ],
+            ]);
         }
 
-        $stack_options = "";
-        if ($p['stacked']) {
-            $stack_options = "
-            stackBars: true,";
+        if ($p['legend']) {
+            $options['legend'] = [
+                'show' => true,
+                'left' => 'left',
+            ];
         }
 
-        $distributed_options = "";
-        if ($p['distributed']) {
-            $distributed_options = "
-            distributeSeries: true,";
-        }
-
-       // just to avoid issues with syntax coloring
-        $point_labels = $p['point_labels'] ? "true" : "false;";
-        $is_multiple  = $p['multiple'] ? "true" : "false;";
+        $options_json = Json::encode(
+            $options,
+            false,
+            ['enableJsonExprFinder' => true]
+        );
 
         $js = <<<JAVASCRIPT
-      $(function () {
-         var chart = new Chartist.Bar('#{$chart_id} .chart', {
-            labels: {$json_labels},
-            series: {$json_series},
-         }, {
-            width: '100%',
-            seriesBarDistance: 10,
-            chartPadding: 0,
-            $distributed_options
-            $horizontal_options
-            $vertical_options
-            $stack_options
-            plugins: [
-               $legend_options
-               Chartist.plugins.tooltip({
-                  appendToBody: true,
-                  class: 'dashboard-tooltip'
-               })
-            ]
-         });
+        $(function () {
+            var myChart = echarts.init($('#$chart_id .chart')[0]);
+            myChart.setOption($options_json);
 
-         var is_horizontal = chart.options.horizontalBars;
-         var is_vertical   = !is_horizontal;
-         var is_stacked    = chart.options.stackBars;
-         var nb_elements   = chart.data.labels.length;
-         var nb_series     = chart.data.series.length;
-         var bar_margin    = chart.options.seriesBarDistance;
-         var point_labels  = {$point_labels}
-         var is_multiple   = {$is_multiple}
+            myChart
+                .on('click', function (params) {
+                    const data_url = _.get(params, 'data.url', '');
+                    if (data_url.length > 0) {
+                        window.location.href = data_url;
+                    }
+                });
 
-         if (!chart.options.stackBars
-             && chart.data.series.length > 0
-             && chart.data.series[0].hasOwnProperty('data')) {
-            nb_elements = nb_elements * chart.data.series.length;
-            bar_margin += 1;
-         }
-
-         chart.on('draw', function(data) {
-            if (data.type === 'bar') {
-               // set url redirecting on bar
-               var url = _.get(data, 'series['+data.index+'].url')
-                  || _.get(data, 'series.data['+data.index+'].url')
-                  || _.get(data, 'series.url')
-                  || "";
-               if (url.length > 0) {
-                  data.element.attr({
-                     'data-clickable': true
-                  });
-                  data.element._node.onclick = function() {
-                     if (!Dashboard.edit_mode) {
-                        window.location = url;
-                     }
-                  }
-               }
-
-               var chart_height = data.chartRect.height();
-               var chart_width = data.chartRect.width();
-
-               var stroke_width = chart_width / nb_elements;
-               if (is_horizontal) {
-                  stroke_width = chart_height / nb_elements;
-               }
-
-               if (!chart.options.stackBars
-                  && chart.data.series.length > 0 && is_vertical) {
-                  stroke_width -= bar_margin * nb_elements;
-               } else {
-                  stroke_width -= bar_margin;
-               }
-               data.element.attr({
-                  'style': 'stroke-width: '+stroke_width+'px'
-               });
-
-               var axis_anim = 'y';
-               if ({$is_horizontal}) {
-                  axis_anim = 'x';
-               }
-
-               var animate_properties = {
-                  opacity: {
-                     dur: {$animation_duration},
-                     from: 0,
-                     to: 1,
-                     easing: Chartist.Svg.Easing.easeOutQuint
-                  }
-               };
-               animate_properties[axis_anim+'2'] = {
-                  dur: {$animation_duration},
-                  from: data[axis_anim+'1'],
-                  to: data[axis_anim+'2'],
-                  easing: Chartist.Svg.Easing.easeOutQuint
-               };
-               data.element.animate(animate_properties);
-
-               // append labels
-               var display_labels = true;
-               var labelX = 0;
-               var labelY = 0;
-               var value = data.element.attr('ct:value').toString();
-               var text_anchor = 'middle';
-
-               if (is_vertical) {
-                  labelX = data.x2;
-                  labelY = data.y2 + 15;
-
-                  if (is_multiple) {
-                     labelY = data.y2 - 5;
-                  } else if (data.y1 - data.y2 < 18) {
-                     display_labels = false;
-                  }
-               }
-
-               if (is_horizontal) {
-                  var word_width = value.length * 5 + 5;
-                  var bar_width = 0;
-
-                  if (value > 0) {
-                     labelX = data.x2 - word_width;
-                     bar_width = data.x2 - data.x1;
-                  } else {
-                     labelX = data.x2 + word_width;
-                     bar_width = data.x1 - data.x2;
-                  }
-                  labelY = data.y2;
-
-                  // don't display label if width too short
-                  if (bar_width < word_width) {
-                     display_labels = false;
-                  }
-               }
-
-               if (is_stacked) {
-                  labelY = data.y2 + 15;
-
-                  // don't display label if height too short
-                  if (is_horizontal) {
-                     if (data.x2 - data.x1 < 15) {
-                        display_labels = false;
-                     }
-                  } else {
-                     if (data.y1 - data.y2 < 15) {
-                        display_labels = false;
-                     }
-                  }
-               }
-
-               // don't display label if value is not relevant
-               if (value == 0 || !point_labels) {
-                  display_labels = false;
-               }
-
-               if (display_labels) {
-                  label = new Chartist.Svg('text');
-                  label.text(value);
-                  label.addClass("ct-barlabel");
-                  label.attr({
-                     x: labelX,
-                     y: labelY,
-                     'text-anchor': text_anchor
-                  });
-                  return data.group.append(label);
-               }
-            }
-         });
-
-         chart.on('created', function(bar) {
-            $('#{$chart_id} .ct-series')
-               .mouseover(function() {
-                  $(this).siblings().children().css('stroke-opacity', "0.2");
-               })
-               .mouseout(function() {
-                  $(this).siblings().children().css('stroke-opacity', "1");
-               });
-         });
-      });
-JAVASCRIPT;
+            $('#$chart_id .chart')
+                .on('mouseover', function (params) {
+                    myChart.setOption({'toolbox': {'show': true}});
+                })
+                .on('mouseout', function (params) {
+                    myChart.setOption({'toolbox': {'show': false}});
+                });
+        });
+        JAVASCRIPT;
         $js = \Html::scriptBlock($js);
 
         return $html . $js;
@@ -1356,7 +1291,7 @@ JAVASCRIPT;
             ];
         }
 
-       // chartist line graphs are always multiple lines
+       // simple line graphs are always multiple lines
         $series = [$series];
 
         return self::getLinesGraph($params, $labels, $series);
@@ -1450,7 +1385,9 @@ JAVASCRIPT;
             'legend'       => false,
             'multiple'     => false,
             'use_gradient' => false,
+            'show_points'  => true,
             'point_labels' => false,
+            'line_width'   => 4,
             'limit'        => 99999,
             'filters'      => [],
             'rand'         => mt_rand(),
@@ -1458,217 +1395,178 @@ JAVASCRIPT;
         $p = array_merge($defaults, $params);
         $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
 
+        $chart_id = 'chart_' . $p['cache_key'];
+
         $nb_series = count($series);
         $nb_labels = min($p['limit'], count($labels));
         array_splice($labels, 0, -$nb_labels);
         if ($p['multiple']) {
-            foreach ($series as &$serie) {
-                if (isset($serie['data'])) {
-                    array_splice($serie['data'], 0, -$nb_labels);
+            foreach ($series as &$tmp_serie) {
+                if (isset($tmp_serie['data'])) {
+                    array_splice($tmp_serie['data'], 0, -$nb_labels);
                 }
             }
         } else {
             array_splice($series[0], 0, -$nb_labels);
         }
 
-        $json_labels = json_encode($labels);
-        $json_series = json_encode($series);
+        $palette = self::getDefaultPalette($nb_series);
+        if ($p['use_gradient']) {
+            $palette = self::getGradientPalette(
+                $p['color'],
+                $nb_series,
+                "#{$chart_id}"
+            )['colors'];
+        }
 
-        $chart_id = 'chart_' . $p['cache_key'];
+        $echarts_series = [];
+        $serie_i = 0;
+        foreach ($series as $serie) {
+            $echart_serie = [
+                'name'            => $serie['name'],
+                'type'            => 'line',
+                'color'           => $palette[$serie_i],
+                'data'            => $serie['data'],
+                'smooth'          => 0.4,
+                'lineStyle'       => [
+                    'width'  => $p['line_width']
+                ],
+                'symbol'         => 'none',
+                'legendHoverLink' => true,
+            ];
+
+            if ($p['area']) {
+                $echart_serie['areaStyle'] = [
+                    'opacity' => 0.1,
+                ];
+            }
+
+            if ($p['show_points']) {
+                $echart_serie['symbol'] = new Json_Expr(<<<JAVASCRIPT
+                    function(value) {
+                        return value > 0 ? 'circle': 'none';
+                    }
+                JAVASCRIPT);
+                $echart_serie['symbolSize'] = 8;
+            }
+
+            if ($p['point_labels']) {
+                $echart_serie['label'] = [
+                    'show'      => true,
+                    'distance'  => 1,
+                    'color'     => 'inherit',
+                    'formatter' => new Json_Expr(<<<JAVASCRIPT
+                        function(param) {
+                            return param.data.value == 0 ? '': param.data.value;
+                        }
+                    JAVASCRIPT),
+                ];
+            }
+
+            $echarts_series[] = $echart_serie;
+            $serie_i++;
+        }
 
         $fg_color        = Toolbox::getFgColor($p['color']);
-        $line_color      = Toolbox::getFgColor($p['color'], 10);
         $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
-        $dark_line_color = Toolbox::getFgColor($p['color'], 90);
 
         $class = "line";
         $class .= $p['area'] ? " area" : "";
         $class .= $p['multiple'] ? " multiple" : "";
         $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-        $animation_duration = self::$animation_duration;
-
-        $palette_style = "";
-        if (!$p['multiple'] || $p['use_gradient']) {
-            $palette_style = self::getCssGradientPalette($p['color'], $nb_series, "#{$chart_id}");
-        }
-
-        $pointlabels_plugins = "";
-        if ($p['point_labels']) {
-            $pointlabels_plugins = ",
-            Chartist.plugins.ctPointLabels({
-               textAnchor: 'middle',
-               labelInterpolationFnc: function(value) {
-                  if (value == undefined) {
-                     return ''
-                  }
-                  return value;
-               }
-            })";
-        }
-
-        $legend_options = "";
-        if ($p['legend']) {
-            $legend_options = "
-            Chartist.plugins.legend(),";
-        }
-
         $html = <<<HTML
-      <style>
+            <style>
+            #{$chart_id} {
+                background-color: {$p['color']};
+                color: {$fg_color}
+            }
 
-      #{$chart_id} {
-         background-color: {$p['color']};
-         color: {$fg_color}
-      }
+            .theme-dark #{$chart_id} {
+                background-color: {$dark_bg_color};
+                color: {$dark_fg_color};
+            }
+            </style>
 
-      .theme-dark #{$chart_id} {
-         background-color: {$dark_bg_color};
-         color: {$dark_fg_color};
-      }
+            <div class="card g-chart $class" id="{$chart_id}">
+                <div class="chart ct-chart"></div>
+                <span class="main-label">{$p['label']}</span>
+                <i class="main-icon {$p['icon']}"></i>
+            </div>
+        HTML;
 
-      #{$chart_id} .ct-label {
-         color: {$fg_color};
-      }
+        $options = [
+            'animationDuration' => self::$animation_duration,
+            'tooltip'           => [
+                'trigger'      => 'axis',
+                'appendToBody' => true,
+            ],
+            'grid'              => [
+                'left'         => '3%',
+                'right'        => '4%',
+                'bottom'       => '3%',
+                'containLabel' => true,
+            ],
+            'toolbox' => [
+                'show'    => false,
+                'feature' => [
+                    'dataView'    => [
+                        'show'     => true,
+                        'readOnly' => true,
+                        'title' => __('View data'),
+                    ],
+                    'saveAsImage' => [
+                        'show'  => true,
+                        'title' => __('Save as image'),
+                    ]
+                ]
+            ],
+            'xAxis'  => [
+                'type'        => 'category',
+                'data'        => $labels,
+                'boundaryGap' => false, // avoid spacing on the left and right
+            ],
+            'yAxis' => [
+                'type' => 'value',
+            ],
+            'series' => $echarts_series,
+        ];
 
-      .theme-dark #{$chart_id} .ct-label {
-         color: {$dark_fg_color};
-      }
-
-      #{$chart_id} .ct-grid {
-         stroke: {$line_color};
-      }
-
-      .theme-dark #{$chart_id} .ct-grid {
-         stroke: {$dark_line_color};
-      }
-
-      #{$chart_id} .ct-circle {
-         stroke: {$p['color']};
-         stroke-width: 3;
-      }
-      #{$chart_id} .ct-circle + .ct-label {
-         stroke: {$p['color']};
-      }
-      {$palette_style}
-      </style>
-
-      <div>
-          <div class="card g-chart $class"
-               id="{$chart_id}">
-             <div class="chart ct-chart"></div>
-             <span class="main-label">{$p['label']}</span>
-             <i class="main-icon {$p['icon']}"></i>
-          </div>
-      </div>
-HTML;
-
-        $area_options = "";
-        if ($p['area']) {
-            $area_options = "
-            showArea: true,";
+        if ($p['legend']) {
+            $options['legend'] = [
+                'show' => true,
+                'left' => 'left',
+            ];
         }
+
+        $options_json = Json::encode(
+            $options,
+            false,
+            ['enableJsonExprFinder' => true]
+        );
 
         $js = <<<JAVASCRIPT
-      $(function () {
-         var chart = new Chartist.Line('#{$chart_id} .chart', {
-            labels: {$json_labels},
-            series: {$json_series},
-         }, {
-            width: '100%',
-            fullWidth: true,
-            chartPadding: {
-               right: 40
-            },
-            axisY: {
-               labelInterpolationFnc: function(value) {
-                  if (value < 1e3) {
-                     // less than 1K
-                     return value;
-                  } else if (value < 1e6) {
-                     // More than 1k, less than 1M
-                     return value / 1e3 + "K";
-                  } else {
-                     // More than 1M
-                     return value / 1e6 + "M";
-                  }
-               },
-            },
-            {$area_options}
-            plugins: [
-               {$legend_options}
-               Chartist.plugins.tooltip({
-                  appendToBody: true,
-                  class: 'dashboard-tooltip',
-                  pointClass: 'ct-circle'
-               })
-               {$pointlabels_plugins}
-            ]
-         });
+        $(function () {
+            var myChart = echarts.init($('#$chart_id .chart')[0]);
+            myChart.setOption($options_json);
+            myChart
+                .on('click', function (params) {
+                    const data_url = _.get(params, 'data.url', '');
+                    if (data_url.length > 0) {
+                        window.location.href = data_url;
+                    }
+                });
 
-         chart.on('draw', function(data) {
-            // animation
-            if (data.type === 'line' || data.type === 'area') {
-               data.element.animate({
-                  d: {
-                     begin: 300 * data.index,
-                     dur: $animation_duration,
-                     from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
-                     to: data.path.clone().stringify(),
-                     easing: Chartist.Svg.Easing.easeOutQuint
-                  }
-               });
-            }
-
-            if (data.type === 'point') {
-               // set url redirecting on line
-               var url = _.get(data, 'series['+data.index+'].url')
-                      || _.get(data, 'series.data['+data.index+'].url')
-                      || _.get(data, 'series.url')
-                      || '';
-               var clickable = url.length > 0;
-
-               var circle = new Chartist.Svg('circle', {
-                  cx: [data.x],
-                  cy: [data.y],
-                  r: data.value.y > 0 ? [5] : [0],
-                  "ct:value": data.value.y,
-                  "data-clickable": clickable
-               }, 'ct-circle');
-               var circle = data.element.replace(circle);
-
-               if (clickable) {
-                  circle.getNode().onclick = function() {
-                     if (!Dashboard.edit_mode) {
-                        window.location = url;
-                     }
-                  }
-               }
-            }
-         });
-
-         // hide other lines when hovering a point
-         chart.on('created', function(bar) {
-            $('#{$chart_id} .ct-series .ct-circle, #{$chart_id} .ct-series .ct-circle + .ct-label')
-               .mouseover(function() {
-                  $(this)
-                     .attr('r', "9")
-                     .parent(".ct-series")
-                     .siblings().children()
-                     .css('stroke-opacity', "0.05")
-                     .filter(".ct-circle, .ct-label").css('fill-opacity', "0.1");
-               })
-               .mouseout(function() {
-                  $(this)
-                     .attr('r', "5")
-                     .parent(".ct-series")
-                     .siblings().children()
-                     .css('stroke-opacity', "1")
-                     .filter(".ct-circle, .ct-label").css('fill-opacity', "1");
-               });
-         });
-      });
-JAVASCRIPT;
+            $('#$chart_id .chart')
+                .on('mouseover', function (params) {
+                    myChart.setOption({'toolbox': {'show': true}});
+                })
+                .on('mouseout', function (params) {
+                    myChart.setOption({'toolbox': {'show': false}});
+                });
+        });
+        JAVASCRIPT;
         $js = Html::scriptBlock($js);
 
         return $html . $js;
@@ -1755,7 +1653,7 @@ HTML;
             'itemtype'   => '',
             'limit'      => $_SESSION['glpilist_limit'],
             'rand'       => mt_rand(),
-            'filters'      => [],
+            'filters'    => [],
         ];
         $p = array_merge($default, $params);
 
@@ -1948,6 +1846,28 @@ JAVASCRIPT;
         return $html . $js;
     }
 
+
+    /**
+     * Get a non-gradient palette based on the number of series
+     * @param int $nb_series
+     *
+     * @return array of hex color strings
+     */
+    public static function getDefaultPalette(int $nb_series = 10): array
+    {
+        $palette = [];
+
+        while (count($palette) < $nb_series) {
+            $current_nb_series = abs(count($palette) - $nb_series);
+            $new_palette = $current_nb_series <= 10 ? self::$palette_10 : self::$palette_20;
+
+            $palette = array_merge($palette, $new_palette);
+        }
+
+        return $palette;
+    }
+
+
     /**
      * Get a gradient palette for a given background color
      *
@@ -1979,7 +1899,13 @@ JAVASCRIPT;
             ];
         }
 
-        $alphabet = range('a', 'z');
+        // aaa - can generate max 702 colors
+        $alphabet = [];
+        $letter = 'a';
+        while ($letter !== 'aaa' && count($alphabet) <= $nb_series) {
+            $alphabet[] = $letter++;
+        }
+
         $min_l = 20; // min for luminosity
         $max_l = 20; // max ...
         $min_s = 30; // min for saturation
@@ -2016,50 +1942,5 @@ JAVASCRIPT;
             'names'  => $names,
             'colors' => $colors,
         ];
-    }
-
-
-    /**
-     * Generate a css ruleset for chartist given a starting background color
-     * Based on @see self::getGradientPalette
-     */
-    public static function getCssGradientPalette(
-        string $bgcolor = "",
-        int $nb_series = 1,
-        string $css_dom_parent = "",
-        bool $revert = true
-    ) {
-        global $GLPI_CACHE;
-
-        $palette = self::getGradientPalette($bgcolor, $nb_series, $revert);
-
-        $series_names  = implode(',', $palette['names']);
-        $series_colors = implode(',', $palette['colors']);
-
-        $hash = sha1($css_dom_parent . $series_names . $series_colors);
-        if (($palette_css = $GLPI_CACHE->get($hash)) !== null) {
-            return $palette_css;
-        }
-
-        $scss = new Compiler();
-        $generate_scss_path = str_replace(
-            DIRECTORY_SEPARATOR,
-            '/',
-            realpath(GLPI_ROOT . '/css/includes/components/chartist/_generate.scss')
-        );
-        $result = $scss->compileString(
-            "{$css_dom_parent} {
-            \$ct-series-names: ({$series_names});
-            \$ct-series-colors: ({$series_colors});
-
-            @import '{$generate_scss_path}';
-         }",
-            dirname($generate_scss_path)
-        );
-        $palette_css = $result->getCss();
-
-        $GLPI_CACHE->set($hash, $palette_css);
-
-        return $palette_css;
     }
 }

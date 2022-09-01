@@ -1465,15 +1465,11 @@
    }
    /** /style for relations **/
 
-   /** Chartists styles fix **/
+   /** charts styles fix **/
    .chart {
       position: relative;
       text-align: center;
       margin-top: 1em;
-   }
-   .chartist-tooltip {
-      /* fix z-index isssue along with legend */
-      z-index: 11!important;
    }
 
    .dashboard.printer_barchart .g-chart .chart {

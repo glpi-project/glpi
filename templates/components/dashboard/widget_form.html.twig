@@ -119,6 +119,28 @@
       ) }}
    </div>
 
+   {# display checkbox to display labels or not #}
+   {% set labels_displayed = edit and widget_def['labels']|default(false) %}
+   <div class="label_field" {% if not labels_displayed %}style="display: none;"{% endif %}>
+      {{ fields.checkboxField(
+         'labels',
+         labels,
+         __('Show labels on chart'),
+         field_options
+      ) }}
+   </div>
+
+   {# display checkbox to display legend or not #}
+   {% set legend_displayed = edit and widget_def['legend']|default(false) %}
+   <div class="label_field" {% if not legend_displayed %}style="display: none;"{% endif %}>
+      {{ fields.checkboxField(
+         'legend',
+         legend,
+         __('Show legend'),
+         field_options
+      ) }}
+   </div>
+
    {# show limit #}
    {% set limit_displayed = edit and widget_def['limit']|default(false) %}
    <div class="limit_field" {% if not limit_displayed %}style="display: none;"{% endif %}>
