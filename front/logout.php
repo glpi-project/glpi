@@ -43,6 +43,9 @@ include('../inc/includes.php');
 
 Session::destroy();
 
+//Remove cookie to allow new login
+Auth::setRememberMeCookie('');
+
 if (
     $CFG_GLPI["ssovariables_id"] > 0
     && strlen($CFG_GLPI['ssologout_url']) > 0
@@ -86,9 +89,6 @@ if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
     }
     $toADD .= "noAUTO=1";
 }
-
-//Remove cookie to allow new login
-Auth::setRememberMeCookie('');
 
 // Redirect to the login-page
 Html::redirect($CFG_GLPI["root_doc"] . "/index.php" . $toADD);
