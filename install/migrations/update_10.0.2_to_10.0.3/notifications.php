@@ -63,20 +63,20 @@ foreach ($iterator as $notification) {
     }
     $removed_item_group = false;
     $found_assigned_group = false;
-    foreach ($targets as $target_id => $target) {
+    foreach ($targets as $target_id => $items_id) {
         if (
-            (int) $target['items_id'] === Notification::ITEM_TECH_GROUP_IN_CHARGE
-            || (int) $target['items_id'] === Notification::ITEM_TECH_IN_CHARGE
-            || (int) $target['items_id'] === Notification::ITEM_USER
+            $items_id === Notification::ITEM_TECH_GROUP_IN_CHARGE
+            || $items_id === Notification::ITEM_TECH_IN_CHARGE
+            || $items_id === Notification::ITEM_USER
         ) {
             $DB->deleteOrDie('glpi_notificationtargets', [
                 'id' => $target['id'],
             ]);
-            if ((int) $target['items_id'] === Notification::ITEM_TECH_GROUP_IN_CHARGE) {
+            if ($items_id === Notification::ITEM_TECH_GROUP_IN_CHARGE) {
                 $removed_item_group = true;
             }
         }
-        if ((int) $target['items_id'] === Notification::ASSIGN_GROUP) {
+        if ($items_id === Notification::ASSIGN_GROUP) {
             $found_assigned_group = true;
         }
     }
