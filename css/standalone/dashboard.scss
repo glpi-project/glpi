@@ -1061,7 +1061,7 @@ $break_tablet: 1400px;
 
         @keyframes slice-fill-opacity {
             to {
-                fill-opacity: 1;
+                fill-opacity: 100%;
             }
         }
 
@@ -1072,7 +1072,7 @@ $break_tablet: 1400px;
                 .ct-slice-donut-solid {
                     stroke-width: 1px;
                     transform-origin: center center;
-                    fill-opacity: 0;
+                    fill-opacity: 0%;
                     animation: slice-fill-opacity 1s ease-in-out forwards;
                 }
 
@@ -1080,15 +1080,15 @@ $break_tablet: 1400px;
                     .ct-slice-pie,
                     .ct-slice-donut-solid {
                         animation: none;
-                        fill-opacity: 1;
+                        fill-opacity: 100%;
                     }
                 }
 
                 &.mouseover {
                     .ct-slice-pie,
                     .ct-slice-donut-solid {
-                        fill-opacity: 1;
-                        stroke-opacity: 1;
+                        fill-opacity: 100%;
+                        stroke-opacity: 100%;
                         stroke-width: 3px;
                     }
                 }
@@ -1096,8 +1096,8 @@ $break_tablet: 1400px;
                 &.notmouseover {
                     .ct-slice-pie,
                     .ct-slice-donut-solid {
-                        fill-opacity: 0.5;
-                        stroke-opacity: 0;
+                        fill-opacity: 50%;
+                        stroke-opacity: 0%;
                     }
                 }
             }
