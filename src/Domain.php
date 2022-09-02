@@ -820,7 +820,6 @@ class Domain extends CommonDBTM
 
     public static function getAdditionalMenuOptions()
     {
-        $can_manage_records = count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
         if (static::canManageRecords()) {
             return [
                 'domainrecord' => [
