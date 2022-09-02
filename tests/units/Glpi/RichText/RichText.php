@@ -343,25 +343,27 @@ HTML,
 
     protected function getTextFromHtmlProvider(): iterable
     {
-       // Handling of sanitized content
+        // Handling of sanitized content
         yield [
             'content'                => Sanitizer::sanitize('<p>Some HTML text</p>'),
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => 'Some HTML text',
         ];
 
-       // Handling of encoded result (to be used in textarea for instance)
+        // Handling of encoded result (to be used in textarea for instance)
         yield [
             'content'                => '<p>Some HTML content with special chars like &gt; &amp; &lt;.</p>',
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => true,
+            'preserve_case'          => false,
             'expected_result'        => 'Some HTML content with special chars like &gt; &amp; &lt;.',
         ];
 
-       // Handling of special chars (<, > and &) through sanitizing process
+        // Handling of special chars (<, > and &) through sanitizing process
         $xml_sample = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
@@ -378,6 +380,7 @@ PLAINTEXT;
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => $result,
         ];
         yield [
@@ -385,10 +388,11 @@ PLAINTEXT;
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => $result,
         ];
 
-       // Simple text without presentation from complex HTML
+        // Simple text without presentation from complex HTML
         $content = <<<HTML
 <h1>A title</h1>
 <p>Text in a paragraph</p>
@@ -398,6 +402,7 @@ PLAINTEXT;
 </ul>
 <div>
   <a href="/glpi/front/computer.form.php?id=150"><img src="/path/to/img" alt="an image" /></a>
+  Should I yell <strong>for the important words</strong>?
 </div>
 HTML;
         yield [
@@ -405,16 +410,18 @@ HTML;
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
-            'expected_result'        => 'A title Text in a paragraph el 1 el 2',
+            'preserve_case'          => false,
+            'expected_result'        => 'A title Text in a paragraph el 1 el 2 Should I yell for the important words?',
         ];
 
-       // Text with presentation from complex HTML
+        // Text with presentation from complex HTML
         $base_url = GLPI_URI;
         yield [
             'content'                => $content,
             'keep_presentation'      => true,
             'compact'                => false,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => <<<PLAINTEXT
 A TITLE
 
@@ -423,17 +430,18 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] [{$base_url}/glpi/front/computer.form.php?id=150] 
+ [an image] [{$base_url}/glpi/front/computer.form.php?id=150] Should I yell FOR THE IMPORTANT WORDS? 
 PLAINTEXT,
         ];
 
-       // Text with presentation from complex HTML (compact mode)
+        // Text with presentation from complex HTML (compact mode)
         $base_url = GLPI_URI;
         yield [
             'content'                => $content,
             'keep_presentation'      => true,
             'compact'                => true,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => <<<PLAINTEXT
 A TITLE
 
@@ -442,7 +450,27 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] 
+ [an image] Should I yell FOR THE IMPORTANT WORDS? 
+PLAINTEXT,
+        ];
+
+        // Text with presentation from complex HTML (with no case transformation)
+        $base_url = GLPI_URI;
+        yield [
+            'content'                => $content,
+            'keep_presentation'      => true,
+            'compact'                => true,
+            'encode_output_entities' => false,
+            'preserve_case'          => true,
+            'expected_result'        => <<<PLAINTEXT
+A title
+
+Text in a paragraph
+
+ 	* el 1
+ 	* el 2
+
+ [an image] Should I yell for the important words? 
 PLAINTEXT,
         ];
     }
@@ -455,12 +483,13 @@ PLAINTEXT,
         bool $keep_presentation,
         bool $compact,
         bool $encode_output_entities,
+        bool $preserve_case,
         string $expected_result
     ) {
         $richtext = $this->newTestedInstance();
 
-        $this->string($richtext->getTextFromHtml($content, $keep_presentation, $compact, $encode_output_entities))
-         ->isEqualTo($expected_result);
+        $this->string($richtext->getTextFromHtml($content, $keep_presentation, $compact, $encode_output_entities, $preserve_case))
+            ->isEqualTo($expected_result);
     }
 
     protected function isRichTextHtmlContentProvider(): iterable

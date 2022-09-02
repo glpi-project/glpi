@@ -774,6 +774,7 @@ trait PlanningEvent
         $out .= "<label for='dropdown_interval$rand'>" . __("Interval") . "</label>";
         $out .= "<div>" . Dropdown::showNumber('rrule[interval]', [
             'value'   => $rrule['interval'],
+            'min'     => 1,
             'rand'    => $rand,
             'display' => false,
         ]) . "</div>";

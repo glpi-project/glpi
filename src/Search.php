@@ -165,7 +165,7 @@ class Search
             $itemtype == "Ticket"
             && $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('mini_ticket', true)
         ) {
-            $dashboard = new Glpi\Dashboard\Grid($default, 33, 1);
+            $dashboard = new Glpi\Dashboard\Grid($default, 33, 2);
             $dashboard->show(true);
         }
 
@@ -648,8 +648,8 @@ class Search
         $to_add_view = array_diff($p['sort'], $data['toview']);
         array_push($data['toview'], ...$to_add_view);
 
-       // Special case for Ticket : put ID in front
-        if ($itemtype == 'Ticket') {
+       // Special case for CommonITILObjects : put ID in front
+        if (is_a($itemtype, CommonITILObject::class, true)) {
             array_unshift($data['toview'], 2);
         }
 
@@ -1776,7 +1776,7 @@ class Search
         $prehref = $search['target'] . (strpos($search['target'], "?") !== false ? "&" : "?");
         $href    = $prehref . $parameters;
 
-        Session::initNavigateListItems($data['itemtype']);
+        Session::initNavigateListItems($data['itemtype'], '', $href);
 
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
             'data'                => $data,
@@ -3716,7 +3716,7 @@ JAVASCRIPT;
                    //FIXME glpi_networkequipments.ip seems like a dead case
                     case "glpi_networkequipments.ip":
                     case "glpi_ipaddresses.name":
-                        $criterion = "INET_ATON(`$table$addtable`.`$field`) $order";
+                        $criterion = "INET6_ATON(`$table$addtable`.`$field`) $order";
                         break;
                 }
             }
@@ -5751,6 +5751,9 @@ JAVASCRIPT;
                     if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
                         $cleanrt     = $intertable;
                         $complexjoin = self::computeComplexJoinID($interjoinparams);
+                        if (!empty($interlinkfield) && ($interlinkfield != getForeignKeyFieldForTable($intertable))) {
+                            $intertable .= "_" . $interlinkfield;
+                        }
                         if (!empty($complexjoin)) {
                             $intertable .= "_" . $complexjoin;
                         }
@@ -7017,9 +7020,10 @@ JAVASCRIPT;
                             $out,
                             Html::showToolTip(
                                 RichText::getEnhancedHtml($data[$ID][0]['content']),
-                                ['applyto' => $itemtype .
-                                                                                $data[$ID][0]['id'],
-                                    'display' => false
+                                [
+                                    'applyto'        => $itemtype . $data[$ID][0]['id'],
+                                    'display'        => false,
+                                    'images_gallery' => false, // don't show photoswipe gallery in tooltips
                                 ]
                             )
                         );
@@ -7532,7 +7536,7 @@ HTML;
                             $out .= $field_data['trans'];
                         } else {
                             $value = $field_data['name'];
-                            $out .= $value !== null && $so['field'] === 'completename'
+                            $out .= $so['field'] === 'completename'
                                 ? CommonTreeDropdown::sanitizeSeparatorInCompletename($value)
                                 : $value;
                         }

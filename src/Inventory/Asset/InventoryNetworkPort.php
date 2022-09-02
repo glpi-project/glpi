@@ -43,6 +43,7 @@ use IPNetwork;
 use Item_DeviceNetworkCard;
 use NetworkName;
 use NetworkPort;
+use NetworkPortAggregate;
 use QueryParam;
 use Toolbox;
 use Unmanaged;
@@ -117,6 +118,7 @@ trait InventoryNetworkPort
         $this->handleIpNetworks();
         $this->handleUpdates();
         $this->handleCreates();
+        $this->handleDeletesManagementPorts();
         if (method_exists($this, 'handleAggregations')) {
             $this->handleAggregations();
         }
@@ -281,7 +283,7 @@ trait InventoryNetworkPort
      * Add a network name into database
      *
      * @param integer $items_id Port id
-     * @param string  $name     Network name name
+     * @param string  $name     Network name
      *
      * @return integer
      */
@@ -441,7 +443,7 @@ trait InventoryNetworkPort
                         $netname_id = $this->addNetworkName($keydb);
                     }
 
-                   //Handle ipaddresses
+                    //Handle ipaddresses
                     $db_addresses = [];
                     $iterator = $DB->request([
                         'SELECT' => ['id', 'name'],
@@ -469,7 +471,7 @@ trait InventoryNetworkPort
 
                     if (!$this->isMainPartial() && count($db_addresses) && count($ips)) {
                         $ipaddress = new IPAddress();
-                       //deleted IP addresses
+                        //deleted IP addresses
                         foreach (array_keys($db_addresses) as $id_ipa) {
                             $ipaddress->delete(['id' => $id_ipa], true);
                         }
@@ -493,7 +495,7 @@ trait InventoryNetworkPort
             }
         }
 
-       //delete remaining network ports, if any
+        //delete remaining network ports, if any
         if (!$this->isMainPartial() && count($db_ports)) {
             foreach ($db_ports as $netpid => $netpdata) {
                 if ($netpdata['name'] != 'management') { //prevent removing internal management port
@@ -606,6 +608,27 @@ trait InventoryNetworkPort
                 $this->handleInstantiation($type, $port, $netports_id, false);
             }
             $this->portCreated($port, $netports_id);
+        }
+    }
+
+    /**
+     * Delete Management Ports if needed
+     *
+     * @return void
+     */
+    private function handleDeletesManagementPorts()
+    {
+        if (method_exists($this, 'getManagementPorts')) {
+            if (empty($this->getManagementPorts())) {
+                //remove all port management ports
+                $networkport = new NetworkPort();
+                $networkport->deleteByCriteria([
+                    "itemtype"           => $this->itemtype,
+                    "items_id"           => $this->items_id,
+                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "name"               => "Management"
+                ], 1);
+            }
         }
     }
 

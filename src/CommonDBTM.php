@@ -6257,7 +6257,7 @@ class CommonDBTM extends CommonGLPI
             static::displayHelpdeskHeader($title, $menus);
         }
 
-        Html::displayNotFoundError();
+        Html::displayNotFoundError('The item could not be found in the database');
     }
 
     /**
@@ -6266,9 +6266,10 @@ class CommonDBTM extends CommonGLPI
      * @param array $menus   Menu path used to load specific JS file and show
      *                       breadcumbs, see $CFG_GLPI['javascript'] and
      *                       Html::includeHeader()
+     * @param string $additional_info Additional information about the error for the access log
      * @return void
      */
-    public static function displayAccessDeniedPage(array $menus): void
+    public static function displayAccessDeniedPage(array $menus, string $additional_info = ''): void
     {
         $helpdesk = Session::getCurrentInterface() == "helpdesk";
         $title = __('Access denied');
@@ -6280,7 +6281,7 @@ class CommonDBTM extends CommonGLPI
             static::displayHelpdeskHeader($title, $menus);
         }
 
-        Html::displayRightError();
+        Html::displayRightError($additional_info);
     }
 
     /**
@@ -6356,7 +6357,7 @@ class CommonDBTM extends CommonGLPI
         if (static::isNewID($id)) {
             // New item, check create rights
             if (!static::canCreate()) {
-                static::displayAccessDeniedPage($menus);
+                static::displayAccessDeniedPage($menus, 'Missing CREATE right. Cannot view the new item form.');
                 return;
             }
 
@@ -6370,7 +6371,7 @@ class CommonDBTM extends CommonGLPI
             }
 
             if (!$item->can($id, READ)) {
-                static::displayAccessDeniedPage($menus);
+                static::displayAccessDeniedPage($menus, 'Missing READ right. Cannot view the item.');
                 return;
             }
 
@@ -6385,6 +6386,9 @@ class CommonDBTM extends CommonGLPI
             static::displayHelpdeskHeader($title, $menus);
         }
 
+        if (!isset($options['id'])) {
+            $options['id'] = $id;
+        }
         // Show item
         $options['loaded'] = true;
         $item->display($options);

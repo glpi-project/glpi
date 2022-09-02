@@ -42,13 +42,30 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class CommonGLPI implements CommonGLPIInterface
 {
-   /// GLPI Item type cache : set dynamically calling getType
+    /**
+     * Show the title of the item in the navigation header ?
+     */
+    protected static $showTitleInNavigationHeader = false;
+
+   /**
+    * GLPI Item type cache : set dynamically calling getType
+    *
+    * @var integer
+    */
     protected $type                 = -1;
 
-   /// Display list on Navigation Header
+   /**
+    * Display list on Navigation Header
+    *
+    * @var boolean
+    */
     protected $displaylist          = true;
 
-   /// Show Debug
+    /**
+     * Show Debug
+     *
+     * @var boolean
+     */
     public $showdebug               = false;
 
     /**
@@ -437,6 +454,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $menu['page']            = static::getSearchURL(false);
                 $menu['links']['search'] = static::getSearchURL(false);
                 $menu['links']['lists']  = "";
+                $menu['lists_itemtype']  = static::getType();
                 $menu['icon']            = static::getIcon();
 
                 if (
@@ -1031,9 +1049,11 @@ class CommonGLPI implements CommonGLPIInterface
 
             echo "</div>";
 
-            if ($this instanceof CommonITILObject) {
+            if (static::$showTitleInNavigationHeader) {
                 echo "<h3 class='navigationheader-title strong d-flex align-items-center'>";
-                echo "<i class='" . $this->getIcon() . " me-1'></i>";
+                if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
+                    echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
+                }
                 echo $this->getNameID([
                     'forceid' => $this instanceof CommonITILObject
                 ]);

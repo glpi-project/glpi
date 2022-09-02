@@ -128,7 +128,6 @@ class Printer extends NetworkEquipment
                 unset($val->credentials);
             }
 
-
             $res_rule = $rulecollection->processAllRules(['name' => $val->name]);
             if (
                 (!isset($res_rule['_ignore_ocs_import']) || $res_rule['_ignore_ocs_import'] != "1")
@@ -139,6 +138,8 @@ class Printer extends NetworkEquipment
                 }
                 if (isset($res_rule['manufacturer'])) {
                     $val->manufacturers_id = $res_rule['manufacturer'];
+                    $known_key = md5('manufacturers_id' . $res_rule['manufacturer']);
+                    $this->known_links[$known_key] = $res_rule['manufacturer'];
                 }
 
                 if (isset($this->extra_data['pagecounters'])) {
@@ -158,6 +159,30 @@ class Printer extends NetworkEquipment
                 unset($this->data[$k]);
             }
         }
+
+        //try to know if management port IP is already known as IP port
+        //if yes remove it from management port
+        $known_ports = $port_managment = $this->getManagementPorts();
+        if (isset($known_ports['management']) && property_exists($known_ports['management'], 'ipaddress')) {
+            foreach ($known_ports['management']->ipaddress as $pa_ip_key => $pa_ip_val) {
+                if (property_exists($this->raw_data->content, 'network_ports')) {
+                    foreach ($this->raw_data->content->network_ports as $port_obj) {
+                        if (property_exists($port_obj, 'ips')) {
+                            foreach ($port_obj->ips as $port_ip) {
+                                if ($pa_ip_val == $port_ip) {
+                                    unset($port_managment['management']->ipaddress[$pa_ip_key]);
+                                    if (empty($port_managment['management']->ipaddress)) {
+                                        unset($port_managment['management']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->setManagementPorts($port_managment);
 
         return $this->data;
     }
@@ -214,7 +239,7 @@ class Printer extends NetworkEquipment
                    // add printer
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $printer->add(Toolbox::addslashes_deep((array)$val));
+                    $items_id = $printer->add(Toolbox::addslashes_deep($this->handleInput($val)));
                 } else {
                     $items_id = $data['found_inventories'][0];
                 }

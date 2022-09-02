@@ -314,19 +314,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public function post_addItem()
     {
-
-       // add screenshots
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles(
             $this->input,
             [
                 'force_update'  => true,
                 'content_field' => 'answer',
-                'name'          => 'answer',
             ]
         );
-
-       // Add documents
-        $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
         if (
             isset($this->input["_visibility"])
@@ -728,21 +723,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function post_updateItem($history = 1)
     {
-       // Update screenshots
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles(
             $this->input,
             [
                 'force_update'  => true,
                 'content_field' => 'answer',
-                'name'          => 'answer',
-            ]
-        );
-
-       // add uploaded documents
-        $this->input = $this->addFiles(
-            $this->input,
-            [
-                'force_update'  => true,
             ]
         );
 

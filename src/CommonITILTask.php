@@ -360,10 +360,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     {
         global $CFG_GLPI;
 
-       // Add document if needed, without notification for file input
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
-       // Add document if needed, without notification for textarea
-        $this->input = $this->addFiles($this->input, ['name' => 'content', 'force_update' => true]);
 
         if (in_array("begin", $this->updates)) {
             PlanningRecall::managePlanningUpdates(
@@ -568,10 +566,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     {
         global $CFG_GLPI;
 
-       // Add document if needed, without notification for file input
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
-       // Add document if needed, without notification for textarea
-        $this->input = $this->addFiles($this->input, ['name' => 'content', 'force_update' => true]);
 
         if (isset($this->input['_planningrecall'])) {
             $this->input['_planningrecall']['items_id'] = $this->fields['id'];
@@ -1648,6 +1644,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         $title = __("Ticket tasks to do");
                     } else if ($itemtype == "ProblemTask") {
                         $title = __("Problem tasks to do");
+                    } else if ($itemtype == "ChangeTask") {
+                        $title = __("Change tasks to do");
                     }
                     $linked_itemtype = str_replace("Task", "", $itemtype);
                     echo "<a href=\"" . $linked_itemtype::getSearchURL() . "?" .
@@ -1664,6 +1662,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $type = Ticket::getTypeName();
             } else if ($itemtype == "ProblemTask") {
                 $type = Problem::getTypeName();
+            } else if ($itemtype == "ChangeTask") {
+                $type = Change::getTypeName();
             }
             echo "<th style='width: 20%;'>" . __('Title') . " (" . strtolower($type) . ")</th>";
             echo "<th>" . __('Description') . "</th>";
@@ -1708,6 +1708,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $item_link = new Problem();
                 $item_link->getFromDB($job->fields['problems_id']);
                 $tab_name = "ProblemTask";
+            } else if ($DB->fieldExists($job->getTable(), 'changes_id')) {
+                $item_link = new Change();
+                $item_link->getFromDB($job->fields['changes_id']);
+                $tab_name = "ChangeTask";
             }
 
             $bgcolor = $_SESSION["glpipriority_" . $item_link->fields["priority"]];

@@ -357,13 +357,13 @@ class ITILSolution extends DbTestCase
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
 HTML
             ),
-            '_content' => [
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
@@ -386,13 +386,13 @@ HTML
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
 HTML
             ),
-            '_content' => [
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);

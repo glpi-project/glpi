@@ -103,15 +103,15 @@ class VirtualMachine extends InventoryAsset
                 }
             }
 
-            if (property_exists($vm_val, 'memory')) {
-                if (strstr($vm_val->memory, 'MB')) {
-                    $vm_val = str_replace('MB', '', $vm_val->memory);
-                } else if (strstr($vm_val->memory, 'KB')) {
-                    $vm_val = str_replace('KB', '', $vm_val->memory) / 1000;
-                } else if (strstr($vm_val->memory, 'GB')) {
-                    $vm_val->memory = str_replace('GB', '', $vm_val->memory) * 1000;
-                } else if (strstr($vm_val->memory, 'B')) {
-                    $vm_val->memory = str_replace('B', '', $vm_val->memory) / 1000000;
+            if (property_exists($vm_val, 'ram')) {
+                if (strstr($vm_val->ram, 'MB')) {
+                    $vm_val = str_replace('MB', '', $vm_val->ram);
+                } else if (strstr($vm_val->ram, 'KB')) {
+                    $vm_val = str_replace('KB', '', $vm_val->ram) / 1000;
+                } else if (strstr($vm_val->ram, 'GB')) {
+                    $vm_val->ram = str_replace('GB', '', $vm_val->ram) * 1000;
+                } else if (strstr($vm_val->ram, 'B')) {
+                    $vm_val->ram = str_replace('B', '', $vm_val->ram) / 1000000;
                 }
             }
 
@@ -134,11 +134,11 @@ class VirtualMachine extends InventoryAsset
                     $vm_val->cpus = $cpus;
                 }
 
-               //create memory component
-                if (!property_exists($vm_val, 'memories') && property_exists($vm_val, 'memory')) {
+                //create memory component
+                if (!property_exists($vm_val, 'memories') && property_exists($vm_val, 'ram')) {
                     $memories = [];
                     $memory = new \stdClass();
-                    $memory->capacity = $vm_val->memory;
+                    $memory->capacity = $vm_val->ram;
                     $memories[] = $memory;
                     $vm_val->memories = $memories;
                 }
@@ -218,10 +218,11 @@ class VirtualMachine extends InventoryAsset
 
         foreach ($db_vms as $keydb => $arraydb) {
             foreach ($value as $key => $val) {
+                $handled_input = $this->handleInput($val);
                 $sinput = [
-                    'name'                     => $val->name ?? '',
-                    'uuid'                     => $val->uuid ?? '',
-                    'virtualmachinesystems_id' => $val->virtualmachinesystems_id ?? 0
+                    'name'                     => $handled_input['name'] ?? '',
+                    'uuid'                     => $handled_input['uuid'] ?? '',
+                    'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
                 ];
                 if ($sinput == $arraydb) {
                     $input = [
@@ -229,9 +230,9 @@ class VirtualMachine extends InventoryAsset
                         'is_dynamic'   => 1
                     ];
 
-                    foreach (['vcpu', 'memory', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
+                    foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
                         if (property_exists($val, $prop)) {
-                            $input[$prop] = $val->$prop;
+                            $input[$prop] = $handled_input[$prop];
                         }
                     }
                     $computerVirtualmachine->update(Toolbox::addslashes_deep($input));
@@ -251,7 +252,7 @@ class VirtualMachine extends InventoryAsset
 
         if (count($value) != 0) {
             foreach ($value as $val) {
-                $input = (array)$val;
+                $input = $this->handleInput($val);
                 $input['computers_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
                 $computerVirtualmachine->add(Toolbox::addslashes_deep($input));

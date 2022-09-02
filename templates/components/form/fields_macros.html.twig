@@ -189,6 +189,8 @@
       'enable_richtext': false,
       'enable_images': true,
       'enable_fileupload': false,
+      'enable_mentions': false,
+      'entities_id': session('glpiactive_entity'),
       'uploads': []
    }|merge(options) %}
 
@@ -251,8 +253,8 @@
             function() {
                const user_mention = new GLPI.RichText.UserMention(
                   tinymce.get('{{ id }}'),
-                  {{ session('glpiactive_entity') }},
-                  '{{ idor_token('User', {'right': 'all', 'entity_restrict': session('glpiactive_entity')}) }}'
+                  {{ options.entities_id }},
+                  '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}'
                );
                user_mention.register();
             }

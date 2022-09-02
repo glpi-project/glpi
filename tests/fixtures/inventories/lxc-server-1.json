@@ -1,0 +1,37 @@
+{
+   "action": "inventory",
+   "content": {
+      "bios": {
+         "bdate": "2011-07-21",
+         "bmanufacturer": "American Megatrends Inc.",
+         "bversion": "P04",
+         "mmanufacturer": "FOXCONN",
+         "mmodel": "NETBOX nT-435/535",
+         "msn": "UH8123706132F",
+         "smanufacturer": "FOXCONN",
+         "smodel": "nT435/nT535",
+         "ssn": "THF10H0D0525102745"
+      },
+      "hardware": {
+         "chassis_type": "Low Profile Desktop",
+         "name": "lxc-server",
+         "uuid": "647f5d51-261e-5113-dce0-d02788d8a3ff",
+         "vmsystem": "Physical"
+      },
+      "versionclient": "GLPI-Inventory_v1.4-1",
+      "virtualmachines": [
+         {
+            "mac": "00:16:3e:ec:95:69",
+            "memory": 2048,
+            "name": "glpi-10-rc1",
+            "status": "off",
+            "uuid": "487dfdb542a4bfb23670b8d4e76d8b6886c2ed35",
+            "vcpu": 2,
+            "vmtype": "lxc"
+         }
+      ]
+   },
+   "deviceid": "lxc-server-2022-08-09-17-49-51",
+   "itemtype": "Computer",
+   "partial": true
+}

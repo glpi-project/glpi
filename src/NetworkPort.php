@@ -563,6 +563,7 @@ class NetworkPort extends CommonDBChild
         $this->addStandardTab('NetworkPortMetrics', $ong, $options);
         $this->addStandardTab('NetworkName', $ong, $options);
         $this->addStandardTab('NetworkPort_Vlan', $ong, $options);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
         $this->addStandardTab('NetworkPortConnectionLog', $ong, $options);
         $this->addStandardTab('NetworkPortInstantiation', $ong, $options);

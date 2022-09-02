@@ -112,16 +112,9 @@ class OperatingSystem extends InventoryAsset
             'items_id'  => $this->item->fields['id']
         ]);
 
-        $input_os = [
+        $input_os = $this->handleInput($val) + [
             'itemtype'                          => $this->item->getType(),
             'items_id'                          => $this->item->fields['id'],
-            'operatingsystemarchitectures_id'   => $val->operatingsystemarchitectures_id ?? 0,
-            'operatingsystemkernelversions_id'  => $val->operatingsystemkernelversions_id ?? 0,
-            'operatingsystems_id'               => $val->operatingsystems_id,
-            'operatingsystemversions_id'        => $val->operatingsystemversions_id ?? 0,
-            'operatingsystemservicepacks_id'    => $val->operatingsystemservicepacks_id ?? 0,
-            'licenseid'                         => $val->licenseid ?? '',
-            'license_number'                    => $val->license_number ?? '',
             'is_dynamic'                        => 1,
             'entities_id'                       => $this->item->fields['entities_id']
         ];
@@ -130,7 +123,7 @@ class OperatingSystem extends InventoryAsset
            //OS exists, check for updates
             $same = true;
             foreach ($input_os as $key => $value) {
-                if ($ios->fields[$key] != $value) {
+                if (isset($ios->fields[$key]) && $ios->fields[$key] != $value) {
                     $same = false;
                     break;
                 }
@@ -142,11 +135,11 @@ class OperatingSystem extends InventoryAsset
             $ios->add(Toolbox::addslashes_deep($input_os));
         }
 
-        $val->operatingsystems_id = $ios->fields['id'];
-        ;
-        $this->operatingsystems_id = $val->operatingsystems_id;
+        $ioskey = 'operatingsystems_id' . $val->operatingsystems_id;
+        $this->known_links[$ioskey] = $ios->fields['id'];
+        $this->operatingsystems_id = $ios->fields['id'];
 
-       //cleanup
+        //cleanup
         if (!$this->main_asset || !$this->main_asset->isPartial()) {
             $iterator = $DB->request([
                 'FROM' => $ios->getTable(),

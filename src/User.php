@@ -2185,8 +2185,10 @@ class User extends CommonDBTM
         if (!$DB->isSlave()) {
            //Instanciate the affectation's rule
             $rule = new RuleRightCollection();
+            $groups = Group_User::getUserGroups($this->fields['id']);
+            $groups_id = array_column($groups, 'id');
 
-            $this->fields = $rule->processAllRules([], Toolbox::stripslashes_deep($this->fields), [
+            $this->fields = $rule->processAllRules($groups_id, Toolbox::stripslashes_deep($this->fields), [
                 'type'   => Auth::EXTERNAL,
                 'email'  => $this->fields["_emails"],
                 'login'  => $this->fields["name"]
@@ -4864,7 +4866,7 @@ JAVASCRIPT;
 
                 foreach ($item_iterator as $data) {
                     $cansee = $item->can($data["id"], READ);
-                    $link   = $data["name"];
+                    $link   = $data[$item->getNameField()];
                     if ($cansee) {
                         $link_item = $item::getFormURLWithID($data['id']);
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
@@ -5124,6 +5126,12 @@ JAVASCRIPT;
                 $tmp['is_active'] = 0;
                 $myuser->update($tmp);
                 Profile_User::deleteRights($users_id, true);
+                Group_User::deleteGroups($users_id, true);
+                break;
+
+            case AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS:
+                $tmp['is_active'] = 0;
+                $myuser->update($tmp);
                 Group_User::deleteGroups($users_id, true);
                 break;
         }
@@ -5414,8 +5422,8 @@ JAVASCRIPT;
 
         // Same check but for the account activation dates
         if (
-            ($user->fields['begin_date'] !== null && $user->fields['begin_date'] < $_SESSION['glpi_currenttime'])
-            || ($user->fields['end_date'] !== null && $user->fields['end_date'] > $_SESSION['glpi_currenttime'])
+            ($user->fields['begin_date'] !== null && $user->fields['begin_date'] > $_SESSION['glpi_currenttime'])
+            || ($user->fields['end_date'] !== null && $user->fields['end_date'] < $_SESSION['glpi_currenttime'])
         ) {
             throw new ForgetPasswordException(
                 __("Unable to reset password, please contact your administrator")

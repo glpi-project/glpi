@@ -68,7 +68,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
             'date_mod'      => $_SESSION["glpi_currenttime"],
-            '_donotadddocs' => true
         ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -89,7 +88,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $input = [
             'id'            => $this->fields[static::$items_id_1],
             'date_mod'      => $_SESSION["glpi_currenttime"],
-            '_donotadddocs' => true
         ];
 
         if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -436,7 +434,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
                 $prem = true;
                 foreach ($iterator as $data) {
-                    $name = $data["name"];
+                    $name = $data["name"] ?? '';
                     if (
                         $_SESSION["glpiis_ids_visible"]
                         || empty($data["name"])

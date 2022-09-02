@@ -88,13 +88,23 @@ class NotificationMailing implements NotificationInterface
     {
         global $CFG_GLPI;
 
+        $sender = Config::getEmailSender();
+        if ($sender['email'] === null || !self::isUserAddressValid($sender['email'])) {
+            Session::addMessageAfterRedirect(
+                __('Sender email is not a valid email address.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         $mmail = new GLPIMailer();
         $mail = $mmail->getEmail();
 
         $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-generated');
         // For exchange
         $mail->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, NDR, RN, NRN');
-        $mail->from(new Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
+        $mail->from(new Address($sender['email'], $sender['name'] ?? ''));
 
         $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
         $recipient = $CFG_GLPI['admin_email'];

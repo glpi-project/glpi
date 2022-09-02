@@ -216,7 +216,7 @@ abstract class CommonDropdown extends CommonDBTM
         ?string $title = null,
         ?array $menus = null
     ): void {
-        if (is_null($menus)) {
+        if (empty($menus)) {
             $dropdown = new static();
 
             $menus = [
@@ -614,26 +614,24 @@ abstract class CommonDropdown extends CommonDBTM
         echo "<form action='$target' method='post'>";
         echo "<table class='tab_cadre'><tr><td>";
 
+        $replacement_options = [
+            'name' => '_replace_by'
+        ];
+        if (!$this instanceof Entity) {
+            $replacement_options['entity'] = $this->getEntityID();
+        }
         if ($this instanceof CommonTreeDropdown) {
            // TreeDropdown => default replacement is parent
             $fk = $this->getForeignKeyField();
-            Dropdown::show(
-                getItemTypeForTable($this->getTable()),
-                ['name'   => '_replace_by',
-                    'value'  => $this->fields[$fk],
-                    'entity' => $this->getEntityID(),
-                    'used'   => getSonsOf($this->getTable(), $ID),
-                ]
-            );
+            $replacement_options['value'] = $this->fields[$fk];
+            $replacement_options['used']  = getSonsOf($this->getTable(), $ID);
         } else {
-            Dropdown::show(
-                getItemTypeForTable($this->getTable()),
-                ['name'   => '_replace_by',
-                    'entity' => $this->getEntityID(),
-                    'used'   => [$ID]
-                ]
-            );
+            $replacement_options['used'] = [$ID];
         }
+        Dropdown::show(
+            getItemTypeForTable($this->getTable()),
+            $replacement_options
+        );
         echo "<input type='hidden' name='id' value='$ID' />";
         echo "<input type='hidden' name='itemtype' value='" . $this->getType() . "' />";
         echo "</td><td>";
@@ -920,15 +918,19 @@ abstract class CommonDropdown extends CommonDBTM
         ) {
             $title = __s('FAQ');
 
+            $condition = [
+                KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
+            ];
+
             if (Session::getCurrentInterface() == 'central') {
                 $title = __s('Knowledge base');
+            } else {
+                $condition[KnowbaseItem::getTable() . '.is_faq'] = 1;
             }
 
             $rand = mt_rand();
             $kbitem = new KnowbaseItem();
-            $found_kbitem = $kbitem->find([
-                KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
-            ]);
+            $found_kbitem = $kbitem->find($condition);
 
             if (count($found_kbitem)) {
                 $kbitem->getFromDB(reset($found_kbitem)['id']);
@@ -961,9 +963,7 @@ abstract class CommonDropdown extends CommonDBTM
                         'value'     => reset($found_kbitem)['id'],
                         'display'   => false,
                         'rand'      => $rand,
-                        'condition' => [
-                            KnowbaseItem::getTable() . '.id' => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id'])
-                        ],
+                        'condition' => $condition,
                         'on_change' => "getKnowbaseItemAnswer$rand()"
                     ]);
                     $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";

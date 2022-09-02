@@ -74,6 +74,7 @@ class NetworkName extends FQDNLabel
         $ong  = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab('NetworkAlias', $ong, $options);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -229,7 +230,9 @@ class NetworkName extends FQDNLabel
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'  => 'mainitemtype_mainitem',
-                'condition' => ['NEWTABLE.is_deleted' => 0]
+                'condition' => ['NEWTABLE.is_deleted' => 0,
+                    'NOT' => ['NEWTABLE.name' => '']
+                ]
             ]
         ];
 

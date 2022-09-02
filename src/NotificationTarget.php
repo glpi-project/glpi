@@ -650,16 +650,24 @@ class NotificationTarget extends CommonDBChild
     {
         global $CFG_GLPI;
 
+        if (urldecode($redirect) === $redirect) {
+            // `redirect` parameter value have to be url-encoded.
+            // Prior to GLPI 10.0.3, method caller was responsible of this encoding,
+            // so we have to ensure that param is not already encoded before encoding it,
+            // to prevent BC breaks.
+            $redirect = rawurlencode($redirect);
+        }
+
         switch ($usertype) {
             case self::EXTERNAL_USER:
-                return urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=$redirect");
+                return $CFG_GLPI["url_base"] . "/index.php?redirect=$redirect";
 
             case self::ANONYMOUS_USER:
                // No URL
                 return '';
 
             case self::GLPI_USER:
-                return urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=$redirect&noAUTO=1");
+                return $CFG_GLPI["url_base"] . "/index.php?redirect=$redirect&noAUTO=1";
         }
     }
 

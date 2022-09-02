@@ -239,7 +239,8 @@ class APIRest extends APIBaseClass
          ->contains('content-type')
          ->contains('accept')
          ->contains('session-token')
-         ->contains('authorization');
+         ->contains('authorization')
+         ->contains('app-token');
     }
 
     /**
@@ -1238,5 +1239,96 @@ class APIRest extends APIBaseClass
         if (!is_null($after_test)) {
             $after_test();
         }
+    }
+
+    /**
+     * Data provider for testReturnSanitizedContentUnit
+     *
+     * @return array
+     */
+    protected function testReturnSanitizedContentUnitProvider(): array
+    {
+        return [
+            [null, true],
+            ["", false],
+            ["true", true],
+            ["false", false],
+            ["on", true],
+            ["off", false],
+            ["1", true],
+            ["0", false],
+            ["yes", true],
+            ["no", false],
+            ["asfbhueshf", false],
+        ];
+    }
+
+    /**
+     * Unit test for the "returnSanitizedContent" method
+     *
+     * @dataProvider testReturnSanitizedContentUnitProvider
+     *
+     * @param string $header_value    Header value to be tested
+     * @param bool   $expected_output Expected output for this header
+     *
+     * @return void
+     */
+    public function testReturnSanitizedContentUnit(
+        ?string $header_value,
+        bool $expected_output
+    ): void {
+        $api = new \Glpi\Api\APIRest();
+
+        if ($header_value === null) {
+            // Simulate missing header
+            unset($_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT']);
+        } else {
+            $_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT'] = $header_value;
+        }
+
+        // Run test
+        $this->boolean(
+            $api->returnSanitizedContent()
+        )->isEqualTo($expected_output);
+
+        // Clean header
+        unset($_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT']);
+    }
+
+    /**
+     * Functional test for the "returnSanitizedContent" method
+     *
+     * @return void
+     */
+    public function testReturnSanitizedContentFunctional(): void
+    {
+        // Get computer with encoded comment
+        $computers_id = getItemByTypeName(
+            "Computer",
+            "_test_pc_with_encoded_comment",
+            true
+        );
+
+        // Request params
+        $url = "/Computer/$computers_id";
+        $method = "GET";
+        $headers = ['Session-Token' => $this->session_token];
+
+        // Execute first test (keep encoded content)
+        $data = $this->query($url, [
+            'headers' => $headers,
+            'verb'    => $method,
+        ], 200);
+        $this->string($data['comment'])->isEqualTo("&#60;&#62;");
+
+        // Add additional header
+        $headers['X-GLPI-Sanitized-Content'] = "false";
+
+        // Execute second test (expect decoded content)
+        $data = $this->query($url, [
+            'headers' => $headers,
+            'verb'    => $method,
+        ], 200);
+        $this->string($data['comment'])->isEqualTo("<>");
     }
 }

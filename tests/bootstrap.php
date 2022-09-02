@@ -146,6 +146,10 @@ function loadDataset()
             ], [
                 'name'        => '_test_pc22',
                 'entities_id' => '_test_child_2',
+            ], [
+                'name'        => '_test_pc_with_encoded_comment',
+                'entities_id' => '_test_root_entity',
+                'comment'     => '&#60;&#62;', // "&#60;" => "<", "&#62;" => ">"
             ]
         ], 'ComputerModel' => [
             [

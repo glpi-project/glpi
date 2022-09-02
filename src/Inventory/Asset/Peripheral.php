@@ -149,10 +149,11 @@ class Peripheral extends InventoryAsset
         $value = $this->data;
 
         foreach ($value as $key => $val) {
+            $handled_input = $this->handleInput($val);
             $input = [
                 'itemtype'     => 'Peripheral',
-                'name'         => $val->name ?? '',
-                'serial'       => $val->serial ?? '',
+                'name'         => $handled_input['name'] ?? '',
+                'serial'       => $handled_input['serial'] ?? '',
                 'entities_id'  => $this->item->fields['entities_id']
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
@@ -162,11 +163,11 @@ class Peripheral extends InventoryAsset
                 $itemtype = 'Peripheral';
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
-                    $val->entities_id = $this->entities_id;
-                    $items_id = $peripheral->add(Toolbox::addslashes_deep((array)$val), [], false);
+                    $handled_input['entities_id'] = $this->entities_id;
+                    $items_id = $peripheral->add(Toolbox::addslashes_deep($handled_input), [], false);
                 } else {
                     $items_id = $data['found_inventories'][0];
-                    $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + (array)$val), false);
+                    $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + $handled_input), false);
                 }
 
                 $peripherals[] = $items_id;

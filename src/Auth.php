@@ -1327,7 +1327,7 @@ class Auth extends CommonGLPI
         }
         $redir_string = "";
         if (!empty($redirect_string)) {
-            $redir_string = "?redirect=" . $redirect_string;
+            $redir_string = "?redirect=" . rawurlencode($redirect_string);
         }
        // Using x509 server
         if (
@@ -1408,6 +1408,7 @@ class Auth extends CommonGLPI
             } else if (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
                 $redirect = $_GET['redirect'];
             }
+            $redirect = $redirect ? Sanitizer::unsanitize($redirect) : '';
         }
 
        //Direct redirect

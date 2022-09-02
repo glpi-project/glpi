@@ -76,6 +76,8 @@ abstract class InventoryAsset
     protected $request_query;
     /** @var bool */
     private bool $is_new = false;
+    /** @var array */
+    protected array $known_links = [];
 
     /**
      * Constructor
@@ -201,47 +203,48 @@ abstract class InventoryAsset
                         $foreignkey_itemtype[$key] = getItemtypeForForeignKeyField('manufacturers_id');
                     }
                 }
-                if (!is_numeric($val)) {
-                    $known_key = md5($key . $val);
-                    if (isset($knowns[$known_key])) {
-                        $value->$key = $knowns[$known_key];
-                        continue;
-                    }
 
+                $known_key = md5($key . $val);
+                if (!isset($this->known_links[$known_key])) {
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
-                        $value->$key = Dropdown::importExternal('Location', addslashes($value->$key), $entities_id);
+                        $this->known_links[$known_key] = Dropdown::importExternal('Location', addslashes($value->$key), $entities_id);
                     } else if (preg_match('/^.+models_id/', $key)) {
-                       // models that need manufacturer relation for dictionary import
-                       // see CommonDCModelDropdown::$additional_fields_for_dictionnary
-                        $value->$key = Dropdown::importExternal(
+                        // models that need manufacturer relation for dictionary import
+                        // see CommonDCModelDropdown::$additional_fields_for_dictionnary
+                        $this->known_links[$known_key] = Dropdown::importExternal(
                             getItemtypeForForeignKeyField($key),
                             addslashes($value->$key),
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
                     } else if (isset($foreignkey_itemtype[$key])) {
-                        $value->$key = Dropdown::importExternal($foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
-                    } else if (isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                        $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
+                    } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
                         $foreignkey_itemtype[$key] = $itemtype;
-                        $value->$key = Dropdown::importExternal($foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
+
+                        $this->known_links[$known_key] = Dropdown::importExternal(
+                            $foreignkey_itemtype[$key],
+                            addslashes($value->$key),
+                            $entities_id
+                        );
 
                         if (
                             $key == 'operatingsystemkernelversions_id'
                             && property_exists($value, 'operatingsystemkernels_id')
-                            && (int)$value->$key > 0
+                            && (int)$this->known_links[$known_key] > 0
                         ) {
                             $kversion = new OperatingSystemKernelVersion();
-                            $kversion->getFromDB($value->$key);
-                            if ($kversion->fields['operatingsystemkernels_id'] != $value->operatingsystemkernels_id) {
+                            $kversion->getFromDB($this->known_links[$known_key]);
+                            $oskernels_id = $this->known_links[md5('operatingsystemkernels_id' . $value->operatingsystemkernels_id)];
+                            if ($kversion->fields['operatingsystemkernels_id'] != $oskernels_id) {
                                 $kversion->update([
                                     'id'                          => $kversion->getID(),
-                                    'operatingsystemkernels_id'   => $value->operatingsystemkernels_id
+                                    'operatingsystemkernels_id'   => $oskernels_id
                                 ]);
                             }
                         }
                     }
-                    $knowns[$known_key] = $value->$key;
                 }
             }
         }
@@ -384,5 +387,22 @@ abstract class InventoryAsset
     public function isNew(): bool
     {
         return $this->is_new;
+    }
+
+    protected function handleInput(\stdClass $value): array
+    {
+        $input = [];
+        foreach ($value as $key => $val) {
+            if (is_object($val) || is_array($val)) {
+                continue;
+            }
+            $known_key = md5($key . $val);
+            if (isset($this->known_links[$known_key])) {
+                $input[$key] = $this->known_links[$known_key];
+            } else {
+                $input[$key] = $val;
+            }
+        }
+        return $input;
     }
 }

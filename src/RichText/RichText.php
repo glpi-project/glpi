@@ -103,7 +103,8 @@ final class RichText
         string $content,
         bool $keep_presentation = true,
         bool $compact = false,
-        bool $encode_output_entities = false
+        bool $encode_output_entities = false,
+        bool $preserve_case = false
     ): string {
         global $CFG_GLPI;
 
@@ -123,7 +124,18 @@ final class RichText
                 );
             }
 
-            $html = new Html2Text($content, $options);
+            $options['preserve_case'] = $preserve_case;
+
+            $html = new class ($content, $options) extends Html2Text {
+                protected function toupper($str)
+                {
+                    if ($this->options['preserve_case'] === true) {
+                        return $str;
+                    }
+
+                    return parent::toupper($str);
+                }
+            };
             $content = $html->getText();
         } else {
            // Remove HTML tags using htmLawed
@@ -257,23 +269,47 @@ final class RichText
     public static function getEnhancedHtml(?string $content, array $params = []): string
     {
         $p = [
-            'images_gallery'           => false,
-            'user_mentions'            => true,
+            'images_gallery' => false,
+            'user_mentions'  => true,
+            'images_lazy'    => true,
         ];
         $p = array_replace($p, $params);
 
        // Sanitize content first (security and to decode HTML entities)
         $content = self::getSafeHtml($content);
 
-        if (isset($p['user_mentions'])) {
+        if ($p['user_mentions']) {
             $content = UserMention::refreshUserMentionsHtmlToDisplay($content);
         }
 
-        if (isset($p['images_gallery'])) {
+        if ($p['images_lazy']) {
+            $content = self::loadImagesLazy($content);
+        }
+
+        if ($p['images_gallery']) {
             $content = self::replaceImagesByGallery($content);
         }
 
         return $content;
+    }
+
+
+    /**
+     * insert `loading="lazy" into img tag
+     *
+     * @since 10.0.3
+     *
+     * @param string  $content
+     *
+     * @return string
+     */
+    private static function loadImagesLazy(string $content): string
+    {
+        return preg_replace(
+            '/<img([\w\W]+?)\/+>/',
+            '<img$1 loading="lazy">',
+            $content
+        );
     }
 
     /**
@@ -403,7 +439,7 @@ final class RichText
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
             $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail'>";
+            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy'>";
             $out .= "</a>";
             $out .= "</figure>";
         }

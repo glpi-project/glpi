@@ -167,6 +167,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'used'        => $used,
                 'entity'      => $problem->getEntityID(),
                 'entity_sons' => $problem->isRecursive(),
+                'displaywith' => ['id'],
             ]);
             echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -290,10 +291,11 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             echo self::dropdownLinks('link');
             echo "&nbsp;";
             Problem::dropdown([
-                'name'      => 'items_id_2',
-                'used'      => $used,
-                'entity'    => $change->getEntityID(),
-                'condition' => Problem::getOpenCriteria()
+                'name'        => 'items_id_2',
+                'used'        => $used,
+                'entity'      => $change->getEntityID(),
+                'condition'   => Problem::getOpenCriteria(),
+                'displaywith' => ['id'],
             ]);
             echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";

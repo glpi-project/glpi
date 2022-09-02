@@ -150,6 +150,10 @@ var filterPluginList = function(page, force) {
     }).done(function(html) {
         plugins_list.html(html);
 
+        if (marketplace.data('tab') === 'installed') {
+            return; // 'installed' tab is not paginated
+        }
+
         var nb_plugins = jqxhr.getResponseHeader('X-GLPI-Marketplace-Total');
         $.get(ajax_url, {
             'action': 'getPagination',

@@ -559,11 +559,12 @@ $CFG_GLPI['javascript'] = [
         ], $dashboard_libs)
     ],
     'assets'    => [
-        'dashboard' => $dashboard_libs,
-        'rack'      => ['gridstack', 'rack'],
-        'printer'   => $dashboard_libs,
-        'cable'     => ['cable'],
-        'socket'    => ['cable'],
+        'dashboard'   => $dashboard_libs,
+        'rack'        => ['gridstack', 'rack'],
+        'printer'     => $dashboard_libs,
+        'cable'       => ['cable'],
+        'socket'      => ['cable'],
+        'networkport' => $dashboard_libs,
     ],
     'helpdesk'  => [
         'dashboard' => $dashboard_libs,

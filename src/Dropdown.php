@@ -367,7 +367,7 @@ class Dropdown
 
            // KB links
             if (
-                $item->isField('knowbaseitemcategories_id') && Session::haveRight('knowbase', READ)
+                $item->isField('knowbaseitemcategories_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
                 && method_exists($item, 'getLinks')
             ) {
                 $paramskblinks = [
@@ -384,6 +384,11 @@ class Dropdown
                     $paramskblinks,
                     false
                 );
+                // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,
+                //  as the profile does not have rights to ITILCategory to initialise it before.
+                if ($item->isNewItem()) {
+                    $item->getFromDB($params['value']);
+                }
                 $icons .= "<span id='$kblink_id'>";
                 $icons .= '&nbsp;' . $item->getLinks();
                 $icons .= "</span>";
@@ -3622,9 +3627,9 @@ class Dropdown
 
         if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
             $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
-            $orwhere = [
+            $orwhere = $item->isField('name') ? [
                 'name'   => $search
-            ];
+            ] : [];
             if (is_int($post['searchText']) || (is_string($post['searchText'] && ctype_digit($post['searchText'])))) {
                 $orwhere[] = ['id' => $post['searchText']];
             }

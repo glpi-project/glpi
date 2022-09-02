@@ -2621,21 +2621,22 @@ class Toolbox
                         $document->getFromDB($id)
                         && strpos($document->fields['mime'], 'image/') !== false
                     ) {
-                        // append itil object reference in image link
-                        $itil_object = null;
-                        if ($item instanceof CommonITILObject) {
-                            $itil_object = $item;
-                        } else if (
-                            isset($item->input['_job'])
+                        // append object reference in image link
+                        $linked_object = null;
+                        if (
+                              !($item instanceof CommonITILObject)
+                              && isset($item->input['_job'])
                               && $item->input['_job'] instanceof CommonITILObject
                         ) {
-                            $itil_object = $item->input['_job'];
+                            $linked_object = $item->input['_job'];
+                        } else if ($item instanceof CommonDBTM) {
+                            $linked_object = $item;
                         }
-                        $itil_url_param = null !== $itil_object
-                        ? "&{$itil_object->getForeignKeyField()}={$itil_object->fields['id']}"
+                        $object_url_param = null !== $linked_object
+                        ? sprintf('&itemtype=%s&items_id=%s', $linked_object->getType(), $linked_object->fields['id'])
                         : "";
                         $img = "<img alt='" . $image['tag'] . "' src='" . $base_path .
-                          "/front/document.send.php?docid=" . $id . $itil_url_param . "'/>";
+                          "/front/document.send.php?docid=" . $id . $object_url_param . "'/>";
 
                       // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
@@ -2672,7 +2673,7 @@ class Toolbox
                                 $width,
                                 $height,
                                 true,
-                                $itil_url_param
+                                $object_url_param
                             );
                             if (empty($new_image)) {
                                   $new_image = '#' . $image['tag'] . '#';

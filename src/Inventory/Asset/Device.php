@@ -107,18 +107,18 @@ abstract class Device extends InventoryAsset
 
             foreach ($value as $val) {
                 if (!isset($val->designation) || $val->designation == '') {
-                   //cannot be empty
+                    //cannot be empty
                     $val->designation = $itemdevice->getTypeName(1);
                 }
 
-                //force convertion if needed for date format as 2015-04-16T00:00:00Z
+                //force conversion if needed for date format as 2015-04-16T00:00:00Z
                 // TODO : need to straighten up date format globally (especially for JSON inventory) which does not use the converter
                 if (property_exists($val, 'date')) {
                     $val->date = date('Y-m-d', strtotime($val->date));
                 }
 
                 //create device or get existing device ID
-                $device_id = $device->import(\Toolbox::addslashes_deep((array)$val) + ['with_history' => false]);
+                $device_id = $device->import(\Toolbox::addslashes_deep($this->handleInput($val)) + ['with_history' => false]);
 
                 //remove all existing instances
                 if (!isset($deleted_items[$device_id])) {
@@ -138,14 +138,14 @@ abstract class Device extends InventoryAsset
                     'itemtype'           => $this->item->getType(),
                     'items_id'           => $this->item->fields['id'],
                     'is_dynamic'         => 1
-                ] + (array)$val);
+                ] + $this->handleInput($val));
                 $itemdevice->add($itemdevice_data, [], false);
                 $this->itemdeviceAdded($itemdevice, $val);
                 unset($existing[$device_id]);
             }
 
             foreach ($existing as $deviceid => $data) {
-               //first, remove items
+                //first, remove items
                 if ($data['is_dynamic'] == 1) {
                     $DB->delete(
                         $itemdevice->getTable(),

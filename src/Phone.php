@@ -114,6 +114,7 @@ class Phone extends CommonDBTM
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Notepad', $ong, $options);
         $this->addStandardTab('Reservation', $ong, $options);
         $this->addStandardTab('Domain_Item', $ong, $options);

@@ -304,6 +304,7 @@ class Plugins
      * @param int    $page which page to query
      * @param int    $nb_per_page how manyu per page we want
      * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
+     * @param int    $total Total count of plugin found with given filters
      *
      * @return array full collection
      */
@@ -313,9 +314,12 @@ class Plugins
         string $string_filter = "",
         int $page = 1,
         int $nb_per_page = 15,
-        string $sort = 'sort-alpha-asc'
+        string $sort = 'sort-alpha-asc',
+        int &$total = 0
     ) {
         $plugins = $this->getAllPlugins($force_refresh, $tag_filter, $string_filter, $sort);
+
+        $total = count($plugins);
 
         $plugins_page = array_splice($plugins, max($page - 1, 0) * $nb_per_page, $nb_per_page);
         return $plugins_page;

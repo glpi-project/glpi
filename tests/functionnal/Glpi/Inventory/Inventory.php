@@ -1281,7 +1281,7 @@ class Inventory extends InventoryTestCase
         $expected = [
             'assocID' => $record['assocID'],
             'name' => 'Fedora release 25 (Twenty Five)',
-            'version' => null,
+            'version' => '25',
             'architecture' => 'x86_64',
             'servicepack' => null,
         ];
@@ -1493,7 +1493,7 @@ class Inventory extends InventoryTestCase
         $expected = [
             'assocID' => $record['assocID'],
             'name' => 'Fedora release 25 (Twenty Five)',
-            'version' => null,
+            'version' => '25',
             'architecture' => 'x86_64',
             'servicepack' => null,
         ];
@@ -1652,7 +1652,7 @@ class Inventory extends InventoryTestCase
         $expected = [
             'assocID' => $record['assocID'],
             'name' => 'Fedora release 25 (Twenty Five)',
-            'version' => null,
+            'version' => '25',
             'architecture' => 'x86_64',
             'servicepack' => null,
         ];
@@ -1755,16 +1755,16 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4374);
+        $this->integer(count($logs))->isIdenticalTo(4375);
 
         $expected_types_count = [
             0 => 3, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3243,//network port/name, ip address, VMs, Software
-            \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, softwares updates
+            \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, software updates
             \Log::HISTORY_DELETE_SUBITEM => 99,//networkport and networkname, Software?
-            \Log::HISTORY_CREATE_ITEM => 196, //virtual machines, os, manufacturer, net ports, net names, ...
+            \Log::HISTORY_CREATE_ITEM => 197, //virtual machines, os, manufacturer, net ports, net names, ...
             \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
         ];
 
@@ -4422,9 +4422,91 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ]
         ]);
         $this->integer(count($iterator))->isIdenticalTo(1);
+    }
+
+    public function testUpdateVirtualMachines()
+    {
+        global $DB;
+
+        $json = json_decode(file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/lxc-server-1.json'));
+
+        $count_vms = count($json->content->virtualmachines);
+        $this->integer($count_vms)->isIdenticalTo(1);
+
+        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_computers = countElementsInTable(\Computer::getTable());
+        $inventory = $this->doInventory($json);
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(4)
+            ->string['deviceid']->isIdenticalTo('lxc-server-2022-08-09-17-49-51')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory');
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('lxc-server-2022-08-09-17-49-51')
+            ->string['name']->isIdenticalTo('lxc-server-2022-08-09-17-49-51')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+        $computers_id = $agent['items_id'];
+
+        //check we add only one computer
+        ++$nb_computers;
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
+        //check created vms
+        $nb_vms += $count_vms;
+        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+
+        $cvms = new \ComputerVirtualMachine();
+        $this->boolean($cvms->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+
+        $this->array($cvms->fields)
+            ->string['name']->isIdenticalTo('glpi-10-rc1')
+            ->integer['vcpu']->isIdenticalTo(2)
+            ->string['ram']->isIdenticalTo('2048')
+            ->string['uuid']->isIdenticalTo('487dfdb542a4bfb23670b8d4e76d8b6886c2ed35')
+        ;
+
+        //import again, RAM has changed
+        $json = json_decode(file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/lxc-server-1.json'));
+        $json_vm = $json->content->virtualmachines[0];
+        $json_vm->memory = 4096;
+        $json_vms = [$json_vm];
+        $json->content->virtualmachines = $json_vms;
+
+        $this->doInventory($json);
+
+        $this->boolean($cvms->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+
+        $this->array($cvms->fields)
+            ->string['name']->isIdenticalTo('glpi-10-rc1')
+            ->integer['vcpu']->isIdenticalTo(2)
+            ->string['ram']->isIdenticalTo('4096')
+            ->string['uuid']->isIdenticalTo('487dfdb542a4bfb23670b8d4e76d8b6886c2ed35')
+        ;
+    }
+
+    public function testImportDatabases()
+    {
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+
+        $nb_computers = countElementsInTable(\Computer::getTable());
+        $inventory = $this->doInventory($json);
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(4)
+            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory');
 
         //partial inventory: add databases
-        global $DB;
 
         //IMPORT rule
         $criteria = [
@@ -4541,7 +4623,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->doInventory($json);
 
         //check nothing has changed
-        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + 1);
 
         //check created databases & instances
         $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
@@ -4553,7 +4635,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->doInventory($json);
 
         //check nothing has changed
-        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + 1);
 
         //check created databases & instances
         $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(2);
@@ -4592,11 +4674,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $databases = $database->getDatabases();
         $this->array($databases)->hasSize(2);
         $this->array(array_pop($databases))
-         ->string['name']->isIdenticalTo('new_database')
-         ->integer['size']->isIdenticalTo(2048);
+            ->string['name']->isIdenticalTo('new_database')
+            ->integer['size']->isIdenticalTo(2048);
         $this->array(array_pop($databases))
-         ->string['name']->isIdenticalTo('glpi')
-         ->integer['size']->isIdenticalTo(55000);
+            ->string['name']->isIdenticalTo('glpi')
+            ->integer['size']->isIdenticalTo(55000);
     }
 
     public function testImportPhone()
@@ -4695,7 +4777,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $expected = [
             'assocID' => $record['assocID'],
             'name' => 'Q Android 10.0 api 29',
-            'version' => null,
+            'version' => '29',
             'architecture' => 'arm64-v8a,armeabi-v7a,armeabi',
             'servicepack' => null,
         ];

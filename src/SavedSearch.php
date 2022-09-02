@@ -807,19 +807,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 ]
                 ]
             ],
-            'WHERE'     => [
-                'OR' => [
-                    [
-                        "$table.is_private" => 0,
-                    ] + getEntitiesRestrictCriteria($table, '', '', true),
-                    "$table.users_id"   => Session::getLoginUserID()
-                ]
-            ],
             'ORDERBY'   => [
                 'itemtype',
                 'name'
             ]
-        ];
+        ] + self::getVisibilityCriteria();
 
         if ($itemtype != null) {
             if (!$inverse) {

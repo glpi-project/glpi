@@ -583,7 +583,7 @@ class Html
      *
      * @return void
      **/
-    public static function displayNotFoundError()
+    public static function displayNotFoundError(string $additional_info = '')
     {
         global $CFG_GLPI, $HEADER_LOADED;
 
@@ -599,6 +599,15 @@ class Html
         echo "<div class='center'><br><br>";
         echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'>";
         echo "<br><br><span class='b'>" . __('Item not found') . "</span></div>";
+        $requested_url = $_SERVER['REQUEST_URI'] ?? 'Unknown';
+        $user_id = Session::getLoginUserID() ?? 'Anonymous';
+        $internal_message = "User ID: $user_id tried to access a non-existent item $requested_url. Additional information: $additional_info\n";
+        $internal_message .= "\tStack Trace:\n";
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        foreach ($backtrace as $frame) {
+            $internal_message .= "\t\t" . $frame['file'] . ':' . $frame['line'] . ' ' . $frame['function'] . '()' . "\n";
+        }
+        Toolbox::logInFile('access-errors', $internal_message);
         self::nullFooter();
         exit();
     }
@@ -3829,7 +3838,7 @@ JS;
     /**
      * Init the Editor System to a textarea
      *
-     * @param string  $name          name of the html textarea to use
+     * @param string  $id            id of the html textarea to use
      * @param string  $rand          rand of the html textarea to use (if empty no image paste system)(default '')
      * @param boolean $display       display or get js script (true by default)
      * @param boolean $readonly      editor will be readonly or not
@@ -3839,7 +3848,7 @@ JS;
      *    integer if param display=true
      *    string if param display=false (HTML code)
      **/
-    public static function initEditorSystem($name, $rand = '', $display = true, $readonly = false, $enable_images = true)
+    public static function initEditorSystem($id, $rand = '', $display = true, $readonly = false, $enable_images = true)
     {
         global $CFG_GLPI, $DB;
 
@@ -3906,7 +3915,7 @@ JS;
             // init editor
             tinyMCE.init(Object.assign({
                branding: false,
-               selector: '#{$name}',
+               selector: '#{$id}',
 
                plugins: {$pluginsjs},
 
@@ -3949,11 +3958,11 @@ JS;
 
                setup: function(editor) {
                   // "required" state handling
-                  if ($('#$name').attr('required') == 'required') {
-                     $('#$name').removeAttr('required'); // Necessary to bypass browser validation
+                  if ($('#$id').attr('required') == 'required') {
+                     $('#$id').removeAttr('required'); // Necessary to bypass browser validation
 
                      editor.on('submit', function (e) {
-                        if ($('#$name').val() == '') {
+                        if ($('#$id').val() == '') {
                            alert(__('The description field is mandatory'));
                            e.preventDefault();
 
@@ -3964,14 +3973,14 @@ JS;
                      });
                      editor.on('keyup', function (e) {
                         editor.save();
-                        if ($('#$name').val() == '') {
+                        if ($('#$id').val() == '') {
                            $(editor.container).addClass('required');
                         } else {
                            $(editor.container).removeClass('required');
                         }
                      });
                      editor.on('init', function (e) {
-                        if (strip_tags($('#$name').val()) == '') {
+                        if (strip_tags($('#$id').val()) == '') {
                            $(editor.container).addClass('required');
                         }
                      });
@@ -3991,7 +4000,7 @@ JS;
                   // ctrl + enter submit the parent form
                   editor.addShortcut('ctrl+13', 'submit', function() {
                      editor.save();
-                     submitparentForm($('#$name'));
+                     submitparentForm($('#$id'));
                   });
                }
             }, {$language_opts}));
@@ -5426,6 +5435,9 @@ HTML;
             $url .= '?v=' . FrontEnd::getVersionCacheKey($version);
         }
 
+        // Convert filesystem path to URL path (fix issues with Windows directory separator)
+        $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
+
         return sprintf('<script type="%s" src="%s"></script>', $type, $url);
     }
 
@@ -5509,6 +5521,9 @@ HTML;
 
             $url .= ((strpos($url, '?') !== false) ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
         }
+
+        // Convert filesystem path to URL path (fix issues with Windows directory separator)
+        $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
 
         return sprintf(
             '<link rel="stylesheet" type="text/css" href="%s" %s>',
@@ -5616,6 +5631,7 @@ HTML;
         $display .= "<input id='fileupload{$p['rand']}' type='file' name='_uploader_" . $p['name'] . "[]'
                       class='form-control'
                       $required
+                      data-uploader-name=\"{$p['name']}\"
                       data-url='" . $CFG_GLPI["root_doc"] . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_" . $p['name'] . "\", \"showfilesize\": \"" . $p['showfilesize'] . "\"}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
@@ -6953,13 +6969,7 @@ CSS;
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
-        return implode(
-            DIRECTORY_SEPARATOR,
-            [
-                self::getScssCompileDir(),
-                str_replace('/', '_', $file) . '.min.css',
-            ]
-        );
+        return self::getScssCompileDir() . '/' . str_replace('/', '_', $file) . '.min.css';
     }
 
     /**

@@ -53,6 +53,32 @@ class RuleTicketCollection extends RuleCommonITILObjectCollection
         if (isset($input['_head']['x-priority'])) {
             $input['_x-priority'] = $input['_head']['x-priority'];
         }
+
+        // Pass From header if exists
+        if (isset($input['_head']['from'])) {
+            $input['_from'] = $input['_head']['from'];
+        }
+
+        // Pass Subject header if exists
+        if (isset($input['_head']['subject'])) {
+            $input['_subject'] = $input['_head']['subject'];
+        }
+
+        // Pass Reply-To header if exists
+        if (isset($input['_head']['reply-to'])) {
+            $input['_reply-to'] = $input['_head']['reply-to'];
+        }
+
+        // Pass In-Reply-To header if exists
+        if (isset($input['_head']['in-reply-to'])) {
+            $input['_in-reply-to'] = $input['_head']['in-reply-to'];
+        }
+
+        // Pass To header if exists
+        if (isset($input['_head']['to'])) {
+            $input['_to'] = $input['_head']['to'];
+        }
+
         return parent::prepareInputDataForProcess($input, $params);
     }
 }

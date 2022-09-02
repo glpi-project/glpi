@@ -66,6 +66,8 @@ abstract class CommonITILObject extends CommonDBTM
 
     public $deduplicate_queued_notifications = false;
 
+    protected static $showTitleInNavigationHeader = true;
+
     const MATRIX_FIELD         = '';
     const URGENCY_MASK_FIELD   = '';
     const IMPACT_MASK_FIELD    = '';
@@ -754,6 +756,24 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
+    public function canMassiveAction($action, $field, $value)
+    {
+
+        switch ($action) {
+            case 'update':
+                switch ($field) {
+                    case 'status':
+                        if (!static::isAllowedStatus($this->fields['status'], $value)) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+        }
+        return true;
+    }
+
+
     /**
      * Do the current ItilObject need to be reopened by a requester answer
      *
@@ -766,11 +786,23 @@ abstract class CommonITILObject extends CommonDBTM
         $my_id    = Session::getLoginUserID();
         $my_groups = $_SESSION["glpigroups"] ?? [];
 
+        // Compute requester groups
+        $requester_groups = array_filter(
+            $my_groups,
+            fn($group) => $this->isGroup(CommonITILActor::REQUESTER, $group)
+        );
+
+        // Compute assigned groups
+        $assigned_groups = array_filter(
+            $my_groups,
+            fn($group) => $this->isGroup(CommonITILActor::ASSIGN, $group)
+        );
+
         $ami_requester       = $this->isUser(CommonITILActor::REQUESTER, $my_id);
-        $ami_requester_group = $this->isGroup(CommonITILActor::REQUESTER, $my_groups);
+        $ami_requester_group = count($requester_groups) > 0;
 
         $ami_assignee        = $this->isUser(CommonITILActor::ASSIGN, $my_id);
-        $ami_assignee_group  = $this->isGroup(CommonITILActor::ASSIGN, $my_groups);
+        $ami_assignee_group  = count($assigned_groups) > 0;
 
         return in_array($this->fields["status"], static::getReopenableStatusArray())
             && ($ami_requester || $ami_requester_group)
@@ -906,14 +938,14 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Is a group linked to the object ?
      *
-     * @param integer $type      type to search (see constants)
-     * @param integer $groups_id group ID
+     * @param int $type      type to search (see constants)
+     * @param int $groups_id group ID
      *
-     * @return boolean
+     * @return bool
      **/
-    public function isGroup($type, $groups_id)
+    // FIXME add params typehint in GLPI 10.1
+    public function isGroup($type, $groups_id): bool
     {
-
         if (isset($this->groups[$type])) {
             foreach ($this->groups[$type] as $data) {
                 if ($data['groups_id'] == $groups_id) {
@@ -1963,22 +1995,8 @@ abstract class CommonITILObject extends CommonDBTM
        // Handle "_solutiontemplates_id" special input
         $this->handleSolutionTemplateInput();
 
-       // Handle files pasted in the file field
-        $this->input = $this->addFiles($this->input);
-
-       // Handle files pasted in the text area
-        if (!isset($this->input['_donotadddocs']) || !$this->input['_donotadddocs']) {
-            $options = [
-                'force_update' => true,
-                'name' => 'content',
-                'content_field' => 'content',
-            ];
-            if (isset($this->input['solution'])) {
-                $options['name'] = 'solution';
-                $options['content_field'] = 'solution';
-            }
-            $this->input = $this->addFiles($this->input, $options);
-        }
+        // Handle rich-text images and uploaded documents
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
        // handle actors changes
         $this->updateActors();
@@ -2755,10 +2773,8 @@ abstract class CommonITILObject extends CommonDBTM
        // Handle "_solutiontemplates_id" special input
         $this->handleSolutionTemplateInput();
 
-       // Add document if needed, without notification for file input
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
-       // Add document if needed, without notification for textarea
-        $this->input = $this->addFiles($this->input, ['name' => 'content', 'force_update' => true]);
 
        // Add default document if set in template
         if (
@@ -7038,7 +7054,6 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->getAssociatedDocumentsCriteria($params['bypass_rights']),
                 'timeline_position'  => ['>', self::NO_TIMELINE]
             ]);
-            $can_view_documents = Document::canView();
             foreach ($document_items as $document_item) {
                 $document_obj->getFromDB($document_item['documents_id']);
 
@@ -7046,14 +7061,15 @@ abstract class CommonITILObject extends CommonDBTM
 
                 $item = $document_obj->fields;
                 $item['date'] = $date;
-                // #1476 - set date_mod and owner to attachment ones
+                // #1476 - set date_creation, date_mod and owner to attachment ones
+                $item['date_creation'] = $date;
                 $item['date_mod'] = $document_item['date_mod'];
                 $item['users_id'] = $document_item['users_id'];
                 $item['documents_item_id'] = $document_item['id'];
 
                 $item['timeline_position'] = $document_item['timeline_position'];
-                $item['_can_edit'] = $can_view_documents && $document_obj->canUpdateItem();
-                $item['_can_delete'] = $can_view_documents && $document_obj->canDeleteItem() && $canupdate_parent;
+                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
+                $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem() && $canupdate_parent;
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
                 if ($document_item['itemtype'] == static::getType()) {
@@ -9819,6 +9835,7 @@ abstract class CommonITILObject extends CommonDBTM
                             }
                         }
                         if ($found === false) {
+                            $input_key = $get_input_key($existing['itemtype'], $actor_type);
                             $input[sprintf('%s_deleted', $input_key)][] = $existing;
                         }
                     }

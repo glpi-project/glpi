@@ -101,7 +101,7 @@
                      {% endif %}
 
                      {% set fk = item.getForeignKeyField() %}
-                     {% if item.isField(fk) %}
+                     {% if item.isField(fk) and item_type != 'Software' %}
                         {{ fields.dropdownField(
                            item_type,
                            fk,

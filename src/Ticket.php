@@ -293,11 +293,6 @@ class Ticket extends CommonITILObject
         switch ($action) {
             case 'update':
                 switch ($field) {
-                    case 'status':
-                        if (!self::isAllowedStatus($this->fields['status'], $value)) {
-                            return false;
-                        }
-                        break;
                     case 'itilcategories_id':
                         $cat = new ITILCategory();
                         if ($cat->getFromDB($value)) {
@@ -320,7 +315,7 @@ class Ticket extends CommonITILObject
                 }
                 break;
         }
-        return true;
+        return parent::canMassiveAction($action, $field, $value);
     }
 
     /**
@@ -1132,6 +1127,8 @@ class Ticket extends CommonITILObject
             foreach ($existing_actors as $actor_itemtype => $actors) {
                 $field = getForeignKeyFieldForItemType($actor_itemtype);
                 $input_key = '_' . $field . '_' . $t;
+                $deleted_key = $input_key . '_deleted';
+                $deleted_actors = array_key_exists($deleted_key, $input) && is_array($input[$deleted_key]) ? array_column($input[$deleted_key], 'items_id') : [];
                 foreach ($actors as $actor) {
                     if (
                         !isset($input[$input_key])
@@ -1146,8 +1143,10 @@ class Ticket extends CommonITILObject
                         } elseif (!is_array($input[$input_key])) {
                             $input[$input_key] = [$input[$input_key]];
                         }
-                        $input[$input_key][]             = $actor[$field];
-                        $tocleanafterrules[$input_key][] = $actor[$field];
+                        if (!in_array($actor[$field], $deleted_actors)) {
+                            $input[$input_key][]             = $actor[$field];
+                            $tocleanafterrules[$input_key][] = $actor[$field];
+                        }
                     }
                 }
             }
@@ -1248,8 +1247,6 @@ class Ticket extends CommonITILObject
         if (isset($input['content'])) {
             if (isset($input['_filename']) || isset($input['_content'])) {
                 $input['_disablenotif'] = true;
-            } else {
-                $input['_donotadddocs'] = true;
             }
         }
 

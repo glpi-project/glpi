@@ -286,21 +286,9 @@ class ITILSolution extends CommonDBChild
 
         $item = $this->item;
 
-       // Replace inline pictures
+        // Handle rich-text images and uploaded documents
         $this->input["_job"] = $this->item;
-        $this->input = $this->addFiles(
-            $this->input,
-            [
-                'force_update' => true,
-                'name' => 'content',
-                'content_field' => 'content',
-            ]
-        );
-
-        // Add documents if needed, without notification
-        $this->input = $this->addFiles($this->input, [
-            'force_update' => true,
-        ]);
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
         // Add solution to duplicates
         if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
@@ -356,18 +344,8 @@ class ITILSolution extends CommonDBChild
 
     public function post_updateItem($history = 1)
     {
-       // Replace inline pictures
-        $options = [
-            'force_update' => true,
-            'name' => 'content',
-            'content_field' => 'content',
-        ];
-        $this->input = $this->addFiles($this->input, $options);
-
-        // Add documents if needed, without notification
-        $this->input = $this->addFiles($this->input, [
-            'force_update' => true,
-        ]);
+        // Handle rich-text images and uploaded documents
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
         parent::post_updateItem($history);
     }

@@ -60,9 +60,11 @@
             </div>
          {% endif %}
 
-         <div class="col-auto text-muted ms-2">
-            {{ entry_i['filepath']|document_size }}
-         </div>
+         {% if entry_i['filepath'] is defined and entry_i['filepath'] is not null %}
+            <div class="col-auto text-muted ms-2">
+               {{ entry_i['filepath']|document_size }}
+            </div>
+         {% endif %}
 
          <div class="col-auto">
             <div class="list-group-item-actions">

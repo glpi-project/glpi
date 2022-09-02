@@ -44,6 +44,7 @@ class Item_RemoteManagement extends CommonDBChild
     public const ANYDESK = 'anydesk';
     public const MESHCENTRAL = 'meshcentral';
     public const SUPREMO = 'supremo';
+    public const RUSTDESK = 'rustdesk';
 
 
     public static function getTypeName($nb = 0)
@@ -357,7 +358,8 @@ class Item_RemoteManagement extends CommonDBChild
             self::LITEMANAGER => 'LiteManager',
             self::ANYDESK => 'AnyDesk',
             self::MESHCENTRAL => 'MeshCentral',
-            self::SUPREMO => 'SupRemo'
+            self::SUPREMO => 'SupRemo',
+            self::RUSTDESK => 'RustDesk',
         ];
         echo "<td>";
         echo Dropdown::showFromArray(

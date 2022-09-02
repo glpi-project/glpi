@@ -3048,8 +3048,9 @@ HTML;
         } else {
            // multiple rows = 0.85+ config
             $values = [];
+            $allowed_context = ['core', 'inventory'];
             foreach ($iterator as $row) {
-                if ('core' !== $row['context']) {
+                if (!in_array($row['context'], $allowed_context)) {
                     continue;
                 }
                 $values[$row['name']] = $row['value'];
@@ -3263,7 +3264,8 @@ HTML;
             ]
         );
         echo "</td></tr>";
-        echo "<input type='hidden' name='id' value='1'>";
+        $config_id = self::getConfigIDForContext('core');
+        echo "<input type='hidden' name='id' value='{$config_id}'>";
 
         echo "<tr class='tab_bg_1'><th colspan='4'>" . __("General") . "</th></tr>";
         echo "<tr class='tab_bg_1'><td class='center'>" . __("Add/update relation between items") .
@@ -4054,5 +4056,30 @@ HTML;
     public function getBrowserTabName(): string
     {
         return self::getTypeName(1);
+    }
+
+    /**
+     * Gets the ID of a random record from the config table with the specified context.
+     *
+     * Used as a hacky workaround when we require a valid glpi_configs record for rights checks.
+     * We cannot rely on something being in ID 1 for the core context for example, because some clustering solutions may change how autoincrement works.
+     * @return ?int
+     * @internal
+     */
+    public static function getConfigIDForContext(string $context)
+    {
+        global $DB;
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'context' => $context,
+            ],
+            'LIMIT'  => 1,
+        ]);
+        if (count($iterator)) {
+            return $iterator->current()['id'];
+        }
+        return null;
     }
 }

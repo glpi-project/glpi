@@ -3584,13 +3584,13 @@ class Ticket extends DbTestCase
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
 HTML
             ),
-            '_content' => [
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
@@ -3611,13 +3611,13 @@ HTML
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
 HTML
             ),
-            '_content' => [
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
@@ -4968,6 +4968,15 @@ HTML
 
         $tech_id     = getItemByTypeName('User', 'tech', true);
         $postonly_id = getItemByTypeName('User', 'post-only', true);
+        $normal_id   = getItemByTypeName('User', 'normal', true);
+
+        $requester_group = $this->createItem("Group", [
+            'name' => "testNeedReopen"
+        ]);
+        $this->createItem("Group_User", [
+            'users_id' => $normal_id,
+            'groups_id' => $requester_group->getID(),
+        ]);
 
         $ticket = new \Ticket();
         $tickets_id = $ticket->add([
@@ -5010,6 +5019,23 @@ HTML
         $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
         $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
         $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+        // Test reopen as a member of a requester group
+        $ticket = $this->createItem('Ticket', [
+            'name'                 => 'testNeedReopen requester group',
+            'content'              => 'testNeedReopen requester group',
+            '_users_id_requester'  => $postonly_id,
+            '_groups_id_requester' => $requester_group->getID(),
+            '_users_id_assign'     => $tech_id,
+        ]);
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'status' => \Ticket::WAITING,
+        ]);
+        $ticket->getFromDB($ticket->getID());
+
+        $this->login('normal', 'normal');
+        $this->boolean((bool)$ticket->needReopen())->isTrue();
     }
 
     protected function assignFromCategoryOrItemProvider(): iterable

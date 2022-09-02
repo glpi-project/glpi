@@ -233,17 +233,9 @@ class ITILFollowup extends CommonDBChild
 
         global $CFG_GLPI;
 
-       // Add screenshots if needed, without notification
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, [
-            'force_update'  => true,
-            'name'          => 'content',
-            'content_field' => 'content',
-            'date' => $this->fields['date'],
-        ]);
-
-       // Add documents if needed, without notification
-        $this->input = $this->addFiles($this->input, [
-            'force_update'  => true,
+            'force_update' => true,
             'date' => $this->fields['date'],
         ]);
 
@@ -558,16 +550,10 @@ class ITILFollowup extends CommonDBChild
             return;
         }
 
-       // Add screenshots if needed, without notification
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, [
             'force_update' => true,
-            'name'          => 'content',
-            'content_field' => 'content',
-        ]);
-
-       // Add documents if needed, without notification
-        $this->input = $this->addFiles($this->input, [
-            'force_update' => true,
+            'date' => $this->fields['date'],
         ]);
 
        //Get user_id when not logged (from mailgate)

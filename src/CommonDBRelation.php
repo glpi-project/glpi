@@ -2142,9 +2142,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
      */
     public static function getMemberPosition(string $class): int
     {
-        if ($class == static::$itemtype_1) {
+        if (is_a($class, static::$itemtype_1, true)) {
             return 1;
-        } elseif ($class == static::$itemtype_2) {
+        } elseif (is_a($class, static::$itemtype_2, true)) {
             return 2;
         } elseif (
             preg_match('/^itemtype/', static::$itemtype_1) === 1

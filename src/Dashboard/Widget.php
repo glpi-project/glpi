@@ -593,11 +593,13 @@ HTML;
 
          {$palette_style}
       </style>
-      <div class="card g-chart {$class}"
-           id="{$chart_id}">
-         <div class="chart ct-chart">{$no_data_html}</div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}"></i>
+      <div>
+         <div class="card g-chart {$class}"
+            id="{$chart_id}">
+            <div class="chart ct-chart">{$no_data_html}</div>
+            <span class="main-label">{$p['label']}</span>
+            <i class="main-icon {$p['icon']}"></i>
+         </div>
       </div>
 HTML;
 
@@ -650,7 +652,6 @@ HTML;
         }
 
         $donut  = $p['donut'] ? 'true' : 'false';
-        $height = $p['half'] ? '180%' : '100%';
         $animation_duration = self::$animation_duration;
 
         $js = <<<JAVASCRIPT
@@ -660,7 +661,6 @@ HTML;
             series: {$series},
          }, {
             width: 'calc(100% - 5px)',
-            height: 'calc({$height} - 5px)',
             chartPadding: {$chartPadding},
             donut: {$donut},
             $donut_opts
@@ -1057,10 +1057,8 @@ JAVASCRIPT;
             <span>";
         }
 
-        $height = "calc(100% - 5px)";
         $legend_options = "";
         if ($p['legend']) {
-            $height = "calc(100% - 40px)";
             $legend_options = "
             Chartist.plugins.legend(),";
         }
@@ -1093,18 +1091,16 @@ JAVASCRIPT;
          stroke: {$dark_line_color};
       }
 
-      /** fix chrome resizing height when animating svg (don't know why) **/
-      #{$chart_id} .ct-chart-bar {
-         min-height: $height;
-      }
       {$palette_style}
       </style>
 
-      <div class="card g-chart $class"
-            id="{$chart_id}">
-         <div class="chart ct-chart">$no_data_html</div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}"></i>
+      <div>
+         <div class="card g-chart $class"
+               id="{$chart_id}">
+            <div class="chart ct-chart">$no_data_html</div>
+            <span class="main-label">{$p['label']}</span>
+            <i class="main-icon {$p['icon']}"></i>
+         </div>
       </div>
 HTML;
 
@@ -1156,7 +1152,6 @@ HTML;
             series: {$json_series},
          }, {
             width: '100%',
-            height: '{$height}',
             seriesBarDistance: 10,
             chartPadding: 0,
             $distributed_options
@@ -1513,20 +1508,14 @@ JAVASCRIPT;
             })";
         }
 
-        $height = "calc(100% - 1px)";
         $legend_options = "";
         if ($p['legend']) {
-            $height = "calc(100% - 40px)";
             $legend_options = "
             Chartist.plugins.legend(),";
         }
 
         $html = <<<HTML
       <style>
-         /** fix chrome resizing height when animating svg (don't know why) **/
-      #{$chart_id} .ct-chart-line {
-         min-height: $height;
-      }
 
       #{$chart_id} {
          background-color: {$p['color']};
@@ -1564,11 +1553,13 @@ JAVASCRIPT;
       {$palette_style}
       </style>
 
-      <div class="card g-chart $class"
-           id="{$chart_id}">
-         <div class="chart ct-chart"></div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}"></i>
+      <div>
+          <div class="card g-chart $class"
+               id="{$chart_id}">
+             <div class="chart ct-chart"></div>
+             <span class="main-label">{$p['label']}</span>
+             <i class="main-icon {$p['icon']}"></i>
+          </div>
       </div>
 HTML;
 
@@ -1585,7 +1576,6 @@ HTML;
             series: {$json_series},
          }, {
             width: '100%',
-            height: '{$height}',
             fullWidth: true,
             chartPadding: {
                right: 40

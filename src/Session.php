@@ -306,28 +306,26 @@ class Session
      * @param string $itemtype Device type
      * @param string $title    List title (default '')
      **/
-    public static function initNavigateListItems($itemtype, $title = "")
+    public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
         global $AJAX_INCLUDE;
 
-        if (isset($AJAX_INCLUDE)) {
+        if (isset($AJAX_INCLUDE) && ($url === null)) {
             return;
         }
         if (empty($title)) {
             $title = __('List');
         }
-        $url = '';
+        if ($url === null) {
+            $url = '';
 
-        if (
-            !isset($_SERVER['REQUEST_URI'])
-            || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)
-            || (preg_match('/\/ajax\/\w+.php/', $_SERVER['REQUEST_URI']))
-        ) {
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                $url = $_SERVER['HTTP_REFERER'];
+            if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
+                if (isset($_SERVER['HTTP_REFERER'])) {
+                    $url = $_SERVER['HTTP_REFERER'];
+                }
+            } else {
+                $url = $_SERVER['REQUEST_URI'];
             }
-        } else {
-            $url = $_SERVER['REQUEST_URI'];
         }
 
         $_SESSION['glpilisttitle'][$itemtype] = $title;

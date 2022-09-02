@@ -82,8 +82,47 @@ class RuleTicket extends RuleCommonITILObject
         )->isIdenticalTo(0);
     }
 
-    public function testHeaderCriteria(): void
+    protected function testMailHeaderCriteriaProvider()
     {
+        return [
+            [
+                "pattern"  => 'pattern_priority',
+                "header"   => 'x-priority',
+            ],
+            [
+                "pattern"  => 'pattern_from',
+                "header"   => 'from',
+            ],
+            [
+                "pattern"  => 'pattern_to',
+                "header"   => 'to',
+            ],
+            [
+                "pattern"  => 'pattern_reply-to',
+                "header"   => 'reply-to',
+            ],
+            [
+                "pattern"  => 'pattern_in-reply-to',
+                "header"   => 'in-reply-to',
+            ],
+            [
+                "pattern"  => 'pattern_subject',
+                "header"   => 'subject',
+            ],
+        ];
+    }
+
+    /**
+     * @dataprovider testMailHeaderCriteriaProvider
+     */
+    public function testMailHeaderCriteria(
+        string $pattern,
+        string $header
+    ) {
+        // clean right singleton
+        \SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+
         $this->login();
 
         $ruleticket = $this->getRuleInstance();
@@ -91,7 +130,7 @@ class RuleTicket extends RuleCommonITILObject
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
-            'name'         => 'test x-priority',
+            'name'         => 'test ' . $header,
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $ruleticket::getType(),
@@ -102,9 +141,9 @@ class RuleTicket extends RuleCommonITILObject
 
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
-            'criteria'  => '_x-priority',
+            'criteria'  => "_" . $header,
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => '1',
+            'pattern'   => $pattern,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -117,13 +156,13 @@ class RuleTicket extends RuleCommonITILObject
         ]);
         $this->checkInput($ruleaction, $action_id, $action_input);
 
-        // Create ITIL Object with "x-priority" = 1 in "_head" property
+        // Create ITIL Object with header value in "_head" property
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add([
-            'name'              => 'test x-priority header',
-            'content'           => 'test x-priority header',
+            'name'              => 'test ' . $header . ' header',
+            'content'           => 'test ' . $header . ' header',
             '_head'             => [
-                'x-priority' => '1'
+                $header => $pattern
             ]
         ]);
 
@@ -131,12 +170,12 @@ class RuleTicket extends RuleCommonITILObject
         $this->boolean($itil->getFromDB($itil_id))->isTrue();
         $this->integer($itil->fields['priority'])->isEqualTo(5);
 
-        // Retest ITIL Object with different x-priority
+        // Retest ITIL Object with different header value
         $itil_id = $itil->add([
-            'name'              => 'test x-priority header',
-            'content'           => 'test x-priority header',
+            'name'              => 'test ' . $header . ' header',
+            'content'           => 'test ' . $header . ' header',
             '_head'             => [
-                'x-priority' => '2'
+                $header => 'header_foo_bar'
             ]
         ]);
 

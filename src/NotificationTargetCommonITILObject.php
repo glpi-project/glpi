@@ -1137,6 +1137,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         global $CFG_GLPI, $DB;
 
         $is_self_service = $options['additionnaloption']['is_self_service'] ?? true;
+        $are_names_anonymized = $is_self_service
+            && Entity::getAnonymizeConfig($item->fields['entities_id']) !== Entity::ANONYMIZE_DISABLED;
         $objettype = strtolower($item->getType());
 
         $data["##$objettype.title##"]        = $item->getField('name');
@@ -1171,6 +1173,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.entity.town##"]     = $entity->getField('town');
             $data["##$objettype.entity.state##"]    = $entity->getField('state');
             $data["##$objettype.entity.country##"]  = $entity->getField('country');
+            $data["##$objettype.entity.registration_number##"] = $entity->getField('registration_number');
         }
 
         $data["##$objettype.storestatus##"]  = $item->getField('status');
@@ -1194,6 +1197,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                                   $item->getField('itilcategories_id')
                               );
         }
+        $data['actors']                = [];
 
         $data["##$objettype.authors##"] = '';
         $data['authors']                = [];
@@ -1208,45 +1212,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 ) {
                     $users[] = $user_tmp->getName();
 
-                    $tmp = [];
-                    $tmp['##author.id##']   = $uid;
-                    $tmp['##author.name##'] = $user_tmp->getName();
+                    // Legacy authors data
+                    $author = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'author');
+                    $author['##author.title##'] = $author['##author.usertitle##'];
+                    $author['##author.category##'] = $author['##author.usercategory##'];
+                    $data['authors'][] = $author;
 
-                    if ($user_tmp->getField('locations_id')) {
-                        $tmp['##author.location##']
-                                    = Dropdown::getDropdownName(
-                                        'glpi_locations',
-                                        $user_tmp->getField('locations_id')
-                                    );
-                    } else {
-                        $tmp['##author.location##'] = '';
-                    }
-
-                    if ($user_tmp->getField('usertitles_id')) {
-                         $tmp['##author.title##']
-                                   = Dropdown::getDropdownName(
-                                       'glpi_usertitles',
-                                       $user_tmp->getField('usertitles_id')
-                                   );
-                    } else {
-                        $tmp['##author.title##'] = '';
-                    }
-
-                    if ($user_tmp->getField('usercategories_id')) {
-                        $tmp['##author.category##']
-                                 = Dropdown::getDropdownName(
-                                     'glpi_usercategories',
-                                     $user_tmp->getField('usercategories_id')
-                                 );
-                    } else {
-                        $tmp['##author.category##'] = '';
-                    }
-
-                    $tmp['##author.email##']  = $user_tmp->getDefaultEmail();
-                    $tmp['##author.mobile##'] = $user_tmp->getField('mobile');
-                    $tmp['##author.phone##']  = $user_tmp->getField('phone');
-                    $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
-                    $data['authors'][]       = $tmp;
+                    $data['actors'][]  = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'actor');
                 } else {
                     // Anonymous users only in xxx.authors, not in authors
                     $users[] = $tmpusr['alternative_email'];
@@ -1256,46 +1228,26 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         $data["##$objettype.suppliers##"] = '';
-        $data['suppliers']              = [];
+        $data["##$objettype.assigntosupplier##"] = '';
+        $data['suppliers'] = [];
         if ($item->countSuppliers(CommonITILActor::ASSIGN)) {
             $suppliers = [];
-            foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $tmpspplier) {
-                $sid      = $tmpspplier['suppliers_id'];
+            foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $supplier_data) {
+                $sid      = $supplier_data['suppliers_id'];
                 $supplier = new Supplier();
-                if (
-                    $sid
-                    && $supplier->getFromDB($sid)
-                ) {
+                if ($sid > 0 && $supplier->getFromDB($sid)) {
                     $suppliers[] = $supplier->getName();
 
-                    $tmp = [];
-                    $tmp['##supplier.id##']       = $sid;
-                    $tmp['##supplier.name##']     = $supplier->getName();
-                    $tmp['##supplier.email##']    = $supplier->getField('email');
-                    $tmp['##supplier.phone##']    = $supplier->getField('phonenumber');
-                    $tmp['##supplier.fax##']      = $supplier->getField('fax');
-                    $tmp['##supplier.website##']  = $supplier->getField('website');
-                    $tmp['##supplier.email##']    = $supplier->getField('email');
-                    $tmp['##supplier.address##']  = $supplier->getField('address');
-                    $tmp['##supplier.postcode##'] = $supplier->getField('postcode');
-                    $tmp['##supplier.town##']     = $supplier->getField('town');
-                    $tmp['##supplier.state##']    = $supplier->getField('state');
-                    $tmp['##supplier.country##']  = $supplier->getField('country');
-                    $tmp['##supplier.comments##'] = $supplier->getField('comment');
+                    // Legacy suppliers data
+                    $supplier = self::getActorData($supplier, CommonITILActor::ASSIGN, 'supplier');
+                    $supplier['##supplier.type##'] = $supplier['##supplier.suppliertype##'];
+                    $data['suppliers'][] = $supplier;
 
-                    $tmp['##supplier.type##'] = '';
-                    if ($supplier->getField('suppliertypes_id')) {
-                        $tmp['##supplier.type##']
-                        = Dropdown::getDropdownName(
-                            'glpi_suppliertypes',
-                            $supplier->getField('suppliertypes_id')
-                        );
-                    }
-
-                    $data['suppliers'][] = $tmp;
+                    $data['actors'][]    = self::getActorData($supplier, CommonITILActor::ASSIGN, 'actor');
                 }
             }
             $data["##$objettype.suppliers##"] = implode(', ', $suppliers);
+            $data["##$objettype.assigntosupplier##"] = implode(', ', $suppliers);
         }
 
         $data["##$objettype.openbyuser##"] = '';
@@ -1321,41 +1273,31 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 if ($user_tmp->getFromDB($uid)) {
                     // Check if the user need to be anonymized
-                    if (
-                        $is_self_service
-                        && !empty($anon_name = User::getAnonymizedNameForUser(
-                            $uid,
-                            $item->getField('entities_id')
-                        ))
-                    ) {
-                        $users[$uid] = $anon_name;
+                    if ($are_names_anonymized) {
+                        $users[$uid] = User::getAnonymizedNameForUser($uid, $item->fields['entities_id']);
                     } else {
                         $users[$uid] = $user_tmp->getName();
                     }
+
+                    $actor = self::getActorData($user_tmp, CommonITILActor::ASSIGN, 'actor');
+                    $actor['##actor.name##'] = $users[$uid]; // Use anonymized name
+                    $data['actors'][] = $actor;
                 }
             }
             $data["##$objettype.assigntousers##"] = implode(', ', $users);
         }
 
-        $data["##$objettype.assigntosupplier##"] = '';
-        if ($item->countSuppliers(CommonITILActor::ASSIGN)) {
-            $suppliers = [];
-            foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $tmp) {
-                $uid           = $tmp['suppliers_id'];
-                $supplier_tmp  = new Supplier();
-                if ($supplier_tmp->getFromDB($uid)) {
-                    $suppliers[$uid] = $supplier_tmp->getName();
-                }
-            }
-            $data["##$objettype.assigntosupplier##"] = implode(', ', $suppliers);
-        }
-
         $data["##$objettype.groups##"] = '';
         if ($item->countGroups(CommonITILActor::REQUESTER)) {
             $groups = [];
-            foreach ($item->getGroups(CommonITILActor::REQUESTER) as $tmp) {
-                $gid          = $tmp['groups_id'];
-                $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+            foreach ($item->getGroups(CommonITILActor::REQUESTER) as $group_data) {
+                $gid = $group_data['groups_id'];
+
+                $group = new Group();
+                if ($gid > 0 && $group->getFromDB($gid)) {
+                    $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                    $data['actors'][] = self::getActorData($group, CommonITILActor::REQUESTER, 'actor');
+                }
             }
             $data["##$objettype.groups##"] = implode(', ', $groups);
         }
@@ -1363,9 +1305,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $data["##$objettype.observergroups##"] = '';
         if ($item->countGroups(CommonITILActor::OBSERVER)) {
             $groups = [];
-            foreach ($item->getGroups(CommonITILActor::OBSERVER) as $tmp) {
-                $gid          = $tmp['groups_id'];
-                $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+            foreach ($item->getGroups(CommonITILActor::OBSERVER) as $group_data) {
+                $gid = $group_data['groups_id'];
+
+                $group = new Group();
+                if ($gid > 0 && $group->getFromDB($gid)) {
+                    $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                    $data['actors'][] = self::getActorData($group, CommonITILActor::OBSERVER, 'actor');
+                }
             }
             $data["##$objettype.observergroups##"] = implode(', ', $groups);
         }
@@ -1381,6 +1328,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     && $user_tmp->getFromDB($uid)
                 ) {
                     $users[] = $user_tmp->getName();
+
+                    $data['actors'][] = self::getActorData($user_tmp, CommonITILActor::OBSERVER, 'actor');
                 } else {
                     $users[] = $tmp['alternative_email'];
                 }
@@ -1391,9 +1340,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $data["##$objettype.assigntogroups##"] = '';
         if ($item->countGroups(CommonITILActor::ASSIGN)) {
             $groups = [];
-            foreach ($item->getGroups(CommonITILActor::ASSIGN) as $tmp) {
-                $gid          = $tmp['groups_id'];
-                $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+            foreach ($item->getGroups(CommonITILActor::ASSIGN) as $group_data) {
+                $gid = $group_data['groups_id'];
+
+                $group = new Group();
+                if ($gid > 0 && $group->getFromDB($gid)) {
+                    $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                    $data['actors'][] = self::getActorData($group, CommonITILActor::ASSIGN, 'actor');
+                }
             }
             $data["##$objettype.assigntogroups##"] = implode(', ', $groups);
         }
@@ -1485,14 +1439,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                  $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
 
                  // Check if the author need to be anonymized
-                if (
-                    $is_self_service && ITILFollowup::getById($followup['id'])->isFromSupportAgent()
-                     && !empty($anon_name = User::getAnonymizedNameForUser(
-                         $followup['users_id'],
-                         $item->getField('entities_id')
-                     ))
-                ) {
-                    $tmp['##followup.author##'] = $anon_name;
+                if ($are_names_anonymized && ITILFollowup::getById($followup['id'])->isFromSupportAgent()) {
+                    $tmp['##followup.author##'] = User::getAnonymizedNameForUser(
+                        $followup['users_id'],
+                        $item->fields['entities_id']
+                    );
                 } else {
                     $tmp['##followup.author##'] = getUserName($followup['users_id']);
                 }
@@ -1563,7 +1514,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["documents"] = [];
             $addtodownloadurl   = '';
             if ($item->getType() == 'Ticket') {
-                 $addtodownloadurl = "%2526tickets_id=" . $item->fields['id'];
+                 $addtodownloadurl = "&tickets_id=" . $item->fields['id'];
             }
             foreach ($iterator as $row) {
                 $tmp                      = [];
@@ -1742,13 +1693,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 if ($timeline_data['type'] == ITILFollowup::getType()) {
                    // Check if the author need to be anonymized
                     if (
-                        $is_self_service && ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
-                        && !empty($anon_name = User::getAnonymizedNameForUser(
-                            $timeline_data['item']['users_id'],
-                            $item->getField('entities_id')
-                        ))
+                        $are_names_anonymized
+                        && ITILFollowup::getById($timeline_data['item']['id'])->isFromSupportAgent()
                     ) {
-                        $tmptimelineitem['##timelineitems.author##'] = $anon_name;
+                        $tmptimelineitem['##timelineitems.author##'] = User::getAnonymizedNameForUser(
+                            $timeline_data['item']['users_id'],
+                            $item->fields['entities_id']
+                        );
                     } else {
                         $tmptimelineitem['##timelineitems.author##'] = getUserName($timeline_data['item']['users_id']);
                     }
@@ -1790,6 +1741,95 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                         = $inquest->fields['comment'];
                 }
             }
+        }
+        return $data;
+    }
+
+    protected function getActorData(CommonDBTM $actor, int $actortype, string $key_prefix): array
+    {
+        $data = [
+            sprintf('##%s.itemtype##', $key_prefix)     => get_class($actor),
+            sprintf('##%s.actortype##', $key_prefix)    => $actortype,
+            sprintf('##%s.id##', $key_prefix)           => $actor->getID(),
+            sprintf('##%s.name##', $key_prefix)         => '',
+            sprintf('##%s.comments##', $key_prefix)     => $actor->getField('comment'),
+            sprintf('##%s.location##', $key_prefix)     => '',
+            sprintf('##%s.usertitle##', $key_prefix)    => '',
+            sprintf('##%s.usercategory##', $key_prefix) => '',
+            sprintf('##%s.email##', $key_prefix)        => '',
+            sprintf('##%s.mobile##', $key_prefix)       => '',
+            sprintf('##%s.phone##', $key_prefix)        => '',
+            sprintf('##%s.phone2##', $key_prefix)       => '',
+            sprintf('##%s.fax##', $key_prefix)          => '',
+            sprintf('##%s.website##', $key_prefix)      => '',
+            sprintf('##%s.address##', $key_prefix)      => '',
+            sprintf('##%s.postcode##', $key_prefix)     => '',
+            sprintf('##%s.town##', $key_prefix)         => '',
+            sprintf('##%s.state##', $key_prefix)        => '',
+            sprintf('##%s.country##', $key_prefix)      => '',
+            sprintf('##%s.suppliertype##', $key_prefix) => '',
+        ];
+        switch (get_class($actor)) {
+            case User::class:
+                $data[sprintf('##%s.name##', $key_prefix)] = $actor->getName();
+
+                $location = new Location();
+                if ($actor->fields['locations_id'] > 0 && $location->getFromDB($actor->fields['locations_id'])) {
+                    $data[sprintf('##%s.location##', $key_prefix)] = Dropdown::getDropdownName(
+                        'glpi_locations',
+                        $actor->fields['locations_id']
+                    );
+                    $data[sprintf('##%s.address##', $key_prefix)]  = $location->getField('address');
+                    $data[sprintf('##%s.postcode##', $key_prefix)] = $location->getField('postcode');
+                    $data[sprintf('##%s.town##', $key_prefix)]     = $location->getField('town');
+                }
+
+                if ($actor->fields['usertitles_id'] > 0) {
+                    $data[sprintf('##%s.usertitle##', $key_prefix)] = Dropdown::getDropdownName(
+                        'glpi_usertitles',
+                        $actor->fields['usertitles_id']
+                    );
+                }
+
+                if ($actor->fields['usercategories_id'] > 0) {
+                    $data[sprintf('##%s.usercategory##', $key_prefix)] = Dropdown::getDropdownName(
+                        'glpi_usercategories',
+                        $actor->fields['usercategories_id']
+                    );
+                }
+
+                $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getDefaultEmail();
+                $data[sprintf('##%s.mobile##', $key_prefix)]     = $actor->getField('mobile');
+                $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phone');
+                $data[sprintf('##%s.phone2##', $key_prefix)]     = $actor->getField('phone2');
+                break;
+            case Group::class:
+                $data[sprintf('##%s.name##', $key_prefix)]       = Dropdown::getDropdownName('glpi_groups', $actor->getID());
+                break;
+            case Supplier::class:
+                $data[sprintf('##%s.name##', $key_prefix)]       = $actor->getName();
+                $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getField('email');
+                $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phonenumber');
+                $data[sprintf('##%s.fax##', $key_prefix)]        = $actor->getField('fax');
+                $data[sprintf('##%s.website##', $key_prefix)]    = $actor->getField('website');
+                $data[sprintf('##%s.address##', $key_prefix)]    = $actor->getField('address');
+                $data[sprintf('##%s.postcode##', $key_prefix)]   = $actor->getField('postcode');
+                $data[sprintf('##%s.town##', $key_prefix)]       = $actor->getField('town');
+                $data[sprintf('##%s.state##', $key_prefix)]      = $actor->getField('state');
+                $data[sprintf('##%s.country##', $key_prefix)]    = $actor->getField('country');
+                if ($actor->getField('suppliertypes_id')) {
+                    $data[sprintf('##%s.type##', $key_prefix)]
+                               = Dropdown::getDropdownName(
+                                   'glpi_suppliertypes',
+                                   $actor->getField('suppliertypes_id')
+                               );
+                    $data[sprintf('##%s.suppliertype##', $key_prefix)]
+                               = Dropdown::getDropdownName(
+                                   'glpi_suppliertypes',
+                                   $actor->getField('suppliertypes_id')
+                               );
+                }
+                break;
         }
         return $data;
     }
@@ -1847,6 +1887,26 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.openbyuser'            => __('Writer'),
             $objettype . '.lastupdater'           => __('Last updater'),
             $objettype . '.assigntousers'         => __('Assigned to technicians'),
+            'actors.itemtype'     => __('Internal type'),
+            'actors.actortype'    => __('Actor type'),
+            'actors.id'           => __('ID'),
+            'actors.name'         => __('Name'),
+            'actors.location'     => __('User location'),
+            'actors.usertitle'    => _x('person', 'Title'),
+            'actors.usercategory' => _n('Category', 'Categories', 1),
+            'actors.email'        => _n('Email', 'Emails', 1),
+            'actors.mobile'       => __('Mobile phone'),
+            'actors.phone'        => Phone::getTypeName(1),
+            'actors.phone2'       => __('Phone 2'),
+            'actors.fax'          => __('Fax'),
+            'actors.website'      => __('Website'),
+            'actors.address'      => __('Address'),
+            'actors.postcode'     => __('Postal code'),
+            'actors.town'         => __('City'),
+            'actors.state'        => _x('location', 'State'),
+            'actors.country'      => __('Country'),
+            'actors.comments'     => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'actors.suppliertype' => SupplierType::getTypeName(1),
             $objettype . '.assigntosupplier'      => __('Assigned to a supplier'),
             $objettype . '.groups'                => _n(
                 'Requester group',
@@ -1981,6 +2041,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 Entity::getTypeName(1),
                 __('Country')
             ),
+            $objettype . '.entity.registration_number'        => sprintf(
+                __('%1$s (%2$s)'),
+                Entity::getTypeName(1),
+                __('Administrative Number')
+            ),
             'timelineitems.author'              => __('Writer'),
             'timelineitems.date'                => __('Opening date'),
             'timelineitems.type'                => __('Internal type'),
@@ -2008,6 +2073,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
             'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
             'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+            'actors' => __('Actors'),
             'timelineitems' => sprintf(__('Processing %1$s'), strtolower($objettype)),
             'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
             'linkedchanges' => _n('Linked change', 'Linked changes', Session::getPluralNumber()),

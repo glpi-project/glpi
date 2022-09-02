@@ -413,6 +413,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 'name'      => 'items_id_2',
                 'used'      => $used,
                 'entity'    => $ticket->getEntityID(),
+                'displaywith' => ['id'],
                 'condition' => Change::getOpenCriteria(),
             ]);
             echo "&nbsp;";

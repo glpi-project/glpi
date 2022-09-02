@@ -371,7 +371,8 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'name'      => 'items_id_2',
                 'used'      => $used,
                 'entity'    => $ticket->getEntityID(),
-                'condition' => Problem::getOpenCriteria()
+                'condition' => Problem::getOpenCriteria(),
+                'displaywith' => ['id'],
             ]);
             echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";

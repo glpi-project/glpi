@@ -199,13 +199,13 @@ class KnowbaseItem extends DbTestCase
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
 HTML
             ),
-            '_answer' => [
+            '_filename' => [
                 $filename,
             ],
-            '_tag_answer' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
             ],
-            '_prefix_answer' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
             ],
             'is_faq'   => 0,
@@ -231,13 +231,13 @@ HTML
 <p><img id="3e29dffe-0237ea21-5e5e7034b1ffff.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
 HTML
             ),
-            '_answer' => [
+            '_filename' => [
                 $filename,
             ],
-            '_tag_answer' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1ffff.33333333',
             ],
-            '_prefix_answer' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
             ],
         ]);
@@ -259,13 +259,13 @@ HTML
         $input = [
             'name'    => 'a kb item',
             'answer' => 'testUploadDocuments',
-            '_answer' => [
+            '_filename' => [
                 $filename,
             ],
-            '_tag_answer' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1ffff.00000000',
             ],
-            '_prefix_answer' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
@@ -285,13 +285,13 @@ HTML
         $success = $instance->update([
             'id' => $instance->getID(),
             'answer' => 'update testUploadDocuments',
-            '_answer' => [
+            '_filename' => [
                 $filename,
             ],
-            '_tag_answer' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
             ],
-            '_prefix_answer' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
