@@ -43,7 +43,7 @@ if (isset($_GET['full_page_tab'])) {
     Html::header_nocache();
 }
 
-if (!str_contains('helpdesk.faq.php', $_GET["_target"])) {
+if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/helpdesk.faq.php'))) {
     Session::checkLoginUser();
 }
 
