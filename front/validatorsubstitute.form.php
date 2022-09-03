@@ -36,14 +36,15 @@
 include('../inc/includes.php');
 
 if (isset($_POST['update'])) {
+    $validator_substitute = new ValidatorSubstitute();
+    if (!$validator_substitute->canEdit($_POST['users_id'] ?? 0)) {
+        $info = 'User failed to update validator substitutes or associated date range';
+        Html::displayRightError($info);
+    }
     if (!isset($_POST['substitutes']) && isset($_POST['_substitutes_defined'])) {
-        // When the multiselect is empty
+        // When the substitutes multiselect is empty
         $_POST['substitutes'] = [];
     }
-    if (count(array_intersect(array_keys($_POST), ['users_id', 'substitutes'])) < 2) {
-        Html::back();
-    }
-    $substitute = new ValidatorSubstitute();
-    $substitute->updateSubstitutes($_POST);
+    $validator_substitute->updateSubstitutes($_POST);
 }
 Html::back();

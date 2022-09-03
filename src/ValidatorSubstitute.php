@@ -53,9 +53,71 @@ class ValidatorSubstitute extends CommonDBTM
             case Preference::class:
                 $user = User::getById(Session::getLoginUserID());
                 $substitute = new ValidatorSubstitute();
-                $substitute->showForUser($user);
-                return true;
+                return $substitute->showForUser($user);
         }
+
+        return false;
+    }
+
+    public static function canView()
+    {
+        return true;
+    }
+
+    public static function canCreate()
+    {
+        return true;
+    }
+
+    public static function canDelete()
+    {
+        return true;
+    }
+
+    public static function canPurge()
+    {
+        return true;
+    }
+
+    public function canViewItem()
+    {
+        if (!isset($this->fields['users_id'])) {
+            return false;
+        }
+        return $this->fields['users_id'] == Session::getLoginUserID();
+    }
+
+    public function canCreateItem()
+    {
+        if (!isset($this->fields['users_id'])) {
+            return false;
+        }
+
+        return $this->fields['users_id'] == Session::getLoginUserID();
+    }
+
+    public function canUpdateItem()
+    {
+        if (!isset($this->fields['users_id'])) {
+            return false;
+        }
+        return $this->fields['users_id'] == Session::getLoginUserID();
+    }
+
+    public function canDeleteItem()
+    {
+        if (!isset($this->fields['users_id'])) {
+            return false;
+        }
+        return $this->fields['users_id'] == Session::getLoginUserID();
+    }
+
+    public function canPurgeItem()
+    {
+        if (!isset($this->fields['users_id'])) {
+            return false;
+        }
+        return $this->fields['users_id'] == Session::getLoginUserID();
     }
 
     public function canEdit($ID)
@@ -72,7 +134,7 @@ class ValidatorSubstitute extends CommonDBTM
         return false;
     }
 
-    public function showForUser(CommonDBTM $item)
+    public function showForUser(CommonDBTM $item): bool
     {
         if ($item->isNewItem()) {
             return false;
@@ -98,6 +160,19 @@ class ValidatorSubstitute extends CommonDBTM
                 'candel'      => false,
             ]
         ]);
+
+        return true;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        if (isset($input['users_id']) && $input['users_id'] != $this->fields['users_id']) {
+            // Do not change the user.
+            Session::addMessageAfterRedirect(__('Cannot change the validation delegator'));
+            return [];
+        }
+
+        return $input;
     }
 
     /**
@@ -113,7 +188,7 @@ class ValidatorSubstitute extends CommonDBTM
         // The user to be substituted
         $validator = $input['users_id'];
         if ($validator != Session::getLoginUserID()) {
-            Session::addMessageAfterRedirect(__('You cannot change substitutes for this user'));
+            Session::addMessageAfterRedirect(__('You cannot change substitutes for this user'), true, ERROR);
             return false;
         }
 
@@ -123,38 +198,51 @@ class ValidatorSubstitute extends CommonDBTM
         // Store the overall sucess of the changes below
         $success = true;
 
-        // Delete old substitutes which are not in the new substitutes list
-        $substitutes_to_delete = array_diff($old_substitutes, $input['substitutes']);
-        if (count($substitutes_to_delete) > 0) {
-            $success = $success && $validator_substitute->deleteByCriteria([
-                'users_id' => $validator,
-                'users_id_substitute' => $substitutes_to_delete,
-            ]);
+        if (isset($input['substitutes'])) {
+            if (in_array($input['users_id'], $input['substitutes'])) {
+                Session::addMessageAfterRedirect(__('Cannot add a user as substitute of himself'), true, ERROR);
+                return false;
+            }
+
+            // Delete old substitutes which are not in the new substitutes list
+            $substitutes_to_delete = array_diff($old_substitutes, $input['substitutes']);
+            if (count($substitutes_to_delete) > 0) {
+                $success = $success && $validator_substitute->deleteByCriteria([
+                    'users_id' => $validator,
+                    'users_id_substitute' => $substitutes_to_delete,
+                ]);
+            }
+
+            // Add the new substitutes which are not in the old substitutes list
+            $substitutes_to_add = array_diff($input['substitutes'], $old_substitutes);
+            foreach ($substitutes_to_add as $substitute) {
+                $success = $success && $validator_substitute->add([
+                    'users_id' => $validator,
+                    'users_id_substitute' => $substitute,
+                ]);
+            }
         }
 
-        // Find the delegators of the validator
-        $delegators = self::getDelegators($validator);
+        $user = User::getById($input['users_id']);
 
-        // Add the new substitutes which are not in the old substitutes list
-        $substitutes_to_add = array_diff($input['substitutes'], $old_substitutes);
-        foreach ($substitutes_to_add as $substitute) {
-            $success = $success && $validator_substitute->add([
-                'users_id' => $validator,
-                'users_id_substitute' => $substitute,
-            ]);
-        }
+        $input['substitution_start_date'] = $input['substitution_start_date'] ?? $user->fields['substitution_start_date'];
+        $input['substitution_start_date'] = $input['substitution_start_date'] ?? '';
+
+        $input['substitution_end_date'] = $input['substitution_end_date'] ?? $user->fields['substitution_end_date'];
+        $input['substitution_end_date'] = $input['substitution_end_date'] ?? '';
 
         // Check sanity of substitution date range
         if ($input['substitution_start_date'] != '' && $input['substitution_end_date'] != '') {
             if ($input['substitution_end_date'] < $input['substitution_start_date']) {
                 $input['substitution_end_date'] = $input['substitution_start_date'];
             }
+        } else {
+            $input['substitution_start_date'] = $input['substitution_start_date'] == '' ? 'NULL' : $input['substitution_start_date'];
+            $input['substitution_end_date']   = $input['substitution_end_date'] == '' ? 'NULL' : $input['substitution_end_date'];
         }
-        $input['substitution_start_date'] = $input['substitution_start_date'] == '' ? 'NULL' : $input['substitution_start_date'];
-        $input['substitution_end_date'] = $input['substitution_end_date'] == '' ? 'NULL' : $input['substitution_end_date'];
 
         // Update begin and end date to apply substitutes
-        $success = $success && (new User())->update([
+        $success = $success && $user->update([
             'id'                      => $input['users_id'],
             'substitution_start_date' => $input['substitution_start_date'],
             'substitution_end_date'   => $input['substitution_end_date'],
@@ -199,5 +287,60 @@ class ValidatorSubstitute extends CommonDBTM
         }
 
         return $delegators;
+    }
+
+    /**
+     * Is the user a substitute of an other user ?
+     *
+     * @param integer $users_id
+     * @param integer $users_id_delegator
+     * @param bool    $use_date_range
+     * @return boolean
+     */
+    public static function isUserSubstituteOf(int $users_id, int $users_id_delegator, bool $use_date_range = true): bool
+    {
+        global $DB;
+
+        $request = [
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                self::getTableField('users_id')            => $users_id_delegator,
+                self::getTableField('users_id_substitute') => $users_id,
+            ],
+        ];
+        if ($use_date_range) {
+            // add date range check
+            $request['INNER JOIN'] = [
+                User::getTable() => [
+                    'ON' => [
+                        User::getTable() => 'id',
+                        self::getTable() => 'users_id',
+                    ],
+                    'AND' => [
+                        [
+                            'OR' => [
+                                [
+                                    User::getTableField('substitution_end_date') => null
+                                ], [
+                                    User::getTableField('substitution_end_date') => ['>=', $_SESSION['glpi_currenttime']],
+                                ],
+                            ],
+                        ], [
+                            'OR' => [
+                                [
+                                    User::getTableField('substitution_start_date') => null,
+                                ], [
+                                    User::getTableField('substitution_start_date') => ['<=', $_SESSION['glpi_currenttime']],
+                                ],
+                            ],
+                        ]
+                    ]
+                ],
+            ];
+        }
+
+        $result = $DB->request($request);
+
+        return (count($result) > 0);
     }
 }
