@@ -357,7 +357,15 @@ abstract class AbstractRequest
                     'expiration' => self::DEFAULT_FREQUENCY
                 ]);
             } else {
-                $this->addToResponse(['ERROR' => \Html::resume_text($message, 250)]);
+                $message = \Html::resume_text($message, 250);
+
+                $this->addToResponse([
+                    'ERROR' => [
+                        'content'    => $message,
+                        'attributes' => [],
+                        'type'       => XML_CDATA_SECTION_NODE,
+                    ]
+                ]);
             }
         }
     }
@@ -408,16 +416,25 @@ abstract class AbstractRequest
                 $this->addNode($node, $sname, $scontent);
             }
         } else {
+            $type = $content['type'] ?? null;
             $attributes = [];
             if (is_array($content) && isset($content['content']) && isset($content['attributes'])) {
                 $attributes = $content['attributes'];
                 $content = $content['content'];
             }
 
-            $new_node = $this->response->createElement(
-                $name,
-                $content
-            );
+            if ($type == XML_CDATA_SECTION_NODE) {
+                // Handle CDATA sections
+                $new_node = $this->response->createElement($name);
+                $cdata = $this->response->createCDATASection($content);
+                $new_node->appendChild($cdata);
+            } else {
+                // Normal sections
+                $new_node = $this->response->createElement(
+                    $name,
+                    $content
+                );
+            }
 
             if (count($attributes)) {
                 foreach ($attributes as $aname => $avalue) {
