@@ -251,7 +251,7 @@ class ComputerVirtualMachine extends CommonDBChild
 
             if (!empty($hosts)) {
                 echo "<table class='tab_cadre_fixehov'>";
-                echo  "<tr class='noHover'><th colspan='2' >" . __('List of virtualized environments') . "</th></tr>";
+                echo  "<tr class='noHover'><th colspan='2' >" . __('List of hosts') . "</th></tr>";
 
                 $header = "<tr><th>" . __('Name') . "</th>";
                 $header .= "<th>" . Entity::getTypeName(1) . "</th>";
