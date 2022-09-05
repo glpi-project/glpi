@@ -2524,7 +2524,7 @@ abstract class CommonITILObject extends CommonDBTM
             $input["status"] = self::INCOMING;
         }
 
-        if (!isset($input["date"]) || $input["date"] == 'NULL') {
+        if (!isset($input["date"]) || empty($input["date"]) || $input["date"] == 'NULL') {
             $input["date"] = $_SESSION["glpi_currenttime"];
         }
 
