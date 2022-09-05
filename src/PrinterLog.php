@@ -131,7 +131,7 @@ class PrinterLog extends CommonDBChild
             $modulo = round($count / $max_size);
             $series = array_filter(
                 $series,
-                fn($k) => ($k % $modulo) == 0,
+                fn($k) => (($count - ($k + 1)) % $modulo) == 0,
                 ARRAY_FILTER_USE_KEY
             );
         }
