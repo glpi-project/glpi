@@ -1374,7 +1374,6 @@ class Printer extends AbstractInventoryAsset
 
 
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-
         //Since this -> https://github.com/glpi-project/glpi/pull/12197
         //management port is not created if is known from port list of printer.
         $this->array($main->getManagementPorts())->hasSize(0);
@@ -1439,7 +1438,6 @@ class Printer extends AbstractInventoryAsset
         ]);
 
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-
         //Since this -> https://github.com/glpi-project/glpi/pull/12197
         //management port is not created if is known from port list of printer.
         $this->array($main->getManagementPorts())->hasSize(0);
@@ -1497,9 +1495,7 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802,
         ]);
 
-       //get one management port only, since iftype 24 is not importable per default
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-
         //Since this -> https://github.com/glpi-project/glpi/pull/12197
         //management port is not created if is known from port list of printer.
         $this->array($main->getManagementPorts())->hasSize(0);
@@ -1557,7 +1553,6 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802,
         ]);
 
-       //get one management port only, since iftype 24 is not importable per default
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
         //Since this -> https://github.com/glpi-project/glpi/pull/12197
         //management port is not created if is known from port list of printer.
