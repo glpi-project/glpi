@@ -490,6 +490,7 @@ class NetworkAlias extends FQDNLabel
                 self::showForFQDN($item, $withtemplate);
                 break;
         }
+        return true;
     }
 
 

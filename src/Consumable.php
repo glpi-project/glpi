@@ -862,8 +862,9 @@ class Consumable extends CommonDBChild
                 self::showAddForm($item);
                 self::showForConsumableItem($item);
                 self::showForConsumableItem($item, 1);
-                return true;
+                break;
         }
+        return true;
     }
 
     public function getRights($interface = 'central')

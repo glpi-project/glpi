@@ -35,7 +35,7 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-class NotificationEventMailing extends NotificationEventAbstract implements NotificationEventInterface
+class NotificationEventMailing extends NotificationEventAbstract
 {
     public static function getTargetFieldName()
     {

@@ -162,6 +162,7 @@ class Planning extends CommonGLPI
                 ]
             ];
         }
+        return false;
     }
 
 
@@ -2385,6 +2386,8 @@ class Planning extends CommonGLPI
                 }
             }
         }
+
+        return false;
     }
 
     /**
@@ -2496,7 +2499,7 @@ class Planning extends CommonGLPI
      * @param $whogroup        group ID
      * @param $limititemtype   itemtype only display this itemtype (default '')
      *
-     * @return icalendar string
+     * @return void Outputs ical contents
      **/
     public static function generateIcal($who, $whogroup, $limititemtype = '')
     {
@@ -2506,7 +2509,7 @@ class Planning extends CommonGLPI
             ($who === 0)
             && ($whogroup === 0)
         ) {
-            return false;
+            return;
         }
 
         if (!empty($CFG_GLPI["version"])) {

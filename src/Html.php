@@ -1022,7 +1022,7 @@ class Html
      *                    - percent   current level
      *
      *
-     * @return void
+     * @return string|void Generated HTML if `display` param is true, void otherwise.
      **/
     public static function progressBar($id, array $options = [])
     {

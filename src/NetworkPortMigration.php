@@ -161,8 +161,10 @@ class NetworkPortMigration extends CommonDBChild
 
         $address = new IPAddress();
         $netmask = new IPNetmask();
+        $network = new IPNetwork();
 
         $number_real_errors = 0;
+
 
         if (
             (!$address->setAddressFromString($this->fields['ip']))
@@ -171,11 +173,10 @@ class NetworkPortMigration extends CommonDBChild
                 $address->getVersion()
             ))
         ) {
-            unset($address);
-            unset($netmask);
+            $address = null;
+            $netmask = null;
+            $network = null;
         } else {
-            $network = new IPNetwork();
-
             $params = ["address" => $address,
                 "netmask" => $netmask
             ];
@@ -191,7 +192,7 @@ class NetworkPortMigration extends CommonDBChild
             $networkports_ids = IPNetwork::searchNetworks("equals", $params, $entity, false);
 
             if (count($networkports_ids) == 0) {
-                unset($network);
+                $network = null;
             } else {
                 $network->getFromDB($networkports_ids[0]);
             }
@@ -219,10 +220,10 @@ class NetworkPortMigration extends CommonDBChild
             $network_cell = "th";
             $address_cell = "th";
             echo "<tr class='tab_bg_1'><th>" . $motives['invalid_network'] . "</th>\n<td colspan=3>";
-            if (isset($network)) {
+            if ($network !== null) {
                 printf(__('Network port information conflicting with %s'), $network->getLink());
             } else {
-                if (!isset($address) || !isset($netmask)) {
+                if ($address === null || $netmask === null) {
                     echo __('Invalid address or netmask');
                 } else {
                     echo __('No conflicting network');
@@ -237,7 +238,7 @@ class NetworkPortMigration extends CommonDBChild
             $number_real_errors++;
             $gateway_cell = "th";
             echo "<tr class='tab_bg_1'><th>" . $motives['invalid_gateway'] . "</th>\n<td colspan=3>";
-            if (isset($network)) {
+            if ($network !== null) {
                 printf(__('Append a correct gateway to the network %s'), $network->getLink());
             } else {
                 printf(

@@ -67,6 +67,7 @@ class Item_OperatingSystem extends CommonDBRelation
     {
 
         self::showForItem($item, $withtemplate);
+        return true;
     }
 
     /**

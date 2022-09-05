@@ -866,9 +866,10 @@ class NetworkPortInstantiation extends CommonDBChild
         if ($item->getType() == "NetworkPort") {
             $instantiation = $item->getInstantiation();
             if ($instantiation !== false) {
-                return Log::displayTabContentForItem($instantiation, $tabnum, $withtemplate);
+                Log::displayTabContentForItem($instantiation, $tabnum, $withtemplate);
             }
         }
+        return true;
     }
 
 

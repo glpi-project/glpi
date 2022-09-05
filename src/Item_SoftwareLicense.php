@@ -950,7 +950,7 @@ JAVASCRIPT;
      * @param integer $items_id         ID of the item
      * @param integer $softwareversions_id ID of the version
      *
-     * @return void
+     * @return array
      **/
     public static function getLicenseForInstallation($itemtype, $items_id, $softwareversions_id)
     {
@@ -1046,7 +1046,7 @@ JAVASCRIPT;
      *
      * @param integer $softwares_id Software ID
      *
-     * @return void
+     * @return int
      **/
     public static function countLicenses($softwares_id)
     {

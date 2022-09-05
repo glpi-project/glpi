@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-class NotificationEventAjax extends NotificationEventAbstract implements NotificationEventInterface
+class NotificationEventAjax extends NotificationEventAbstract
 {
     public static function getTargetFieldName()
     {

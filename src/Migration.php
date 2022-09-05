@@ -452,8 +452,8 @@ class Migration
                 }
                 return true;
             }
-            return false;
         }
+        return false;
     }
 
 
@@ -747,7 +747,7 @@ class Migration
      * @param string $table The table to alter
      * @param array  $input The elements to add inside the table
      *
-     * @return integer id of the last item inserted by mysql
+     * @return integer|null id of the last item inserted by mysql
      **/
     public function insertInTable($table, array $input)
     {
@@ -768,6 +768,8 @@ class Migration
 
             return $DB->insertId();
         }
+
+        return null;
     }
 
 
@@ -904,6 +906,8 @@ class Migration
             }
             $DB->insertOrDie('glpi_ruleactions', $values);
         }
+
+        return $rid;
     }
 
 
@@ -1096,7 +1100,7 @@ class Migration
      *
      * @since 9.2
      *
-     * @return boolean
+     * @return void
      */
     private function storeConfig()
     {

@@ -926,6 +926,7 @@ class NetworkName extends FQDNLabel
                 self::showForItem($item, $withtemplate);
                 break;
         }
+        return true;
     }
 
 

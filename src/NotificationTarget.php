@@ -1035,11 +1035,11 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * Get item associated with the object on which the event was raised
+     * Fetch item associated with the object on which the event was raised
      *
      * @param $event  (default '')
      *
-     * @return the object associated with the itemtype
+     * @return void
      **/
     public function getObjectItem($event = '')
     {

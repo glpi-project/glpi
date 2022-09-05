@@ -544,7 +544,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array of additional options
+     * @return array|false array of additional options, false if no options
      **/
     public static function getAdditionalMenuOptions()
     {

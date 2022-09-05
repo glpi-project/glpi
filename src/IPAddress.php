@@ -318,6 +318,7 @@ class IPAddress extends CommonDBChild
                 self::showForItem($item, $withtemplate);
                 break;
         }
+        return true;
     }
 
 
@@ -640,7 +641,7 @@ class IPAddress extends CommonDBChild
             $this->isDottedQuoadFormat = true;
         }
 
-        unset($binary);
+        $binary = null;
         $singletons = explode(".", $address);
        // First, check to see if it is an IPv4 address
         if (count($singletons) == 4) {
@@ -752,7 +753,7 @@ class IPAddress extends CommonDBChild
         }
 
        // $binary is an array that is only defined for IPv4 or IPv6 address
-        if (isset($binary)) {
+        if ($binary !== null && $binary !== false) {
            // Calling setAddressFromBinary is usefull to recheck one more time inside
            // glpi_ipaddresses table and to make canonical textual version
             return $this->setAddressFromBinary($binary, $itemtype, $items_id);

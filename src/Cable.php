@@ -102,6 +102,7 @@ class Cable extends CommonDBTM
                 ]
             ];
         }
+        return false;
     }
 
     public function rawSearchOptions()

@@ -181,6 +181,7 @@ class Plugin extends CommonDBTM
                 ]
             ];
         }
+        return false;
     }
 
 
@@ -2589,6 +2590,8 @@ class Plugin extends CommonDBTM
                 return Dropdown::showFromArray($name, $tab, $options);
             break;
         }
+
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
     public function getForbiddenStandardMassiveAction()

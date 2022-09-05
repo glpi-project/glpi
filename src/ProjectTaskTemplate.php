@@ -244,21 +244,6 @@ class ProjectTaskTemplate extends CommonDropdown
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
-    {
-
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-        switch ($field) {
-            case 'type':
-                $types = self::getTypes();
-                return $types[$values[$field]];
-        }
-        return parent::getSpecificValueToDisplay($field, $values, $options);
-    }
-
-
     public function defineTabs($options = [])
     {
 
