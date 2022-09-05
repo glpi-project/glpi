@@ -270,15 +270,21 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                             if (!in_array($docID, $inline_docs)) {
                                 $doc->getFromDB($docID);
 
-                                //find size from image
-                                $docpath = GLPI_DOC_DIR . '/' . $doc->fields['filepath'];
-                                $imgsize = getimagesize($docpath);
+                                //find width
+                                $width = null;
+                                if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $wmatches)) {
+                                    $width = intval($wmatches[1]);
+                                }
+                                $height = null;
+                                if (preg_match("/height=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $hmatches)) {
+                                    $height = intval($hmatches[1]);
+                                }
 
                                 $image_path = Document::getImage(
                                     GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
                                     'mail',
-                                    $imgsize[0],
-                                    $imgsize[1]
+                                    $width,
+                                    $height
                                 );
                                 if (
                                     $mmail->AddEmbeddedImage(
