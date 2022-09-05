@@ -339,12 +339,27 @@ final class RichText
             if ($document->getFromDB($docid)) {
                 $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
                 if (Document::isImage($docpath)) {
+
+                    //find width / height define by user
+                    $width = null;
+                    if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $img_tag, $wmatches)) {
+                        $width = intval($wmatches[1]);
+                    }
+                    $height = null;
+                    if (preg_match("/height=[\"|'](\d+)(\.\d+)?[\"|']/", $img_tag, $hmatches)) {
+                        $height = intval($hmatches[1]);
+                    }
+
+                    //find real size from image
                     $imgsize = getimagesize($docpath);
+
                     $gallery = self::imageGallery([
                         [
                             'src' => $docsrc,
-                            'w'   => $imgsize[0],
-                            'h'   => $imgsize[1]
+                            'w'   => $imgsize[0], //used by photoSwipe gallery
+                            'h'   => $imgsize[1], //used by photoSwipe gallery
+                            'user_w' => $width, //use from timeline
+                            'user_h' => $height,//use from timeline
                         ]
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
@@ -439,7 +454,7 @@ final class RichText
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
             $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy'>";
+            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy' width='{$img['user_w']}' height='{$img['user_h']}' >";
             $out .= "</a>";
             $out .= "</figure>";
         }
