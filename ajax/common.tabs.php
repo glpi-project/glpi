@@ -34,6 +34,7 @@
  */
 
 include('../inc/includes.php');
+$AJAX_INCLUDE = 1;
 
 if (isset($_GET['full_page_tab'])) {
     Html::header('Only tab for debug', $_SERVER['PHP_SELF']);
@@ -42,8 +43,9 @@ if (isset($_GET['full_page_tab'])) {
     Html::header_nocache();
 }
 
-// Not possible to check right for anonymous FAQ
-//Session::checkLoginUser();
+if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/helpdesk.faq.php'))) {
+    Session::checkLoginUser();
+}
 
 if (!isset($_GET['_glpi_tab'])) {
     exit();
