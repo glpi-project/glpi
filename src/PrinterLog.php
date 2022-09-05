@@ -121,7 +121,7 @@ class PrinterLog extends CommonDBChild
             ] + $filters
         ]);
 
-        $series = iterator_to_array($iterator);
+        $series = iterator_to_array($iterator, false);
 
         // Reduce the data to 25 points
         $count = count($series);
