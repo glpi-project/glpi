@@ -1497,7 +1497,7 @@ class Item_Devices extends CommonDBRelation
                     default:
                          $fieldType = 'textfield';
                 }
-                echo "<label for='${fieldType}_$field$rand'>" . $attributs['long name'] . "</label>";
+                echo "<label for='{$fieldType}_{$field}{$rand}'>" . $attributs['long name'] . "</label>";
             } else {
                 echo $attributs['long name'];
             }

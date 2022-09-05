@@ -2762,8 +2762,8 @@ abstract class CommonITILObject extends CommonDBTM
             $active_priorities = [];
             foreach ($urgencies as $urgency) {
                 foreach ($impacts as $impact) {
-                    if (isset($CFG_GLPI["_matrix_${urgency}_${impact}"])) {
-                        $active_priorities[] = $CFG_GLPI["_matrix_${urgency}_${impact}"];
+                    if (isset($CFG_GLPI["_matrix_{$urgency}_{$impact}"])) {
+                        $active_priorities[] = $CFG_GLPI["_matrix_{$urgency}_{$impact}"];
                     }
                 }
             }
