@@ -1792,7 +1792,7 @@ class Inventory extends InventoryTestCase
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find(['NOT' => ['id' => array_keys($mrules_found)]]);
         $mrules_criteria['WHERE'] = ['NOT' => [\RuleMatchedLog::getTable() . '.id' => array_keys($mrules_found)]];
-        $this->array($found)->hasSize(5);
+        $this->array($found)->hasSize(3);
 
         $monitor_criteria = $mrules_criteria;
         $monitor_criteria['WHERE'][] = ['itemtype' => \Monitor::getType()];
@@ -1805,7 +1805,7 @@ class Inventory extends InventoryTestCase
         $computer_criteria['WHERE'][] = ['itemtype' => \Computer::getType()];
         $iterator = $DB->request($computer_criteria);
 
-        $this->integer(count($iterator))->isIdenticalTo(4);
+        $this->integer(count($iterator))->isIdenticalTo(2);
         foreach ($iterator as $rmlog) {
             $this->string($rmlog['name'])->isIdenticalTo('Computer update (by serial + uuid)');
             $this->integer($rmlog['items_id'])->isIdenticalTo($agent['items_id']);

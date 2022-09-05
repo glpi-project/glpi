@@ -935,14 +935,15 @@ class RuleImportAsset extends Rule
                              $items_id = current($inventory);
                              $output['found_inventories'] = [$items_id, $itemtype, $rules_id];
                             if (!isset($params['return'])) {
-                                $inputrulelog = $inputrulelog + [
-                                    'items_id'  => $items_id,
-                                    'itemtype'  => $itemtype
-                                ];
-                                $rulesmatched->add($inputrulelog);
-                                $rulesmatched->cleanOlddata($items_id, $itemtype);
                                 if ($class) {
                                     $class->rulepassed($items_id, $itemtype, $rules_id, $this->criterias_results['found_port']);
+                                } else {
+                                    $inputrulelog = $inputrulelog + [
+                                        'items_id'  => $items_id,
+                                        'itemtype'  => $itemtype
+                                    ];
+                                    $rulesmatched->add($inputrulelog);
+                                    $rulesmatched->cleanOlddata($items_id, $itemtype);
                                 }
                             }
                             return $output;
