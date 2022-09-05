@@ -107,7 +107,7 @@ class Request extends \GLPITestCase
                     ]
                 );
             }
-        )->hasCode(400)->message->contains('<ERROR>XML not well formed!</ERROR>');
+        )->hasCode(400)->message->contains('<ERROR><![CDATA[XML not well formed!]]></ERROR>');
     }
 
     public function testRequestInvalidJSONContent()

@@ -145,7 +145,7 @@ class Request extends \GLPITestCase
         $request->handleContentType('application/xml');
         $request->handleRequest($data);
         $this->integer($request->getHttpResponseCode())->isIdenticalTo(501);
-        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Query '$query' is not supported.</ERROR></REPLY>");
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[Query '$query' is not supported.]]></ERROR></REPLY>");
     }
 
     public function testAddError()
@@ -153,7 +153,7 @@ class Request extends \GLPITestCase
         $request = new \Glpi\Inventory\Request();
         $request->handleContentType('application/xml');
         $request->addError('Something went wrong.');
-        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR>Something went wrong.</ERROR></REPLY>");
+        $this->string($request->getResponse())->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[Something went wrong.]]></ERROR></REPLY>");
     }
 
     public function testAddResponse()
