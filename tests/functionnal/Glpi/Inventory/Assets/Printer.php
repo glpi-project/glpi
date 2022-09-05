@@ -1372,19 +1372,13 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802,
         ]);
 
-       //get one management port only, since iftype 24 is not importable per default
+
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-        $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
-        $this->array((array)$mports['management'])->isIdenticalTo([
-            'mac' => '00:68:eb:f2:be:10',
-            'name' => 'Management',
-            'netname' => 'internal',
-            'instantiation_type' => 'NetworkPortAggregate',
-            'is_internal' => true,
-            'ipaddress' => [
-                '10.59.29.175'
-            ]
-        ]);
+
+        //Since this -> https://github.com/glpi-project/glpi/pull/12197
+        //management port is not created if is known from port list of printer.
+        $this->array($main->getManagementPorts())->hasSize(0);
+
 
         $main->handle();
         $inventory->doInventory();
@@ -1444,19 +1438,11 @@ class Printer extends AbstractInventoryAsset
             'last_pages_counter' => 1802,
         ]);
 
-       //get one management port only, since iftype 24 is not importable per default
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-        $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
-        $this->array((array)$mports['management'])->isIdenticalTo([
-            'mac' => '00:68:eb:f2:be:10',
-            'name' => 'Management',
-            'netname' => 'internal',
-            'instantiation_type' => 'NetworkPortAggregate',
-            'is_internal' => true,
-            'ipaddress' => [
-                $new_ip
-            ]
-        ]);
+
+        //Since this -> https://github.com/glpi-project/glpi/pull/12197
+        //management port is not created if is known from port list of printer.
+        $this->array($main->getManagementPorts())->hasSize(0);
 
         $main->handle();
         $inventory->doInventory();
@@ -1513,19 +1499,13 @@ class Printer extends AbstractInventoryAsset
 
        //get one management port only, since iftype 24 is not importable per default
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-        $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
-        $this->array((array)$mports['management'])->isIdenticalTo([
-            'mac' => '00:68:eb:f2:be:10',
-            'name' => 'Management',
-            'netname' => 'internal',
-            'instantiation_type' => 'NetworkPortAggregate',
-            'is_internal' => true,
-            'ipaddress' => [
-                '10.59.29.175'
-            ]
-        ]);
+
+        //Since this -> https://github.com/glpi-project/glpi/pull/12197
+        //management port is not created if is known from port list of printer.
+        $this->array($main->getManagementPorts())->hasSize(0);
 
         $main->handle();
+        $inventory->doInventory();
 
         $this->boolean($printer->getFromDB($printer->fields['id']))->isTrue();
         $this->integer($printer->fields['last_pages_counter'])->isIdenticalTo(1802);
@@ -1579,19 +1559,12 @@ class Printer extends AbstractInventoryAsset
 
        //get one management port only, since iftype 24 is not importable per default
         $this->array($main->getNetworkPorts())->isIdenticalTo([]);
-        $this->array($mports = $main->getManagementPorts())->hasSize(1)->hasKey('management');
-        $this->array((array)$mports['management'])->isIdenticalTo([
-            'mac' => '00:68:eb:f2:be:10',
-            'name' => 'Management',
-            'netname' => 'internal',
-            'instantiation_type' => 'NetworkPortAggregate',
-            'is_internal' => true,
-            'ipaddress' => [
-                "10.59.29.175"
-            ]
-        ]);
+        //Since this -> https://github.com/glpi-project/glpi/pull/12197
+        //management port is not created if is known from port list of printer.
+        $this->array($main->getManagementPorts())->hasSize(0);
 
         $main->handle();
+        $inventory->doInventory();
 
         $this->boolean($printer->getFromDB($printer->fields['id']))->isTrue();
         $this->string($printer->fields['name'])->isIdenticalTo($old_name);
