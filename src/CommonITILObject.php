@@ -431,7 +431,7 @@ abstract class CommonITILObject extends CommonDBTM
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
         );
 
-        $predefined_fields = $this->setPredefinedFields($tt, $options, self::getDefaultValues());
+        $predefined_fields = $this->setPredefinedFields($tt, $options, static::getDefaultValues());
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                    => $this,
