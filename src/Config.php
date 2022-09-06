@@ -2838,10 +2838,6 @@ HTML;
                 'simplexml' => [
                     'required'  => true,
                 ],
-                'xml'        => [
-                    'required'  => true,
-                    'function'  => 'utf8_decode'
-                ],
             //to sync/connect from LDAP
                 'ldap'       => [
                     'required'  => false,
