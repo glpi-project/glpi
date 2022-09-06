@@ -448,7 +448,9 @@ class GLPIKanbanRights {
             // Dropdown for single additions
             let add_itemtype_dropdown = "<ul id='kanban-add-dropdown' class='kanban-dropdown dropdown-menu' style='display: none'>";
             Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-                add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+                if (self.supported_itemtypes[itemtype]['allow_create'] !== false) {
+                    add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+                }
             });
             add_itemtype_dropdown += '</ul>';
             kanban_container.append(add_itemtype_dropdown);
@@ -457,7 +459,9 @@ class GLPIKanbanRights {
             let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown  dropdown-menu' style='display: none'>";
             let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='dropdown-menu' style='display: none'>";
             Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-                add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+                if (self.supported_itemtypes[itemtype]['allow_create'] !== false) {
+                    add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+                }
             });
             add_itemtype_bulk_dropdown += '</ul>';
             const add_itemtype_bulk_link = '<a href="#">' + '<i class="fa-fw fas fa-list"></i>' + __('Bulk add') + '</a>';

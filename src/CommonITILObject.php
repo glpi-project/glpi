@@ -8711,27 +8711,26 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $supported_itemtypes = [];
-        if (static::canCreate()) {
-            $supported_itemtypes[static::class] = [
-                'name' => static::getTypeName(1),
-                'icon' => static::getIcon(),
-                'fields' => [
-                    'name'   => [
-                        'placeholder'  => __('Name')
-                    ],
-                    'content'   => [
-                        'placeholder'  => __('Content'),
-                        'type'         => 'textarea'
-                    ],
-                    'users_id'  => [
-                        'type'         => 'hidden',
-                        'value'        => $_SESSION['glpiID']
-                    ]
+        $supported_itemtypes[static::class] = [
+            'name' => static::getTypeName(1),
+            'icon' => static::getIcon(),
+            'fields' => [
+                'name'   => [
+                    'placeholder'  => __('Name')
                 ],
-                'team_itemtypes'  => static::getTeamItemtypes(),
-                'team_roles'      => $team_roles,
-            ];
-        }
+                'content'   => [
+                    'placeholder'  => __('Content'),
+                    'type'         => 'textarea'
+                ],
+                'users_id'  => [
+                    'type'         => 'hidden',
+                    'value'        => $_SESSION['glpiID']
+                ]
+            ],
+            'team_itemtypes'  => static::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
+            'allow_create'    => static::canCreate(),
+        ];
         $column_field = [
             'id' => 'status',
             'extra_fields' => []
