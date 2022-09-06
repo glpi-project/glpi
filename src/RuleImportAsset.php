@@ -331,8 +331,6 @@ class RuleImportAsset extends Rule
 
             case Rule::PATTERN_EXISTS:
             case Rule::PATTERN_DOES_NOT_EXISTS:
-            case Rule::PATTERN_FIND:
-            case RuleImportAsset::PATTERN_IS_EMPTY:
                 Dropdown::showYesNo($name, 1, 0);
                 return true;
         }
@@ -381,7 +379,7 @@ class RuleImportAsset extends Rule
             $criteria = $this->getCriteriaByID($criterion);
             if (!empty($criteria)) {
                 foreach ($criteria as $crit) {
-                    if (!isset($input[$criterion]) || $input[$criterion] == '') {
+                    if (!isset($input[$criterion]) || ($input[$criterion] == '' && $crit->fields['condition'] != self::PATTERN_IS_EMPTY)) {
                         $definition_criteria = $this->getCriteria($crit->fields['criteria']);
                         if ($crit->fields["criteria"] == 'link_criteria_port') {
                             $this->link_criteria_port = true;
@@ -395,7 +393,7 @@ class RuleImportAsset extends Rule
                             trigger_error('A value seems missing, criterion was: ' . $criterion, E_USER_WARNING);
                             return false;
                         }
-                    } else if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
+                    } else if (in_array($crit->fields["condition"], [Rule::PATTERN_FIND, Rule::PATTERN_IS_EMPTY])) {
                         $this->complex_criteria[] = $crit;
                         ++$this->found_criteria;
                     } else if ($crit->fields["condition"] == Rule::PATTERN_EXISTS) {
@@ -837,7 +835,16 @@ class RuleImportAsset extends Rule
                     break;
 
                 case 'uuid':
-                    $it_criteria['WHERE'][] = ['uuid' => $input['uuid']];
+                    if ($criterion->fields['condition'] == self::PATTERN_IS_EMPTY) {
+                        $it_criteria['WHERE'][] = [
+                            'OR' => [
+                                ["$itemtable.uuid" => ''],
+                                ["$itemtable.uuid" => null]
+                            ]
+                        ];
+                    } else {
+                        $it_criteria['WHERE'][] = ["$itemtable.uuid" => $input['uuid']];
+                    }
                     break;
 
                 case 'device_id':
@@ -1341,6 +1348,35 @@ class RuleImportAsset extends Rule
                 [
                     'criteria'  => 'uuid',
                     'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Computer update (by serial + uuid is empty in GLPI)',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Computer'
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'serial',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'uuid',
+                    'condition' => Rule::PATTERN_IS_EMPTY,
                     'pattern'   => 1
                 ]
             ],

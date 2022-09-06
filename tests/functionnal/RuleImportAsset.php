@@ -1115,4 +1115,37 @@ class RuleImportAsset extends DbTestCase
             ->array($this->testedInstance->addMoreCriteria($criterion))
             ->isIdenticalTo($expected);
     }
+
+    public function testCreateComputerSerial_emptyUUID()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $fields   = $computer->fields;
+        unset($fields['id']);
+        unset($fields['date_creation']);
+        unset($fields['date_mod']);
+        $fields['name'] = $this->getUniqueString();
+        $fields['serial'] = '75F4BFC';
+        $this->integer((int)$computer->add(\Toolbox::addslashes_deep($fields)))->isGreaterThan(0);
+
+        $input = [
+            'itemtype' => 'Computer',
+            'name'     => 'pc-02',
+            'serial'   => '75F4BFC',
+            'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
+            'entities_id' => 0
+        ];
+
+        $ruleCollection = new \RuleImportAssetCollection();
+        $rule = new \RuleImportAsset();
+
+        $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
+
+        $this->array($data)->hasKey('_ruleid');
+        $_rule_id = (int)$data['_ruleid'];
+        $this->integer($_rule_id)->isGreaterThan(0);
+
+        $this->boolean($rule->getFromDB($_rule_id))->isTrue();
+        $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by serial + uuid is empty in GLPI)");
+        $this->string($this->itemtype)->isIdenticalTo('Computer');
+    }
 }
