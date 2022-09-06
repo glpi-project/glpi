@@ -1580,6 +1580,20 @@ HTML;
             chartPadding: {
                right: 40
             },
+            axisY: {
+               labelInterpolationFnc: function(value) {
+                  if (value < 1e3) {
+                     // less than 1K
+                     return value;
+                  } else if (value < 1e6) {
+                     // More than 1k, less than 1M
+                     return value / 1e3 + "K";
+                  } else {
+                     // More than 1M
+                     return value / 1e6 + "M";
+                  }
+               },
+            },
             {$area_options}
             plugins: [
                {$legend_options}

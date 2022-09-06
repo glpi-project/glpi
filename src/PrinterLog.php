@@ -121,7 +121,22 @@ class PrinterLog extends CommonDBChild
             ] + $filters
         ]);
 
-        return iterator_to_array($iterator);
+        $series = iterator_to_array($iterator, false);
+
+        // Reduce the data to 25 points
+        $count = count($series);
+        $max_size = 25;
+        if ($count > $max_size) {
+            // Keep one row every X entry using modulo
+            $modulo = round($count / $max_size);
+            $series = array_filter(
+                $series,
+                fn($k) => (($count - ($k + 1)) % $modulo) == 0,
+                ARRAY_FILTER_USE_KEY
+            );
+        }
+
+        return $series;
     }
 
     /**
@@ -142,19 +157,35 @@ class PrinterLog extends CommonDBChild
 
         $series = [];
         $labels = [];
-        $i = 0;
+
+        // Formatter to display the date (months names) in the correct language
+        // Dates will be displayed as "d MMMM":
+        // d = short day number (1, 12, ...)
+        // MMM = short month name (jan, feb, ...)
+        // Note that PHP use ISO 8601 Date Output here which is different from
+        // the "Constants for PHP Date Output" used in others functions
+        // See https://framework.zend.com/manual/1.12/en/zend.date.constants.html#zend.date.constants.selfdefinedformats
+        $fmt = new IntlDateFormatter(
+            $_SESSION['glpilanguage'] ?? 'en_GB',
+            IntlDateFormatter::NONE,
+            IntlDateFormatter::NONE,
+            null,
+            null,
+            'd MMM'
+        );
+
         foreach ($raw_metrics as $metrics) {
             $date = new DateTime($metrics['date']);
-            $labels[] = $date->format(__('Y-m-d'));
+            $labels[] = $fmt->format($date);
             unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
 
             foreach ($metrics as $key => $value) {
-                if ($value > 0) {
-                    $series[$key]['name'] = $this->getLabelFor($key);
+                $label = $this->getLabelFor($key);
+                if ($label && $value > 0) {
+                    $series[$key]['name'] = $label;
                     $series[$key]['data'][] = $value;
                 }
             }
-            ++$i;
         }
 
         $bar_conf = [
@@ -170,11 +201,19 @@ class PrinterLog extends CommonDBChild
 
        //display graph
         echo "<div class='dashboard printer_barchart'>";
-        echo Widget::multipleBars($bar_conf);
+        echo Widget::multipleAreas($bar_conf);
         echo "</div>";
     }
 
-    private function getLabelFor($key)
+    /**
+     * Get the label for a given column of glpi_printerlogs.
+     * To be used when displaying the printed pages graph.
+     *
+     * @param string $key
+     *
+     * @return null|string null if the key didn't match any valid field
+     */
+    private function getLabelFor($key): ?string
     {
         switch ($key) {
             case 'total_pages':
@@ -202,5 +241,7 @@ class PrinterLog extends CommonDBChild
             case 'faxed':
                 return __('Fax');
         }
+
+        return null;
     }
 }
