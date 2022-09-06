@@ -8489,7 +8489,8 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($iterator as $data) {
             // Create a fake item to get just the actors without loading all other information about items.
             $temp_item = new static();
-            $temp_item->fields['id'] = $data['id'];
+            $temp_item->getEmpty();
+            $temp_item->fields = array_merge($temp_item->fields, $data);
             $temp_item->loadActors();
 
             // Build team member data
@@ -8594,7 +8595,7 @@ abstract class CommonITILObject extends CommonDBTM
             } else {
                 $data['_steps'] = [];
             }
-            $data['_readonly'] = false;
+            $data['_readonly'] = !static::canUpdate() || !$temp_item->canUpdateItem();
             $items[$data['id']] = $data;
         }
 
