@@ -8474,12 +8474,7 @@ abstract class CommonITILObject extends CommonDBTM
         $WHERE += getEntitiesRestrictCriteria();
 
         $request = [
-            'SELECT' => [
-                $itil_table . '.id',
-                $itil_table . '.name',
-                $itil_table . '.content',
-                $itil_table . '.status',
-            ],
+            'SELECT' => [$itil_table . '.id'],
             'FROM'   => $itil_table,
             'WHERE'  => $WHERE
         ];
@@ -8488,9 +8483,16 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($iterator as $data) {
             // Create a fake item to get just the actors without loading all other information about items.
             $temp_item = new static();
-            $temp_item->getEmpty();
-            $temp_item->fields = array_merge($temp_item->fields, $data);
-            $temp_item->loadActors();
+            $temp_item->getFromDB($data['id']);
+            $data = [
+                'id'      => $temp_item->fields['id'],
+                'name'    => $temp_item->fields['name'],
+                'content' => $temp_item->fields['content'],
+                'status'  => $temp_item->fields['status'],
+            ];
+            if (!$temp_item->canViewItem()) {
+                continue;
+            }
 
             // Build team member data
             $supported_teamtypes = [
