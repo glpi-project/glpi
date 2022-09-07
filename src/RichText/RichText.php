@@ -355,10 +355,10 @@ final class RichText
                     $gallery = self::imageGallery([
                         [
                             'src' => $docsrc,
-                            'w'   => $imgsize[0], //used by photoSwipe gallery
-                            'h'   => $imgsize[1], //used by photoSwipe gallery
-                            'user_w' => $width, //use from timeline
-                            'user_h' => $height,//use from timeline
+                            'w'   => $imgsize[0],
+                            'h'   => $imgsize[1],
+                            'thumbnail_w' => $width,
+                            'thumbnail_h' => $height,
                         ]
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
