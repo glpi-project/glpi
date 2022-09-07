@@ -339,7 +339,6 @@ final class RichText
             if ($document->getFromDB($docid)) {
                 $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
                 if (Document::isImage($docpath)) {
-
                     //find width / height define by user
                     $width = null;
                     if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $img_tag, $wmatches)) {
