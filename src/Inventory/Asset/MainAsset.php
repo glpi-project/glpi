@@ -646,15 +646,8 @@ abstract class MainAsset extends InventoryAsset
         $_SESSION['glpiactiveentities_string'] = $entities_id;
         $_SESSION['glpiactive_entity']         = $entities_id;
 
-        //locked fields
-        $lockedfield = new Lockedfield();
-        $locks = $lockedfield->getLockedNames($this->item->getType(), $items_id);
-        foreach ($this->data as &$data) {
-            foreach ($locks as $lock) {
-                if (property_exists($data, $lock)) {
-                    unset($data->$lock);
-                }
-            }
+        if ($items_id != 0) {
+            $this->item->getFromDB($items_id);
         }
 
         //handleLinks relies on $this->data; update it before the call
@@ -666,8 +659,6 @@ abstract class MainAsset extends InventoryAsset
             unset($input['firmware']);
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
             $this->setNew();
-        } else {
-            $this->item->getFromDB($items_id);
         }
 
         if (in_array($itemtype, $CFG_GLPI['agent_types'])) {

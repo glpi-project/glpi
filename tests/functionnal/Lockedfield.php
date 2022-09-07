@@ -421,6 +421,8 @@ class Lockedfield extends DbTestCase
 
         //ensure no new location has been added
         $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
+
+        $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => 'Greffe Charron']);
     }
 
     public function testNoLocationGlobal()
