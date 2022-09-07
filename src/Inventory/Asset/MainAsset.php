@@ -646,17 +646,6 @@ abstract class MainAsset extends InventoryAsset
         $_SESSION['glpiactiveentities_string'] = $entities_id;
         $_SESSION['glpiactive_entity']         = $entities_id;
 
-        //locked fields
-        $lockedfield = new Lockedfield();
-        $locks = $lockedfield->getLocks($this->item->getType(), $items_id);
-        foreach ($this->data as &$data) {
-            foreach ($locks as $lock) {
-                if (property_exists($data, $lock)) {
-                    unset($data->$lock);
-                }
-            }
-        }
-
         //handleLinks relies on $this->data; update it before the call
         $this->handleLinks();
 
