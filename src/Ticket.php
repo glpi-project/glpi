@@ -4317,7 +4317,10 @@ JAVASCRIPT;
                     'glpi_validatorsubstitutes' => [
                         'FKEY' => [
                             'glpi_validatorsubstitutes' => 'users_id',
-                            'glpi_ticketvalidations' => 'users_id_validate',
+                            'glpi_ticketvalidations' => 'items_id_target',
+                        ],
+                        'AND' => [
+                            'glpi_ticketvalidations.itemtype_target' => User::class,
                         ],
                     ],
                     'glpi_users' => [

@@ -7043,8 +7043,6 @@ abstract class CommonITILObject extends CommonDBTM
                 $canedit = $validation_obj->can($validations_id, UPDATE);
                 $cananswer = ($validation_obj->canValidate($this->getID())
                               && $validation['status'] == CommonITILValidation::WAITING);
-                $user = new User();
-                $user->getFromDB($validation['users_id_validate']);
 
                 $request_key = $validation_obj::getType() . '_' . $validations_id
                     . (empty($validation['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request

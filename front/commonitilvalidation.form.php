@@ -115,7 +115,8 @@ if (isset($_POST["add"])) {
             Session::addMessageAfterRedirect(sprintf(__('%1$s does not have a responsible'), $primaryRequester->getFriendlyName()));
             Html::back();
         }
-        $_POST['users_id_validate'] = $primaryRequester->fields['users_id_supervisor'];
+        $_POST['itemtype_target'] = User::class;
+        $_POST['items_id_target'] = $primaryRequester->fields['users_id_supervisor'];
         $validation->add($_POST);
         Event::log(
             $validation->getField($fk),
