@@ -299,8 +299,8 @@ class Lockedfield extends DbTestCase
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
         $this->integer($computer->fields['manufacturers_id'])->isEqualTo(0);
 
-        //ensure no new manufacturer has been added
-        $this->integer(countElementsInTable(\Manufacturer::getTable()))->isIdenticalTo($existing_manufacturers);
+        //ensure new manufacturer has been added -> usefull for 'value' column from LockedField in the case that it refers to a ForeignKey
+        $this->integer(countElementsInTable(\Manufacturer::getTable()))->isIdenticalTo($existing_manufacturers + 1);
     }
 
     public function testNoLocation()
@@ -420,8 +420,8 @@ class Lockedfield extends DbTestCase
         $this->boolean($printer->getFromDB($printers_id))->isTrue();
         $this->integer($printer->fields['locations_id'])->isEqualTo($locations_id);
 
-        //ensure no new location has been added
-        $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
+        //ensure new location has been added -> usefull for 'value' column from LockedField in the case that it refers to a ForeignKey
+        $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations + 1);
     }
 
     public function testNoLocationGlobal()
@@ -496,7 +496,7 @@ class Lockedfield extends DbTestCase
         $this->boolean($printer->getFromDB($printers_id))->isTrue();
         $this->integer($printer->fields['locations_id'])->isEqualTo(0);
 
-        //ensure no new location has been added
-        $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
+        //ensure new location has been added -> usefull for 'value' column from LockedField in the case that it refers to a ForeignKey
+        $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations + 1);
     }
 }
