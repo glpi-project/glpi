@@ -41,7 +41,6 @@ namespace Glpi\Search\Output;
  */
 final class PDFPortraitSearchOutput extends PDFSearchOutput
 {
-
     public static function showFooter($title = "", $count = null): string
     {
         global $PDF_TABLE;

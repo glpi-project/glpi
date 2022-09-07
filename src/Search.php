@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Output\CSVSearchOutput;

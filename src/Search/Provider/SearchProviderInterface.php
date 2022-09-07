@@ -42,6 +42,6 @@ namespace Glpi\Search\Provider;
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-interface SearchProviderInterface {
-
+interface SearchProviderInterface
+{
 }

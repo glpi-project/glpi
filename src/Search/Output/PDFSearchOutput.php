@@ -44,7 +44,6 @@ use Glpi\Toolbox\DataExport;
  */
 abstract class PDFSearchOutput extends ExportSearchOutput
 {
-
     /**
      * Compute title (use case of PDF OUTPUT)
      *
@@ -236,8 +235,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
                             $metacriteria['link']
                         );
                     }
-                    $titlecontain2
-                        = sprintf(
+                    $titlecontain2 = sprintf(
                         __('%1$s %2$s'),
                         $titlecontain2,
                         sprintf(

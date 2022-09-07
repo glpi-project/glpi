@@ -56,7 +56,6 @@ use Glpi\Search\Output\TableSearchOutput;
  */
 final class SearchEngine
 {
-
     /**
      * @param int $output_type
      * @param array $data

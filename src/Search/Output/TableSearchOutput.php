@@ -41,5 +41,4 @@ namespace Glpi\Search\Output;
  */
 final class TableSearchOutput extends HTMLSearchOutput
 {
-
 }

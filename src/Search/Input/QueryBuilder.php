@@ -39,8 +39,8 @@ use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
 
-final class QueryBuilder implements SearchInputInterface {
-
+final class QueryBuilder implements SearchInputInterface
+{
     /**
      * Print generic search form
      *

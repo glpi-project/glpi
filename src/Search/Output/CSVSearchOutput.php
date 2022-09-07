@@ -43,7 +43,6 @@ use Glpi\Toolbox\DataExport;
  */
 final class CSVSearchOutput extends ExportSearchOutput
 {
-
     public static function cleanValue(string $value): string
     {
         return str_replace("\"", "''", $value);

@@ -41,7 +41,6 @@ namespace Glpi\Search\Output;
  */
 abstract class AbstractSearchOutput
 {
-
     /**
      * Print generic normal Item Cell
      *

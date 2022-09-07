@@ -43,7 +43,6 @@ use Glpi\Search\SearchOption;
  */
 abstract class ExportSearchOutput extends AbstractSearchOutput
 {
-
     /**
      * Generic Function to display Items
      *

@@ -35,6 +35,8 @@
 
 namespace Glpi\Search;
 
+use ReturnTypeWillChange;
+
 /**
  * Object representing a search option.
  *
@@ -42,8 +44,8 @@ namespace Glpi\Search;
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-final class SearchOption implements \ArrayAccess {
-
+final class SearchOption implements \ArrayAccess
+{
     /**
      * Internal search option array
      * @var array{id: int, name: string, field: string, table: string}
@@ -77,7 +79,8 @@ final class SearchOption implements \ArrayAccess {
         return isset($this->search_opt_array[$offset]);
     }
 
-    public function offsetGet($offset): mixed
+    #[ReturnTypeWillChange]
+    public function offsetGet($offset)
     {
         return $this->search_opt_array[$offset];
     }
@@ -239,19 +242,14 @@ final class SearchOption implements \ArrayAccess {
                 $search[$itemtype][60]['forcegroupby']  = true;
                 $search[$itemtype][60]['usehaving']     = true;
                 $search[$itemtype][60]['massiveaction'] = false;
-                $search[$itemtype][60]['joinparams']    = ['beforejoin'
-                => ['table'
-                    => 'glpi_items_tickets',
-                        'joinparams'
-                        => ['jointype'
-                        => 'itemtype_item'
+                $search[$itemtype][60]['joinparams']    = [
+                    'beforejoin' => [
+                        'table' => 'glpi_items_tickets',
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
                         ]
                     ],
-                    'condition'
-                    => getEntitiesRestrictRequest(
-                        'AND',
-                        'NEWTABLE'
-                    )
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
                 ];
 
                 $search[$itemtype][140]['table']         = 'glpi_problems';
@@ -261,19 +259,14 @@ final class SearchOption implements \ArrayAccess {
                 $search[$itemtype][140]['forcegroupby']  = true;
                 $search[$itemtype][140]['usehaving']     = true;
                 $search[$itemtype][140]['massiveaction'] = false;
-                $search[$itemtype][140]['joinparams']    = ['beforejoin'
-                => ['table'
-                    => 'glpi_items_problems',
-                        'joinparams'
-                        => ['jointype'
-                        => 'itemtype_item'
+                $search[$itemtype][140]['joinparams']    = [
+                    'beforejoin' => [
+                        'table' => 'glpi_items_problems',
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
                         ]
                     ],
-                    'condition'
-                    => getEntitiesRestrictRequest(
-                        'AND',
-                        'NEWTABLE'
-                    )
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
                 ];
             }
 

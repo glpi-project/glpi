@@ -44,7 +44,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 abstract class HTMLSearchOutput extends AbstractSearchOutput
 {
-
     /**
      * Display datas extracted from DB
      *
@@ -122,9 +121,9 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                     || count(\MassiveAction::getAllMassiveActions($item, $is_deleted))
                 ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [
-                    'is_deleted' => $is_deleted,
-                    'container'  => "massform$itemtype",
-                ],
+                'is_deleted' => $is_deleted,
+                'container'  => "massform$itemtype",
+            ],
             'can_config'          => \Session::haveRightsOr('search_config', [
                 \DisplayPreference::PERSONAL,
                 \DisplayPreference::GENERAL
@@ -228,14 +227,14 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             $value = preg_replace('/' . \Search::LBHR . '/', '<hr>', $value);
             $value = '<div class="fup-popup">' . $value . '</div>';
             $valTip = "&nbsp;" . \Html::showToolTip(
-                    $value,
-                    [
-                        'awesome-class'   => 'fa-comments',
-                        'display'         => false,
-                        'autoclose'       => false,
-                        'onclick'         => true
-                    ]
-                );
+                $value,
+                [
+                    'awesome-class'   => 'fa-comments',
+                    'display'         => false,
+                    'autoclose'       => false,
+                    'onclick'         => true
+                ]
+            );
             $out .= $values[0] . $valTip;
         } else {
             $value = preg_replace('/' . \Search::LBBR . '/', '<br>', $value);

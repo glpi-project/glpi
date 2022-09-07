@@ -43,7 +43,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 final class MapSearchOutput extends HTMLSearchOutput
 {
-
     /**
      * Display result table for search engine for an item type as a map
      *

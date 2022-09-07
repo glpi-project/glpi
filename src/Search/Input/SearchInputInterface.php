@@ -41,5 +41,4 @@ namespace Glpi\Search\Input;
  */
 interface SearchInputInterface
 {
-
 }

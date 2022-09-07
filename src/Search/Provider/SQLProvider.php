@@ -40,6 +40,7 @@ use Glpi\RichText\RichText;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
+use Session;
 
 /**
  *
@@ -47,7 +48,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 final class SQLProvider implements SearchProviderInterface
 {
-
     private static function buildSelect(array $data, string $itemtable): string
     {
         // request currentuser for SQL supervision, not displayed
@@ -445,7 +445,7 @@ final class SQLProvider implements SearchProviderInterface
                         || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])
                     ) {
                         $TRANS = '';
-                        if (\Session::haveTranslations(getItemTypeForTable($table), $field)) {
+                        if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
                             $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '" . \Search::NULLVALUE . "'),
                                                              '" . \Search::SHORTSEP . "',$tocomputeid) ORDER BY $tocomputeid
                                              SEPARATOR '" . \Search::LONGSEP . "')
@@ -473,7 +473,7 @@ final class SQLProvider implements SearchProviderInterface
                     && $searchopt[$ID]["computationgroupby"]))
         ) { // Not specific computation
             $TRANS = '';
-            if (\Session::haveTranslations(getItemTypeForTable($table), $field)) {
+            if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
                 $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '" . \Search::NULLVALUE . "'),
                                                    '" . \Search::SHORTSEP . "',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "')
                                   AS `" . $NAME . "_trans_" . $field . "`, ";
@@ -485,7 +485,7 @@ final class SQLProvider implements SearchProviderInterface
                   $ADDITONALFIELDS";
         }
         $TRANS = '';
-        if (\Session::haveTranslations(getItemTypeForTable($table), $field)) {
+        if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = $tocomputetrans . " AS `" . $NAME . "_trans_" . $field . "`, ";
         }
         return "$tocompute AS `" . $NAME . "`, $TRANS $ADDITONALFIELDS";
@@ -529,7 +529,7 @@ final class SQLProvider implements SearchProviderInterface
             // No link
             case 'User':
                 // View all entities
-                if (!\Session::canViewAllEntities()) {
+                if (!Session::canViewAllEntities()) {
                     $condition = getEntitiesRestrictRequest("", "glpi_profiles_users", '', '', true);
                 }
                 break;
@@ -539,7 +539,7 @@ final class SQLProvider implements SearchProviderInterface
                 $teamtable  = 'glpi_projecttaskteams';
                 $condition .= "`glpi_projects`.`is_template` = 0";
                 $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
-                             AND `$teamtable`.`items_id` = '" . \Session::getLoginUserID() . "')";
+                             AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
                 if (count($_SESSION['glpigroups'])) {
                     $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
                                     AND `$teamtable`.`items_id`
@@ -550,11 +550,11 @@ final class SQLProvider implements SearchProviderInterface
 
             case 'Project':
                 $condition = '';
-                if (!\Session::haveRight("project", \Project::READALL)) {
+                if (!Session::haveRight("project", \Project::READALL)) {
                     $teamtable  = 'glpi_projectteams';
-                    $condition .= "(`glpi_projects`.users_id = '" . \Session::getLoginUserID() . "'
+                    $condition .= "(`glpi_projects`.users_id = '" . Session::getLoginUserID() . "'
                                OR (`$teamtable`.`itemtype` = 'User'
-                                   AND `$teamtable`.`items_id` = '" . \Session::getLoginUserID() . "')";
+                                   AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
                     if (count($_SESSION['glpigroups'])) {
                         $condition .= " OR (`glpi_projects`.`groups_id`
                                        IN (" . implode(",", $_SESSION['glpigroups']) . "))";
@@ -569,7 +569,7 @@ final class SQLProvider implements SearchProviderInterface
             case 'Ticket':
                 // Same structure in addDefaultJoin
                 $condition = '';
-                if (!\Session::haveRight("ticket", \Ticket::READALL)) {
+                if (!Session::haveRight("ticket", \Ticket::READALL)) {
                     $searchopt
                         = &SearchOption::getOptionsForItemtype($itemtype);
                     $requester_table
@@ -601,15 +601,15 @@ final class SQLProvider implements SearchProviderInterface
 
                     $condition = "(";
 
-                    if (\Session::haveRight("ticket", \Ticket::READMY)) {
-                        $condition .= " $requester_table.users_id = '" . \Session::getLoginUserID() . "'
-                                    OR $observer_table.users_id = '" . \Session::getLoginUserID() . "'
-                                    OR `glpi_tickets`.`users_id_recipient` = '" . \Session::getLoginUserID() . "'";
+                    if (Session::haveRight("ticket", \Ticket::READMY)) {
+                        $condition .= " $requester_table.users_id = '" . Session::getLoginUserID() . "'
+                                    OR $observer_table.users_id = '" . Session::getLoginUserID() . "'
+                                    OR `glpi_tickets`.`users_id_recipient` = '" . Session::getLoginUserID() . "'";
                     } else {
                         $condition .= "0=1";
                     }
 
-                    if (\Session::haveRight("ticket", \Ticket::READGROUP)) {
+                    if (Session::haveRight("ticket", \Ticket::READGROUP)) {
                         if (count($_SESSION['glpigroups'])) {
                             $condition .= " OR $requestergroup_table.`groups_id`
                                              IN (" . implode(",", $_SESSION['glpigroups']) . ")";
@@ -618,23 +618,23 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
 
-                    if (\Session::haveRight("ticket", \Ticket::OWN)) {// Can own ticket : show assign to me
-                        $condition .= " OR $assign_table.users_id = '" . \Session::getLoginUserID() . "' ";
+                    if (Session::haveRight("ticket", \Ticket::OWN)) {// Can own ticket : show assign to me
+                        $condition .= " OR $assign_table.users_id = '" . Session::getLoginUserID() . "' ";
                     }
 
-                    if (\Session::haveRight("ticket", \Ticket::READASSIGN)) { // assign to me
-                        $condition .= " OR $assign_table.`users_id` = '" . \Session::getLoginUserID() . "'";
+                    if (Session::haveRight("ticket", \Ticket::READASSIGN)) { // assign to me
+                        $condition .= " OR $assign_table.`users_id` = '" . Session::getLoginUserID() . "'";
                         if (count($_SESSION['glpigroups'])) {
                             $condition .= " OR $assigngroup_table.`groups_id`
                                              IN (" . implode(",", $_SESSION['glpigroups']) . ")";
                         }
-                        if (\Session::haveRight('ticket', \Ticket::ASSIGN)) {
+                        if (Session::haveRight('ticket', \Ticket::ASSIGN)) {
                             $condition .= " OR `glpi_tickets`.`status`='" . \CommonITILObject::INCOMING . "'";
                         }
                     }
 
                     if (
-                        \Session::haveRightsOr(
+                        Session::haveRightsOr(
                             'ticketvalidation',
                             [\TicketValidation::VALIDATEINCIDENT,
                                 \TicketValidation::VALIDATEREQUEST
@@ -663,9 +663,9 @@ final class SQLProvider implements SearchProviderInterface
                 }
                 // Same structure in addDefaultJoin
                 $condition = '';
-                if (!\Session::haveRight("$right", $itemtype::READALL)) {
+                if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $searchopt       = &SearchOption::getOptionsForItemtype($itemtype);
-                    if (\Session::haveRight("$right", $itemtype::READMY)) {
+                    if (Session::haveRight("$right", $itemtype::READMY)) {
                         $requester_table      = '`glpi_' . $table . '_users_' .
                             self::computeComplexJoinID($searchopt[4]['joinparams']
                             ['beforejoin']['joinparams']) . '`';
@@ -689,11 +689,11 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $condition = "(";
 
-                    if (\Session::haveRight("$right", $itemtype::READMY)) {
-                        $condition .= " $requester_table.users_id = '" . \Session::getLoginUserID() . "'
-                                 OR $observer_table.users_id = '" . \Session::getLoginUserID() . "'
-                                 OR $assign_table.users_id = '" . \Session::getLoginUserID() . "'
-                                 OR `glpi_" . $table . "`.`users_id_recipient` = '" . \Session::getLoginUserID() . "'";
+                    if (Session::haveRight("$right", $itemtype::READMY)) {
+                        $condition .= " $requester_table.users_id = '" . Session::getLoginUserID() . "'
+                                 OR $observer_table.users_id = '" . Session::getLoginUserID() . "'
+                                 OR $assign_table.users_id = '" . Session::getLoginUserID() . "'
+                                 OR `glpi_" . $table . "`.`users_id_recipient` = '" . Session::getLoginUserID() . "'";
                         if (count($_SESSION['glpigroups'])) {
                             $my_groups_keys = "'" . implode("','", $_SESSION['glpigroups']) . "'";
                             $condition .= " OR $requestergroup_table.groups_id IN ($my_groups_keys)
@@ -721,10 +721,10 @@ final class SQLProvider implements SearchProviderInterface
             case 'TicketTask':
                 // Filter on is_private
                 $allowed_is_private = [];
-                if (\Session::haveRight(\TicketTask::$rightname, \CommonITILTask::SEEPRIVATE)) {
+                if (Session::haveRight(\TicketTask::$rightname, \CommonITILTask::SEEPRIVATE)) {
                     $allowed_is_private[] = 1;
                 }
-                if (\Session::haveRight(\TicketTask::$rightname, \CommonITILTask::SEEPUBLIC)) {
+                if (Session::haveRight(\TicketTask::$rightname, \CommonITILTask::SEEPUBLIC)) {
                     $allowed_is_private[] = 0;
                 }
 
@@ -738,12 +738,12 @@ final class SQLProvider implements SearchProviderInterface
                 $condition = "(`glpi_tickettasks`.`is_private` $in ";
 
                 // Check for assigned or created tasks
-                $condition .= "OR `glpi_tickettasks`.`users_id` = " . \Session::getLoginUserID() . " ";
-                $condition .= "OR `glpi_tickettasks`.`users_id_tech` = " . \Session::getLoginUserID() . " ";
+                $condition .= "OR `glpi_tickettasks`.`users_id` = " . Session::getLoginUserID() . " ";
+                $condition .= "OR `glpi_tickettasks`.`users_id_tech` = " . Session::getLoginUserID() . " ";
 
                 // Check for parent item visibility unless the user can see all the
                 // possible parents
-                if (!\Session::haveRight('ticket', \Ticket::READALL)) {
+                if (!Session::haveRight('ticket', \Ticket::READALL)) {
                     $condition .= "AND " . \TicketTask::buildParentCondition();
                 }
 
@@ -754,10 +754,10 @@ final class SQLProvider implements SearchProviderInterface
             case 'ITILFollowup':
                 // Filter on is_private
                 $allowed_is_private = [];
-                if (\Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPRIVATE)) {
+                if (Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPRIVATE)) {
                     $allowed_is_private[] = 1;
                 }
-                if (\Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPUBLIC)) {
+                if (Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPUBLIC)) {
                     $allowed_is_private[] = 0;
                 }
 
@@ -1072,15 +1072,15 @@ final class SQLProvider implements SearchProviderInterface
                     switch ($searchtype) {
                         case 'equals':
                             return " $link (`$table`.`id` IN ('" . implode(
-                                    "','",
-                                    $_SESSION['glpigroups']
-                                ) . "')) ";
+                                "','",
+                                $_SESSION['glpigroups']
+                            ) . "')) ";
 
                         case 'notequals':
                             return " $link (`$table`.`id` NOT IN ('" . implode(
-                                    "','",
-                                    $_SESSION['glpigroups']
-                                ) . "')) ";
+                                "','",
+                                $_SESSION['glpigroups']
+                            ) . "')) ";
 
                         case 'under':
                             $groups = $_SESSION['glpigroups'];
@@ -1521,7 +1521,7 @@ final class SQLProvider implements SearchProviderInterface
             return $out;
         }
         $transitemtype = getItemTypeForTable($inittable);
-        if (\Session::haveTranslations($transitemtype, $field)) {
+        if (Session::haveTranslations($transitemtype, $field)) {
             return " $link (" . self::makeTextCriteria($tocompute, $val, $nott, '') . "
                           OR " . self::makeTextCriteria($tocomputetrans, $val, $nott, '') . ")";
         }
@@ -1599,7 +1599,7 @@ final class SQLProvider implements SearchProviderInterface
 
             case 'Project':
                 // Same structure in addDefaultWhere
-                if (!\Session::haveRight("project", \Project::READALL)) {
+                if (!Session::haveRight("project", \Project::READALL)) {
                     $out .= self::addLeftJoin(
                         $itemtype,
                         $ref_table,
@@ -1615,7 +1615,7 @@ final class SQLProvider implements SearchProviderInterface
 
             case 'Ticket':
                 // Same structure in addDefaultWhere
-                if (!\Session::haveRight("ticket", \Ticket::READALL)) {
+                if (!Session::haveRight("ticket", \Ticket::READALL)) {
                     $searchopt = &SearchOption::getOptionsForItemtype($itemtype);
 
                     // show mine : requester
@@ -1630,7 +1630,7 @@ final class SQLProvider implements SearchProviderInterface
                         $searchopt[4]['joinparams']['beforejoin']['joinparams']
                     );
 
-                    if (\Session::haveRight("ticket", \Ticket::READGROUP)) {
+                    if (Session::haveRight("ticket", \Ticket::READGROUP)) {
                         if (count($_SESSION['glpigroups'])) {
                             $out .= self::addLeftJoin(
                                 $itemtype,
@@ -1671,7 +1671,7 @@ final class SQLProvider implements SearchProviderInterface
                         );
                     }
 
-                    if (\Session::haveRight("ticket", \Ticket::OWN)) { // Can own ticket : show assign to me
+                    if (Session::haveRight("ticket", \Ticket::OWN)) { // Can own ticket : show assign to me
                         $out .= self::addLeftJoin(
                             $itemtype,
                             $ref_table,
@@ -1684,7 +1684,7 @@ final class SQLProvider implements SearchProviderInterface
                         );
                     }
 
-                    if (\Session::haveRightsOr("ticket", [\Ticket::READMY, \Ticket::READASSIGN])) { // show mine + assign to me
+                    if (Session::haveRightsOr("ticket", [\Ticket::READMY, \Ticket::READASSIGN])) { // show mine + assign to me
                         $out .= self::addLeftJoin(
                             $itemtype,
                             $ref_table,
@@ -1712,7 +1712,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
 
                     if (
-                        \Session::haveRightsOr(
+                        Session::haveRightsOr(
                             'ticketvalidation',
                             [\TicketValidation::VALIDATEINCIDENT,
                                 \TicketValidation::VALIDATEREQUEST
@@ -1749,10 +1749,10 @@ final class SQLProvider implements SearchProviderInterface
 
                 // Same structure in addDefaultWhere
                 $out = '';
-                if (!\Session::haveRight("$right", $itemtype::READALL)) {
+                if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $searchopt = &SearchOption::getOptionsForItemtype($itemtype);
 
-                    if (\Session::haveRight("$right", $itemtype::READMY)) {
+                    if (Session::haveRight("$right", $itemtype::READMY)) {
                         // show mine : requester
                         $out .= self::addLeftJoin(
                             $itemtype,
@@ -1897,7 +1897,7 @@ final class SQLProvider implements SearchProviderInterface
             && !$is_fkey_composite_on_self
         ) {
             $transitemtype = getItemTypeForTable($new_table);
-            if (\Session::haveTranslations($transitemtype, $field)) {
+            if (Session::haveTranslations($transitemtype, $field)) {
                 $transAS            = $nt . '_trans_' . $field;
                 return self::joinDropdownTranslations(
                     $transAS,
@@ -2162,7 +2162,7 @@ final class SQLProvider implements SearchProviderInterface
                                           ON (`$rt`.`$linkfield` = `$nt`.`id`
                                               $addcondition)";
                         $transitemtype = getItemTypeForTable($new_table);
-                        if (\Session::haveTranslations($transitemtype, $field)) {
+                        if (Session::haveTranslations($transitemtype, $field)) {
                             $transAS            = $nt . '_trans_' . $field;
                             $specific_leftjoin .= self::joinDropdownTranslations(
                                 $transAS,
@@ -3638,9 +3638,9 @@ final class SQLProvider implements SearchProviderInterface
             // Search case
             $data['data']['begin'] = $data['search']['start'];
             $data['data']['end']   = min(
-                    $data['data']['totalcount'],
-                    $data['search']['start'] + $data['search']['list_limit']
-                ) - 1;
+                $data['data']['totalcount'],
+                $data['search']['start'] + $data['search']['list_limit']
+            ) - 1;
             //map case
             if (isset($data['search']['as_map'])  && $data['search']['as_map'] == 1) {
                 $data['data']['end'] = $data['data']['totalcount'] - 1;
@@ -3650,9 +3650,9 @@ final class SQLProvider implements SearchProviderInterface
             if ($data['search']['no_search']) {
                 $data['data']['begin'] = 0;
                 $data['data']['end']   = min(
-                        $data['data']['totalcount'] - $data['search']['start'],
-                        $data['search']['list_limit']
-                    ) - 1;
+                    $data['data']['totalcount'] - $data['search']['start'],
+                    $data['search']['list_limit']
+                ) - 1;
             }
             // Export All case
             if ($data['search']['export_all']) {
@@ -4059,7 +4059,7 @@ final class SQLProvider implements SearchProviderInterface
                         $added         = [];
 
                         $showuserlink = 0;
-                        if (\Session::haveRight('user', READ)) {
+                        if (Session::haveRight('user', READ)) {
                             $showuserlink = 1;
                         }
 
@@ -4078,7 +4078,7 @@ final class SQLProvider implements SearchProviderInterface
                                         && $data[$ID][$k]['name'] > 0
                                     ) {
                                         if (
-                                            \Session::getCurrentInterface() == 'helpdesk'
+                                            Session::getCurrentInterface() == 'helpdesk'
                                             && $orig_id == 5 // -> Assigned user
                                             && !empty($anon_name = \User::getAnonymizedNameForUser(
                                                 $data[$ID][$k]['name'],
@@ -4089,7 +4089,7 @@ final class SQLProvider implements SearchProviderInterface
                                         } else {
                                             $userdata = getUserName($data[$ID][$k]['name'], 2);
                                             $tooltip  = "";
-                                            if (\Session::haveRight('user', READ)) {
+                                            if (Session::haveRight('user', READ)) {
                                                 $tooltip = \Html::showToolTip(
                                                     $userdata["comment"],
                                                     ['link'    => $userdata["link"],
@@ -4305,7 +4305,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && \Session::haveRight("problem", \Problem::READALL)
+                            && Session::haveRight("problem", \Problem::READALL)
                         ) {
                             if ($itemtype == 'ITILCategory') {
                                 $options['criteria'][0]['field']      = 7;
@@ -4343,7 +4343,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && \Session::haveRight("ticket", \Ticket::READALL)
+                            && Session::haveRight("ticket", \Ticket::READALL)
                         ) {
                             if ($itemtype == 'User') {
                                 // Requester
@@ -4573,7 +4573,7 @@ final class SQLProvider implements SearchProviderInterface
                     } else {
                         $text = \Html::resume_text($data[$ID][0]['name']);
                     }
-                    if (\Session::haveRight('reservation', UPDATE)) {
+                    if (Session::haveRight('reservation', UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"
                            href='" . \ReservationItem::getFormURLWithID($data['refID']) . "' >" . $text . "</a>";
                     }
@@ -4868,7 +4868,7 @@ final class SQLProvider implements SearchProviderInterface
 
         if (
             $itemtype == 'Ticket'
-            && \Session::getCurrentInterface() == 'helpdesk'
+            && Session::getCurrentInterface() == 'helpdesk'
             && $orig_id == 8
             && !empty($anon_name = \Group::getAnonymizedName(
                 $itemtype::getById($data['id'])->getEntityId()
@@ -5029,10 +5029,10 @@ final class SQLProvider implements SearchProviderInterface
                     $out   = '';
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         $out .= (empty($out) ? '' : '<br>') . \Html::timestampToString(
-                                $data[$ID][$k]['name'],
-                                $withseconds,
-                                $withdays
-                            );
+                            $data[$ID][$k]['name'],
+                            $withseconds,
+                            $withdays
+                        );
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
                     return $out;

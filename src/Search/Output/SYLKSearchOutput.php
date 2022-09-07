@@ -43,7 +43,6 @@ use Glpi\Toolbox\DataExport;
  */
 final class SYLKSearchOutput extends ExportSearchOutput
 {
-
     public static function cleanValue(string $value): string
     {
         $value = preg_replace('/\x0A/', ' ', $value);

@@ -41,7 +41,6 @@ namespace Glpi\Search\Output;
  */
 final class NamesListSearchOutput extends ExportSearchOutput
 {
-
     public static function showEndLine(bool $is_header_line): string
     {
         return $is_header_line ? '' : "\n";
