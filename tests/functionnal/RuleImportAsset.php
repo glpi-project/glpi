@@ -711,7 +711,7 @@ class RuleImportAsset extends DbTestCase
         $this->integer($_rule_id)->isGreaterThan(0);
 
         $this->boolean($rule->getFromDB($_rule_id))->isTrue();
-        $this->string($rule->fields['name'])->isIdenticalTo("Device import (by mac+ifnumber)");
+        $this->string($rule->fields['name'])->isIdenticalTo("Global import (by mac+ifnumber)");
         $this->integer($this->items_id)->isIdenticalTo(0);
         $this->string($this->itemtype)->isIdenticalTo('Unmanaged'); //not handled yet...
         $this->integer($this->ports_id)->isIdenticalTo(0);
@@ -766,7 +766,7 @@ class RuleImportAsset extends DbTestCase
         $this->integer($_rule_id)->isGreaterThan(0);
 
         $this->boolean($rule->getFromDB($_rule_id))->isTrue();
-        $this->string($rule->fields['name'])->isIdenticalTo("Device update (by mac+ifnumber restricted port)");
+        $this->string($rule->fields['name'])->isIdenticalTo("Global update (by mac+ifnumber restricted port)");
         $this->integer($this->items_id)->isIdenticalTo($networkEquipments_id);
         $this->string($this->itemtype)->isIdenticalTo('NetworkEquipment');
         $this->integer($this->ports_id)->isIdenticalTo($ports_id);
@@ -836,7 +836,7 @@ class RuleImportAsset extends DbTestCase
         $this->integer($_rule_id)->isGreaterThan(0);
 
         $this->boolean($rule->getFromDB($_rule_id))->isTrue();
-        $this->string($rule->fields['name'])->isIdenticalTo("Device update (by ip+ifdescr restricted port)");
+        $this->string($rule->fields['name'])->isIdenticalTo("Global update (by ip+ifdescr restricted port)");
         $this->integer($this->items_id)->isIdenticalTo($networkEquipments_id);
         $this->string($this->itemtype)->isIdenticalTo('NetworkEquipment');
         $this->integer($this->ports_id)->isIdenticalTo($ports_id_1);
@@ -921,7 +921,7 @@ class RuleImportAsset extends DbTestCase
         $this->integer((int)$data['_ruleid'])->isGreaterThan(0);
 
         $this->boolean($rule->getFromDB($data['_ruleid']))->isTrue();
-        $this->string($rule->fields['name'])->isIdenticalTo('Device update (by ip+ifdescr not restricted port)');
+        $this->string($rule->fields['name'])->isIdenticalTo('Global update (by ip+ifdescr not restricted port)');
         $this->integer($this->items_id)->isIdenticalTo($networkEquipments_id);
         $this->string($this->itemtype)->isIdenticalTo('NetworkEquipment');
         $this->integer($this->ports_id)->isIdenticalTo($ports_id);

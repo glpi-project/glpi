@@ -2148,7 +2148,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $iterator = $DB->request($unmanaged_criteria);
         $this->integer(count($iterator))->isIdenticalTo(5);
         foreach ($iterator as $unmanaged) {
-            $this->string($unmanaged['name'])->isIdenticalTo('Device import (by ip+ifdescr)');
+            $this->string($unmanaged['name'])->isIdenticalTo('Global import (by ip+ifdescr)');
             $this->string($unmanaged['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
         }
     }
@@ -3688,7 +3688,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $iterator = $DB->request($unmanaged_criteria);
         $this->integer(count($iterator))->isIdenticalTo(count($unmanageds));
         foreach ($iterator as $unmanaged) {
-            $this->string($unmanaged['name'])->isIdenticalTo('Device import (by ip+ifdescr)');
+            $this->string($unmanaged['name'])->isIdenticalTo('Global import (by ip+ifdescr)');
             $this->string($unmanaged['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
         }
     }
