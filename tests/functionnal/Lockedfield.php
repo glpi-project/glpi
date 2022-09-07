@@ -63,7 +63,7 @@ class Lockedfield extends DbTestCase
         )->isTrue();
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure new dynamic update does not override otherserial again
         $this->boolean(
@@ -76,7 +76,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['otherserial'])->isEqualTo('AZERTY');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
@@ -89,7 +89,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure regular update do work on locked field
         $this->boolean(
@@ -123,7 +123,7 @@ class Lockedfield extends DbTestCase
         )->isGreaterThan(0);
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure new dynamic update does not override otherserial again
         $this->boolean(
@@ -136,7 +136,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['otherserial'])->isEqualTo('789012');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
@@ -149,7 +149,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure regular update do work on locked field
         $this->boolean(
@@ -187,7 +187,7 @@ class Lockedfield extends DbTestCase
         $this->variable($computer->fields['otherserial'])->isEqualTo('');
 
         $this->boolean($lockedfield->isHandled($computer))->isTrue();
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure new dynamic update does not override otherserial again
         $this->boolean(
@@ -200,7 +200,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['otherserial'])->isEqualTo('');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
@@ -213,7 +213,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure regular update do work on locked field
         $this->boolean(
@@ -378,8 +378,7 @@ class Lockedfield extends DbTestCase
                 'id_dynamic' => true
             ])
         )->isTrue();
-        $this->array($lockedfield->getLocks($printer->getType(), $printers_id))->isIdenticalTo(['locations_id']);
-
+        $this->array($lockedfield->getLocks($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => null]);
 
         //Replay, with a location
         $xml = "<?xml version=\"1.0\"?>

@@ -1730,7 +1730,7 @@ class CommonDBTM extends CommonGLPI
         if (isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true) {
             $lockedfield = new Lockedfield();
             $locks = $lockedfield->getLocks($this->getType(), 0);
-            foreach ($locks as $lock) {
+            foreach (array_keys($locks) as $lock) {
                 if (array_key_exists($lock, $this->input)) {
                     $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
                     unset($this->input[$lock]);
@@ -1749,7 +1749,7 @@ class CommonDBTM extends CommonGLPI
         if ($this->isDynamic() && (in_array('is_dynamic', $this->updates) || isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true)) {
             $lockedfield = new Lockedfield();
             $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);
-            foreach ($locks as $lock) {
+            foreach (array_keys($locks) as $lock) {
                 $idx = array_search($lock, $this->updates);
                 if ($idx !== false) {
                     $lockedfield->setLastValue($this->getType(), $this->fields['id'], $lock, $this->input[$lock]);

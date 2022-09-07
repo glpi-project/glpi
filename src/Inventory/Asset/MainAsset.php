@@ -650,7 +650,7 @@ abstract class MainAsset extends InventoryAsset
         $lockedfield = new Lockedfield();
         $locks = $lockedfield->getLocks($this->item->getType(), $items_id);
         foreach ($this->data as &$data) {
-            foreach ($locks as $lock) {
+            foreach (array_keys($locks) as $lock) {
                 if (property_exists($data, $lock)) {
                     unset($data->$lock);
                 }
