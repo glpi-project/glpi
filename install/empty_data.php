@@ -3860,7 +3860,7 @@ $empty_data_builder = new class
                 'notifications_id' => '63',
             ], [
                 'id' => '129',
-                'items_id' => '23',
+                'items_id' => '9',
                 'type' => '1',
                 'notifications_id' => '64',
             ], [
