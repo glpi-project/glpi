@@ -2193,9 +2193,8 @@ class Search extends DbTestCase
         $names = ob_get_contents();
         ob_end_clean();
 
-       // Convert results to array and remove last row (always empty)
-        $names = explode("\n", $names);
-        array_pop($names);
+       // Convert results to array
+        $names = explode("\n", trim($names));
 
        // Check results
         $this->array($names)->isEqualTo($expected);

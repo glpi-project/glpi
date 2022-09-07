@@ -3964,7 +3964,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         $search_val = self::makeTextSearchValue($val);
-        if ($search_val === null) {
+        if ($search_val == null) {
             $SEARCH = " IS $NOT NULL ";
         } else {
             $SEARCH = " $NOT LIKE " . \DBmysql::quoteValue($search_val) . " ";

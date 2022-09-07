@@ -246,7 +246,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
             );
         }
         // End Line for column headers
-        $headers_line .= static::showEndLine(false);
+        $headers_line .= static::showEndLine(true);
 
         $headers_line_top    .= $headers_line;
         $headers_line_top    .= static::showEndHeader();

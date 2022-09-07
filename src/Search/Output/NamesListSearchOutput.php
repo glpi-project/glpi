@@ -53,8 +53,10 @@ final class NamesListSearchOutput extends ExportSearchOutput
 
     public static function showHeader($rows, $cols, $fixed = 0): string
     {
-        header("Content-disposition: filename=glpi.txt");
-        header('Content-type: file/txt');
+        if (!headers_sent()) {
+            header("Content-disposition: filename=glpi.txt");
+            header('Content-type: file/txt');
+        }
         return '';
     }
 
