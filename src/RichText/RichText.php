@@ -453,7 +453,9 @@ final class RichText
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
             $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy' width='{$img['user_w']}' height='{$img['user_h']}' >";
+            $width_attr = isset($img['thumbnail_w']) ? "width='{$img['thumbnail_w']}'" : "";
+            $height_attr = isset($img['thumbnail_h']) ? "height='{$img['thumbnail_h']}'" : "";
+            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
             $out .= "</a>";
             $out .= "</figure>";
         }
