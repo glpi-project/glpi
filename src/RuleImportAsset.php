@@ -1055,7 +1055,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Device update (by mac+ifnumber restricted port)',
+            'name'      => 'Global update (by mac+ifnumber restricted port)',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
@@ -1094,7 +1094,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Device update (by mac+ifnumber not restricted port)',
+            'name'      => 'Global update (by mac+ifnumber not restricted port)',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
@@ -1128,7 +1128,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Device import (by mac+ifnumber)',
+            'name'      => 'Global import (by mac+ifnumber)',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
@@ -1152,7 +1152,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Device update (by ip+ifdescr restricted port)',
+            'name'      => 'Global update (by ip+ifdescr restricted port)',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
@@ -1191,7 +1191,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Device update (by ip+ifdescr not restricted port)',
+            'name'      => 'Global update (by ip+ifdescr not restricted port)',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
@@ -1225,7 +1225,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Device import (by ip+ifdescr)',
+            'name'      => 'Global import (by ip+ifdescr)',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
@@ -1832,7 +1832,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Peripheral update (by serial)',
+            'name'      => 'Device update (by serial)',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
@@ -1856,7 +1856,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Peripheral import (by serial)',
+            'name'      => 'Device import (by serial)',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
@@ -1875,7 +1875,7 @@ class RuleImportAsset extends Rule
         ];
 
         $rules[] = [
-            'name'      => 'Peripheral import denied',
+            'name'      => 'Device import denied',
             'match'     => 'AND',
             'is_active' => 1,
             'criteria'  => [
