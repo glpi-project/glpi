@@ -430,6 +430,7 @@ abstract class CommonITILObject extends CommonDBTM
         );
 
         $predefined_fields = $this->setPredefinedFields($tt, $options, static::getDefaultValues());
+        $this->initForm($this->fields['id'], $options);
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                    => $this,
@@ -515,8 +516,6 @@ abstract class CommonITILObject extends CommonDBTM
             $options['time_to_resolve']     = $problem->fields['time_to_resolve'];
             $options['entities_id']         = $problem->fields['entities_id'];
         }
-
-        $this->initForm($this->fields['id'], $options);
 
         // Store predefined fields to be able not to take into account on change template
         $predefined_fields = [];
