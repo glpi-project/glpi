@@ -35,30 +35,27 @@
 
 use Glpi\Inventory\Conf;
 
-include('../inc/includes.php');
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
-
-Html::header(__('Inventory'), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory");
-
-$conf = new Conf();
-
-if (isset($_FILES['inventory_file']) && $_FILES['inventory_file']['tmp_name'] != '') {
-    $conf->importFile($_FILES);
-    Html::back();
-}
-
-if (isset($_POST['update'])) {
-    unset($_POST['update']);
-    $conf->saveConf($_POST);
-    Session::addMessageAfterRedirect(
-        __('Configuration has been updated'),
-        false,
-        INFO
+//new right value for inventory
+//give full rights to profiles having config right
+foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+    if ($profrights['rights'] && (Conf::UPDATECONFIG + Conf::IMPORTFROMFILE)) {
+        $rightValue = READ + Conf::UPDATECONFIG + Conf::IMPORTFROMFILE;
+    } else {
+        $rightValue = 0;
+    }
+    $DB->update(
+        "glpi_profilerights",
+        [
+            'rights' => $rightValue
+        ],
+        [
+            'profiles_id' => $profrights['profiles_id'],
+            'name'        => 'inventory'
+        ]
     );
-    Html::back();
 }
-
-$conf->display(['id' => 1]);
-
-Html::footer();
