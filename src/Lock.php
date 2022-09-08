@@ -526,7 +526,8 @@ class Lock extends CommonGLPI
         echo "</div>\n";
     }
 
-    public static function countLockFromItem(CommonGLPI $item) {
+    public static function countLockFromItem(CommonGLPI $item)
+    {
         global $CFG_GLPI, $DB;
 
         $nb = 0;
@@ -621,7 +622,7 @@ class Lock extends CommonGLPI
                     'WHERE'  => [
                         'itemtype'     => 'NetworkName',
                         'items_id'     => $networNameID,
-                        'mainitems_id' =>$item->fields['id'],
+                        'mainitems_id' => $item->fields['id'],
                         'mainitemtype' => $item->getType(),
                         'is_deleted'   => 1,
                         'is_dynamic'   => 1
@@ -638,7 +639,7 @@ class Lock extends CommonGLPI
                 'sv.name AS version',
                 's.name AS software'
             ],
-            'FROM'      => Item_SoftwareVersion::getTable()." AS isv",
+            'FROM'      => Item_SoftwareVersion::getTable() . " AS isv",
             'LEFT JOIN' => [
                 'glpi_softwareversions AS sv' => [
                     'FKEY' => [
@@ -669,7 +670,7 @@ class Lock extends CommonGLPI
                 'sl.name AS version',
                 's.name AS software'
             ],
-            'FROM'      => Item_SoftwareLicense::getTable()." AS isl",
+            'FROM'      => Item_SoftwareLicense::getTable() . " AS isl",
             'LEFT JOIN' => [
                 'glpi_softwarelicenses AS sl' => [
                     'FKEY' => [
@@ -705,7 +706,6 @@ class Lock extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
-
             $nb = Lock::countLockFromItem($item);
             return self::createTabEntry(Lock::getTypeName(Session::getPluralNumber()), $nb);
         }
