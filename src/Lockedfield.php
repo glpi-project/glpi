@@ -138,6 +138,16 @@ class Lockedfield extends CommonDBTM
         return (bool)$item->isDynamic();
     }
 
+    public function getLockedNames($itemtype, $items_id)
+    {
+        return $this->getLocks($itemtype, $items_id, true);
+    }
+
+    public function getLockedValues($itemtype, $items_id)
+    {
+        return $this->getLocks($itemtype, $items_id, false);
+    }
+
     /**
      * Get locked fields
      *
@@ -146,7 +156,7 @@ class Lockedfield extends CommonDBTM
      *
      * return array
      */
-    public function getLocks($itemtype, $items_id)
+    public function getLocks($itemtype, $items_id, bool $fields_only = true)
     {
         global $DB;
 
@@ -165,17 +175,21 @@ class Lockedfield extends CommonDBTM
 
         $locks = [];
         foreach ($iterator as $row) {
-            $value = $row['value'];
-            //if it refers to a ForeignKey get dropdown name
-            if (
-                $row['field'] !== 'entities_id'
-                && isForeignKeyField($row['field'])
-                && is_a($itemtype = getItemtypeForForeignKeyField($row['field']), CommonDropdown::class, true)
-                && null !== $row['value']
-            ) {
+            if ($fields_only === true) {
+                $locks[] = $row['field'];
+            } else {
+                $value = $row['value'];
+                //if it refers to a ForeignKey get dropdown name
+                if (
+                    $row['field'] !== 'entities_id'
+                    && isForeignKeyField($row['field'])
+                    && is_a($itemtype = getItemtypeForForeignKeyField($row['field']), CommonDropdown::class, true)
+                    && null !== $row['value']
+                ) {
                     $value = Dropdown::getDropdownName(getTableForItemType($itemtype), $row['value'], 0, true, true, $row['value']);
+                }
+                $locks[$row['field']] = $value;
             }
-            $locks[$row['field']] = $value;
         }
         return $locks;
     }
