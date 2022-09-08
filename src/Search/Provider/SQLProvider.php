@@ -51,7 +51,7 @@ final class SQLProvider implements SearchProviderInterface
     private static function buildSelect(array $data, string $itemtable): string
     {
         // request currentuser for SQL supervision, not displayed
-        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . \Toolbox::addslashes_deep($_SESSION['glpiname']) . "' AS currentuser,
+        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . \Toolbox::addslashes_deep($_SESSION['glpiname'] ?? '') . "' AS currentuser,
                         " . self::addDefaultSelect($data['itemtype']);
 
         // Add select for all toview item
