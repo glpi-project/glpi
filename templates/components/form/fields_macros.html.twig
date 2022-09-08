@@ -702,8 +702,8 @@
       'locked_fields': [],
    }|merge(options) %}
 
-   {% if options.locked_values[name] is defined %}
-      {% set options = options|merge({'locked': true, 'locked_value': options.locked_values[name]}) %}
+   {% if options.locked_fields[name] is defined %}
+      {% set options = options|merge({'locked': true, 'locked_value': options.locked_fields[name]}) %}
    {% elseif name in options.locked_fields %}
       {% set options = options|merge({'locked': true}) %}
    {% endif %}
