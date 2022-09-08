@@ -185,7 +185,7 @@ class Lockedfield extends CommonDBTM
                     && isForeignKeyField($row['field'])
                     && is_a($itemtype = getItemtypeForForeignKeyField($row['field']), CommonDropdown::class, true)
                 ) {
-                    $value = Dropdown::getDropdownName(getTableForItemType($itemtype), $row['value'], 0, true, true, $row['value']);
+                    $value = Dropdown::getDropdownName(getTableForItemType($itemtype), $row['value'], 0, true, false, $row['value']);
                 }
                 $locks[$row['field']] = $value;
             }
