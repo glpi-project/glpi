@@ -535,9 +535,9 @@ class Lock extends CommonGLPI
      **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
-            return Lock::getTypeName(Session::getPluralNumber());
+            $nb = countElementsInTable(Lockedfield::getTable(), ['items_id' => $item->fields['id'], "itemtype" => $item->getType()]);
+            return self::createTabEntry(Lock::getTypeName(Session::getPluralNumber()), $nb);
         }
         return '';
     }
