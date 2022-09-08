@@ -526,6 +526,175 @@ class Lock extends CommonGLPI
         echo "</div>\n";
     }
 
+    public static function countLockFromItem(CommonGLPI $item) {
+        global $CFG_GLPI, $DB;
+
+        $nb = 0;
+        //count LockField for item
+        $nb += countElementsInTable(Lockedfield::getTable(), [
+            'itemtype'  => $item->getType(),
+            [
+                'OR' => [
+                    'items_id'  => $item->fields['id'],
+                    'is_global' => 1
+                ]
+            ]
+        ]);
+
+        //special case for computer item
+        if ($item->getType() == Computer::class) {
+            $types = $CFG_GLPI['directconnect_types'];
+            foreach ($types as $type) {
+                $nb += countElementsInTable(Computer_Item::getTable(), [
+                    'is_dynamic'   => 1,
+                    'is_deleted'   => 1,
+                    'computers_id'     => $item->fields['id'],
+                    'itemtype'     => $type,
+                ]);
+            }
+
+            //computer_vm
+            $nb += countElementsInTable(ComputerVirtualMachine::getTable(), [
+                'is_dynamic'   => 1,
+                'is_deleted'   => 1,
+                'computers_id'     => $item->fields['id'],
+            ]);
+        }
+
+
+
+        //item_disk
+        $nb += countElementsInTable(Item_Disk::getTable(), [
+            'is_dynamic'   => 1,
+            'is_deleted'   => 1,
+            'items_id'     => $item->fields['id'],
+            'itemtype'     => $item->getType(),
+        ]);
+
+        //item_device
+        $types = Item_Devices::getDeviceTypes();
+        foreach ($types as $type) {
+            $nb += countElementsInTable(
+                getTableForItemType($type),
+                ['items_id'   => $item->fields['id'],
+                    'itemtype'   => $item->getType(),
+                    'is_dynamic' => 1,
+                    'is_deleted' => 1
+                ]
+            );
+        }
+
+        //networkport
+        $iterator = $DB->request([
+            'SELECT'    => ['id'],
+            'FROM'      => NetworkPort::getTable(),
+            'WHERE'     => [
+                'is_dynamic'   => 1,
+                'is_deleted'   => 1,
+                'items_id'     => $item->fields['id'],
+                'itemtype'     => $item->getType(),
+            ]
+        ]);
+        $nb += $iterator->count();
+
+        //count networkname
+        //see Lock.php:381
+        foreach ($iterator as $networPortID) {
+            $iterator = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => NetworkName::getTable(),
+                'WHERE'  => [
+                    'itemtype'     => 'NetworkPort',
+                    'items_id'     => $networPortID,
+                    'is_deleted'   => 1,
+                    'is_dynamic'   => 1
+                ]
+            ]);
+            $nb += $iterator->count();
+
+            //count ipaddress
+            //see Lock.php:412
+            foreach ($iterator as $networNameID) {
+                $iterator = $DB->request([
+                    'SELECT' => 'id',
+                    'FROM'   => IPAddress::getTable(),
+                    'WHERE'  => [
+                        'itemtype'     => 'NetworkName',
+                        'items_id'     => $networNameID,
+                        'mainitems_id' =>$item->fields['id'],
+                        'mainitemtype' => $item->getType(),
+                        'is_deleted'   => 1,
+                        'is_dynamic'   => 1
+                    ]
+                ]);
+                $nb += $iterator->count();
+            }
+        }
+
+        //Software versions
+        $iterator = $DB->request([
+            'SELECT'    => [
+                'isv.id AS id',
+                'sv.name AS version',
+                's.name AS software'
+            ],
+            'FROM'      => Item_SoftwareVersion::getTable()." AS isv",
+            'LEFT JOIN' => [
+                'glpi_softwareversions AS sv' => [
+                    'FKEY' => [
+                        'isv' => 'softwareversions_id',
+                        'sv'  => 'id'
+                    ]
+                ],
+                'glpi_softwares AS s'         => [
+                    'FKEY' => [
+                        'sv'  => 'softwares_id',
+                        's'   => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'isv.is_deleted'  => 1,
+                'isv.is_dynamic'  => 1,
+                'isv.items_id'     => $item->fields['id'],
+                'isv.itemtype'     => $item->getType(),
+            ]
+        ]);
+        $nb += $iterator->count();
+
+        //Software licenses
+        $iterator = $DB->request([
+            'SELECT'    => [
+                'isl.id AS id',
+                'sl.name AS version',
+                's.name AS software'
+            ],
+            'FROM'      => Item_SoftwareLicense::getTable()." AS isl",
+            'LEFT JOIN' => [
+                'glpi_softwarelicenses AS sl' => [
+                    'FKEY' => [
+                        'isl' => 'softwarelicenses_id',
+                        'sl'  => 'id'
+                    ]
+                ],
+                'glpi_softwares AS s'         => [
+                    'FKEY' => [
+                        'sl'  => 'softwares_id',
+                        's'   => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'isl.is_deleted'  => 1,
+                'isl.is_dynamic'  => 1,
+                'isl.items_id'    => $item->fields['id'],
+                'isl.itemtype'    => $item->getType(),
+            ]
+        ]);
+
+        return $nb;
+    }
+
 
     /**
      * @see CommonGLPI::getTabNameForItem()
@@ -536,15 +705,8 @@ class Lock extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
-            $nb = countElementsInTable(Lockedfield::getTable(), [
-                'itemtype'  => $item->getType(),
-                [
-                    'OR' => [
-                        'items_id'  => $item->fields['id'],
-                        'is_global' => 1
-                    ]
-                ]
-            ]);
+
+            $nb = Lock::countLockFromItem($item);
             return self::createTabEntry(Lock::getTypeName(Session::getPluralNumber()), $nb);
         }
         return '';
