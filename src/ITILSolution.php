@@ -242,8 +242,8 @@ class ITILSolution extends CommonDBChild
                 Entity::CONFIG_NEVER
             );
 
-           // 0 = immediatly
-            if ($autoclosedelay != 0) {
+           // 0  or ticket status CLOSED = immediately
+            if ($autoclosedelay != 0 && $this->item->fields["status"] != $this->item::CLOSED) {
                 $status = CommonITILValidation::WAITING;
             }
         }
@@ -308,8 +308,8 @@ class ITILSolution extends CommonDBChild
                     Entity::CONFIG_NEVER
                 );
 
-                // 0 = immediatly
-                if ($autoclosedelay == 0) {
+                // 0 = immediately or ticket status CLOSED force status
+                if ($autoclosedelay == 0 || $this->item->fields["status"] == $this->item::CLOSED) {
                      $status = $item::CLOSED;
                 }
             }

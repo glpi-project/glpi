@@ -475,4 +475,29 @@ HTML
 
         $this->string($solution->fields['content'])->isEqualTo('test template2');
     }
+
+    public function testAddOnClosedTicket()
+    {
+        $this->login();
+        // Create new ticket
+        $ticket = $this->getNewITILObject('Ticket', true);
+        // Close ticket
+        $this->boolean($ticket->update([
+            'id'    => $ticket->fields['id'],
+            'status' => \CommonITILObject::CLOSED,
+        ]))->isTrue();
+        // Create solution
+        $solution = new \ITILSolution();
+        $solutions_id = $solution->add([
+            'itemtype'           => 'Ticket',
+            'items_id'           => $ticket->fields['id'],
+            'content'            => 'test solution',
+        ]);
+        $this->integer($solutions_id)->isGreaterThan(0);
+        // Verify solution is not waiting for approval. Should default to being approved.
+        $this->integer($solution->fields['status'])->isEqualTo(\CommonITILValidation::ACCEPTED);
+        // Verify the ticket status is still closed.
+        $this->boolean($ticket->getFromDB($ticket->fields['id']))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
+    }
 }
