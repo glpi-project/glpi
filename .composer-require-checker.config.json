@@ -48,6 +48,14 @@
     "// OPCache extension (not installed on testing env)",
     "opcache_get_status", "opcache_invalidate", "opcache_reset",
 
+    "// random native PHP functions",
+    "// these are moved in random native extension in PHP 8.2, but this extension does not exists in previous PHP versions",
+    "mt_getrandmax",
+    "mt_rand",
+    "rand",
+    "random_bytes",
+    "random_int",
+
     "// SELinux PECL extension",
     "selinux_getenforce", "selinux_get_boolean_active", "selinux_is_enabled",
 

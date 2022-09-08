@@ -271,7 +271,7 @@ abstract class AbstractRequest
         libxml_use_internal_errors(true);
 
         if (mb_detect_encoding($data, 'UTF-8', true) === false) {
-            $data = utf8_encode($data);
+            $data = iconv('ISO-8859-1', 'UTF-8', $data);
         }
         $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
         if (!$xml) {

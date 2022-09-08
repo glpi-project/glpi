@@ -40,10 +40,10 @@ class ExtensionFunction extends \GLPITestCase
     public function testCheckOnExistingExtension()
     {
 
-        $this->newTestedInstance('xml', 'utf8_decode');
+        $this->newTestedInstance('simplexml', 'simplexml_load_string');
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
         $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['xml extension is installed.']);
+         ->isEqualTo(['simplexml extension is installed.']);
     }
 
     public function testCheckOnMissingMandatoryExtension()

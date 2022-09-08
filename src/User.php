@@ -845,16 +845,16 @@ class User extends CommonDBTM
                     : 'jpg';
 
                     @mkdir(GLPI_PICTURE_DIR . "/$sub");
-                    $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
-                    self::dropPictureFiles("$sub/${filename}.$extension");
+                    $picture_path = GLPI_PICTURE_DIR  . "/{$sub}/{$filename}.{$extension}";
+                    self::dropPictureFiles("{$sub}/{$filename}.{$extension}");
 
                     if (Document::renameForce($fullpath, $picture_path)) {
                         Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
                         // For display
-                        $input['picture'] = "$sub/${filename}.$extension";
+                        $input['picture'] = "{$sub}/{$filename}.{$extension}";
 
                         //prepare a thumbnail
-                        $thumb_path = GLPI_PICTURE_DIR . "/$sub/${filename}_min.$extension";
+                        $thumb_path = GLPI_PICTURE_DIR . "/{$sub}/{$filename}_min.{$extension}";
                         Toolbox::resizePicture($picture_path, $thumb_path);
                     } else {
                         Session::addMessageAfterRedirect(
@@ -1340,7 +1340,7 @@ class User extends CommonDBTM
                     $img       = array_pop($info[$picture_field]);
                     $filename  = uniqid($this->fields['id'] . '_');
                     $sub       = substr($filename, -2); /* 2 hex digit */
-                    $file      = GLPI_PICTURE_DIR . "/$sub/${filename}.jpg";
+                    $file      = GLPI_PICTURE_DIR . "/{$sub}/{$filename}.jpg";
 
                     if (array_key_exists('picture', $this->fields)) {
                         $oldfile = GLPI_PICTURE_DIR . "/" . $this->fields["picture"];
@@ -1364,10 +1364,10 @@ class User extends CommonDBTM
                         fclose($outjpeg);
 
                        //save thumbnail
-                        $thumb = GLPI_PICTURE_DIR . "/$sub/${filename}_min.jpg";
+                        $thumb = GLPI_PICTURE_DIR . "/{$sub}/{$filename}_min.jpg";
                         Toolbox::resizePicture($file, $thumb);
 
-                        return "$sub/${filename}.jpg";
+                        return "{$sub}/{$filename}.jpg";
                     }
                     return $this->fields["picture"];
                 }

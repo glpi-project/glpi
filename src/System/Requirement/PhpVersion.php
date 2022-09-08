@@ -35,6 +35,8 @@
 
 namespace Glpi\System\Requirement;
 
+use Glpi\Toolbox\VersionParser;
+
 /**
  * @since 9.5.0
  */
@@ -67,11 +69,18 @@ class PhpVersion extends AbstractRequirement
 
     protected function check()
     {
-        $this->validated = version_compare(PHP_VERSION, $this->min_version, '>=')
-            && version_compare(PHP_VERSION, $this->max_version, '<');
+        // Remove potential stability flag used in version strings
+        $min_version = VersionParser::getNormalizedVersion($this->min_version, false);
+        $max_version = VersionParser::getNormalizedVersion($this->max_version, false);
+
+        // Use `-dev` stability flag in comparisons
+        // -> 7.4.0-dev, 7.4.0-alphaX, 7.4.0-rcX are accepted when $this->min_version is 7.4.0
+        // -> 8.2.0-dev, 8.2.0-alphaX, 8.2.0-rcX is refused when $this->max_version is 8.2.0
+        $this->validated = version_compare(PHP_VERSION, sprintf('%s-dev', $min_version), '>=')
+            && version_compare(PHP_VERSION, sprintf('%s-dev', $max_version), '<');
 
         $this->validation_messages[] = $this->validated
-         ? sprintf(__('PHP version (%s) is supported.'), PHP_VERSION)
-         : sprintf(__('PHP version must be between %s and %s (exclusive).'), $this->min_version, $this->max_version);
+            ? sprintf(__('PHP version (%s) is supported.'), PHP_VERSION)
+            : sprintf(__('PHP version must be between %s and %s (exclusive).'), $min_version, $max_version);
     }
 }
