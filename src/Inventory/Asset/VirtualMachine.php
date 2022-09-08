@@ -306,12 +306,12 @@ class VirtualMachine extends InventoryAsset
                     $rule = new RuleImportAssetCollection();
                     $rule->getCollectionPart();
                     $input = (array)$vm;
-                    $input ['itemtype'] = \Computer::class;
+                    $input['itemtype'] = \Computer::class;
                     $input['entities_id'] = $this->main_asset->getEntityID();
                     $input  = \Toolbox::addslashes_deep($input);
                     $datarules = $rule->processAllRules($input);
 
-                    if (isset($datarules['_no_rule_matches']) and ($datarules['_no_rule_matches'] == '1') or isset($datarules['found_inventories'])) {
+                    if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
                         //this is a new one
                         $vm->entities_id = $this->item->fields['entities_id'];
                         $computers_vm_id = $computervm->add($input);
@@ -319,7 +319,6 @@ class VirtualMachine extends InventoryAsset
                         //refused by rules
                         return;
                     }
-                    // Add computer
                 } else {
                     // Update computer
                     $computervm->getFromDB($computers_vm_id);
