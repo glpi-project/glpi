@@ -339,12 +339,26 @@ final class RichText
             if ($document->getFromDB($docid)) {
                 $docpath = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
                 if (Document::isImage($docpath)) {
+                    //find width / height define by user
+                    $width = null;
+                    if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $img_tag, $wmatches)) {
+                        $width = intval($wmatches[1]);
+                    }
+                    $height = null;
+                    if (preg_match("/height=[\"|'](\d+)(\.\d+)?[\"|']/", $img_tag, $hmatches)) {
+                        $height = intval($hmatches[1]);
+                    }
+
+                    //find real size from image
                     $imgsize = getimagesize($docpath);
+
                     $gallery = self::imageGallery([
                         [
                             'src' => $docsrc,
                             'w'   => $imgsize[0],
-                            'h'   => $imgsize[1]
+                            'h'   => $imgsize[1],
+                            'thumbnail_w' => $width,
+                            'thumbnail_h' => $height,
                         ]
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
@@ -439,7 +453,9 @@ final class RichText
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
             $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy'>";
+            $width_attr = isset($img['thumbnail_w']) ? "width='{$img['thumbnail_w']}'" : "";
+            $height_attr = isset($img['thumbnail_h']) ? "height='{$img['thumbnail_h']}'" : "";
+            $out .= "<img src='{$img['thumbnail_src']}' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
             $out .= "</a>";
             $out .= "</figure>";
         }
