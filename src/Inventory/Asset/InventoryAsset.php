@@ -404,18 +404,10 @@ abstract class InventoryAsset
     protected function handleInput(\stdClass $value): array
     {
         $input = [];
-        $lockedfield = new Lockedfield();
-        $locks = $lockedfield->getLockedNames($this->item->getType(), $this->item->fields['id'] ?? 0);
-
         foreach ($value as $key => $val) {
             if (is_object($val) || is_array($val)) {
                 continue;
             }
-
-            if (in_array($key, $locks)) {
-                continue;
-            }
-
             $known_key = md5($key . $val);
             if (isset($this->known_links[$known_key])) {
                 $input[$key] = $this->known_links[$known_key];
