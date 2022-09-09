@@ -1255,6 +1255,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $this->getField('itemtype'),
                     $params
                 );
+                $data['search']['savedsearches_id'] = $this->getID();
                 $data['search']['sort'] = [];
                 $search->constructSQL($data);
                 $search->constructData($data, true);
