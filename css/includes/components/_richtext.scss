@@ -61,10 +61,10 @@ body.mce-content-body {
         max-width: 100%;
     }
 
-    a[target="_blank"]::after {
+    a[target="_blank"]::before {
         font-family: "tabler-icons";
         content: "\ea99";
-        padding-left: 4px;
+        padding-right: 4px;
     }
 }
 
