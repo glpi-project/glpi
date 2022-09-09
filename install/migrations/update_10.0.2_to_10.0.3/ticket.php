@@ -66,7 +66,7 @@ if (!$DB->fieldExists("glpi_tickets", "takeintoaccountdate")) {
     	   $la->getFromDB($ticket->fields['slas_id_tto']);
        }
        if(isset($la) && !$la->getField('use_ticket_calendar')){
-    	   $calendards_id = $la->getFeild('calendars_id');
+    	   $calendards_id = $la->getField('calendars_id');
        }
        // If no calendar from LA lets try to take Entity config
        if(!$calendards_id){
