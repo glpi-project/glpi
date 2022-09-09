@@ -1538,7 +1538,9 @@ class Ticket extends CommonITILObject
 	if(in_array("takeintoaccount_delay_stat",$this->updates) &&
             $this->fields['takeintoaccount_delay_stat'] == 0
 	) {
-	    !in_array("takeintoaccountdate",$this->updates) && $this->updates[] = "takeintoaccountdate";
+	    if (!in_array("takeintoaccountdate",$this->updates)) {
+	        $this->updates[] = "takeintoaccountdate";
+	    }
 	    $this->fields["takeintoaccountdate"] = null;
 	}
 
