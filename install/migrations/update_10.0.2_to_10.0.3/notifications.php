@@ -70,7 +70,7 @@ foreach ($iterator as $notification) {
             || $items_id === Notification::ITEM_USER
         ) {
             $DB->deleteOrDie('glpi_notificationtargets', [
-                'id' => $target['id'],
+                'id' => $target_id,
             ]);
             if ($items_id === Notification::ITEM_TECH_GROUP_IN_CHARGE) {
                 $removed_item_group = true;
