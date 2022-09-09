@@ -1754,6 +1754,7 @@ class CommonDBTM extends CommonGLPI
                 if ($idx !== false) {
                     $lockedfield->setLastValue($this->getType(), $this->fields['id'], $lock, $this->input[$lock]);
                     unset($this->updates[$idx]);
+                    unset($this->input[$lock]);
                 }
             }
             $this->updates = array_values($this->updates);
