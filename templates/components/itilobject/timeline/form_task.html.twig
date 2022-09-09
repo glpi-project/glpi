@@ -44,7 +44,7 @@
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
-      <div class="read-only-content {{ entry_i['state'] is constant('Planning::DONE') ? 'done' : '' }}">
+      <div class="read-only-content rich_text_container {{ entry_i['state'] is constant('Planning::DONE') ? 'done' : '' }}">
          <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
               title="{{ entry_i['content']|html_to_text }}" data-bs-toggle="tooltip">
             {{ entry_i['content']|enhanced_html({

@@ -38,7 +38,7 @@
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
-      <div class="read-only-content w-100">
+      <div class="read-only-content rich_text_container w-100">
          {{ entry_i['content']|raw }}
 
          {% if entry_i['comment_submission']|length %}
