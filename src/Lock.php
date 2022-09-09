@@ -562,8 +562,6 @@ class Lock extends CommonGLPI
             ]);
         }
 
-
-
         //item_disk
         $nb += countElementsInTable(Item_Disk::getTable(), [
             'is_dynamic'   => 1,
@@ -633,65 +631,22 @@ class Lock extends CommonGLPI
         }
 
         //Software versions
-        $iterator = $DB->request([
-            'SELECT'    => [
-                'isv.id AS id',
-                'sv.name AS version',
-                's.name AS software'
-            ],
-            'FROM'      => Item_SoftwareVersion::getTable() . " AS isv",
-            'LEFT JOIN' => [
-                'glpi_softwareversions AS sv' => [
-                    'FKEY' => [
-                        'isv' => 'softwareversions_id',
-                        'sv'  => 'id'
-                    ]
-                ],
-                'glpi_softwares AS s'         => [
-                    'FKEY' => [
-                        'sv'  => 'softwares_id',
-                        's'   => 'id'
-                    ]
-                ]
-            ],
-            'WHERE'     => [
-                'isv.is_deleted'  => 1,
-                'isv.is_dynamic'  => 1,
-                'isv.items_id'     => $item->fields['id'],
-                'isv.itemtype'     => $item->getType(),
-            ]
+        $nb += countElementsInTable(Item_SoftwareVersion::getTable(), [
+            'is_deleted'  => 1,
+            'is_dynamic'  => 1,
+            'items_id'    => $item->fields['id'],
+            'itemtype'    => $item->getType(),
         ]);
         $nb += $iterator->count();
 
         //Software licenses
-        $iterator = $DB->request([
-            'SELECT'    => [
-                'isl.id AS id',
-                'sl.name AS version',
-                's.name AS software'
-            ],
-            'FROM'      => Item_SoftwareLicense::getTable() . " AS isl",
-            'LEFT JOIN' => [
-                'glpi_softwarelicenses AS sl' => [
-                    'FKEY' => [
-                        'isl' => 'softwarelicenses_id',
-                        'sl'  => 'id'
-                    ]
-                ],
-                'glpi_softwares AS s'         => [
-                    'FKEY' => [
-                        'sl'  => 'softwares_id',
-                        's'   => 'id'
-                    ]
-                ]
-            ],
-            'WHERE'     => [
-                'isl.is_deleted'  => 1,
-                'isl.is_dynamic'  => 1,
-                'isl.items_id'    => $item->fields['id'],
-                'isl.itemtype'    => $item->getType(),
-            ]
+        $nb += countElementsInTable(Item_SoftwareLicense::getTable(), [
+            'is_deleted'  => 1,
+            'is_dynamic'  => 1,
+            'items_id'    => $item->fields['id'],
+            'itemtype'    => $item->getType(),
         ]);
+        $nb += $iterator->count();
 
         return $nb;
     }
