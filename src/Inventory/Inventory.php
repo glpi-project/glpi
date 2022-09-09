@@ -85,8 +85,6 @@ class Inventory
     private $request_query;
     /** @var bool */
     private bool $is_discovery = false;
-    /** @var string */
-    public static $rightname = 'inventory';
 
     /**
      * @param mixed   $data   Inventory data, optional
@@ -459,7 +457,7 @@ class Inventory
 
     public static function getMenuContent()
     {
-        if (!Session::haveRight(self::$rightname, Conf::IMPORTFROMFILE)) {
+        if (!Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
             return false;
         }
 
