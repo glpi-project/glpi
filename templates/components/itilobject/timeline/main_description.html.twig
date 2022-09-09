@@ -73,17 +73,19 @@
                   </button>
                </div>
 
-               <div class="read-only-content rich_text_container">
+               <div class="read-only-content">
                   {% if not itiltemplate.isHiddenField('name') %}
                      <div class="card-title card-header mx-n3 mt-n3">
                         {{ item.fields['name']|verbatim_value }}
                      </div>
                   {% endif %}
                   {% if not itiltemplate.isHiddenField('content') %}
-                     {{ item.fields['content']|enhanced_html({
-                        'user_mentions': true,
-                        'images_gallery': true
-                     }) }}
+                     <div class="rich_text_container">
+                        {{ item.fields['content']|enhanced_html({
+                           'user_mentions': true,
+                           'images_gallery': true
+                        }) }}
+                     </div>
                   {% endif %}
                </div>
                <div class="edit-content collapse">
