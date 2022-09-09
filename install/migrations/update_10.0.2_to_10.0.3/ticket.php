@@ -54,8 +54,8 @@ if (!$DB->fieldExists("glpi_tickets", "takeintoaccountdate")) {
     foreach ($tickets_iterator as $data) {
        $ticket = new Ticket();
        $ticket->getFromDB($data['id']);
-       $tia_delay = $ticket->getField('takeintoaccount_delay_stat');
-       $ticket_date = $ticket->getField('date');
+       $tia_delay = $ticket->fields['takeintoaccount_delay_stat'];
+       $ticket_date = $ticket->fields['date'];
 
        // Get calendar ID for the Ticket
        // Existing Ticket::computeTakeIntoAccountDelayStat() used Ticket::getCalendar() so migration has to use same function
