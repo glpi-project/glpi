@@ -399,8 +399,6 @@ abstract class CommonITILObject extends CommonDBTM
 
         $this->restoreInputAndDefaults($ID, $options);
 
-        $this->initForm($ID, $options);
-
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
@@ -432,6 +430,7 @@ abstract class CommonITILObject extends CommonDBTM
         );
 
         $predefined_fields = $this->setPredefinedFields($tt, $options, static::getDefaultValues());
+        $this->initForm($this->fields['id'], $options);
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                    => $this,
