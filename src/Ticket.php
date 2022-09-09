@@ -1529,9 +1529,18 @@ class Ticket extends CommonITILObject
             && $this->canTakeIntoAccount()
             && !$this->isNew()
         ) {
+            $this->updates[]				= "takeintoaccountdate";
+            $this->fields['takeintoaccountdate'] = $_SESSION["glpi_currenttime"];
             $this->updates[]                            = "takeintoaccount_delay_stat";
             $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
         }
+
+	if(in_array("takeintoaccount_delay_stat",$this->updates) &&
+            $this->fields['takeintoaccount_delay_stat'] == 0
+	) {
+	    !in_array("takeintoaccountdate",$this->updates) && $this->updates[] = "takeintoaccountdate";
+	    $this->fields["takeintoaccountdate"] = null;
+	}
 
         parent::pre_updateInDB();
     }
@@ -2328,6 +2337,7 @@ class Ticket extends CommonITILObject
                     [
                         'id'                         => $ID,
                         'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),
+			'takeintoaccountdate'        => $_SESSION["glpi_currenttime"],
                         '_disablenotif'              => true
                     ]
                 );
@@ -6220,10 +6230,7 @@ JAVASCRIPT;
     {
         $now                      = time();
         $date_creation            = strtotime($this->fields['date'] ?? '');
-        $date_takeintoaccount     = $date_creation + $this->fields['takeintoaccount_delay_stat'];
-        if ($date_takeintoaccount == $date_creation) {
-            $date_takeintoaccount  = 0;
-        }
+        $date_takeintoaccount     = strtotime($this->fields['takeintoaccountdate'] ?? '');
         $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
         $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
         $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');

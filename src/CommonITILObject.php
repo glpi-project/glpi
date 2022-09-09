@@ -1435,6 +1435,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $allowed_fields[] = '_tag_content';
                     $allowed_fields[] = '_prefix_content';
                     $allowed_fields[] = 'takeintoaccount_delay_stat';
+                    $allowed_fields[] = 'takeintoaccountdate';
                 }
             }
 
@@ -4291,10 +4292,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'time_to_own':
                 return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
             AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND (' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . '
-                        > TIMESTAMPDIFF(SECOND,
-                                        ' . $DB->quoteName($table . '.date') . ',
-                                        ' . $DB->quoteName($table . '.' . $type) . ')
+            AND (' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
                  OR (' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . ' = 0
                       AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
             1, 0)';
@@ -4303,7 +4301,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'internal_time_to_resolve':
             case 'time_to_resolve':
                 return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
-            AND ' . $DB->quoteName($table . '.status') . ' <> 4
+            AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
             AND (' . $DB->quoteName($table . '.solvedate') . ' > ' . $DB->quoteName($table . '.' . $type) . '
                   OR (' . $DB->quoteName($table . '.solvedate') . ' IS NULL
                      AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
