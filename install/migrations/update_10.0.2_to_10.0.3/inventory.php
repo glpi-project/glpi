@@ -41,4 +41,4 @@ use Glpi\Inventory\Conf;
  */
 
 //new right value for inventory
-$migration->updateRight('inventory', READ + Conf::IMPORTFROMFILE + Conf::UPDATECONFIG, ['config' => UPDATE, 'inventory' => READ]);
+$migration->updateRight('inventory', READ | Conf::IMPORTFROMFILE | Conf::UPDATECONFIG, ['config' => UPDATE, 'inventory' => READ]);

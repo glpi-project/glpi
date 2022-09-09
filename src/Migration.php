@@ -1233,7 +1233,7 @@ class Migration
      *
      * @return void
      */
-    public function updateRight($name, $rights = ALLSTANDARDRIGHT, $requiredrights = ['config' => READ | UPDATE])
+    public function updateRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
     {
         global $DB;
 
