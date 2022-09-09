@@ -41,21 +41,4 @@ use Glpi\Inventory\Conf;
  */
 
 //new right value for inventory
-//give full rights to profiles having config right
-foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
-    if ($profrights['rights'] && (Conf::UPDATECONFIG + Conf::IMPORTFROMFILE)) {
-        $rightValue = READ + Conf::UPDATECONFIG + Conf::IMPORTFROMFILE;
-    } else {
-        $rightValue = 0;
-    }
-    $DB->update(
-        "glpi_profilerights",
-        [
-            'rights' => $rightValue
-        ],
-        [
-            'profiles_id' => $profrights['profiles_id'],
-            'name'        => 'inventory'
-        ]
-    );
-}
+$migration->updateRight('inventory', READ + Conf::IMPORTFROMFILE + Conf::UPDATECONFIG, ['config' => UPDATE, 'inventory' => READ]);

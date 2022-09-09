@@ -1220,6 +1220,74 @@ class Migration
         );
     }
 
+    /**
+     * Update right to profiles that match rights requirements
+     *    Default is to give rights to profiles with READ and UPDATE rights on config
+     *
+     * @param string  $name   Right name
+     * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
+     * @param array   $requiredrights Array of right name => value
+     *                   A profile must have these rights in order to get the new right.
+     *                   This array can be empty to add the right to every profile.
+     *                   Default is ['config' => READ | UPDATE].
+     *
+     * @return void
+     */
+    public function updateRight($name, $rights = ALLSTANDARDRIGHT, $requiredrights = ['config' => READ | UPDATE])
+    {
+        global $DB;
+
+       // Get all profiles with required rights
+
+        $join = [];
+        $i = 1;
+        foreach ($requiredrights as $reqright => $reqvalue) {
+            $join["glpi_profilerights as right$i"] = [
+                'ON' => [
+                    "right$i"       => 'profiles_id',
+                    'glpi_profiles' => 'id',
+                    [
+                        'AND' => [
+                            "right$i.name"   => $reqright,
+                            new QueryExpression("{$DB->quoteName("right$i.rights")} & $reqvalue = $reqvalue"),
+                        ]
+                    ]
+                ]
+            ];
+            $i++;
+        }
+
+        $prof_iterator = $DB->request(
+            [
+                'SELECT'     => 'glpi_profiles.id',
+                'FROM'       => 'glpi_profiles',
+                'INNER JOIN' => $join,
+            ]
+        );
+
+        foreach ($prof_iterator as $profile) {
+            $DB->updateOrDie(
+                'glpi_profilerights',
+                [
+                    'rights'       => $rights
+                ],
+                [
+                    'profiles_id'  => $profile['id'],
+                    'name'         => $name
+                ],
+                sprintf('%1$s update right for %2$s', $this->version, $name)
+            );
+        }
+
+        $this->displayWarning(
+            sprintf(
+                'Rights has been updated for %1$s, you should review ACLs after update',
+                $name
+            ),
+            true
+        );
+    }
+
     public function setOutputHandler($output_handler)
     {
 
