@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
     if (!isset($_POST['contracts_id']) || empty($_POST['contracts_id'])) {
         $message = sprintf(
             __('Mandatory fields are not filled. Please correct: %s'),
-            _n('Contract', 'Contract', 1)
+            _n('Contract', 'Contracts', 1)
         );
         Session::addMessageAfterRedirect($message, false, ERROR);
         Html::back();
