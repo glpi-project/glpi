@@ -50,30 +50,14 @@ if (!$DB->fieldExists("glpi_tickets", "takeintoaccountdate")) {
        $tia_delay = $ticket->getField('takeintoaccount_delay_stat');
        $ticket_date = $ticket->getField('date');
 
-       // Get default calendar ID for ticket. Ticket::getCalendar() uses SLA TTR calendar and if not defined Entity calendar, this is not 100% correct
-       // as it does not count with SLA TTO and OLA TTO, which potentially could use different calendars with different working hours
+       // Get calendar ID for the Ticket
+       // Existing Ticket::computeTakeIntoAccountDelayStat() used Ticket::getCalendar() so migration has to use same function
+       // Currently Ticket::getCalendar() uses SLA TTR calendar and if not defined Entity calendar, this is not correct
+       // as it does not count that SLA TTO and OLA TTO count potentially use different calendars with different working hours
        // Also attaching new OLA/SLA TTO does not reset TIA
-       $calendars_id = 0;
-
-       // There is no clear definition what should happen if both OLA and SLA are defined
-       // Lets assume OLA is overidding the SLA as it probably was attached after SLA
-       // For future OLA should be probably reworked to have separate fields for TIA
-       if(isset($ticket->fields['olas_id_tto']) && $ticket->fields['olas_id_tto'] > 0){
-    	   $la = new OLA();
-    	   $la->getFromDB($ticket->fields['olas_id_tto']);
-       } elseif (isset($ticket->fields['slas_id_tto']) && $ticket->fields['slas_id_tto'] > 0){
-    	   $la = new SLA();
-    	   $la->getFromDB($ticket->fields['slas_id_tto']);
-       }
-       if(isset($la) && !$la->getField('use_ticket_calendar')){
-    	   $calendards_id = $la->getField('calendars_id');
-       }
-       // If no calendar from LA lets try to take Entity config
-       if(!$calendards_id){
-    	$calendards_id = Entity::getUsedConfig('calendars_strategy',$ticket->fields['entities_id'],'calendars_id',0);
-       }
-
+       $calendars_id = $ticket->getCalendar();
        $calendar = new Calendar();
+
        if (($calendars_id > 0) && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay()){
           // Compute takeintoaccountdate using Calendar, delay is added to active time of calendar
           // this is just an approximation as time during non-active hours was not counted to delay (should be fixed with introduction of new field)
