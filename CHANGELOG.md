@@ -7,8 +7,6 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 
-- `CommonDBTM::pre_addToDB()` added.
-
 ### Changed
 
 ### Deprecated
@@ -18,6 +16,8 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+
+- `CommonDBTM::pre_addToDB()` added.
 
 #### Changes
 
