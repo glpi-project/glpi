@@ -1266,7 +1266,7 @@ class Migration
         );
 
         foreach ($prof_iterator as $profile) {
-            $DB->updateOrDie(
+            $DB->updateOrInsert(
                 'glpi_profilerights',
                 [
                     'rights'       => $rights

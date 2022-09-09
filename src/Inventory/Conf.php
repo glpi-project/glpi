@@ -951,7 +951,7 @@ class Conf extends CommonGLPI
             'long'  => __('Import from file')
         ];
         $values[self::UPDATECONFIG] = ['short' => __('Configure'),
-            'long'  => __('Configure importation')
+            'long'  => __('Import configuration')
         ];
 
         return $values;
