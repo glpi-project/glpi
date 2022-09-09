@@ -43,8 +43,15 @@ if (!$DB->fieldExists("glpi_tickets", "takeintoaccountdate")) {
     $migration->addKey("glpi_tickets", "takeintoaccountdate");
     $migration->migrationOneTable("glpi_tickets");
 
-    foreach (getAllDataFromTable('glpi_tickets', ['takeintoaccount_delay_stat' => ['>', 0]]) as $data)
-    {
+    $tickets_iterator = $DB->request([
+        'SELECT'    => ['id'],
+        'FROM'      => 'glpi_tickets',
+        'WHERE'     => [
+            'takeintoaccount_delay_stat' => ['>', 0],
+        ]
+    ]);
+
+    foreach ($tickets_iterator as $data) {
        $ticket = new Ticket();
        $ticket->getFromDB($data['id']);
        $tia_delay = $ticket->getField('takeintoaccount_delay_stat');
