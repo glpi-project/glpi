@@ -1291,6 +1291,8 @@ class CommonDBTM extends CommonGLPI
             $this->fields = [];
             $table_fields = $DB->listFields($this->getTable());
 
+            $this->pre_addInDB();
+
             // fill array for add
             $this->cleanLockedsOnAdd();
             foreach (array_keys($this->input) as $key) {
@@ -1928,6 +1930,18 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
+     * Actions done before the ADD of the item in the database
+     *
+     * @since 10.0.3
+     *
+     * @return void
+     */
+    public function pre_addInDB()
+    {
+    }
+
+
+     /**
      * Actions done before the UPDATE of the item in the database
      *
      * @return void
