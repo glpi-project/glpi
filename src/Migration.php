@@ -1222,12 +1222,12 @@ class Migration
 
     /**
      * Update right to profiles that match rights requirements
-     *    Default is to give rights to profiles with READ and UPDATE rights on config
+     *    Default is to update rights of profiles with READ and UPDATE rights on config
      *
      * @param string  $name   Right name
-     * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
+     * @param integer $rights Right to set
      * @param array   $requiredrights Array of right name => value
-     *                   A profile must have these rights in order to get the new right.
+     *                   A profile must have these rights in order to get its rights updated.
      *                   This array can be empty to add the right to every profile.
      *                   Default is ['config' => READ | UPDATE].
      *
