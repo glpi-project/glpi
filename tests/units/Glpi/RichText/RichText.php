@@ -117,8 +117,8 @@ PLAINTEXT,
 1. br should be added for each "\\r?\\n"<br />
 <br />
 2. contained URL should be transformed into links:<br />
- - <a href="http://www.glpi-project.org">www.glpi-project.org</a><br />
- - <a href="mailto:test@glpi-project.org">mailto:test@glpi-project.org</a><br />
+ - <a href="http://www.glpi-project.org" target="_blank">www.glpi-project.org</a><br />
+ - <a href="mailto:test@glpi-project.org" target="_blank">mailto:test@glpi-project.org</a><br />
 </p>
 HTML,
         ];

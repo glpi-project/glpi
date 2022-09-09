@@ -60,6 +60,12 @@ body.mce-content-body {
     img {
         max-width: 100%;
     }
+
+    a[target="_blank"]::before {
+        font-family: tabler-icons;
+        content: "\ea99";
+        padding-right: 4px;
+    }
 }
 
 .user-mention,
