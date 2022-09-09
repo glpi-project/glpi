@@ -106,6 +106,10 @@
 $(function() {
    // init tabs
    $('#saved-searches-panel-{{ rand }} a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+      console.log("shown.bs.tab");
+      if ($(this).is(":hidden")) {
+         return;
+      }
       e.preventDefault();
 
       var tablink = $(this);
@@ -128,6 +132,8 @@ $(function() {
       $(".saved-searches-panel." + clean_itemtype)
          .toggleClass('d-none')
          .toggleClass('responsive-toggle');
+
+      $('#saved-searches-panel-{{ rand }} a[data-bs-toggle="tab"]').trigger('shown.bs.tab');
    });
 
    // close panel
