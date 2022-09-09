@@ -106,7 +106,6 @@
 $(function() {
    // init tabs
    $('#saved-searches-panel-{{ rand }} a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
-      console.log("shown.bs.tab");
       if ($(this).is(":hidden")) {
          return;
       }
