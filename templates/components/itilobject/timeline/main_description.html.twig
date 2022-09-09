@@ -80,10 +80,12 @@
                      </div>
                   {% endif %}
                   {% if not itiltemplate.isHiddenField('content') %}
-                     {{ item.fields['content']|enhanced_html({
-                        'user_mentions': true,
-                        'images_gallery': true
-                     }) }}
+                     <div class="rich_text_container">
+                        {{ item.fields['content']|enhanced_html({
+                           'user_mentions': true,
+                           'images_gallery': true
+                        }) }}
+                     </div>
                   {% endif %}
                </div>
                <div class="edit-content collapse">
