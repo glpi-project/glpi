@@ -3880,6 +3880,7 @@ JS;
 
             // init editor
             tinyMCE.init(Object.assign({
+               link_default_target: '_blank',
                branding: false,
                selector: '#{$id}',
 
