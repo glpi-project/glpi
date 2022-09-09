@@ -47,10 +47,10 @@
    {% if form_mode == 'view' %}
       <div class="read-only-content">
          <div class= "rich_text_container">
-         {{ entry_i['content']|enhanced_html({
-            'user_mentions': true,
-            'images_gallery': true
-         }) }}
+            {{ entry_i['content']|enhanced_html({
+               'user_mentions': true,
+               'images_gallery': true
+            }) }}
          </div>
 
          <div class="timeline-badges">
