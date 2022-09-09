@@ -40,6 +40,7 @@ use Glpi\Toolbox\Sanitizer;
  * @var Migration $migration
  */
 
+/* BEGIN: Fixes default notification targets */
 $itil_types = ['Ticket', 'Change', 'Problem'];
 $iterator = $DB->request([
     'SELECT' => ['id', 'event'],
@@ -88,3 +89,33 @@ foreach ($iterator as $notification) {
         ]);
     }
 }
+/* END: Fixes default notification targets */
+
+/* BEGIN: Fixes notification templates encoding */
+$template_iterator = $DB->request([
+    'SELECT' => ['id', 'content_html'],
+    'FROM'   => 'glpi_notificationtemplatetranslations',
+]);
+foreach ($template_iterator as $template_data) {
+    if (!Sanitizer::isHtmlEncoded($template_data['content_html'])) {
+        $content_html = $template_data['content_html'];
+        if (str_contains($content_html, '&lt;p&gt;') && str_contains($content_html, '&lt;/p&gt;')) {
+            // HTML is partially encoded, meaning it contains both encoded HTML, and both raw HTML (see #10295)
+            // Encoded HTML has to be decoded, so it will be then possible to reencode the whole
+            // content without having some characters that are double-encoded.
+            $content_html = str_replace(['&lt;', '&gt;'], ['<', '>'], $content_html);
+        }
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_notificationtemplatetranslations',
+                [
+                    'content_html' => Sanitizer::sanitize($content_html),
+                ],
+                [
+                    'id' => $template_data['id'],
+                ]
+            )
+        );
+    }
+}
+/* END: Fixes notification templates encoding */
