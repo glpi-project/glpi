@@ -68,12 +68,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
    // From CommonDBTM
     public $dohistory                   = true;
 
-   // For visibility checks
-    protected $users     = [];
-    protected $groups    = [];
-    protected $profiles  = [];
-    protected $entities  = [];
-
     public static $rightname    = 'rssfeed_public';
 
 

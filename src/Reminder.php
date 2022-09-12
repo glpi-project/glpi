@@ -54,11 +54,6 @@ class Reminder extends CommonDBVisible implements
    // From CommonDBTM
     public $dohistory                   = true;
     public $can_be_translated           = true;
-   // For visibility checks
-    protected $users     = [];
-    protected $groups    = [];
-    protected $profiles  = [];
-    protected $entities  = [];
 
     public static $rightname    = 'reminder_public';
 
