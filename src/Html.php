@@ -3564,7 +3564,9 @@ JS;
      *      - add_now, boolean to precise if we need to add to dates array, an entry for now time
      *        (with now class)
      *
-     * @return array of posible values
+     * @return void|string
+     *    void if option display=true
+     *    string if option display=false (HTML code)
      *
      * @see self::showGenericDateTimeSearch()
      **/
