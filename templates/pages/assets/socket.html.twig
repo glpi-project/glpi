@@ -40,9 +40,10 @@
    <input type="hidden" name="items_id" value="{{ params["items_id"] }}">
 
    {{ fields.nullField() }}
+   {% set add_several = params['several'] is defined and params['several'] %}
 
    {# Do not display position if several mode, value is compute on add #}
-   {% if params['several'] is not defined %}
+   {% if not add_several %}
       {{ fields.numberField(
          'position',
          item.fields['position'],
@@ -53,18 +54,13 @@
     {{ fields.nullField() }}
    {% endif %}
 
-   {% set full = false %}
-   {% if params['several'] is defined %}
-      {% set full = true %}
-   {% endif %}
-
    {% set wiring_side %}
       {% do call('Glpi\\Socket::dropdownWiringSide', [
          'wiring_side',
          {
             'value': item.fields['wiring_side'],
          },
-         full
+         add_several
       ]) %}
    {% endset %}
    {{ fields.htmlField(
@@ -87,7 +83,7 @@
       _n('Network port', 'Network ports', get_plural_number()),
    ) }}
 
-   {% if params['several'] is defined %}
+   {% if add_several %}
 
       {{ fields.dropdownNumberField(
          '_from',
@@ -107,14 +103,14 @@
          }
       ) }}
 
-		{{ fields.textField(
+      {{ fields.textField(
          '_before',
          '',
          __('Prefix'),
          {}
       ) }}
 
-		{{ fields.textField(
+      {{ fields.textField(
          '_after',
          '',
          __('Suffix'),
