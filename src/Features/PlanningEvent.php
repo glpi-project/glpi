@@ -35,13 +35,13 @@
 
 namespace Glpi\Features;
 
-use CommonDBVisible;
 use CommonITILTask;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Dropdown;
 use Entity;
+use ExtraVisibilityCriteria;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Group_User;
@@ -415,8 +415,8 @@ trait PlanningEvent
             $_SESSION["glpiactiveprofile"][static::$rightname] = READ;
         }
         $visibility_criteria = [];
-        if ($event_obj instanceof CommonDBVisible) {
-            $visibility_criteria = self::getVisibilityCriteria(true);
+        if ($event_obj instanceof ExtraVisibilityCriteria) {
+            $visibility_criteria = $event_obj::getVisibilityCriteria(true);
         }
         $nreadpub  = [];
         $nreadpriv = [];
