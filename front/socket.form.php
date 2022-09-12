@@ -72,6 +72,15 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
         $initialName = $_POST["name"];
         $wiring_side = $_POST["wiring_side"];
 
+        if ($_POST["_to"] < $_POST["_from"]) {
+            Session::addMessageAfterRedirect(
+                __("'To' should not be smaller than 'From'"),
+                false,
+                ERROR
+            );
+            Html::back();
+        }
+
         for ($i = $_POST["_from"]; $i <= $_POST["_to"]; $i++) {
             $_POST["name"] = $_POST["_before"] . $initialName . $i . $_POST["_after"];
             $_POST["position"] =  $i;
