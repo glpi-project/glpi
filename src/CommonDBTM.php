@@ -4337,7 +4337,7 @@ class CommonDBTM extends CommonGLPI
         $message_text .= '<br>' . __('Other item exist');
 
         foreach ($doubles as $double) {
-            if (in_array('CommonDBChild', class_parents($this))) {
+            if ($this instanceof CommonDBChild) {
                 if ($this->getField($this->itemtype)) {
                     $item = new $double['itemtype']();
                 } else {
