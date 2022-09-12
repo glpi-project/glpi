@@ -61,19 +61,19 @@ trait PlanningEvent
 {
     public function post_getEmpty()
     {
-        if (isset($this->fields["users_id"])) {
+        if ($this->isField("users_id")) {
             $this->fields["users_id"] = Session::getLoginUserID();
         }
 
-        if (isset($this->field['rrule'])) {
-            $this->field['rrule'] = json_decode($this->field['rrule'], true);
+        if ($this->isField('rrule')) {
+            $this->fields['rrule'] = [];
         }
 
-        if (isset($this->fields['is_recursive'])) {
+        if ($this->isField('is_recursive')) {
             $this->fields['is_recursive'] = 1;
         }
 
-        if (isset($this->fields['users_id_guests'])) {
+        if ($this->isField('users_id_guests')) {
             $this->fields['users_id_guests'] = [];
         }
 
