@@ -1185,7 +1185,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $saved Array of values saved in session
      *
-     * @return array Array of values
+     * @return void
      **/
     protected function restoreSavedValues(array $saved = [])
     {
