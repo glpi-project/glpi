@@ -1321,7 +1321,8 @@ class CronTask extends CommonDBTM
         global $DB;
 
         if (isset($_GET["crontasklogs_id"]) && $_GET["crontasklogs_id"]) {
-            return $this->showHistoryDetail($_GET["crontasklogs_id"]);
+            $this->showHistoryDetail($_GET["crontasklogs_id"]);
+            return;
         }
 
         if (isset($_GET["start"])) {
