@@ -658,7 +658,7 @@ class CommonDBTM extends CommonGLPI
      * @param string[] $updates   fields to update
      * @param string[] $oldvalues array of old values of the updated fields
      *
-     * @return void
+     * @return bool
      **/
     public function updateInDB($updates, $oldvalues = [])
     {
