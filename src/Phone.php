@@ -61,6 +61,7 @@ class Phone extends CommonDBTM
             Item_Devices::class,
             Infocom::class,
             Item_Disk::class,
+            Item_Process::class,
             Item_SoftwareVersion::class,
             Item_SoftwareLicense::class,
             Contract_Item::class,
