@@ -215,7 +215,14 @@ abstract class AbstractRequest
                     $data = gzdecode($data);
                     break;
                 case self::COMPRESS_BR:
-                    $data = brotli_uncompress($data);
+                    if (!function_exists('brotli_uncompress')) {
+                        trigger_error(
+                            'Brotli PHP extension is required to handle Brotli compression algorithm in inventory feature.',
+                            E_USER_WARNING
+                        );
+                    } else {
+                        $data = brotli_uncompress($data);
+                    }
                     break;
                 case self::COMPRESS_DEFLATE:
                     $data = gzinflate($data);
@@ -521,7 +528,14 @@ abstract class AbstractRequest
                         $data = gzencode($data);
                         break;
                     case self::COMPRESS_BR:
-                        $data = brotli_compress($data);
+                        if (!function_exists('brotli_compress')) {
+                            trigger_error(
+                                'Brotli PHP extension is required to handle Brotli compression algorithm in inventory feature.',
+                                E_USER_WARNING
+                            );
+                        } else {
+                            $data = brotli_compress($data);
+                        }
                         break;
                     case self::COMPRESS_DEFLATE:
                         $data = gzdeflate($data);
