@@ -490,8 +490,16 @@ abstract class CommonITILObject extends CommonDBTM
             if (isset($options['tickets_id'])) {
                 //page is reloaded on category change, we only want category on the very first load
                 $category = new ITILCategory();
-                $category->getFromDB($ticket->fields['itilcategories_id']);
-                $options['itilcategories_id'] = ($category->fields['is_change'] ?? false) ? $ticket->fields['itilcategories_id'] : 0;
+                $options['itilcategories_id'] = 0;
+                if (
+                    $category->getFromDB($ticket->fields['itilcategories_id'])
+                    && (
+                        ($this->getType() === Change::class && $category->fields['is_change'])
+                        || ($this->getType() === Problem::class && $category->fields['is_problem'])
+                    )
+                ) {
+                    $options['itilcategories_id'] = $ticket->fields['itilcategories_id'];
+                }
             }
             $options['time_to_resolve']     = $ticket->fields['time_to_resolve'];
             $options['entities_id']         = $ticket->fields['entities_id'];
