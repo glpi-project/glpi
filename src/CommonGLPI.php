@@ -1466,6 +1466,10 @@ class CommonGLPI implements CommonGLPIInterface
     {
         global $CFG_GLPI, $DB;
 
+        if (!($this instanceof CommonDBTM)) {
+            return '';
+        }
+
         $ret = '';
         $title = __s('FAQ');
         if (Session::getCurrentInterface() == 'central') {
