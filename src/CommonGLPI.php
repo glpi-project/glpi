@@ -1134,7 +1134,8 @@ class CommonGLPI implements CommonGLPIInterface
         unset($options['loaded']);
         if (!$item_loaded) {
             if (
-                isset($options['id'])
+                $this instanceof CommonDBTM
+                && isset($options['id'])
                 && !$this->isNewID($options['id'])
             ) {
                 if (!$this->getFromDB($options['id'])) {
