@@ -43,6 +43,7 @@ use CommonDropdown;
 use Dropdown;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
+use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
 
@@ -180,6 +181,8 @@ abstract class InventoryAsset
         $foreignkey_itemtype = [];
 
         $blacklist = new Blacklist();
+        $lockedfield = new Lockedfield();
+        $locks = $lockedfield->getLockedNames($this->item->getType(), $this->item->fields['id'] ?? 0);
 
         $data = $this->data;
         foreach ($data as &$value) {
@@ -196,6 +199,16 @@ abstract class InventoryAsset
                     continue;
                 }
 
+                $known_key = md5($key . $val);
+
+                //locked fields
+                foreach ($locks as $lock) {
+                    if ($key == $lock) {
+                        $this->known_links[$known_key] = $val;
+                        continue 2;
+                    }
+                }
+
                 if ($key == "manufacturers_id" || $key == 'bios_manufacturers_id') {
                     $manufacturer = new Manufacturer();
                     $value->$key  = $manufacturer->processName($value->$key);
@@ -204,7 +217,6 @@ abstract class InventoryAsset
                     }
                 }
 
-                $known_key = md5($key . $val);
                 if (!isset($this->known_links[$known_key])) {
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
