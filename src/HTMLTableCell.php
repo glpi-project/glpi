@@ -43,6 +43,7 @@ class HTMLTableCell extends HTMLTableEntity
     private $father;
     private $sons = [];
     private $item;
+    private $numberOfLines;
 
    // List of rows that have specific attributs
     private $attributForTheRow = false;
@@ -121,6 +122,43 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
 
+    public function __get(string $property)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'numberOfLines':
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        switch ($property) {
+            case 'numberOfLines':
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
+
+
     /**
      * @param $attributForTheRow
      **/
@@ -169,7 +207,7 @@ class HTMLTableCell extends HTMLTableEntity
     public function computeNumberOfLines()
     {
 
-        if (!isset($this->numberOfLines)) {
+        if ($this->numberOfLines === null) {
             $this->numberOfLines = 1;
             if (count($this->sons) > 0) {
                 foreach ($this->sons as $headered_sons) {
