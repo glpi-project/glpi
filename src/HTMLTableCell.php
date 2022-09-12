@@ -44,6 +44,7 @@ class HTMLTableCell extends HTMLTableEntity
     private $sons = [];
     private $item;
     private $numberOfLines;
+    private $start;
 
    // List of rows that have specific attributs
     private $attributForTheRow = false;
@@ -128,6 +129,7 @@ class HTMLTableCell extends HTMLTableEntity
         $value = null;
         switch ($property) {
             case 'numberOfLines':
+            case 'start':
                 $value = $this->$property;
                 break;
             default:
@@ -146,6 +148,7 @@ class HTMLTableCell extends HTMLTableEntity
         // TODO Deprecate access to variables in GLPI 10.1.
         switch ($property) {
             case 'numberOfLines':
+            case 'start':
                 $this->$property = $value;
                 break;
             default:
@@ -264,7 +267,7 @@ class HTMLTableCell extends HTMLTableEntity
     public function computeStartEnd(&$start)
     {
 
-        if (!isset($this->start)) {
+        if ($this->start === null) {
             if ($this->attributForTheRow !== false) {
                 $this->row->addAttributForLine($start, $this->attributForTheRow);
             }
