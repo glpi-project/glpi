@@ -723,6 +723,8 @@ class Document_Item extends CommonDBRelation
 
             echo "</div>";
         }
+
+        return true;
     }
 
 
