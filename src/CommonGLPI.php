@@ -1455,6 +1455,8 @@ class CommonGLPI implements CommonGLPIInterface
             case ERROR_ALREADY_DEFINED:
                 return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
         }
+
+        return '';
     }
 
     /**
