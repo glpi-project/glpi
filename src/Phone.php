@@ -62,6 +62,7 @@ class Phone extends CommonDBTM
             Infocom::class,
             Item_Disk::class,
             Item_Process::class,
+            Item_Environment::class,
             Item_SoftwareVersion::class,
             Item_SoftwareLicense::class,
             Contract_Item::class,
@@ -100,6 +101,7 @@ class Phone extends CommonDBTM
         $this->addStandardTab('Item_OperatingSystem', $ong, $options);
         $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
         $this->addStandardTab('Item_Process', $ong, $options);
+        $this->addStandardTab('Item_Environment', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
         $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
@@ -148,6 +150,7 @@ class Phone extends CommonDBTM
                 Item_Project::class,
                 Item_SoftwareVersion::class,
                 Item_Process::class,
+                Item_Environment::class
             ]
         );
 
