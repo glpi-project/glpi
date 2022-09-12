@@ -40,6 +40,7 @@ use Cable;
 use CommonDBChild;
 use CommonDBTM;
 use CommonGLPI;
+use Computer;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
@@ -206,7 +207,9 @@ class Socket extends CommonDBChild
             $item->getFromDB($this->fields['items_id']);
         } else {
             $this->check(-1, CREATE, $options);
-            $item->getFromDB($options['from_items_id']);
+            if (isset($options['from_items_id'])) {
+                $item->getFromDB($options['from_items_id']);
+            }
         }
 
         TemplateRenderer::getInstance()->display('pages/assets/socket.html.twig', [
@@ -866,6 +869,7 @@ class Socket extends CommonDBChild
             echo "<td>" . __('Itemtype') . "</td><td>";
             Dropdown::showSelectItemFromItemtypes([
                 'itemtypes' => $socket_itemtypes,
+                'default_itemtype' => Computer::getType(),
             ]);
             echo "</td>";
 
@@ -905,6 +909,7 @@ class Socket extends CommonDBChild
             echo "<td>" . __('Itemtype') . "</td><td>";
             Dropdown::showSelectItemFromItemtypes([
                 'itemtypes' => $socket_itemtypes,
+                'default_itemtype' => Computer::getType(),
             ]);
             echo "</td>";
 
