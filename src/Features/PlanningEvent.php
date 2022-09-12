@@ -882,6 +882,7 @@ trait PlanningEvent
 
             return $out;
         }
+        return '';
     }
 
     /**
