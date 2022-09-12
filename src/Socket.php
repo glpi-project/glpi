@@ -285,7 +285,7 @@ class Socket extends CommonDBChild
      *    - display
      * @return string ID of the select
      **/
-    public static function dropdownWiringSide($name, $options = [], $full = false)
+    public static function dropdownWiringSide($name, $options = [], bool $full = false)
     {
         $params = [
             'value'     => 0,
