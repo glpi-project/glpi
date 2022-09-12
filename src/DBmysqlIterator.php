@@ -793,7 +793,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $this->count;
     }
 
-    public function seek(int $position): void
+    public function seek($position): void
     {
         if ($position < 0 || $position + 1 > $this->count) {
             throw new \OutOfBoundsException();
