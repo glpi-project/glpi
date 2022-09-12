@@ -1436,7 +1436,7 @@ class CommonGLPI implements CommonGLPIInterface
     public function getErrorMessage($error, $object = '')
     {
 
-        if (empty($object)) {
+        if (empty($object) && $this instanceof CommonDBTM) {
             $object = $this->getLink();
         }
         switch ($error) {
