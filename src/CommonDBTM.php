@@ -3050,7 +3050,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param mixed $right Right to check : c / r / w / d / READ / UPDATE / CREATE / DELETE
      *
-     * @return void
+     * @return bool
      **/
     public function canGlobal($right)
     {
