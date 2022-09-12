@@ -3949,7 +3949,7 @@ class Dropdown
             'itiltemplate_class' => 'TicketTemplate',
             'itiltemplates_id'   => 0,
             'returned_itemtypes' => ['User', 'Group', 'Supplier'],
-            'limit'              => $CFG_GLPI['dropdown_max'],
+            'page_limit'         => $CFG_GLPI['dropdown_max'],
         ];
         $post = array_merge($defaults, $post);
 
@@ -3979,7 +3979,7 @@ class Dropdown
                 $post['used'],
                 $post['searchText'],
                 0,
-                (int) $post['limit'],
+                -1,
                 $post['inactive_deleted'],
             );
             foreach ($users_iterator as $ID => $user) {
@@ -4080,11 +4080,20 @@ class Dropdown
         ]);
 
         $results = $hook_results['actors'] ?? [];
+        $total_results = count($results);
+
+        $start = ($post['page'] - 1) * $post['page_limit'];
+        $results = array_slice($results, $start, $post['page_limit']);
 
         $return = [
             'results' => $results,
             'count'   => count($results),
         ];
+        if ($total_results > count($results)) {
+            $return['pagination'] = [
+                'more' => true,
+            ];
+        }
 
         return ($json === true)
          ? json_encode($return)
