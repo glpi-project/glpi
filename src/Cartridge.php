@@ -364,8 +364,8 @@ class Cartridge extends CommonDBRelation
 
                  return true;
             }
-            return false;
         }
+        return false;
     }
 
 
