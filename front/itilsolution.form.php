@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 }
 
 if ($handled) {
-    if (isset($_POST['kb_linked_id'])) {
+    if (isset($_POST['kb_linked_id']) && (int) $_POST['kb_linked_id'] > 0) {
        //if solution should be linked to selected KB entry
         $params = [
             'knowbaseitems_id' => $_POST['kb_linked_id'],
