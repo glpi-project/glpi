@@ -2082,6 +2082,8 @@ class CronTask extends CommonDBTM
                     'parameter'   => __("Number of days to keep archived logs")
                 ];
         }
+
+        return [];
     }
 
 
