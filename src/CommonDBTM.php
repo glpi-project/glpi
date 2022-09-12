@@ -1229,7 +1229,10 @@ class CommonDBTM extends CommonGLPI
         }
 
         // This means we are not adding a cloned object
-        if (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone'])) {
+        if (
+            (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone']))
+            && method_exists($this, 'clone')
+        ) {
             // This means we are asked to clone the object (old way). This will clone the clone method
             // that will set the clone parameter to true
             if (isset($input['_oldID'])) {
