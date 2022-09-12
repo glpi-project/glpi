@@ -2851,9 +2851,8 @@ class AuthLDAP extends CommonDBTM
                 ErrorHandler::getInstance()->handleException($e);
                 return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
 
