@@ -306,7 +306,7 @@ class Socket extends CommonDBChild
      * Get sides
      * @return array Array of types
      **/
-    public static function getSides($full = false)
+    public static function getSides(bool $full = false)
     {
         $data =  [
             self::REAR   => __('Rear'),
