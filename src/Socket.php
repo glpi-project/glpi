@@ -193,8 +193,8 @@ class Socket extends CommonDBChild
     {
 
         $itemtype = null;
-        if (isset($options['from_itemtype']) && !empty($options['from_itemtype'])) {
-            $itemtype = $options['from_itemtype'];
+        if (isset($options['_add_fromitem']) && !empty($options['_add_fromitem'])) {
+            $itemtype = $options['_add_fromitem']['_from_itemtype'];
         } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
         } else {
@@ -207,8 +207,8 @@ class Socket extends CommonDBChild
             $item->getFromDB($this->fields['items_id']);
         } else {
             $this->check(-1, CREATE, $options);
-            if (isset($options['from_items_id'])) {
-                $item->getFromDB($options['from_items_id']);
+            if (isset($options['_add_fromitem'])) {
+                $item->getFromDB($options['_add_fromitem']['_from_items_id']);
             }
         }
 
