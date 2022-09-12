@@ -1558,9 +1558,22 @@ class Ticket extends CommonITILObject
             isset($this->fields['id'])
             && !empty($this->fields['date'])
         ) {
-            $calendars_id = $this->getCalendar();
+            $calendars_id = 0;
             $calendar     = new Calendar();
-
+	    // Not clear how to handle case with both SLA and OLA
+	    // For now prefer OLA calendar
+	    if (isset($this->fields['olas_id_tto']) && $this->fields['olas_id_tto'] > 0){
+		    $la = new OLA();
+		    $la->getFromDB($this->fields['olas_id_tto']);
+	    } elseif (isset($this->fields['slas_id_tto']) && $this->fields['slas_id_tto'] > 0){
+		    $la = new SLA();
+		    $la->getFromDB($this->fields['slas_id_tto']);
+	    }
+	    if (isset($la) && $la->fields['use_ticket_calendar']){
+		    $calendars_id = $la->getField('calendars_id');
+	    } else {
+		    $calendars_id = parent::getCalendar();
+	    }
            // Using calendar
             if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
                 return max(1, $calendar->getActiveTimeBetween(
