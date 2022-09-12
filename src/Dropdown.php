@@ -1581,6 +1581,7 @@ class Dropdown
             'checkright'                => false,
             'showItemSpecificity'       => '',
             'emptylabel'                => self::EMPTY_VALUE,
+            'display_emptychoice'       => false,
             'used'                      => [],
             'ajax_page'                 => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
             'display'                   => true,
@@ -1595,12 +1596,13 @@ class Dropdown
         }
 
         $select = self::showItemType($params['itemtypes'], [
-            'checkright'    => $params['checkright'],
-            'name'          => $params['itemtype_name'],
-            'emptylabel'    => $params['emptylabel'],
-            'display'       => $params['display'],
-            'rand'          => $params['rand'],
-            'track_changes' => $params['itemtype_track_changes'],
+            'checkright'          => $params['checkright'],
+            'name'                => $params['itemtype_name'],
+            'emptylabel'          => $params['emptylabel'],
+            'display_emptychoice' => $params['display_emptychoice'],
+            'display'             => $params['display'],
+            'rand'                => $params['rand'],
+            'track_changes'       => $params['itemtype_track_changes'],
         ]);
 
         $p_ajax = [
