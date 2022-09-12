@@ -117,7 +117,7 @@ class HTMLTableGroup extends HTMLTableBase
     {
 
         $header_name    = '';
-        $subHeader_name = '';
+        $subheader_name = '';
         $header->getHeaderAndSubHeaderName($header_name, $subheader_name);
         try {
             $subheaders = $this->getHeaders($header_name);
