@@ -1567,9 +1567,9 @@ class CronTask extends CommonDBTM
 
         switch ($ma->getAction()) {
             case 'reset':
-                if (Config::canUpdate()) {
-                    foreach ($ids as $key) {
-                        if ($item->getFromDB($key)) {
+                foreach ($ids as $key) {
+                    if ($item->getFromDB($key)) {
+                        if (Config::canUpdate()) {
                             if ($item->resetDate()) {
                                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                             } else {
@@ -1577,13 +1577,13 @@ class CronTask extends CommonDBTM
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                            $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
+                    } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
-                } else {
-                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
-                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                 }
                 return;
         }
