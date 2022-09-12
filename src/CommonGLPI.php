@@ -1193,6 +1193,10 @@ class CommonGLPI implements CommonGLPIInterface
             $this->showDebug();
         }
 
+        if (!($this instanceof CommonDBTM)) {
+            return;
+        }
+
         $class = $this->getType();
 
         if (Infocom::canApplyOn($class)) {
