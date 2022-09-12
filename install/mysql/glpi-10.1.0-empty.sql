@@ -3792,6 +3792,22 @@ CREATE TABLE `glpi_items_processes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
+### Dump table glpi_items_environments
+
+DROP TABLE IF EXISTS `glpi_items_environments`;
+CREATE TABLE `glpi_items_environments` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) DEFAULT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `key` varchar(255) DEFAULT NULL,
+  `value` text,
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `is_dynamic` (`is_dynamic`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
 ### Dump table glpi_items_projects
 
 DROP TABLE IF EXISTS `glpi_items_projects`;

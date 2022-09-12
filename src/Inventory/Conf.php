@@ -96,6 +96,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
  * @property int $import_monitor
  * @property int $import_printer
  * @property int $import_peripheral
+ * @property int $import_env
  *
  */
 class Conf extends CommonGLPI
@@ -136,6 +137,7 @@ class Conf extends CommonGLPI
         'stale_agents_delay'             => 0,
         'stale_agents_clean'             => 1,
         'stale_agents_status'            => 0,
+        'import_env'                     => 0,
     ];
 
     /**
@@ -464,6 +466,18 @@ class Conf extends CommonGLPI
             'name'      => 'import_process',
             'id'        => 'import_process',
             'checked'   => $config['import_process']
+        ]);
+        echo "</td>";
+        echo "<td>";
+        echo "<label for='import_env'>";
+        echo \Item_Environment::getTypeName(Session::getPluralNumber());
+        echo "</label>";
+        echo "</td>";
+        echo "<td width='360'>";
+        Html::showCheckbox([
+            'name'      => 'import_env',
+            'id'        => 'import_env',
+            'checked'   => $config['import_env']
         ]);
         echo "</td>";
         echo "</tr>";
