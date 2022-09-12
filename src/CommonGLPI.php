@@ -212,6 +212,7 @@ class CommonGLPI implements CommonGLPIInterface
         if (static::$rightname) {
             return Session::haveRight(static::$rightname, UPDATE);
         }
+        return false;
     }
 
 
