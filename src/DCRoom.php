@@ -346,6 +346,8 @@ class DCRoom extends CommonDBTM
                 );
              break;
         }
+
+        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
