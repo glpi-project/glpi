@@ -35,30 +35,10 @@
 
 use Glpi\Inventory\Conf;
 
-include('../inc/includes.php');
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
-
-Html::header(__('Inventory'), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory");
-
-$conf = new Conf();
-
-if (isset($_FILES['inventory_file']) && $_FILES['inventory_file']['tmp_name'] != '') {
-    $conf->importFile($_FILES);
-    Html::back();
-}
-
-if (isset($_POST['update'])) {
-    unset($_POST['update']);
-    $conf->saveConf($_POST);
-    Session::addMessageAfterRedirect(
-        __('Configuration has been updated'),
-        false,
-        INFO
-    );
-    Html::back();
-}
-
-$conf->display(['id' => 1]);
-
-Html::footer();
+//new right value for inventory
+$migration->updateRight('inventory', READ | Conf::IMPORTFROMFILE | Conf::UPDATECONFIG, ['config' => UPDATE, 'inventory' => READ]);

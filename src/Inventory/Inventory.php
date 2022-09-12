@@ -457,8 +457,7 @@ class Inventory
 
     public static function getMenuContent()
     {
-        // Require config update permission globally
-        if (!Session::haveRight('config', UPDATE)) {
+        if (!Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
             return false;
         }
 

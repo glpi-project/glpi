@@ -141,6 +141,11 @@ class Conf extends CommonGLPI
 
     public const STALE_AGENT_ACTION_STATUS = 1;
 
+    public static $rightname = 'inventory';
+
+    const IMPORTFROMFILE     = 1024;
+    const UPDATECONFIG       = 2048;
+
     /**
      * Display form for import the XML
      *
@@ -296,10 +301,13 @@ class Conf extends CommonGLPI
     {
         switch ($item->getType()) {
             case __CLASS__:
-                $tabs = [
-                    1 => __('Configuration'),
-                    2 => __('Import from file')
-                ];
+                $tabs = [];
+                if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
+                    $tabs[1] = __('Configuration');
+                }
+                if (Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
+                    $tabs[2] = __('Import from file');
+                }
                 return $tabs;
         }
         return '';
@@ -938,7 +946,15 @@ class Conf extends CommonGLPI
 
     public function getRights($interface = 'central')
     {
-        return [ READ => __('Read')];
+        $values = [ READ => __('Read')];
+        $values[self::IMPORTFROMFILE] = ['short' => __('Import'),
+            'long'  => __('Import from file')
+        ];
+        $values[self::UPDATECONFIG] = ['short' => __('Configure'),
+            'long'  => __('Import configuration')
+        ];
+
+        return $values;
     }
 
     /**
