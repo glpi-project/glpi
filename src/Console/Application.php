@@ -37,6 +37,7 @@ namespace Glpi\Console;
 
 use Config;
 use DB;
+use DBmysql;
 use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
@@ -86,7 +87,7 @@ class Application extends BaseApplication
     private $error_handler;
 
     /**
-     * @var DB
+     * @var DBmysql
      */
     private $db;
 
@@ -307,7 +308,7 @@ class Application extends BaseApplication
     /**
      * Initialize database connection.
      *
-     * @global DB $DB
+     * @global DBmysql $DB
      *
      * @return void
      *
@@ -391,7 +392,7 @@ class Application extends BaseApplication
 
         Config::detectRootDoc();
 
-        if (!($this->db instanceof DB) || !$this->db->connected) {
+        if (!($this->db instanceof DBmysql) || !$this->db->connected) {
             return;
         }
 
@@ -456,7 +457,7 @@ class Application extends BaseApplication
      */
     private function usePlugins()
     {
-        if (!($this->db instanceof DB) || !$this->db->connected) {
+        if (!($this->db instanceof DBmysql) || !$this->db->connected) {
             return false;
         }
 
@@ -486,7 +487,7 @@ class Application extends BaseApplication
 
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
-            $db instanceof \DBmysql && $db->connected ? $db : null
+            $db instanceof DBmysql && $db->connected ? $db : null
         );
 
         if ($core_requirements->hasMissingMandatoryRequirements()) {
