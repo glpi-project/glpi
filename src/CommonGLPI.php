@@ -445,22 +445,22 @@ class CommonGLPI implements CommonGLPIInterface
         $menu       = [];
 
         $type       = static::getType();
-        $item       = new $type();
-        $forbidden  = $type::getForbiddenActionsForMenu();
+        $item       = new static();
+        $forbidden  = $item->getForbiddenActionsForMenu();
 
         if ($item instanceof CommonDBTM) {
-            if ($type::canView()) {
-                $menu['title']           = static::getMenuName();
-                $menu['shortcut']        = static::getMenuShorcut();
-                $menu['page']            = static::getSearchURL(false);
-                $menu['links']['search'] = static::getSearchURL(false);
+            if ($item->canView()) {
+                $menu['title']           = $item->getMenuName();
+                $menu['shortcut']        = $item->getMenuShorcut();
+                $menu['page']            = $item->getSearchURL(false);
+                $menu['links']['search'] = $item->getSearchURL(false);
                 $menu['links']['lists']  = "";
-                $menu['lists_itemtype']  = static::getType();
-                $menu['icon']            = static::getIcon();
+                $menu['lists_itemtype']  = $item->getType();
+                $menu['icon']            = $item->getIcon();
 
                 if (
                     !in_array('add', $forbidden)
-                    && $type::canCreate()
+                    && $item->canCreate()
                 ) {
                     if ($item->maybeTemplate()) {
                         $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
@@ -470,11 +470,11 @@ class CommonGLPI implements CommonGLPIInterface
                                                   '&add=0';
                         }
                     } else {
-                        $menu['links']['add'] = static::getFormURL(false);
+                        $menu['links']['add'] = $item->getFormURL(false);
                     }
                 }
 
-                $extra_links = static::getAdditionalMenuLinks();
+                $extra_links = $item->getAdditionalMenuLinks();
                 if (is_array($extra_links) && count($extra_links)) {
                     $menu['links'] += $extra_links;
                 }
@@ -484,19 +484,19 @@ class CommonGLPI implements CommonGLPIInterface
                 !method_exists($type, 'canView')
                 || $item->canView()
             ) {
-                $menu['title']           = static::getMenuName();
-                $menu['shortcut']        = static::getMenuShorcut();
-                $menu['page']            = static::getSearchURL(false);
-                $menu['links']['search'] = static::getSearchURL(false);
+                $menu['title']           = $item->getMenuName();
+                $menu['shortcut']        = $item->getMenuShorcut();
+                $menu['page']            = $item->getSearchURL(false);
+                $menu['links']['search'] = $item->getSearchURL(false);
                 if (method_exists($item, 'getIcon')) {
-                    $menu['icon'] = static::getIcon();
+                    $menu['icon'] = $item->getIcon();
                 }
             }
         }
-        if ($data = static::getAdditionalMenuOptions()) {
+        if ($data = $item->getAdditionalMenuOptions()) {
             $menu['options'] = $data;
         }
-        if ($data = static::getAdditionalMenuContent()) {
+        if ($data = $item->getAdditionalMenuContent()) {
             $newmenu = [
                 strtolower($type) => $menu,
             ];
