@@ -595,6 +595,8 @@ class Domain_Item extends CommonDBRelation
             Html::closeForm();
         }
         echo "</div>";
+
+        return true;
     }
 
     public function rawSearchOptions()
