@@ -123,11 +123,13 @@
 {% macro sliderField(name, value, label = '', options = {}) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {
-         'no_value': 0,
-         'yes_value': 1,
          'required': true
       }|merge(options) %}
    {% endif %}
+   {% set options = {
+      'no_value': 0,
+      'yes_value': 1,
+   }|merge(options) %}
 
    {% set field %}
       <label class="form-check form-switch pt-2">
