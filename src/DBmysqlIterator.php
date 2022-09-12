@@ -408,7 +408,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * @param integer|string $t Table name or function
      * @param array|string   $f Field(s) name(s)
      *
-     * @return void
+     * @return string
      */
     private function handleFields($t, $f)
     {
