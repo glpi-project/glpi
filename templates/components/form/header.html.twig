@@ -63,7 +63,7 @@
    {% endif %}
 {% endif %}
    <div id="mainformtable">
-      {% if no_header == false and (in_twig is defined or _get._in_modal|default(false)) %}
+      {% if no_header == false and ((in_twig is defined or _get._in_modal|default(false)) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
          {{ include('components/form/header_content.html.twig', {'inside_main': true}) }}
       {% else %}
          <input type="hidden" name="is_recursive" value="{{ item.fields['is_recursive']|default(1) }}" />
