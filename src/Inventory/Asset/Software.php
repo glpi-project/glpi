@@ -362,7 +362,7 @@ class Software extends InventoryAsset
                 $software_to_update->update([
                     "id" => $db_software_data[$key_wo_version]['softid'],
                     "softwarecategories_id" => $val->softwarecategories_id
-                ]);
+                ], 0);
             }
 
             if (isset($db_software[$key_w_version])) {
