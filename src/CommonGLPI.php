@@ -1124,6 +1124,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @since 0.85
      *
      * @param array $options Options
+     *                       show_nav_header (default true): show navigation header (link to list of items)
      *
      * @return void
      */
@@ -1173,7 +1174,9 @@ class CommonGLPI implements CommonGLPIInterface
             ]);
         }
         echo "<div class='col'>";
-        $this->showNavigationHeader($options);
+        if (($options['show_nav_header'] ?? true)) {
+            $this->showNavigationHeader($options);
+        }
         $this->showTabsContent($options);
         echo "</div>";
         echo "</div>";
