@@ -120,6 +120,6 @@ class GLPIMailer extends PHPMailer
                 $lang_path = $local_path;
             }
         }
-        parent::setLanguage($langcode, $lang_path);
+        return parent::setLanguage($langcode, $lang_path);
     }
 }

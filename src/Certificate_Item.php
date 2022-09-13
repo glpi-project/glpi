@@ -541,5 +541,7 @@ class Certificate_Item extends CommonDBRelation
             Html::closeForm();
         }
         echo "</div>";
+
+        return true;
     }
 }

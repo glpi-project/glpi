@@ -1672,7 +1672,7 @@ class Entity extends CommonTreeDropdown
             echo "</td></tr>";
         }
 
-        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
         echo "</table>";
 
@@ -2424,7 +2424,7 @@ class Entity extends CommonTreeDropdown
         }
         echo "</td></tr>";
 
-        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
         echo "</table>";
 
@@ -2524,7 +2524,7 @@ class Entity extends CommonTreeDropdown
             ]
         );
 
-        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
+        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
 
         echo "</table>";
 

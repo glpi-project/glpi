@@ -3564,7 +3564,9 @@ JS;
      *      - add_now, boolean to precise if we need to add to dates array, an entry for now time
      *        (with now class)
      *
-     * @return array of posible values
+     * @return void|string
+     *    void if option display=true
+     *    string if option display=false (HTML code)
      *
      * @see self::showGenericDateTimeSearch()
      **/
@@ -4827,7 +4829,6 @@ JAVASCRIPT
             'display_emptychoice' => false,
             'specific_tags'       => [],
             'parent_id_field'     => null,
-            'multiple'            => false,
         ];
         $params = array_merge($default_options, $params);
 

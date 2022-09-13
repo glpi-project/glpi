@@ -46,6 +46,8 @@ class NotificationSettingConfig extends CommonDBTM
 
     public function update(array $input, $history = 1, $options = [])
     {
+        $success = true;
+
         $config_id = Config::getConfigIDForContext('core');
         if (isset($input['use_notifications'])) {
             $config = new Config();
@@ -53,7 +55,9 @@ class NotificationSettingConfig extends CommonDBTM
                 'id'                 => $config_id,
                 'use_notifications'  => $input['use_notifications']
             ];
-            $config->update($tmp);
+            if (!$config->update($tmp)) {
+                $success = false;
+            }
            //disable all notifications types if notifications has been disabled
             if ($tmp['use_notifications'] == 0) {
                 $modes = Notification_NotificationTemplate::getModes();
@@ -70,9 +74,13 @@ class NotificationSettingConfig extends CommonDBTM
                     'id' => $config_id,
                     $k    => $v
                 ];
-                $config->update($tmp);
+                if (!$config->update($tmp)) {
+                    $success = false;
+                }
             }
         }
+
+        return $success;
     }
 
     /**

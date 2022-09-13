@@ -520,6 +520,7 @@ class DatabaseInstance extends CommonDBTM
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
         }
+        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

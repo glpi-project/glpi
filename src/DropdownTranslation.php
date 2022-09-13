@@ -791,7 +791,7 @@ class DropdownTranslation extends CommonDBChild
      * @param string  $itemtype    itemtype
      * @param integer $items_id    item ID
      *
-     * @return string the value translated if a translation is available, or the same value if not
+     * @return void
      **/
     public static function regenerateAllCompletenameTranslationsFor($itemtype, $items_id)
     {

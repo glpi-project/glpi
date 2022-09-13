@@ -569,9 +569,9 @@ class FieldUnicity extends CommonDropdown
             $where_fields[] = $field;
         }
 
+        echo "<table class='tab_cadre_fixe'>";
         if (!empty($fields)) {
             $colspan = count($fields) + 1;
-            echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='" . $colspan . "'>" . __('Duplicates') . "</th></tr>";
 
             $entities = [$unicity->fields['entities_id']];
@@ -641,7 +641,7 @@ class FieldUnicity extends CommonDropdown
             }
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='$colspan'>" . __('No item to display') . "</td></tr>";
+            echo "<td class='center'>" . __('No item to display') . "</td></tr>";
         }
         echo "</table>";
     }

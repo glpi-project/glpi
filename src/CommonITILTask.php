@@ -1640,6 +1640,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         'link'       => 'AND',
                     ];
 
+                    $title = '';
                     if ($itemtype == "TicketTask") {
                         $title = __("Ticket tasks to do");
                     } else if ($itemtype == "ProblemTask") {

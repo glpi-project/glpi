@@ -501,6 +501,7 @@ class Consumable extends CommonDBChild
         } else if (self::isOld($cID)) {
             return _nx('consumable', 'Used', 'Used', 1);
         }
+        return '';
     }
 
 

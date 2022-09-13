@@ -101,8 +101,8 @@ class Contact extends CommonDBTM
     /**
      * Get address of the contact (company one)
      *
-     *@return string containing the address
-     **/
+     * @return array|null Address related fields.
+     */
     public function getAddress()
     {
         global $DB;
@@ -131,6 +131,7 @@ class Contact extends CommonDBTM
         if ($data = $iterator->current()) {
             return $data;
         }
+        return null;
     }
 
 
@@ -453,7 +454,7 @@ class Contact extends CommonDBTM
         $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
         $vcard->add('URL', $this->GetWebsite(), ['type' => 'WORK']);
 
-        $addr = $this->GetAddress();
+        $addr = $this->getAddress();
         if (is_array($addr)) {
             $addr_string = implode(";", array_filter($addr));
             $vcard->add('ADR', $addr_string, ['type' => 'WORK;POSTAL']);

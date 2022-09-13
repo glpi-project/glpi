@@ -90,48 +90,6 @@ class Domain extends CommonDBTM
         }
     }
 
-    public function getAdditionalFields()
-    {
-        $fields = parent::getAdditionalFields();
-        $fields[] = [
-            'name'  => 'is_active',
-            'label' => __('Is active'),
-            'type'  => 'bool',
-        ];
-
-        $fields[] = [
-            'name'  => 'domaintypes_id',
-            'label' => _n('Type', 'Types', 1),
-            'type'  => 'dropdownValue',
-        ];
-
-        $fields[] = [
-            'name'  => 'date_creation',
-            'label' => __('Creation date'),
-            'type'  => 'datetime',
-        ];
-
-        $fields[] = [
-            'name'  => 'date_expiration',
-            'label' => __('Expiration date'),
-            'type'  => 'datetime',
-        ];
-
-        $fields[] = [
-            'name'  => 'users_id_tech',
-            'label' => __('Technician in charge'),
-            'type'  => 'UserDropdown',
-        ];
-
-        $fields[] = [
-            'name'  => 'groups_id_tech',
-            'label' => __('Group in charge'),
-            'type'  => 'dropdownValue',
-        ];
-
-        return $fields;
-    }
-
     public function rawSearchOptions()
     {
         $tab = [];

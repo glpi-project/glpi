@@ -2251,7 +2251,7 @@ class Dropdown
      * @param string  $name   select name
      * @param integer $value  default value (default 0)
      *
-     * @return string|integer HTML output, or random part of dropdown ID.
+     * @return void
      **/
     public static function showFrequency($name, $value = 0)
     {

@@ -658,7 +658,7 @@ class CommonDBTM extends CommonGLPI
      * @param string[] $updates   fields to update
      * @param string[] $oldvalues array of old values of the updated fields
      *
-     * @return void
+     * @return bool
      **/
     public function updateInDB($updates, $oldvalues = [])
     {
@@ -1185,7 +1185,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $saved Array of values saved in session
      *
-     * @return array Array of values
+     * @return void
      **/
     protected function restoreSavedValues(array $saved = [])
     {
@@ -1229,7 +1229,10 @@ class CommonDBTM extends CommonGLPI
         }
 
         // This means we are not adding a cloned object
-        if (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone'])) {
+        if (
+            (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone']))
+            && method_exists($this, 'clone')
+        ) {
             // This means we are asked to clone the object (old way). This will clone the clone method
             // that will set the clone parameter to true
             if (isset($input['_oldID'])) {
@@ -3050,7 +3053,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param mixed $right Right to check : c / r / w / d / READ / UPDATE / CREATE / DELETE
      *
-     * @return void
+     * @return bool
      **/
     public function canGlobal($right)
     {
@@ -4337,7 +4340,7 @@ class CommonDBTM extends CommonGLPI
         $message_text .= '<br>' . __('Other item exist');
 
         foreach ($doubles as $double) {
-            if (in_array('CommonDBChild', class_parents($this))) {
+            if ($this instanceof CommonDBChild) {
                 if ($this->getField($this->itemtype)) {
                     $item = new $double['itemtype']();
                 } else {
@@ -4613,8 +4616,9 @@ class CommonDBTM extends CommonGLPI
 
         switch ($field) {
             case '_virtual_datacenter_position':
-                if (method_exists(static::class, 'getDcBreadcrumbSpecificValueToDisplay')) {
-                    return static::getDcBreadcrumbSpecificValueToDisplay($values['id']);
+                $static = new static();
+                if (method_exists($static, 'getDcBreadcrumbSpecificValueToDisplay')) {
+                    return $static::getDcBreadcrumbSpecificValueToDisplay($values['id']);
                 }
         }
 

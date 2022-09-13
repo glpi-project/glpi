@@ -359,7 +359,7 @@ abstract class CommonDevice extends CommonDropdown
      *                            (default NULL)
      * @param $options   array    parameter such as restriction
      *
-     * @return HTMLTableHeader
+     * @return HTMLTableHeader|void
      **/
     public static function getHTMLTableHeader(
         $itemtype,

@@ -720,7 +720,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     }
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-                    $ma->addMessage($parent->getErrorMessage(ERROR_COMPAT));
+                    $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                 }
                 return;
         }

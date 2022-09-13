@@ -1994,6 +1994,7 @@ final class DbUtils
      */
     public function getDbRelations()
     {
+        $RELATION = []; // Redefined inside /inc/relation.constant.php
 
         include(GLPI_ROOT . "/inc/relation.constant.php");
 

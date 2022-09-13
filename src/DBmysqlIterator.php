@@ -408,7 +408,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * @param integer|string $t Table name or function
      * @param array|string   $f Field(s) name(s)
      *
-     * @return void
+     * @return string
      */
     private function handleFields($t, $f)
     {
@@ -793,7 +793,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $this->count;
     }
 
-    public function seek(int $position): void
+    public function seek($position): void
     {
         if ($position < 0 || $position + 1 > $this->count) {
             throw new \OutOfBoundsException();

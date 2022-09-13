@@ -1321,7 +1321,8 @@ class CronTask extends CommonDBTM
         global $DB;
 
         if (isset($_GET["crontasklogs_id"]) && $_GET["crontasklogs_id"]) {
-            return $this->showHistoryDetail($_GET["crontasklogs_id"]);
+            $this->showHistoryDetail($_GET["crontasklogs_id"]);
+            return;
         }
 
         if (isset($_GET["start"])) {
@@ -1567,8 +1568,8 @@ class CronTask extends CommonDBTM
 
         switch ($ma->getAction()) {
             case 'reset':
-                if (Config::canUpdate()) {
-                    foreach ($ids as $key) {
+                foreach ($ids as $key) {
+                    if (Config::canUpdate()) {
                         if ($item->getFromDB($key)) {
                             if ($item->resetDate()) {
                                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
@@ -1580,10 +1581,10 @@ class CronTask extends CommonDBTM
                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
+                    } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
-                } else {
-                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
-                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                 }
                 return;
         }
@@ -2082,6 +2083,8 @@ class CronTask extends CommonDBTM
                     'parameter'   => __("Number of days to keep archived logs")
                 ];
         }
+
+        return [];
     }
 
 
