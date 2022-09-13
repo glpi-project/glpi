@@ -288,7 +288,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             }
         }
 
-        for ($i = 1; $i < 30; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             if (!in_array($i * DAY_TIMESTAMP, $p['used'])) {
                 $possible_values[$i * DAY_TIMESTAMP] = sprintf(_n('+ %d day', '+ %d days', $i), $i);
             }
