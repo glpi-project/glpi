@@ -60,6 +60,7 @@ module.exports = {
             {
                 "ignoreFontFamilies": [
                     "Font Awesome 5 Free",
+                    "tabler-icons",
                 ],
             }
         ],

@@ -1,0 +1,177 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro log_entry_tpl(log) %}
+    {% set log_entry_html %}
+        <div class="log_entry d-flex" id="{{ log['id'] }}">
+            {% if log['text']|split("\n")|length > 2 %}
+                <input type="checkbox" class="log_entry_toggle" id="more_{{ log['id'] }}">
+                <label for="more_{{ log['id'] }}" class="log_entry_toggle_lbl" role="button">&nbsp;</label>
+            {% else %}
+                <span class="log_entry_toggle_placeholder"></span>
+            {% endif %}
+            <label class="log_long_text" for="more_{{ log['id'] }}">
+                <a class="log_datetime badge me-1" href="#{{ log['id'] }}">
+                    {{ log['datetime']|formatted_datetime }}
+                </a>
+                <##log_text##>
+            </label>
+        </div>
+    {% endset %}
+    {{ log_entry_html|spaceless|replace({
+        '<##log_text##>': log['text']|trim,
+    })|raw }}
+{% endmacro %}
+
+{% set log_entries_html %}
+    {% for log_entry in log_entries %}{{ _self.log_entry_tpl(log_entry)|trim|raw }}{% endfor %}
+{% endset %}
+
+{% if only_content %}
+    {{ log_entries_html }}
+    <span class="animated-dots" id="auto-refresh-indicator"></span>
+{% else %}
+    <div class="log-viewer card">
+        <div class="btn-list justify-content-between card-header">
+            <span class="d-flex align-items-start">
+                <div class="input-group">
+                    <select class="form-select form-select-sm w-auto" id="change-file">
+                    {% for log_slug, log_file in log_files %}
+                        set
+                        <option value="{{ log_slug }}"
+                                {{ log_file == filename ? 'selected="selected"' : '' }}>
+                            {{ log_file }}
+                        </option>
+                    {% endfor %}
+                    </select>
+
+                    <a href="?action=download_log_file&amp;filename={{ filename }}"
+                    class="btn btn-sm btn-outline-secondary"
+                    title="{{ __("Download file") }}"
+                    data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="ti ti-device-floppy"></i>
+                    </a>
+                </div>
+
+                <span class="input-icon ms-3">
+                    <input type="text" value="" class="form-control form-control-sm" id="filter_logs_input"
+                        placeholder="{{ __("filter logs") }}">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-filter fa-xs"></i>
+                    </span>
+                </span>
+            </span>
+            <span class="d-inline-flex">
+                {% set limitdropdown = include('components/dropdown/limit.html.twig', {
+                    'no_onchange': fluid_search|default(false),
+                }) %}
+                <span class="search-limit d-none d-md-block text-muted">
+                    {{ __('display the last %s entries')|format(limitdropdown)|raw }}
+                </span>
+
+                <a href="#bottom"
+                   class="btn btn-sm btn-outline-secondary ms-3"
+                   title="{{ __("Scroll to bottom") }}"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <i class="ti ti-arrow-bar-to-down"></i>
+                </a>
+            </span>
+        </div>
+        <div class="log-entries card-body">
+            {{ log_entries_html }}
+        </div>
+        <span>
+            <label class="form-check form-switch btn btn-sm btn-ghost-secondary ms-2 px-1 flex-column-reverse flex-sm-row"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="{{ __('Toggle auto refresh') }}">
+                <input type="checkbox"
+                    id="log-auto-refresh"
+                    class="form-check-input ms-0 me-1 mt-0 fold-search"
+                    role="button" autocomplete="off">
+                <span class="form-check-label mb-1 mb-sm-0">
+                    <i class="ti ti-refresh"></i>
+                </span>
+            </label>
+        </span>
+        <a id="bottom"></a>
+    </div>
+
+    <script>
+    $(function () {
+        // change log file
+        $("#change-file").on('change', function () {
+            window.location.href = "?filename=" + $(this).val();
+        });
+
+        // manage auto-refresh of log
+        let autorefresh_interval = null;
+        $("#log-auto-refresh").change(function() {
+            if(this.checked) {
+                const reloadContent = function() {
+                    $('.log-entries').load('{{ path("/ajax/logviewer.php") }}', {
+                        action: 'refresh_log_file',
+                        fileslug: '{{ fileslug }}'
+                    }, function() {
+                        window.scrollTo(0, document.body.scrollHeight);
+                    });
+                }
+                reloadContent();
+                autorefresh_interval = setInterval(() => {
+                    reloadContent();
+                }, 1500);
+            } else {
+                clearInterval(autorefresh_interval);
+                $("#auto-refresh-indicator").remove();
+            }
+        });
+
+        // filter logs
+        var delay_timer = null;
+        $('#filter-logs-input').on('input', function() {
+            const filtered_text = $(this).val().trim();
+            clearTimeout(delay_timer);
+            $('.log_entry').removeClass('d-none');
+            delay_timer = setTimeout(function() {
+                $('.log_entry').each(function() {
+                    const row = $(this);
+                    const log_text = row.text().trim();
+                    if (log_text.indexOf(filtered_text) === -1) {
+                        row.addClass('d-none');
+                    }
+                });
+            }, 500);
+        });
+    });
+    </script>
+{% endif %}

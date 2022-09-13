@@ -33,20 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
-
 include('../inc/includes.php');
 
 Session::checkRight("logs", READ);
 
+if (
+    isset($_GET['action'])
+    && $_GET['action'] == 'download_log_file'
+    && isset($_GET['filename'])
+) {
+    LogViewer::downloadLogFile($_GET['filename']);
+    exit;
+}
+
 Html::header(
-    Event::getTypeName(Session::getPluralNumber()),
+    LogViewer::getTypeName(Session::getPluralNumber()),
     $_SERVER['PHP_SELF'],
-    "admin",
-    "logviewer",
-    "Glpi\\Event"
+    'admin',
+    'logviewer',
+    'logfile'
 );
 
-Search::show(Event::class);
+$logs = new LogViewer();
+$logs->showLogFile($_GET['filename'] ?? null);
 
 Html::footer();

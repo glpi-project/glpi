@@ -33,20 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
-
 include('../inc/includes.php');
 
 Session::checkRight("logs", READ);
 
 Html::header(
-    Event::getTypeName(Session::getPluralNumber()),
+    LogViewer::getTypeName(Session::getPluralNumber()),
     $_SERVER['PHP_SELF'],
     "admin",
-    "logviewer",
-    "Glpi\\Event"
+    "logviewer"
 );
 
-Search::show(Event::class);
+$logs = new LogViewer();
+$logs->displayList();
 
 Html::footer();
