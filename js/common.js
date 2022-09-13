@@ -1446,3 +1446,24 @@ function strip_tags(html_string) {
     var dom = new DOMParser().parseFromString(html_string, 'text/html');
     return dom.body.textContent;
 }
+
+$(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
+    const new_tab = $(e.target);
+    // Main tab is the first in the list (check parent li)
+    const is_main_tab = new_tab.parent().index() === 0;
+    const nav_header = new_tab.closest('.card-tabs').parent().find('.navigationheader');
+    if (nav_header.length > 0) {
+        const is_recursive_toggle = nav_header.find('span.is_recursive-toggle');
+        if (is_recursive_toggle.length > 0) {
+            if (is_main_tab) {
+                is_recursive_toggle.css({
+                    'visibility': 'visible',
+                });
+            } else {
+                is_recursive_toggle.css({
+                    'visibility': 'hidden',
+                });
+            }
+        }
+    }
+});
