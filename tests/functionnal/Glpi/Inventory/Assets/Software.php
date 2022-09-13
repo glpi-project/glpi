@@ -407,7 +407,6 @@ class Software extends AbstractInventoryAsset
         $iterator = $DB->request($criteria);
         $this->integer(count($iterator))->isIdenticalTo(1);
 
-
        //we now have 1 softwareversion items linked to the computer
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($item_versions))->isIdenticalTo(1);
