@@ -305,7 +305,6 @@ class Software extends AbstractInventoryAsset
         $versions = $version->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($versions))->isIdenticalTo(2);
 
-
         //check that sofware exist with softwarecategories
         $criteria = [
             'FROM' => \Software::getTable(),
