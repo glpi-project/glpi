@@ -122,13 +122,19 @@
 
 {% macro sliderField(name, value, label = '', options = {}) %}
    {% if options.fields_template.isMandatoryField(name) %}
-      {% set options = {'required': true}|merge(options) %}
+      {% set options = {
+         'required': true
+      }|merge(options) %}
    {% endif %}
+   {% set options = {
+      'no_value': 0,
+      'yes_value': 1,
+   }|merge(options) %}
 
    {% set field %}
       <label class="form-check form-switch pt-2">
-         <input type="hidden"   name="{{ name }}" value="0" />
-         <input type="checkbox" name="{{ name }}" value="1" class="form-check-input" id="%id%"
+         <input type="hidden"   name="{{ name }}" value="{{ options.no_value }}" />
+         <input type="checkbox" name="{{ name }}" value="{{ options.yes_value }}" class="form-check-input" id="%id%"
                 {{ value == 1 ? 'checked' : '' }}
                 {{ options.readonly ? 'readonly' : '' }}
                 {{ options.required ? 'required' : '' }}
