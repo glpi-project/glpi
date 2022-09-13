@@ -1455,18 +1455,15 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
     if (nav_header.length > 0) {
         const is_recursive_toggle = nav_header.find('span.is_recursive-toggle');
         if (is_recursive_toggle.length > 0) {
-            is_recursive_toggle.find('input').css({
-                'transition': 'none'
-            });
-            if (is_main_tab) {
-                is_recursive_toggle.css({
-                    'visibility': 'visible',
-                });
-            } else {
-                is_recursive_toggle.css({
-                    'visibility': 'hidden',
-                });
+            const checkbox = is_recursive_toggle.find('input');
+            const disabled_state = checkbox.prop('disabled');
+            // if data-disabled-initial is not set, set it to the current disabled state
+            if (checkbox.attr('data-disabled-initial') === undefined) {
+                checkbox.attr('data-disabled-initial', disabled_state || false);
             }
+            const original_disabled_state = checkbox.attr('data-disabled-initial') === 'true';
+            // disable input element inside the toggle
+            checkbox.prop('disabled', is_main_tab ? original_disabled_state : true);
         }
     }
 });
