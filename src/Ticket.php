@@ -1529,20 +1529,9 @@ class Ticket extends CommonITILObject
             && $this->canTakeIntoAccount()
             && !$this->isNew()
         ) {
-            $this->updates[]				= "takeintoaccountdate";
-            $this->fields['takeintoaccountdate'] = $_SESSION["glpi_currenttime"];
             $this->updates[]                            = "takeintoaccount_delay_stat";
             $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
         }
-
-	if(in_array("takeintoaccount_delay_stat",$this->updates) &&
-            $this->fields['takeintoaccount_delay_stat'] == 0
-	) {
-	    if (!in_array("takeintoaccountdate",$this->updates)) {
-	        $this->updates[] = "takeintoaccountdate";
-	    }
-	    $this->fields["takeintoaccountdate"] = null;
-	}
 
         parent::pre_updateInDB();
     }
@@ -1558,27 +1547,17 @@ class Ticket extends CommonITILObject
             isset($this->fields['id'])
             && !empty($this->fields['date'])
         ) {
-	    // If SLA TTO calendar is defined use it for Take Into Account, if not, fallback to previous method (SLA TTR)
             $calendars_id = $this->getCalendar();
             $calendar     = new Calendar();
-	    if (isset($this->fields['slas_id_tto']) && $this->fields['slas_id_tto'] > 0){
-		    $sla = new SLA();
-		    if($sla->getFromDB($this->fields['slas_id_tto'])){
-		    	if($sla->fields['use_ticket_calendar']){
-		    		$calendars_id = parent::getCalendar();
-		    	} else {
-		    		$calendars_id = $sla->getField('calendars_id');
-		    	}
-		    }
-	    }
-            // Using calendar
+
+           // Using calendar
             if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
                 return max(1, $calendar->getActiveTimeBetween(
                     $this->fields['date'],
                     $_SESSION["glpi_currenttime"]
                 ));
             }
-            // Not calendar defined
+           // Not calendar defined
             return max(1, strtotime($_SESSION["glpi_currenttime"]) - strtotime($this->fields['date']));
         }
         return 0;
@@ -2349,7 +2328,6 @@ class Ticket extends CommonITILObject
                     [
                         'id'                         => $ID,
                         'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),
-			'takeintoaccountdate'        => $_SESSION["glpi_currenttime"],
                         '_disablenotif'              => true
                     ]
                 );
@@ -2975,7 +2953,7 @@ JAVASCRIPT;
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['date', 'status', 'takeintoaccountdate']
+            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat']
         ];
 
         $tab[] = [
@@ -3037,7 +3015,7 @@ JAVASCRIPT;
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['date', 'status', 'takeintoaccountdate'],
+            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat'],
         ];
 
         $tab[] = [
@@ -6242,7 +6220,10 @@ JAVASCRIPT;
     {
         $now                      = time();
         $date_creation            = strtotime($this->fields['date'] ?? '');
-        $date_takeintoaccount     = strtotime($this->fields['takeintoaccountdate'] ?? '');
+        $date_takeintoaccount     = $date_creation + $this->fields['takeintoaccount_delay_stat'];
+        if ($date_takeintoaccount == $date_creation) {
+            $date_takeintoaccount  = 0;
+        }
         $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
         $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
         $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');
