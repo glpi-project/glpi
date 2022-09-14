@@ -61,14 +61,15 @@
             {% endif %}
             {% if not user['phone'] is empty or not user['phone2'] is empty %}
                <div>
-                  <i class="fas fa-fw fa-phone"></i>
                   {% if not user['phone'] is empty %}
+                     <i class="fas fa-fw fa-phone"></i>
                      <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
                   {% endif %}
                   {% if not user['phone'] is empty and not user['phone2'] is empty %}
                      <span> - </span>
                   {% endif %}
                   {% if not user['phone2'] is empty %}
+                     <i class="fas fa-fw fa-phone"></i>
                      <a href="tel:{{ user['phone2'] }}">{{ user['phone2'] }}</a>
                   {% endif %}
                </div>
