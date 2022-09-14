@@ -3885,6 +3885,7 @@ JS;
                link_default_target: '_blank',
                branding: false,
                selector: '#{$id}',
+               text_patterns: false,
 
                plugins: {$pluginsjs},
 
