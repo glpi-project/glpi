@@ -555,7 +555,7 @@ class Log extends CommonDBTM
                                 } else if (!$isr && $isa && !$iso) {
                                     $as = __('Assigned to');
                                 } else if (!$isr && !$isa && $iso) {
-                                    $as = _n('Watcher', 'Watchers', 1);
+                                    $as = _n('Observer', 'Observers', 1);
                                 } else {
                       // Deleted or Ambiguous
                                     $as = false;

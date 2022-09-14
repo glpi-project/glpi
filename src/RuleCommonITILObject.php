@@ -587,13 +587,13 @@ abstract class RuleCommonITILObject extends Rule
 
         $criterias['_users_id_observer']['table']             = 'glpi_users';
         $criterias['_users_id_observer']['field']             = 'name';
-        $criterias['_users_id_observer']['name']              = _n('Watcher', 'Watchers', 1);
+        $criterias['_users_id_observer']['name']              = _n('Observer', 'Observers', 1);
         $criterias['_users_id_observer']['linkfield']         = '_users_id_observer';
         $criterias['_users_id_observer']['type']              = 'dropdown_users';
 
         $criterias['_groups_id_observer']['table']            = 'glpi_groups';
         $criterias['_groups_id_observer']['field']            = 'completename';
-        $criterias['_groups_id_observer']['name']             = _n('Watcher group', 'Watcher groups', 1);
+        $criterias['_groups_id_observer']['name']             = _n('Observer group', 'Observer groups', 1);
         $criterias['_groups_id_observer']['linkfield']        = '_groups_id_observer';
         $criterias['_groups_id_observer']['type']             = 'dropdown';
 
@@ -706,7 +706,7 @@ abstract class RuleCommonITILObject extends Rule
         $actions['_suppliers_id_assign']['appendtoarray']           = ['use_notification' => 1];
         $actions['_suppliers_id_assign']['appendtoarrayfield']      = 'suppliers_id';
 
-        $actions['_users_id_observer']['name']                      = _n('Watcher', 'Watchers', 1);
+        $actions['_users_id_observer']['name']                      = _n('Observer', 'Observers', 1);
         $actions['_users_id_observer']['type']                      = 'dropdown_users';
         $actions['_users_id_observer']['force_actions']             = ['assign', 'append'];
         $actions['_users_id_observer']['permitseveral']             = ['append'];
@@ -715,7 +715,7 @@ abstract class RuleCommonITILObject extends Rule
         $actions['_users_id_observer']['appendtoarrayfield']        = 'users_id';
 
         $actions['_groups_id_observer']['table']                    = 'glpi_groups';
-        $actions['_groups_id_observer']['name']                     = _n('Watcher group', 'Watcher groups', 1);
+        $actions['_groups_id_observer']['name']                     = _n('Observer group', 'Observer groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
         $actions['_groups_id_observer']['condition']                = ['is_watcher' => 1];
         $actions['_groups_id_observer']['force_actions']            = ['assign', 'append', 'regex_result'];

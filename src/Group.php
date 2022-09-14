@@ -261,7 +261,7 @@ class Group extends CommonTreeDropdown
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Watcher', 'Watchers', 1) . "</td>";
+        echo "<td>" . _n('Observer', 'Observers', 1) . "</td>";
         echo "<td>";
         Dropdown::showYesNo('is_watcher', $this->fields['is_watcher']);
         echo "</td></tr>";
@@ -488,7 +488,7 @@ class Group extends CommonTreeDropdown
             'id'                 => '21',
             'table'              => $this->getTable(),
             'field'              => 'is_watcher',
-            'name'               => _n('Watcher', 'Watchers', 1),
+            'name'               => _n('Observer', 'Observers', 1),
             'datatype'           => 'bool'
         ];
 
