@@ -54,6 +54,10 @@
 
 {% set no_header = no_header|default(false) %}
 {% set open_form = no_header or item.isNewID(item.fields['id']) or in_twig is not defined %}
+{# Include header content if one or more condition matches and no_header is not explicitly true: #}
+{# - This template is called from another twig template (as opposed to from PHP and most likely a legacy form) OR is in a modal #}
+{# - Not from a twig template and it is a new item #}
+{% set include_header_content = no_header == false and ((in_twig is defined or _get._in_modal|default(false)) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
 
 {% if open_form and item.canEdit(item.fields['id']) %}
 <form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
@@ -63,7 +67,7 @@
    {% endif %}
 {% endif %}
    <div id="mainformtable">
-      {% if no_header == false and ((in_twig is defined or _get._in_modal|default(false)) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
+      {% if include_header_content %}
          {{ include('components/form/header_content.html.twig', {'inside_main': true}) }}
       {% else %}
          <input type="hidden" name="is_recursive" value="{{ item.fields['is_recursive']|default(1) }}" />
