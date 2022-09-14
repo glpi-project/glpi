@@ -1689,6 +1689,7 @@ final class DbUtils
                         $user_params = array_merge($user_params, [
                             'email'              => UserEmail::getDefaultForUser($ID),
                             'phone'              => $data["phone"],
+                            'phone2'             => $data["phone2"],
                             'mobile'             => $data["mobile"],
                             'locations_id'       => $data['locations_id'],
                             'usertitles_id'      => $data['usertitles_id'],
