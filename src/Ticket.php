@@ -1547,9 +1547,19 @@ class Ticket extends CommonITILObject
             isset($this->fields['id'])
             && !empty($this->fields['date'])
         ) {
+	   // If SLA TTO calendar is defined use it for Take Into Account, if not, fallback to previous method (SLA TTR)
             $calendars_id = $this->getCalendar();
             $calendar     = new Calendar();
-
+            if (isset($this->fields['slas_id_tto']) && $this->fields['slas_id_tto'] > 0){
+                    $sla = new SLA();
+                    if($sla->getFromDB($this->fields['slas_id_tto'])){
+                        if($sla->fields['use_ticket_calendar']){
+                                $calendars_id = parent::getCalendar();
+                        } else {
+                                $calendars_id = $sla->getField('calendars_id');
+                        }
+                    }
+            }
            // Using calendar
             if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
                 return max(1, $calendar->getActiveTimeBetween(
