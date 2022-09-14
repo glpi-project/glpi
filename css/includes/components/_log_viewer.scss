@@ -43,6 +43,7 @@
 
         .log_datetime {
             font-family: var(--tblr-font-sans-serif);
+
             &:hover {
                 text-decoration: underline;
             }
@@ -57,7 +58,7 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             cursor: row-resize;
-            padding: 1em 0.5em 0.18em 0.5em;
+            padding: 1em 0.5em 0.18em;
             box-sizing: border-box;
             font-family: var(--tblr-font-monospace);
             font-size: 0.8rem;
