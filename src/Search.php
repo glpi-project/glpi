@@ -2529,6 +2529,7 @@ class Search
         $p['mainform']     = true;
         $p['prefix_crit']  = '';
         $p['addhidden']    = [];
+        $p['showaction']   = true;
         $p['actionname']   = 'search';
         $p['actionvalue']  = _sx('button', 'Search');
 
@@ -2541,7 +2542,7 @@ class Search
         $rand_criteria = mt_rand();
         $main_block_class = '';
         $card_class = 'search-form card card-sm mb-4';
-        if ($p['mainform']) {
+        if ($p['mainform'] && $p['showaction']) {
             echo "<form name='searchform$normalized_itemtype' class='search-form-container' method='get' action='" . $p['target'] . "'>";
         } else {
             $main_block_class = "sub_criteria";
@@ -2603,11 +2604,13 @@ class Search
         $json_p = json_encode($p);
 
         if ($p['mainform']) {
-           // Display submit button
-            echo "<button class='btn btn-sm btn-primary me-1' type='submit' name='" . $p['actionname'] . "'>
-               <i class='ti ti-list-search'></i>
-               <span class='d-none d-sm-block'>" . $p['actionvalue'] . "</span>
-            </button>";
+            if ($p['showaction']) {
+                // Display submit button
+                echo "<button class='btn btn-sm btn-primary me-1' type='submit' name='" . $p['actionname'] . "'>
+                <i class='ti ti-list-search'></i>
+                <span class='d-none d-sm-block'>" . $p['actionvalue'] . "</span>
+                </button>";
+            }
             if ($p['showbookmark'] || $p['showreset']) {
                 if ($p['showbookmark']) {
                     SavedSearch::showSaveButton(
@@ -2727,7 +2730,7 @@ JAVASCRIPT;
 
         echo "</div>"; // #searchcriteria
         echo "</div>"; // .card
-        if ($p['mainform']) {
+        if ($p['mainform'] && $p['showaction']) {
             Html::closeForm();
         }
     }
