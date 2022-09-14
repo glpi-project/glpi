@@ -59,18 +59,16 @@
                   <a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a>
                </div>
             {% endif %}
-            {% if not user['phone'] is empty or not user['phone2'] is empty %}
+            {% if not user['phone'] is empty %}
                <div>
                   <i class="fas fa-fw fa-phone"></i>
-                  {% if not user['phone'] is empty %}
-                     <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
-                  {% endif %}
-                  {% if not user['phone'] is empty and not user['phone2'] is empty %}
-                     <span> - </span>
-                  {% endif %}
-                  {% if not user['phone2'] is empty %}
-                     <a href="tel:{{ user['phone2'] }}">{{ user['phone2'] }}</a>
-                  {% endif %}
+                  <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
+               </div>
+            {% endif %}
+            {% if not user['phone2'] is empty %}
+               <div>
+                  <i class="fas fa-fw fa-phone"></i>
+                  <a href="tel:{{ user['phone2'] }}">{{ user['phone2'] }}</a>
                </div>
             {% endif %}
             {% if user['mobile']|length > 0 %}
