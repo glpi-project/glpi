@@ -140,14 +140,14 @@ class DataHelpersExtension extends AbstractExtension
     /**
      * Return string having its shortcut letter underlined.
      *
-     * @param string $string
+     * @param string|null $string
      * @param string $shortcut
      *
      * @return string
      */
-    public function underlineShortcutLetter(string $string, string $shortcut_letter): string
+    public function underlineShortcutLetter(?string $string, string $shortcut_letter): string
     {
-        if (empty($shortcut_letter)) {
+        if (empty($string) || empty($shortcut_letter)) {
             return $string;
         }
         return Toolbox::shortcut($string, $shortcut_letter);
