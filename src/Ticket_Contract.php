@@ -119,6 +119,7 @@ class Ticket_Contract extends CommonDBRelation
                 'used'        => $used,
                 'displaywith' => ['id'],
                 'entity'      => $item->fields['entities_id'],
+                'from'        => self::class
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";

@@ -1395,6 +1395,7 @@ class Contract extends CommonDBTM
             'class'          => "form-select",
             'width'          => "",
             'hide_if_no_elements' => false,
+            'from'           => Contract_Item::class
         ];
 
         if (is_array($options) && count($options)) {
@@ -1455,12 +1456,13 @@ class Contract extends CommonDBTM
         $group  = '';
         $prev   = -1;
         $values = $p['toadd'];
+        $from_table = $p['from']::getTable();
         foreach ($iterator as $data) {
             if (
                 $p['nochecklimit']
                 || ($data["max_links_allowed"] == 0)
                 || ($data["max_links_allowed"] > countElementsInTable(
-                    'glpi_contracts_items',
+                    $from_table,
                     ['contracts_id' => $data['id']]
                 ))
             ) {
