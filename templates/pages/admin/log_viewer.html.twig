@@ -129,7 +129,7 @@
     $(function () {
         // change log file
         $("#change-file").on('change', function () {
-            window.location.href = "?filename=" + $(this).val();
+            window.location.href = "?fileslug=" + $(this).val();
         });
 
         // manage auto-refresh of log
