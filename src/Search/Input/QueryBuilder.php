@@ -1065,7 +1065,7 @@ JAVASCRIPT;
      *
      * @return array Criteria
      */
-    public static function getDefaultCriteria($itemtype = ''): array
+    private static function getDefaultCriteria($itemtype = ''): array
     {
         global $CFG_GLPI;
 
@@ -1104,7 +1104,7 @@ JAVASCRIPT;
      *
      * @return array|false The found criteria array or false if nothing found
      */
-    public static function findCriteriaInSession($itemtype = '', $num = 0, $parents_num = [])
+    private static function findCriteriaInSession($itemtype = '', $num = 0, $parents_num = [])
     {
         if (!isset($_SESSION['glpisearch'][$itemtype]['criteria'])) {
             return false;

@@ -137,7 +137,7 @@ final class SearchEngine
      *
      * @return string[]
      */
-    public static function getMetaParentItemtypesForTypesConfig(string $config_key): array
+    private static function getMetaParentItemtypesForTypesConfig(string $config_key): array
     {
         $matches = [];
         if (preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {

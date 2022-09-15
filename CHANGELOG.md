@@ -80,6 +80,14 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
+- `Search::computeTitle()`
+- `Search::csv_clean()`
+- `Search::findCriteriaInSession()`
+- `Search::getDefaultCriteria()`
+- `Search::getLogicalOperators()`
+- `Search::getMetaReferenceItemtype()`
+- `Search::outputData()`
+- `Search::sylk_clean()`
 
 ## [10.0.3] unreleased
 
