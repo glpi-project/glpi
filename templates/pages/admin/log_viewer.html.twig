@@ -54,13 +54,32 @@
 {% endmacro %}
 
 {% set log_entries_html %}
-    {% for log_entry in log_entries %}{{ _self.log_entry_tpl(log_entry)|trim|raw }}{% endfor %}
+    {% if log_entries|length %}
+        {% for log_entry in log_entries %}{{ _self.log_entry_tpl(log_entry)|trim|raw }}{% endfor %}
+    {% elseif not only_content %}
+        <div class="empty">
+            <div class="empty-icon">
+                <i class="ti ti-mood-empty fa-2x"></i>
+            </div>
+            <p class="empty-title">{{ __("The log file is empty") }}</p>
+            <p class="empty-subtitle text-muted">
+                {{ __("Try enabling auto-refresh to see new content of the file") }}
+            </p>
+
+            <div class="empty-action">
+                <button type="button" class="btn btn-primary force-auto-refresh">
+                    <i class="ti ti-refresh"></i>
+                    <span>{{ __("Enable auto-refresh") }}</span>
+                </a>
+            </div>
+        </div>
+    {% endif %}
     <a id="bottom"></a>
 {% endset %}
 
 {% if only_content %}
     {{ log_entries_html }}
-    <span class="animated-dots" id="auto-refresh-indicator"></span>
+    <div class="spinner-border mt-3" id="auto-refresh-indicator" role="status"></div>
 {% else %}
     <div class="d-inline-flex mb-2">
         <div class="input-group">
@@ -93,10 +112,10 @@
             </span>
 
             <a href="#bottom"
-                class="btn btn-sm btn-outline-secondary ms-3"
+                class="btn btn-sm btn-ghost-secondary ms-3"
                 title="{{ __("Scroll to bottom") }}"
                 data-bs-toggle="tooltip" data-bs-placement="bottom">
-                <i class="ti ti-arrow-bar-to-down"></i>
+                <i class="ti ti-player-track-next fa-rotate-90"></i>
             </a>
         </div>
         <div class="log-entries card-body">
@@ -153,6 +172,11 @@
                 clearInterval(autorefresh_interval);
                 $("#auto-refresh-indicator").remove();
             }
+        });
+
+        // force auto-refresh
+        $(".force-auto-refresh").click(function() {
+            $("#log-auto-refresh").prop('checked', true).change();
         });
 
         // filter logs
