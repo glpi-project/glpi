@@ -204,8 +204,7 @@ class LogViewer extends CommonGLPI
         $filename = self::getFilenameFromSlug($fileslug);
         $filepath = GLPI_LOG_DIR . "/" . $filename;
         if (is_dir($filepath) || !file_exists($filepath)) {
-            echo "";
-            return false;
+            return;
         }
 
         header('Content-Type: application/octet-stream');
