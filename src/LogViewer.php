@@ -128,7 +128,7 @@ class LogViewer extends CommonGLPI
         $logfiles = self::getLogsFilesList();
         $filename = $logfiles[$fileslug] ?? "";
         $filepath = GLPI_LOG_DIR . "/" . $filename;
-        if (!file_exists($filepath)) {
+        if (is_dir($filepath) || !file_exists($filepath)) {
             echo "";
             return false;
         }
