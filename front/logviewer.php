@@ -40,9 +40,9 @@ Session::checkRight("logs", READ);
 if (
     isset($_GET['action'])
     && $_GET['action'] == 'download_log_file'
-    && isset($_GET['filename'])
+    && isset($_GET['fileslug'])
 ) {
-    LogViewer::downloadLogFile($_GET['filename']);
+    LogViewer::downloadLogFile($_GET['fileslug']);
     exit;
 }
 

@@ -195,9 +195,16 @@ class LogViewer extends CommonGLPI
      *
      * @return void
      */
-    public static function downloadLogFile(string $log_filename = "")
+    public static function downloadLogFile(string $fileslug = "")
     {
-        $filepath = GLPI_LOG_DIR . '/' . $log_filename;
+        $logfiles = self::getLogsFilesList();
+        $filename = $logfiles[$fileslug] ?? "";
+        $filepath = GLPI_LOG_DIR . "/" . $filename;
+        if (is_dir($filepath) || !file_exists($filepath)) {
+            echo "";
+            return false;
+        }
+
         header('Content-Type: application/octet-stream');
         header("Content-Transfer-Encoding: Binary");
         header("Content-disposition: attachment; filename=\"" . basename($filepath) . "\"");
