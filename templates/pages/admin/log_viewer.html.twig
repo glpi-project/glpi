@@ -136,12 +136,13 @@
         let autorefresh_interval = null;
         $("#log-auto-refresh").change(function() {
             if(this.checked) {
+                const log_entries = $('.log-entries');
                 const reloadContent = function() {
-                    $('.log-entries').load('{{ path("/ajax/logviewer.php") }}', {
+                    log_entries.load('{{ path("/ajax/logviewer.php") }}', {
                         action: 'refresh_log_file',
                         fileslug: '{{ fileslug }}'
                     }, function() {
-                        window.scrollTo(0, document.body.scrollHeight);
+                        log_entries.animate({ 'scrollTop': log_entries.prop("scrollHeight")}, 1000);
                     });
                 }
                 reloadContent();
