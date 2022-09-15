@@ -182,7 +182,7 @@ abstract class InventoryAsset
 
         $blacklist = new Blacklist();
         $lockedfield = new Lockedfield();
-        $locks = $lockedfield->getLockedNames($this->item->getType(), $this->item->fields['id'] ?? 0);
+        $locks = $lockedfield->getLockedValues($this->item->getType(), $this->item->fields['id'] ?? 0);
 
         $data = $this->data;
         foreach ($data as &$value) {
@@ -202,9 +202,9 @@ abstract class InventoryAsset
                 $known_key = md5($key . $val);
 
                 //locked fields
-                foreach ($locks as $lock) {
-                    if ($key == $lock) {
-                        $this->known_links[$known_key] = $val;
+                foreach ($locks as $lock_key => $lock_val) {
+                    if ($key == $lock_key) {
+                        $this->known_links[$known_key] = $lock_val;
                         continue 2;
                     }
                 }
