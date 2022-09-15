@@ -100,6 +100,11 @@ class LogViewer extends CommonGLPI
      */
     protected static function getLogsFilesList(): array
     {
+        static $logs_files = [];
+        if (count($logs_files) > 0) {
+            return $logs_files;
+        }
+
         $logs_files = scandir(GLPI_LOG_DIR);
         $files = [];
         foreach ($logs_files as $log_filename) {
@@ -125,8 +130,7 @@ class LogViewer extends CommonGLPI
     {
         global $CFG_GLPI;
 
-        $logfiles = self::getLogsFilesList();
-        $filename = $logfiles[$fileslug] ?? "";
+        $filename = self::getFilenameFromSlug($fileslug);
         $filepath = GLPI_LOG_DIR . "/" . $filename;
         if (is_dir($filepath) || !file_exists($filepath)) {
             echo "";
@@ -180,7 +184,7 @@ class LogViewer extends CommonGLPI
                 'fileslug'     => $fileslug,
                 'filename'     => $filename,
                 'log_entries'  => $lines,
-                'log_files'    => $logfiles,
+                'log_files'    => self::getLogsFilesList(),
                 'only_content' => $only_content,
                 'href'         => self::getSearchURL() . "?fileslug=$fileslug&",
             ]
@@ -197,8 +201,7 @@ class LogViewer extends CommonGLPI
      */
     public static function downloadLogFile(string $fileslug = "")
     {
-        $logfiles = self::getLogsFilesList();
-        $filename = $logfiles[$fileslug] ?? "";
+        $filename = self::getFilenameFromSlug($fileslug);
         $filepath = GLPI_LOG_DIR . "/" . $filename;
         if (is_dir($filepath) || !file_exists($filepath)) {
             echo "";
@@ -209,6 +212,13 @@ class LogViewer extends CommonGLPI
         header("Content-Transfer-Encoding: Binary");
         header("Content-disposition: attachment; filename=\"" . basename($filepath) . "\"");
         readfile($filepath);
+    }
+
+
+    protected static function getFilenameFromSlug(string $fileslug): string
+    {
+        $logfiles = self::getLogsFilesList();
+        return $logfiles[$fileslug] ?? "";
     }
 
 
