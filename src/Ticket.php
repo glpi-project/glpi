@@ -3892,6 +3892,7 @@ JAVASCRIPT;
             '_tag_filename'             => [],
             '_tasktemplates_id'         => []
         ];
+        $options = [];
 
        // Get default values from posted values on reload form
         if (!$ticket_template) {
