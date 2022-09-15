@@ -774,7 +774,8 @@ class NetworkPort extends InventoryAsset
     private function addPortsWiring(int $netports_id_1, int $netports_id_2): bool
     {
         if ($netports_id_1 == $netports_id_2) {
-            throw new \RuntimeException('Cannot wire a port to itself!');
+            //no wiring
+            return false;
         }
 
         $wire = new \NetworkPort_NetworkPort();
