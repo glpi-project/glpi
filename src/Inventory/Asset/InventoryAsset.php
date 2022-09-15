@@ -182,7 +182,6 @@ abstract class InventoryAsset
 
         $blacklist = new Blacklist();
         $lockedfield = new Lockedfield();
-        $locks = $lockedfield->getLockedValues($this->item->getType(), $this->item->fields['id'] ?? 0);
 
         $data = $this->data;
         foreach ($data as &$value) {
@@ -200,15 +199,6 @@ abstract class InventoryAsset
                 }
 
                 $known_key = md5($key . $val);
-
-                //locked fields
-                foreach ($locks as $lock_key => $lock_val) {
-                    if ($key == $lock_key) {
-                        $this->known_links[$known_key] = $lock_val;
-                        continue 2;
-                    }
-                }
-
                 if ($key == "manufacturers_id" || $key == 'bios_manufacturers_id') {
                     $manufacturer = new Manufacturer();
                     $value->$key  = $manufacturer->processName($value->$key);
