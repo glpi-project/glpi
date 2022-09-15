@@ -32,80 +32,93 @@
  */
 
 .log-viewer {
-    .log_entry {
-        white-space: pre-wrap;
-        scroll-margin-top: 5em;
+    .log-entries {
+        height: calc(100vh - 265px);
+        overflow-y: auto;
 
-        &:target {
-            animation: shakeX;
-            animation-duration: 2s;
-        }
+        .log_entry {
+            white-space: pre-wrap;
+            scroll-margin-top: 5em;
 
-        .log_datetime {
-            font-family: var(--tblr-font-sans-serif);
-
-            &:hover {
-                text-decoration: underline;
+            &:target {
+                animation: shakeX;
+                animation-duration: 2s;
             }
-        }
 
-        .log_long_text {
-            /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
-            display: -webkit-box;
-            /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
-            -webkit-line-clamp: 2;
-            /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            cursor: row-resize;
-            padding: 1em 0.5em 0.18em;
-            box-sizing: border-box;
-            font-family: var(--tblr-font-monospace);
-            font-size: 0.8rem;
-            border-bottom: 1px solid var(--tblr-border-color);
+            .log_datetime {
+                font-family: var(--tblr-font-sans-serif);
 
-            &:hover {
-                background: rgba($color: #000, $alpha: 10%);
-            }
-        }
-
-        .log_entry_toggle_lbl {
-            position: relative;
-            width: 15px;
-            height: 20px;
-
-            &::after {
-                font-family: tabler-icons !important;
-                content: "\eb5f";
-                position: absolute;
-                left: 0;
-                top: 0.3em;
-            }
-        }
-
-        .log_entry_toggle_placeholder {
-            width: 15px;
-            height: 20px;
-
-            & ~ .log_long_text {
-                cursor: default;
-            }
-        }
-
-        .log_entry_toggle {
-            display: none;
-
-            &:checked {
-                & ~ .log_long_text {
-                    -webkit-line-clamp: unset;
+                &:hover {
+                    text-decoration: underline;
                 }
+            }
 
-                & ~ .log_entry_toggle_lbl {
-                    &::after {
-                        content: "\eb5d";
+            .log_long_text {
+                /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+                display: -webkit-box;
+                /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+                -webkit-line-clamp: 2;
+                /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                cursor: row-resize;
+                padding: 1em 0.5em 0.18em;
+                box-sizing: border-box;
+                font-family: var(--tblr-font-monospace);
+                font-size: 0.8rem;
+                border-bottom: 1px solid var(--tblr-border-color);
+
+                &:hover {
+                    background: rgba($color: #000, $alpha: 10%);
+                }
+            }
+
+            .log_entry_toggle_lbl {
+                position: relative;
+                width: 15px;
+                height: 20px;
+
+                &::after {
+                    font-family: tabler-icons !important;
+                    content: "\eb5f";
+                    position: absolute;
+                    left: 0;
+                    top: 0.3em;
+                }
+            }
+
+            .log_entry_toggle_placeholder {
+                width: 15px;
+                height: 20px;
+
+                & ~ .log_long_text {
+                    cursor: default;
+                }
+            }
+
+            .log_entry_toggle {
+                display: none;
+
+                &:checked {
+                    & ~ .log_long_text {
+                        -webkit-line-clamp: unset;
+                    }
+
+                    & ~ .log_entry_toggle_lbl {
+                        &::after {
+                            content: "\eb5d";
+                        }
                     }
                 }
             }
+        }
+    }
+}
+
+.horizontal-layout {
+    .log-viewer {
+        .log-entries {
+            height: calc(100vh - 350px);
         }
     }
 }

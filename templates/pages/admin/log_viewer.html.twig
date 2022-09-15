@@ -55,62 +55,54 @@
 
 {% set log_entries_html %}
     {% for log_entry in log_entries %}{{ _self.log_entry_tpl(log_entry)|trim|raw }}{% endfor %}
+    <a id="bottom"></a>
 {% endset %}
 
 {% if only_content %}
     {{ log_entries_html }}
     <span class="animated-dots" id="auto-refresh-indicator"></span>
 {% else %}
+    <div class="d-inline-flex mb-2">
+        <div class="input-group">
+            <select class="form-select w-auto" id="change-file">
+            {% for log_slug, log_file in log_files %}
+                set
+                <option value="{{ log_slug }}"
+                        {{ log_file == filename ? 'selected="selected"' : '' }}>
+                    {{ log_file }}
+                </option>
+            {% endfor %}
+            </select>
+
+            <a href="?action=download_log_file&amp;filename={{ filename }}"
+            class="btn btn-sm btn-outline-secondary"
+            title="{{ __("Download file") }}"
+            data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <i class="ti ti-device-floppy"></i>
+            </a>
+        </div>
+    </div>
     <div class="log-viewer card">
-        <div class="btn-list justify-content-between card-header">
-            <span class="d-flex align-items-start">
-                <div class="input-group">
-                    <select class="form-select form-select-sm w-auto" id="change-file">
-                    {% for log_slug, log_file in log_files %}
-                        set
-                        <option value="{{ log_slug }}"
-                                {{ log_file == filename ? 'selected="selected"' : '' }}>
-                            {{ log_file }}
-                        </option>
-                    {% endfor %}
-                    </select>
-
-                    <a href="?action=download_log_file&amp;filename={{ filename }}"
-                    class="btn btn-sm btn-outline-secondary"
-                    title="{{ __("Download file") }}"
-                    data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <i class="ti ti-device-floppy"></i>
-                    </a>
-                </div>
-
-                <span class="input-icon ms-3">
-                    <input type="text" value="" class="form-control form-control-sm" id="filter-logs-input"
-                        placeholder="{{ __("filter logs") }}">
-                    <span class="input-icon-addon">
-                        <i class="ti ti-filter fa-xs"></i>
-                    </span>
+        <div class="card-header justify-content-between ">
+            <span class="input-icon ms-3">
+                <input type="text" value="" class="form-control" id="filter-logs-input"
+                    placeholder="{{ __("filter logs") }}">
+                <span class="input-icon-addon">
+                    <i class="ti ti-filter fa-xs"></i>
                 </span>
             </span>
-            <span class="d-inline-flex">
-                {% set limitdropdown = include('components/dropdown/limit.html.twig', {
-                    'no_onchange': fluid_search|default(false),
-                }) %}
-                <span class="search-limit d-none d-md-block text-muted">
-                    {{ __('display the last %s entries')|format(limitdropdown)|raw }}
-                </span>
 
-                <a href="#bottom"
-                   class="btn btn-sm btn-outline-secondary ms-3"
-                   title="{{ __("Scroll to bottom") }}"
-                   data-bs-toggle="tooltip" data-bs-placement="bottom">
-                    <i class="ti ti-arrow-bar-to-down"></i>
-                </a>
-            </span>
+            <a href="#bottom"
+                class="btn btn-sm btn-outline-secondary ms-3"
+                title="{{ __("Scroll to bottom") }}"
+                data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <i class="ti ti-arrow-bar-to-down"></i>
+            </a>
         </div>
         <div class="log-entries card-body">
             {{ log_entries_html }}
         </div>
-        <span>
+        <div class="card-footer d-flex justify-content-between">
             <label class="form-check form-switch btn btn-sm btn-ghost-secondary ms-2 px-1 flex-column-reverse flex-sm-row"
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
@@ -123,8 +115,14 @@
                     <i class="ti ti-refresh"></i>
                 </span>
             </label>
-        </span>
-        <a id="bottom"></a>
+
+            {% set limitdropdown = include('components/dropdown/limit.html.twig', {
+                'no_onchange': fluid_search|default(false),
+            }) %}
+            <span class="search-limit d-none d-md-block text-muted">
+                {{ __('display the last %s entries')|format(limitdropdown)|raw }}
+            </span>
+        </div>
     </div>
 
     <script>
