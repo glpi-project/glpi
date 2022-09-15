@@ -182,6 +182,7 @@ class LogViewer extends CommonGLPI
                 'log_entries'  => $lines,
                 'log_files'    => $logfiles,
                 'only_content' => $only_content,
+                'href'         => self::getSearchURL()."?fileslug=$fileslug&",
             ]
         );
     }

@@ -55,6 +55,6 @@ Html::header(
 );
 
 $logs = new LogViewer();
-$logs->showLogFile($_GET['filename'] ?? null);
+$logs->showLogFile($_GET['fileslug'] ?? null);
 
 Html::footer();

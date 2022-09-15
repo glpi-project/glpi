@@ -54,7 +54,7 @@
                 </div>
                 <div class="list-group list-group-flush">
                     {% for slug, log in logs %}
-                        <a class="list-group-item list-group-item-action" href="logviewer.php?filename={{ slug }}">
+                        <a class="list-group-item list-group-item-action" href="logviewer.php?fileslug={{ slug }}">
                             <i class="fa-fw ti ti-file me-1"></i>
                             <span>{{ log }}</span>
                         </a>
