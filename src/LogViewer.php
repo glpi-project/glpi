@@ -215,6 +215,13 @@ class LogViewer extends CommonGLPI
     }
 
 
+    /**
+     * Get the filename from a slug of a log file
+     *
+     * @param string $fileslug
+     *
+     * @return string the filename
+     */
     protected static function getFilenameFromSlug(string $fileslug): string
     {
         $logfiles = self::getLogsFilesList();
