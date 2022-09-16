@@ -240,7 +240,7 @@ class Printer extends NetworkEquipment
                    // add printer
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $printer->add(Toolbox::addslashes_deep($this->handleInput($val)));
+                    $items_id = $printer->add(Toolbox::addslashes_deep($this->handleInput($val, $printer)));
                 } else {
                     $items_id = $data['found_inventories'][0];
                 }

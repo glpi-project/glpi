@@ -654,7 +654,7 @@ abstract class MainAsset extends InventoryAsset
         $this->handleLinks();
 
         if ($items_id == 0) {
-            $input = $this->handleInput($val);
+            $input = $this->handleInput($val, $this->item);
             unset($input['ap_port']);
             unset($input['firmware']);
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
@@ -713,7 +713,7 @@ abstract class MainAsset extends InventoryAsset
                 )
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
-                $input = $this->handleInput($val);
+                $input = $this->handleInput($val, $this->item);
                 $this->item->update(['id' => $input['id'],
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
@@ -747,7 +747,7 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-        $input = $this->handleInput($val);
+        $input = $this->handleInput($val, $this->item);
         $this->item->update(Toolbox::addslashes_deep($input));
 
         if (!($this->item instanceof RefusedEquipment)) {

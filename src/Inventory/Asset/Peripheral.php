@@ -163,10 +163,12 @@ class Peripheral extends InventoryAsset
                 $itemtype = 'Peripheral';
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
+                    //FIXME: handleInput
                     $handled_input['entities_id'] = $this->entities_id;
                     $items_id = $peripheral->add(Toolbox::addslashes_deep($handled_input), [], false);
                 } else {
                     $items_id = $data['found_inventories'][0];
+                    //FIXME: handleInput
                     $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + $handled_input), false);
                 }
 

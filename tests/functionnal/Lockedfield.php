@@ -723,16 +723,12 @@ class Lockedfield extends DbTestCase
         $this->boolean($cos->getFromDBByCrit(['items_id' => $computers_id]))->isTrue();
         $this->integer($cos->fields['operatingsystemarchitectures_id'])->isIdenticalTo($newarchs_id);
 
-        //FIXME: should be raw text, not old architectures_id
-        $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isEqualTo(['operatingsystemarchitectures_id' => $archs_id]);
-        //$this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => 'x86_64']);
+        $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => 'x86_64']);
 
         //make sure manufacturer is still the correct one
         $this->boolean($iav->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
         $this->integer($iav->fields['manufacturers_id'])->isIdenticalTo($newmanufacturers_id);
 
-        //FIXME: should be raw text, not old manufacturers_id
-        $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isEqualTo(['manufacturers_id' => $manufacturers_id]);
-        //$this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => 'Microsoft Corporation']);
+        $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isIdenticalTo(['manufacturers_id' => 'Microsoft Corporation']);
     }
 }

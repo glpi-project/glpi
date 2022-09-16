@@ -79,6 +79,8 @@ abstract class InventoryAsset
     private bool $is_new = false;
     /** @var array */
     protected array $known_links = [];
+    /** @var array */
+    protected array $raw_links = [];
 
     /**
      * Constructor
@@ -181,8 +183,8 @@ abstract class InventoryAsset
         $foreignkey_itemtype = [];
 
         $blacklist = new Blacklist();
-        $lockedfield = new Lockedfield();
-        $locks = $lockedfield->getLockedNames($this->item->getType(), $this->item->fields['id'] ?? 0);
+        //$lockedfield = new Lockedfield();
+        //$locks = $lockedfield->getLockedNames($this->item->getType(), $this->item->fields['id'] ?? 0);
 
         $data = $this->data;
         foreach ($data as &$value) {
@@ -201,13 +203,15 @@ abstract class InventoryAsset
 
                 $known_key = md5($key . $val);
 
+                //keep raw values...
+                $this->raw_links[$known_key] = $val;
                 //locked fields
-                foreach ($locks as $lock) {
+                /*foreach ($locks as $lock) {
                     if ($key == $lock) {
-                        $this->known_links[$known_key] = $val;
+                        $this->locked_links[$known_key] = $val;
                         continue 2;
                     }
-                }
+                }*/
 
                 if ($key == "manufacturers_id" || $key == 'bios_manufacturers_id') {
                     $manufacturer = new Manufacturer();
@@ -401,15 +405,24 @@ abstract class InventoryAsset
         return $this->is_new;
     }
 
-    protected function handleInput(\stdClass $value): array
+    protected function handleInput(\stdClass $value, ?CommonDBTM $item = null): array
     {
         $input = [];
+        $locks = [];
+
+        if ($item !== null) {
+            $lockeds = new \Lockedfield();
+            $locks = $lockeds->getLockedNames($item->getType(), $item->fields['id'] ?? 0);
+        }
+
         foreach ($value as $key => $val) {
             if (is_object($val) || is_array($val)) {
                 continue;
             }
             $known_key = md5($key . $val);
-            if (isset($this->known_links[$known_key])) {
+            if (in_array($key, $locks)) {
+                $input[$key] = $this->raw_links[$known_key];
+            } elseif (isset($this->known_links[$known_key])) {
                 $input[$key] = $this->known_links[$known_key];
             } else {
                 $input[$key] = $val;

@@ -216,8 +216,9 @@ class VirtualMachine extends InventoryAsset
         $db_vms = $this->getExisting();
 
         foreach ($db_vms as $keydb => $arraydb) {
+            $computerVirtualmachine->getFromDB($keydb);
             foreach ($value as $key => $val) {
-                $handled_input = $this->handleInput($val);
+                $handled_input = $this->handleInput($val, $computerVirtualmachine);
                 $sinput = [
                     'name'                     => $handled_input['name'] ?? '',
                     'uuid'                     => $handled_input['uuid'] ?? '',
@@ -251,7 +252,7 @@ class VirtualMachine extends InventoryAsset
 
         if (count($value) != 0) {
             foreach ($value as $val) {
-                $input = $this->handleInput($val);
+                $input = $this->handleInput($val, $computerVirtualmachine);
                 $input['computers_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
                 $computerVirtualmachine->add(Toolbox::addslashes_deep($input));

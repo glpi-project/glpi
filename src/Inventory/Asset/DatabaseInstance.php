@@ -126,11 +126,11 @@ class DatabaseInstance extends InventoryAsset
 
             if (isset($data['found_inventories'])) {
                 $databases = $val->databases ?? [];
-                $input = $this->handleInput($val);
 
                 $items_id = null;
                 $itemtype = 'DatabaseInstance';
                 if ($data['found_inventories'][0] == 0) {
+                    $input = $this->handleInput($val, $instance);
                     // add instance
                     $input += [
                         'entities_id'  => $this->entities_id,
@@ -143,6 +143,7 @@ class DatabaseInstance extends InventoryAsset
                     $databases = $val->databases ?? [];
 
                     $instance->getFromDB($items_id);
+                    $input = $this->handleInput($val, $instance);
                     $input += ['id' => $instance->fields['id']];
                     $instance->update(Toolbox::addslashes_deep($input));
 
