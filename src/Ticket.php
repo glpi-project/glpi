@@ -5089,6 +5089,19 @@ JAVASCRIPT;
             $opt['criteria'][1]['searchtype'] = 'equals';
             $opt['criteria'][1]['value']      = Session::getLoginUserID();
             $opt['criteria'][1]['link']       = 'AND';
+            $opt['criteria'][1]['criteria'][1]['field']      = 195; // validation aprobator substitute user
+            $opt['criteria'][1]['criteria'][1]['searchtype'] = 'equals';
+            $opt['criteria'][1]['criteria'][1]['value']      = 'myself'; // Resolved as current user's ID
+            $opt['criteria'][1]['criteria'][1]['link']       = 'OR';
+            $opt['criteria'][1]['criteria'][2]['field']      = 196; // validation aprobator group
+            $opt['criteria'][1]['criteria'][2]['searchtype'] = 'equals';
+            $opt['criteria'][1]['criteria'][2]['value']      = 'mygroups'; // Resolved as groups the current user belongs to
+            $opt['criteria'][1]['criteria'][2]['link']       = 'OR';
+            $opt['criteria'][1]['criteria'][3]['field']      = 197; // validation aprobator group
+            $opt['criteria'][1]['criteria'][3]['searchtype'] = 'equals';
+            $opt['criteria'][1]['criteria'][3]['value']      = 'myself'; // Resolved as groups the current user belongs to
+            $opt['criteria'][1]['criteria'][3]['link']       = 'OR';
+            $opt['criteria'][1]['link']       = 'AND';
 
             $twig_params['items'][] = [
                 'link'    => self::getSearchURL() . "?" . Toolbox::append_params($opt),
