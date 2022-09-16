@@ -224,21 +224,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $iterator = $DB->request([
             'SELECT' => [static::getTable() . '.id'],
             'FROM'   => static::getTable(),
-            'LEFT JOIN' => [
-                ValidatorSubstitute::getTable() => [
-                    'FKEY' => [
-                        ValidatorSubstitute::getTable() => 'users_id',
-                        static::getTable() => 'items_id_target',
-                    ],
-                    ['AND' => ['itemtype_target' => User::class]]
-                ],
-                User::getTable() => [
-                    'FKEY' => [
-                        ValidatorSubstitute::getTable() => 'users_id',
-                        User::getTable() => 'id',
-                    ],
-                ],
-            ],
             'WHERE'  => [
                 static::$items_id => $items_id,
                 static::getTargetCriteriaForUser(Session::getLoginUserID()),
@@ -762,21 +747,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $row = $DB->request([
             'FROM'   => static::getTable(),
             'COUNT'  => 'cpt',
-            'LEFT JOIN' => [
-                ValidatorSubstitute::getTable() => [
-                    'FKEY' => [
-                        ValidatorSubstitute::getTable() => 'users_id',
-                        static::getTable() => 'items_id_target',
-                    ],
-                    ['AND' => ['itemtype_target' => User::class]]
-                ],
-                User::getTable() => [
-                    'FKEY' => [
-                        ValidatorSubstitute::getTable() => 'users_id',
-                        User::getTable() => 'id',
-                    ],
-                ],
-            ],
             'WHERE'  => [
                 'status' => self::WAITING,
                 static::getTargetCriteriaForUser($users_id)
@@ -789,8 +759,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Return criteria to apply to get only validations on which given user is targetted.
      *
-     * Requires the caller do a left join with ValidatorSubstitute's table
-     * and User's table
      * @see self::getNumberToValidate()
      *
      * @param int $users_id
@@ -807,28 +775,42 @@ abstract class CommonITILValidation extends CommonDBChild
                     static::getTableField('items_id_target') => $users_id,
                 ],
                 'AND' => [
-                    [
-                        'OR' => [
-                            [
-                                User::getTableField('substitution_start_date')  => null,
-                            ],
-                            [
-                                User::getTableField('substitution_start_date')  => ['<=', new QueryExpression('NOW()')],
-                            ],
-                        ],
-                    ], [
-                        'OR' => [
-                            [
-                                User::getTableField('substitution_end_date') => null,
-                            ],
-                            [
-                                User::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                    'itemtype_target' => User::class,
+                    'items_id_target' => new QuerySubQuery([
+                        'SELECT'     => 'validator_users.id',
+                        'FROM'       => User::getTable() . ' as validator_users',
+                        'INNER JOIN' => [
+                            ValidatorSubstitute::getTable() => [
+                                'ON' => [
+                                    'validator_users' => 'id',
+                                    ValidatorSubstitute::getTable() => User::getForeignKeyField(),
+                                ],
                             ],
                         ],
-                    ],
-                    ValidatorSubstitute::getTableField('users_id_substitute')  => $users_id,
+                        'WHERE' => [
+                            [
+                                'OR' => [
+                                    [
+                                        'validator_users.substitution_start_date'  => null,
+                                    ],
+                                    [
+                                        'validator_users.substitution_start_date'  => ['<=', new QueryExpression('NOW()')],
+                                    ],
+                                ],
+                            ], [
+                                'OR' => [
+                                    [
+                                        'validator_users.substitution_end_date' => null,
+                                    ],
+                                    [
+                                        'validator_users.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]),
                 ],
-            ]
+            ],
         ];
         if ($search_in_groups) {
             $target_criteria = [
