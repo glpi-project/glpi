@@ -32,7 +32,7 @@
  #}
 
 {% set timeline_btns_cls = left_regular_cls %}
-{% set form_btns_cls     = is_expanded ? right_expanded_cls : "col-md" %}
+{% set form_btns_cls     = is_expanded ? right_expanded_cls : "col-lg" %}
 {% set switch_btn_cls    = "fa-caret-left" %}
 {% if is_expanded %}
     {% set timeline_btns_cls = left_expanded_cls %}
@@ -42,7 +42,7 @@
 
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
-      <div class="{{ timeline_btns_cls }} ps-3 timeline-buttons">
+      <div class="col {{ timeline_btns_cls }} ps-3 timeline-buttons">
          {% if not item.isNewItem() %}
             {% set default_action_data = timeline_itemtypes|first %}
             {% if item.isNotSolved() and default_action_data != false %}
@@ -84,22 +84,23 @@
          {% endif %}
      </div>
 
-      <div class="form-buttons {{ form_btns_cls }} d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
-         <span class="d-none d-md-block position-absolute top-0 start-0"
+      <div class="form-buttons {{ form_btns_cls }} d-flex justify-content-between ms-auto ms-lg-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
+         <span class="d-none d-lg-block ms-n3"
                data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Toggle panels width') }}">
-            <button type="button" class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary px-0">
+            <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary px-0">
                <i class="fas {{ switch_btn_cls }}"></i>
             </button>
-            <button type="button" class="collapse-panel btn btn-sm btn-square btn-icon btn-ghost-secondary px-0 mr-1">
+            <button type="button" class="collapse-panel btn btn-icon btn-ghost-secondary px-0 mr-1">
                <i class="fas fa-caret-right"></i>
             </button>
          </span>
 
+         <span>
          {% if item.isNewItem() %}
             <button class="btn btn-primary" type="submit" name="add" form="itil-form"
                   title="{{ _x('button', 'Add') }}">
                <i class="fas fa-plus"></i>
-               <span class="d-none d-md-block">{{ _x('button', 'Add') }}</span>
+               <span class="d-none d-lg-block">{{ _x('button', 'Add') }}</span>
             </button>
          {% else %}
 
@@ -109,14 +110,14 @@
                      <button class="btn btn-outline-secondary" type="submit" name="restore" form="itil-form"
                            title="{{ _x('button', 'Restore') }}">
                         <i class="fas fa-trash-restore-alt"></i>
-                        <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
+                        <span class="d-none d-lg-block">{{ _x('button', 'Restore') }}</span>
                      </button>
 
                      <button class="btn btn-outline-danger" type="submit" name="purge" form="itil-form"
                            title="{{ _x('button', 'Delete permanently') }}"
                            onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
                         <i class="ti ti-trash"></i>
-                        <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
+                        <span class="d-none d-lg-block">{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                   {% else %}
                      <button class="btn btn-outline-danger" type="submit" name="delete" form="itil-form"
@@ -139,12 +140,13 @@
                   <button class="btn btn-primary" type="submit" name="update" form="itil-form"
                         title="{{ _x('button', 'Save') }}">
                      <i class="far fa-save"></i>
-                     <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
+                     <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
                   </button>
                {% endif %}
             </div>
 
          {% endif %}
+         </span>
       </div>
    </div>
 </div>
