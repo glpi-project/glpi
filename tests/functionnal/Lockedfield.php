@@ -602,4 +602,137 @@ class Lockedfield extends DbTestCase
 
         $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => 'Greffe Charron']);
     }
+
+    public function testLockedRelations()
+    {
+        $computer = new \Computer();
+        $cos = new \Item_OperatingSystem();
+        $aos = new \OperatingSystemArchitecture();
+        $manufacturer = new \Manufacturer();
+        $iav = new \ComputerAntivirus();
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <OPERATINGSYSTEM>
+      <ARCH>x86_64</ARCH>
+      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
+      <FQDN>test-pc002</FQDN>
+      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
+      <HOSTID>a8c07701</HOSTID>
+      <KERNEL_NAME>linux</KERNEL_NAME>
+      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
+      <NAME>Fedora</NAME>
+      <TIMEZONE>
+        <NAME>CEST</NAME>
+        <OFFSET>+0200</OFFSET>
+      </TIMEZONE>
+      <VERSION>28 (Workstation Edition)</VERSION>
+    </OPERATINGSYSTEM>
+    <ANTIVIRUS>
+      <COMPANY>Microsoft Corporation</COMPANY>
+      <ENABLED>1</ENABLED>
+      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
+      <NAME>Microsoft Security Essentials</NAME>
+      <UPTODATE>1</UPTODATE>
+      <VERSION>4.3.216.0</VERSION>
+      <EXPIRATION>01/04/2019</EXPIRATION>
+    </ANTIVIRUS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $lockedfield = new \Lockedfield();
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $this->boolean($cos->getFromDBByCrit(['items_id' => $computers_id]))->isTrue();
+
+        //check OS version
+        $this->boolean($aos->getFromDBByCrit(['name' => 'x86_64']))->isTrue();
+        $archs_id = $aos->fields['id'];
+        $this->integer($cos->fields['operatingsystemarchitectures_id'])->isIdenticalTo($archs_id);
+
+        //check antivirus manufacturer
+        $this->boolean($iav->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->boolean($manufacturer->getFromDBByCrit(['name' => 'Microsoft Corporation']))->isTrue();
+        $manufacturers_id = $manufacturer->fields['id'];
+        $this->integer($iav->fields['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //manually update OS architecture field
+        $newarchs_id = $aos->add(['name' => 'i386']);
+        $this->integer($newarchs_id)->isGreaterThan(0);
+
+        $this->boolean(
+            $cos->update([
+                'id' => $cos->fields['id'],
+                'operatingsystemarchitectures_id' => $newarchs_id,
+                'id_dynamic' => true
+            ])
+        )->isTrue();
+        $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => null]);
+
+        //manually update AV manufacturer field
+        $newmanufacturers_id = $manufacturer->add(['name' => 'Crosoft']);
+        $this->integer($newmanufacturers_id)->isGreaterThan(0);
+
+        $this->boolean(
+            $iav->update([
+                'id' => $iav->fields['id'],
+                'manufacturers_id' => $newmanufacturers_id,
+                'id_dynamic' => true
+            ])
+        )->isTrue();
+        $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isIdenticalTo(['manufacturers_id' => null]);
+
+        //replay
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //make sure architecture is still the correct one
+        $this->boolean($cos->getFromDBByCrit(['items_id' => $computers_id]))->isTrue();
+        $this->integer($cos->fields['operatingsystemarchitectures_id'])->isIdenticalTo($newarchs_id);
+
+        //FIXME: should be raw text, not old architectures_id
+        $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isEqualTo(['operatingsystemarchitectures_id' => $archs_id]);
+        //$this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => 'x86_64']);
+
+        //make sure manufacturer is still the correct one
+        $this->boolean($iav->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->integer($iav->fields['manufacturers_id'])->isIdenticalTo($newmanufacturers_id);
+
+        //FIXME: should be raw text, not old manufacturers_id
+        $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isEqualTo(['manufacturers_id' => $manufacturers_id]);
+        //$this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => 'Microsoft Corporation']);
+    }
 }
