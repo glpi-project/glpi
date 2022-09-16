@@ -1530,7 +1530,7 @@ HTML;
                             if (is_array($val)) {
                                 foreach ($val as $k => $object) {
                                     $menu[$key]['types'][] = $object;
-                                    if (method_exists($object, 'getIcon')) {
+                                    if (empty($menu[$key]['icon']) && method_exists($object, 'getIcon')) {
                                         $menu[$key]['icon']    = $object::getIcon();
                                     }
                                 }
