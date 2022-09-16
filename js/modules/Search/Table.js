@@ -209,7 +209,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
     // permit to [shift] select checkboxes
     shiftSelectAllCheckbox() {
-        $('#'+this.element_id+' input[type="checkbox"]').shiftSelectable();
+        $('#'+this.element_id+' tbody input[type="checkbox"]').shiftSelectable();
     }
 
     registerListeners() {
