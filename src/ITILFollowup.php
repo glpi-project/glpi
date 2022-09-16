@@ -872,8 +872,8 @@ class ITILFollowup extends CommonDBChild
         $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
             'long'  => __('Add a followup to tickets (requester)')
         ];
-        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (watcher)'),
-            'long'  => __('Add a followup to tickets (watcher)')
+        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (observer)'),
+            'long'  => __('Add a followup to tickets (observer)')
         ];
         $values[self::SEEPUBLIC]   = __('See public ones');
 

@@ -3774,7 +3774,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'add_actor':
                 $types            = [0                          => Dropdown::EMPTY_VALUE,
                     CommonITILActor::REQUESTER => _n('Requester', 'Requesters', 1),
-                    CommonITILActor::OBSERVER  => _n('Watcher', 'Watchers', 1),
+                    CommonITILActor::OBSERVER  => _n('Observer', 'Observers', 1),
                     CommonITILActor::ASSIGN    => __('Assigned to')
                 ];
                 $rand             = Dropdown::showFromArray('actortype', $types);
@@ -4394,7 +4394,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'observer',
-            'name'               => _n('Watcher', 'Watchers', 1)
+            'name'               => _n('Observer', 'Observers', 1)
         ];
 
         $tab[] = [
@@ -4403,7 +4403,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'name',
             'datatype'           => 'dropdown',
             'right'              => 'all',
-            'name'               => _n('Watcher', 'Watchers', 1),
+            'name'               => _n('Observer', 'Observers', 1),
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
@@ -4422,7 +4422,7 @@ abstract class CommonITILObject extends CommonDBTM
             'table'              => 'glpi_groups',
             'field'              => 'completename',
             'datatype'           => 'dropdown',
-            'name'               => _n('Watcher group', 'Watcher groups', 1),
+            'name'               => _n('Observer group', 'Observer groups', 1),
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'condition'          => ['is_watcher' => 1],
@@ -9127,7 +9127,7 @@ abstract class CommonITILObject extends CommonDBTM
             case Team::ROLE_REQUESTER:
                 return _n('Requester', 'Requesters', $nb);
             case Team::ROLE_OBSERVER:
-                return _n('Watcher', 'Watchers', $nb);
+                return _n('Observer', 'Observers', $nb);
             case Team::ROLE_ASSIGNED:
                 return _n('Assignee', 'Assignees', $nb);
         }

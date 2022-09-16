@@ -893,12 +893,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
             $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
             $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
-            $this->addTarget(Notification::OBSERVER_GROUP, _n('Watcher group', 'Watcher groups', 1));
-            $this->addTarget(Notification::OBSERVER, _n('Watcher', 'Watchers', 1));
-            $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP, __('Watcher group manager'));
+            $this->addTarget(Notification::OBSERVER_GROUP, _n('Observer group', 'Observer groups', 1));
+            $this->addTarget(Notification::OBSERVER, _n('Observer', 'Observers', 1));
+            $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP, __('Observer group manager'));
             $this->addTarget(
                 Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR,
-                __("Watcher group except manager users")
+                __("Observer group except manager users")
             );
         }
 
@@ -1913,11 +1913,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 'Requester groups',
                 Session::getPluralNumber()
             ),
-            $objettype . '.observergroups'        => _n('Watcher group', 'Watcher groups', Session::getPluralNumber()),
+            $objettype . '.observergroups'        => _n('Observer group', 'Observer groups', Session::getPluralNumber()),
             $objettype . '.assigntogroups'        => __('Assigned to groups'),
             $objettype . '.solution.type'         => SolutionType::getTypeName(1),
             $objettype . '.solution.description'  => ITILSolution::getTypeName(1),
-            $objettype . '.observerusers'         => _n('Watcher', 'Watchers', Session::getPluralNumber()),
+            $objettype . '.observerusers'         => _n('Observer', 'Observers', Session::getPluralNumber()),
             $objettype . '.action'                => _n('Event', 'Events', 1),
             'followup.date'                     => __('Opening date'),
             'followup.isprivate'                => __('Private'),

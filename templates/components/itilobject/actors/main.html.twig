@@ -101,7 +101,7 @@
       {{ fields.field(
          'observer',
          observer_field,
-         __('Observer'),
+         _n('Observer', 'Observers', 1),
          actor_options|merge({
             required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
          })
