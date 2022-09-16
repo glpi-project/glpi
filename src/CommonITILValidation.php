@@ -813,7 +813,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                 User::getTableField('substitution_start_date')  => null,
                             ],
                             [
-                                User::getTableField('substitution_start_date')  => ['<=', $_SESSION['glpi_currenttime']],
+                                User::getTableField('substitution_start_date')  => ['<=', new QueryExpression('NOW()')],
                             ],
                         ],
                     ], [
@@ -822,7 +822,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                 User::getTableField('substitution_end_date') => null,
                             ],
                             [
-                                User::getTableField('substitution_end_date') => ['>=', $_SESSION['glpi_currenttime']],
+                                User::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
                             ],
                         ],
                     ],
@@ -861,7 +861,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                                                             User::getTable() . '.substitution_start_date' => null,
                                                                         ],
                                                                         [
-                                                                            User::getTable() . '.substitution_start_date' => ['<=', $_SESSION['glpi_currenttime']],
+                                                                            User::getTable() . '.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
                                                                         ],
                                                                     ],
                                                                 ],
@@ -871,7 +871,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                                                             User::getTable() . '.substitution_end_date' => null,
                                                                         ],
                                                                         [
-                                                                            User::getTable() . '.substitution_end_date' => ['>=', $_SESSION['glpi_currenttime']],
+                                                                            User::getTable() . '.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
                                                                         ],
                                                                     ],
                                                                 ],
@@ -1592,7 +1592,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                     [
                                         'REFTABLE.substitution_start_date' => null,
                                     ], [
-                                        'REFTABLE.substitution_start_date' => ['<=', $_SESSION['glpi_currenttime']],
+                                        'REFTABLE.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
                                     ],
                                 ],
                             ], [
@@ -1600,7 +1600,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                     [
                                         'REFTABLE.substitution_end_date' => null,
                                     ], [
-                                        'REFTABLE.substitution_end_date' => ['>=', $_SESSION['glpi_currenttime']],
+                                        'REFTABLE.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
                                     ],
                                 ],
                             ]
@@ -1673,7 +1673,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                     [
                                         'REFTABLE.substitution_end_date' => null,
                                     ], [
-                                        'REFTABLE.substitution_end_date' => ['>=', $_SESSION['glpi_currenttime']],
+                                        'REFTABLE.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
                                     ],
                                 ],
                             ], [
@@ -1681,7 +1681,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                     [
                                         'REFTABLE.substitution_start_date' => null,
                                     ], [
-                                        'REFTABLE.substitution_start_date' => ['<=', $_SESSION['glpi_currenttime']],
+                                        'REFTABLE.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
                                     ],
                                 ],
                             ]
