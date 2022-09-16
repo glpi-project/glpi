@@ -77,7 +77,7 @@ final class SearchOption implements \ArrayAccess
         return isset($this->search_opt_array[$offset]);
     }
 
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->search_opt_array[$offset];
