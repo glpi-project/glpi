@@ -35,8 +35,6 @@
 
 namespace Glpi\Search;
 
-use ReturnTypeWillChange;
-
 /**
  * Object representing a search option.
  *
@@ -112,7 +110,7 @@ final class SearchOption implements \ArrayAccess
      *
      * @return array The reference to the array of search options for the given item type
      **/
-    final public static function &getOptionsForItemtype($itemtype, $withplugins = true): array
+    public static function &getOptionsForItemtype($itemtype, $withplugins = true): array
     {
         global $CFG_GLPI;
         $item = null;
