@@ -185,20 +185,10 @@ abstract class InventoryAsset
 
         $blacklist = new Blacklist();
 
+        //load locked field for 'real' current item manage
         $itemtype = str_replace("Glpi\Inventory\Asset\\", "", get_called_class());
         $lockedfield = new Lockedfield();
         $locks = $lockedfield->getLockedNames($itemtype, $this->item->fields['id'] ?? 0);
-
-        //manage locked fields
-        //store inventory raw value for locked field
-        //unset value from $this->data to prevent DB add
-        //input will be restored after Dropdown::import process
-        foreach ($locks as $lock) {
-            $known_key = md5($lock . $this->data[0]->{$lock});
-            $this->raw_links[$known_key] = $this->data[0]->{$lock}; //need for save inventory value intoDB (see glpi_slockedfield)
-            $this->input_notmanaged[$lock] = $this->data[0]->{$lock}; //save current inventory field / val
-            unset($this->data[0]->{$lock}); //unset field not to be managed after
-        }
 
         $data = $this->data;
         foreach ($data as &$value) {
@@ -216,9 +206,15 @@ abstract class InventoryAsset
                 }
 
                 $known_key = md5($key . $val);
-
                 //keep raw values...
                 $this->raw_links[$known_key] = $val;
+
+                //do not process field if it's locked
+                foreach ($locks as $lock) {
+                    if($key == $lock){
+                        continue 2;
+                    }
+                }
 
                 if ($key == "manufacturers_id" || $key == 'bios_manufacturers_id') {
                     $manufacturer = new Manufacturer();
@@ -270,12 +266,6 @@ abstract class InventoryAsset
                     }
                 }
             }
-        }
-
-        //restore input for locked field
-        //needed to store inventory raw value into DB (see glpi_lockedfield -> value column)
-        foreach ($this->input_notmanaged as $notmanage_key => $notmanage_value) {
-            $this->data[0]->{$notmanage_key} = $notmanage_value;
         }
 
         $this->links_handled = true;
