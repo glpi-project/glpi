@@ -191,10 +191,9 @@ $.fn.shiftSelectable = function() {
         }
 
         if (evt.shiftKey) {
-            evt.preventDefault();
             var start = $boxes.index(selected_checkbox);
             var end = $boxes.index(lastChecked);
-            $boxes.slice(Math.min(start, end), Math.max(start, end) + 1)
+            $boxes.slice(Math.min(start, end), Math.max(start, end))
                 .prop('checked', $(lastChecked).is(':checked'))
                 .trigger('change');
         }
