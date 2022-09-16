@@ -51,7 +51,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
      *
      * @return string Title
      **/
-    public static function computeTitle(array $data): string
+    protected static function computeTitle(array $data): string
     {
         $title = "";
 

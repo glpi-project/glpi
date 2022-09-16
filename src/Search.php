@@ -46,6 +46,10 @@ use Glpi\Search\Output\SYLKSearchOutput;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
+use Glpi\Search\Output\PDFLandscapeSearchOutput;
+use Glpi\Search\Output\PDFPortraitSearchOutput;
+use Glpi\Search\Output\NamesListSearchOutput;
+use Glpi\Search\Output\GlobalSearchOutput;
 
 /**
  * Search Class
@@ -218,16 +222,26 @@ class Search
 
         switch ($data['display_type']) {
             case self::CSV_OUTPUT:
+                CSVSearchOutput::outputData($data);
+                break;
             case self::PDF_OUTPUT_LANDSCAPE:
+                PDFLandscapeSearchOutput::outputData($data);
+                break;
             case self::PDF_OUTPUT_PORTRAIT:
+                PDFPortraitSearchOutput::outputData($data);
+                break;
             case self::SYLK_OUTPUT:
+                SYLKSearchOutput::outputData($data);
+                break;
             case self::NAMES_OUTPUT:
-                self::outputData($data);
+                NamesListSearchOutput::outputData($data);
                 break;
             case self::GLOBAL_SEARCH:
+                GlobalSearchOutput::displayData($data);
+                break;
             case self::HTML_OUTPUT:
             default:
-                self::displayData($data);
+                HTMLSearchOutput::displayData($data);
                 break;
         }
     }
@@ -388,33 +402,6 @@ class Search
     }
 
     /**
-     * Output data (for export in CSV, PDF, ...).
-     *
-     * @param array $data Array of search datas prepared to get datas
-     *
-     * @return void
-     **/
-    public static function outputData(array $data)
-    {
-        /** @var ExportSearchOutput $output */
-        $output = SearchEngine::getOutputForLegacyKey($data['display_type']);
-        return $output::outputData($data);
-    }
-
-
-    /**
-     * Compute title (use case of PDF OUTPUT)
-     *
-     * @param array $data Array data of search
-     *
-     * @return string Title
-     **/
-    public static function computeTitle($data)
-    {
-        return PDFSearchOutput::computeTitle($data);
-    }
-
-    /**
      * Get meta types available for search engine
      *
      * @param class-string<CommonDBTM> $itemtype Type to display the form
@@ -424,57 +411,6 @@ class Search
     public static function getMetaItemtypeAvailable($itemtype)
     {
         return SearchEngine::getMetaItemtypeAvailable($itemtype);
-    }
-
-    /**
-     * Returns parents itemtypes having subitems defined in given config key.
-     * This list is filtered and is only valid in a "meta" search context.
-     *
-     * @param string $config_key
-     *
-     * @return string[]
-     */
-    private static function getMetaParentItemtypesForTypesConfig(string $config_key): array
-    {
-        return SearchEngine::getMetaParentItemtypesForTypesConfig($config_key);
-    }
-
-    /**
-     * Check if an itemtype is a possible subitem of another itemtype in a "meta" search context.
-     *
-     * @param string $parent_itemtype
-     * @param string $child_itemtype
-     *
-     * @return boolean
-     */
-    private static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype)
-    {
-        return SearchEngine::isPossibleMetaSubitemOf($parent_itemtype, $child_itemtype);
-    }
-
-    /**
-     * Gets the class to use if the specified itemtype extends one of the known reference types.
-     *
-     * @param class-string<CommonDBTM> $itemtype
-     *
-     * @return string|false The reference class name. If the provided itemtype is from a plugin, the provided itemtype is returned.
-     *                      If the itemtype is not from a plugin and not exactly or extended from a reference itemtype, false will be returned.
-     * @since 0.85
-     */
-    public static function getMetaReferenceItemtype($itemtype)
-    {
-        return SearchEngine::getMetaReferenceItemtype($itemtype);
-    }
-
-
-    /**
-     * Get dropdown options of logical operators.
-     * @return string[]|array<string, string>
-     * @since 0.85
-     **/
-    public static function getLogicalOperators($only_not = false)
-    {
-        return SearchEngine::getLogicalOperators($only_not);
     }
 
 
@@ -538,36 +474,6 @@ class Search
     public static function displayCriteriaGroup($request = [])
     {
         QueryBuilder::displayCriteriaGroup($request);
-    }
-
-    /**
-     * Retrieve a single criteria in Session by its index
-     *
-     * @since 9.4
-     *
-     * @param  string  $itemtype    which glpi type we must search in session
-     * @param  integer $num         index of the criteria
-     * @param  array   $parents_num node indexes of the parents (@see displayCriteriaGroup)
-     *
-     * @return array|false The found criteria array or false if nothing found
-     */
-    public static function findCriteriaInSession($itemtype = '', $num = 0, $parents_num = [])
-    {
-        return QueryBuilder::findCriteriaInSession($itemtype, $num, $parents_num);
-    }
-
-    /**
-     * construct the default criteria for an itemtype
-     *
-     * @since 9.4
-     *
-     * @param  class-string<CommonDBTM> $itemtype
-     *
-     * @return array  criteria
-     */
-    public static function getDefaultCriteria($itemtype = '')
-    {
-        return QueryBuilder::getDefaultCriteria($itemtype);
     }
 
     /**
@@ -1114,30 +1020,6 @@ class Search
     public static function computeComplexJoinID(array $joinparams)
     {
         return SQLProvider::computeComplexJoinID($joinparams);
-    }
-
-    /**
-     * Clean display value for csv export
-     *
-     * @param string $value value
-     *
-     * @return string Clean value
-     **/
-    public static function csv_clean($value)
-    {
-        return CSVSearchOutput::cleanValue((string) $value);
-    }
-
-    /**
-     * Clean display value for sylk export
-     *
-     * @param string $value value
-     *
-     * @return string Clean value
-     **/
-    public static function sylk_clean($value)
-    {
-        return SYLKSearchOutput::cleanValue((string) $value);
     }
 
     /**
