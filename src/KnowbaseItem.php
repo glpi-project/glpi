@@ -49,11 +49,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
    // From CommonDBTM
     public $dohistory    = true;
 
-   // For visibility checks
-    protected $users     = [];
-    protected $groups    = [];
-    protected $profiles  = [];
-    protected $entities  = [];
     protected $items     = [];
 
     const KNOWBASEADMIN = 1024;

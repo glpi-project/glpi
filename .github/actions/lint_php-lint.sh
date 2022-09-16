@@ -17,3 +17,10 @@ touch ~/phpcs.cache
 vendor/bin/phpcs \
   --cache ~/phpcs.cache \
   .
+
+echo "Run code static analysis"
+vendor/bin/phpstan analyze \
+  --ansi \
+  --memory-limit=2G \
+  --no-interaction \
+  --no-progress

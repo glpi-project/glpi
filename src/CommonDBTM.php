@@ -516,7 +516,7 @@ class CommonDBTM extends CommonGLPI
             && !$this->isNewItem()
             && $lockedfield->isHandled($this)
         ) {
-            $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);
+            $locks = $lockedfield->getLockedValues($this->getType(), $this->fields['id']);
         }
 
         return $locks;
@@ -658,7 +658,7 @@ class CommonDBTM extends CommonGLPI
      * @param string[] $updates   fields to update
      * @param string[] $oldvalues array of old values of the updated fields
      *
-     * @return void
+     * @return bool
      **/
     public function updateInDB($updates, $oldvalues = [])
     {
@@ -1191,7 +1191,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $saved Array of values saved in session
      *
-     * @return array Array of values
+     * @return void
      **/
     protected function restoreSavedValues(array $saved = [])
     {
@@ -1235,7 +1235,10 @@ class CommonDBTM extends CommonGLPI
         }
 
         // This means we are not adding a cloned object
-        if (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone'])) {
+        if (
+            (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone']))
+            && method_exists($this, 'clone')
+        ) {
             // This means we are asked to clone the object (old way). This will clone the clone method
             // that will set the clone parameter to true
             if (isset($input['_oldID'])) {
@@ -1296,6 +1299,8 @@ class CommonDBTM extends CommonGLPI
         if ($this->input && is_array($this->input)) {
             $this->fields = [];
             $table_fields = $DB->listFields($this->getTable());
+
+            $this->pre_addInDB();
 
             // fill array for add
             $this->cleanLockedsOnAdd();
@@ -1735,7 +1740,7 @@ class CommonDBTM extends CommonGLPI
     {
         if (isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true) {
             $lockedfield = new Lockedfield();
-            $locks = $lockedfield->getLocks($this->getType(), 0);
+            $locks = $lockedfield->getLockedNames($this->getType(), 0);
             foreach ($locks as $lock) {
                 if (array_key_exists($lock, $this->input)) {
                     $lockedfield->setLastValue($this->getType(), 0, $lock, $this->input[$lock]);
@@ -1754,12 +1759,15 @@ class CommonDBTM extends CommonGLPI
     {
         if ($this->isDynamic() && (in_array('is_dynamic', $this->updates) || isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true)) {
             $lockedfield = new Lockedfield();
-            $locks = $lockedfield->getLocks($this->getType(), $this->fields['id']);
+            $locks = $lockedfield->getLockedNames($this->getType(), $this->fields['id']);
             foreach ($locks as $lock) {
                 $idx = array_search($lock, $this->updates);
                 if ($idx !== false) {
                     $lockedfield->setLastValue($this->getType(), $this->fields['id'], $lock, $this->input[$lock]);
                     unset($this->updates[$idx]);
+                    unset($this->input[$lock]);
+                    $this->fields[$lock] = $this->oldvalues[$lock];
+                    unset($this->oldvalues[$lock]);
                 }
             }
             $this->updates = array_values($this->updates);
@@ -1934,6 +1942,18 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
+     * Actions done before the ADD of the item in the database
+     *
+     * @since 10.0.3
+     *
+     * @return void
+     */
+    public function pre_addInDB()
+    {
+    }
+
+
+     /**
      * Actions done before the UPDATE of the item in the database
      *
      * @return void
@@ -3039,7 +3059,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param mixed $right Right to check : c / r / w / d / READ / UPDATE / CREATE / DELETE
      *
-     * @return void
+     * @return bool
      **/
     public function canGlobal($right)
     {
@@ -4326,7 +4346,7 @@ class CommonDBTM extends CommonGLPI
         $message_text .= '<br>' . __('Other item exist');
 
         foreach ($doubles as $double) {
-            if (in_array('CommonDBChild', class_parents($this))) {
+            if ($this instanceof CommonDBChild) {
                 if ($this->getField($this->itemtype)) {
                     $item = new $double['itemtype']();
                 } else {
@@ -4602,8 +4622,9 @@ class CommonDBTM extends CommonGLPI
 
         switch ($field) {
             case '_virtual_datacenter_position':
-                if (method_exists(static::class, 'renderDcBreadcrumb')) {
-                    return static::renderDcBreadcrumb($values['id']);
+                $static = new static();
+                if (method_exists($static, 'renderDcBreadcrumb')) {
+                    return $static::renderDcBreadcrumb($values['id']);
                 }
         }
 

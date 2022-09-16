@@ -400,6 +400,7 @@ class Database extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForInstance($item);
+        return true;
     }
 
     /**
@@ -522,6 +523,7 @@ class Database extends CommonDBChild
                 ]
             ];
         }
+        return false;
     }
 
     public function useDeletedToLockIfDynamic()

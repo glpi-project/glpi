@@ -268,7 +268,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             echo "<input type='hidden' name='itemtype_1' value='Change'>";
             echo "<input type='hidden' name='items_id_1' value='$ID'>";
             echo "<input type='hidden' name='itemtype_2' value='Ticket'>";
-            echo self::dropdownLinks('link');
+            self::dropdownLinks('link');
             echo "&nbsp;";
             Ticket::dropdown([
                 'name'        => 'items_id_2',
@@ -407,7 +407,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             echo "<input type='hidden' name='itemtype_1' value='Ticket'>";
             echo "<input type='hidden' name='items_id_1' value='$ID'>";
             echo "<input type='hidden' name='itemtype_2' value='Change'>";
-            echo self::dropdownLinks('link');
+            self::dropdownLinks('link');
             echo "&nbsp;";
             Change::dropdown([
                 'name'      => 'items_id_2',

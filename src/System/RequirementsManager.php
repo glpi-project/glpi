@@ -49,6 +49,7 @@ use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\ProtectedWebAccess;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
+use Glpi\System\Requirement\SessionsSecurityConfiguration;
 
 /**
  * @since 9.5.0
@@ -133,6 +134,7 @@ class RequirementsManager
 
        // Below requirements are optionals
 
+        $requirements[] = new SessionsSecurityConfiguration();
         $requirements[] = new Extension(
             'exif',
             true,

@@ -393,7 +393,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public function addRecipientAddress()
     {
-        return $this->addUserByField("users_id_recipient");
+        $this->addUserByField("users_id_recipient");
     }
 
 
@@ -880,18 +880,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR,
                 __("Requester group except manager users")
             );
-            $this->addTarget(
-                Notification::ITEM_TECH_IN_CHARGE,
-                __('Technician in charge of the hardware')
-            );
-            $this->addTarget(
-                Notification::ITEM_TECH_GROUP_IN_CHARGE,
-                __('Group in charge of the hardware')
-            );
             $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of the ticket'));
             $this->addTarget(Notification::REQUESTER_GROUP, _n('Requester group', 'Requester groups', 1));
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
-            $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
             $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
             $this->addTarget(Notification::OBSERVER_GROUP, _n('Observer group', 'Observer groups', 1));
             $this->addTarget(Notification::OBSERVER, _n('Observer', 'Observers', 1));

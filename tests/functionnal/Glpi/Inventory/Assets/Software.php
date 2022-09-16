@@ -56,7 +56,7 @@ class Software extends AbstractInventoryAsset
       <INSTALLDATE>03/09/2018</INSTALLDATE>
       <NAME>gimp</NAME>
       <PUBLISHER>Fedora Project</PUBLISHER>
-      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <SYSTEM_CATEGORY>Application</SYSTEM_CATEGORY>
       <VERSION>2.8.22-7.fc28</VERSION>
     </SOFTWARES>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
@@ -64,7 +64,7 @@ class Software extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Unspecified", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "Unspecified", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
+                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Application", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "Application", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
             ],
             [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -88,7 +88,7 @@ class Software extends AbstractInventoryAsset
       <INSTALLDATE>03/09/2018</INSTALLDATE>
       <NAME>gimp</NAME>
       <PUBLISHER>Fedora Project</PUBLISHER>
-      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <SYSTEM_CATEGORY>System Component</SYSTEM_CATEGORY>
       <VERSION>2.8.22-7.fc28</VERSION>
     </SOFTWARES>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
@@ -96,7 +96,7 @@ class Software extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Unspecified", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "Unspecified", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
+                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "System Component", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Feodra Project", "comment": "GNU Image Manipulation Program", "_system_category": "System Component", "operatingsystems_id": 0, "entities_id": 0, "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
             ]
         ];
     }
@@ -117,9 +117,15 @@ class Software extends AbstractInventoryAsset
 
        //Manufacturer has been imported into db...
         $expected = json_decode($expected);
+
         $manu = new \Manufacturer();
         $this->boolean($manu->getFromDbByCrit(['name' => $result[0]->publisher]))->isTrue();
         $expected->manufacturers_id = $manu->fields['id'];
+
+        $softCate = new \SoftwareCategory();
+        $this->boolean($softCate->getFromDbByCrit(['name' => $result[0]->system_category]))->isTrue();
+        $expected->softwarecategories_id = $softCate->fields['id'];
+
         $this->object($result[0])->isEqualTo($expected);
     }
 
@@ -147,6 +153,9 @@ class Software extends AbstractInventoryAsset
         $manu = new \Manufacturer();
         $this->boolean($manu->getFromDbByCrit(['name' => $result[0]->publisher]))->isTrue();
         $expected->manufacturers_id = $manu->fields['id'];
+        $softCate = new \SoftwareCategory();
+        $this->boolean($softCate->getFromDbByCrit(['name' => $result[0]->system_category]))->isTrue();
+        $expected->softwarecategories_id = $softCate->fields['id'];
         $this->object($result[0])->isEqualTo($expected);
 
        //handle
@@ -183,6 +192,9 @@ class Software extends AbstractInventoryAsset
         $manu = new \Manufacturer();
         $this->boolean($manu->getFromDbByCrit(['name' => $result[0]->publisher]))->isTrue();
         $expected->manufacturers_id = $manu->fields['id'];
+        $softCate = new \SoftwareCategory();
+        $this->boolean($softCate->getFromDbByCrit(['name' => $result[0]->system_category]))->isTrue();
+        $expected->softwarecategories_id = $softCate->fields['id'];
         $this->object($result[0])->isEqualTo($expected);
 
        //handle
@@ -231,10 +243,12 @@ class Software extends AbstractInventoryAsset
 
     public function testInventoryUpdate()
     {
+        global $DB;
         $computer = new \Computer();
         $soft = new \Software();
         $version = new \SoftwareVersion();
         $item_version = new \Item_SoftwareVersion();
+        $software_categorie = new \SoftwareCategory();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -247,7 +261,7 @@ class Software extends AbstractInventoryAsset
       <INSTALLDATE>03/10/2021</INSTALLDATE>
       <NAME>gimp</NAME>
       <PUBLISHER>Fedora Project</PUBLISHER>
-      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <SYSTEM_CATEGORY>Application</SYSTEM_CATEGORY>
       <VERSION>2.10.28-1.fc34</VERSION>
     </SOFTWARES>
     <SOFTWARES>
@@ -291,6 +305,45 @@ class Software extends AbstractInventoryAsset
         $versions = $version->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($versions))->isIdenticalTo(2);
 
+        //check that sofware exist with softwarecategories
+        $criteria = [
+            'FROM' => \Software::getTable(),
+            'LEFT JOIN' => [
+                \SoftwareCategory::getTable() => [
+                    'ON' => [
+                        \Software::getTable() => 'softwarecategories_id',
+                        \SoftwareCategory::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                \Software::getTable() . ".name" => "gimp",
+                \SoftwareCategory::getTable() . ".name" => "Application"
+            ]
+        ];
+
+        $iterator = $DB->request($criteria);
+        $this->integer(count($iterator))->isIdenticalTo(1);
+
+        $criteria = [
+            'FROM' => \Software::getTable(),
+            'LEFT JOIN' => [
+                \SoftwareCategory::getTable() => [
+                    'ON' => [
+                        \Software::getTable() => 'softwarecategories_id',
+                        \SoftwareCategory::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                \Software::getTable() . ".name" => "php-cli",
+                \SoftwareCategory::getTable() . ".name" => "Development/Languages"
+            ]
+        ];
+
+        $iterator = $DB->request($criteria);
+        $this->integer(count($iterator))->isIdenticalTo(1);
+
        //we have 2 softwareversion items linked to the computer
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($item_versions))->isIdenticalTo(2);
@@ -299,7 +352,7 @@ class Software extends AbstractInventoryAsset
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($item_versions))->isIdenticalTo(2);
 
-       //Redo inventory, but with removed "php-cli" software
+       //Redo inventory, but with removed "php-cli" software and change softwareCategories
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -311,7 +364,7 @@ class Software extends AbstractInventoryAsset
       <INSTALLDATE>03/10/2021</INSTALLDATE>
       <NAME>gimp</NAME>
       <PUBLISHER>Fedora Project</PUBLISHER>
-      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <SYSTEM_CATEGORY>Web App</SYSTEM_CATEGORY>
       <VERSION>2.10.28-1.fc34</VERSION>
     </SOFTWARES>
     <HARDWARE>
@@ -333,6 +386,25 @@ class Software extends AbstractInventoryAsset
         $this->integer(count($softs))->isIdenticalTo(2);
         $versions = $version->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->integer(count($versions))->isIdenticalTo(2);
+
+        //check that sofware still exist but with different softwarecategories
+        $criteria = [
+            'FROM' => \Software::getTable(),
+            'LEFT JOIN' => [
+                \SoftwareCategory::getTable() => [
+                    'ON' => [
+                        \Software::getTable() => 'softwarecategories_id',
+                        \SoftwareCategory::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                \Software::getTable() . ".name" => "gimp",
+                \SoftwareCategory::getTable() . ".name" => "Web App"
+            ]
+        ];
+        $iterator = $DB->request($criteria);
+        $this->integer(count($iterator))->isIdenticalTo(1);
 
        //we now have 1 softwareversion items linked to the computer
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

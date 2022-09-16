@@ -237,13 +237,18 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         $this->output->writeln('<comment>' . __('Checking database schema integrity...') . '</comment>');
 
         $current_version   = GLPI_SCHEMA_VERSION;
-        // Normalize versions: remove @sha suffix and stability flags
-        $install_version_normalized = VersionParser::getNormalizedVersion(preg_replace('/@.+$/', '', $installed_version), false);
-        $current_version_normalized = VersionParser::getNormalizedVersion(preg_replace('/@.+$/', '', $current_version), false);
+        $install_version_nohash = preg_replace('/@.+$/', '', $installed_version);
+        $current_version_nohash = preg_replace('/@.+$/', '', $current_version);
 
         if (
-            $install_version_normalized === $current_version_normalized
-            && $installed_version !== $current_version
+            // source version is unstable version (e.g. upgrade from 10.0.3-dev)
+            !VersionParser::isStableRelease($install_version_nohash)
+            // or source and target versions are the same, but with a different schema hash
+            // (e.g. upgrade from 10.0.2@xxx to 10.0.2@yyy)
+            || (
+                $install_version_nohash === $current_version_nohash
+                && $installed_version !== $current_version
+            )
         ) {
             $msg = sprintf(
                 __('Database schema integrity check skipped as database was installed using an intermediate unstable version (%s).'),
@@ -253,7 +258,11 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             return;
         }
 
-        $schema_file = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $install_version_normalized);
+        $schema_file = sprintf(
+            '%s/install/mysql/glpi-%s-empty.sql',
+            GLPI_ROOT,
+            VersionParser::getNormalizedVersion($install_version_nohash, false)
+        );
         if (!file_exists($schema_file)) {
             $msg = sprintf(
                 __('Database schema integrity check skipped as version "%s" is not supported by checking process.'),
@@ -271,7 +280,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             $error = sprintf(__('Database integrity check failed with error (%s).'), $e->getMessage());
         }
         if (count($differences) > 0) {
-            $error = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_normalized)
+            $error = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_nohash)
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to view found differences.'), 'glpi:database:check_schema_integrity');
         }

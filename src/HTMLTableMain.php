@@ -61,6 +61,8 @@
 /// @since 0.84
 class HTMLTableMain extends HTMLTableBase
 {
+    private $title;
+
     private $groups    = [];
     private $itemtypes = [];
 
@@ -70,6 +72,42 @@ class HTMLTableMain extends HTMLTableBase
         parent::__construct(true);
     }
 
+
+    public function __get(string $property)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'title':
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        switch ($property) {
+            case 'title':
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
 
     /**
      * We can define a global name for the table : this will print as header that colspan all columns

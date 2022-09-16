@@ -122,13 +122,19 @@
 
 {% macro sliderField(name, value, label = '', options = {}) %}
    {% if options.fields_template.isMandatoryField(name) %}
-      {% set options = {'required': true}|merge(options) %}
+      {% set options = {
+         'required': true
+      }|merge(options) %}
    {% endif %}
+   {% set options = {
+      'no_value': 0,
+      'yes_value': 1,
+   }|merge(options) %}
 
    {% set field %}
       <label class="form-check form-switch pt-2">
-         <input type="hidden"   name="{{ name }}" value="0" />
-         <input type="checkbox" name="{{ name }}" value="1" class="form-check-input" id="%id%"
+         <input type="hidden"   name="{{ name }}" value="{{ options.no_value }}" />
+         <input type="checkbox" name="{{ name }}" value="{{ options.yes_value }}" class="form-check-input" id="%id%"
                 {{ value == 1 ? 'checked' : '' }}
                 {{ options.readonly ? 'readonly' : '' }}
                 {{ options.required ? 'required' : '' }}
@@ -723,7 +729,9 @@
       'locked_fields': [],
    }|merge(options) %}
 
-   {% if name in options.locked_fields %}
+   {% if options.locked_fields[name] is defined %}
+      {% set options = options|merge({'locked': true, 'locked_value': options.locked_fields[name]}) %}
+   {% elseif name in options.locked_fields %}
       {% set options = options|merge({'locked': true}) %}
    {% endif %}
 
@@ -878,7 +886,8 @@
 
 {% macro label(label, id, options = {}, class = 'form-label') %}
     {% set options = {
-        locked: false
+        locked: false,
+        locked_value: null
     }|merge(options) %}
 
    {% set required_mark = '' %}
@@ -899,8 +908,12 @@
    {% set locked_mark = '' %}
    {% if options.locked %}
       {% set locked_mark %}
+        {% set locked_title %}{{ __('Field will not be updated from inventory') }}{% endset %}
+        {% if options.locked_value is not empty %}
+            {% set locked_title %}{{ locked_title }} - {{ __('Last inventory value was:') ~ ' ' ~ options.locked_value }}{% endset %}
+        {% endif %}
         <i class="ti ti-lock"
-           title="{{ __('Field will not be updated from inventory') }}"
+           title="{{ locked_title }}"
            data-bs-toggle="tooltip"></i>
       {% endset %}
    {% endif %}

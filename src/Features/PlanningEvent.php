@@ -35,13 +35,13 @@
 
 namespace Glpi\Features;
 
-use CommonDBVisible;
 use CommonITILTask;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Dropdown;
 use Entity;
+use ExtraVisibilityCriteria;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Group_User;
@@ -61,19 +61,19 @@ trait PlanningEvent
 {
     public function post_getEmpty()
     {
-        if (isset($this->fields["users_id"])) {
+        if ($this->isField("users_id")) {
             $this->fields["users_id"] = Session::getLoginUserID();
         }
 
-        if (isset($this->field['rrule'])) {
-            $this->field['rrule'] = json_decode($this->field['rrule'], true);
+        if ($this->isField('rrule')) {
+            $this->fields['rrule'] = [];
         }
 
-        if (isset($this->fields['is_recursive'])) {
+        if ($this->isField('is_recursive')) {
             $this->fields['is_recursive'] = 1;
         }
 
-        if (isset($this->fields['users_id_guests'])) {
+        if ($this->isField('users_id_guests')) {
             $this->fields['users_id_guests'] = [];
         }
 
@@ -354,7 +354,7 @@ trait PlanningEvent
        // avoid checking availability, will be done after when updating new dates
         $fields['_no_check_plan'] = true;
 
-        $instance = new self();
+        $instance = new static();
         $new_id = $instance->add($fields);
         $instance->getFromDB($new_id);
 
@@ -396,7 +396,7 @@ trait PlanningEvent
         $event_obj = new static();
         $itemtype  = $event_obj->getType();
         $item_fk   = getForeignKeyFieldForItemType($itemtype);
-        $table     = self::getTable();
+        $table     = static::getTable();
         $has_bg    = $DB->fieldExists($table, 'background');
 
         if (
@@ -415,8 +415,8 @@ trait PlanningEvent
             $_SESSION["glpiactiveprofile"][static::$rightname] = READ;
         }
         $visibility_criteria = [];
-        if ($event_obj instanceof CommonDBVisible) {
-            $visibility_criteria = self::getVisibilityCriteria(true);
+        if ($event_obj instanceof ExtraVisibilityCriteria) {
+            $visibility_criteria = $event_obj::getVisibilityCriteria(true);
         }
         $nreadpub  = [];
         $nreadpriv = [];
@@ -425,7 +425,7 @@ trait PlanningEvent
         if (
             !$options['genical']
             && (Session::getLoginUserID() !== false && $who == Session::getLoginUserID())
-            && self::canView()
+            && static::canView()
             && isset($visibility_criteria['WHERE'])
         ) {
             $nreadpub = $visibility_criteria['WHERE'];
@@ -560,7 +560,7 @@ trait PlanningEvent
                     $url = (!$options['genical'])
                     ? $event_obj->getFormURLWithID($data['id'])
                     : $CFG_GLPI["url_base"] .
-                    self::getFormURLWithID($data['id'], false);
+                    static::getFormURLWithID($data['id'], false);
 
                     $is_rrule = isset($data['rrule']) && strlen($data['rrule']) > 0;
 
@@ -603,7 +603,7 @@ trait PlanningEvent
                         $event      = $events[$key];
                         $duration   = strtotime($event['end']) - strtotime($event['begin']);
 
-                        $rset = self::getRsetFromRRuleField($event['rrule'], $event['begin']);
+                        $rset = static::getRsetFromRRuleField($event['rrule'], $event['begin']);
 
                        // - rrule object doesn't any duration property,
                        //   so we remove the duration from the begin part of the range
@@ -670,7 +670,7 @@ trait PlanningEvent
         }
 
         $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" . $img . "' alt='' title=\"" .
-             self::getTypeName(1) . "\">&nbsp;";
+             static::getTypeName(1) . "\">&nbsp;";
         $html .= "<a id='reminder_" . $val[$item_fk] . $rand . "' href='" .
              Reminder::getFormURLWithID($val[$item_fk]) . "'>";
 
@@ -882,6 +882,7 @@ trait PlanningEvent
 
             return $out;
         }
+        return '';
     }
 
     /**
@@ -934,17 +935,17 @@ trait PlanningEvent
         $tab = [
             [
                 'id'            => 'common',
-                'name'          => self::GetTypeName()
+                'name'          => static::getTypeName()
             ], [
                 'id'            => '1',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'name',
                 'name'          => __('Name'),
                 'datatype'      => 'itemlink',
                 'massiveaction' => false,
             ], [
                 'id'            => '2',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'id',
                 'name'          => __('ID'),
                 'massiveaction' => false,
@@ -957,7 +958,7 @@ trait PlanningEvent
                 'datatype'      => 'dropdown'
             ], [
                 'id'            => '3',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'state',
                 'name'          => __('Status'),
                 'datatype'      => 'specific',
@@ -980,26 +981,26 @@ trait PlanningEvent
                 'datatype'      => 'dropdown'
             ], [
                 'id'            => '6',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'background',
                 'name'          => __('Background event'),
                 'datatype'      => 'bool'
             ], [
                 'id'            => '10',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'rrule',
                 'name'          => __('Repeat'),
                 'datatype'      => 'text'
             ], [
                 'id'            => '19',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'date_mod',
                 'name'          => __('Last update'),
                 'datatype'      => 'datetime',
                 'massiveaction' => false
             ], [
                 'id'            => '121',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'date_creation',
                 'name'          => __('Creation date'),
                 'datatype'      => 'datetime',
@@ -1014,7 +1015,7 @@ trait PlanningEvent
         if (isset($this->fields['is_recursive'])) {
             $tab[] = [
                 'id'            => 86,
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'is_recursive',
                 'name'          => __('Child entities'),
                 'datatype'      => 'bool'
@@ -1035,7 +1036,7 @@ trait PlanningEvent
         if (isset($this->fields['users_id_guests'])) {
             $tab[] = [
                 'id'            => '12',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'users_id_guests',
                 'name'          => __('Guests'),
                 'datatype'      => 'text',
@@ -1045,7 +1046,7 @@ trait PlanningEvent
         if (isset($this->fields['begin'])) {
             $tab[] = [
                 'id'            => '8',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'begin',
                 'name'          => __('Planning start date'),
                 'datatype'      => 'datetime'
@@ -1055,7 +1056,7 @@ trait PlanningEvent
         if (isset($this->fields['end'])) {
             $tab[] = [
                 'id'            => '9',
-                'table'         => self::getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'end',
                 'name'          => __('Planning end date'),
                 'datatype'      => 'datetime'

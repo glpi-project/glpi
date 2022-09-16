@@ -261,7 +261,12 @@ class Inventory
             $schema = $converter->buildSchema();
 
             $properties = array_keys((array)$schema->properties->content->properties);
-            unset($properties['versionclient'], $properties['versionprovider']); //already handled in extractMetadata
+            $properties = array_filter(
+                $properties,
+                function ($property_name) {
+                    return !in_array($property_name, ['versionclient', 'versionprovider']); //already handled in extractMetadata
+                }
+            );
             if (method_exists($this, 'getSchemaExtraProps')) {
                 $properties = array_merge(
                     $properties,
@@ -452,8 +457,7 @@ class Inventory
 
     public static function getMenuContent()
     {
-        // Require config update permission globally
-        if (!Session::haveRight('config', UPDATE)) {
+        if (!Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
             return false;
         }
 

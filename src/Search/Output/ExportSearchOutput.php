@@ -309,12 +309,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
         }
 
         // Create title
-        $title = '';
-        if (
-            is_a(static::class, PDFSearchOutput::class, true)
-        ) {
-            $title = static::computeTitle($data);
-        }
+        $title = static::computeTitle($data);
 
         // Display footer (close table)
         echo static::showFooter($title, $data['data']['count']);
@@ -331,6 +326,11 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
     }
 
     public static function showError($message = ''): string
+    {
+        return '';
+    }
+
+    protected static function computeTitle(array $data): string
     {
         return '';
     }

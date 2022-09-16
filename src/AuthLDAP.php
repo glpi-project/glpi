@@ -2458,19 +2458,12 @@ class AuthLDAP extends CommonDBTM
                 }
             }
 
-            if ($order == 'DESC') {
-                function local_cmp($b, $a)
-                {
-                    return strcasecmp($a['cn'], $b['cn']);
+            usort(
+                $groups,
+                function ($a, $b) use ($order) {
+                    return $order == 'DESC' ? strcasecmp($b['cn'], $a['cn']) : strcasecmp($a['cn'], $b['cn']);
                 }
-
-            } else {
-                function local_cmp($a, $b)
-                {
-                    return strcasecmp($a['cn'], $b['cn']);
-                }
-            }
-            usort($groups, 'local_cmp');
+            );
         }
         return $groups;
     }
@@ -2874,9 +2867,8 @@ class AuthLDAP extends CommonDBTM
                 ErrorHandler::getInstance()->handleException($e);
                 return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
 

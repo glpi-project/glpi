@@ -190,6 +190,7 @@ class Datacenter extends CommonDBTM
                 ]
             ];
         }
+        return false;
     }
 
 

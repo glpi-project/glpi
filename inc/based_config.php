@@ -34,7 +34,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
+    define('GLPI_ROOT', dirname(__FILE__, 2));
 }
 
 // Notice problem  for date function :
@@ -82,6 +82,11 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_USE_IDOR_CHECK'            => '1',
         'GLPI_IDOR_EXPIRES'              => '7200',
         'GLPI_ALLOW_IFRAME_IN_RICH_TEXT' => false,
+        'GLPI_SERVERSIDE_URL_ALLOWLIST'  => [
+            // allowlist (regex format) of URL that can be fetched from server side (used for RSS feeds and external calendars, among others)
+            // URL will be considered as safe as long as it matches at least one entry of the allowlist
+            '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // only accept http/https/feed protocols, and reject presence of @ (username) and : (protocol) in host part of URL
+        ],
 
       // Constants related to GLPI Project / GLPI Network external services
         'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
@@ -128,7 +133,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
    // This logic is quiet simple and is not made to handle chain inheritance.
     $inherit_pattern = '/\{(?<name>GLPI_[\w]+)\}/';
     foreach ($constants as $key => $value) {
-        if (!defined($key) && !preg_match($inherit_pattern, $value)) {
+        if (!defined($key) && (!is_string($value) || !preg_match($inherit_pattern, $value))) {
             define($key, $value);
         }
     }

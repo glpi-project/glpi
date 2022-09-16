@@ -162,6 +162,7 @@ class Planning extends CommonGLPI
                 ]
             ];
         }
+        return false;
     }
 
 
@@ -1002,7 +1003,13 @@ class Planning extends CommonGLPI
             echo "<i class='actor_icon fa fa-fw fa-$icon'></i>";
         }
 
-        echo "<label for='$filter_key'>$title</label>";
+        echo "<label for='$filter_key'>";
+        echo $title;
+        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($filter_data['url'])) {
+            $warning = sprintf(__s('URL "%s" is not allowed by your administrator.'), $filter_data['url']);
+            echo "<i class='fas fa-exclamation-triangle' title='{$warning}'></i>";
+        }
+        echo "</label>";
 
         $color = self::$palette_bg[$params['filter_color_index']];
         if (isset($filter_data['color']) && !empty($filter_data['color'])) {
@@ -1395,6 +1402,15 @@ class Planning extends CommonGLPI
      */
     public static function sendAddExternalForm($params = [])
     {
+        if (!Toolbox::isUrlSafe($params['url'])) {
+            Session::addMessageAfterRedirect(
+                sprintf(__('URL "%s" is not allowed by your administrator.'), $params['url']),
+                false,
+                ERROR
+            );
+            return;
+        }
+
         $_SESSION['glpi_plannings']['plannings']['external_' . md5($params['url'])] = [
             'color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
             'display' => true,
@@ -2385,6 +2401,8 @@ class Planning extends CommonGLPI
                 }
             }
         }
+
+        return false;
     }
 
     /**
@@ -2496,7 +2514,7 @@ class Planning extends CommonGLPI
      * @param $whogroup        group ID
      * @param $limititemtype   itemtype only display this itemtype (default '')
      *
-     * @return icalendar string
+     * @return void Outputs ical contents
      **/
     public static function generateIcal($who, $whogroup, $limititemtype = '')
     {
@@ -2506,7 +2524,7 @@ class Planning extends CommonGLPI
             ($who === 0)
             && ($whogroup === 0)
         ) {
-            return false;
+            return;
         }
 
         if (!empty($CFG_GLPI["version"])) {

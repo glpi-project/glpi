@@ -33,7 +33,7 @@
 
 <div class="firstbloc">
    {% if rss_feed.error is defined and rss_feed.error is not null %}
-      {{ __('Error retrieving RSS feed') }}
+      {{ rss_feed.error }}
    {% endif %}
    <table class="table table-striped table-hover">
       <thead>

@@ -35,7 +35,7 @@
 
 namespace Glpi\Console;
 
-use DB;
+use DBmysql;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
 use Symfony\Component\Console\Command\Command;
@@ -48,7 +48,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
     /**
-     * @var DB
+     * @var DBmysql
      */
     protected $db;
 
@@ -97,7 +97,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
 
         global $DB;
 
-        if ($this->requires_db && (!($DB instanceof DB) || !$DB->connected)) {
+        if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {
             throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to connect to database.'));
         }
 
@@ -194,7 +194,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
 
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
-            $db instanceof \DBmysql && $db->connected ? $db : null
+            $db instanceof DBmysql && $db->connected ? $db : null
         );
         if ($core_requirements->hasMissingOptionalRequirements()) {
             $message = __('Some optional system requirements are missing.')

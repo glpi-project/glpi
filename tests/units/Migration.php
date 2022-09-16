@@ -1103,4 +1103,82 @@ class Migration extends \GLPITestCase
             "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=100&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
         ]);
     }
+
+    public function testUpdateRight()
+    {
+        global $DB;
+
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'testright1', 'testright2', 'testright3'
+            ]
+        ]);
+
+        //Test updating a UPDATE right when profile has READ and UPDATE config right (Default)
+        $this->output(
+            function () {
+                $this->migration->updateRight('testright1', READ);
+            }
+        )->isEqualTo('Rights has been updated for testright1, you should review ACLs after update');
+
+        $right1 = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright1',
+                'rights' => READ
+            ]
+        ]);
+        $this->integer(count($right1))->isEqualTo(1);
+
+        //Test updating a READ right when profile has UPDATE group right
+        $this->output(
+            function () {
+                $this->migration->updateRight('testright2', READ, ['group' => UPDATE]);
+            }
+        )->isEqualTo('Rights has been updated for testright2, you should review ACLs after update');
+
+        $right1 = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright2',
+                'rights' => READ
+            ]
+        ]);
+        $this->integer(count($right1))->isEqualTo(2);
+
+        //Test updating an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
+        $this->output(
+            function () {
+                $this->migration->updateRight('testright2', UPDATE, [
+                    'group'  => READ | UPDATE,
+                    'entity' => CREATE
+                ]);
+            }
+        )->isEqualTo('Rights has been updated for testright2, you should review ACLs after update');
+
+        $right1 = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright2',
+                'rights' => UPDATE
+            ]
+        ]);
+        $this->integer(count($right1))->isEqualTo(1);
+
+        //Test updating a READ right when profile with no requirements
+        $this->output(
+            function () {
+                $this->migration->updateRight('testright3', READ, []);
+            }
+        )->isEqualTo('Rights has been updated for testright3, you should review ACLs after update');
+
+        $right1 = $DB->request([
+            'FROM' => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'testright3',
+                'rights' => READ
+            ]
+        ]);
+        $this->integer(count($right1))->isEqualTo(8);
+    }
 }

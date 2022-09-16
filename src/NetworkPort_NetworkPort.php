@@ -184,8 +184,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     {
         $opposite_id = $this->getOppositeContact($ports_id);
         if ($opposite_id && $this->getFromDBForNetworkPort($opposite_id) || $this->getFromDBForNetworkPort($ports_id)) {
-            $this->delete($this->fields);
+            return $this->delete($this->fields);
         }
+        return true; // Nothing to disconnect
     }
 
     /**

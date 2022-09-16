@@ -571,7 +571,11 @@ class Html
         }
 
         if (!empty($params)) {
-            $dest .= '&' . $params;
+            if (str_contains('?', $dest)) {
+                $dest .= '&' . $params;
+            } else {
+                $dest .= '?' . $params;
+            }
         }
 
         self::redirect($dest);
@@ -1023,7 +1027,7 @@ class Html
      *                    - percent   current level
      *
      *
-     * @return void
+     * @return string|void Generated HTML if `display` param is true, void otherwise.
      **/
     public static function progressBar($id, array $options = [])
     {
@@ -1564,7 +1568,7 @@ HTML;
                             if (is_array($val)) {
                                 foreach ($val as $k => $object) {
                                     $menu[$key]['types'][] = $object;
-                                    if (method_exists($object, 'getIcon')) {
+                                    if (empty($menu[$key]['icon']) && method_exists($object, 'getIcon')) {
                                         $menu[$key]['icon']    = $object::getIcon();
                                     }
                                 }
@@ -3598,7 +3602,9 @@ JS;
      *      - add_now, boolean to precise if we need to add to dates array, an entry for now time
      *        (with now class)
      *
-     * @return array of posible values
+     * @return void|string
+     *    void if option display=true
+     *    string if option display=false (HTML code)
      *
      * @see self::showGenericDateTimeSearch()
      **/
@@ -3914,8 +3920,10 @@ JS;
 
             // init editor
             tinyMCE.init(Object.assign({
+               link_default_target: '_blank',
                branding: false,
                selector: '#{$id}',
+               text_patterns: false,
 
                plugins: {$pluginsjs},
 
@@ -4858,7 +4866,6 @@ JAVASCRIPT
             'display_emptychoice' => false,
             'specific_tags'       => [],
             'parent_id_field'     => null,
-            'multiple'            => false,
         ];
         $params = array_merge($default_options, $params);
 
@@ -6511,10 +6518,13 @@ HTML;
     {
         global $CFG_GLPI;
 
+        // prevent leak of data for non logged sessions
+        $full = $full && (Session::getLoginUserID(true) !== false);
+
         $cfg_glpi = "var CFG_GLPI  = {
-         'url_base': '" . (isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '') . "',
-         'root_doc': '" . $CFG_GLPI["root_doc"] . "',
-      };";
+            'url_base': '" . (isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '') . "',
+            'root_doc': '" . $CFG_GLPI["root_doc"] . "',
+        };";
 
         if ($full) {
             $debug = (isset($_SESSION['glpi_use_mode'])
@@ -6529,9 +6539,9 @@ HTML;
         $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
 
         return self::scriptBlock("
-         $cfg_glpi
-         $plugins_path
-      ");
+            $cfg_glpi
+            $plugins_path
+        ");
     }
 
     /**

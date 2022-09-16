@@ -4040,6 +4040,14 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
+        $html_output = in_array(
+            \Search::$output_type,
+            [
+                \Search::HTML_OUTPUT,
+                \Search::GLOBAL_SEARCH, // For a global search, output will be done in HTML context
+            ]
+        );
+
         if (isset($so["table"])) {
             $table     = $so["table"];
             $field     = $so["field"];
@@ -4722,7 +4730,7 @@ final class SQLProvider implements SearchProviderInterface
                     return "";
 
                 case 'glpi_ticketsatisfactions.satisfaction':
-                    if (\Search::$output_type == \Search::HTML_OUTPUT) {
+                    if ($html_output) {
                         return \TicketSatisfaction::displaySatisfaction($data[$ID][0]['name']);
                     }
                     break;
@@ -4743,20 +4751,20 @@ final class SQLProvider implements SearchProviderInterface
                     return \Cartridge::getCount(
                         $data["id"],
                         $data[$ID][0]['alarm_threshold'],
-                        \Search::$output_type != \Search::HTML_OUTPUT
+                        !$html_output
                     );
 
                 case 'glpi_printers._virtual':
                     return \Cartridge::getCountForPrinter(
                         $data["id"],
-                        \Search::$output_type != \Search::HTML_OUTPUT
+                        !$html_output
                     );
 
                 case 'glpi_consumableitems._virtual':
                     return \Consumable::getCount(
                         $data["id"],
                         $data[$ID][0]['alarm_threshold'],
-                        \Search::$output_type != \Search::HTML_OUTPUT
+                        !$html_output
                     );
 
                 case 'glpi_links._virtual':
@@ -4962,7 +4970,7 @@ final class SQLProvider implements SearchProviderInterface
 
                             $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, \Search::$output_type == \Search::HTML_OUTPUT);
 
-                            if (\Search::$output_type == \Search::HTML_OUTPUT && (\Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
+                            if ($html_output && (\Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                                 $rand = mt_rand();
                                 $popup_params = [
                                     'display'       => false,

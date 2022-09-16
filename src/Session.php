@@ -218,9 +218,7 @@ class Session
     {
 
         if (session_status() === PHP_SESSION_NONE) {
-           // Force session to use cookies and prevent JS scripts to access to them
-            ini_set('session.cookie_httponly', '1');
-            ini_set('session.use_only_cookies', '1');
+            ini_set('session.use_only_cookies', '1'); // Force session to use cookies
 
             session_name("glpi_" . md5(realpath(GLPI_ROOT)));
 

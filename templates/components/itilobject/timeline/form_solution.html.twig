@@ -46,10 +46,12 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content">
-         {{ entry_i['content']|enhanced_html({
-            'user_mentions': true,
-            'images_gallery': true
-         }) }}
+         <div class= "rich_text_container">
+            {{ entry_i['content']|enhanced_html({
+               'user_mentions': true,
+               'images_gallery': true
+            }) }}
+         </div>
 
          <div class="timeline-badges">
             {% if entry_i['solutiontypes_id'] %}
@@ -186,12 +188,13 @@
                         {% endset %}
                         {{ fields.sliderField(
                            'kb_linked_id',
-                           kb_id_toload,
+                           1,
                            link_kb_lbl,
                            {
                               'full_width': true,
                               'icon_label': true,
                               'rand': rand,
+                              'yes_value': kb_id_toload,
                            }
                         ) }}
                      {% endif %}

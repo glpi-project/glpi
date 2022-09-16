@@ -78,9 +78,18 @@ if (isset($itemtype)) {
             return;
         }
     }
-    if (in_array($action, ['update', 'add_teammember', 'delete_teammember', 'load_item_panel'])) {
+    if (in_array($action, ['update', 'load_item_panel', 'delete_teammember'])) {
         $item->getFromDB($_REQUEST['items_id']);
         if (!$item->canUpdateItem()) {
+            // Missing rights
+            http_response_code(403);
+            return;
+        }
+    }
+    if (in_array($action, ['add_teammember'])) {
+        $item->getFromDB($_REQUEST['items_id']);
+        $can_assign = method_exists($item, 'canAssign') ? $item->canAssign() : $item->canUpdateItem();
+        if (!$can_assign) {
            // Missing rights
             http_response_code(403);
             return;

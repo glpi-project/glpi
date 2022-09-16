@@ -1755,7 +1755,7 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4375);
+        $this->integer(count($logs))->isIdenticalTo(4443);
 
         $expected_types_count = [
             0 => 3, //Agent version, disks usage
@@ -1764,7 +1764,7 @@ class Inventory extends InventoryTestCase
             \Log::HISTORY_ADD_SUBITEM => 3243,//network port/name, ip address, VMs, Software
             \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, software updates
             \Log::HISTORY_DELETE_SUBITEM => 99,//networkport and networkname, Software?
-            \Log::HISTORY_CREATE_ITEM => 197, //virtual machines, os, manufacturer, net ports, net names, ...
+            \Log::HISTORY_CREATE_ITEM => 265, //virtual machines, os, manufacturer, net ports, net names, software category ...
             \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
         ];
 
@@ -1792,7 +1792,7 @@ class Inventory extends InventoryTestCase
         $mlogs = new \RuleMatchedLog();
         $found = $mlogs->find(['NOT' => ['id' => array_keys($mrules_found)]]);
         $mrules_criteria['WHERE'] = ['NOT' => [\RuleMatchedLog::getTable() . '.id' => array_keys($mrules_found)]];
-        $this->array($found)->hasSize(5);
+        $this->array($found)->hasSize(3);
 
         $monitor_criteria = $mrules_criteria;
         $monitor_criteria['WHERE'][] = ['itemtype' => \Monitor::getType()];
@@ -1805,7 +1805,7 @@ class Inventory extends InventoryTestCase
         $computer_criteria['WHERE'][] = ['itemtype' => \Computer::getType()];
         $iterator = $DB->request($computer_criteria);
 
-        $this->integer(count($iterator))->isIdenticalTo(4);
+        $this->integer(count($iterator))->isIdenticalTo(2);
         foreach ($iterator as $rmlog) {
             $this->string($rmlog['name'])->isIdenticalTo('Computer update (by serial + uuid)');
             $this->integer($rmlog['items_id'])->isIdenticalTo($agent['items_id']);
@@ -2148,7 +2148,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $iterator = $DB->request($unmanaged_criteria);
         $this->integer(count($iterator))->isIdenticalTo(5);
         foreach ($iterator as $unmanaged) {
-            $this->string($unmanaged['name'])->isIdenticalTo('Device import (by ip+ifdescr)');
+            $this->string($unmanaged['name'])->isIdenticalTo('Global import (by ip+ifdescr)');
             $this->string($unmanaged['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
         }
     }
@@ -3688,7 +3688,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $iterator = $DB->request($unmanaged_criteria);
         $this->integer(count($iterator))->isIdenticalTo(count($unmanageds));
         foreach ($iterator as $unmanaged) {
-            $this->string($unmanaged['name'])->isIdenticalTo('Device import (by ip+ifdescr)');
+            $this->string($unmanaged['name'])->isIdenticalTo('Global import (by ip+ifdescr)');
             $this->string($unmanaged['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
         }
     }
@@ -3999,10 +3999,9 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
     public function testImportRefusedFromAssetRules()
     {
-
         $rule = new \Rule();
 
-       //prepares needed rules id
+        //prepares needed rules id
         $this->boolean(
             $rule->getFromDBByCrit(['name' => 'Computer constraint (name)'])
         )->isTrue();
@@ -4490,6 +4489,96 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ->string['ram']->isIdenticalTo('4096')
             ->string['uuid']->isIdenticalTo('487dfdb542a4bfb23670b8d4e76d8b6886c2ed35')
         ;
+    }
+
+    public function testRuleRefuseImportVirtualMachines()
+    {
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+
+        $count_vms = count($json->content->virtualmachines);
+        $this->integer($count_vms)->isIdenticalTo(6);
+
+        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_computers = countElementsInTable(\Computer::getTable());
+
+        //change config to import vms as computers
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
+        $this->logout();
+
+        //IMPORT rule to refuse "db" virtual machine
+        $criteria = [
+            [
+                'condition' => 0,
+                'criteria'  => 'itemtype',
+                'pattern'   => 'Computer',
+            ], [
+                'condition' => \RuleImportAsset::PATTERN_IS,
+                'criteria'  => 'name',
+                'pattern'   => 'db'
+            ]
+        ];
+        $action = [
+            'action_type' => 'assign',
+            'field'       => '_ignore_import',
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT
+        ];
+        $rule = new \RuleImportAsset();
+        $collection = new \RuleImportAssetCollection();
+        $rulecriteria = new \RuleCriteria();
+
+        $input = [
+            'is_active' => 1,
+            'name'      => 'Refuse one VM creation',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportAsset',
+        ];
+
+        $rules_id = $rule->add($input);
+        $this->integer($rules_id)->isGreaterThan(0);
+        $this->boolean($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE))->isTrue();
+
+        // Add criteria
+        foreach ($criteria as $crit) {
+            $input = [
+                'rules_id'  => $rules_id,
+                'criteria'  => $crit['criteria'],
+                'pattern'   => $crit['pattern'],
+                'condition' => $crit['condition'],
+            ];
+            $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
+        }
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => $action['action_type'],
+            'field'       => $action['field'],
+            'value'       => $action['value'],
+        ];
+        $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+        $inventory = $this->doInventory($json);
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(4)
+            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory');
+
+        global $DB;
+
+        //check created vms
+        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($count_vms);
+
+        //check we add main computer and one computer per vm
+        //one does not have an uuid, so no computer is created.
+        ++$nb_computers;
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 2);
     }
 
     public function testImportDatabases()

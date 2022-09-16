@@ -130,6 +130,7 @@ class Notepad extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         static::showForItem($item, $withtemplate);
+        return true;
     }
 
 

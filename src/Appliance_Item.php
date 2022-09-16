@@ -78,6 +78,8 @@ class Appliance_Item extends CommonDBRelation
             }
             return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb);
         }
+
+        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

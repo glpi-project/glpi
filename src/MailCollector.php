@@ -124,9 +124,15 @@ class MailCollector extends CommonDBTM
     {
 
         if (static::canView()) {
-            $options['options']['notimportedemail']['links']['search']
-                                          = '/front/notimportedemail.php';
-            return $options;
+            return [
+                'options' => [
+                    'notimportedemail' => [
+                        'links' => [
+                            'search' => '/front/notimportedemail.php',
+                        ],
+                    ],
+                ],
+            ];
         }
         return false;
     }

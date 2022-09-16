@@ -757,7 +757,7 @@ class Infocom extends CommonDBChild
      * @param $itemtype   integer  item type
      * @param $device_id  integer  item ID
      *
-     * @return float
+     * @return void
      **/
     public static function showDisplayLink($itemtype, $device_id)
     {
@@ -767,7 +767,7 @@ class Infocom extends CommonDBChild
             !Session::haveRight(self::$rightname, READ)
             || !($item = getItemForItemtype($itemtype))
         ) {
-            return false;
+            return;
         }
 
         $result = $DB->request([
@@ -785,7 +785,7 @@ class Infocom extends CommonDBChild
             $add  = "";
             $text = _x('button', 'Show');
         } else if (!Infocom::canUpdate()) {
-            return false;
+            return;
         }
 
         if ($item->canView()) {

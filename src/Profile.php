@@ -3456,7 +3456,7 @@ class Profile extends CommonDBTM
      * @param $itemtype   string   itemtype
      * @param $interface  string   (default 'central')
      *
-     * @return rights
+     * @return array
      **/
     public static function getRightsFor($itemtype, $interface = 'central')
     {
@@ -3465,6 +3465,8 @@ class Profile extends CommonDBTM
             $item = new $itemtype();
             return $item->getRights($interface);
         }
+
+        return [];
     }
 
 
@@ -3624,7 +3626,7 @@ class Profile extends CommonDBTM
      *             'display'
      *             'check_method'  method used to check the right
      *
-     * @return content if !display
+     * @return string|void Return generated content if `display` parameter is true.
      **/
     public static function getLinearRightChoice(array $elements, array $options = [])
     {

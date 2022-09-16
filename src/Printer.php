@@ -767,7 +767,7 @@ class Printer extends CommonDBTM
             'WHERE'  => [
                 'manufacturers_id'   => $manufacturer_id,
                 'name'               => $name,
-            ] + getEntitiesRestrictCriteria(self::getTable, 'entities_id', $entity, true)
+            ] + getEntitiesRestrictCriteria(self::getTable(), 'entities_id', $entity, true)
         ]);
 
         if ($printer = $iterator->current()) {

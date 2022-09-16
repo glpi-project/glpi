@@ -131,7 +131,7 @@ class TemplateRenderer
         static $instance = null;
 
         if ($instance === null) {
-            $instance = new static();
+            $instance = new self();
         }
 
         return $instance;

@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Conf;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
 
@@ -3943,7 +3944,7 @@ $empty_data_builder = new class
                 'notifications_id' => '63',
             ], [
                 'id' => '129',
-                'items_id' => '23',
+                'items_id' => '9',
                 'type' => '1',
                 'notifications_id' => '64',
             ], [
@@ -7776,11 +7777,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'inventory',
-                'rights' => READ,
+                'rights' => READ | Conf::IMPORTFROMFILE | Conf::UPDATECONFIG,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'inventory',
-                'rights' => READ,
+                'rights' => READ | Conf::IMPORTFROMFILE | Conf::UPDATECONFIG,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'inventory',

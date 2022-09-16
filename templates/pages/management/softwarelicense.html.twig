@@ -102,4 +102,8 @@
    {{ fields.datetimeField('expire', item.fields['expire'], __('Expiration'), {
       'helper': __('On search engine, use "Expiration contains NULL" to search licenses with no expiration date')
    }) }}
+
+   {% if params['withtemplate'] == 1 %}
+      {{ fields.hiddenField('withtemplate', '1') }}
+   {% endif %}
 {% endblock %}

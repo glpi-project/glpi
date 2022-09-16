@@ -45,7 +45,7 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content {{ entry_i['state'] is constant('Planning::DONE') ? 'done' : '' }}">
-         <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
+         <div class="rich_text_container text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
               title="{{ entry_i['content']|html_to_text }}" data-bs-toggle="tooltip">
             {{ entry_i['content']|enhanced_html({
                'user_mentions': true,
@@ -268,12 +268,13 @@
                         {% endset %}
                         {{ fields.sliderField(
                            'kb_linked_id',
-                           kb_id_toload,
+                           1,
                            link_kb_lbl,
                            {
                               'full_width': true,
                               'icon_label': true,
                               'rand': rand,
+                              'yes_value': kb_id_toload,
                            }
                         ) }}
                      {% endif %}

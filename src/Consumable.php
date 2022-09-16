@@ -501,6 +501,7 @@ class Consumable extends CommonDBChild
         } else if (self::isOld($cID)) {
             return _nx('consumable', 'Used', 'Used', 1);
         }
+        return '';
     }
 
 
@@ -862,8 +863,9 @@ class Consumable extends CommonDBChild
                 self::showAddForm($item);
                 self::showForConsumableItem($item);
                 self::showForConsumableItem($item, 1);
-                return true;
+                break;
         }
+        return true;
     }
 
     public function getRights($interface = 'central')

@@ -829,8 +829,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         foreach ($iterator as $data) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $this->fields = $data;
-                $search_data = $this->execute(false, $enable_partial_warnings);
-
                 $count = null;
                 try {
                     $search_data = $this->execute(false, $enable_partial_warnings);
@@ -1257,6 +1255,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $this->getField('itemtype'),
                     $params
                 );
+                // force saved search ID to indicate to Search to save execution time
+                $data['search']['savedsearches_id'] = $this->getID();
                 $data['search']['sort'] = [];
                 $search->constructSQL($data);
                 $search->constructData($data, true);

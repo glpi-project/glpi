@@ -1665,10 +1665,21 @@ class Ticket extends CommonITILObject
         if (
             isset($input['check_delegatee'], $input['_users_id_requester'])
             && $input['check_delegatee']
-            && !self::canDelegateeCreateTicket($input['_users_id_requester'], ($input['entities_id'] ?? -2))
         ) {
-            Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
-            return false;
+            $requesters_ids = is_array($input['_users_id_requester'])
+                ? $input['_users_id_requester']
+                : [$input['_users_id_requester']];
+            $can_delegatee_create_ticket = false;
+            foreach ($requesters_ids as $requester_id) {
+                if (self::canDelegateeCreateTicket($requester_id, ($input['entities_id'] ?? -2))) {
+                    $can_delegatee_create_ticket = true;
+                    break;
+                }
+            }
+            if (!$can_delegatee_create_ticket) {
+                Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
+                return false;
+            }
         }
 
         if (!isset($input["requesttypes_id"])) {
@@ -3740,6 +3751,7 @@ JAVASCRIPT;
             '_tag_filename'             => [],
             '_tasktemplates_id'         => []
         ];
+        $options = [];
 
        // Get default values from posted values on reload form
         if (!$ticket_template) {
@@ -3754,11 +3766,7 @@ JAVASCRIPT;
             $options['name'] = str_replace($order, $replace, $options['name']);
         }
 
-        // Restore saved value or override with page parameter
-        $options['_saved'] = $this->restoreInput();
-
-        // Restore saved values and override $this->fields
-        $this->restoreSavedValues($options['_saved']);
+        $this->restoreInputAndDefaults($ID, $options, $default_values, true);
 
        // Check category / type validity
         if ($options['itilcategories_id']) {
@@ -3808,6 +3816,7 @@ JAVASCRIPT;
             'selfservice'             => true,
             'item'                    => $this,
             'params'                  => $options,
+            'entities_id'             => $options['entities_id'],
             'itiltemplate_key'        => self::getTemplateFormFieldName(),
             'itiltemplate'            => $tt,
             'delegating'              => $delegating,
@@ -3955,7 +3964,7 @@ JAVASCRIPT;
             'priority'                  => self::computePriority(3, 3),
             'requesttypes_id'           => $requesttype,
             'actiontime'                => 0,
-            'date'                      => null,
+            'date'                      => 'NULL',
             'entities_id'               => $entity,
             'status'                    => self::INCOMING,
             'followup'                  => [],
@@ -4000,23 +4009,7 @@ JAVASCRIPT;
             $options['entities_id'] = $item->fields['entities_id'];
         }
 
-        $default_values = self::getDefaultValues();
-
-        // Restore saved value or override with page parameter
-        $options['_saved'] = $this->restoreInput();
-
-        // Restore saved values and override $this->fields
-        $this->restoreSavedValues($options['_saved']);
-
-        foreach ($default_values as $name => $value) {
-            if (!isset($options[$name])) {
-                if (isset($options['_saved'][$name])) {
-                    $options[$name] = $options['_saved'][$name];
-                } else {
-                    $options[$name] = $value;
-                }
-            }
-        }
+        $this->restoreInputAndDefaults($ID, $options, null, true);
 
         if (isset($options['content'])) {
             $order              = ["\\'", '\\"', "\\\\"];
@@ -4168,7 +4161,7 @@ JAVASCRIPT;
         );
 
         // override current fields in options with template fields and return the array of these predefined fields
-        $predefined_fields = $this->setPredefinedFields($tt, $options, $default_values);
+        $predefined_fields = $this->setPredefinedFields($tt, $options, self::getDefaultValues());
 
         // check right used for this ticket
         $canupdate     = !$ID

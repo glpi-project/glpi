@@ -579,9 +579,12 @@ class NetworkPort extends CommonDBChild
      * @param integer $ID ID of the port
      *
      * @return boolean true on success
+     *
+     * @FIXME Deprecate this method in GLPI 10.1, it is not used.
      **/
     public function resetConnections($ID)
     {
+        return false;
     }
 
 
@@ -1748,8 +1751,8 @@ class NetworkPort extends CommonDBChild
             || ($item->getType() == 'NetworkPort')
         ) {
             self::showForItem($item, $withtemplate);
-            return true;
         }
+        return true;
     }
 
 

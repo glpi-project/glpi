@@ -39,6 +39,76 @@
 abstract class CommonDBVisible extends CommonDBTM
 {
     /**
+     * Entities on which item is visible.
+     * Keys are ID, values are DB fields values.
+     * @var array
+     */
+    protected $entities = [];
+
+    /**
+     * Groups for whom item is visible.
+     * Keys are ID, values are DB fields values.
+     * @var array
+     */
+    protected $groups = [];
+
+    /**
+     * Profiles for whom item is visible.
+     * Keys are ID, values are DB fields values.
+     * @var array
+     */
+    protected $profiles = [];
+
+    /**
+     * Users for whom item is visible.
+     * Keys are ID, values are DB fields values.
+     * @var array
+     */
+    protected $users = [];
+
+    public function __get(string $property)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'entities':
+            case 'groups':
+            case 'profiles':
+            case 'users':
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        switch ($property) {
+            case 'entities':
+            case 'groups':
+            case 'profiles':
+            case 'users':
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
+
+    /**
      * Is the login user have access to item based on visibility configuration
      *
      * @since 0.83

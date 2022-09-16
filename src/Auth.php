@@ -1843,12 +1843,25 @@ class Auth extends CommonGLPI
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');
         $cookie_secure   = (bool)ini_get('session.cookie_secure');
+        $cookie_httponly = (bool)ini_get('session.cookie_httponly');
+        $cookie_samesite = ini_get('session.cookie_samesite');
 
         if (empty($cookie_value) && !isset($_COOKIE[$cookie_name])) {
             return;
         }
 
-        setcookie($cookie_name, $cookie_value, $cookie_lifetime, $cookie_path, $cookie_domain, $cookie_secure, true);
+        setcookie(
+            $cookie_name,
+            $cookie_value,
+            [
+                'expires'  => $cookie_lifetime,
+                'path'     => $cookie_path,
+                'domain'   => $cookie_domain,
+                'secure'   => $cookie_secure,
+                'httponly' => $cookie_httponly,
+                'samesite' => $cookie_samesite,
+            ]
+        );
 
         if (empty($cookie_value)) {
             unset($_COOKIE[$cookie_name]);

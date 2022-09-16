@@ -36,7 +36,7 @@
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
-class NotificationEventMailing extends NotificationEventAbstract implements NotificationEventInterface
+class NotificationEventMailing extends NotificationEventAbstract
 {
     public static function getTargetFieldName()
     {
@@ -261,10 +261,10 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                             if (!in_array($docID, $inline_docs)) {
                                 $doc->getFromDB($docID);
 
-                             //find width
+                                //find width
                                 $width = null;
                                 if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $wmatches)) {
-                                      $width = intval($wmatches[1]);
+                                    $width = intval($wmatches[1]);
                                 }
                                 $height = null;
                                 if (preg_match("/height=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $hmatches)) {

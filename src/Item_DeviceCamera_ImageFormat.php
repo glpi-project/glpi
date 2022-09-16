@@ -67,6 +67,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showItems($item, $withtemplate);
+        return true;
     }
 
     public function getForbiddenStandardMassiveAction()

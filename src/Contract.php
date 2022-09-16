@@ -851,7 +851,7 @@ class Contract extends CommonDBTM
      *
      * @param bool $display if false, return html
      *
-     * @return void
+     * @return string|void Return generated content if `display` parameter is true.
      **/
     public static function showCentral(bool $display = true)
     {

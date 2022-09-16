@@ -1687,16 +1687,24 @@ class DBmysql
     {
         if (!$savepoint) {
             $this->in_transaction = false;
-            $this->dbh->rollback();
+            return $this->dbh->rollback();
         } else {
-            $this->rollbackTo($savepoint);
+            return $this->rollbackTo($savepoint);
         }
     }
 
+    /**
+     * Rollbacks a transaction to a specified savepoint
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
     protected function rollbackTo($name)
     {
-       // No proper rollback to savepoint support in mysqli extension?
-        $this->query('ROLLBACK TO ' . self::quoteName($name));
+        // No proper rollback to savepoint support in mysqli extension?
+        $result = $this->query('ROLLBACK TO ' . self::quoteName($name));
+        return $result !== false;
     }
 
     /**

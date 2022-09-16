@@ -212,6 +212,7 @@ class CommonGLPI implements CommonGLPIInterface
         if (static::$rightname) {
             return Session::haveRight(static::$rightname, UPDATE);
         }
+        return false;
     }
 
 
@@ -444,22 +445,22 @@ class CommonGLPI implements CommonGLPIInterface
         $menu       = [];
 
         $type       = static::getType();
-        $item       = new $type();
-        $forbidden  = $type::getForbiddenActionsForMenu();
+        $item       = new static();
+        $forbidden  = $item->getForbiddenActionsForMenu();
 
         if ($item instanceof CommonDBTM) {
-            if ($type::canView()) {
-                $menu['title']           = static::getMenuName();
-                $menu['shortcut']        = static::getMenuShorcut();
-                $menu['page']            = static::getSearchURL(false);
-                $menu['links']['search'] = static::getSearchURL(false);
+            if ($item->canView()) {
+                $menu['title']           = $item->getMenuName();
+                $menu['shortcut']        = $item->getMenuShorcut();
+                $menu['page']            = $item->getSearchURL(false);
+                $menu['links']['search'] = $item->getSearchURL(false);
                 $menu['links']['lists']  = "";
-                $menu['lists_itemtype']  = static::getType();
-                $menu['icon']            = static::getIcon();
+                $menu['lists_itemtype']  = $item->getType();
+                $menu['icon']            = $item->getIcon();
 
                 if (
                     !in_array('add', $forbidden)
-                    && $type::canCreate()
+                    && $item->canCreate()
                 ) {
                     if ($item->maybeTemplate()) {
                         $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
@@ -469,11 +470,11 @@ class CommonGLPI implements CommonGLPIInterface
                                                   '&add=0';
                         }
                     } else {
-                        $menu['links']['add'] = static::getFormURL(false);
+                        $menu['links']['add'] = $item->getFormURL(false);
                     }
                 }
 
-                $extra_links = static::getAdditionalMenuLinks();
+                $extra_links = $item->getAdditionalMenuLinks();
                 if (is_array($extra_links) && count($extra_links)) {
                     $menu['links'] += $extra_links;
                 }
@@ -483,19 +484,19 @@ class CommonGLPI implements CommonGLPIInterface
                 !method_exists($type, 'canView')
                 || $item->canView()
             ) {
-                $menu['title']           = static::getMenuName();
-                $menu['shortcut']        = static::getMenuShorcut();
-                $menu['page']            = static::getSearchURL(false);
-                $menu['links']['search'] = static::getSearchURL(false);
+                $menu['title']           = $item->getMenuName();
+                $menu['shortcut']        = $item->getMenuShorcut();
+                $menu['page']            = $item->getSearchURL(false);
+                $menu['links']['search'] = $item->getSearchURL(false);
                 if (method_exists($item, 'getIcon')) {
-                    $menu['icon'] = static::getIcon();
+                    $menu['icon'] = $item->getIcon();
                 }
             }
         }
-        if ($data = static::getAdditionalMenuOptions()) {
+        if ($data = $item->getAdditionalMenuOptions()) {
             $menu['options'] = $data;
         }
-        if ($data = static::getAdditionalMenuContent()) {
+        if ($data = $item->getAdditionalMenuContent()) {
             $newmenu = [
                 strtolower($type) => $menu,
             ];
@@ -544,7 +545,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array of additional options
+     * @return array|false array of additional options, false if no options
      **/
     public static function getAdditionalMenuOptions()
     {
@@ -1049,7 +1050,7 @@ class CommonGLPI implements CommonGLPIInterface
 
             echo "</div>";
 
-            if (static::$showTitleInNavigationHeader) {
+            if (static::$showTitleInNavigationHeader && $this instanceof CommonDBTM) {
                 echo "<h3 class='navigationheader-title strong d-flex align-items-center'>";
                 if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
                     echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
@@ -1123,6 +1124,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @since 0.85
      *
      * @param array $options Options
+     *                       show_nav_header (default true): show navigation header (link to list of items)
      *
      * @return void
      */
@@ -1133,7 +1135,8 @@ class CommonGLPI implements CommonGLPIInterface
         unset($options['loaded']);
         if (!$item_loaded) {
             if (
-                isset($options['id'])
+                $this instanceof CommonDBTM
+                && isset($options['id'])
                 && !$this->isNewID($options['id'])
             ) {
                 if (!$this->getFromDB($options['id'])) {
@@ -1171,7 +1174,9 @@ class CommonGLPI implements CommonGLPIInterface
             ]);
         }
         echo "<div class='col'>";
-        $this->showNavigationHeader($options);
+        if (($options['show_nav_header'] ?? true)) {
+            $this->showNavigationHeader($options);
+        }
         $this->showTabsContent($options);
         echo "</div>";
         echo "</div>";
@@ -1189,6 +1194,10 @@ class CommonGLPI implements CommonGLPIInterface
 
         if (method_exists($this, 'showDebug')) {
             $this->showDebug();
+        }
+
+        if (!($this instanceof CommonDBTM)) {
+            return;
         }
 
         $class = $this->getType();
@@ -1430,7 +1439,7 @@ class CommonGLPI implements CommonGLPIInterface
     public function getErrorMessage($error, $object = '')
     {
 
-        if (empty($object)) {
+        if (empty($object) && $this instanceof CommonDBTM) {
             $object = $this->getLink();
         }
         switch ($error) {
@@ -1449,6 +1458,8 @@ class CommonGLPI implements CommonGLPIInterface
             case ERROR_ALREADY_DEFINED:
                 return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
         }
+
+        return '';
     }
 
     /**
@@ -1457,6 +1468,10 @@ class CommonGLPI implements CommonGLPIInterface
     public function getKBLinks()
     {
         global $CFG_GLPI, $DB;
+
+        if (!($this instanceof CommonDBTM)) {
+            return '';
+        }
 
         $ret = '';
         $title = __s('FAQ');

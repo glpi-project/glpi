@@ -354,6 +354,40 @@ abstract class CommonITILObject extends CommonDBTM
         return $actors;
     }
 
+    /**
+     * Restores input, restores saved values, then sets the default options for any that are missing.
+     * @param integer $ID The item ID
+     * @param array $options ITIL Object options array passed to showFormXXXX functions. This is passed by reference and will be modified by this function.
+     * @param ?array $overriden_defaults If specified, these values will be used as the defaults instead of the ones from the {@link getDefaultValues()} function.
+     * @param bool $force_set_defaults If true, the defaults are set for missing options even if the item is not new.
+     * @return void
+     * @see getDefaultOptions()
+     * @see restoreInput()
+     * @see restoreSavedValues()
+     */
+    protected function restoreInputAndDefaults($ID, array &$options, ?array $overriden_defaults = null, bool $force_set_defaults = false): void
+    {
+        $default_values = $overriden_defaults ?? static::getDefaultValues();
+
+        // Restore saved value or override with page parameter
+        $options['_saved'] = $this->restoreInput();
+
+        // Restore saved values and override $this->fields
+        $this->restoreSavedValues($options['_saved']);
+
+        // Set default options
+        if ($force_set_defaults || static::isNewID($ID)) {
+            foreach ($default_values as $key => $val) {
+                if (!isset($options[$key])) {
+                    if (isset($options['_saved'][$key])) {
+                        $options[$key] = $options['_saved'][$key];
+                    } else {
+                        $options[$key] = $val;
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * @param $ID
@@ -365,28 +399,7 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
 
-        $default_values = static::getDefaultValues();
-
-        // Restore saved value or override with page parameter
-        $options['_saved'] = $this->restoreInput();
-
-        // Restore saved values and override $this->fields
-        $this->restoreSavedValues($options['_saved']);
-
-        // Set default options
-        if (!$ID) {
-            foreach ($default_values as $key => $val) {
-                if (!isset($options[$key])) {
-                    if (isset($options['_saved'][$key])) {
-                        $options[$key] = $options['_saved'][$key];
-                    } else {
-                        $options[$key] = $val;
-                    }
-                }
-            }
-        }
-
-        $this->initForm($ID, $options);
+        $this->restoreInputAndDefaults($ID, $options);
 
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
 
@@ -423,7 +436,8 @@ abstract class CommonITILObject extends CommonDBTM
             ($ID ? $this->fields['entities_id'] : $options['entities_id'])
         );
 
-        $predefined_fields = $this->setPredefinedFields($tt, $options, $default_values);
+        $predefined_fields = $this->setPredefinedFields($tt, $options, static::getDefaultValues());
+        $this->initForm($this->fields['id'], $options);
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                    => $this,
@@ -483,8 +497,16 @@ abstract class CommonITILObject extends CommonDBTM
             if (isset($options['tickets_id'])) {
                 //page is reloaded on category change, we only want category on the very first load
                 $category = new ITILCategory();
-                $category->getFromDB($ticket->fields['itilcategories_id']);
-                $options['itilcategories_id'] = $category->fields['is_change'] ? $ticket->fields['itilcategories_id'] : 0;
+                $options['itilcategories_id'] = 0;
+                if (
+                    $category->getFromDB($ticket->fields['itilcategories_id'])
+                    && (
+                        ($this->getType() === Change::class && $category->fields['is_change'])
+                        || ($this->getType() === Problem::class && $category->fields['is_problem'])
+                    )
+                ) {
+                    $options['itilcategories_id'] = $ticket->fields['itilcategories_id'];
+                }
             }
             $options['time_to_resolve']     = $ticket->fields['time_to_resolve'];
             $options['entities_id']         = $ticket->fields['entities_id'];
@@ -2702,7 +2724,7 @@ abstract class CommonITILObject extends CommonDBTM
     private function checkFieldsConsistency(array $input): bool
     {
         if (
-            array_key_exists('date', $input) && !empty($input['date'])
+            array_key_exists('date', $input) && !empty($input['date']) && $input['date'] != 'NULL'
             && (!is_string($input['date']) || !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $input['date']))
         ) {
             Session::addMessageAfterRedirect(__('Incorrect value for date field.'), false, ERROR);
@@ -2729,7 +2751,7 @@ abstract class CommonITILObject extends CommonDBTM
             $input["status"] = self::INCOMING;
         }
 
-        if (!isset($input["date"]) || empty($input["date"])) {
+        if (!isset($input["date"]) || empty($input["date"]) || $input["date"] == 'NULL') {
             $input["date"] = $_SESSION["glpi_currenttime"];
         }
 
@@ -2971,8 +2993,8 @@ abstract class CommonITILObject extends CommonDBTM
             $active_priorities = [];
             foreach ($urgencies as $urgency) {
                 foreach ($impacts as $impact) {
-                    if (isset($CFG_GLPI["_matrix_${urgency}_${impact}"])) {
-                        $active_priorities[] = $CFG_GLPI["_matrix_${urgency}_${impact}"];
+                    if (isset($CFG_GLPI["_matrix_{$urgency}_{$impact}"])) {
+                        $active_priorities[] = $CFG_GLPI["_matrix_{$urgency}_{$impact}"];
                     }
                 }
             }
@@ -7370,12 +7392,6 @@ abstract class CommonITILObject extends CommonDBTM
         return $this;
     }
 
-
-    /**
-     * @see CommonGLPI::getAdditionalMenuOptions()
-     *
-     * @since 0.85
-     **/
     public static function getAdditionalMenuOptions()
     {
         $tplclass = self::getTemplateClass();
@@ -8788,12 +8804,7 @@ abstract class CommonITILObject extends CommonDBTM
         $WHERE += getEntitiesRestrictCriteria();
 
         $request = [
-            'SELECT' => [
-                $itil_table . '.id',
-                $itil_table . '.name',
-                $itil_table . '.content',
-                $itil_table . '.status',
-            ],
+            'SELECT' => [$itil_table . '.id'],
             'FROM'   => $itil_table,
             'WHERE'  => $WHERE
         ];
@@ -8802,8 +8813,16 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($iterator as $data) {
             // Create a fake item to get just the actors without loading all other information about items.
             $temp_item = new static();
-            $temp_item->fields['id'] = $data['id'];
-            $temp_item->loadActors();
+            $temp_item->getFromDB($data['id']);
+            $data = [
+                'id'      => $temp_item->fields['id'],
+                'name'    => $temp_item->fields['name'],
+                'content' => $temp_item->fields['content'],
+                'status'  => $temp_item->fields['status'],
+            ];
+            if (!$temp_item->canViewItem()) {
+                continue;
+            }
 
             // Build team member data
             $supported_teamtypes = [
@@ -8864,7 +8883,7 @@ abstract class CommonITILObject extends CommonDBTM
             } else {
                 $data['_steps'] = [];
             }
-            $data['_readonly'] = false;
+            $data['_readonly'] = !static::canUpdate() || !$temp_item->canUpdateItem();
             $items[$data['id']] = $data;
         }
 
@@ -9002,27 +9021,26 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $supported_itemtypes = [];
-        if (static::canCreate()) {
-            $supported_itemtypes[static::class] = [
-                'name' => static::getTypeName(1),
-                'icon' => static::getIcon(),
-                'fields' => [
-                    'name'   => [
-                        'placeholder'  => __('Name')
-                    ],
-                    'content'   => [
-                        'placeholder'  => __('Content'),
-                        'type'         => 'textarea'
-                    ],
-                    'users_id'  => [
-                        'type'         => 'hidden',
-                        'value'        => $_SESSION['glpiID']
-                    ]
+        $supported_itemtypes[static::class] = [
+            'name' => static::getTypeName(1),
+            'icon' => static::getIcon(),
+            'fields' => [
+                'name'   => [
+                    'placeholder'  => __('Name')
                 ],
-                'team_itemtypes'  => static::getTeamItemtypes(),
-                'team_roles'      => $team_roles,
-            ];
-        }
+                'content'   => [
+                    'placeholder'  => __('Content'),
+                    'type'         => 'textarea'
+                ],
+                'users_id'  => [
+                    'type'         => 'hidden',
+                    'value'        => $_SESSION['glpiID']
+                ]
+            ],
+            'team_itemtypes'  => static::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
+            'allow_create'    => static::canCreate(),
+        ];
         $column_field = [
             'id' => 'status',
             'extra_fields' => []

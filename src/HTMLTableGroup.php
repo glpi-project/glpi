@@ -41,6 +41,7 @@ class HTMLTableGroup extends HTMLTableBase
     private $name;
     private $content;
     private $new_headers = [];
+    private $ordered_headers;
     private $table;
     private $rows = [];
 
@@ -57,6 +58,43 @@ class HTMLTableGroup extends HTMLTableBase
         $this->table      = $table;
         $this->name       = $name;
         $this->content    = $content;
+    }
+
+
+    public function __get(string $property)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'ordered_headers':
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        switch ($property) {
+            case 'ordered_headers':
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
     }
 
 
@@ -79,7 +117,7 @@ class HTMLTableGroup extends HTMLTableBase
     {
 
         $header_name    = '';
-        $subHeader_name = '';
+        $subheader_name = '';
         $header->getHeaderAndSubHeaderName($header_name, $subheader_name);
         try {
             $subheaders = $this->getHeaders($header_name);
@@ -97,37 +135,14 @@ class HTMLTableGroup extends HTMLTableBase
     public function tryAddHeader()
     {
 
-        if (isset($this->ordered_headers)) {
+        if ($this->ordered_headers !== null) {
             throw new \Exception('Implementation error: must define all headers before any row');
-        }
-    }
-
-
-    private function completeHeaders()
-    {
-
-        if (!isset($this->ordered_headers)) {
-            $this->ordered_headers = [];
-
-            foreach ($this->table->getHeaderOrder() as $header_name) {
-                $header        = $this->table->getSuperHeaderByName($header_name);
-                $header_names  = $this->getHeaderOrder($header_name);
-                if (!$header_names) {
-                    $this->ordered_headers[] = $header;
-                } else {
-                    foreach ($header_names as $sub_header_name) {
-                        $this->ordered_headers[] = $this->getHeaderByName($header_name, $sub_header_name);
-                    }
-                }
-            }
         }
     }
 
 
     public function createRow()
     {
-
-       //$this->completeHeaders();
         $new_row      = new HTMLTableRow($this);
         $this->rows[] = $new_row;
         return $new_row;

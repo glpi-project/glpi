@@ -2263,7 +2263,7 @@ class Dropdown
      * @param integer $value  default value (default 0)
      * @param array   $options
      *
-     * @return string|integer HTML output, or random part of dropdown ID.
+     * @return void
      **/
     public static function showFrequency($name, $value = 0, $options = [])
     {
@@ -3972,6 +3972,8 @@ class Dropdown
 
     public static function getDropdownActors($post, $json = true)
     {
+        global $CFG_GLPI;
+
         if (!Session::validateIDOR($post)) {
             return;
         }
@@ -3988,6 +3990,7 @@ class Dropdown
             'itiltemplate_class' => 'TicketTemplate',
             'itiltemplates_id'   => 0,
             'returned_itemtypes' => ['User', 'Group', 'Supplier'],
+            'page_limit'         => $CFG_GLPI['dropdown_max'],
         ];
         $post = array_merge($defaults, $post);
 
@@ -4118,11 +4121,20 @@ class Dropdown
         ]);
 
         $results = $hook_results['actors'] ?? [];
+        $total_results = count($results);
+
+        $start = ($post['page'] - 1) * $post['page_limit'];
+        $results = array_slice($results, $start, $post['page_limit']);
 
         $return = [
             'results' => $results,
             'count'   => count($results),
         ];
+        if ($total_results > count($results)) {
+            $return['pagination'] = [
+                'more' => true,
+            ];
+        }
 
         return ($json === true)
          ? json_encode($return)

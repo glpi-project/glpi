@@ -55,7 +55,7 @@ class Lockedfield extends DbTestCase
 
         $lockedfield = new \Lockedfield();
         $this->boolean($lockedfield->isHandled($computer))->isTrue();
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isEmpty();
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isEmpty();
 
         //update computer manually, to add a locked field
         $this->boolean(
@@ -63,7 +63,7 @@ class Lockedfield extends DbTestCase
         )->isTrue();
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure new dynamic update does not override otherserial again
         $this->boolean(
@@ -76,7 +76,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['otherserial'])->isEqualTo('AZERTY');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
@@ -89,7 +89,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure regular update do work on locked field
         $this->boolean(
@@ -113,7 +113,7 @@ class Lockedfield extends DbTestCase
 
         $lockedfield = new \Lockedfield();
         $this->boolean($lockedfield->isHandled($computer))->isTrue();
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isEmpty();
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isEmpty();
 
         //add a global lock on otherserial field
         $this->integer(
@@ -123,7 +123,7 @@ class Lockedfield extends DbTestCase
         )->isGreaterThan(0);
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure new dynamic update does not override otherserial again
         $this->boolean(
@@ -136,7 +136,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['otherserial'])->isEqualTo('789012');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
@@ -149,7 +149,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure regular update do work on locked field
         $this->boolean(
@@ -187,7 +187,7 @@ class Lockedfield extends DbTestCase
         $this->variable($computer->fields['otherserial'])->isEqualTo('');
 
         $this->boolean($lockedfield->isHandled($computer))->isTrue();
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure new dynamic update does not override otherserial again
         $this->boolean(
@@ -200,7 +200,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['otherserial'])->isEqualTo('');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
@@ -213,7 +213,7 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
-        $this->array($lockedfield->getLocks($computer->getType(), $cid))->isIdenticalTo(['otherserial']);
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
 
         //ensure regular update do work on locked field
         $this->boolean(
@@ -378,8 +378,7 @@ class Lockedfield extends DbTestCase
                 'id_dynamic' => true
             ])
         )->isTrue();
-        $this->array($lockedfield->getLocks($printer->getType(), $printers_id))->isIdenticalTo(['locations_id']);
-
+        $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => null]);
 
         //Replay, with a location
         $xml = "<?xml version=\"1.0\"?>
@@ -422,6 +421,8 @@ class Lockedfield extends DbTestCase
 
         //ensure no new location has been added
         $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
+
+        $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => 'Greffe Charron']);
     }
 
     public function testNoLocationGlobal()
@@ -498,5 +499,107 @@ class Lockedfield extends DbTestCase
 
         //ensure no new location has been added
         $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
+    }
+
+    public function testLockedDdValue()
+    {
+        global $DB;
+
+        //Play, with a location
+        $xml = "<?xml version=\"1.0\"?>
+<REQUEST><CONTENT><DEVICE>
+      <INFO>
+        <COMMENTS>Brother NC-6800h, Firmware Ver.1.01  (08.12.12),MID 84UB03</COMMENTS>
+        <ID>1907</ID>
+        <IPS>
+          <IP>10.75.230.125</IP>
+        </IPS>
+        <LOCATION>Greffe Charron</LOCATION>
+        <MAC>00:1b:a9:12:11:f2</MAC>
+        <MANUFACTURER>Brother</MANUFACTURER>
+        <MEMORY>32</MEMORY>
+        <MODEL>Brother HL-5350DN series</MODEL>
+        <NAME>CE75I09008</NAME>
+        <RAM>32</RAM>
+        <SERIAL>D9J230159</SERIAL>
+        <TYPE>PRINTER</TYPE>
+        <UPTIME>14 days, 22:48:33.30</UPTIME>
+      </INFO>
+    </DEVICE>
+  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
+";
+
+        $existing_locations = countElementsInTable(\Location::getTable());
+        $lockedfield = new \Lockedfield();
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check matchedlogs
+        $criteria = [
+            'FROM' => \RuleMatchedLog::getTable(),
+            'LEFT JOIN' => [
+                \Rule::getTable() => [
+                    'ON' => [
+                        \RuleMatchedLog::getTable() => 'rules_id',
+                        \Rule::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => []
+        ];
+        $iterator = $DB->request($criteria);
+        $this->string($iterator->current()['name'])->isIdenticalTo('Printer import (by serial)');
+
+        $printers_id = $inventory->getItem()->fields['id'];
+        $this->integer($printers_id)->isGreaterThan(0);
+
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+        $this->integer($printer->fields['locations_id'])->isGreaterThan(0);
+
+        //ensure new location has been added
+        ++$existing_locations;
+        $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
+
+        //manually update to lock locations_id field
+        $locations_id = getItemByTypeName('Location', '_location02', true);
+        $this->boolean(
+            $printer->update([
+                'id' => $printers_id,
+                'locations_id' => $locations_id,
+                'id_dynamic' => true
+            ])
+        )->isTrue();
+        $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => null]);
+
+        //Replay, with a location, to ensure location has not been updated, and locked value is correct.
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+        $this->integer($printer->fields['locations_id'])->isEqualTo($locations_id);
+
+        //ensure no new location has been added
+        $this->integer(countElementsInTable(\Location::getTable()))->isIdenticalTo($existing_locations);
+
+        $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => 'Greffe Charron']);
     }
 }

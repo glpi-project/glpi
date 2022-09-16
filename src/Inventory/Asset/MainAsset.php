@@ -40,9 +40,12 @@ use Auth;
 use Blacklist;
 use CommonDBTM;
 use Dropdown;
+use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Lockedfield;
+use NetworkEquipment;
+use Printer;
 use RefusedEquipment;
 use RuleImportAssetCollection;
 use RuleImportEntityCollection;
@@ -643,15 +646,8 @@ abstract class MainAsset extends InventoryAsset
         $_SESSION['glpiactiveentities_string'] = $entities_id;
         $_SESSION['glpiactive_entity']         = $entities_id;
 
-        //locked fields
-        $lockedfield = new Lockedfield();
-        $locks = $lockedfield->getLocks($this->item->getType(), $items_id);
-        foreach ($this->data as &$data) {
-            foreach ($locks as $lock) {
-                if (property_exists($data, $lock)) {
-                    unset($data->$lock);
-                }
-            }
+        if ($items_id != 0) {
+            $this->item->getFromDB($items_id);
         }
 
         //handleLinks relies on $this->data; update it before the call
@@ -663,8 +659,6 @@ abstract class MainAsset extends InventoryAsset
             unset($input['firmware']);
             $items_id = $this->item->add(Toolbox::addslashes_deep($input));
             $this->setNew();
-        } else {
-            $this->item->getFromDB($items_id);
         }
 
         if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
@@ -707,17 +701,27 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if ($this->is_discovery === true && !$this->isNew()) {
-            //prevents discoveries to remove all ports, IPs and so on found with network inventory
-            //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
-            $input = $this->handleInput($val);
-            $this->item->update(['id' => $input['id'],
-                'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
-                'last_inventory_update' => $input['last_inventory_update'],
-                'snmpcredentials_id'    => $input['snmpcredentials_id'],
-                'is_dynamic'            => true
-            ]);
-
-            return;
+            //if NetworkEquipement
+            //Or printer that has not changed its IP
+            //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
+            if (
+                $itemtype == NetworkEquipment::getType()
+                ||
+                (
+                $itemtype == Printer::getType()
+                && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
+                )
+            ) {
+                //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
+                $input = $this->handleInput($val);
+                $this->item->update(['id' => $input['id'],
+                    'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
+                    'last_inventory_update' => $input['last_inventory_update'],
+                    'snmpcredentials_id'    => $input['snmpcredentials_id'],
+                    'is_dynamic'            => true
+                ]);
+                return;
+            }
         }
 
         //Ports are handled a different way on network equipments

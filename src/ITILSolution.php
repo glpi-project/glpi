@@ -62,7 +62,7 @@ class ITILSolution extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->isNewItem()) {
-            return;
+            return '';
         }
         if ($item->maySolve()) {
             $nb    = 0;
@@ -72,6 +72,7 @@ class ITILSolution extends CommonDBChild
             }
             return self::createTabEntry($title, $nb);
         }
+        return '';
     }
 
     public static function canView()
@@ -241,8 +242,8 @@ class ITILSolution extends CommonDBChild
                 Entity::CONFIG_NEVER
             );
 
-           // 0 = immediatly
-            if ($autoclosedelay != 0) {
+           // 0  or ticket status CLOSED = immediately
+            if ($autoclosedelay != 0 && $this->item->fields["status"] != $this->item::CLOSED) {
                 $status = CommonITILValidation::WAITING;
             }
         }
@@ -309,8 +310,8 @@ class ITILSolution extends CommonDBChild
                     Entity::CONFIG_NEVER
                 );
 
-                // 0 = immediatly
-                if ($autoclosedelay == 0) {
+                // 0 = immediately or ticket status CLOSED force status
+                if ($autoclosedelay == 0 || $this->item->fields["status"] == $this->item::CLOSED) {
                      $status = $item::CLOSED;
                 }
             }

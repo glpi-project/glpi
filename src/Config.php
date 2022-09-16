@@ -233,7 +233,7 @@ class Config extends CommonDBTM
 
             for ($urgency = 1; $urgency <= 5; $urgency++) {
                 for ($impact = 1; $impact <= 5; $impact++) {
-                    $priority               = $input["_matrix_${urgency}_${impact}"];
+                    $priority               = $input["_matrix_{$urgency}_{$impact}"];
                     $tab[$urgency][$impact] = $priority;
                 }
             }
@@ -243,11 +243,11 @@ class Config extends CommonDBTM
             $input['impact_mask']     = 0;
 
             for ($i = 1; $i <= 5; $i++) {
-                if ($input["_urgency_${i}"]) {
+                if ($input["_urgency_{$i}"]) {
                     $input['urgency_mask'] += (1 << $i);
                 }
 
-                if ($input["_impact_${i}"]) {
+                if ($input["_impact_{$i}"]) {
                     $input['impact_mask'] += (1 << $i);
                 }
             }
@@ -1062,7 +1062,7 @@ class Config extends CommonDBTM
                 echo "<input type='hidden' name='_impact_3' value='1'>";
             } else {
                 $isimpact[$impact] = (($CFG_GLPI['impact_mask'] & (1 << $impact)) > 0);
-                Dropdown::showYesNo("_impact_${impact}", $isimpact[$impact]);
+                Dropdown::showYesNo("_impact_{$impact}", $isimpact[$impact]);
             }
             echo "</td>";
         }
@@ -1087,7 +1087,7 @@ class Config extends CommonDBTM
                 echo "<input type='hidden' name='_urgency_3' value='1'>";
             } else {
                 $isurgency[$urgency] = (($CFG_GLPI['urgency_mask'] & (1 << $urgency)) > 0);
-                Dropdown::showYesNo("_urgency_${urgency}", $isurgency[$urgency]);
+                Dropdown::showYesNo("_urgency_{$urgency}", $isurgency[$urgency]);
             }
             echo "</td>";
 
@@ -1103,12 +1103,12 @@ class Config extends CommonDBTM
                     echo "<td class='center' bgcolor='$bgcolor'>";
                     Ticket::dropdownPriority([
                         'value' => $pri,
-                        'name'  => "_matrix_${urgency}_${impact}",
+                        'name'  => "_matrix_{$urgency}_{$impact}",
                         'enable_filtering' => false,
                     ]);
                     echo "</td>";
                 } else {
-                    echo "<td><input type='hidden' name='_matrix_${urgency}_${impact}' value='$pri'>
+                    echo "<td><input type='hidden' name='_matrix_{$urgency}_{$impact}' value='$pri'>
                      </td>";
                 }
             }
@@ -2411,6 +2411,10 @@ HTML;
                 'check' => 'array_is_list'
             ],
             [
+                'name'  => 'symfony/polyfill-php82',
+                'check' => 'Symfony\\Polyfill\\Php82\\SensitiveParameterValue'
+            ],
+            [
                 'name' => 'egulias/email-validator',
                 'check' => 'Egulias\\EmailValidator\\EmailValidator'
             ],
@@ -2854,10 +2858,6 @@ HTML;
                 ],
                 'simplexml' => [
                     'required'  => true,
-                ],
-                'xml'        => [
-                    'required'  => true,
-                    'function'  => 'utf8_decode'
                 ],
             //to sync/connect from LDAP
                 'ldap'       => [

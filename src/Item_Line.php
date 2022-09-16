@@ -68,6 +68,7 @@ class Item_Line extends CommonDBRelation
         } else {
             self::showLinesForItem($item, $withtemplate);
         }
+        return true;
     }
 
     public function getForbiddenStandardMassiveAction()
