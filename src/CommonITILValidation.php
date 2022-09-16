@@ -431,7 +431,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
 
         $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
-        if (isset($input["status"]) && static::canValidate($this->fields[static::$items_id]) ) {
+        if (isset($input["status"]) && static::canValidate($this->fields[static::$items_id])) {
             if (
                 ($input["status"] == self::REFUSED)
                 && (!isset($input["comment_validation"])
@@ -451,8 +451,14 @@ abstract class CommonITILValidation extends CommonDBChild
                 $input["validation_date"] = $_SESSION["glpi_currenttime"];
             }
 
-            array_push($forbid_fields, 'users_id', 'itemtype_target', 'items_id_target',
-                'comment_submission', 'submission_date');
+            array_push(
+                $forbid_fields,
+                'users_id',
+                'itemtype_target',
+                'items_id_target',
+                'comment_submission',
+                'submission_date'
+            );
         } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
             array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
         }
