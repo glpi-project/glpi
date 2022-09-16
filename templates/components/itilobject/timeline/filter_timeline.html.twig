@@ -81,10 +81,10 @@
    }) %}
 {% endif %}
 
-<div class="filter-timeline d-none d-md-block float-end mt-n2 position-relative">
+<div class="filter-timeline float-end position-relative">
    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Timeline filter') }}">
       <button type="button"
-            class="btn btn-sm btn-icon btn-ghost-secondary open-timeline-filter-popover"
+            class="btn btn-icon btn-ghost-secondary open-timeline-filter-popover"
             data-bs-toggle="collapse"
             data-bs-target="#filter-timeline-popover"
             data-bs-trigger="click">
@@ -117,7 +117,7 @@
    {% if get_current_interface() == 'central' %}
       <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View TODO list') }}">
          <button type="button"
-               class="btn btn-sm btn-icon btn-ghost-secondary view-timeline-todo-list me-1">
+               class="btn btn-icon btn-ghost-secondary view-timeline-todo-list me-1">
             <i class="fas fa-tasks"></i>
          </button>
       </span>
