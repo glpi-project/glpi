@@ -176,7 +176,7 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     public function canUpdateItem()
     {
-        $is_target = $this->isCurrentUserValidationTarget(true);
+        $is_target = static::canValidate($this->fields[static::$items_id]);
         if (
             !$is_target
             && !Session::haveRightsOr(static::$rightname, static::getCreateRights())
@@ -445,8 +445,8 @@ abstract class CommonITILValidation extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
 
-        $forbid_fields = [];
-        if ($this->isCurrentUserValidationTarget(true) && isset($input["status"])) {
+        $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
+        if (isset($input["status"]) && static::canValidate($this->fields[static::$items_id]) ) {
             if (
                 ($input["status"] == self::REFUSED)
                 && (!isset($input["comment_validation"])
@@ -466,13 +466,10 @@ abstract class CommonITILValidation extends CommonDBChild
                 $input["validation_date"] = $_SESSION["glpi_currenttime"];
             }
 
-            $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'itemtype_target', 'items_id_target',
-                'comment_submission', 'submission_date', 'is_recursive'
-            ];
+            array_push($forbid_fields, 'users_id', 'itemtype_target', 'items_id_target',
+                'comment_submission', 'submission_date');
         } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
-            $forbid_fields = ['entities_id', static::$items_id, 'status', 'comment_validation',
-                'validation_date', 'is_recursive'
-            ];
+            array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
         }
 
         if (count($forbid_fields)) {
