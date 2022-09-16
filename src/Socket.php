@@ -870,6 +870,7 @@ class Socket extends CommonDBChild
             Dropdown::showSelectItemFromItemtypes([
                 'itemtypes' => $socket_itemtypes,
                 'default_itemtype' => Computer::getType(),
+                'display_emptychoice' => false,
             ]);
             echo "</td>";
 
@@ -910,6 +911,7 @@ class Socket extends CommonDBChild
             Dropdown::showSelectItemFromItemtypes([
                 'itemtypes' => $socket_itemtypes,
                 'default_itemtype' => Computer::getType(),
+                'display_emptychoice' => false,
             ]);
             echo "</td>";
 

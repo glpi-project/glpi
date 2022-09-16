@@ -1561,6 +1561,7 @@ class Dropdown
      *    - showItemSpecificity : given an item, the AJAX file to open if there is special
      *                            treatment. For instance, select a Item_Device* for CommonDevice
      *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+     *    - display_emptychoice : display empty choice, cannot be used when "multiple" option set to true (default false)
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - display             : true : display directly, false return the html
      *
