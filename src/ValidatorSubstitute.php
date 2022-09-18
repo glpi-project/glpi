@@ -322,7 +322,7 @@ class ValidatorSubstitute extends CommonDBTM
                                 [
                                     User::getTableField('substitution_end_date') => null
                                 ], [
-                                    User::getTableField('substitution_end_date') => ['>=', $_SESSION['glpi_currenttime']],
+                                    User::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
                                 ],
                             ],
                         ], [
@@ -330,7 +330,7 @@ class ValidatorSubstitute extends CommonDBTM
                                 [
                                     User::getTableField('substitution_start_date') => null,
                                 ], [
-                                    User::getTableField('substitution_start_date') => ['<=', $_SESSION['glpi_currenttime']],
+                                    User::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
                                 ],
                             ],
                         ]
