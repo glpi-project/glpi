@@ -271,8 +271,7 @@ class Dropdown
         }
 
        // Display comment
-        $icons = "";
-        $icon_count = 0;
+        $icon_array = [];
         if ($params['comments']) {
             $comment_id      = Html::cleanId("comment_" . $params['name'] . $params['rand']);
             $link_id         = Html::cleanId("comment_link_" . $params['name'] . $params['rand']);
@@ -312,7 +311,7 @@ class Dropdown
             }
 
             // Comment icon
-            $icons .= Ajax::updateItemOnSelectEvent(
+            $comment_icon = Ajax::updateItemOnSelectEvent(
                 $field_id,
                 $comment_id,
                 $CFG_GLPI["root_doc"] . "/ajax/comments.php",
@@ -320,8 +319,8 @@ class Dropdown
                 false
             );
             $options_tooltip['link_class'] = 'btn btn-outline-secondary';
-            $icons .= Html::showToolTip($comment, $options_tooltip);
-            $icon_count++;
+            $comment_icon .= Html::showToolTip($comment, $options_tooltip);
+            $icon_array[] = $comment_icon;
 
             // Add icon
             if (
@@ -330,37 +329,36 @@ class Dropdown
                 && !isset($_REQUEST['_in_modal'])
                 && $params['addicon']
             ) {
-                  $icons .= $add_item_icon;
-                  $icon_count++;
+                  $icon_array[] = $add_item_icon;
             }
 
            // Supplier Links
             if ($itemtype == "Supplier") {
                 if ($item->getFromDB($params['value'])) {
-                    $icons .= '<div>';
-                    $icons .= $item->getLinks();
-                    $icons .= '</div>';
-                    $icon_count++;
+                    $link_icon = '<div>';
+                    $link_icon .= $item->getLinks();
+                    $link_icon .= '</div>';
+                    $icon_array[] = $link_icon;
                 }
             }
 
            // Location icon
             if ($itemtype == 'Location') {
-                $icons .= '<div class="btn btn-outline-secondary">';
-                $icons .= "<span title='" . __s('Display on map') . "' data-bs-toggle='tooltip' onclick='showMapForLocation(this)' data-fid='$field_id'>
+                $location_icon = '<div class="btn btn-outline-secondary">';
+                $location_icon .= "<span title='" . __s('Display on map') . "' data-bs-toggle='tooltip' onclick='showMapForLocation(this)' data-fid='$field_id'>
                <i class='fa-fw ti ti-map'></i>
             </span>";
-                $icons .= '</div>';
-                $icon_count++;
+                $location_icon .= '</div>';
+                $icon_array[] = $location_icon;
             }
 
             if ($params['display_dc_position']) {
                 if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
-                    $icons .= "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
-                    $icons .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
-                    $icons .= "</span>";
+                    $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
+                    $dc_icon .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
+                    $dc_icon .= "</span>";
                     $paramscomment['with_dc_position'] = $breadcrumb_id;
-                    $icon_count++;
+                    $icon_array[] = $dc_icon;
                 }
             }
 
@@ -375,8 +373,8 @@ class Dropdown
                     '_idor_token' => Session::getNewIDORToken($itemtype),
                     'withlink'    => $kblink_id,
                 ];
-                $icons .= '<div>';
-                $icons .= Ajax::updateItemOnSelectEvent(
+                $kb_link_icon = '<div>';
+                $kb_link_icon .= Ajax::updateItemOnSelectEvent(
                     $field_id,
                     $kblink_id,
                     $CFG_GLPI["root_doc"] . "/ajax/kblink.php",
@@ -388,21 +386,21 @@ class Dropdown
                 if ($item->isNewItem()) {
                     $item->getFromDB($params['value']);
                 }
-                $icons .= "<span id='$kblink_id'>";
-                $icons .= '&nbsp;' . $item->getLinks();
-                $icons .= "</span>";
-                $icons .= '</div>';
-                $icon_count++;
+                $kb_link_icon .= "<span id='$kblink_id'>";
+                $kb_link_icon .= '&nbsp;' . $item->getLinks();
+                $kb_link_icon .= "</span>";
+                $kb_link_icon .= '</div>';
+                $icon_array[] = $kb_link_icon;
             }
         }
 
         // Trick to get the "+" button to work with dropdowns that support multiple values
-        if (strlen($icons) == 0 && strlen($add_item_icon) > 0) {
-            $icons .= $add_item_icon;
-            $icon_count++;
+        if (count($icon_array) === 0 && $add_item_icon !== '') {
+            $icon_array[] .= $add_item_icon;
         }
 
-        if ($icon_count > 0) {
+        if (count($icon_array) > 0) {
+            $icon_count = count($icon_array);
             $original_width = $params['width'];
             if ($original_width === '100%') {
                 $calc_width = "calc(100% - (({$icon_count} * 0.9em) + (18px * {$icon_count})))";
@@ -414,6 +412,7 @@ class Dropdown
                 $params['url'],
                 $p
             );
+            $icons = implode('', $icon_array);
             $output = "<div class='btn-group btn-group-sm' role='group'
                 style='width: {$original_width}'>{$output} {$icons}</div>";
         } else {
