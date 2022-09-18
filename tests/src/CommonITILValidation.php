@@ -479,6 +479,19 @@ abstract class CommonITILValidation extends DbTestCase
             }
         }
         unset($array);
+        $itilObject = new $validation::$itemtype();
+        $itilObject->getFromDb(1);
+        $this->boolean($itilObject->isNewItem())->isFalse();
+        $validation->add([
+            'users_id' => \Session::getLoginUserID(),
+            $validation::$items_id => $itilObject->getID(),
+            'users_id_validate' => \Session::getLoginUserID(),
+            'itemtype_target' => \User::class,
+            'items_id_target' => \Session::getLoginUserID(),
+            'status' => $input['status'],
+            'timeline_position' => '1',
+        ]);
+        $this->boolean($validation->isNewItem())->isFalse();
         if (!empty($expected)) {
             // Inject target fields into fields so isCurrentUserValidationTarget will work
             if (isset($input['itemtype_target'])) {
