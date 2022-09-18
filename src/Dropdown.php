@@ -414,7 +414,7 @@ class Dropdown
                 $params['url'],
                 $p
             );
-            $output = "<div class='btn-group btn-group-sm " . ($original_width == "100%" ? "" : "") . "' role='group'
+            $output = "<div class='btn-group btn-group-sm' role='group'
                 style='width: {$original_width}'>{$output} {$icons}</div>";
         } else {
             $output .= Html::jsAjaxDropdown(
