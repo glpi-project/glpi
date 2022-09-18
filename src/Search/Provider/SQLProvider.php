@@ -48,6 +48,13 @@ use Session;
  */
 final class SQLProvider implements SearchProviderInterface
 {
+    public static function prepareData(array &$data, array $options = []): array
+    {
+        self::constructSQL($data);
+        self::constructData($data, $options['only_count'] ?? false);
+        return $data;
+    }
+
     private static function buildSelect(array $data, string $itemtable): string
     {
         // request currentuser for SQL supervision, not displayed
@@ -2852,7 +2859,7 @@ final class SQLProvider implements SearchProviderInterface
      *                    may be an array a request : need to add counts
      *                    maybe empty : use search one to count
      *
-     * @param array $data Array of search datas prepared to generate SQL
+     * @param array $data Array of search data prepared to generate SQL
      * @return false|void
      */
     public static function constructSQL(array &$data)
@@ -3571,7 +3578,7 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * Retrieve datas from DB : construct data array containing columns definitions and rows datas
+     * Retrieve data from DB : construct data array containing columns definitions and rows data
      *
      * add to data array a field data containing :
      *      cols : columns definition
@@ -3765,7 +3772,7 @@ final class SQLProvider implements SearchProviderInterface
                 $newrow        = [];
                 $newrow['raw'] = $row;
 
-                // Parse datas
+                // Parse data
                 foreach ($newrow['raw'] as $key => $val) {
                     if (preg_match('/ITEM(_(\w[^\d]+))?_(\d+)(_(.+))?/', $key, $matches)) {
                         $j = $matches[3];
