@@ -252,13 +252,6 @@ class Dropdown
             }
         }
 
-        $output .= Html::jsAjaxDropdown(
-            $params['name'],
-            $field_id,
-            $params['url'],
-            $p
-        );
-
         // Add icon
         $add_item_icon = "";
         if (
@@ -279,6 +272,7 @@ class Dropdown
 
        // Display comment
         $icons = "";
+        $icon_count = 0;
         if ($params['comments']) {
             $comment_id      = Html::cleanId("comment_" . $params['name'] . $params['rand']);
             $link_id         = Html::cleanId("comment_link_" . $params['name'] . $params['rand']);
@@ -327,6 +321,7 @@ class Dropdown
             );
             $options_tooltip['link_class'] = 'btn btn-outline-secondary';
             $icons .= Html::showToolTip($comment, $options_tooltip);
+            $icon_count++;
 
             // Add icon
             if (
@@ -336,6 +331,7 @@ class Dropdown
                 && $params['addicon']
             ) {
                   $icons .= $add_item_icon;
+                  $icon_count++;
             }
 
            // Supplier Links
@@ -344,6 +340,7 @@ class Dropdown
                     $icons .= '<div>';
                     $icons .= $item->getLinks();
                     $icons .= '</div>';
+                    $icon_count++;
                 }
             }
 
@@ -354,6 +351,7 @@ class Dropdown
                <i class='fa-fw ti ti-map'></i>
             </span>";
                 $icons .= '</div>';
+                $icon_count++;
             }
 
             if ($params['display_dc_position']) {
@@ -362,6 +360,7 @@ class Dropdown
                     $icons .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
                     $icons .= "</span>";
                     $paramscomment['with_dc_position'] = $breadcrumb_id;
+                    $icon_count++;
                 }
             }
 
@@ -393,16 +392,37 @@ class Dropdown
                 $icons .= '&nbsp;' . $item->getLinks();
                 $icons .= "</span>";
                 $icons .= '</div>';
+                $icon_count++;
             }
         }
 
         // Trick to get the "+" button to work with dropdowns that support multiple values
         if (strlen($icons) == 0 && strlen($add_item_icon) > 0) {
             $icons .= $add_item_icon;
+            $icon_count++;
         }
 
-        if (strlen($icons) > 0) {
-            $output = "<div class='btn-group btn-group-sm " . ($params['width'] == "100%" ? "w-150" : "") . "' role='group'>{$output} {$icons}</div>";
+        if ($icon_count > 0) {
+            $original_width = $params['width'];
+            if ($original_width === '100%') {
+                $calc_width = "calc(100% - (({$icon_count} * 0.9em) + (18px * {$icon_count})))";
+                $p['width'] = $calc_width;
+            }
+            $output .= Html::jsAjaxDropdown(
+                $params['name'],
+                $field_id,
+                $params['url'],
+                $p
+            );
+            $output = "<div class='btn-group btn-group-sm " . ($original_width == "100%" ? "" : "") . "' role='group'
+                style='width: {$original_width}'>{$output} {$icons}</div>";
+        } else {
+            $output .= Html::jsAjaxDropdown(
+                $params['name'],
+                $field_id,
+                $params['url'],
+                $p
+            );
         }
 
         $output .= Ajax::commonDropdownUpdateItem($params, false);
