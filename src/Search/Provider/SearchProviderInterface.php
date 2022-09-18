@@ -44,4 +44,5 @@ namespace Glpi\Search\Provider;
  */
 interface SearchProviderInterface
 {
+    public static function prepareData(array &$data, array $options): array;
 }

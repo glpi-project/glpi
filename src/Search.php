@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
+use Glpi\Search\Output\AbstractSearchOutput;
 use Glpi\Search\Output\CSVSearchOutput;
 use Glpi\Search\Output\ExportSearchOutput;
 use Glpi\Search\Output\HTMLSearchOutput;
@@ -170,35 +171,7 @@ class Search
      **/
     public static function show($itemtype)
     {
-        Plugin::doHook(Hooks::PRE_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
-
-        $params = self::manageParams($itemtype, $_GET);
-        echo "<div class='search_page row'>";
-        TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
-            'itemtype' => $itemtype,
-        ]);
-        echo "<div class='col search-container'>";
-
-        if (
-            $itemtype == "Ticket"
-            && $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('mini_ticket', true)
-        ) {
-            $dashboard = new Glpi\Dashboard\Grid($default, 33, 2);
-            $dashboard->show(true);
-        }
-
-        self::showGenericSearch($itemtype, $params);
-        if ($params['as_map'] == 1) {
-            self::showMap($itemtype, $params);
-        } elseif ($params['browse'] == 1) {
-            $itemtype::showBrowseView($itemtype, $params);
-        } else {
-            self::showList($itemtype, $params);
-        }
-        echo "</div>";
-        echo "</div>";
-
-        Plugin::doHook(Hooks::POST_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
+        SearchEngine::show($itemtype, []);
     }
 
 
@@ -218,32 +191,7 @@ class Search
         $params,
         array $forcedisplay = []
     ) {
-        $data = self::getDatas($itemtype, $params, $forcedisplay);
-
-        switch ($data['display_type']) {
-            case self::CSV_OUTPUT:
-                CSVSearchOutput::outputData($data);
-                break;
-            case self::PDF_OUTPUT_LANDSCAPE:
-                PDFLandscapeSearchOutput::outputData($data);
-                break;
-            case self::PDF_OUTPUT_PORTRAIT:
-                PDFPortraitSearchOutput::outputData($data);
-                break;
-            case self::SYLK_OUTPUT:
-                SYLKSearchOutput::outputData($data);
-                break;
-            case self::NAMES_OUTPUT:
-                NamesListSearchOutput::outputData($data);
-                break;
-            case self::GLOBAL_SEARCH:
-                GlobalSearchOutput::displayData($data);
-                break;
-            case self::HTML_OUTPUT:
-            default:
-                HTMLSearchOutput::displayData($data);
-                break;
-        }
+        SearchEngine::showOutput($itemtype, $params, $forcedisplay);
     }
 
     /**
@@ -256,7 +204,11 @@ class Search
      **/
     public static function showMap($itemtype, $params)
     {
-        MapSearchOutput::showMap($itemtype, $params);
+        $params = MapSearchOutput::prepareInputParams($itemtype, $params);
+
+        $data = SearchEngine::getData($itemtype, $params);
+        $data['as_map'] = true;
+        \Search::displayData($data);
     }
 
 
@@ -273,12 +225,7 @@ class Search
      **/
     public static function getDatas($itemtype, $params, array $forcedisplay = [])
     {
-
-        $data = self::prepareDatasForSearch($itemtype, $params, $forcedisplay);
-        self::constructSQL($data);
-        self::constructData($data);
-
-        return $data;
+        return SearchEngine::getData($itemtype, $params, $forcedisplay);
     }
 
 
@@ -296,7 +243,7 @@ class Search
      **/
     public static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = [])
     {
-        return SearchEngine::prepareDatasForSearch($itemtype, $params, $forcedisplay);
+        return SearchEngine::prepareDataForSearch($itemtype, $params, $forcedisplay);
     }
 
 
@@ -397,7 +344,7 @@ class Search
     public static function displayData(array $data)
     {
         /** @var HTMLSearchOutput $output */
-        $output = SearchEngine::getOutputForLegacyKey($data['display_type']);
+        $output = SearchEngine::getOutputForLegacyKey($data['display_type'], $data);
         return $output::displayData($data);
     }
 

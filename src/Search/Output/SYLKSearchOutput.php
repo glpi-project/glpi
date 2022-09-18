@@ -134,7 +134,7 @@ final class SYLKSearchOutput extends ExportSearchOutput
             $out .= "C;N;K\"$val\"\n";
             $out .= "\n";
         }
-        // Datas
+        // Data
         foreach ($SYLK_ARRAY as $row => $tab) {
             foreach ($tab as $num => $val) {
                 $out .= "F;P3;FG0L;" . ($num == 1 ? "Y" . $row . ";" : "") . "X$num\n";

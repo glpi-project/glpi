@@ -163,14 +163,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
         return $out;
     }
 
-    /**
-     * Output data (for export in CSV, PDF, ...).
-     *
-     * @param array $data Array of search datas prepared to get datas
-     *
-     * @return void|false
-     **/
-    public static function outputData(array $data)
+    public static function displayData(array $data, array $params)
     {
         global $CFG_GLPI;
 
