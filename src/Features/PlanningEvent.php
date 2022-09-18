@@ -66,7 +66,7 @@ trait PlanningEvent
         }
 
         if ($this->isField('rrule')) {
-            $this->fields['rrule'] = [];
+            $this->fields['rrule'] = '';
         }
 
         if ($this->isField('is_recursive')) {
