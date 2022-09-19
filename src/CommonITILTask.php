@@ -620,6 +620,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
         }
 
+        $needupdateparent = false;
+
        // Set pending reason data on parent and self
         if ($this->input['pending'] ?? 0) {
             PendingReason_Item::createForItem($this->input["_job"], [
@@ -636,7 +638,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
            // Set parent status to pending
             $this->input['_status'] = CommonITILObject::WAITING;
         } elseif ($this->input['_job']->fields["status"] == CommonITILObject::WAITING) {
-            $needupdateparent = false;
             if (
                 isset($this->input['_job']::getAllStatusArray($this->input['_job']->getType())[CommonITILObject::ASSIGNED])
                 && (
