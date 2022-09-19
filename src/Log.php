@@ -87,7 +87,9 @@ class Log extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        if (!Session::haveRight(self::$rightname, READ)) {
+            return false;
+        }
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable(
