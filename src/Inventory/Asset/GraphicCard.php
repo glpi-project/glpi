@@ -78,4 +78,9 @@ class GraphicCard extends Device
     {
         return $conf->component_graphiccard == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceGraphicCard::class;
+    }
 }

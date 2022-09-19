@@ -141,4 +141,9 @@ class Drive extends Device
     {
         return $this->prepared_harddrives;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceDrive::class;
+    }
 }

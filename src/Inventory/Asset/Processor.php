@@ -79,4 +79,9 @@ class Processor extends Device
     {
         return $conf->component_processor == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceProcessor::class;
+    }
 }

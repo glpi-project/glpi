@@ -185,8 +185,8 @@ abstract class InventoryAsset
 
         $blacklist = new Blacklist();
 
-        //load locked field for 'real' current item manage
-        $itemtype = str_replace("Glpi\Inventory\Asset\\", "", get_called_class());
+        //load locked field for current itemtype
+        $itemtype = $this->getItemtype();
         $lockedfield = new Lockedfield();
         $locks = $lockedfield->getLockedNames($itemtype, $this->item->fields['id'] ?? 0);
 
@@ -434,4 +434,6 @@ abstract class InventoryAsset
         }
         return $input;
     }
+
+    abstract public function getItemtype(): string;
 }

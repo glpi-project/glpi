@@ -75,4 +75,9 @@ class HardDrive extends Device
     {
         return $conf->component_harddrive == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceHardDrive::class;
+    }
 }

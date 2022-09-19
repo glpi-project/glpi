@@ -265,4 +265,9 @@ class NetworkCard extends Device
        //ports are handled from main asset in NetworkCard case
         return;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceNetworkCard::class;
+    }
 }

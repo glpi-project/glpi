@@ -111,4 +111,9 @@ class Memory extends Device
     {
         return $conf->component_memory == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceMemory::class;
+    }
 }

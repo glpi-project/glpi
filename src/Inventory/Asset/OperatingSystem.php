@@ -170,4 +170,9 @@ class OperatingSystem extends InventoryAsset
     {
         return $this->operatingsystems_id;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_OperatingSystem::class;
+    }
 }

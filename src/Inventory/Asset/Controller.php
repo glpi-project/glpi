@@ -102,4 +102,9 @@ class Controller extends Device
     {
         return $conf->component_control == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceControl::class;
+    }
 }

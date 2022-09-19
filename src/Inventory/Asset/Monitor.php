@@ -235,4 +235,9 @@ class Monitor extends InventoryAsset
         $this->import_monitor_on_partial_sn = $conf->import_monitor_on_partial_sn;
         return $conf->import_monitor == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Computer_Item::class;
+    }
 }

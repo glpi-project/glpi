@@ -70,4 +70,9 @@ class SoundCard extends Device
     {
         return $conf->component_soundcard == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceSoundCard::class;
+    }
 }

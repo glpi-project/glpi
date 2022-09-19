@@ -403,4 +403,9 @@ class NetworkEquipment extends MainAsset
             return preg_replace('/.+\s(\d+)$/', '$1', $data->name);
         }
     }
+
+    public function getItemtype(): string
+    {
+        return \NetworkEquipment::class;
+    }
 }

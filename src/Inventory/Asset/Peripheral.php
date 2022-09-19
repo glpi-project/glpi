@@ -259,4 +259,9 @@ class Peripheral extends InventoryAsset
     {
         return $conf->import_peripheral == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Peripheral::class;
+    }
 }

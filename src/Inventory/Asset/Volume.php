@@ -215,4 +215,9 @@ class Volume extends InventoryAsset
         $this->conf = $conf;
         return $conf->import_volume == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_Disk::class;
+    }
 }

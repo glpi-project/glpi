@@ -68,4 +68,9 @@ class PowerSupply extends Device
     {
         return $conf->component_powersupply == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DevicePowerSupply::class;
+    }
 }

@@ -79,4 +79,9 @@ class Battery extends Device
     {
         return $conf->component_battery == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceBattery::class;
+    }
 }

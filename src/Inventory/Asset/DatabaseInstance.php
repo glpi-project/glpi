@@ -227,4 +227,9 @@ class DatabaseInstance extends InventoryAsset
     {
         return true;
     }
+
+    public function getItemtype(): string
+    {
+        return \DatabaseInstance::class;
+    }
 }

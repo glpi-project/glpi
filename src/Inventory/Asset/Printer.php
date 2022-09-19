@@ -382,4 +382,9 @@ class Printer extends NetworkEquipment
         }
         return false;
     }
+
+    public function getItemtype(): string
+    {
+        return \Printer::class;
+    }
 }

@@ -362,4 +362,9 @@ class VirtualMachine extends InventoryAsset
         $this->conf = $conf;
         return $conf->import_vm == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \ComputerVirtualMachine::class;
+    }
 }

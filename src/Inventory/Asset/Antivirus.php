@@ -155,4 +155,9 @@ class Antivirus extends InventoryAsset
     {
         return $conf->import_antivirus == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \ComputerAntivirus::class;
+    }
 }

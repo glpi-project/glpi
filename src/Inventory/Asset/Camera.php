@@ -157,4 +157,9 @@ class Camera extends Device
     {
         return true;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceCamera::class;
+    }
 }

@@ -64,4 +64,9 @@ class Simcard extends Device
     {
         return $conf->component_simcard == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceSimcard::class;
+    }
 }
