@@ -635,6 +635,46 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
            // Set parent status to pending
             $this->input['_status'] = CommonITILObject::WAITING;
+        } elseif ($this->input['_job']->fields["status"] == CommonITILObject::WAITING) {
+            $needupdateparent = false;
+            if (
+                isset($this->input['_job']::getAllStatusArray($this->input['_job']->getType())[CommonITILObject::ASSIGNED])
+                && (
+                    ($this->input['_job']->countUsers(CommonITILActor::ASSIGN) > 0)
+                    || ($this->input['_job']->countGroups(CommonITILActor::ASSIGN) > 0)
+                    || ($this->input['_job']->countSuppliers(CommonITILActor::ASSIGN) > 0)
+                )
+            ) {
+               //check if lifecycle allowed new status
+                if (
+                    Session::isCron()
+                    || Session::getCurrentInterface() == "helpdesk"
+                    || $this->input['_job']::isAllowedStatus($this->input['_job']->fields["status"], CommonITILObject::ASSIGNED)
+                ) {
+                    $needupdateparent = true;
+                    $this->input['_status'] = CommonITILObject::ASSIGNED;
+                }
+            } else {
+               //check if lifecycle allowed new status
+                if (
+                    Session::isCron()
+                    || Session::getCurrentInterface() == "helpdesk"
+                    || $this->input['_job']::isAllowedStatus($this->input['_job']->fields["status"], CommonITILObject::INCOMING)
+                ) {
+                    $needupdateparent = true;
+                    $this->input['_status'] = CommonITILObject::INCOMING;
+                }
+            }
+        }
+
+        if (
+            !empty($this->fields['begin'])
+            && $this->input["_job"]->isStatusExists(CommonITILObject::PLANNED)
+            && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
+              || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED)
+              || $needupdateparent)
+        ) {
+            $this->input['_status'] = CommonITILObject::PLANNED;
         }
 
        //change status only if input change
@@ -648,20 +688,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 '_disablenotif' => true
             ];
             $this->input['_job']->update($update);
-        }
-
-        if (
-            !empty($this->fields['begin'])
-            && $this->input["_job"]->isStatusExists(CommonITILObject::PLANNED)
-            && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
-              || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED))
-        ) {
-            $input2 = [
-                'id'            => $this->input["_job"]->getID(),
-                'status'        => CommonITILObject::PLANNED,
-                '_disablenotif' => true,
-            ];
-            $this->input["_job"]->update($input2);
         }
 
         if ($donotif) {

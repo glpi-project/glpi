@@ -285,6 +285,8 @@ class ITILFollowup extends CommonDBChild
        // Set parent status to pending
         if ($this->input['pending'] ?? 0) {
             $this->input['_status'] = CommonITILObject::WAITING;
+        } elseif ($parentitem->fields["status"] == CommonITILObject::WAITING) {
+            $this->input["_reopen"] = true;
         }
 
        //manage reopening of ITILObject
