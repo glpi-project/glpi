@@ -1374,9 +1374,9 @@ abstract class CommonITILObject extends CommonDBTM
         $iterator = $DB->request([
             'FROM'      => $this->getTable(),
             'LEFT JOIN' => [
-                "glpi_items_${class_l_pl}" => [
+                "glpi_items_{$class_l_pl}" => [
                     'ON' => [
-                        "glpi_items_${class_l_pl}" => "${class_l_pl}_id",
+                        "glpi_items_{$class_l_pl}" => "{$class_l_pl}_id",
                         $this->getTable()    => 'id'
                     ]
                 ]
