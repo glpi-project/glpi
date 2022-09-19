@@ -1209,7 +1209,18 @@ abstract class CommonITILObject extends CommonDBTM
 
        /// TODO own_ticket -> own_itilobject
         if ($type == CommonITILActor::ASSIGN) {
-            if (Session::haveRight("ticket", Ticket::OWN)) {
+            if (
+                Session::haveRight("ticket", Ticket::OWN)
+                && $_SESSION['glpiset_default_tech']
+            ) {
+                return Session::getLoginUserID();
+            }
+        }
+        if ($type == CommonITILActor::REQUESTER) {
+            if (
+                Session::haveRight(static::$rightname, CREATE)
+                && $_SESSION['glpiset_default_requester']
+            ) {
                 return Session::getLoginUserID();
             }
         }
