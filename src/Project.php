@@ -2326,100 +2326,98 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         }
 
         $supported_itemtypes = [];
-        if (Project::canCreate()) {
-            $team_role_ids = static::getTeamRoles();
-            $team_roles = [];
+        $team_role_ids = static::getTeamRoles();
+        $team_roles = [];
 
-            foreach ($team_role_ids as $role_id) {
-                $team_roles[$role_id] = static::getTeamRoleName($role_id);
-            }
-           // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
-            unset($team_roles[Team::ROLE_OWNER]);
-
-            $supported_itemtypes['Project'] = [
-                'name'   => Project::getTypeName(1),
-                'icon'   => Project::getIcon(),
-                'fields' => [
-                    'projects_id'  => [
-                        'type'   => 'hidden',
-                        'value'  => $ID
-                    ],
-                    'name'   => [
-                        'placeholder'  => __('Name')
-                    ],
-                    'content'   => [
-                        'placeholder'  => __('Content'),
-                        'type'         => 'textarea'
-                    ],
-                    'users_id'  => [
-                        'type'         => 'hidden',
-                        'value'        => $_SESSION['glpiID']
-                    ],
-                    'entities_id' => [
-                        'type'   => 'hidden',
-                        'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
-                    ],
-                    'is_recursive' => [
-                        'type'   => 'hidden',
-                        'value'  => 0
-                    ]
-                ],
-                'team_itemtypes'  => Project::getTeamItemtypes(),
-                'team_roles'      => $team_roles,
-            ];
+        foreach ($team_role_ids as $role_id) {
+            $team_roles[$role_id] = static::getTeamRoleName($role_id);
         }
+        // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
+        unset($team_roles[Team::ROLE_OWNER]);
 
-        if (ProjectTask::canCreate()) {
-            $team_role_ids = static::getTeamRoles();
-            $team_roles = [];
-
-            foreach ($team_role_ids as $role_id) {
-                $team_roles[$role_id] = static::getTeamRoleName($role_id);
-            }
-           // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
-            unset($team_roles[Team::ROLE_OWNER]);
-
-            $supported_itemtypes['ProjectTask'] = [
-                'name'   => ProjectTask::getTypeName(1),
-                'icon'   => ProjectTask::getIcon(),
-                'fields' => [
-                    'projects_id'  => [
-                        'type'   => 'hidden',
-                        'value'  => $ID
-                    ],
-                    'name'   => [
-                        'placeholder'  => __('Name')
-                    ],
-                    'content'   => [
-                        'placeholder'  => __('Content'),
-                        'type'         => 'textarea'
-                    ],
-                    'projecttasktemplates_id' => [
-                        'type'   => 'hidden',
-                        'value'  => 0
-                    ],
-                    'projecttasks_id' => [
-                        'type'   => 'hidden',
-                        'value'  => 0
-                    ],
-                    'entities_id' => [
-                        'type'   => 'hidden',
-                        'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
-                    ],
-                    'is_recursive' => [
-                        'type'   => 'hidden',
-                        'value'  => 0
-                    ]
+        $supported_itemtypes['Project'] = [
+            'name'   => Project::getTypeName(1),
+            'icon'   => Project::getIcon(),
+            'fields' => [
+                'projects_id'  => [
+                    'type'   => 'hidden',
+                    'value'  => $ID
                 ],
-                'team_itemtypes'  => ProjectTask::getTeamItemtypes(),
-                'team_roles'      => $team_roles,
+                'name'   => [
+                    'placeholder'  => __('Name')
+                ],
+                'content'   => [
+                    'placeholder'  => __('Content'),
+                    'type'         => 'textarea'
+                ],
+                'users_id'  => [
+                    'type'         => 'hidden',
+                    'value'        => $_SESSION['glpiID']
+                ],
+                'entities_id' => [
+                    'type'   => 'hidden',
+                    'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
+                ],
+                'is_recursive' => [
+                    'type'   => 'hidden',
+                    'value'  => 0
+                ]
+            ],
+            'team_itemtypes'  => Project::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
+            'allow_create'    => Project::canCreate()
+        ];
+
+        $team_role_ids = static::getTeamRoles();
+        $team_roles = [];
+
+        foreach ($team_role_ids as $role_id) {
+            $team_roles[$role_id] = static::getTeamRoleName($role_id);
+        }
+        // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
+        unset($team_roles[Team::ROLE_OWNER]);
+
+        $supported_itemtypes['ProjectTask'] = [
+            'name'   => ProjectTask::getTypeName(1),
+            'icon'   => ProjectTask::getIcon(),
+            'fields' => [
+                'projects_id'  => [
+                    'type'   => 'hidden',
+                    'value'  => $ID
+                ],
+                'name'   => [
+                    'placeholder'  => __('Name')
+                ],
+                'content'   => [
+                    'placeholder'  => __('Content'),
+                    'type'         => 'textarea'
+                ],
+                'projecttasktemplates_id' => [
+                    'type'   => 'hidden',
+                    'value'  => 0
+                ],
+                'projecttasks_id' => [
+                    'type'   => 'hidden',
+                    'value'  => 0
+                ],
+                'entities_id' => [
+                    'type'   => 'hidden',
+                    'value'  => $ID > 0 ? $project->fields["entities_id"] : $_SESSION['glpiactive_entity'],
+                ],
+                'is_recursive' => [
+                    'type'   => 'hidden',
+                    'value'  => 0
+                ]
+            ],
+            'team_itemtypes'  => ProjectTask::getTeamItemtypes(),
+            'team_roles'      => $team_roles,
+            'allow_create'    => ProjectTask::canCreate()
+        ];
+        if ($ID <= 0) {
+            $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
+                'type'   => 'raw',
+                'value'  => Project::dropdown(['display' => false, 'width' => '90%'])
             ];
-            if ($ID <= 0) {
-                $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
-                    'type'   => 'raw',
-                    'value'  => Project::dropdown(['display' => false, 'width' => '90%'])
-                ];
-            }
         }
         $column_field = [
             'id' => 'projectstates_id',
