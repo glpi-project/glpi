@@ -44,11 +44,6 @@ class Drive extends Device
     private $harddrives;
     private $prepared_harddrives = [];
 
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceDrive');
-    }
-
     public function prepare(): array
     {
         $mapping = [

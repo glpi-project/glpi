@@ -42,11 +42,6 @@ class SoundCard extends Device
 {
     protected $ignored = ['controllers' => null];
 
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceSoundCard');
-    }
-
     public function prepare(): array
     {
         $mapping = [

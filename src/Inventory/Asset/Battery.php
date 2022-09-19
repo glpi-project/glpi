@@ -41,11 +41,6 @@ use Glpi\Inventory\Conf;
 
 class Battery extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceBattery');
-    }
-
     public function prepare(): array
     {
         $mapping = [

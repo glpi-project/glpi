@@ -41,11 +41,6 @@ use Item_Devices;
 
 class Camera extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceCamera');
-    }
-
     public function prepare(): array
     {
 

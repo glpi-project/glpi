@@ -40,11 +40,6 @@ use Glpi\Inventory\Conf;
 
 class Firmware extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceFirmware');
-    }
-
     public function prepare(): array
     {
         $mapping = [

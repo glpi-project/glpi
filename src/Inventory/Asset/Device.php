@@ -40,21 +40,6 @@ use Item_Devices;
 
 abstract class Device extends InventoryAsset
 {
-    protected $id_class;
-
-    /**
-     * Constructor
-     *
-     * @param CommonDBTM $item    Item instance
-     * @param array      $data    Data part
-     * @param string     $id_class Item device class
-     */
-    public function __construct(CommonDBTM $item, array $data = null, $id_class)
-    {
-        parent::__construct($item, $data);
-        $this->id_class = $id_class;
-    }
-
     /**
      * Get existing entries from database
      *
@@ -91,8 +76,8 @@ abstract class Device extends InventoryAsset
 
         $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
 
-        $itemdevicetype = $this->id_class;
-        if (in_array($this->id_class, $devicetypes)) {
+        $itemdevicetype = $this->getItemtype();
+        if (in_array($itemdevicetype, $devicetypes)) {
             $value = $this->data;
             $itemdevice = new $itemdevicetype();
 
