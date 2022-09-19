@@ -96,11 +96,6 @@ class TicketTemplate extends ITILTemplate
             )      => 'olas_id_ttr',
             $itil_object->getSearchOptionIDByField(
                 'field',
-                'time_to_resolve',
-                'glpi_tickets'
-            )   => 'time_to_resolve',
-            $itil_object->getSearchOptionIDByField(
-                'field',
                 'time_to_own',
                 'glpi_tickets'
             )   => 'time_to_own',
@@ -114,11 +109,6 @@ class TicketTemplate extends ITILTemplate
                 'internal_time_to_own',
                 'glpi_tickets'
             )   => 'internal_time_to_own',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'actiontime',
-                'glpi_tickets'
-            )   => 'actiontime',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'global_validation',

@@ -220,6 +220,16 @@ abstract class ITILTemplate extends CommonDropdown
                     'date',
                     $itil_object->getTable()
                 )   => 'date',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'actiontime',
+                    $itil_object->getTable()
+                )   => 'actiontime',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'time_to_resolve',
+                    $itil_object->getTable()
+                )   => 'time_to_resolve',
                 4                 => '_users_id_requester',
                 71                => '_groups_id_requester',
                 5                 => '_users_id_assign',
