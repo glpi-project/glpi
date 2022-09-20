@@ -41,6 +41,8 @@ class LogViewer extends CommonGLPI
     protected $fileslug = "";
     protected $filename = "";
 
+    protected static $logs_files = [];
+
     public static $rightname = 'logs';
 
 
@@ -109,21 +111,20 @@ class LogViewer extends CommonGLPI
      */
     protected static function getLogsFilesList(): array
     {
-        static $logs_files = [];
-        if (count($logs_files) > 0) {
-            return $logs_files;
+        if (count(self::$logs_files) > 0) {
+            return self::$logs_files;
         }
 
-        $logs_files = scandir(GLPI_LOG_DIR);
-        $files = [];
-        foreach ($logs_files as $log_filename) {
+        $raw_logs_files = scandir(GLPI_LOG_DIR);
+        self::$logs_files = [];
+        foreach ($raw_logs_files as $log_filename) {
             if (preg_match('/^(.+)\.log$/', $log_filename, $matches)) {
                 $filename = $matches[1];
                 $filekey  = Toolbox::slugify($filename, '', true);
-                $files[$filekey] = "$filename.log";
+                self::$logs_files[$filekey] = "$filename.log";
             }
         }
-        return $files;
+        return self::$logs_files;
     }
 
 
@@ -183,6 +184,8 @@ class LogViewer extends CommonGLPI
             ];
             $index++;
         }
+
+        \Toolbox::logDebug(self::getLogsFilesList());
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/log_viewer.html.twig',
