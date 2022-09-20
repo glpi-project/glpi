@@ -40,7 +40,7 @@ Session::checkRight("logs", READ);
 $log = new LogViewer($_GET['fileslug'] ?? null);
 
 if (($_GET['action'] ?? "") === 'download_log_file') {
-    $log->downloadLogFile();
+    $log->download();
     exit;
 }
 

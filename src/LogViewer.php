@@ -38,6 +38,7 @@ use Glpi\Event;
 
 final class LogViewer extends CommonGLPI
 {
+    protected $baselogdir = "";
     protected $fileslug = "";
     protected $filename = "";
     protected $filepath = "";
@@ -47,15 +48,19 @@ final class LogViewer extends CommonGLPI
     public static $rightname = 'logs';
 
 
-    public function __construct(string $fileslug = null)
+    public function __construct(string $fileslug = null, string $baselogdir = GLPI_LOG_DIR)
     {
+        $this->baselogdir = $baselogdir;
         $this->fileslug = $fileslug;
-        $logfiles = self::getLogsFilesList();
+        $logfiles = self::getLogsFilesList($baselogdir);
         $this->filename = $logfiles[$this->fileslug] ?? "";
-        $this->filepath = GLPI_LOG_DIR . "/" . $this->filename;
+        $this->filepath = $this->baselogdir . "/" . $this->filename;
 
         if (is_dir($this->filepath) || !file_exists($this->filepath)) {
-            throw new \RuntimeException("Invalid log file");
+            trigger_error(
+                "Invalid log file",
+                E_USER_ERROR
+            );
         }
     }
 
@@ -115,13 +120,13 @@ final class LogViewer extends CommonGLPI
      *
      * @return array of [slug => filename.log]
      */
-    protected static function getLogsFilesList(): array
+    public static function getLogsFilesList(string $baselogdir = GLPI_LOG_DIR): array
     {
         if (count(self::$logs_files) > 0) {
             return self::$logs_files;
         }
 
-        $raw_logs_files = scandir(GLPI_LOG_DIR);
+        $raw_logs_files = scandir($baselogdir);
         self::$logs_files = [];
         foreach ($raw_logs_files as $log_filename) {
             if (preg_match('/^(.+)\.log$/', $log_filename, $matches)) {
@@ -161,7 +166,7 @@ final class LogViewer extends CommonGLPI
      *
      * @return array of log entries
      */
-    protected function parseLogFile(int $max_nb_lines = null): array
+    public function parseLogFile(int $max_nb_lines = null): array
     {
         global $CFG_GLPI;
 
@@ -214,7 +219,7 @@ final class LogViewer extends CommonGLPI
     /**
      * Send a log file as attachment to the browser
      */
-    public function downloadLogFile()
+    public function download()
     {
         header('Content-Type: application/octet-stream');
         header("Content-Transfer-Encoding: Binary");
