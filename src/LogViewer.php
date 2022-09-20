@@ -185,8 +185,6 @@ class LogViewer extends CommonGLPI
             $index++;
         }
 
-        \Toolbox::logDebug(self::getLogsFilesList());
-
         TemplateRenderer::getInstance()->display(
             'pages/admin/log_viewer.html.twig',
             [
