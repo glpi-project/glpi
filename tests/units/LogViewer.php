@@ -61,7 +61,6 @@ test log 3 line 2
 test log 3 line 3
 LOG,
             ]
-
         );
     }
 
@@ -99,7 +98,8 @@ LOG,
     }
 
 
-    public function testParseLogFile() {
+    public function testParseLogFile()
+    {
         $log = new \LogViewer('test', vfsStream::url('glpi_logs'));
 
         $log_entries = $log->parseLogFile();
@@ -126,7 +126,8 @@ LOG,
     }
 
 
-    public function testDownloadFile() {
+    public function testDownloadFile()
+    {
         $log = new \LogViewer('test', vfsStream::url('glpi_logs'));
 
         $this->output(
