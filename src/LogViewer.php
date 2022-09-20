@@ -40,6 +40,7 @@ final class LogViewer extends CommonGLPI
 {
     protected $fileslug = "";
     protected $filename = "";
+    protected $filepath = "";
 
     protected static $logs_files = [];
 
@@ -51,6 +52,11 @@ final class LogViewer extends CommonGLPI
         $this->fileslug = $fileslug;
         $logfiles = self::getLogsFilesList();
         $this->filename = $logfiles[$this->fileslug] ?? "";
+        $this->filepath = GLPI_LOG_DIR . "/" . $this->filename;
+
+        if (is_dir($this->filepath) || !file_exists($this->filepath)) {
+            throw new \RuntimeException("Invalid log file");
+        }
     }
 
 
@@ -159,16 +165,9 @@ final class LogViewer extends CommonGLPI
     {
         global $CFG_GLPI;
 
-
-        $filepath = GLPI_LOG_DIR . "/" . $this->filename;
-        if (is_dir($filepath) || !file_exists($filepath)) {
-            echo "";
-            return false;
-        }
-
         // set max content for files to avoid performance issues
         $max_bytes = 1024 * 1000;
-        if ($max_bytes > filesize($filepath)) {
+        if ($max_bytes > filesize($this->filepath)) {
             $max_bytes = 0;
         }
         if (is_null($max_nb_lines)) {
@@ -176,7 +175,7 @@ final class LogViewer extends CommonGLPI
         }
 
         // explode log files by datetime pattern
-        $logs  = file_get_contents($filepath, false, null, -$max_bytes);
+        $logs  = file_get_contents($this->filepath, false, null, -$max_bytes);
         $datetime_pattern = "\[*\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\]*";
         $rawlines = preg_split(
             "/^(?=$datetime_pattern)/m",
@@ -217,15 +216,10 @@ final class LogViewer extends CommonGLPI
      */
     public function downloadLogFile()
     {
-        $filepath = GLPI_LOG_DIR . "/" . $this->filename;
-        if (is_dir($filepath) || !file_exists($filepath)) {
-            return;
-        }
-
         header('Content-Type: application/octet-stream');
         header("Content-Transfer-Encoding: Binary");
-        header("Content-disposition: attachment; filename=\"" . basename($filepath) . "\"");
-        readfile($filepath);
+        header("Content-disposition: attachment; filename=\"" . basename($this->filepath) . "\"");
+        readfile($this->filepath);
     }
 
 
