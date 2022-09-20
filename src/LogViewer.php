@@ -132,11 +132,33 @@ final class LogViewer extends CommonGLPI
      *  We try to explode the log file by searching datetime patterns
      *
      * @param bool $only_content if true, don't return the html layout
-     * @param int $nb_lines
      */
-    public function showLogFile(bool $only_content = false, int $nb_lines = null)
+    public function showLogFile(bool $only_content = false)
+    {
+        TemplateRenderer::getInstance()->display(
+            'pages/admin/log_viewer.html.twig',
+            [
+                'fileslug'     => $this->fileslug,
+                'filename'     => $this->filename,
+                'log_entries'  => $this->parseLogFile(),
+                'log_files'    => self::getLogsFilesList(),
+                'only_content' => $only_content,
+                'href'         => self::getSearchURL() . "?fileslug={$this->fileslug}&",
+            ]
+        );
+    }
+
+
+    /** Parse a log file and return an array of log entries
+     *
+     * @param int $max_nb_lines
+     *
+     * @return array of log entries
+     */
+    protected function parseLogFile(int $max_nb_lines = null): array
     {
         global $CFG_GLPI;
+
 
         $filepath = GLPI_LOG_DIR . "/" . $this->filename;
         if (is_dir($filepath) || !file_exists($filepath)) {
@@ -149,10 +171,11 @@ final class LogViewer extends CommonGLPI
         if ($max_bytes > filesize($filepath)) {
             $max_bytes = 0;
         }
-        if (is_null($nb_lines)) {
-            $nb_lines = $_SESSION['glpilist_limit'] ?? $CFG_GLPI['list_limit'];
+        if (is_null($max_nb_lines)) {
+            $max_nb_lines = $_SESSION['glpilist_limit'] ?? $CFG_GLPI['list_limit'];
         }
 
+        // explode log files by datetime pattern
         $logs  = file_get_contents($filepath, false, null, -$max_bytes);
         $datetime_pattern = "\[*\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\]*";
         $rawlines = preg_split(
@@ -162,7 +185,7 @@ final class LogViewer extends CommonGLPI
             PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
         );
 
-        $rawlines = array_splice($rawlines, -$nb_lines);
+        $rawlines = array_splice($rawlines, -$max_nb_lines);
 
         $lines = [];
         $index = 0;
@@ -185,17 +208,7 @@ final class LogViewer extends CommonGLPI
             $index++;
         }
 
-        TemplateRenderer::getInstance()->display(
-            'pages/admin/log_viewer.html.twig',
-            [
-                'fileslug'     => $this->fileslug,
-                'filename'     => $this->filename,
-                'log_entries'  => $lines,
-                'log_files'    => self::getLogsFilesList(),
-                'only_content' => $only_content,
-                'href'         => self::getSearchURL() . "?fileslug={$this->fileslug}&",
-            ]
-        );
+        return $lines;
     }
 
 
