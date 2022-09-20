@@ -37,12 +37,10 @@ include('../inc/includes.php');
 
 Session::checkRight("logs", READ);
 
-if (
-    isset($_GET['action'])
-    && $_GET['action'] == 'download_log_file'
-    && isset($_GET['fileslug'])
-) {
-    LogViewer::downloadLogFile($_GET['fileslug']);
+$log = new LogViewer($_GET['fileslug'] ?? null);
+
+if (($_GET['action'] ?? "") === 'download_log_file') {
+    $log->downloadLogFile();
     exit;
 }
 
@@ -54,7 +52,6 @@ Html::header(
     'logfile'
 );
 
-$logs = new LogViewer();
-$logs->showLogFile($_GET['fileslug'] ?? null);
+$log->showLogFile();
 
 Html::footer();

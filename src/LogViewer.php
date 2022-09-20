@@ -38,7 +38,18 @@ use Glpi\Event;
 
 class LogViewer extends CommonGLPI
 {
+    protected $fileslug = "";
+    protected $filename = "";
+
     public static $rightname = 'logs';
+
+
+    public function __construct(string $fileslug = null)
+    {
+        $this->fileslug = $fileslug;
+        $logfiles = self::getLogsFilesList();
+        $this->filename = $logfiles[$this->fileslug] ?? "";
+    }
 
 
     public static function getTypeName($nb = 0)
@@ -80,10 +91,8 @@ class LogViewer extends CommonGLPI
 
     /**
      * Display a link for events and a list of log files links
-     *
-     * @return void
      */
-    public function displayList()
+    public static function displayList()
     {
         TemplateRenderer::getInstance()->display(
             'pages/admin/logs_list.html.twig',
@@ -121,17 +130,14 @@ class LogViewer extends CommonGLPI
     /** Display a log file content
      *  We try to explode the log file by searching datetime patterns
      *
-     * @param string $fileslug the slug of the log file
+     * @param bool $only_content if true, don't return the html layout
      * @param int $nb_lines
-     *
-     * @return void
      */
-    public static function showLogFile(string $fileslug = "", bool $only_content = false, int $nb_lines = null)
+    public function showLogFile(bool $only_content = false, int $nb_lines = null)
     {
         global $CFG_GLPI;
 
-        $filename = self::getFilenameFromSlug($fileslug);
-        $filepath = GLPI_LOG_DIR . "/" . $filename;
+        $filepath = GLPI_LOG_DIR . "/" . $this->filename;
         if (is_dir($filepath) || !file_exists($filepath)) {
             echo "";
             return false;
@@ -181,12 +187,12 @@ class LogViewer extends CommonGLPI
         TemplateRenderer::getInstance()->display(
             'pages/admin/log_viewer.html.twig',
             [
-                'fileslug'     => $fileslug,
-                'filename'     => $filename,
+                'fileslug'     => $this->fileslug,
+                'filename'     => $this->filename,
                 'log_entries'  => $lines,
                 'log_files'    => self::getLogsFilesList(),
                 'only_content' => $only_content,
-                'href'         => self::getSearchURL() . "?fileslug=$fileslug&",
+                'href'         => self::getSearchURL() . "?fileslug={$this->fileslug}&",
             ]
         );
     }
@@ -194,15 +200,10 @@ class LogViewer extends CommonGLPI
 
     /**
      * Send a log file as attachment to the browser
-     *
-     * @param string $log_filename
-     *
-     * @return void
      */
-    public static function downloadLogFile(string $fileslug = "")
+    public function downloadLogFile()
     {
-        $filename = self::getFilenameFromSlug($fileslug);
-        $filepath = GLPI_LOG_DIR . "/" . $filename;
+        $filepath = GLPI_LOG_DIR . "/" . $this->filename;
         if (is_dir($filepath) || !file_exists($filepath)) {
             return;
         }
@@ -211,20 +212,6 @@ class LogViewer extends CommonGLPI
         header("Content-Transfer-Encoding: Binary");
         header("Content-disposition: attachment; filename=\"" . basename($filepath) . "\"");
         readfile($filepath);
-    }
-
-
-    /**
-     * Get the filename from a slug of a log file
-     *
-     * @param string $fileslug
-     *
-     * @return string the filename
-     */
-    protected static function getFilenameFromSlug(string $fileslug): string
-    {
-        $logfiles = self::getLogsFilesList();
-        return $logfiles[$fileslug] ?? "";
     }
 
 

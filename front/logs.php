@@ -44,7 +44,6 @@ Html::header(
     "logviewer"
 );
 
-$logs = new LogViewer();
-$logs->displayList();
+LogViewer::displayList();
 
 Html::footer();
