@@ -299,7 +299,7 @@ abstract class API
 
        // login on glpi
         if (!$auth->login($params['login'], $params['password'], $noAuto, false, $params['auth'])) {
-            $err = Toolbox::stripTags($auth->getErr());
+            $err = implode(' ', $auth->getErrors());
             if (
                 isset($params['user_token'])
                 && !empty($params['user_token'])
