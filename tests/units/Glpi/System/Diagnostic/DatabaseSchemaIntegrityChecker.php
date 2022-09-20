@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
+use Glpi\Toolbox\VersionParser;
 use org\bovigo\vfs\vfsStream;
 
 class DatabaseSchemaIntegrityChecker extends \GLPITestCase
@@ -1631,5 +1632,98 @@ SQL
 DIFF
             );
         }
+    }
+
+    protected function versionProvider(): iterable
+    {
+        // Current version -> can check
+        yield [
+            'version'              => GLPI_SCHEMA_VERSION,
+            'context'              => 'core',
+            'expected_can_check'   => true,
+            'expected_schema_path' => sprintf(
+                '%s/install/mysql/glpi-%s-empty.sql',
+                GLPI_ROOT,
+                VersionParser::getNormalizedVersion(GLPI_VERSION, false)
+            ),
+        ];
+
+        // Stable version with hash -> can check
+        yield [
+            'version'              => '10.0.2@1530dc89c7d9b131c2e2ea59fe0d6260fe93d831',
+            'context'              => 'core',
+            'expected_can_check'   => true,
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+        ];
+
+        // Stable version WITHOUT hash -> can check
+        yield [
+            'version'              => '10.0.2',
+            'context'              => 'core',
+            'expected_can_check'   => true,
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+        ];
+
+        // Unstable version with hash -> cannot check
+        yield [
+            'version'              => '10.0.2-dev@b130dc89c7d9b131c2e2ea59fe0d6260fe93d831',
+            'context'              => 'core',
+            'expected_can_check'   => false,
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+        ];
+
+        // Unstable version WITHOUT hash -> cannot check
+        yield [
+            'version'              => '10.0.2-dev',
+            'context'              => 'core',
+            'expected_can_check'   => false,
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+        ];
+
+        // Old unsupported version -> cannot check
+        yield [
+            'version'              => '0.0.1',
+            'context'              => 'core',
+            'expected_can_check'   => false,
+            'expected_schema_path' => null,
+        ];
+    }
+
+    /**
+     * @dataProvider versionProvider
+     */
+    public function testGetSchemaPath(
+        ?string $version,
+        string $context,
+        bool $expected_can_check,
+        ?string $expected_schema_path
+    ) {
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+        $this->newTestedInstance($db);
+
+        $getSchemaPath = new \ReflectionMethod($this->testedInstance, 'getSchemaPath');
+        $getSchemaPath->setAccessible(true);
+        $this->variable($getSchemaPath->invoke($this->testedInstance, $version, $context))->isEqualTo($expected_schema_path);
+    }
+
+    /**
+     * @dataProvider versionProvider
+     */
+    public function testCanCheckIntegrity(
+        ?string $version,
+        string $context,
+        bool $expected_can_check,
+        ?string $expected_schema_path
+    ) {
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+        $this->newTestedInstance($db);
+
+        $getSchemaPath = new \ReflectionMethod($this->testedInstance, 'getSchemaPath');
+        $getSchemaPath->setAccessible(true);
+        $this->variable($this->testedInstance->canCheckIntegrity($version, $context))->isEqualTo($expected_can_check, $version);
     }
 }

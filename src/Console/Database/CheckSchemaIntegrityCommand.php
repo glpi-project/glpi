@@ -40,8 +40,6 @@ use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Glpi\Toolbox\VersionParser;
-use Plugin;
 
 class CheckSchemaIntegrityCommand extends AbstractCommand
 {
@@ -65,6 +63,13 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
      * @var integer
      */
     const ERROR_REQUIRE_DB_UPDATE = 3;
+
+    /**
+     * Error code returned when a DB version is not supported.
+     *
+     * @var integer
+     */
+    const ERROR_UNSUPPORTED_VERSION = 4;
 
     protected $requires_db_up_to_date = false;
 
@@ -143,59 +148,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
     {
         global $CFG_GLPI;
 
-        $installed_version = $CFG_GLPI['dbversion'];
-        $current_version   = GLPI_SCHEMA_VERSION;
-        // Normalize versions: remove @sha suffix and stability flags
-        $install_version_normalized = VersionParser::getNormalizedVersion(preg_replace('/@.+$/', '', $installed_version), false);
-        $current_version_normalized = VersionParser::getNormalizedVersion(preg_replace('/@.+$/', '', $current_version), false);
-
-        if (
-            $install_version_normalized === $current_version_normalized
-            && $installed_version !== $current_version
-        ) {
-            // Installed version is same as current version, but with a different hash/stability flag.
-            // It was probably done from a branch in development or a pre-release.
-            // Check will likely find differences, as schema file changed, but these differences would
-            // probably be fixed by running update again.
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>'
-                    . sprintf(
-                        __('Cannot check database integrity of intermediate unstable version "%s". Please process to database update and run the command again.'),
-                        $installed_version
-                    )
-                    . '</error>',
-                self::ERROR_REQUIRE_DB_UPDATE
-            );
-        }
-
-        if (!$input->getOption('plugin')) {
-            // Check tables of core
-            $schema_file = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $install_version_normalized);
-            if (!file_exists($schema_file)) {
-                throw new \Glpi\Console\Exception\EarlyExitException(
-                    '<error>' . sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version) . '</error>',
-                    self::ERROR_UNABLE_TO_READ_EMPTYSQL
-                );
-            }
-            $context = 'core';
-        } else {
-            // check tables of a plugin
-            $plugin_key = $input->getOption('plugin');
-            if (!Plugin::isPluginActive($plugin_key)) {
-                throw new \Glpi\Console\Exception\EarlyExitException(
-                    '<error>' . sprintf(__('The plugin "%s" is not found or not activated.'), $plugin_key) . '</error>',
-                    self::ERROR_UNABLE_TO_READ_EMPTYSQL
-                );
-            }
-            $function_name = sprintf('plugin_%s_getSchemaPath', $plugin_key);
-            if (!function_exists($function_name) || ($schema_file = $function_name()) === null) {
-                throw new \Glpi\Console\Exception\EarlyExitException(
-                    '<error>' . sprintf(__('The plugin "%s" does not provide a SQL schema file.'), $plugin_key) . '</error>',
-                    self::ERROR_UNABLE_TO_READ_EMPTYSQL
-                );
-            }
-            $context = 'plugin:' . $plugin_key;
-        }
+        $plugin_key = $input->getOption('plugin');
 
         $checker = new DatabaseSchemaIntegrityChecker(
             $this->db,
@@ -207,8 +160,23 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             !$input->getOption('check-all-migrations') && !$input->getOption('check-unsigned-keys-migration')
         );
 
+        if ($plugin_key !== null) {
+            $context = 'plugin:' . $plugin_key;
+            $installed_version = null; // Cannot know installed schema of plugins
+        } else {
+            $context = 'core';
+            $installed_version = $CFG_GLPI['dbversion'];
+        }
+
+        if (!$checker->canCheckIntegrity($installed_version, $context)) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version) . '</error>',
+                self::ERROR_UNSUPPORTED_VERSION
+            );
+        }
+
         try {
-            $differences = $checker->checkCompleteSchema($schema_file, true, $context);
+            $differences = $checker->checkCompleteSchemaForVersion($installed_version, true, $context);
         } catch (\Throwable $e) {
             $output->writeln(
                 '<error>' . $e->getMessage() . '</error>',
