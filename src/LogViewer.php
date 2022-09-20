@@ -36,7 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 
-class LogViewer extends CommonGLPI
+final class LogViewer extends CommonGLPI
 {
     protected $fileslug = "";
     protected $filename = "";
