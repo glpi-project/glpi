@@ -798,4 +798,9 @@ class NetworkPort extends InventoryAsset
             'networkports_id_2' => $netports_id_2,
         ]);
     }
+
+    public function getItemtype(): string
+    {
+        return \NetworkPort::class;
+    }
 }

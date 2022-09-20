@@ -408,7 +408,7 @@ class RuleImportAsset extends DbTestCase
             ],
             [
                 'action_type' => 'assign',
-                'field'       => '_fusion',
+                'field'       => '_inventory',
                 'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
             ],
             "Computer update (by mac)"
@@ -430,7 +430,7 @@ class RuleImportAsset extends DbTestCase
             ],
             [
                 'action_type' => 'assign',
-                'field'       => '_fusion',
+                'field'       => '_inventory',
                 'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
             ],
             "Computer import (by mac)"
@@ -538,7 +538,7 @@ class RuleImportAsset extends DbTestCase
             ],
             [
                 'action_type' => 'assign',
-                'field'       => '_fusion',
+                'field'       => '_inventory',
                 'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT,
             ],
             "Computer update (by mac)"

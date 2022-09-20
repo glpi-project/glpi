@@ -41,11 +41,6 @@ use Glpi\Inventory\Conf;
 
 class Memory extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceMemory');
-    }
-
     public function prepare(): array
     {
         $mapping = [
@@ -110,5 +105,10 @@ class Memory extends Device
     public function checkConf(Conf $conf): bool
     {
         return $conf->component_memory == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceMemory::class;
     }
 }

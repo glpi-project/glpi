@@ -112,7 +112,7 @@ class OperatingSystem extends InventoryAsset
             'items_id'  => $this->item->fields['id']
         ]);
 
-        $input_os = $this->handleInput($val) + [
+        $input_os = $this->handleInput($val, $ios) + [
             'itemtype'                          => $this->item->getType(),
             'items_id'                          => $this->item->fields['id'],
             'is_dynamic'                        => 1,
@@ -120,7 +120,7 @@ class OperatingSystem extends InventoryAsset
         ];
 
         if (!$ios->isNewItem()) {
-           //OS exists, check for updates
+            //OS exists, check for updates
             $same = true;
             foreach ($input_os as $key => $value) {
                 if (isset($ios->fields[$key]) && $ios->fields[$key] != $value) {
@@ -169,5 +169,10 @@ class OperatingSystem extends InventoryAsset
     public function getId()
     {
         return $this->operatingsystems_id;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_OperatingSystem::class;
     }
 }

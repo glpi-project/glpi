@@ -40,11 +40,6 @@ use Glpi\Inventory\Conf;
 
 class Simcard extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceSimcard');
-    }
-
     public function prepare(): array
     {
         $mapping = [
@@ -63,5 +58,10 @@ class Simcard extends Device
     public function checkConf(Conf $conf): bool
     {
         return $conf->component_simcard == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceSimcard::class;
     }
 }

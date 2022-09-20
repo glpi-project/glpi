@@ -4611,7 +4611,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
         $action = [
             'action_type' => 'assign',
-            'field'       => '_fusion',
+            'field'       => '_inventory',
             'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
         ];
         $rule = new \RuleImportAsset();
@@ -4668,7 +4668,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
         $action = [
             'action_type' => 'assign',
-            'field'       => '_fusion',
+            'field'       => '_inventory',
             'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
         ];
         $rule = new \RuleImportAsset();

@@ -40,11 +40,6 @@ use Glpi\Inventory\Conf;
 
 class Processor extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceProcessor');
-    }
-
     public function prepare(): array
     {
         $mapping = [
@@ -78,5 +73,10 @@ class Processor extends Device
     public function checkConf(Conf $conf): bool
     {
         return $conf->component_processor == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceProcessor::class;
     }
 }

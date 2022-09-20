@@ -49,4 +49,9 @@ class Phone extends MainAsset
     {
         return PhoneType::getForeignKeyField();
     }
+
+    public function getItemtype(): string
+    {
+        return \Phone::class;
+    }
 }

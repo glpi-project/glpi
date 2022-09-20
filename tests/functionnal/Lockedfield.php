@@ -602,4 +602,309 @@ class Lockedfield extends DbTestCase
 
         $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => 'Greffe Charron']);
     }
+
+    public function testLockedRelations()
+    {
+        $computer = new \Computer();
+        $cos = new \Item_OperatingSystem();
+        $aos = new \OperatingSystemArchitecture();
+        $manufacturer = new \Manufacturer();
+        $iav = new \ComputerAntivirus();
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <OPERATINGSYSTEM>
+      <ARCH>x86_64</ARCH>
+      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
+      <FQDN>test-pc002</FQDN>
+      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
+      <HOSTID>a8c07701</HOSTID>
+      <KERNEL_NAME>linux</KERNEL_NAME>
+      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
+      <NAME>Fedora</NAME>
+      <TIMEZONE>
+        <NAME>CEST</NAME>
+        <OFFSET>+0200</OFFSET>
+      </TIMEZONE>
+      <VERSION>28 (Workstation Edition)</VERSION>
+    </OPERATINGSYSTEM>
+    <ANTIVIRUS>
+      <COMPANY>Microsoft Corporation</COMPANY>
+      <ENABLED>1</ENABLED>
+      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
+      <NAME>Microsoft Security Essentials</NAME>
+      <UPTODATE>1</UPTODATE>
+      <VERSION>4.3.216.0</VERSION>
+      <EXPIRATION>01/04/2019</EXPIRATION>
+    </ANTIVIRUS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $lockedfield = new \Lockedfield();
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $this->boolean($cos->getFromDBByCrit(['items_id' => $computers_id]))->isTrue();
+
+        //check OS version
+        $this->boolean($aos->getFromDBByCrit(['name' => 'x86_64']))->isTrue();
+        $archs_id = $aos->fields['id'];
+        $this->integer($cos->fields['operatingsystemarchitectures_id'])->isIdenticalTo($archs_id);
+
+        //check antivirus manufacturer
+        $this->boolean($iav->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->boolean($manufacturer->getFromDBByCrit(['name' => 'Microsoft Corporation']))->isTrue();
+        $manufacturers_id = $manufacturer->fields['id'];
+        $this->integer($iav->fields['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        //manually update OS architecture field
+        $newarchs_id = $aos->add(['name' => 'i386']);
+        $this->integer($newarchs_id)->isGreaterThan(0);
+
+        $this->boolean(
+            $cos->update([
+                'id' => $cos->fields['id'],
+                'operatingsystemarchitectures_id' => $newarchs_id,
+                'id_dynamic' => true
+            ])
+        )->isTrue();
+        $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => null]);
+
+        //manually update AV manufacturer field
+        $newmanufacturers_id = $manufacturer->add(['name' => 'Crosoft']);
+        $this->integer($newmanufacturers_id)->isGreaterThan(0);
+
+        $this->boolean(
+            $iav->update([
+                'id' => $iav->fields['id'],
+                'manufacturers_id' => $newmanufacturers_id,
+                'id_dynamic' => true
+            ])
+        )->isTrue();
+        $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isIdenticalTo(['manufacturers_id' => null]);
+
+        //replay
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //make sure architecture is still the correct one
+        $this->boolean($cos->getFromDBByCrit(['items_id' => $computers_id]))->isTrue();
+        $this->integer($cos->fields['operatingsystemarchitectures_id'])->isIdenticalTo($newarchs_id);
+
+        $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => 'x86_64']);
+
+        //make sure manufacturer is still the correct one
+        $this->boolean($iav->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->integer($iav->fields['manufacturers_id'])->isIdenticalTo($newmanufacturers_id);
+
+        $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isIdenticalTo(['manufacturers_id' => 'Microsoft Corporation']);
+    }
+
+    public function testLockDatabasesManufacturer()
+    {
+        $lockedfield = new \Lockedfield();
+
+        //IMPORT rule
+        $criteria = [
+            [
+                'condition' => 0,
+                'criteria'  => 'itemtype',
+                'pattern'   => 'DatabaseInstance',
+            ], [
+                'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                'criteria'  => 'name',
+                'pattern'   => '1'
+            ]
+        ];
+        $action = [
+            'action_type' => 'assign',
+            'field'       => '_inventory',
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
+        ];
+        $rule = new \RuleImportAsset();
+        $collection = new \RuleImportAssetCollection();
+        $rulecriteria = new \RuleCriteria();
+
+        $input = [
+            'is_active' => 1,
+            'name'      => 'Database server import (by name)',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportAsset',
+        ];
+
+        $rules_id = $rule->add($input);
+        $this->integer($rules_id)->isGreaterThan(0);
+        $this->boolean($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE))->isTrue();
+
+        // Add criteria
+        foreach ($criteria as $crit) {
+            $input = [
+                'rules_id'  => $rules_id,
+                'criteria'  => $crit['criteria'],
+                'pattern'   => $crit['pattern'],
+                'condition' => $crit['condition'],
+            ];
+            $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
+        }
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => $action['action_type'],
+            'field'       => $action['field'],
+            'value'       => $action['value'],
+        ];
+        $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
+
+        //UPDATE rule
+        $criteria = [
+            [
+                'condition' => 0,
+                'criteria'  => 'itemtype',
+                'pattern'   => 'DatabaseInstance',
+            ], [
+                'condition' => \RuleImportAsset::PATTERN_FIND,
+                'criteria'  => 'name',
+                'pattern'   => '1'
+            ], [
+                'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                'criteria' => 'name',
+                'pattern' => '1'
+            ]
+        ];
+        $action = [
+            'action_type' => 'assign',
+            'field'       => '_inventory',
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
+        ];
+        $rule = new \RuleImportAsset();
+        $collection = new \RuleImportAssetCollection();
+        $rulecriteria = new \RuleCriteria();
+
+        $input = [
+            'is_active' => 1,
+            'name'      => 'Database server update (by name)',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportAsset',
+        ];
+
+        $prev_rules_id = $rules_id;
+        $rules_id = $rule->add($input);
+        $this->integer($rules_id)->isGreaterThan(0);
+        $this->boolean($collection->moveRule($rules_id, $prev_rules_id, $collection::MOVE_BEFORE))->isTrue();
+
+        // Add criteria
+        foreach ($criteria as $crit) {
+            $input = [
+                'rules_id'  => $rules_id,
+                'criteria'  => $crit['criteria'],
+                'pattern'   => $crit['pattern'],
+                'condition' => $crit['condition'],
+            ];
+            $this->integer((int)$rulecriteria->add($input))->isGreaterThan(0);
+        }
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => $action['action_type'],
+            'field'       => $action['field'],
+            'value'       => $action['value'],
+        ];
+        $this->integer((int)$ruleaction->add($input))->isGreaterThan(0);
+
+        //keep only postgresql
+        $json = json_decode(file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_2_partial_dbs.json'));
+        $pgsql = $json->content->databases_services[1];
+        $services = [$pgsql];
+        $json->content->databases_services = $services;
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check created databases & instances
+        $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(1);
+
+        //ensure database version has been updated
+        $database = new \DatabaseInstance();
+        $this->boolean($database->getFromDBByCrit(['name' => 'PostgreSQL 13']))->isTrue();
+        $this->string($database->fields['version'])->isIdenticalTo('13.2.3');
+
+        $manufacturer = new \Manufacturer();
+        $this->boolean($manufacturer->getFromDBByCrit(['name' => 'PostgreSQL']))->isTrue();
+        $manufacturers_id = $manufacturer->fields['id'];
+        $this->integer($database->fields['manufacturers_id'])->isIdenticalTo($manufacturers_id);
+
+        $newmanufacturers_id = $manufacturer->add(['name' => 'For test']);
+        $this->integer($newmanufacturers_id)->isGreaterThan(0);
+
+        //manually update manufacturer to lock it
+        $this->boolean(
+            $database->update([
+                'id' => $database->fields['id'],
+                'manufacturers_id' => $newmanufacturers_id
+            ])
+        )->isTrue();
+        $this->array($lockedfield->getLockedValues($database->getType(), $database->fields['id']))->isIdenticalTo(['manufacturers_id' => null]);
+
+        $json = json_decode(file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_2_partial_dbs.json'));
+        $pgsql = $json->content->databases_services[1];
+        $services = [$pgsql];
+        $json->content->databases_services = $services;
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check created databases & instances
+        $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(1);
+
+        //make sure manufacturer is still the correct one
+        $database = new \DatabaseInstance();
+        $this->boolean($database->getFromDBByCrit(['name' => 'PostgreSQL 13']))->isTrue();
+        $this->string($database->fields['version'])->isIdenticalTo('13.2.3');
+        $this->integer($database->fields['manufacturers_id'])->isIdenticalTo($newmanufacturers_id);
+        $this->array($lockedfield->getLockedValues($database->getType(), $database->fields['id']))->isIdenticalTo(['manufacturers_id' => 'PostgreSQL']);
+    }
 }

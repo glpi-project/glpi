@@ -42,11 +42,6 @@ class Controller extends Device
 {
     protected $extra_data = ['ignored' => null];
 
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceControl');
-    }
-
     public function prepare(): array
     {
         $mapping = [
@@ -101,5 +96,10 @@ class Controller extends Device
     public function checkConf(Conf $conf): bool
     {
         return $conf->component_control == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceControl::class;
     }
 }

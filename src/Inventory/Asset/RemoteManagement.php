@@ -142,4 +142,9 @@ class RemoteManagement extends InventoryAsset
     {
         return true;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_RemoteManagement::class;
+    }
 }
