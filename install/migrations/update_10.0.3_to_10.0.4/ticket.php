@@ -51,6 +51,12 @@ if (!$DB->fieldExists("glpi_tickets", "takeintoaccountdate")) {
         ]
     ]);
 
+    $query = $DB->buildUpdate('glpi_tickets', 
+	    [ 'takeintoaccountdate' => new QueryParam() ],
+	    [ 'id' => new QueryParam() ]
+    );
+    $stmt = $DB->prepare($query);
+
     foreach ($tickets_iterator as $data) {
        $ticket = new Ticket();
        $ticket->getFromDB($data['id']);
@@ -74,8 +80,8 @@ if (!$DB->fieldExists("glpi_tickets", "takeintoaccountdate")) {
           // No calendar defined so assume 24/7 working hours
           $tia_update  = date('Y-m-d H:i:s', strtotime($ticket_date) + $tia_delay);
        }
-    
-       $query = "UPDATE `glpi_tickets` SET takeintoaccountdate = '" . $tia_update . "' WHERE id=" . $data['id'];
-       $DB->queryOrDie($query, '10.0.3 set takeintoaccountdate on existing tickets');
+       
+       $stmt->bind_param('si', $tia_update, $data['id']);  
+       $DB->executeStatement($stmt);
     }
 }

@@ -6198,7 +6198,7 @@ JAVASCRIPT;
                 $is_late = !empty($value)
                     && $status != CommonITILObject::WAITING
                     && (
-                        $tia_date > strtotime($value)
+                        $tia_date > $value
                         || ($tia_date == null && $value < $_SESSION['glpi_currenttime'])
                     );
 
