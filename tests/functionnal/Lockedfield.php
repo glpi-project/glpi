@@ -900,7 +900,7 @@ class Lockedfield extends DbTestCase
         //check created databases & instances
         $this->integer(countElementsInTable(\DatabaseInstance::getTable()))->isIdenticalTo(1);
 
-        //ensure database version has been updated
+        //make sure manufacturer is still the correct one
         $database = new \DatabaseInstance();
         $this->boolean($database->getFromDBByCrit(['name' => 'PostgreSQL 13']))->isTrue();
         $this->string($database->fields['version'])->isIdenticalTo('13.2.3');

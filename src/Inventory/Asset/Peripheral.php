@@ -168,7 +168,6 @@ class Peripheral extends InventoryAsset
                     $items_id = $data['found_inventories'][0];
                     $peripheral->getFromDB($items_id);
                     $handled_input = $this->handleInput($val, $peripheral);
-                    //FIXME: handleInput
                     $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + $handled_input), false);
                 }
 
