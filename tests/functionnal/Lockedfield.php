@@ -750,7 +750,7 @@ class Lockedfield extends DbTestCase
         ];
         $action = [
             'action_type' => 'assign',
-            'field'       => '_fusion',
+            'field'       => '_inventory',
             'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
         ];
         $rule = new \RuleImportAsset();
@@ -807,7 +807,7 @@ class Lockedfield extends DbTestCase
         ];
         $action = [
             'action_type' => 'assign',
-            'field'       => '_fusion',
+            'field'       => '_inventory',
             'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
         ];
         $rule = new \RuleImportAsset();
