@@ -514,6 +514,8 @@ class DatabaseSchemaIntegrityChecker
 
         // Normalize indexes definitions
         $indexes_replacements = [
+            // Remove comments
+            '/ COMMENT \'.+\'/i' => '',
             // Always use `KEY` word
             '/INDEX\s*(`\w+`)/' => 'KEY $1',
             // Add `KEY` word when missing from UNIQUE/FULLTEXT

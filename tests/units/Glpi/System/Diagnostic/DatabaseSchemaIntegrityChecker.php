@@ -148,7 +148,8 @@ CREATE TABLE `table_{$table_increment}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `is_valid` tinyint(4) NOT NULL COMMENT 'is object valid ?',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `is_valid` (`is_valid`) COMMENT 'this is a key'
 ) ENGINE=InnoDB COMMENT='some comment with an escaped \' backquote' AUTO_INCREMENT=15
 SQL,
                 'normalized_sql' => <<<SQL
@@ -156,7 +157,8 @@ CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `is_valid` tinyint NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `is_valid` (`is_valid`)
 ) ENGINE=InnoDB
 SQL,
                 'effective_sql'  => <<<SQL
@@ -164,7 +166,8 @@ CREATE TABLE `table_{$table_increment}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT 'name of the object',
   `is_valid` tinyint(4) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `is_valid` (`is_valid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15
 SQL,
                 'differences'    => null,
