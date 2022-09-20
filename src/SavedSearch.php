@@ -796,15 +796,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             ],
             'FROM'      => $table,
             'LEFT JOIN' => [
-                $utable => ['ON' => [
-                    $utable  => 'savedsearches_id',
-                    $table   => 'id', [
-                        'AND' => [
-                            "$table.itemtype"  => new \QueryExpression("$utable.itemtype"),
-                            "$utable.users_id" => Session::getLoginUserID()
-                        ]
+                $utable => [
+                    'ON' => [
+                        $utable  => 'savedsearches_id',
+                        $table   => 'id'
                     ]
-                ]
                 ]
             ],
             'ORDERBY'   => [

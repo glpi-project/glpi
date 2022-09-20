@@ -115,6 +115,22 @@ class SavedSearch extends DbTestCase
                 'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
             ])
         )->isTrue();
+
+        $this->boolean(
+            (bool)$bk->add([
+                'name'         => 'private',
+                'type'         => 1,
+                'itemtype'     => 'Ticket',
+                'users_id'     => $uid + 1,
+                'is_private'   => 1,
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+            ])
+        )->isTrue();
+        // With UPDATE 'config' right, we can see all bookmarks
+        $this->integer(count($bk->getMine()))->isEqualTo(3);
+        $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
         $this->integer(count($bk->getMine()))->isEqualTo(2);
 
         //add public saved searches read right for normal profile
