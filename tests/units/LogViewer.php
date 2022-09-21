@@ -138,4 +138,14 @@ LOG,
         ->isNotEmpty()
         ->isEqualToContentsOfFile(vfsStream::url('glpi_logs/test.log'));
     }
+
+
+    public function testEmptyFile()
+    {
+        $log = new \LogViewer('test', vfsStream::url('glpi_logs'));
+
+        $this->boolean($log->empty())->isTrue();
+        $this->string(file_get_contents(vfsStream::url('glpi_logs/test.log')))
+            ->isEmpty();
+    }
 }

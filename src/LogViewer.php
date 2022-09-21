@@ -228,6 +228,16 @@ final class LogViewer extends CommonGLPI
     }
 
 
+    /** clear a log file
+     *
+     * @return bool
+     */
+    public function empty(): bool
+    {
+        return file_put_contents($this->filepath, '') >= 0;
+    }
+
+
     public static function getIcon()
     {
         return "ti ti-news";

@@ -39,19 +39,27 @@ Session::checkRight("logs", READ);
 
 $log = new LogViewer($_GET['fileslug'] ?? null);
 
-if (($_GET['action'] ?? "") === 'download_log_file') {
-    $log->download();
-    exit;
+switch ($_GET['action'] ?? "") {
+   case 'download':
+        $log->download();
+        exit;
+
+   case 'empty':
+        $log->empty();
+        Html::back();
+        break;
+
+   default:
+        Html::header(
+            LogViewer::getTypeName(Session::getPluralNumber()),
+            $_SERVER['PHP_SELF'],
+            'admin',
+            'logviewer',
+            'logfile'
+        );
+
+        $log->showLogFile();
+
+        Html::footer();
+        break;
 }
-
-Html::header(
-    LogViewer::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
-    'admin',
-    'logviewer',
-    'logfile'
-);
-
-$log->showLogFile();
-
-Html::footer();
