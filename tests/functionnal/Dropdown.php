@@ -1249,6 +1249,188 @@ class Dropdown extends DbTestCase
     }
 
     /**
+     * Summary of testShow
+     */
+    public function testShow()
+    {
+        $expected = <<<'EXPECTED'
+<div class='btn-group btn-group-sm ' role='group'><script type="text/javascript">
+//<![CDATA[
+
+$(function() {
+         var params_dropdown_entities_id123456 = {multiple: 1,
+values: [0,1],
+valuesnames: ["Root entity","Root entity > _test_root_entity"],
+display_emptychoice: 0,
+specific_tags: [],
+itemtype: "Entity",
+displaywith: [],
+emptylabel: "-----",
+condition: [],
+used: [],
+toadd: [],
+entity_restrict: -1,
+permit_select_parent: 0,
+class: "form-select",
+_idor_token: "8961133e2dec757572a4aeed81419b585e9cead899f1c6bea9e344555cfa89a2",
+order: null,
+};
+
+         const select2_el = $('#dropdown_entities_id123456').select2({
+            width: '',
+            multiple: '1',
+            placeholder: '',
+            allowClear: false,
+            minimumInputLength: 0,
+            quietMillis: 100,
+            dropdownAutoWidth: true,
+            dropdownParent: $('#dropdown_entities_id123456').closest('div.modal, body'),
+            minimumResultsForSearch: 10,
+            ajax: {
+               url: '/glpi/ajax/getDropdownValue.php',
+               dataType: 'json',
+               type: 'POST',
+               data: function (params) {
+                  query = params;
+                  return $.extend({}, params_dropdown_entities_id123456, {
+                     searchText: params.term,
+                     page_limit: 100, // page size
+                     page: params.page || 1, // page number
+                  });
+               },
+               processResults: function (data, params) {
+                  params.page = params.page || 1;
+                  var more = (data.count >= 100);
+
+                  return {
+                     results: data.results,
+                     pagination: {
+                           more: more
+                     }
+                  };
+               }
+            },
+            templateResult: templateResult,
+            templateSelection: templateSelection
+         })
+         .bind('setValue', function(e, value) {
+            $.ajax('/glpi/ajax/getDropdownValue.php', {
+               data: $.extend({}, params_dropdown_entities_id123456, {
+                  _one_id: value,
+               }),
+               dataType: 'json',
+               type: 'POST',
+            }).done(function(data) {
+
+               var iterate_options = function(options, value) {
+                  var to_return = false;
+                  $.each(options, function(index, option) {
+                     if (option.hasOwnProperty('id')
+                         && option.id == value) {
+                        to_return = option;
+                        return false; // act as break;
+                     }
+
+                     if (option.hasOwnProperty('children')) {
+                        to_return = iterate_options(option.children, value);
+                     }
+                  });
+
+                  return to_return;
+               };
+
+               var option = iterate_options(data.results, value);
+               if (option !== false) {
+                  var newOption = new Option(option.text, option.id, true, true);
+                   $('#dropdown_entities_id123456').append(newOption).trigger('change');
+               }
+            });
+         });
+          $('label[for=dropdown_entities_id123456]').on('click', function(){ $('#dropdown_entities_id123456').select2('open'); }); $('#dropdown_entities_id123456').on('select2:open', function(e){    const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${e.target.id}-results']`);    if (search_input) {       search_input.focus();    } });});
+
+//]]>
+</script><select name="entities_id" id="dropdown_entities_id123456" multiple="multiple" class="form-select"><option value="0" selected="selected">Root entity</option><option value="1" selected="selected">Root entity &gt; _test_root_entity</option></select> <div class="btn btn-outline-secondary"
+                           title="Add" data-bs-toggle="modal" data-bs-target="#add_dropdown_entities_id123456"><script type='text/javascript'>      $(function() {
+         myModalEl123456 = document.getElementById('add_dropdown_entities_id123456');
+         myModal123456   = new bootstrap.Modal(myModalEl123456);
+
+         // move modal to body
+         $(myModalEl123456).appendTo($("body"));
+
+         myModalEl123456.addEventListener('show.bs.modal', function () {
+            $('#iframeadd_dropdown_entities_id123456').attr('src','/glpi/front/entity.form.php?_in_modal=1').removeClass('hidden');
+         });
+         myModalEl123456.addEventListener('hide.bs.modal', function () {
+            if (false) {
+               window.location.reload()
+            }
+         });
+
+         if (false) {
+            myModal123456.show();
+         }
+
+         document.getElementById('iframeadd_dropdown_entities_id123456').onload = function() {
+            if (500 !== 'undefined') {
+               var h =  500;
+            } else {
+               var h =  $('#iframeadd_dropdown_entities_id123456').contents().height();
+            }
+            if (1050 !== 'undefined') {
+               var w =  1050;
+            } else {
+               var w =  $('#iframeadd_dropdown_entities_id123456').contents().width();
+            }
+
+            $('#iframeadd_dropdown_entities_id123456')
+               .height(h);
+
+            if (w >= 700) {
+               $('#add_dropdown_entities_id123456 .modal-dialog').addClass('modal-xl');
+            } else if (w >= 500) {
+               $('#add_dropdown_entities_id123456 .modal-dialog').addClass('modal-lg');
+            } else if (w <= 300) {
+               $('#add_dropdown_entities_id123456 .modal-dialog').addClass('modal-sm');
+            }
+
+            // reajust height to content
+            myModal123456.handleUpdate()
+         };
+      });</script><div id="add_dropdown_entities_id123456" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                     <h3></h3>
+                  </div>
+                  <div class="modal-body">
+                     <iframe id='iframeadd_dropdown_entities_id123456' class="iframe hidden"
+                        width="100%" height="400" frameborder="0">
+                     </iframe>
+                  </div>
+               </div>
+            </div>
+         </div><span data-bs-toggle='tooltip'>
+              <i class='fa-fw ti ti-plus'></i>
+              <span class='sr-only'>Add</span>
+                </span></div></div>
+EXPECTED;
+
+        $this->login();
+
+        $params['_idor_token'] = \Session::getNewIDORToken('Entity');
+        $result = \Dropdown::show('Entity', [
+            'display' => false,
+            'multiple' => true,
+            'value' => [0, 1],
+            'rand' => "123456"
+        ]);
+        $result = preg_replace('/^_idor_token: .*,$/m', '_idor_token: "8961133e2dec757572a4aeed81419b585e9cead899f1c6bea9e344555cfa89a2",', $result);
+        $result = preg_replace(['/myModal[0-9]+/', '/myModalEl[0-9]+/'], ['myModal123456','myModalEl123456' ], $result);
+        $this->string($result)->isIdenticalTo($expected);
+    }
+
+    /**
      * Test getDropdownValue with paginated results on
      * an CommonTreeDropdown
      *
