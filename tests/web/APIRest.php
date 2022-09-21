@@ -1325,7 +1325,7 @@ class APIRest extends APIBaseClass
         $headers = ['Session-Token' => $this->session_token];
         $rand = mt_rand();
 
-        // Group user for our tests
+        // Group used for our tests
         $groups_id = getItemByTypeName("Group", "_test_group_1", true);
 
         // Create ticket
@@ -1344,7 +1344,6 @@ class APIRest extends APIBaseClass
         $tickets_id = $data['id'];
 
         // Add group
-        var_dump($tickets_id);
         $input = [
             'input' => [
                 '_actors' => [
