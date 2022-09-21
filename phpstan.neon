@@ -8,6 +8,8 @@ parameters:
         - src
     scanDirectories:
         - inc
+    stubFiles:
+        - stubs/glpi_constants.php
     ignoreErrors:
         - '/Call to static method \w+\(\) on an unknown class phpCAS/'
         - '/Class Ldap\\Connection not found/'
