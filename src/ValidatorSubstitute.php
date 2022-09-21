@@ -207,19 +207,19 @@ final class ValidatorSubstitute extends CommonDBTM
             // Delete old substitutes which are not in the new substitutes list
             $substitutes_to_delete = array_diff($old_substitutes, $input['substitutes']);
             if (count($substitutes_to_delete) > 0) {
-                $success = $success && $validator_substitute->deleteByCriteria([
+                $success = $validator_substitute->deleteByCriteria([
                     'users_id' => $validator,
                     'users_id_substitute' => $substitutes_to_delete,
-                ]);
+                ]) && $success;
             }
 
             // Add the new substitutes which are not in the old substitutes list
             $substitutes_to_add = array_diff($input['substitutes'], $old_substitutes);
             foreach ($substitutes_to_add as $substitute) {
-                $success = $success && $validator_substitute->add([
+                $success = $validator_substitute->add([
                     'users_id' => $validator,
                     'users_id_substitute' => $substitute,
-                ]);
+                ]) && $success;
             }
         }
 
