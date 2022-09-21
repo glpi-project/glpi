@@ -136,14 +136,14 @@ final class ValidatorSubstitute extends CommonDBTM
 
     public function showForUser(User $user): bool
     {
-        if ($item->isNewItem()) {
+        if ($user->isNewItem()) {
             return false;
         }
 
-        /** @var User $item */
+        /** @var User $user */
         if (
-            ($item->fields['id'] != Session::getLoginUserID())
-            && !$item->currentUserHaveMoreRightThan($item->fields['id'])
+            ($user->fields['id'] != Session::getLoginUserID())
+            && !$user->currentUserHaveMoreRightThan($user->fields['id'])
         ) {
             return false;
         }
@@ -151,9 +151,9 @@ final class ValidatorSubstitute extends CommonDBTM
         // the user cannot select himself as a substitute
         TemplateRenderer::getInstance()->display('pages/admin/user.substitute.html.twig', [
             'item'        => $this,
-            'user'        => $item,
-            'substitutes' => self::getSubstitutes($item->fields['id']),
-            'delegators'  => self::getDelegators($item->fields['id']),
+            'user'        => $user,
+            'substitutes' => self::getSubstitutes($user->fields['id']),
+            'delegators'  => self::getDelegators($user->fields['id']),
             'params'      => [
                 'target'      => self::getFormURL(),
                 'canedit'     => true,
@@ -225,20 +225,20 @@ final class ValidatorSubstitute extends CommonDBTM
 
         $user = User::getById($input['users_id']);
 
-        $input['substitution_start_date'] = $input['substitution_start_date'] ?? $user->fields['substitution_start_date'];
-        $input['substitution_start_date'] = $input['substitution_start_date'] ?? '';
+        $start_date = $input['substitution_start_date'] ?? $user->fields['substitution_start_date'];
+        $input['substitution_start_date'] = is_string($start_date) && strtotime($start_date) !== false ? $start_date : null;
 
-        $input['substitution_end_date'] = $input['substitution_end_date'] ?? $user->fields['substitution_end_date'];
-        $input['substitution_end_date'] = $input['substitution_end_date'] ?? '';
+        $end_date = $input['substitution_end_date'] ?? $user->fields['substitution_end_date'];
+        $input['substitution_end_date'] = is_string($end_date) && strtotime($end_date) !== false ? $end_date : null;
 
         // Check sanity of substitution date range
-        if ($input['substitution_start_date'] != '' && $input['substitution_end_date'] != '') {
+        if ($input['substitution_start_date'] !== null && $input['substitution_end_date'] !== null) {
             if ($input['substitution_end_date'] < $input['substitution_start_date']) {
                 $input['substitution_end_date'] = $input['substitution_start_date'];
             }
         } else {
-            $input['substitution_start_date'] = $input['substitution_start_date'] == '' ? 'NULL' : $input['substitution_start_date'];
-            $input['substitution_end_date']   = $input['substitution_end_date'] == '' ? 'NULL' : $input['substitution_end_date'];
+            $input['substitution_start_date'] = $input['substitution_start_date'] ?? 'NULL';
+            $input['substitution_end_date']   = $input['substitution_end_date'] ?? 'NULL';
         }
 
         // Update begin and end date to apply substitutes
