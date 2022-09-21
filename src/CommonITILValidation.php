@@ -774,6 +774,46 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     final public static function getTargetCriteriaForUser(int $users_id, bool $search_in_groups = true): array
     {
+        $substitute_subQuery = new QuerySubQuery([
+            'SELECT'     => 'validator_users.id',
+            'FROM'       => User::getTable() . ' as validator_users',
+            'INNER JOIN' => [
+                ValidatorSubstitute::getTable() => [
+                    'ON' => [
+                        ValidatorSubstitute::getTable() => User::getForeignKeyField(),
+                        'validator_users' => 'id',
+                        [
+                            'AND' => [
+                                [
+                                    'OR' => [
+                                        [
+                                            'validator_users.substitution_start_date' => null,
+                                        ],
+                                        [
+                                            'validator_users.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
+                                        ],
+                                    ],
+                                ],
+                                [
+                                    'OR' => [
+                                        [
+                                            'validator_users.substitution_end_date' => null,
+                                        ],
+                                        [
+                                            'validator_users.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
+                                        ],
+                                    ],
+                                ],
+                            ]
+                        ]
+                    ],
+                ],
+            ],
+            'WHERE'  => [
+                ValidatorSubstitute::getTable() . '.users_id_substitute' => $users_id,
+            ],
+        ]);
+
         $target_criteria = [
             'OR' => [
                 [
@@ -782,39 +822,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 ],
                 'AND' => [
                     static::getTableField('itemtype_target') => User::class,
-                    static::getTableField('items_id_target') => new QuerySubQuery([
-                        'SELECT'     => 'validator_users.id',
-                        'FROM'       => User::getTable() . ' as validator_users',
-                        'INNER JOIN' => [
-                            ValidatorSubstitute::getTable() => [
-                                'ON' => [
-                                    'validator_users' => 'id',
-                                    ValidatorSubstitute::getTable() => User::getForeignKeyField(),
-                                ],
-                            ],
-                        ],
-                        'WHERE' => [
-                            [
-                                'OR' => [
-                                    [
-                                        'validator_users.substitution_start_date'  => null,
-                                    ],
-                                    [
-                                        'validator_users.substitution_start_date'  => ['<=', new QueryExpression('NOW()')],
-                                    ],
-                                ],
-                            ], [
-                                'OR' => [
-                                    [
-                                        'validator_users.substitution_end_date' => null,
-                                    ],
-                                    [
-                                        'validator_users.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ]),
+                    static::getTableField('items_id_target') => $substitute_subQuery,
                 ],
             ],
         ];
@@ -833,51 +841,13 @@ abstract class CommonITILValidation extends CommonDBChild
                                         Group_User::getTableField('users_id') => $users_id,
                                     ],
                                     [
-                                        Group_User::getTableField('users_id') => new QuerySubQuery([
-                                            'SELECT' => 'users_id',
-                                            'FROM'   => ValidatorSubstitute::getTable(),
-                                            'INNER JOIN' => [
-                                                User::getTable() => [
-                                                    'FKEY' => [
-                                                        ValidatorSubstitute::getTable() => 'users_id',
-                                                        User::getTable() => 'id',
-                                                        [
-                                                            'AND' => [
-                                                                [
-                                                                    'OR' => [
-                                                                        [
-                                                                            User::getTable() . '.substitution_start_date' => null,
-                                                                        ],
-                                                                        [
-                                                                            User::getTable() . '.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
-                                                                        ],
-                                                                    ],
-                                                                ],
-                                                                [
-                                                                    'OR' => [
-                                                                        [
-                                                                            User::getTable() . '.substitution_end_date' => null,
-                                                                        ],
-                                                                        [
-                                                                            User::getTable() . '.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
-                                                                        ],
-                                                                    ],
-                                                                ],
-                                                            ]
-                                                        ]
-                                                    ],
-                                                ],
-                                            ],
-                                            'WHERE'  => [
-                                                ValidatorSubstitute::getTable() . '.users_id_substitute' => $users_id,
-                                            ],
-                                        ]),
+                                        Group_User::getTableField('users_id') => $substitute_subQuery,
                                     ],
-                                ]
-                            ]
+                                ],
+                            ],
                         ])
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 
