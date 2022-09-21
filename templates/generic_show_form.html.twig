@@ -629,6 +629,11 @@
                         ) }}
                      {% endif %}
 
+                     {% if item.isField('is_dynamic') %}
+                        {% set is_dynamic_value = call('Dropdown::getYesNo', [item.fields['is_dynamic']]) %}
+                        {{ fields.field('is_dynamic', is_dynamic_value, __('Automatic Inventory')) }}
+                     {% endif %}
+
                      {% block more_fields %}
                      {% endblock %}
                   {% endblock %}
