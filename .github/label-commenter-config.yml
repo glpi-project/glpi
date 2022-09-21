@@ -1,0 +1,25 @@
+labels:
+  - name: "invalid"
+    labeled:
+      issue:
+        body: |
+            This issue has been closed because you did not provide the requested information.
+        action: "close"
+  - name: "support"
+    labeled:
+      issue:
+        body: |
+            This issue has been closed as we only track bugs here.
+            
+            You can get community support on [forums](https://forum.glpi-project.org/) or you can consider [taking a subscription](https://glpi-project.org/subscriptions/) to get professional support.
+            You can also [contact GLPI editor team](https://portal.glpi-network.com/contact-us) directly.
+        action: close
+  - name: "feature suggestion"
+    labeled:
+      issue:
+        body: |
+            This issue has been closed as we only track bugs here.
+            
+            You can open a topic to discuss with community about this enhancement on [suggestion website](https://glpi.userecho.com/).
+            You can also [contact GLPI editor team](https://portal.glpi-network.com/contact-us) directly if you are willing to sponsor this feature.
+        action: close
