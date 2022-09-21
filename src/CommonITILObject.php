@@ -840,36 +840,18 @@ abstract class CommonITILObject extends CommonDBTM
      */
     final protected function isUserValidationRequested(int $users_id, bool $search_in_groups): bool
     {
-        global $DB;
-
         $validation = $this->getValidationClassInstance();
         if ($validation === null) {
             // Object cannot be validated
             return false;
         }
 
-        $validation_requests = $DB->request([
-            'FROM' => $validation::getTable(),
-            'LEFT JOIN' => [
-                ValidatorSubstitute::getTable() => [
-                    'FKEY' => [
-                        ValidatorSubstitute::getTable() => 'users_id',
-                        $validation::getTable() => 'items_id_target',
-                    ],
-                    ['AND' => ['itemtype_target' => User::class]]
-                ],
-                User::getTable() => [
-                    'FKEY' => [
-                        ValidatorSubstitute::getTable() => 'users_id',
-                        User::getTable() => 'id',
-                    ],
-                ],
-            ],
-            'WHERE' => [
+        $validation_requests = $validation->find(
+            [
                 getForeignKeyFieldForItemType(static::class) => $this->getID(),
                 $validation->getTargetCriteriaForUser($users_id, $search_in_groups),
-            ],
-        ]);
+            ]
+        );
 
         return count($validation_requests) > 0;
     }
