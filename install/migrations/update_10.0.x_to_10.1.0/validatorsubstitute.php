@@ -67,26 +67,6 @@ foreach ($validation_tables as $validation_table) {
         ]
     );
     $migration->addKey($validation_table, 'users_id_actual_validate');
-
-    $migration->changeField(
-        $validation_table,
-        'itemtype_target',
-        'itemtype_target',
-        "varchar(255) NOT NULL",
-        [
-            'comment' => 'itemtype in charge of the validation',
-        ]
-    );
-
-    $migration->changeField(
-        $validation_table,
-        'items_id_target',
-        'items_id_target',
-        "int {$default_key_sign} NOT NULL DEFAULT '0'",
-        [
-            'comment' => 'items id in charge of the validation',
-        ]
-    );
 }
 
 $table = 'glpi_users';

@@ -781,8 +781,8 @@ abstract class CommonITILValidation extends CommonDBChild
                     static::getTableField('items_id_target') => $users_id,
                 ],
                 'AND' => [
-                    'itemtype_target' => User::class,
-                    'items_id_target' => new QuerySubQuery([
+                    static::getTableField('itemtype_target') => User::class,
+                    static::getTableField('items_id_target') => new QuerySubQuery([
                         'SELECT'     => 'validator_users.id',
                         'FROM'       => User::getTable() . ' as validator_users',
                         'INNER JOIN' => [
@@ -1848,7 +1848,7 @@ abstract class CommonITILValidation extends CommonDBChild
             $requester_user = $params['parent']->getPrimaryRequesterUser();
             if ($requester_user !== null) {
                 $supervisor_user = User::getById($requester_user->fields['users_id_supervisor']);
-                if (is_object($supervisor_user)) {
+                if ($supervisor_user instanceof User) {
                     $validators['requester_supervisor'] =  sprintf(
                         __('Responsible of %s (%s)'),
                         $requester_user->getFriendlyName(),

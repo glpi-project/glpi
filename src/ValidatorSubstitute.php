@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-class ValidatorSubstitute extends CommonDBTM
+final class ValidatorSubstitute extends CommonDBTM
 {
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -134,7 +134,7 @@ class ValidatorSubstitute extends CommonDBTM
         return false;
     }
 
-    public function showForUser(CommonDBTM $item): bool
+    public function showForUser(User $user): bool
     {
         if ($item->isNewItem()) {
             return false;
@@ -188,7 +188,7 @@ class ValidatorSubstitute extends CommonDBTM
         // The user to be substituted
         $validator = $input['users_id'];
         if ($validator != Session::getLoginUserID()) {
-            Session::addMessageAfterRedirect(__('You cannot change substitutes for this user'), true, ERROR);
+            Session::addMessageAfterRedirect(__('You cannot change substitutes for this user.'), true, ERROR);
             return false;
         }
 
@@ -200,7 +200,7 @@ class ValidatorSubstitute extends CommonDBTM
 
         if (isset($input['substitutes'])) {
             if (in_array($input['users_id'], $input['substitutes'])) {
-                Session::addMessageAfterRedirect(__('Cannot add a user as substitute of himself'), true, ERROR);
+                Session::addMessageAfterRedirect(__('Cannot add a user as substitute of himself.'), true, ERROR);
                 return false;
             }
 

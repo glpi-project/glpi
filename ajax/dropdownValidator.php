@@ -84,7 +84,7 @@ if (isset($_POST["validatortype"])) {
             // find the supervisor of the requester of the ITIL object
             $user_id = 0;
             $itilValidationObjectType = $_POST['validation_class'];
-            if (!class_exists($itilValidationObjectType)) {
+            if (is_a($itilValidationObjectType, CommonITILValidation::class, true)) {
                 // Invalid class
                 break;
             }
