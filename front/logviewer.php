@@ -40,16 +40,16 @@ Session::checkRight("logs", READ);
 $log = new LogViewer($_GET['fileslug'] ?? null);
 
 switch ($_GET['action'] ?? "") {
-   case 'download':
+    case 'download':
         $log->download();
         exit;
 
-   case 'empty':
+    case 'empty':
         $log->empty();
         Html::back();
         break;
 
-   default:
+    default:
         Html::header(
             LogViewer::getTypeName(Session::getPluralNumber()),
             $_SERVER['PHP_SELF'],
