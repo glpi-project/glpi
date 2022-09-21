@@ -6383,7 +6383,7 @@ class CommonDBTM extends CommonGLPI
                 return;
             }
 
-            if (!$item->can($id, READ)) {
+            if (!$item->canView()) {
                 static::displayAccessDeniedPage($menus, 'Missing READ right. Cannot view the item.');
                 return;
             }
