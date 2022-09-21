@@ -33,7 +33,7 @@
 
 <div class="container px-4">
     <div class="row mb-2">
-        <div class="col-12 col-xxl-5">
+        <div class="col-12 col-xxl-6">
             <div class="card">
                 <div class="card-header">
                     <a href="event.php">
@@ -47,16 +47,26 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-xxl-5">
+        <div class="col-12 col-xxl-6">
             <div class="card">
                 <div class="card-header">
                     <h3>{{ __("Log files") }}</h3>
                 </div>
                 <div class="list-group list-group-flush">
                     {% for slug, log in logs %}
-                        <a class="list-group-item list-group-item-action" href="logviewer.php?fileslug={{ slug }}">
-                            <i class="fa-fw ti ti-file me-1"></i>
-                            <span>{{ log }}</span>
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between" href="logviewer.php?fileslug={{ slug }}">
+                            <span class="text-truncate">
+                                <i class="fa-fw ti ti-file me-1"></i>
+                                <span>{{ log['filename'] }}</span>
+                            </span>
+                            <span class="d-inline-flex">
+                                <span class="badge badge-outline text-muted border fw-normal bg-azure-lt me-1">
+                                    {{ log['size']|formatted_size }}
+                                </span>
+                                <span class="badge badge-outline text-muted border fw-normal bg-blue-lt">
+                                    {{ log['datemod']|formatted_datetime }}
+                                </span>
+                            </span>
                         </a>
                     {% endfor %}
                 </div>

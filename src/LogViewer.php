@@ -39,9 +39,11 @@ use Glpi\Event;
 final class LogViewer extends CommonGLPI
 {
     protected $baselogdir = "";
-    protected $fileslug = "";
-    protected $filename = "";
-    protected $filepath = "";
+    protected $fileslug   = "";
+    protected $filename   = "";
+    protected $filepath   = "";
+    protected $datemod    = "";
+    protected $filesize   = 0;
 
     protected static $logs_files = [];
 
@@ -53,7 +55,7 @@ final class LogViewer extends CommonGLPI
         $this->baselogdir = $baselogdir;
         $this->fileslug = $fileslug;
         $logfiles = self::getLogsFilesList($baselogdir);
-        $this->filename = $logfiles[$this->fileslug] ?? "";
+        $this->filename = $logfiles[$this->fileslug]['filename'] ?? "";
         $this->filepath = $this->baselogdir . "/" . $this->filename;
 
         if (is_dir($this->filepath) || !file_exists($this->filepath)) {
@@ -62,6 +64,9 @@ final class LogViewer extends CommonGLPI
                 E_USER_ERROR
             );
         }
+
+        $this->datemod  = date('Y-m-d H:i:s', filemtime($this->filepath));
+        $this->filesize = filesize($this->filepath);
     }
 
 
@@ -132,7 +137,11 @@ final class LogViewer extends CommonGLPI
             if (preg_match('/^(.+)\.log$/', $log_filename, $matches)) {
                 $filename = $matches[1];
                 $filekey  = Toolbox::slugify($filename, '', true);
-                self::$logs_files[$filekey] = "$filename.log";
+                self::$logs_files[$filekey] = [
+                    'filename' => "$filename.log",
+                    'datemod'  => date('Y-m-d H:i:s', filemtime("{$baselogdir}/{$filename}.log")),
+                    'size'     => filesize("{$baselogdir}/{$filename}.log"),
+                ];
             }
         }
         return self::$logs_files;
@@ -151,6 +160,8 @@ final class LogViewer extends CommonGLPI
             [
                 'fileslug'     => $this->fileslug,
                 'filename'     => $this->filename,
+                'datemod'      => $this->datemod,
+                'filesize'     => $this->filesize,
                 'log_entries'  => $this->parseLogFile(),
                 'log_files'    => self::getLogsFilesList(),
                 'only_content' => $only_content,

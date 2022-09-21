@@ -89,10 +89,15 @@ LOG,
 
     public function testGetLogsFilesList()
     {
+        touch(vfsStream::url('glpi_logs/test.log'), strtotime('2022-09-20 00:00:00'));
         $this->array(\LogViewer::getLogsFilesList(vfsStream::url('glpi_logs')))
             ->isIdenticalTo(
                 [
-                    'test' => 'test.log',
+                    'test' => [
+                        'filename' => 'test.log',
+                        'datemod'  => '2022-09-20 00:00:00',
+                        'size'     => 229,
+                    ]
                 ]
             );
     }
