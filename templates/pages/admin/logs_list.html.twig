@@ -82,7 +82,8 @@
 
 							<a href="?order={{ sort_control['key'] }}&amp;sort={{ next_sort }}"
                                class="btn {{ active_order ? "btn-outline-secondary" : "btn-ghost-secondary" }}  btn-sm me-1"
-                               title="{{ sort_control['label'] }}">
+                               title="{{ sort_control['label'] }}"
+                               data-bs-toggle="tooltip" data-bs-placement="bottom">
 								<i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}"></i>
 								<i class="{{ sort_control['icon'] }}"></i>
 							</a>
@@ -97,10 +98,12 @@
 								<span>{{ log['filename'] }}</span>
 							</span>
 							<span class="d-inline-flex">
-								<span class="badge badge-outline text-muted border fw-normal bg-azure-lt me-1">
+								<span class="badge badge-outline text-muted border fw-normal bg-azure-lt me-1"
+                                      title="{{ __("file size") }}">
 									{{ log['size']|formatted_size }}
 								</span>
-								<span class="badge badge-outline text-muted border fw-normal bg-blue-lt">
+								<span class="badge badge-outline text-muted border fw-normal bg-blue-lt"
+                                      title="{{ __("date of last modification") }}">
 									{{ log['datemod']|formatted_datetime }}
 								</span>
 							</span>

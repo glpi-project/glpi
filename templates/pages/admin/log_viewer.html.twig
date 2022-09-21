@@ -81,7 +81,7 @@
     {{ log_entries_html }}
     <div class="spinner-border mt-3" id="auto-refresh-indicator" role="status"></div>
 {% else %}
-    <div class="d-inline-flex align-items-center mb-2">
+    <div class="d-inline-flex flex-wrap flex-md-nowrap align-items-center mb-2">
         <div class="input-group">
             <select class="form-select w-auto" id="change-file">
             {% for log_slug, log_file in log_files %}
@@ -108,16 +108,17 @@
             </a>
         </div>
 
-
-        <span class="d-inline-flex ms-2">
-            <span class="badge badge-outline text-muted fw-normal bg-azure-lt me-1">
-                <i class="ti ti-file"></i>
-                {{ filesize|formatted_size }}
-            </span>
-            <span class="badge badge-outline text-muted fw-normal bg-blue-lt">
-                <i class="ti ti-clock"></i>
-                {{ datemod|formatted_datetime }}
-            </span>
+        <span class="d-inline-flex ms-3">
+            <small class="d-inline-flex text-muted text-nowrap me-3"
+                title="{{ __("file size") }}">
+                <i class="ti ti-file me-1"></i>
+                <span>{{ filesize|formatted_size }}</span>
+            </small>
+            <small class="d-inline-flex text-muted text-nowrap "
+                title="{{ __("date of last modification") }}">
+                <i class="ti ti-clock me-1"></i>
+                <span>{{ datemod|formatted_datetime }}</span>
+            </small>
         </span>
     </div>
     <div class="log-viewer card">
@@ -141,7 +142,7 @@
             {{ log_entries_html }}
         </div>
         <div class="card-footer d-flex justify-content-between">
-            <label class="form-check form-switch btn btn-sm btn-ghost-secondary ms-2 px-1 flex-column-reverse flex-sm-row"
+            <label class="form-check form-switch btn btn-sm btn-ghost-secondary ms-2 px-1 flex-column-reverse flex-sm-row flex-nowrap"
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
                 title="{{ __('Toggle auto refresh') }}">
