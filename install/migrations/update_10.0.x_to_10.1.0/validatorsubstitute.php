@@ -64,6 +64,8 @@ foreach ($validation_tables as $validation_table) {
         [
             'after' => 'timeline_position',
             'comment' => 'User who did the validation',
+            'update' => $DB->quoteName('users_id_validate'),
+            'condition' => "`status` IN (3, 4)",
         ]
     );
     $migration->addKey($validation_table, 'users_id_actual_validate');
