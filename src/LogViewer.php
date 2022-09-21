@@ -179,6 +179,7 @@ final class LogViewer extends CommonGLPI
                 'log_entries'  => $this->parseLogFile(),
                 'log_files'    => self::getLogsFilesList(),
                 'only_content' => $only_content,
+                'can_clear'    => Session::haveRight('config', UPDATE),
                 'href'         => self::getSearchURL() . "?fileslug={$this->fileslug}&",
             ]
         );

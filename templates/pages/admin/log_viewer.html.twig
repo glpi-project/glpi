@@ -100,12 +100,14 @@
                 <i class="ti ti-file-download"></i>
             </a>
 
-            <a href="?action=empty&amp;fileslug={{ fileslug }}"
-               class="btn btn-outline-secondary"
-               title="{{ __("Empty file") }}"
-               data-bs-toggle="tooltip" data-bs-placement="bottom">
-                <i class="ti ti-trash-x"></i>
-            </a>
+            {% if can_clear %}
+                <a href="?action=empty&amp;fileslug={{ fileslug }}"
+                class="btn btn-outline-secondary"
+                title="{{ __("Empty file") }}"
+                data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <i class="ti ti-trash-x"></i>
+                </a>
+            {% endif %}
         </div>
 
         <span class="d-inline-flex ms-3">
