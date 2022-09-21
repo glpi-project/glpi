@@ -110,12 +110,26 @@ final class LogViewer extends CommonGLPI
     /**
      * Display a link for events and a list of log files links
      */
-    public static function displayList()
+    public static function displayList(string $order = "filename", string $sort = "asc")
     {
+
+        $logs = self::getLogsFilesList();
+
+        $order_key_values = array_column($logs, $order);
+        if (count($order_key_values)) {
+            array_multisort(
+                $order_key_values,
+                $sort === "desc" ? SORT_DESC : SORT_ASC,
+                $logs
+            );
+        }
+
         TemplateRenderer::getInstance()->display(
             'pages/admin/logs_list.html.twig',
             [
-                'logs' => self::getLogsFilesList(),
+                'logs'  => $logs,
+                'order' => $order,
+                'sort'  => $sort,
             ]
         );
     }

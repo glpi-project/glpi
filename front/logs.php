@@ -44,6 +44,9 @@ Html::header(
     "logviewer"
 );
 
-LogViewer::displayList();
+LogViewer::displayList(
+    $_GET['order'] ?? "filename",
+    $_GET['sort']  ?? "asc"
+);
 
 Html::footer();
