@@ -92,6 +92,8 @@ dev_nodes=(
     "vendor/donatj/phpuseragentparser/.helpers"
     "vendor/donatj/phpuseragentparser/bin"
     "vendor/donatj/phpuseragentparser/tests"
+    "vendor/glpi-project/inventory_format/examples"
+    "vendor/glpi-project/inventory_format/source_files"
     "vendor/htmlawed/htmlawed/htmLawedTest.php"
     "vendor/html2text/html2text/test"
     "vendor/mexitek/phpcolors/demo"
