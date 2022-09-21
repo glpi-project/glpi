@@ -88,31 +88,81 @@ class Lock extends CommonGLPI
             echo "<th width='10'>";
             Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $lockedfield::getType()]]);
             echo "</th>";
-            echo "<th>" . $lockedfield->getTypeName() . "</th></tr>";
+            echo "<th>" . $lockedfield->getTypeName() . "</th>";
+            echo "<th>" . __('Itemtype') . "</th>";
+            echo "<th>" . __('Last inventoried value')  . "</th></tr>";
 
-            //inventory locked fields
-            $locked_iterator = $DB->request([
+            $subquery = [];
+
+            //get locked field for current itemtype
+            $subquery[] = new \QuerySubQuery([
+                'SELECT' => $lockedfield->getTable() . ".*",
                 'FROM'   => $lockedfield->getTable(),
                 'WHERE'  => [
                     'OR' => [
                         [
-                            'itemtype'  => $itemtype,
-                            'items_id'  => $ID
+                            $lockedfield->getTable() . '.itemtype'  => $itemtype,
+                            $lockedfield->getTable() . '.items_id'  => $ID
                         ], [
-                            'itemtype'  => $itemtype,
-                            'is_global' => 1
+                            $lockedfield->getTable() . '.itemtype'  => $itemtype,
+                            $lockedfield->getTable() . '.is_global' => 1
                         ]
                     ]
                 ]
             ]);
 
+            //get other locked related to curren itemtype
+            //where GLPI allows to update their data
+            $inventory_lockable_objects = [
+                Item_OperatingSystem::class,
+                Item_Disk::class
+            ];
+
+            foreach ($inventory_lockable_objects as $lockable_itemtype) {
+                $query  = [
+                    'SELECT' => $lockedfield->getTable() . ".*",
+                    'FROM'   => $lockedfield->getTable(),
+                    'LEFT JOIN' => [
+                        getTableForItemType($lockable_itemtype)   => [
+                            'FKEY'   => [
+                                $lockedfield->getTable()  => 'items_id',
+                                getTableForItemType($lockable_itemtype)   => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'  => [
+                        'OR' => [
+                            [
+                                $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
+                                $lockedfield->getTable() . '.items_id'  => new \QueryExpression(getTableForItemType($lockable_itemtype) . '.id')
+                            ], [
+                                $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
+                                $lockedfield->getTable() . '.is_global' => 1
+                            ]
+                        ],
+                        getTableForItemType($lockable_itemtype) . '.itemtype' => $itemtype,
+                        getTableForItemType($lockable_itemtype) . '.items_id' => $ID
+                    ]
+                ];
+                $subquery[] = new \QuerySubQuery($query);
+            }
+
+            $union = new \QueryUnion($subquery);
+            $locked_iterator = $DB->request([
+                'FROM' => $union
+            ]);
+
             //get fields labels
             $search_options = Search::getOptions($itemtype);
             foreach ($search_options as $search_option) {
-                if (isset($search_option['linkfield'])) {
-                    $so_fields[$search_option['linkfield']] = $search_option['name'];
-                } else if (isset($search_option['field'])) {
-                    $so_fields[$search_option['field']] = $search_option['name'];
+                //exclude SO added by dropdown part (to get real name)
+                //ex : Manufacturer != Firmware : Manufacturer
+                if (isset($search_option['table']) && $search_option['table'] == getTableForItemType($itemtype)) {
+                    if (isset($search_option['linkfield'])) {
+                        $so_fields[$search_option['linkfield']] = $search_option['name'];
+                    } else if (isset($search_option['field'])) {
+                        $so_fields[$search_option['field']] = $search_option['name'];
+                    }
                 }
             }
 
@@ -138,7 +188,9 @@ class Lock extends CommonGLPI
                 if ($row['is_global']) {
                     $field_label .= ' (' . __('Global') . ')';
                 }
-                echo "<td class='left' width='95%'>" . $field_label . "</td>";
+                echo "<td class='left'>" . $field_label . "</td>";
+                echo "<td class='left'>" . $row['itemtype']::getTypeName() . "</td>";
+                echo "<td class='left'>" . $row['value'] . "</td>";
                 echo "</tr>\n";
             }
 
@@ -156,11 +208,14 @@ class Lock extends CommonGLPI
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='2'>" . __('Locked items') . "</th></tr>";
 
+        //reset_header
+        $header = false;
         //Use a hook to allow external inventory tools to manage per field lock
         $results =  Plugin::doHookFunction(Hooks::DISPLAY_LOCKED_FIELDS, ['item'   => $item,
             'header' => $header
         ]);
         $header |= $results['header'];
+
 
         //Special locks for computers only
         if ($itemtype == 'Computer') {
@@ -286,8 +341,13 @@ class Lock extends CommonGLPI
                 'isv.itemtype'    => $itemtype,
             ]
         ]);
-        echo "<tr><th colspan='2'>" . Software::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+        $first  = true;
         foreach ($iterator as $data) {
+            if ($first) {
+                echo "<tr><th colspan='2'>" . Software::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+                $first = false;
+            }
+
             echo "<tr class='tab_bg_1'>";
 
             echo "<td class='center' width='10'>";
@@ -334,8 +394,12 @@ class Lock extends CommonGLPI
             ]
         ]);
 
-        echo "<tr><th colspan='2'>" . SoftwareLicense::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+        $first = true;
         foreach ($iterator as $data) {
+            if ($first) {
+                echo "<tr><th colspan='2'>" . Software::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
+                $first = false;
+            }
             echo "<tr class='tab_bg_1'>";
 
             echo "<td class='center' width='10'>";

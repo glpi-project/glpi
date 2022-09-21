@@ -491,7 +491,7 @@ $CFG_GLPI['inventory_types'] = [
 
 $CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Item_SoftwareLicense',
     'Item_SoftwareVersion', 'Item_Disk', 'ComputerVirtualMachine',
-    'NetworkPort', 'NetworkName', 'IPAddress'
+    'NetworkPort', 'NetworkName', 'IPAddress', 'Item_OperatingSystem'
 ];
 
 $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
