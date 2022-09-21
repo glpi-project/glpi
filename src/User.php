@@ -6780,6 +6780,14 @@ JAVASCRIPT;
 
         $request = [
             'FROM' => self::getTable(),
+            'INNER JOIN' => [
+                ValidatorSubstitute::getTable() => [
+                    'ON' => [
+                        self::getTable() => 'id',
+                        ValidatorSubstitute::getTable() => self::getForeignKeyField(),
+                    ],
+                ],
+            ],
             'WHERE' => [
                 ValidatorSubstitute::getTableField('users_id')            => $users_id_delegator,
                 ValidatorSubstitute::getTableField('users_id_substitute') => $this->fields['id'],
@@ -6787,32 +6795,24 @@ JAVASCRIPT;
         ];
         if ($use_date_range) {
             // add date range check
-            $request['INNER JOIN'] = [
-                self::getTable() => [
-                    'ON' => [
-                        self::getTable() => 'id',
-                        ValidatorSubstitute::getTable() => 'users_id',
-                    ],
-                    'AND' => [
+            $request['WHERE'][] = [
+                [
+                    'OR' => [
                         [
-                            'OR' => [
-                                [
-                                    self::getTableField('substitution_end_date') => null
-                                ], [
-                                    self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
-                                ],
-                            ],
+                            self::getTableField('substitution_end_date') => null
                         ], [
-                            'OR' => [
-                                [
-                                    self::getTableField('substitution_start_date') => null,
-                                ], [
-                                    self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
-                                ],
-                            ],
-                        ]
-                    ]
-                ],
+                            self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                        ],
+                    ],
+                ], [
+                    'OR' => [
+                        [
+                            self::getTableField('substitution_start_date') => null,
+                        ], [
+                            self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
+                        ],
+                    ],
+                ]
             ];
         }
 

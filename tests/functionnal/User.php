@@ -35,6 +35,9 @@
 
 namespace tests\units;
 
+use DateTime;
+use DateInterval;
+
 /* Test for inc/user.class.php */
 
 class User extends \DbTestCase
@@ -1009,5 +1012,197 @@ class User extends \DbTestCase
         ];
         $this->integer(countElementsInTable(\User::getTable(), $user_crit))->isEqualTo($expected_lock_count);
         $DB->update(\User::getTable(), ['is_active' => 1], $user_crit); // reset users
+    }
+
+    public function providerGetSubstitutes()
+    {
+        // remove all substitutes, if any
+        $validator_substitute = new \ValidatorSubstitute();
+        $testedClass = $this->getTestedClassName();
+        $validator_substitute->deleteByCriteria([
+            'users_id' => $testedClass::getIdByName('normal'),
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [],
+        ];
+
+        $this->login('normal', 'normal');
+        $validator_substitute->updateSubstitutes([
+            'users_id' => $testedClass::getIdByName('normal'),
+            'substitutes' => [$testedClass::getIdByName('glpi')],
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [$testedClass::getIdByName('glpi')],
+        ];
+
+        $validator_substitute->updateSubstitutes([
+            'users_id' => $testedClass::getIdByName('normal'),
+            'substitutes' => [$testedClass::getIdByName('glpi'), 3],
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [$testedClass::getIdByName('glpi'), 3],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetSubstitutes
+     *
+     * @param integer $input
+     * @param array $expected
+     * @return void
+     */
+    public function testGetSubstitutes(int $input, array $expected)
+    {
+        $instance = $this->newTestedInstance;
+        $instance->getFromDB($input);
+        $output = $instance->getSubstitutes($input);
+        $this->array($output)->isEqualTo($expected);
+    }
+
+    public function providerGetDelegators()
+    {
+        // remove all delegators, if any
+        $validator_substitute = new \ValidatorSubstitute();
+        $testedClass = $this->getTestedClassName();
+        $validator_substitute->deleteByCriteria([
+            'users_id_substitute' => $testedClass::getIdByName('normal'),
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [],
+        ];
+
+        $this->login('glpi', 'glpi');
+        $validator_substitute->updateSubstitutes([
+            'users_id' => $testedClass::getIdByName('glpi'),
+            'substitutes' => [$testedClass::getIdByName('normal')],
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [$testedClass::getIdByName('glpi')],
+        ];
+
+        $this->login('post-only', 'postonly');
+        $validator_substitute->updateSubstitutes([
+            'users_id' => $testedClass::getIdByName('post-only'),
+            'substitutes' => [$testedClass::getIdByName('normal')],
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [$testedClass::getIdByName('glpi'), $testedClass::getIdByName('post-only')],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetDelegators
+     *
+     * @param integer $input
+     * @param array $expected
+     * @return void
+     */
+    public function testGetDelegators(int $input, array $expected)
+    {
+        $instance = $this->newTestedInstance;
+        $instance->getFromDB($input);
+        $output = $instance->getDelegators($input);
+        $this->array($output)->isEqualTo($expected);
+    }
+
+    public function providerIsSubstituteOf()
+    {
+        $validator_substitute = new \ValidatorSubstitute();
+        $testedClass = $this->getTestedClassName();
+        $validator_substitute->deleteByCriteria([
+            'users_id' => $testedClass::getIdByName('normal'),
+        ]);
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => false,
+            'expected'           => false,
+        ];
+
+        $validator_substitute->add([
+            'users_id' => $testedClass::getIdByName('normal'),
+            'users_id_substitute' => $testedClass::getIdByName('glpi'),
+        ]);
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => false,
+            'expected'           => true,
+        ];
+
+        $instance = $this->newTestedInstance;
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => '1999-01-01 12:00:00',
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => false,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => '',
+            'substitution_start_date' => (new DateTime())->add(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => false,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => (new DateTime())->add(new DateInterval('P2Y'))->format('Y-m-d H:i:s'),
+            'substitution_start_date' => (new DateTime())->add(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => false,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => (new DateTime())->sub(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
+            'substitution_start_date' => (new DateTime())->sub(new DateInterval('P2Y'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => false,
+        ];
+    }
+
+    /**
+     * @dataProvider providerIsSubstituteOf
+     *
+     * @param integer $users_id
+     * @param integer $users_id_delegator
+     * @param boolean $use_date_range
+     * @param [type] $expected
+     * @return void
+     */
+    public function testIsSubstituteOf(int $users_id, int $users_id_delegator, bool $use_date_range, $expected)
+    {
+        $instance = $this->newTestedInstance;
+        $instance->getFromDB($users_id);
+        $output = $instance->isSubstituteOf($users_id_delegator, $use_date_range);
+        $this->boolean($output)->isEqualTo($expected);
     }
 }

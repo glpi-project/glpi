@@ -152,8 +152,8 @@ final class ValidatorSubstitute extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/admin/user.substitute.html.twig', [
             'item'        => $this,
             'user'        => $user,
-            'substitutes' => self::getSubstitutes($user->fields['id']),
-            'delegators'  => self::getDelegators($user->fields['id']),
+            'substitutes' => $user->getSubstitutes(),
+            'delegators'  => $user->getDelegators(),
             'params'      => [
                 'target'      => self::getFormURL(),
                 'canedit'     => true,
@@ -186,14 +186,17 @@ final class ValidatorSubstitute extends CommonDBTM
         $validator_substitute = new self();
 
         // The user to be substituted
-        $validator = $input['users_id'];
-        if ($validator != Session::getLoginUserID()) {
+        if ($input['users_id'] != Session::getLoginUserID()) {
             Session::addMessageAfterRedirect(__('You cannot change substitutes for this user.'), true, ERROR);
+            return false;
+        }
+        $user = User::getById($input['users_id']);
+        if (!($user instanceof User)) {
             return false;
         }
 
         // Get the old substitutes list
-        $old_substitutes = self::getSubstitutes($validator);
+        $old_substitutes = $user->getSubstitutes();
 
         // Store the overall sucess of the changes below
         $success = true;
@@ -208,7 +211,7 @@ final class ValidatorSubstitute extends CommonDBTM
             $substitutes_to_delete = array_diff($old_substitutes, $input['substitutes']);
             if (count($substitutes_to_delete) > 0) {
                 $success = $validator_substitute->deleteByCriteria([
-                    'users_id' => $validator,
+                    'users_id' => $user->fields['id'],
                     'users_id_substitute' => $substitutes_to_delete,
                 ]) && $success;
             }
@@ -217,13 +220,11 @@ final class ValidatorSubstitute extends CommonDBTM
             $substitutes_to_add = array_diff($input['substitutes'], $old_substitutes);
             foreach ($substitutes_to_add as $substitute) {
                 $success = $validator_substitute->add([
-                    'users_id' => $validator,
+                    'users_id' => $user->fields['id'],
                     'users_id_substitute' => $substitute,
                 ]) && $success;
             }
         }
-
-        $user = User::getById($input['users_id']);
 
         $start_date = $input['substitution_start_date'] ?? $user->fields['substitution_start_date'];
         $input['substitution_start_date'] = is_string($start_date) && strtotime($start_date) !== false ? $start_date : null;
