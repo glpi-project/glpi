@@ -323,3 +323,12 @@ body,
 body input {
     font-variant-ligatures: no-contextual;
 }
+
+/** Bootstrap visibility classes (The utility class behavior is different in _styles.scss) */
+.bs-visible {
+    visibility: visible !important;
+}
+
+.bs-invisible {
+    visibility: hidden !important;
+}
