@@ -6683,7 +6683,6 @@ JAVASCRIPT;
 
         return $user;
     }
-
     /**
      * Get name of the user with ID
      *
@@ -6718,5 +6717,107 @@ JAVASCRIPT;
         }
 
         return __('Unknown user');
+    }
+
+    /**
+     * Get all valdiation substitutes
+     *
+     * @return array
+     */
+    public function getSubstitutes(): array
+    {
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $substitutes = [];
+        $rows = (new ValidatorSubstitute())->find([
+            'users_id' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $substitutes[] = $row['users_id_substitute'];
+        }
+
+        return $substitutes;
+    }
+
+    /**
+     * Get all delegators
+     *
+     * @return array
+     */
+    public function getDelegators(): array
+    {
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $delegators = [];
+        $rows = (new ValidatorSubstitute())->find([
+            'users_id_substitute' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $delegators[] = $row['users_id'];
+        }
+
+        return $delegators;
+    }
+
+    /**
+     * Is a substitute of the given user ?
+     *
+     * @param integer $users_id_delegator
+     * @param bool    $use_date_range
+     * @return boolean
+     */
+    public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
+    {
+        global $DB;
+
+        if ($this->isNewItem()) {
+            return false;
+        }
+
+        $request = [
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                ValidatorSubstitute::getTableField('users_id')            => $users_id_delegator,
+                ValidatorSubstitute::getTableField('users_id_substitute') => $this->fields['id'],
+            ],
+        ];
+        if ($use_date_range) {
+            // add date range check
+            $request['INNER JOIN'] = [
+                self::getTable() => [
+                    'ON' => [
+                        self::getTable() => 'id',
+                        ValidatorSubstitute::getTable() => 'users_id',
+                    ],
+                    'AND' => [
+                        [
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_end_date') => null
+                                ], [
+                                    self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ], [
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_start_date') => null,
+                                ], [
+                                    self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ]
+                    ]
+                ],
+            ];
+        }
+
+        $result = $DB->request($request);
+
+        return (count($result) > 0);
     }
 }
