@@ -32,7 +32,7 @@
  #}
 
 {% set rand = random() %}
-{% set mainform = mainform is not defined ? true : mainform %}
+{% set mainform = mainform is not defined ? true : (mainform and showaction )%}
 {% set main_block_class = mainform ? '' : 'sub_criteria' %}
 {% set card_class = mainform ? 'search-form card card-sm mb-4' : 'border d-inline-block ms-1' %}
 
@@ -76,11 +76,13 @@
             <span class="d-none d-sm-block">{{ __('group') }}</span>
          </button>
          {% if mainform %}
-            {# Display submit button #}
-            <button class="btn btn-sm btn-primary me-1" type="submit" name="{{ p['actionname'] }}">
-               <i class="ti ti-list-search"></i>
-               <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
-            </button>
+            {% if (showaction) %}
+               {# Display submit button #}
+               <button class="btn btn-sm btn-primary me-1" type="submit" name="{{ p['actionname'] }}">
+                  <i class="ti ti-list-search"></i>
+                  <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
+               </button>
+            {% endif %}
             {% if p['showbookmark'] %}
                {{ call('SavedSearch::showSaveButton', [constant('SavedSearch::SEARCH'), itemtype, _get['savedsearches_id'] is defined]) }}
             {% endif %}
@@ -178,7 +180,7 @@
    </div>
 </div>
 
-{% if mainform %}
+{% if mainform and showaction %}
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
    </form>
 {% endif %}
