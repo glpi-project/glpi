@@ -58,6 +58,10 @@ class Item_DeviceSimcard extends Item_Devices
     public static function getSpecificities($specif = '')
     {
         return [
+            'serial'         => parent::getSpecificities('serial'),
+            'otherserial'    => parent::getSpecificities('otherserial'),
+            'locations_id'   => parent::getSpecificities('locations_id'),
+            'states_id'      => parent::getSpecificities('states_id'),
             'pin'            => ['long name'  => __('PIN code'),
                 'short name' => __('PIN code'),
                 'size'       => 20,
@@ -110,7 +114,20 @@ class Item_DeviceSimcard extends Item_Devices
                 'id'         => 20,
                 'datatype'   => 'string',
                 'tooltip'    => __('MSIN is the last 8 or 10 digits of IMSI')
-            ]
+            ],
+            'users_id'        => ['long name'  => User::getTypeName(1),
+                'short name' => User::getTypeName(1),
+                'size'       => 20,
+                'id'         => 21,
+                'datatype'   => 'dropdown',
+                'dropdown_options' => ['right' => 'all']
+            ],
+            'groups_id'        => ['long name'  => Group::getTypeName(1),
+                'short name' => Group::getTypeName(1),
+                'size'       => 20,
+                'id'         => 22,
+                'datatype'   => 'dropdown'
+            ],
         ];
     }
 
