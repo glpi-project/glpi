@@ -1547,19 +1547,9 @@ class Ticket extends CommonITILObject
             isset($this->fields['id'])
             && !empty($this->fields['date'])
         ) {
-	   // If SLA TTO calendar is defined use it for Take Into Account, if not, fallback to previous method (SLA TTR)
-            $calendars_id = $this->getCalendar();
+	   // Use SLA TTO calendar
+            $calendars_id = $this->getCalendar(SLM::TTO);
             $calendar     = new Calendar();
-            if (isset($this->fields['slas_id_tto']) && $this->fields['slas_id_tto'] > 0){
-                    $sla = new SLA();
-                    if($sla->getFromDB($this->fields['slas_id_tto'])){
-                        if($sla->fields['use_ticket_calendar']){
-                                $calendars_id = parent::getCalendar();
-                        } else {
-                                $calendars_id = $sla->getField('calendars_id');
-                        }
-                    }
-            }
            // Using calendar
             if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
                 return max(1, $calendar->getActiveTimeBetween(
@@ -6173,13 +6163,16 @@ JAVASCRIPT;
      *
      * @since 0.90.4
      *
+     * @param (since 10.0.4) integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
+     *
      **/
-    public function getCalendar()
+    public function getCalendar($slmType = SLM::TTR)
     {
+	list($dateField,$slaField) = SLA::getFieldNames($slmType);
 
-        if (isset($this->fields['slas_id_ttr']) && $this->fields['slas_id_ttr'] > 0) {
+        if (isset($this->fields[$slaField]) && $this->fields[$slaField] > 0) {
             $sla = new SLA();
-            if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
+            if ($sla->getFromDB($this->fields[$slaField])) {
                 if (!$sla->fields['use_ticket_calendar']) {
                     return $sla->getField('calendars_id');
                 }
