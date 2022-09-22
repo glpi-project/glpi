@@ -6175,7 +6175,7 @@ JAVASCRIPT;
             $sla = new SLA();
             if ($sla->getFromDB($this->fields[$sla_field])) {
                 if (!$sla->fields['use_ticket_calendar']) {
-                    return $sla->getField('calendars_id');
+                    return $sla->fields['calendars_id'];
                 }
             }
         }
