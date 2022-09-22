@@ -335,12 +335,12 @@
                            {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                               'helper': __('Empty for infinite'),
                               'checkIsExpired': true
-                           }) }}
+                           }|merge(field_options)) }}
                         {% else %}
                            {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                               'helper': __('Empty for infinite'),
                               'checkIsExpired': true
-                           }) }}
+                           }|merge(field_options)) }}
                         {% endif %}
                      {% endif %}
 

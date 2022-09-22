@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * @since 9.1
  */
@@ -87,6 +89,7 @@ class ComputerAntivirus extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -229,7 +232,7 @@ class ComputerAntivirus extends CommonDBChild
         return $tab;
     }
 
-    /**
+        /**
      * Display form for antivirus
      *
      * @param integer $ID      id of the antivirus
@@ -239,6 +242,43 @@ class ComputerAntivirus extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
+
+        if (!Session::haveRight("computer", READ)) {
+            return false;
+        }
+
+        $comp = new Computer();
+        if ($ID > 0) {
+            $this->check($ID, READ);
+            $comp->getFromDB($this->fields['computers_id']);
+        } else {
+            $this->check(-1, CREATE, $options);
+            $comp->getFromDB($options['computers_id']);
+        }
+
+        $options['canedit'] = Session::haveRight("computer", UPDATE);
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/computerantivirus.html.twig', [
+            'item'                      => $this,
+            'computer'                => $comp,
+            'params'                    => $options,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Display form for antivirus
+     *
+     * @param integer $ID      id of the antivirus
+     * @param array   $options
+     *
+     * @return boolean TRUE if form is ok
+     **/
+    public function showFormV1($ID, array $options = [])
+    {
+
+        echo "toto";
 
         if (!Session::haveRight("computer", READ)) {
             return false;
@@ -419,9 +459,19 @@ class ComputerAntivirus extends CommonDBChild
     {
         $input = parent::prepareInputForAdd($input);
 
-        // Clear date if empty to avoid SQL error
-        if (empty($input['date_expiration'])) {
-            unset($input['date_expiration']);
+        if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
+            $input['date_expiration'] = 'NULL';
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
+            $input['date_expiration'] = 'NULL';
         }
 
         return $input;
