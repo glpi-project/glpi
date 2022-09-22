@@ -6162,17 +6162,18 @@ JAVASCRIPT;
      * Get correct Calendar: Entity or Sla
      *
      * @since 0.90.4
+     * @since 10.0.4 $slm_type parameter added
      *
-     * @param (since 10.0.4) integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
+     * @param int $slm_type Type of SLA, can be SLM::TTO or SLM::TTR
      *
      **/
-    public function getCalendar($slmType = SLM::TTR)
+    public function getCalendar(int $slm_type = SLM::TTR)
     {
-	list($dateField,$slaField) = SLA::getFieldNames($slmType);
+	list($date_field, $sla_field) = SLA::getFieldNames($slm_type);
 
-        if (isset($this->fields[$slaField]) && $this->fields[$slaField] > 0) {
+        if (isset($this->fields[$sla_field]) && $this->fields[$sla_field] > 0) {
             $sla = new SLA();
-            if ($sla->getFromDB($this->fields[$slaField])) {
+            if ($sla->getFromDB($this->fields[$sla_field])) {
                 if (!$sla->fields['use_ticket_calendar']) {
                     return $sla->getField('calendars_id');
                 }
