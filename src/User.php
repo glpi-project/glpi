@@ -3894,6 +3894,22 @@ JAVASCRIPT;
             ]
         ];
 
+        $tab[] = [
+            'id'                => 130,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_start_date',
+            'name'              => __('Substitution start date'),
+            'datatype'          => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'                => 131,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_end_date',
+            'name'              => __('Substitution end date'),
+            'datatype'          => 'datetime',
+        ];
+
        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
@@ -6667,7 +6683,7 @@ JAVASCRIPT;
 
         return $user;
     }
-    /**
+        /**
      * Get name of the user with ID
      *
      * @param integer $ID   ID of the user.
@@ -6748,7 +6764,7 @@ JAVASCRIPT;
     }
 
     /**
-     * Is a substitute of the given user ?
+     * Is a substitute of an other user ?
      *
      * @param integer $users_id_delegator
      * @param bool    $use_date_range
@@ -6764,14 +6780,6 @@ JAVASCRIPT;
 
         $request = [
             'FROM' => self::getTable(),
-            'INNER JOIN' => [
-                ValidatorSubstitute::getTable() => [
-                    'ON' => [
-                        self::getTable() => 'id',
-                        ValidatorSubstitute::getTable() => self::getForeignKeyField(),
-                    ],
-                ],
-            ],
             'WHERE' => [
                 ValidatorSubstitute::getTableField('users_id')            => $users_id_delegator,
                 ValidatorSubstitute::getTableField('users_id_substitute') => $this->fields['id'],
@@ -6779,24 +6787,32 @@ JAVASCRIPT;
         ];
         if ($use_date_range) {
             // add date range check
-            $request['WHERE'][] = [
-                [
-                    'OR' => [
-                        [
-                            self::getTableField('substitution_end_date') => null
-                        ], [
-                            self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
-                        ],
+            $request['INNER JOIN'] = [
+                self::getTable() => [
+                    'ON' => [
+                        self::getTable() => 'id',
+                        ValidatorSubstitute::getTable() => 'users_id',
                     ],
-                ], [
-                    'OR' => [
+                    'AND' => [
                         [
-                            self::getTableField('substitution_start_date') => null,
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_end_date') => null
+                                ], [
+                                    self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                                ],
+                            ],
                         ], [
-                            self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
-                        ],
-                    ],
-                ]
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_start_date') => null,
+                                ], [
+                                    self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ]
+                    ]
+                ],
             ];
         }
 
