@@ -63,11 +63,12 @@
       field_options|merge(params)
    ) }}
 
+   {% set filesystems_label = call('Filesystem::getTypeName', [0]) %}
    {{ fields.dropdownField(
       'Filesystem',
       'filesystems_id',
       item.fields['filesystems_id'],
-      __('File system'),
+      filesystems_label,
       field_options|merge(params)
    ) }}
 
