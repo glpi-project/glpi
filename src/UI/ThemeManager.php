@@ -37,7 +37,6 @@ namespace Glpi\UI;
 
 final class ThemeManager
 {
-
     public const DEFAULT_THEME = 'auror';
     public const CORE_THEME_ROOT = GLPI_ROOT . '/css/palettes/';
 
