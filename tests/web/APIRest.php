@@ -1319,4 +1319,57 @@ class APIRest extends APIBaseClass
         ], 200);
         $this->string($data['comment'])->isEqualTo("<>");
     }
+
+    public function test_ActorUpdate()
+    {
+        $headers = ['Session-Token' => $this->session_token];
+        $rand = mt_rand();
+
+        // Group used for our tests
+        $groups_id = getItemByTypeName("Group", "_test_group_1", true);
+
+        // Create ticket
+        $input = [
+            'input' => [
+                'name' => "test_ActorUpdate_Ticket_$rand",
+                'content' => 'content'
+            ]
+        ];
+        $data = $this->query("/Ticket", [
+            'headers' => $headers,
+            'verb'    => "POST",
+            'json'    => $input,
+        ], 201);
+        $this->integer($data['id'])->isGreaterThan(0);
+        $tickets_id = $data['id'];
+
+        // Add group
+        $input = [
+            'input' => [
+                '_actors' => [
+                    'assign' => [
+                        [
+                            'itemtype' => "Group",
+                            'items_id' => $groups_id,
+                            'use_notification' => 1,
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->query("/Ticket/$tickets_id/", [
+            'headers' => $headers,
+            'verb'    => "PUT",
+            'json'    => $input,
+        ], 200);
+
+        // Check assigned groups
+        $data = $this->query("/Ticket/$tickets_id/Group_Ticket", [
+            'headers' => $headers,
+            'verb'    => "GET",
+        ], 200);
+
+        $this->integer($data[0]['tickets_id'])->isEqualTo($tickets_id);
+        $this->integer($data[0]['groups_id'])->isEqualTo($groups_id);
+    }
 }

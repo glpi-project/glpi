@@ -1981,7 +1981,7 @@ abstract class API
                         }
 
                      //update item
-                        $object = Sanitizer::sanitize((array)$object);
+                        $object = Sanitizer::sanitize($this->inputObjectToArray($object));
                         $update_return = $item->update($object);
                         if ($update_return === false) {
                              $failed++;
@@ -1991,7 +1991,6 @@ abstract class API
                         ];
                     }
                 }
-
                // attach fileupload answer
                 if (
                     isset($params['upload_result'])
@@ -2366,7 +2365,7 @@ abstract class API
        // get sql errors
         if (
             count($all_messages) <= 0
-            && $DEBUG_SQL['errors'] !== null
+            && ($DEBUG_SQL['errors'] ?? null) !== null
         ) {
             $all_messages = $DEBUG_SQL['errors'];
         }
