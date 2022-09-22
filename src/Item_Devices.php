@@ -1431,6 +1431,13 @@ class Item_Devices extends CommonDBRelation
         $specificities_fields = [];
 
         foreach (static::getSpecificities() as $field => $attributs) {
+
+            //exclude some field already handle by generic_show_form.html.twig
+            $exclude_fields = ["locations_id", "states_id", "otherserial", "serial", "users_id", "groups_id"];
+            if (in_array($field, $exclude_fields)) {
+                continue;
+            }
+
             $specificities = [];
             $rand = rand();
 
