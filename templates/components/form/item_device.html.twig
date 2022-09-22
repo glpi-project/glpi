@@ -60,7 +60,7 @@
 
    {% set field_options = field_options|merge(params) %}
 
-   <input type="hidden" name="{{get_static(item, 'itemtype_1')}}" value="{{ item.fields[get_static(item, 'itemtype_1')] }}">
+   <input type="hidden" name={{ get_static(item, 'itemtype_1') }} value={{ item.fields[get_static(item, 'itemtype_1')] }}>
 
    {% if item1 %}
       {{ fields.htmlField(
@@ -86,21 +86,21 @@
          field_options
       ) }}
    {% else %}
-         {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [get_static(item, 'items_id_2')]) %}
-         {{ fields.dropdownField(
-            dropdown_itemtype,
-            get_static(item, 'items_id_2'),
-            item.fields[get_static(item, 'items_id_2')],
-            _n('Component', 'Components', 1),
-            field_options)
-         }}
+      {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [get_static(item, 'items_id_2')]) %}
+      {{ fields.dropdownField(
+         dropdown_itemtype,
+         get_static(item, 'items_id_2'),
+         item.fields[get_static(item, 'items_id_2')],
+         _n('Component', 'Components', 1),
+         field_options
+      ) }}
    {% endif %}
 
    {% for specificities in specificities_fields %}
       {% if specificities['canread'] %}
 
          {% if specificities['tooltip'] is defined %}
-            {% set field_options = field_options|merge({'helper' : specificities['tooltip'] }) %}
+            {% set field_options = field_options|merge({'helper': specificities['tooltip']}) %}
          {% endif %}
 
          {% if specificities['attribute'] == "dropdown" %}
@@ -110,17 +110,16 @@
                specificities['field'],
                specificities['value'],
                specificities['label'],
-               specificities['dropdown_options']|merge(field_options))
-            }}
+               specificities['dropdown_options']|merge(field_options)
+            ) }}
          {% else %}
             {% if specificities['protected'] %}
                {{ fields.passwordField(
                   specificities['field'],
                   specificities['value'],
                   specificities['label'],
-                  field_options|merge({'id':  specificities['protected_field_id']}))
-               }}
-
+                  field_options|merge({'id':  specificities['protected_field_id']})
+               ) }}
             {% else %}
                {{ fields.textField(
                   specificities['field'],
