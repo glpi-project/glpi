@@ -926,10 +926,14 @@ class RuleImportAsset extends Rule
                         }
                     }
 
-                    if ($class && !isset($params['return'])) {
-                        $class->rulepassed("0", "Unmanaged", $rules_id);
+                    $back_class = Unmanaged::class;
+                    if (is_a($class, \Glpi\Inventory\Asset\MainAsset::class)) {
+                        $back_class = $class->getItemtype();
                     }
-                    $output['found_inventories'] = [0, 'Unmanaged', $rules_id];
+                    if ($class && !isset($params['return'])) {
+                        $class->rulepassed("0", $back_class, $rules_id);
+                    }
+                    $output['found_inventories'] = [0, $back_class, $rules_id];
                     return $output;
                 }
 
@@ -970,10 +974,14 @@ class RuleImportAsset extends Rule
                             }
                         }
 
-                        if ($class && !isset($params['return'])) {
-                            $class->rulepassed("0", "Unmanaged", $rules_id);
+                        $back_class = Unmanaged::class;
+                        if (is_a($class, \Glpi\Inventory\Asset\MainAsset::class)) {
+                            $back_class = $class->getItemtype();
                         }
-                        $output['found_inventories'] = [0, "Unmanaged", $rules_id];
+                        if ($class && !isset($params['return'])) {
+                            $class->rulepassed("0", $back_class, $rules_id);
+                        }
+                        $output['found_inventories'] = [0, $back_class, $rules_id];
                         return $output;
                     }
                 }
