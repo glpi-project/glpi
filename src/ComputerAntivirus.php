@@ -232,7 +232,7 @@ class ComputerAntivirus extends CommonDBChild
         return $tab;
     }
 
-        /**
+    /**
      * Display form for antivirus
      *
      * @param integer $ID      id of the antivirus
@@ -263,88 +263,6 @@ class ComputerAntivirus extends CommonDBChild
             'computer'                => $comp,
             'params'                    => $options,
         ]);
-
-        return true;
-    }
-
-    /**
-     * Display form for antivirus
-     *
-     * @param integer $ID      id of the antivirus
-     * @param array   $options
-     *
-     * @return boolean TRUE if form is ok
-     **/
-    public function showFormV1($ID, array $options = [])
-    {
-
-        echo "toto";
-
-        if (!Session::haveRight("computer", READ)) {
-            return false;
-        }
-
-        $comp = new Computer();
-        if ($ID > 0) {
-            $this->check($ID, READ);
-            $comp->getFromDB($this->fields['computers_id']);
-        } else {
-            $this->check(-1, CREATE, $options);
-            $comp->getFromDB($options['computers_id']);
-        }
-
-        $this->showFormHeader($options);
-
-        if ($this->isNewID($ID)) {
-            echo "<input type='hidden' name='computers_id' value='" . $options['computers_id'] . "'>";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . Computer::getTypeName(1) . "</td>";
-        echo "<td>" . $comp->getLink() . "</td>";
-        $this->autoinventoryInformation();
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-        echo "<td>" . __('Active') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . Manufacturer::getTypeName(1) . "</td>";
-        echo "<td>";
-        Dropdown::show('Manufacturer', ['value' => $this->fields["manufacturers_id"]]);
-        echo "</td>";
-        echo "<td>" . __('Up to date') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_uptodate', $this->fields['is_uptodate']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Antivirus version') . "</td>";
-        echo "<td>";
-        echo Html::input('antivirus_version', ['value' => $this->fields['antivirus_version']]);
-        echo "</td>";
-        echo "<td>" . __('Signature database version') . "</td>";
-        echo "<td>";
-        echo Html::input('signature_version', ['value' => $this->fields['signature_version']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Expiration date') . "</td>";
-        echo "<td>";
-        Html::showDateField("date_expiration", ['value' => $this->fields['date_expiration']]);
-        echo "</td>";
-        echo "<td colspan='2'></td>";
-        echo "</tr>";
-
-        $options['canedit'] = Session::haveRight("computer", UPDATE);
-        $this->showFormButtons($options);
 
         return true;
     }
