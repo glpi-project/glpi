@@ -1547,7 +1547,7 @@ class Ticket extends CommonITILObject
             isset($this->fields['id'])
             && !empty($this->fields['date'])
         ) {
-	   // Use SLA TTO calendar
+           // Use SLA TTO calendar
             $calendars_id = $this->getCalendar(SLM::TTO);
             $calendar     = new Calendar();
            // Using calendar
@@ -6169,7 +6169,7 @@ JAVASCRIPT;
      **/
     public function getCalendar(int $slm_type = SLM::TTR)
     {
-	list($date_field, $sla_field) = SLA::getFieldNames($slm_type);
+        list($date_field, $sla_field) = SLA::getFieldNames($slm_type);
 
         if (isset($this->fields[$sla_field]) && $this->fields[$sla_field] > 0) {
             $sla = new SLA();
