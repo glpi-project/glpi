@@ -29,7 +29,7 @@ jobs:
           docker exec ${{ job.services.app.id }} composer install --optimize-autoloader --prefer-dist --no-interaction --no-progress --no-suggest
       - name: "Define release name"
         run: |
-          REF_NAME=$(echo ${{ github.ref_name }} | sed -E 's|/|-|')
+          REF_NAME=$(echo ${{ github.ref_name }} | sed -E 's|/|-|g')
           SHA=$(git rev-parse --short HEAD)
           echo "release_name=$REF_NAME.$SHA" >> $GITHUB_ENV
       - name: "Build"
