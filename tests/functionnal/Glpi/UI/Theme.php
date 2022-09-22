@@ -41,7 +41,7 @@ class Theme extends DbTestCase
 {
     public function testGetCoreThemes()
     {
-        $themes = \Glpi\UI\Theme::getCoreThemes();
+        $themes = \Glpi\UI\ThemeManager::getInstance()->getCoreThemes();
         $this->integer(count($themes))->isGreaterThan(0);
         // Each element should be a Theme object
         foreach ($themes as $theme) {
@@ -51,7 +51,7 @@ class Theme extends DbTestCase
 
     public function testGetAllThemes()
     {
-        $themes = \Glpi\UI\Theme::getCoreThemes();
+        $themes = \Glpi\UI\ThemeManager::getInstance()->getCoreThemes();
         $this->integer(count($themes))->isGreaterThan(0);
         // Each element should be a Theme object
         foreach ($themes as $theme) {
@@ -62,27 +62,27 @@ class Theme extends DbTestCase
     public function testGetCurrentTheme()
     {
         $this->login();
-        $theme = \Glpi\UI\Theme::getCurrentTheme();
+        $theme = \Glpi\UI\ThemeManager::getInstance()->getCurrentTheme();
         $this->object($theme)->isInstanceOf(\Glpi\UI\Theme::class);
         $this->string($theme->getKey())->isEqualTo('auror');
     }
 
     public function testGetTheme()
     {
-        $theme = \Glpi\UI\Theme::getTheme('auror');
+        $theme = \Glpi\UI\ThemeManager::getInstance()->getTheme('auror');
         $this->object($theme)->isInstanceOf(\Glpi\UI\Theme::class);
         $this->string($theme->getKey())->isEqualTo('auror');
     }
 
     public function testProperties()
     {
-        $theme_auror = \Glpi\UI\Theme::getTheme('auror');
+        $theme_auror = \Glpi\UI\ThemeManager::getInstance()->getTheme('auror');
         $this->string($theme_auror->getKey())->isEqualTo('auror');
         $this->string($theme_auror->getName())->isEqualTo('Auror');
         $this->boolean($theme_auror->isCustomTheme())->isFalse();
         $this->boolean($theme_auror->isDarkTheme())->isFalse();
 
-        $theme_midnight = \Glpi\UI\Theme::getTheme('midnight');
+        $theme_midnight = \Glpi\UI\ThemeManager::getInstance()->getTheme('midnight');
         $this->string($theme_midnight->getKey())->isEqualTo('midnight');
         $this->string($theme_midnight->getName())->isEqualTo('Midnight');
         $this->boolean($theme_midnight->isCustomTheme())->isFalse();
@@ -91,7 +91,7 @@ class Theme extends DbTestCase
 
     public function testConfigGetPalletes()
     {
-        $themes = \Glpi\UI\Theme::getAllThemes();
+        $themes = \Glpi\UI\ThemeManager::getInstance()->getAllThemes();
         $palettes = (new \Config())->getPalettes();
         $this->integer(count($palettes))->isEqualTo(count($themes));
         foreach ($themes as $theme) {

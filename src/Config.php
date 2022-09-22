@@ -39,7 +39,7 @@ use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
-use Glpi\UI\Theme;
+use Glpi\UI\ThemeManager;
 use SimplePie\SimplePie;
 
 /**
@@ -3222,7 +3222,7 @@ HTML;
      */
     public function getPalettes()
     {
-        $all_themes = Theme::getAllThemes();
+        $all_themes = ThemeManager::getInstance()->getAllThemes();
         $themes = [];
         foreach ($all_themes as $theme) {
             $themes[$theme->getKey()] = $theme->getName();

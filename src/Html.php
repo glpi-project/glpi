@@ -41,6 +41,7 @@ use Glpi\Console\Application;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\UI\ThemeManager;
 use ScssPhp\ScssPhp\Compiler;
 
 /**
@@ -1266,7 +1267,7 @@ HTML;
         $tpl_vars = [
             'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
             'title'     => $title,
-            'theme'     => \Glpi\UI\Theme::getCurrentTheme(),
+            'theme'     => ThemeManager::getInstance()->getCurrentTheme(),
             'css_files' => [],
             'js_files'  => [],
         ];
