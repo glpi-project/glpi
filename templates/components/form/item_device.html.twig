@@ -86,11 +86,14 @@
          field_options
       ) }}
    {% else %}
-      {{ fields.dropdownItemsFromItemtypes(
-         item.fields[get_static(item, 'items_id_2')],
-         _n('Component', 'Components', 1),
-         field_options|merge({'itemtypes': [get_static(item, 'itemtype_2')]}))
-      }}
+         {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [get_static(item, 'items_id_2')]) %}
+         {{ fields.dropdownField(
+            dropdown_itemtype,
+            get_static(item, 'itemtype_1'),
+            item.fields[get_static(item, 'items_id_2')],
+            _n('Component', 'Components', 1),
+            field_options)
+         }}
    {% endif %}
 
    {% for specificities in specificities_fields %}
