@@ -46,10 +46,6 @@ class Item_DeviceSensor extends Item_Devices
 
     public static function getSpecificities($specif = '')
     {
-        return ['serial'       => parent::getSpecificities('serial'),
-            'otherserial'  => parent::getSpecificities('otherserial'),
-            'locations_id' => parent::getSpecificities('locations_id'),
-            'states_id'    => parent::getSpecificities('states_id'),
-        ];
+        return [];
     }
 }
