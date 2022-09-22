@@ -57,26 +57,9 @@
 
 {% if item.canEdit(user.fields['id']) %}
    <form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
-      <input type="hidden" name="entities_id" value="{{ entity_id }}" />
-      {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
-         <input type="hidden" name="_in_modal" value="1"/>
-      {% endif %}
 {% endif %}
 
    <div id="mainformtable">
-      {% set template_name = item.fields['template_name']|verbatim_value %}
-      {% if withtemplate == 2 and not item.isNewItem() %}
-         <input type="hidden" name="template_name" value="{{ template_name }}" />
-         {% set nametype = __('Created from the template %s')|format(template_name) %}
-      {% elseif withtemplate == 1 %}
-         <input type="hidden" name="is_template" value="1" />
-      {% elseif item.isNewItem() %}
-         {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
-      {% else %}
-         {% if noid == false and (session('glpiis_ids_visible') or nametype|length == 0) %}
-            {% set nametype = __('%1$s - %2$s')|format(nametype, item.fields['id']) %}
-         {% endif %}
-      {% endif %}
 
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
