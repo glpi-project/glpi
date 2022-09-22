@@ -396,7 +396,7 @@ class Dropdown
 
         // Trick to get the "+" button to work with dropdowns that support multiple values
         if (count($icon_array) === 0 && $add_item_icon !== '') {
-            $icon_array[] .= $add_item_icon;
+            $icon_array[] = $add_item_icon;
         }
 
         if (count($icon_array) > 0) {
