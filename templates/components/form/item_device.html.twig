@@ -89,7 +89,7 @@
          {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [get_static(item, 'items_id_2')]) %}
          {{ fields.dropdownField(
             dropdown_itemtype,
-            get_static(item, 'itemtype_1'),
+            get_static(item, 'items_id_2'),
             item.fields[get_static(item, 'items_id_2')],
             _n('Component', 'Components', 1),
             field_options)
