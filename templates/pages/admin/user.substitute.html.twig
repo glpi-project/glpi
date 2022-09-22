@@ -32,21 +32,12 @@
  #}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% set bg = '' %}
-{% if item.isDeleted() %}
-   {% set bg = 'asset-deleted' %}
-{% endif %}
-
-<div class="asset {{ bg }}">
+<div class="asset">
 
 {# Form Header #}
 {% set target       = params['target'] ?? item.getFormURL() %}
 {% set canedit      = params['canedit'] ?? true %}
-{% set withtemplate = params['withtemplate'] ?? '' %}
 {% set rand         = random() %}
-{% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
-{% set friendlyname = params['friendlyname'] ?? item.getHeaderName() %}
-{% set no_id        = params['noid'] ?? false %}
 {% set id           = item.fields['id'] ?? -1 %}
 {% set formoptions  = params['formoptions'] ?? '' %}
 
@@ -65,12 +56,6 @@
 {% endif %}
 
 {% if item.canEdit(user.fields['id']) %}
-   <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
-         action="{{ path('/front/massiveaction.php') }}" data-submit-once>
-      <div id="massive_container_{{ rand }}"></div>
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-   </form>
-
    <form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
       <input type="hidden" name="entities_id" value="{{ entity_id }}" />
       {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
