@@ -1,0 +1,132 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set no_header = true %}
+{% set no_inventory_footer = true %}
+
+{% block more_fields %}
+
+   <script>
+      function showField(item) {
+         $("#" + item).prop("type", "text");
+      }
+      function hideField(item) {
+         $("#" + item).prop("type", "password");
+      }
+      function copyToClipboard(item) {
+         showField(item);
+         $("#" + item).select();
+         try {
+            document.execCommand("copy");
+         } catch (e) {
+            alert("Copy to clipboard failed'");
+         }
+         hideField(item);
+      }
+   </script>
+
+   {% set field_options = field_options|merge(params) %}
+
+   <input type="hidden" name="{{get_static(item, 'itemtype_1')}}" value="{{ item.fields[get_static(item, 'itemtype_1')] }}">
+
+   {% if item1 %}
+      {{ fields.htmlField(
+         get_static(item, 'itemtype_1'),
+         item1.getLink(),
+         item1.getTypeName(1),
+         field_options
+      ) }}
+   {% else %}
+      {{ fields.htmlField(
+         '',
+         __('No associated item'),
+         __('Itemtype'),
+         field_options
+      ) }}
+   {% endif %}
+
+   {% if device %}
+      {{ fields.htmlField(
+         get_static(item, 'itemtype_2'),
+         device.getLink(),
+         _n('Component', 'Components', 1),
+         field_options
+      ) }}
+   {% else %}
+      {{ fields.dropdownItemsFromItemtypes(
+         item.fields[get_static(item, 'items_id_2')],
+         _n('Component', 'Components', 1),
+         field_options|merge({'itemtypes': [get_static(item, 'itemtype_2')]}))
+      }}
+   {% endif %}
+
+   {% for specificities in specificities_fields %}
+      {% if specificities['canread'] %}
+
+         {% if specificities['tooltip'] is defined %}
+            {% set field_options = field_options|merge({'helper' : specificities['tooltip'] }) %}
+         {% endif %}
+
+         {% if specificities['attribute'] == "dropdown" %}
+            {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [specificities['field']]) %}
+            {{ fields.dropdownField(
+               dropdown_itemtype,
+               specificities['field'],
+               specificities['value'],
+               specificities['label'],
+               specificities['dropdown_options']|merge(field_options))
+            }}
+         {% else %}
+            {% if specificities['protected'] %}
+               {{ fields.passwordField(
+                  specificities['field'],
+                  specificities['value'],
+                  specificities['label'],
+                  field_options|merge({'id':  specificities['protected_field_id']}))
+               }}
+
+            {% else %}
+               {{ fields.textField(
+                  specificities['field'],
+                  specificities['value'],
+                  specificities['label'],
+                  field_options
+               ) }}
+            {% endif %}
+         {% endif %}
+      {% endif %}
+   {% endfor %}
+{% endblock %}
