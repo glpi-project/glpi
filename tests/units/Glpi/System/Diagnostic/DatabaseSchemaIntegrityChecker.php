@@ -1199,11 +1199,8 @@ DIFF,
             $args['ignore_unsigned_keys_migration']
         );
 
-        $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
-        $getNomalizedSql->setAccessible(true);
-
         foreach ($raw_tables as $table_name => $raw_sql) {
-            $this->string($getNomalizedSql->invoke($this->testedInstance, $raw_sql))->isEqualTo($normalized_tables[$table_name]);
+            $this->string($this->callPrivateMethod($this->testedInstance, 'getNomalizedSql', $raw_sql))->isEqualTo($normalized_tables[$table_name]);
         }
     }
 
@@ -1550,8 +1547,6 @@ SQL
         ];
         foreach ($dbversions as $dbversion) {
             $this->newTestedInstance($db);
-            $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
-            $getNomalizedSql->setAccessible(true);
             $this->calling($db)->request = function ($query) use ($dbversion) {
                 return new \ArrayIterator(
                     [
@@ -1607,8 +1602,6 @@ SQL
         ];
         foreach ($dbversions as $dbversion) {
             $this->newTestedInstance($db);
-            $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
-            $getNomalizedSql->setAccessible(true);
             $this->calling($db)->request = function ($query) use ($dbversion) {
                 return new \ArrayIterator(
                     [
@@ -1706,9 +1699,7 @@ DIFF
         $db = new \mock\DBmysql();
         $this->newTestedInstance($db);
 
-        $getSchemaPath = new \ReflectionMethod($this->testedInstance, 'getSchemaPath');
-        $getSchemaPath->setAccessible(true);
-        $this->variable($getSchemaPath->invoke($this->testedInstance, $version, $context))->isEqualTo($expected_schema_path);
+        $this->variable($this->callPrivateMethod($this->testedInstance, 'getSchemaPath', $version, $context))->isEqualTo($expected_schema_path);
     }
 
     /**
@@ -1725,8 +1716,6 @@ DIFF
         $db = new \mock\DBmysql();
         $this->newTestedInstance($db);
 
-        $getSchemaPath = new \ReflectionMethod($this->testedInstance, 'getSchemaPath');
-        $getSchemaPath->setAccessible(true);
         $this->variable($this->testedInstance->canCheckIntegrity($version, $context))->isEqualTo($expected_can_check, $version);
     }
 }
