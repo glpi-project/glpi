@@ -133,4 +133,9 @@ final class Environment extends InventoryAsset
         $this->conf = $conf;
         return $conf->import_env == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return Item_Environment::class;
+    }
 }

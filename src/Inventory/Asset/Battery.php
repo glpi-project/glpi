@@ -41,11 +41,6 @@ use Glpi\Inventory\Conf;
 
 class Battery extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceBattery');
-    }
-
     public function prepare(): array
     {
         $mapping = [
@@ -78,5 +73,10 @@ class Battery extends Device
     public function checkConf(Conf $conf): bool
     {
         return $conf->component_battery == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceBattery::class;
     }
 }

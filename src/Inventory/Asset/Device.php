@@ -40,21 +40,6 @@ use Item_Devices;
 
 abstract class Device extends InventoryAsset
 {
-    protected $id_class;
-
-    /**
-     * Constructor
-     *
-     * @param CommonDBTM $item    Item instance
-     * @param array      $data    Data part
-     * @param string     $id_class Item device class
-     */
-    public function __construct(CommonDBTM $item, array $data = null, $id_class)
-    {
-        parent::__construct($item, $data);
-        $this->id_class = $id_class;
-    }
-
     /**
      * Get existing entries from database
      *
@@ -91,8 +76,8 @@ abstract class Device extends InventoryAsset
 
         $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
 
-        $itemdevicetype = $this->id_class;
-        if (in_array($this->id_class, $devicetypes)) {
+        $itemdevicetype = $this->getItemtype();
+        if (in_array($itemdevicetype, $devicetypes)) {
             $value = $this->data;
             $itemdevice = new $itemdevicetype();
 
@@ -118,7 +103,7 @@ abstract class Device extends InventoryAsset
                 }
 
                 //create device or get existing device ID
-                $device_id = $device->import(\Toolbox::addslashes_deep($this->handleInput($val)) + ['with_history' => false]);
+                $device_id = $device->import(\Toolbox::addslashes_deep($this->handleInput($val, $device)) + ['with_history' => false]);
 
                 //remove all existing instances
                 if (!isset($deleted_items[$device_id])) {
@@ -138,7 +123,7 @@ abstract class Device extends InventoryAsset
                     'itemtype'           => $this->item->getType(),
                     'items_id'           => $this->item->fields['id'],
                     'is_dynamic'         => 1
-                ] + $this->handleInput($val));
+                ] + $this->handleInput($val, $itemdevice));
                 $itemdevice->add($itemdevice_data, [], false);
                 $this->itemdeviceAdded($itemdevice, $val);
                 unset($existing[$device_id]);

@@ -42,11 +42,6 @@ class GraphicCard extends Device
 {
     protected $ignored = ['controllers' => null];
 
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceGraphicCard');
-    }
-
     public function prepare(): array
     {
         $mapping = [
@@ -77,5 +72,10 @@ class GraphicCard extends Device
     public function checkConf(Conf $conf): bool
     {
         return $conf->component_graphiccard == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceGraphicCard::class;
     }
 }

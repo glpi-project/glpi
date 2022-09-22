@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
+use Glpi\Toolbox\VersionParser;
 use org\bovigo\vfs\vfsStream;
 
 class DatabaseSchemaIntegrityChecker extends \GLPITestCase
@@ -147,7 +148,8 @@ CREATE TABLE `table_{$table_increment}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `is_valid` tinyint(4) NOT NULL COMMENT 'is object valid ?',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `is_valid` (`is_valid`) COMMENT 'this is a key'
 ) ENGINE=InnoDB COMMENT='some comment with an escaped \' backquote' AUTO_INCREMENT=15
 SQL,
                 'normalized_sql' => <<<SQL
@@ -155,7 +157,8 @@ CREATE TABLE `table_{$table_increment}` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `is_valid` tinyint NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `is_valid` (`is_valid`)
 ) ENGINE=InnoDB
 SQL,
                 'effective_sql'  => <<<SQL
@@ -163,7 +166,8 @@ CREATE TABLE `table_{$table_increment}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT 'name of the object',
   `is_valid` tinyint(4) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `is_valid` (`is_valid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15
 SQL,
                 'differences'    => null,
@@ -1195,11 +1199,8 @@ DIFF,
             $args['ignore_unsigned_keys_migration']
         );
 
-        $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
-        $getNomalizedSql->setAccessible(true);
-
         foreach ($raw_tables as $table_name => $raw_sql) {
-            $this->string($getNomalizedSql->invoke($this->testedInstance, $raw_sql))->isEqualTo($normalized_tables[$table_name]);
+            $this->string($this->callPrivateMethod($this->testedInstance, 'getNomalizedSql', $raw_sql))->isEqualTo($normalized_tables[$table_name]);
         }
     }
 
@@ -1546,8 +1547,6 @@ SQL
         ];
         foreach ($dbversions as $dbversion) {
             $this->newTestedInstance($db);
-            $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
-            $getNomalizedSql->setAccessible(true);
             $this->calling($db)->request = function ($query) use ($dbversion) {
                 return new \ArrayIterator(
                     [
@@ -1603,8 +1602,6 @@ SQL
         ];
         foreach ($dbversions as $dbversion) {
             $this->newTestedInstance($db);
-            $getNomalizedSql = new \ReflectionMethod($this->testedInstance, 'getNomalizedSql');
-            $getNomalizedSql->setAccessible(true);
             $this->calling($db)->request = function ($query) use ($dbversion) {
                 return new \ArrayIterator(
                     [
@@ -1631,5 +1628,94 @@ SQL
 DIFF
             );
         }
+    }
+
+    protected function versionProvider(): iterable
+    {
+        // Current version -> can check
+        yield [
+            'version'              => GLPI_SCHEMA_VERSION,
+            'context'              => 'core',
+            'expected_can_check'   => true,
+            'expected_schema_path' => sprintf(
+                '%s/install/mysql/glpi-%s-empty.sql',
+                GLPI_ROOT,
+                VersionParser::getNormalizedVersion(GLPI_VERSION, false)
+            ),
+        ];
+
+        // Stable version with hash -> can check
+        yield [
+            'version'              => '10.0.2@1530dc89c7d9b131c2e2ea59fe0d6260fe93d831',
+            'context'              => 'core',
+            'expected_can_check'   => true,
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+        ];
+
+        // Stable version WITHOUT hash -> can check
+        yield [
+            'version'              => '10.0.2',
+            'context'              => 'core',
+            'expected_can_check'   => true,
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+        ];
+
+        // Unstable version with hash -> cannot check
+        yield [
+            'version'              => '10.0.2-dev@b130dc89c7d9b131c2e2ea59fe0d6260fe93d831',
+            'context'              => 'core',
+            'expected_can_check'   => false,
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+        ];
+
+        // Unstable version WITHOUT hash -> cannot check
+        yield [
+            'version'              => '10.0.2-dev',
+            'context'              => 'core',
+            'expected_can_check'   => false,
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+        ];
+
+        // Old unsupported version -> cannot check
+        yield [
+            'version'              => '0.0.1',
+            'context'              => 'core',
+            'expected_can_check'   => false,
+            'expected_schema_path' => null,
+        ];
+    }
+
+    /**
+     * @dataProvider versionProvider
+     */
+    public function testGetSchemaPath(
+        ?string $version,
+        string $context,
+        bool $expected_can_check,
+        ?string $expected_schema_path
+    ) {
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+        $this->newTestedInstance($db);
+
+        $this->variable($this->callPrivateMethod($this->testedInstance, 'getSchemaPath', $version, $context))->isEqualTo($expected_schema_path);
+    }
+
+    /**
+     * @dataProvider versionProvider
+     */
+    public function testCanCheckIntegrity(
+        ?string $version,
+        string $context,
+        bool $expected_can_check,
+        ?string $expected_schema_path
+    ) {
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+        $this->newTestedInstance($db);
+
+        $this->variable($this->testedInstance->canCheckIntegrity($version, $context))->isEqualTo($expected_can_check, $version);
     }
 }

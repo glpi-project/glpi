@@ -31,7 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-.asset {
+.asset,
+.navigationheader {
     .card-header {
         background-color: $header-bg;
         color: $header-fg;
@@ -52,6 +53,17 @@
 
         .badge .ribbon {
             left: 0.5rem;
+        }
+
+        // remove margin-left is small screen
+        @include media-breakpoint-down(sm) {
+            .card-title {
+                padding-left: 0 !important;
+            }
+
+            .badge {
+                margin-left: 0 !important;
+            }
         }
     }
 
@@ -76,4 +88,21 @@
 
 #page > .asset {
     margin-top: 15px; // Fix top of form when embedded in iframe (Usually positioned properly because of .tab-content)
+}
+
+.navigationheader {
+    .main-header {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .ribbon {
+            position: relative;
+            left: -0.25rem;
+        }
+    }
+
+    .card-header {
+        background-color: transparent !important;
+        border-color: transparent !important;
+    }
 }

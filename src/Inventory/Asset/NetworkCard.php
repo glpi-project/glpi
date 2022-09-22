@@ -49,11 +49,6 @@ class NetworkCard extends Device
     protected $extra_data = ['controllers' => null];
     protected $ignored = ['controllers' => null];
 
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceNetworkCard');
-    }
-
     public function prepare(): array
     {
         $mapping = [
@@ -264,5 +259,10 @@ class NetworkCard extends Device
     {
        //ports are handled from main asset in NetworkCard case
         return;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceNetworkCard::class;
     }
 }

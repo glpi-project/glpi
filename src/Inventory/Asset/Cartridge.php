@@ -274,4 +274,9 @@ class Cartridge extends InventoryAsset
     {
         return true;
     }
+
+    public function getItemtype(): string
+    {
+        return \CartridgeItem::class;
+    }
 }

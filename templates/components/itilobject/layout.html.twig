@@ -40,11 +40,11 @@
 {% set collapsed_cls = (is_collapsed ? "right-collapsed" : "") %}
 {% set expanded_cls  = (is_expanded == "true" ? "right-expanded" : "") %}
 
-{% set left_regular_cls = "col-xl-8 col-md-10" %}
-{% set right_regular_cls = "col-xl-4 col-md-2" %}
+{% set left_regular_cls = "col-lg-8" %}
+{% set right_regular_cls = "col-lg-4" %}
 
-{% set left_expanded_cls = "col-xxl-4 col-md-4" %}
-{% set right_expanded_cls = "col-xxl-8 col-md-8" %}
+{% set left_expanded_cls = "col-xl-5 col-lg-6" %}
+{% set right_expanded_cls = "col-xl-7 col-lg-6" %}
 
 {% set left_side_cls = left_regular_cls %}
 {% set right_side_cls = right_regular_cls %}
@@ -63,14 +63,14 @@
    <div class="row d-flex flex-column alin-items-stretch itil-object">
       {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
       {% set fl_direction = (item.isNewItem or is_timeline_reversed ? 'flex-column' : 'flex-column-reverse') %}
-      <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-md-first pt-2 pe-2 pe-md-4 d-flex {{ fl_direction }} border-top border-4">
+      <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex {{ fl_direction }} border-top border-4">
          {% if item.isNewItem() %}
             {{ include('components/itilobject/timeline/new_form.html.twig') }}
          {% else %}
             {{ include('components/itilobject/timeline/timeline.html.twig') }}
          {% endif %}
       </div>
-      <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-md-n1 card-footer p-0 rounded-0">
+      <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-lg-n1 card-footer p-0 rounded-0">
          {% if not item.isNewItem() %}
             {{ include('components/itilobject/mainform_open.html.twig') }}
          {% endif %}
@@ -126,7 +126,7 @@ $(function() {
          $('.itil-left-side').removeClass("{{ left_regular_cls }}").addClass("{{ left_expanded_cls }}");
          $('.itil-footer .timeline-buttons').removeClass("{{ left_regular_cls }}").addClass("{{ left_expanded_cls }}");
          // Right side
-         $('.itil-footer .form-buttons').removeClass('col-md').addClass("{{ right_expanded_cls }}");
+         $('.itil-footer .form-buttons').removeClass('col-lg').addClass("{{ right_expanded_cls }}");
          $('.itil-right-side').removeClass("{{ right_regular_cls }}").addClass("{{ right_expanded_cls }}");
          // Switcher buttons
          $('.switch-panel-width i.fas').removeClass('fa-caret-left').addClass('fa-caret-right');
@@ -139,7 +139,7 @@ $(function() {
          $('.itil-left-side').removeClass("{{ left_expanded_cls }}").addClass("{{ left_regular_cls }}");
          $('.itil-footer .timeline-buttons').removeClass("{{ left_expanded_cls }}").addClass("{{ left_regular_cls }}");
          // Right side
-         $('.itil-footer .form-buttons').removeClass("{{ right_expanded_cls }}").addClass('col-md');
+         $('.itil-footer .form-buttons').removeClass("{{ right_expanded_cls }}").addClass('col-lg');
          $('.itil-right-side').removeClass("{{ right_expanded_cls }}").addClass("{{ right_regular_cls }}");
          // Switcher buttons
          $('.switch-panel-width i.fas').removeClass('fa-caret-right').addClass('fa-caret-left');

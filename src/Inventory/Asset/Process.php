@@ -154,4 +154,9 @@ class Process extends InventoryAsset
         $this->conf = $conf;
         return $conf->import_process == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return Item_Process::class;
+    }
 }

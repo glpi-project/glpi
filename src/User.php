@@ -2012,12 +2012,8 @@ class User extends CommonDBTM
         $groups     = [];
         $listgroups = [];
 
-       //User dn may contain ( or ), need to espace it!
-        $user_dn = str_replace(
-            ["(", ")", "\,", "\+"],
-            ["\(", "\)", "\\\,", "\\\+"],
-            $user_dn
-        );
+       //User dn may contain ['(', ')', ',', '\'] then it needs to be escaped!
+        $user_dn = ldap_escape($user_dn, "", LDAP_ESCAPE_FILTER);
 
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
@@ -2290,6 +2286,70 @@ class User extends CommonDBTM
         return Profile::currentUserHaveMoreRightThan($user_prof);
     }
 
+    protected function getFormHeaderToolbar(): array
+    {
+        $ID = $this->getID();
+        $toolbar = [];
+
+        if ($ID > 0) {
+            $vcard_lbl = __s('Download user VCard');
+            $vcard_url = self::getFormURLWithID($ID) . "&amp;getvcard=1";
+            $vcard_btn = <<<HTML
+            <a href="{$vcard_url}" target="_blank"
+                     class="btn btn-icon btn-sm btn-ghost-secondary"
+                     title="{$vcard_lbl}"
+                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+               <i class="far fa-address-card fa-lg"></i>
+            </a>
+HTML;
+            $toolbar[] = $vcard_btn;
+
+            $error_message = null;
+            $impersonate_form = self::getFormURLWithID($ID);
+            if (Session::canImpersonate($ID, $error_message)) {
+                $impersonate_lbl = __s('Impersonate');
+                $csrf_token = Session::getNewCSRFToken();
+                $impersonate_btn = <<<HTML
+                    <form method="post" action="{$impersonate_form}">
+                        <input type="hidden" name="id" value="{$ID}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{$csrf_token}">
+                        <button type="button" name="impersonate" value="1"
+                            class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
+                            title="{$impersonate_lbl}"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <i class="fas fa-user-secret fa-lg"></i>
+                        </button>
+                    </form>
+HTML;
+
+                // "impersonate" button type is set to "button" on form display to prevent it to be used
+                // by default (as it is the first found in current form) when pressing "enter" key.
+                // When clicking it, switch to "submit" type to make it submit current user form.
+                $impersonate_js = <<<JAVASCRIPT
+               (function($) {
+                  $('button[type="button"][name="impersonate"]').click(
+                     function () {
+                        $(this).attr('type', 'submit');
+                     }
+                  );
+               })(jQuery);
+JAVASCRIPT;
+                $toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
+            } elseif ($error_message !== null) {
+                $impersonate_btn = <<<HTML
+               <button type="button" name="impersonate" value="1"
+                       class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
+                       title="{$error_message}"
+                       data-bs-toggle="tooltip" data-bs-placement="bottom">
+                  <i class="fas fa-user-secret fa-lg"></i>
+               </button>
+HTML;
+                $toolbar[] = $impersonate_btn;
+            }
+        }
+        return $toolbar;
+    }
+
     /**
      * Print the user form.
      *
@@ -2333,61 +2393,11 @@ class User extends CommonDBTM
 
         $formtitle = $this->getTypeName(1);
 
-        $header_toolbar = [];
-        if ($ID > 0) {
-            $vcard_lbl = __s('Download user VCard');
-            $vcard_url = User::getFormURLWithID($ID) . "&amp;getvcard=1";
-            $vcard_btn = <<<HTML
-            <a href="{$vcard_url}" target="_blank"
-                     class="btn btn-icon btn-sm btn-ghost-secondary"
-                     title="{$vcard_lbl}"
-                     data-bs-toggle="tooltip" data-bs-placement="bottom">
-               <i class="far fa-address-card fa-lg"></i>
-            </a>
-HTML;
-            $header_toolbar[] = $vcard_btn;
-
-            $error_message = null;
-            if (Session::canImpersonate($ID, $error_message)) {
-                $impersonate_lbl = __s('Impersonate');
-                $impersonate_btn = <<<HTML
-               <button type="button" name="impersonate" value="1"
-                       class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
-                       title="{$impersonate_lbl}"
-                       data-bs-toggle="tooltip" data-bs-placement="bottom">
-                  <i class="fas fa-user-secret fa-lg"></i>
-               </button>
-HTML;
-
-               // "impersonate" button type is set to "button" on form display to prevent it to be used
-               // by default (as it is the first found in current form) when pressing "enter" key.
-               // When clicking it, switch to "submit" type to make it submit current user form.
-                $impersonate_js = <<<JAVASCRIPT
-               (function($) {
-                  $('button[type="button"][name="impersonate"]').click(
-                     function () {
-                        $(this).attr('type', 'submit');
-                     }
-                  );
-               })(jQuery);
-JAVASCRIPT;
-                $header_toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
-            } elseif ($error_message !== null) {
-                $impersonate_btn = <<<HTML
-               <button type="button" name="impersonate" value="1"
-                       class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
-                       title="{$error_message}"
-                       data-bs-toggle="tooltip" data-bs-placement="bottom">
-                  <i class="fas fa-user-secret fa-lg"></i>
-               </button>
-HTML;
-                $header_toolbar[] = $impersonate_btn;
-            }
-        }
-
         $options['formtitle']      = $formtitle;
         $options['formoptions']    = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
-        $options['header_toolbar'] = $header_toolbar;
+        if (!self::isNewID($ID)) {
+            $options['no_header'] = true;
+        }
         $this->showFormHeader($options);
         $rand = mt_rand();
 

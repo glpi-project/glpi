@@ -1,4 +1,6 @@
 parameters:
+    parallel:
+        maximumNumberOfProcesses: 2
     level: 0
     bootstrapFiles:
         - inc/based_config.php
@@ -6,6 +8,8 @@ parameters:
         - src
     scanDirectories:
         - inc
+    stubFiles:
+        - stubs/glpi_constants.php
     ignoreErrors:
         - '/Call to static method \w+\(\) on an unknown class phpCAS/'
         - '/Class Ldap\\Connection not found/'

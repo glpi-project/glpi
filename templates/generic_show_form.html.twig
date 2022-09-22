@@ -33,13 +33,14 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set no_header = no_header|default(not item.isNewItem() and not _get._in_modal|default(false)) %}
 {% set bg = '' %}
 {% if item.isDeleted() %}
    {% set bg = 'asset-deleted' %}
 {% endif %}
 
 <div class="asset {{ bg }}">
-   {{ include('components/form/header.html.twig') }}
+   {{ include('components/form/header.html.twig', {'in_twig': true}) }}
 
    {% set rand = random() %}
    {% set params  = params ?? [] %}
@@ -623,6 +624,12 @@
                             __('Active'),
                             field_options
                         ) }}
+                     {% endif %}
+
+                     {# display is_dynamic data without input to prevent "lock field" process to be avoid #}
+                     {% if item.isField('is_dynamic') %}
+                        {% set is_dynamic_value = call('Dropdown::getYesNo', [item.fields['is_dynamic']]) %}
+                        {{ fields.field('is_dynamic', is_dynamic_value, __('Automatic Inventory')) }}
                      {% endif %}
 
                      {% block more_fields %}

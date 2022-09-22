@@ -4484,20 +4484,11 @@ HTML
         $linked = $item->input[$field];
         $this->array($linked);
 
-        // Allow protected calls on update1NTableData and load1NTableData
-        // Needed as these methods are not used in GLPI core yet, there is
-        // no itemtype calling them in their post_update and post_load process
-        // -> we need to be able to call them directly in this test
-        $update1NTableData = new \ReflectionMethod($item, "update1NTableData");
-        $update1NTableData->setAccessible(true);
-        $load1NTableData = new \ReflectionMethod($item, "load1NTableData");
-        $load1NTableData->setAccessible(true);
-
         // Update DB
-        $update1NTableData->invoke($item, $commondb_relation, $field, $extra_input);
+        $this->callPrivateMethod($item, 'update1NTableData', $commondb_relation, $field, $extra_input);
 
         // Load values
-        $load1NTableData->invoke($item, $commondb_relation, $field, $extra_input);
+        $this->callPrivateMethod($item, 'load1NTableData', $commondb_relation, $field, $extra_input);
 
         // Compare values
         $this->array($item->fields[$field])->isEqualTo($linked);

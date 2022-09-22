@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Disk Class
  **/
@@ -101,11 +103,11 @@ class Item_Disk extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
     }
-
 
     /**
      * Print the version form
@@ -133,78 +135,25 @@ class Item_Disk extends CommonDBChild
             return false;
         }
 
-        $item = new $itemtype();
+        $asset_item = new $itemtype();
         if ($ID > 0) {
             $this->check($ID, READ);
-            $item->getFromDB($this->fields['items_id']);
+            $asset_item->getFromDB($this->fields['items_id']);
         } else {
             $this->check(-1, CREATE, $options);
-            $item->getFromDB($options['items_id']);
+            $asset_item->getFromDB($options['items_id']);
         }
-
-        $this->showFormHeader($options);
-
-        if ($this->isNewID($ID)) {
-            echo "<input type='hidden' name='items_id' value='" . $options['items_id'] . "'>";
-            echo "<input type='hidden' name='itemtype' value='" . $options['itemtype'] . "'>";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Item', 'Items', 1) . "</td>";
-        echo "<td>" . $item->getLink() . "</td>";
-        $this->autoinventoryInformation();
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td><td>" . __('Partition') . "</td>";
-        echo "<td>";
-        echo Html::input('device', ['value' => $this->fields['device']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Mount point') . "</td>";
-        echo "<td>";
-        echo Html::input('mountpoint', ['value' => $this->fields['mountpoint']]);
-        echo "</td><td>" . Filesystem::getTypeName(1) . "</td>";
-        echo "<td>";
-        Filesystem::dropdown(['value' => $this->fields["filesystems_id"]]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Global size') . "</td>";
-        echo "<td>";
-        echo Html::input('totalsize', ['value' => $this->fields['totalsize']]);
-        echo "&nbsp;" . __('Mio') . "</td>";
-
-        echo "<td>" . __('Free size') . "</td>";
-        echo "<td>";
-        echo Html::input('freesize', ['value' => $this->fields['freesize']]);
-        echo "&nbsp;" . __('Mio') . "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Encryption') . "</td>";
-        echo "<td>";
-        echo self::getEncryptionStatusDropdown($this->fields['encryption_status']);
-        echo "</td><td>" . __('Encryption tool') . "</td>";
-        echo "<td>";
-        echo Html::input('encryption_tool', ['value' => $this->fields['encryption_tool']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Encryption algorithm') . "</td>";
-        echo "<td>";
-        echo Html::input('encryption_algorithm', ['value' => $this->fields['encryption_algorithm']]);
-        echo "</td><td>" . __('Encryption type') . "</td>";
-        echo "<td>";
-        echo Html::input('encryption_type', ['value' => $this->fields['encryption_type']]);
-        echo "</td></tr>";
 
         $itemtype = $this->fields['itemtype'];
         $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
-        $this->showFormButtons($options);
+
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/item_disk.html.twig', [
+            'item'                      => $this,
+            'asset_item'                => $asset_item,
+            'encryption_status_list'    => self::getAllEncryptionStatus(),
+            'params'                    => $options,
+        ]);
 
         return true;
     }

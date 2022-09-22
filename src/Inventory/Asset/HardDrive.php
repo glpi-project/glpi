@@ -40,11 +40,6 @@ use Glpi\Inventory\Conf;
 
 class HardDrive extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceHardDrive');
-    }
-
     public function prepare(): array
     {
         $mapping = [
@@ -74,5 +69,10 @@ class HardDrive extends Device
     public function checkConf(Conf $conf): bool
     {
         return $conf->component_harddrive == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceHardDrive::class;
     }
 }

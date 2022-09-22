@@ -928,4 +928,9 @@ class Software extends InventoryAsset
     {
         return $conf->import_software == 1;
     }
+
+    public function getItemtype(): string
+    {
+        return \Item_SoftwareVersion::class;
+    }
 }
