@@ -331,7 +331,7 @@
                      {% endif %}
 
                      {% if item.isField('date_expiration') %}
-                        {% if item_type == 'Certificate' %}
+                        {% if item_type == 'Certificate' or item_type == 'ComputerAntivirus' %}
                            {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                               'helper': __('Empty for infinite'),
                               'checkIsExpired': true
