@@ -103,6 +103,23 @@ class GLPITestCase extends atoum
         }
     }
 
+    /**
+     * Call a private method, and get its return value.
+     *
+     * @param mixed     $instance   Class instance
+     * @param string    $methodName Method to call
+     * @param mixed     ...$arg     Method arguments
+     *
+     * @return mixed
+     */
+    protected function callPrivateMethod($instance, string $methodName, ...$args)
+    {
+        $method = new \ReflectionMethod($instance, $methodName);
+        $method->setAccessible(true);
+
+        return $method->invoke($instance, ...$args);
+    }
+
     protected function resetSession()
     {
         Session::destroy();
