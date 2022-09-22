@@ -629,6 +629,7 @@
                         ) }}
                      {% endif %}
 
+                     {# display is_dynamic data without input to prevent "lock field" process to be avoid #}
                      {% if item.isField('is_dynamic') %}
                         {% set is_dynamic_value = call('Dropdown::getYesNo', [item.fields['is_dynamic']]) %}
                         {{ fields.field('is_dynamic', is_dynamic_value, __('Automatic Inventory')) }}
