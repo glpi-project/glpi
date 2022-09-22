@@ -83,13 +83,12 @@ if (isset($_POST["validatortype"])) {
         case 'requester_supervisor':
             // find the supervisor of the requester of the ITIL object
             $user_id = 0;
-            $itilValidationObjectType = $_POST['validation_class'];
-            if (is_a($itilValidationObjectType, CommonITILValidation::class, true)) {
+            if (!is_a($validation_class, CommonITILValidation::class, true)) {
                 // Invalid class
                 break;
             }
-            $itilObjectType = $itilValidationObjectType::$itemtype;
-            $itilObject = $itilObjectType::getById($_POST['parent']['fields']['id']);
+            $itilObjectType = $validation_class::$itemtype;
+            $itilObject = $itilObjectType::getById($_POST['parents_id']);
             $requester_user = $itilObject->getPrimaryRequesterUser();
             if ($requester_user === null) {
                 // No requester user found

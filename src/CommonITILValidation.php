@@ -1780,7 +1780,7 @@ abstract class CommonITILValidation extends CommonDBChild
         $params = [
             'prefix'            => null,
             'id'                => 0,
-            'parent'            => null,
+            'parents_id'        => null,
             'entity'            => $_SESSION['glpiactive_entity'],
             'right'             => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
             'groups_id'         => 0,
@@ -1814,8 +1814,10 @@ abstract class CommonITILValidation extends CommonDBChild
             'Group_User' => __('Group user(s)'),
             'Group'      => Group::getTypeName(1),
         ];
-        if (isset($params['parent']) && $params['parent'] instanceof CommonITILObject) {
-            $requester_user = $params['parent']->getPrimaryRequesterUser();
+        if (isset($params['parents_id'])) {
+            $parent_itil_object = new static::$itemtype();
+            $parent_itil_object->getFromDB($params['parents_id']);
+            $requester_user = $parent_itil_object->getPrimaryRequesterUser();
             if ($requester_user !== null) {
                 $supervisor_user = User::getById($requester_user->fields['users_id_supervisor']);
                 if ($supervisor_user instanceof User) {
