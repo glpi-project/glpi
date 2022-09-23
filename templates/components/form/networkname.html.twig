@@ -49,7 +49,7 @@
                {% block more_fields %}
 
                   {% set field_options = field_options|merge(params) %}
-                  {% set sessionGetPlural = call('Session::getPluralNumber', []) %}
+                  {% set sessiongetplural = call('Session::getPluralNumber', []) %}
                   {% set rand =  random() %}
 
                   {% if ID %}
@@ -69,8 +69,8 @@
                      {% set unaffect_btn %}
                         <a class="btn btn-sm btn-outline-danger"
                         onclick=" submitGetLink('{{ item.getFormURL }}', {'unaffect': 'unaffect', 'id': '{{ ID }}', '_glpi_csrf_token': '{{ csrf_token() }}', '_glpi_simple_form': '1'});">
-                           <span class="fas fa-unlink " title={{  __('Dissociate') }}>
-                              <span class="sr-only">{{  __('Dissociate') }}</span>
+                           <span class="fas fa-unlink " title={{ __('Dissociate') }}>
+                              <span class="sr-only">{{ __('Dissociate') }}</span>
                            </span>
                         </a>
 
@@ -86,15 +86,15 @@
                      })
                   ) }}
 
-                  {% set tableFromForeignKey = call('getTableNameForForeignKeyField', ["fqdns_id"]) %}
-                  {% set tableFromItemtype = call('getItemTypeForTable', [tableFromForeignKey]) %}
+                  {% set tablefromforeignKey = call('getTableNameForForeignKeyField', ["fqdns_id"]) %}
+                  {% set tablefromitemtype = call('getItemTypeForTable', [tablefromforeignKey]) %}
                   {% set fqdn_label = call('FQDN::getTypeName', [0]) %}
                   {{ fields.dropdownField(
-                     tableFromItemtype,
+                     tablefromitemtype,
                      "fqdns_id",
                      item.fields["fqdns_id"],
                      fqdn_label,
-                     field_options|merge({'entity' : item.getEntityID(), 'displaywith' :  ['view'] })
+                     field_options|merge({'entity' : item.getEntityID(), 'displaywith' : ['view'] })
                   ) }}
 
                   {{ fields.textareaField(
@@ -105,26 +105,26 @@
                   ) }}
 
 
-                  {% set IPnetwork_label = call('IPNetwork::getTypeName', [sessionGetPlural]) %}
+                  {% set ipnetwork_label = call('IPNetwork::getTypeName', [sessiongetplural]) %}
                   {% set span_for_ajax %}
-                     <span id='show_ipnetwork_{{rand}}'></span>
+                     <span id='show_ipnetwork_{{ rand }}'></span>
                   {% endset %}
 
                   {{ fields.dropdownField(
                      "IPNetwork",
                      "ipnetworks_id",
                      item.fields["ipnetworks_id"],
-                     IPnetwork_label,
-                     field_options|merge({'entity' : item.getEntityID(), 
-                        'rand' : rand, 
-                        'value': item.fields["ipnetworks_id"],
+                     ipnetwork_label,
+                     field_options|merge({'entity' : item.getEntityID(),
+                        'rand' : rand,
+                        'value' : item.fields["ipnetworks_id"],
                         'helper' : __('IP network is not included in the database. However, you can see current available networks.'),
                         add_field_html : span_for_ajax
                         })
                   ) }}
 
                   {% do call('Ajax::updateItemOnSelectEvent', [
-                     'dropdown_ipnetworks_id' ~ rand ,
+                     'dropdown_ipnetworks_id' ~ rand,
                      'show_ipnetwork_' ~ rand,
                      config('root_doc') ~ '/ajax/dropdownShowIPNetwork.php',
                      {
@@ -142,7 +142,7 @@
                      %}
                   {% endif %}
 
-                  {% set ip_label = call('IPAddress::getTypeName', [sessionGetPlural]) %}
+                  {% set ip_label = call('IPAddress::getTypeName', [sessiongetplural]) %}
                   {% set add_child = call('IPAddress::showAddChildButtonForItemForm', [item, '_ipaddresses', true, false]) %}
                   {% set show_child = call('IPAddress::showChildsForItemForm', [item, '_ipaddresses', true, false]) %}
 
