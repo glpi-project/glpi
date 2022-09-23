@@ -94,7 +94,7 @@
                      "fqdns_id",
                      item.fields["fqdns_id"],
                      fqdn_label,
-                     field_options|merge({'entity': item.getEntityID(), 'displaywith': ['view'] })
+                     field_options|merge({'entity': item.getEntityID(), 'displaywith': ['view']})
                   ) }}
 
                   {{ fields.textareaField(
@@ -136,8 +136,8 @@
                      {% do call('Ajax::updateItem', [
                         'show_ipnetwork_' ~ rand,
                         config('root_doc') ~ '/ajax/dropdownShowIPNetwork.php',
-                        {'ipnetworks_id': item.fields["ipnetworks_id"]}])
-                     %}
+                        {'ipnetworks_id': item.fields["ipnetworks_id"]}
+                     ]) %}
                   {% endif %}
 
                   {% set ip_label = call('IPAddress::getTypeName', [sessiongetplural]) %}
