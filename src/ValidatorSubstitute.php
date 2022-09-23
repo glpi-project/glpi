@@ -147,17 +147,11 @@ final class ValidatorSubstitute extends CommonDBTM
             return false;
         }
 
-        // the user cannot select himself as a substitute
         TemplateRenderer::getInstance()->display('pages/admin/user.substitute.html.twig', [
             'item'        => $this,
             'user'        => $user,
             'substitutes' => $user->getSubstitutes(),
             'delegators'  => $user->getDelegators(),
-            'params'      => [
-                'target'      => self::getFormURL(),
-                'canedit'     => true,
-                'candel'      => false,
-            ]
         ]);
 
         return true;

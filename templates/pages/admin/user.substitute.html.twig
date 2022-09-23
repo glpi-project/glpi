@@ -32,38 +32,18 @@
  #}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set id      = item.fields['id'] ?? -1 %}
+{% set canedit = item.canEdit(user.fields['id']) %}
+
 <div class="asset">
 
-{# Form Header #}
-{% set target       = params['target'] ?? item.getFormURL() %}
-{% set canedit      = params['canedit'] ?? true %}
-{% set rand         = random() %}
-{% set id           = item.fields['id'] ?? -1 %}
-{% set formoptions  = params['formoptions'] ?? '' %}
-
-{% set entity_id = 0 %}
-{% set entity_name = '' %}
-{% if item.isEntityAssign() %}
-   {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
-      {% set entity_id = null %}
-   {% else %}
-      {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
-   {% endif %}
-
-   {% if is_multi_entities_mode() %}
-      {% set entity_name = get_item_name('Entity', item.getEntityID()) %}
-   {% endif %}
-{% endif %}
-
-{% if item.canEdit(user.fields['id']) %}
-   <form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
+{% if canedit %}
+   <form name="asset_form" method="post" action="{{ item.getFormURL( }}" enctype="multipart/form-data" data-submit-once>
 {% endif %}
 
    <div id="mainformtable">
 
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
-
-      {% set rand = random() %}
 
       <div class="card-body d-flex flex-wrap">
          <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
@@ -71,8 +51,7 @@
                <div class="row flex-row align-items-start flex-grow-1">
                   <div class="row flex-row">
                      <input type="hidden" name="users_id" value={{ user.fields['id'] }} />
-                     {% if (delegators) %}
-                     {% endif %}
+
                      {{ fields.datetimeField(
                         'substitution_start_date',
                         user.fields['substitution_start_date'],
@@ -95,7 +74,6 @@
                               'used': [user.fields['id']],
                               'value': substitutes,
                               'right': 'create_ticket_validate',
-                              'rand': rand,
                         }
                      ) }}
 
@@ -108,7 +86,7 @@
                         <table class="table card-table table-hover table-striped">
                         <thead>
                            <tr>
-                              <th style="width: 33%;">{{ __('name') }}</th>
+                              <th style="width: 33%;">{{ __('Name') }}</th>
                               <th style="width: 33%;">{{ __('Substitution start date') }}</th>
                               <th style="width: 33%;">{{ __('Substitution end date') }}</th>
                            </tr>
@@ -130,26 +108,13 @@
                </div> {# .row #}
             </div> {# .flex-row #}
          </div>
-         {% if item_has_pictures %}
-            <div class="col-12 col-xxl-3 flex-column">
-               <div class="flex-row asset-pictures">
-                  {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
-               </div>
-            </div>
-         {% endif %}
       </div> {# .card-body #}
 
-
-      {% set withtemplate = params['withtemplate'] ?? '' %}
-      {% set candel       = params['candel'] ?? true %}
-      {% set canedit      = params['canedit'] ?? true %}
-      {% set id           = item.fields['id'] ?? -1 %}
-
       <div class="row">
-      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
       </div>
 
-      {% if canedit or item.canEdit(user.fields['id']) %}
+      {% if canedit %}
          <div class="card-body mx-n2 mb-4 border-top d-flex flex-row-reverse align-items-start flex-wrap">
             <button class="btn btn-primary me-2" type="submit" name="update" value="1">
                <i class="far fa-save"></i>
