@@ -794,7 +794,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     static::getTableField('itemtype_target') => User::class,
                     static::getTableField('items_id_target') => $users_id,
                 ],
-                'AND' => [
+                [
                     static::getTableField('itemtype_target') => User::class,
                     static::getTableField('items_id_target') => $substitute_subQuery,
                 ],
