@@ -4292,7 +4292,13 @@ abstract class CommonITILObject extends CommonDBTM
             case 'time_to_own':
                 return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
             AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND (' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
+            AND ((' . $DB->quoteName($table . '.takeintoaccountdelaydate') . ' IS NOT NULL AND 
+                 ' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
+                 OR (' . $DB->quoteName($table . '.takeintoaccountdelaydate') . ' IS NULL AND
+                 ' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . '
+                        > TIMESTAMPDIFF(SECOND,
+                                        ' . $DB->quoteName($table . '.date') . ',
+                                        ' . $DB->quoteName($table . '.' . $type) . '))
                  OR (' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . ' = 0
                       AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
             1, 0)';

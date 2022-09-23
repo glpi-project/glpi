@@ -1529,9 +1529,20 @@ class Ticket extends CommonITILObject
             && $this->canTakeIntoAccount()
             && !$this->isNew()
         ) {
+            $this->updates[]				= "takeintoaccountdate";
+            $this->fields['takeintoaccountdate'] = $_SESSION["glpi_currenttime"];
             $this->updates[]                            = "takeintoaccount_delay_stat";
             $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
         }
+
+	if(in_array("takeintoaccount_delay_stat",$this->updates) &&
+            $this->fields['takeintoaccount_delay_stat'] == 0
+	) {
+	    if (!in_array("takeintoaccountdate",$this->updates)) {
+	        $this->updates[] = "takeintoaccountdate";
+	    }
+	    $this->fields["takeintoaccountdate"] = null;
+	}
 
         parent::pre_updateInDB();
     }
@@ -2328,6 +2339,7 @@ class Ticket extends CommonITILObject
                     [
                         'id'                         => $ID,
                         'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),
+			'takeintoaccountdate'        => $_SESSION["glpi_currenttime"],
                         '_disablenotif'              => true
                     ]
                 );
@@ -2953,7 +2965,7 @@ JAVASCRIPT;
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat']
+            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate']
         ];
 
         $tab[] = [
@@ -3015,7 +3027,7 @@ JAVASCRIPT;
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat'],
+            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
         ];
 
         $tab[] = [
@@ -6220,9 +6232,14 @@ JAVASCRIPT;
     {
         $now                      = time();
         $date_creation            = strtotime($this->fields['date'] ?? '');
+       // Tickets created before 10.0.4 do not have takeintoaccountdate field, use old and incorrect computation for those cases
         $date_takeintoaccount     = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         if ($date_takeintoaccount == $date_creation) {
             $date_takeintoaccount  = 0;
+        }
+       // If takeintoaccountdate was saved use it
+        if(!empty($this->fields['takeintoaccountdate'])) {
+            $date_takeintoaccount = strtotime($this->fields['takeintoaccountdate']);
         }
         $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
         $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');

@@ -6193,7 +6193,12 @@ JAVASCRIPT;
                 $value        = $data[$NAME][0]['name'];
                 $status       = $data[$NAME][0]['status'];
                 $opening_date = $data[$NAME][0]['date'];
+		$tia_delay    = $data[$NAME][0]['takeintoaccount_delay_stat'];
                 $tia_date     = $data[$NAME][0]['takeintoaccountdate'];
+               // Fallback to old and incorrect computation for tickets saved before introducing takeintoaccountdate field
+                if ($tia_delay > 0 && $tia_date == null){
+                    $tia_date = strtotime($opening_date) + $tia_delay;
+                }
 
                 $is_late = !empty($value)
                     && $status != CommonITILObject::WAITING
