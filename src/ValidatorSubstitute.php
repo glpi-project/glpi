@@ -140,7 +140,6 @@ final class ValidatorSubstitute extends CommonDBTM
             return false;
         }
 
-        /** @var User $user */
         if (
             ($user->fields['id'] != Session::getLoginUserID())
             && !$user->currentUserHaveMoreRightThan($user->fields['id'])
