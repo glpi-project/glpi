@@ -124,7 +124,6 @@ class NetworkName extends FQDNLabel
         ]);
 
         return true;
-
     }
 
 
