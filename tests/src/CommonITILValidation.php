@@ -437,68 +437,6 @@ abstract class CommonITILValidation extends DbTestCase
         $this->boolean($validation::canValidate($itil_items_id))->isFalse();
     }
 
-    public function testIsCurrentUserValidationTarget()
-    {
-        $this->login();
-
-        // Create ITIL Object
-        $itil_class = $this->getITILObjectClass();
-        $itil_item = new $itil_class();
-        $itil_items_id = $itil_item->add([
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'name'      => __FUNCTION__,
-            'content'   => __FUNCTION__,
-        ]);
-        $this->integer($itil_items_id)->isGreaterThan(0);
-
-        // Add validation for current user
-        $validation = $this->newTestedInstance();
-        $validations_id = $validation->add([
-            $itil_class::getForeignKeyField()   => $itil_items_id,
-            'itemtype_target'                   => 'User',
-            'items_id_target'                   => $_SESSION['glpiID'],
-            'comment_submission'                => __FUNCTION__,
-        ]);
-        $this->integer($validations_id)->isGreaterThan(0);
-
-        // Test the current user is the validation target
-        $this->boolean($validation->isCurrentUserValidationTarget())->isTrue();
-
-        // Delete validation
-        $this->boolean($validation->delete(['id' => $validations_id]))->isTrue();
-
-        // Create a test group
-        $group = new \Group();
-        $groups_id = $group->add([
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'name' => __FUNCTION__,
-        ]);
-        $this->integer($groups_id)->isGreaterThan(0);
-        // Add current user to the group
-        $group_user = new \Group_User();
-        $this->integer($group_user->add([
-            'groups_id' => $groups_id,
-            'users_id'  => $_SESSION['glpiID'],
-        ]))->isGreaterThan(0);
-
-        // Force reload of group memberships is current session
-        \Session::loadGroups();
-
-        // Add validation for group
-        $validations_id = $validation->add([
-            $itil_class::getForeignKeyField()   => $itil_items_id,
-            'itemtype_target'                   => 'Group',
-            'items_id_target'                   => $groups_id,
-            'comment_submission'                => __FUNCTION__,
-        ]);
-        $this->integer($validations_id)->isGreaterThan(0);
-
-        // Test the current user is the validation target
-        $this->boolean($validation->isCurrentUserValidationTarget(true))->isTrue();
-        // Test the current user is not the validation target when groups are not considered
-        $this->boolean($validation->isCurrentUserValidationTarget(false))->isFalse();
-    }
-
     protected function prepareInputForAddProvider()
     {
         $fk_field = $this->getITILObjectClass()::getForeignKeyField();
@@ -659,13 +597,6 @@ abstract class CommonITILValidation extends DbTestCase
         ]);
         $this->boolean($validation->isNewItem())->isFalse();
         if (!empty($expected)) {
-            // Inject target fields into fields so isCurrentUserValidationTarget will work
-            if (isset($input['itemtype_target'])) {
-                $validation->fields['itemtype_target'] = $input['itemtype_target'];
-            }
-            if (isset($input['items_id_target'])) {
-                $validation->fields['items_id_target'] = $input['items_id_target'];
-            }
             $result = $validation->prepareInputForUpdate($input);
             $this->array($result)->hasKeys(array_keys($expected));
             foreach ($result as $k => $v) {

@@ -187,32 +187,6 @@ abstract class CommonITILValidation extends CommonDBChild
             || (int) $this->fields['users_id_validate'] === Session::getLoginUserID();
     }
 
-    /**
-     * Is the validation request for the current user or one or their groups (optional)?
-     * @param bool $include_groups If true, group memberships will be taken into account (true by default)
-     * @return bool
-     */
-    public function isCurrentUserValidationTarget(bool $include_groups = true): bool
-    {
-        $is_target = false;
-
-        if (
-            (!isset($this->fields['itemtype_target']) || empty($this->fields['itemtype_target']))
-            && (isset($this->fields['users_id_validate']) && !empty($this->fields['users_id_validate']))
-        ) {
-            Toolbox::deprecated('Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" fields is deprecated in "CommonITILValidation".');
-            $this->fields['itemtype_target'] = 'User';
-            $this->fields['items_id_target'] = $this->fields['users_id_validate'];
-        }
-
-        if ($this->fields['itemtype_target'] === 'User') {
-            $is_target = $this->fields['items_id_target'] == Session::getLoginUserID();
-        } else if ($include_groups && $this->fields['itemtype_target'] === 'Group') {
-            $is_target = in_array($this->fields['items_id_target'], $_SESSION['glpigroups']);
-        }
-        return $is_target;
-    }
-
 
     /**
      * @param integer $items_id ID of the item
