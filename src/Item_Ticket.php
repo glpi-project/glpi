@@ -450,8 +450,8 @@ class Item_Ticket extends CommonItilObject_Item
         $header_end .= "<th>" . __('Serial number') . "</th>";
         $header_end .= "<th>" . __('Inventory number') . "</th>";
         $header_end .= "<th>" . __('Knowledge base entries') . "</th>";
-        $header_end .= "<th>" . __('Status') . "</th>";
-        $header_end .= "<th>" . __('Location') . "</th>";
+        $header_end .= "<th>" . State::getTypeName(1) . "</th>";
+        $header_end .= "<th>" . Location::getTypeName(1) . "</th>";
         echo "<tr>";
         echo $header_begin . $header_top . $header_end;
 
