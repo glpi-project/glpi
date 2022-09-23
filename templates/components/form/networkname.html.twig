@@ -50,7 +50,7 @@
 
                   {% set field_options = field_options|merge(params) %}
                   {% set sessiongetplural = call('Session::getPluralNumber', []) %}
-                  {% set rand =  random() %}
+                  {% set rand = random() %}
 
                   {% if ID %}
                      <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
@@ -86,15 +86,15 @@
                      })
                   ) }}
 
-                  {% set tablefromforeignKey = call('getTableNameForForeignKeyField', ["fqdns_id"]) %}
-                  {% set tablefromitemtype = call('getItemTypeForTable', [tablefromforeignKey]) %}
+                  {% set tablefromforeignkey = call('getTableNameForForeignKeyField', ["fqdns_id"]) %}
+                  {% set tablefromitemtype = call('getItemTypeForTable', [tablefromforeignkey]) %}
                   {% set fqdn_label = call('FQDN::getTypeName', [0]) %}
                   {{ fields.dropdownField(
                      tablefromitemtype,
                      "fqdns_id",
                      item.fields["fqdns_id"],
                      fqdn_label,
-                     field_options|merge({'entity' : item.getEntityID(), 'displaywith' : ['view'] })
+                     field_options|merge({'entity': item.getEntityID(), 'displaywith': ['view'] })
                   ) }}
 
                   {{ fields.textareaField(
@@ -136,9 +136,7 @@
                      {% do call('Ajax::updateItem', [
                         'show_ipnetwork_' ~ rand,
                         config('root_doc') ~ '/ajax/dropdownShowIPNetwork.php',
-                        {
-                           'ipnetworks_id': item.fields["ipnetworks_id"],
-                        } ])
+                        {'ipnetworks_id': item.fields["ipnetworks_id"]}])
                      %}
                   {% endif %}
 
