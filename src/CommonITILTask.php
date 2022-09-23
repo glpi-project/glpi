@@ -43,6 +43,7 @@ use Sabre\VObject\Component\VCalendar;
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItemInterface
 {
+    use Glpi\Features\ParentStatus;
     use Glpi\Features\PlanningEvent;
     use VobjectConverterTrait;
 

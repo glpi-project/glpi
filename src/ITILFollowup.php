@@ -41,6 +41,8 @@ use Glpi\Toolbox\Sanitizer;
  */
 class ITILFollowup extends CommonDBChild
 {
+    use Glpi\Features\ParentStatus;
+
    // From CommonDBTM
     public $auto_message_on_action = false;
     public static $rightname              = 'followup';
