@@ -6720,11 +6720,11 @@ JAVASCRIPT;
     }
 
     /**
-     * Get all valdiation substitutes
+     * Get all validation substitutes
      *
      * @return array
      */
-    public function getSubstitutes(): array
+    final public function getSubstitutes(): array
     {
         if ($this->isNewItem()) {
             return [];
@@ -6746,7 +6746,7 @@ JAVASCRIPT;
      *
      * @return array
      */
-    public function getDelegators(): array
+    final public function getDelegators(): array
     {
         if ($this->isNewItem()) {
             return [];
@@ -6770,7 +6770,7 @@ JAVASCRIPT;
      * @param bool    $use_date_range
      * @return boolean
      */
-    public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
+    final public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
     {
         global $DB;
 
