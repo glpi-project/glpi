@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * @since 9.1
  */
@@ -87,6 +89,7 @@ class ComputerAntivirus extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -253,58 +256,13 @@ class ComputerAntivirus extends CommonDBChild
             $comp->getFromDB($options['computers_id']);
         }
 
-        $this->showFormHeader($options);
-
-        if ($this->isNewID($ID)) {
-            echo "<input type='hidden' name='computers_id' value='" . $options['computers_id'] . "'>";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . Computer::getTypeName(1) . "</td>";
-        echo "<td>" . $comp->getLink() . "</td>";
-        $this->autoinventoryInformation();
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-        echo "<td>" . __('Active') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . Manufacturer::getTypeName(1) . "</td>";
-        echo "<td>";
-        Dropdown::show('Manufacturer', ['value' => $this->fields["manufacturers_id"]]);
-        echo "</td>";
-        echo "<td>" . __('Up to date') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_uptodate', $this->fields['is_uptodate']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Antivirus version') . "</td>";
-        echo "<td>";
-        echo Html::input('antivirus_version', ['value' => $this->fields['antivirus_version']]);
-        echo "</td>";
-        echo "<td>" . __('Signature database version') . "</td>";
-        echo "<td>";
-        echo Html::input('signature_version', ['value' => $this->fields['signature_version']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Expiration date') . "</td>";
-        echo "<td>";
-        Html::showDateField("date_expiration", ['value' => $this->fields['date_expiration']]);
-        echo "</td>";
-        echo "<td colspan='2'></td>";
-        echo "</tr>";
-
         $options['canedit'] = Session::haveRight("computer", UPDATE);
-        $this->showFormButtons($options);
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/computerantivirus.html.twig', [
+            'item'                      => $this,
+            'computer'                => $comp,
+            'params'                    => $options,
+        ]);
 
         return true;
     }
@@ -419,9 +377,19 @@ class ComputerAntivirus extends CommonDBChild
     {
         $input = parent::prepareInputForAdd($input);
 
-        // Clear date if empty to avoid SQL error
-        if (empty($input['date_expiration'])) {
-            unset($input['date_expiration']);
+        if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
+            $input['date_expiration'] = 'NULL';
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
+            $input['date_expiration'] = 'NULL';
         }
 
         return $input;
