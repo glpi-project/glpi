@@ -198,7 +198,7 @@ abstract class CommonITILValidation extends DbTestCase
         $validations_id_2 = $validation->add([
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
-            'items_id_target'                   => \User::getIdByName('normal'), // Other user. Doesn't need to exist
+            'items_id_target'                   => \User::getIdByName('normal'), // Other user.
             'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id_2)->isGreaterThan(0);
@@ -341,7 +341,7 @@ abstract class CommonITILValidation extends DbTestCase
         $validations_id_2 = $validation->add([
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'Group',
-            'items_id_target'                   => $other_groups_id, // Other group. Doesn't need to exist
+            'items_id_target'                   => $other_groups_id, // Other group.
             'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id_2)->isGreaterThan(0);

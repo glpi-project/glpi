@@ -9875,7 +9875,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @return null|User the first user added as a requester or 0 if no requester found
      */
-    public function getPrimaryRequesterUser(): ?User
+    final public function getPrimaryRequesterUser(): ?User
     {
         if (!isset($this->fields['id']) || $this->isNewID($this->fields['id'])) {
             return null;
