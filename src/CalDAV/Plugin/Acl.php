@@ -86,7 +86,7 @@ class Acl extends Plugin
         ];
 
         // Check if user has permission in any of their profiles
-        $can_update = PermissionManager::haveRight(-1, PlanningExternalEvent::$rightname, UPDATE);
+        $can_update = PermissionManager::getInstance()->haveRight(-1, PlanningExternalEvent::$rightname, UPDATE);
         if ($node instanceof Calendar && $can_update) {
            // If user can update external events, then he is able to write on calendar to create new events.
             $acl[] = [

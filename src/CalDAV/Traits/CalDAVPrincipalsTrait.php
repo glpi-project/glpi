@@ -125,7 +125,7 @@ trait CalDAVPrincipalsTrait
         global $DB;
 
         // Check if user has permission in any of their profiles
-        $can_read_all = PermissionManager::haveRight(-1, Planning::$rightname, Planning::READALL);
+        $can_read_all = PermissionManager::getInstance()->haveRight(-1, Planning::$rightname, Planning::READALL);
         if (
             !$can_read_all
             && empty($_SESSION['glpigroups'])
@@ -168,8 +168,8 @@ trait CalDAVPrincipalsTrait
     {
 
         // Check if user has permission in any of their profiles
-        $can_read_all = PermissionManager::haveRight(-1, Planning::$rightname, Planning::READALL);
-        $can_read_group = PermissionManager::haveRight(-1, Planning::$rightname, Planning::READGROUP);
+        $can_read_all = PermissionManager::getInstance()->haveRight(-1, Planning::$rightname, Planning::READALL);
+        $can_read_group = PermissionManager::getInstance()->haveRight(-1, Planning::$rightname, Planning::READGROUP);
         if (!($can_read_all || $can_read_group)) {
            // Can see only personnal planning
             $rights = 'id';

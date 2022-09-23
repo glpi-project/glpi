@@ -44,14 +44,14 @@ class PermissionManager extends DbTestCase
         $test_users_id = getItemByTypeName('User', TU_USER, true);
         $root_entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        $this->boolean(\Glpi\Security\PermissionManager::haveRight(
+        $this->boolean(\Glpi\Security\PermissionManager::getInstance()->haveRight(
             $test_users_id,
             'computer',
             ALLSTANDARDRIGHT,
             false,
             $root_entities_id
         ))->isTrue();
-        $this->boolean(\Glpi\Security\PermissionManager::haveRight(
+        $this->boolean(\Glpi\Security\PermissionManager::getInstance()->haveRight(
             $test_users_id,
             'computer',
             PHP_INT_MAX,
@@ -61,12 +61,12 @@ class PermissionManager extends DbTestCase
 
         $this->login();
 
-        $this->boolean(\Glpi\Security\PermissionManager::haveRight(
+        $this->boolean(\Glpi\Security\PermissionManager::getInstance()->haveRight(
             -1,
             'computer',
             ALLSTANDARDRIGHT
         ))->isTrue();
-        $this->boolean(\Glpi\Security\PermissionManager::haveRight(
+        $this->boolean(\Glpi\Security\PermissionManager::getInstance()->haveRight(
             -1,
             'computer',
             PHP_INT_MAX
@@ -75,19 +75,19 @@ class PermissionManager extends DbTestCase
 
     public function testGetPossibleProfiles()
     {
-        $this->integer(count(\Glpi\Security\PermissionManager::getPossibleProfiles('computer', CREATE)))->isEqualTo(4);
-        $this->integer(count(\Glpi\Security\PermissionManager::getPossibleProfiles('computer', 255)))->isEqualTo(1);
+        $this->integer(count(\Glpi\Security\PermissionManager::getInstance()->getPossibleProfiles('computer', CREATE)))->isEqualTo(4);
+        $this->integer(count(\Glpi\Security\PermissionManager::getInstance()->getPossibleProfiles('computer', 255)))->isEqualTo(1);
     }
 
     public function testHasProfile()
     {
         $test_users_id = getItemByTypeName('User', TU_USER, true);
-        $this->boolean(\Glpi\Security\PermissionManager::hasProfile($test_users_id, 4))->isTrue();
-        $this->boolean(\Glpi\Security\PermissionManager::hasProfile($test_users_id, 8))->isFalse();
+        $this->boolean(\Glpi\Security\PermissionManager::getInstance()->hasProfile($test_users_id, 4))->isTrue();
+        $this->boolean(\Glpi\Security\PermissionManager::getInstance()->hasProfile($test_users_id, 8))->isFalse();
 
         $this->login();
-        $this->boolean(\Glpi\Security\PermissionManager::hasProfile(-1, 4))->isTrue();
-        $this->boolean(\Glpi\Security\PermissionManager::hasProfile(-1, 8))->isFalse();
+        $this->boolean(\Glpi\Security\PermissionManager::getInstance()->hasProfile(-1, 4))->isTrue();
+        $this->boolean(\Glpi\Security\PermissionManager::getInstance()->hasProfile(-1, 8))->isFalse();
     }
 
     public function testGetAggregatedRights()
@@ -109,7 +109,7 @@ class PermissionManager extends DbTestCase
             'ticket' => \Ticket::READMY | \Ticket::READASSIGN,
         ]);
 
-        $aggregated = \Glpi\Security\PermissionManager::getAggregatedRights([
+        $aggregated = $this->callPrivateMethod(\Glpi\Security\PermissionManager::getInstance(), 'getAggregatedRights', [
             $profiles_id_1,
             $profiles_id_2,
         ]);
