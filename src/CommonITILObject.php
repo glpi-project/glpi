@@ -872,19 +872,7 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
 
-        if (!$this instanceof Ticket && !$this instanceof Change) {
-           // Not a valid validation target
-            return false;
-        }
-
-        $validation_class = static::class . "Validation";
-        $valitation_obj = new $validation_class();
-        $validation_requests = $valitation_obj->find([
-            getForeignKeyFieldForItemType(static::class) => $this->getID(),
-            'users_id_validate' => $users_id,
-        ]);
-
-        return count($validation_requests) > 0;
+        return $this->isUserValidationRequested($users_id, true);
     }
 
 

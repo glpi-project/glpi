@@ -286,6 +286,7 @@ abstract class CommonITILValidation extends CommonDBChild
             Toolbox::deprecated('Defining "users_id_validate" field during creation is deprecated in "CommonITILValidation".');
             $input['itemtype_target'] = User::class;
             $input['items_id_target'] = $input['users_id_validate'];
+            unset($input['users_id_validate']);
         }
 
         if (
@@ -295,29 +296,10 @@ abstract class CommonITILValidation extends CommonDBChild
             return false;
         }
 
-        $input = $this->autosetUsersIdValidate($input);
-
         $itemtype = static::$itemtype;
         $input['timeline_position'] = $itemtype::getTimelinePosition($input[static::$items_id], $this->getType(), $input["users_id"]);
 
         return parent::prepareInputForAdd($input);
-    }
-
-    /**
-     * Automatically defines `users_id_validate` field based on `itemtype_target`/`items_id_target`.
-     * This is done to prevent BC breaks related to introduction of `itemtype_target`/`items_id_target` fields.
-     *
-     * @param array $input
-     *
-     * @return array
-     */
-    private function autosetUsersIdValidate(array $input): array
-    {
-        if (array_key_exists('itemtype_target', $input) && $input['itemtype_target'] === User::class) {
-            $input['users_id_validate'] = $input['items_id_target'];
-        }
-
-        return $input;
     }
 
 
@@ -444,8 +426,6 @@ abstract class CommonITILValidation extends CommonDBChild
                 }
             }
         }
-
-        $input = $this->autosetUsersIdValidate($input);
 
         return parent::prepareInputForUpdate($input);
     }
@@ -973,6 +953,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                 Toolbox::deprecated('Usage of "users_id_validate" in input is deprecated. Use "itemtype_target"/"items_id_target" instead.');
                                 $input['itemtype_target'] = User::class;
                                 $input['items_id_target'] = $input['users_id_validate'];
+                                unset($input['users_id_validate']);
                             }
 
                             $itemtype  = $input['itemtype_target'];
