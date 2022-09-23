@@ -102,7 +102,7 @@ class NetworkName extends FQDNLabel
             $options['entities_id'] = $lastItem->getField('entities_id');
         }
 
-        $recursiveItemsTypeData = __("Associated element");
+        $recursiveItemsTypeData = _n('Associated element', 'Associated elements', Session::getPluralNumber());
         if (count($recursiveItems) > 0) {
             $recursiveItemsTypeData = $this->displayRecursiveItems($recursiveItems, 'Type', false);
         }
