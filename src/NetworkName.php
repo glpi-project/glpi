@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * NetworkName Class
  *
@@ -80,7 +82,6 @@ class NetworkName extends FQDNLabel
         return $ong;
     }
 
-
     /**
      * Print the network name form
      *
@@ -101,70 +102,29 @@ class NetworkName extends FQDNLabel
             $options['entities_id'] = $lastItem->getField('entities_id');
         }
 
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>";
+        $recursiveItemsTypeData = __("Associated element");
         if (count($recursiveItems) > 0) {
-            $this->displayRecursiveItems($recursiveItems, 'Type');
+            $recursiveItemsTypeData = $this->displayRecursiveItems($recursiveItems, 'Type', false);
         }
-        echo "</td>\n<td colspan='3'>";
 
-        if (!($ID > 0)) {
-            echo "<input type='hidden' name='items_id' value='" . $this->fields["items_id"] . "'>\n";
-            echo "<input type='hidden' name='itemtype' value='" . $this->fields["itemtype"] . "'>\n";
-        }
-        $this->displayRecursiveItems($recursiveItems, "Link");
+        $displayRecursiveItemsLink = $this->displayRecursiveItems($recursiveItems, 'Link', false);
+        $displayDissociateBtn = false;
         if ((count($recursiveItems) > 0) && $this->canUpdate()) {
-            Html::showSimpleForm(
-                $this->getFormURL(),
-                'unaffect',
-                _sx('button', 'Dissociate'),
-                ['id' => $ID]
-            );
+            $displayDissociateBtn = true;
         }
 
-        echo "</td></tr>\n";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td><td>\n";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>\n";
-
-        echo "<td>" . FQDN::getTypeName(1) . "</td><td>";
-        Dropdown::show(
-            getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
-            ['value'       => $this->fields["fqdns_id"],
-                'name'        => 'fqdns_id',
-                'entity'      => $this->getEntityID(),
-                'displaywith' => ['view']
-            ]
-        );
-        echo "</td>\n</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . IPAddress::getTypeName(Session::getPluralNumber());
-        IPAddress::showAddChildButtonForItemForm($this, '_ipaddresses');
-        echo "</td>";
-        echo "<td>";
-        IPAddress::showChildsForItemForm($this, '_ipaddresses');
-        echo "</td>\n";
-
-        echo "<td rowspan='3'>" . __('Comments') . "</td>";
-        echo "<td rowspan='3'><textarea class='form-control' rows='4' name='comment' >" . $this->fields["comment"];
-        echo "</textarea></td>\n";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . IPNetwork::getTypeName(Session::getPluralNumber()) . "</td><td>";
-        echo __('IP network is not included in the database. However, you can see current available networks.');
-        echo "</td></tr>";
-        echo "<tr class='tab_bg_1'><td>&nbsp;</td><td>";
-        IPNetwork::showIPNetworkProperties($this->getEntityID(), $this->fields['ipnetworks_id']);
-        echo "</td></tr>\n";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('components/form/networkname.html.twig', [
+            'ID'                        => $ID,
+            'displayDissociateBtn'      => $displayDissociateBtn,
+            'recursiveItemsTypeData'    => $recursiveItemsTypeData,
+            'displayRecursiveItemsLink' => $displayRecursiveItemsLink,
+            'item'                      => $this,
+            'params'                    => $options,
+        ]);
 
         return true;
+
     }
 
 

@@ -1,0 +1,174 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+{% set no_header = true %}
+{% set no_inventory_footer = true %}
+{% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
+{% set field_options = {
+      'locked_fields': item.getLockedFields(),
+} %}
+
+<div class="card-body d-flex flex-wrap">
+   <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
+      <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+         <div class="row flex-row align-items-start flex-grow-1">
+            <div class="row flex-row">
+               {% block more_fields %}
+
+                  {% set field_options = field_options|merge(params) %}
+                  {% set sessionGetPlural = call('Session::getPluralNumber', []) %}
+                  {% set rand =  random() %}
+
+                  {% if ID %}
+                     <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
+                     <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
+                  {% endif %}
+
+                  {{ fields.autoNameField(
+                     'name',
+                     item,
+                     (item_type == 'Contact' ? __('Surname') : __('Name')),
+                     withtemplate,
+                     field_options
+                  ) }}
+
+                  {% if displayDissociateBtn %}
+                     {% set unaffect_btn %}
+                        <a class="btn btn-sm btn-outline-danger"
+                        onclick=" submitGetLink('{{ item.getFormURL }}', {'unaffect': 'unaffect', 'id': '{{ ID }}', '_glpi_csrf_token': '{{ csrf_token() }}', '_glpi_simple_form': '1'});">
+                           <span class="fas fa-unlink " title={{  __('Dissociate') }}>
+                              <span class="sr-only">{{  __('Dissociate') }}</span>
+                           </span>
+                        </a>
+
+                     {% endset %}
+                  {% endif %}
+
+                  {{ fields.htmlField(
+                     '_vrtual',
+                     displayRecursiveItemsLink|raw,
+                     recursiveItemsTypeData,
+                     field_options|merge({
+                        add_field_html: unaffect_btn
+                     })
+                  ) }}
+
+                  {% set tableFromForeignKey = call('getTableNameForForeignKeyField', ["fqdns_id"]) %}
+                  {% set tableFromItemtype = call('getItemTypeForTable', [tableFromForeignKey]) %}
+                  {% set fqdn_label = call('FQDN::getTypeName', [0]) %}
+                  {{ fields.dropdownField(
+                     tableFromItemtype,
+                     "fqdns_id",
+                     item.fields["fqdns_id"],
+                     fqdn_label,
+                     field_options|merge({'entity' : item.getEntityID(), 'displaywith' :  ['view'] })
+                  ) }}
+
+                  {{ fields.textareaField(
+                     'comment',
+                     item.fields['comment'],
+                     _n('Comment', 'Comments', get_plural_number()),
+                     field_options
+                  ) }}
+
+
+                  {% set IPnetwork_label = call('IPNetwork::getTypeName', [sessionGetPlural]) %}
+                  {% set span_for_ajax %}
+                     <span id='show_ipnetwork_{{rand}}'></span>
+                  {% endset %}
+
+                  {{ fields.dropdownField(
+                     "IPNetwork",
+                     "ipnetworks_id",
+                     item.fields["ipnetworks_id"],
+                     IPnetwork_label,
+                     field_options|merge({'entity' : item.getEntityID(), 
+                        'rand' : rand, 
+                        'value': item.fields["ipnetworks_id"],
+                        'helper' : __('IP network is not included in the database. However, you can see current available networks.'),
+                        add_field_html : span_for_ajax
+                        })
+                  ) }}
+
+                  {% do call('Ajax::updateItemOnSelectEvent', [
+                     'dropdown_ipnetworks_id' ~ rand ,
+                     'show_ipnetwork_' ~ rand,
+                     config('root_doc') ~ '/ajax/dropdownShowIPNetwork.php',
+                     {
+                        'ipnetworks_id': '__VALUE__',
+                     }
+                  ]) %}
+
+                  {% if item.fields["ipnetworks_id"] %}
+                     {% do call('Ajax::updateItem', [
+                        'show_ipnetwork_' ~ rand,
+                        config('root_doc') ~ '/ajax/dropdownShowIPNetwork.php',
+                        {
+                           'ipnetworks_id': item.fields["ipnetworks_id"],
+                        } ])
+                     %}
+                  {% endif %}
+
+                  {% set ip_label = call('IPAddress::getTypeName', [sessionGetPlural]) %}
+                  {% set add_child = call('IPAddress::showAddChildButtonForItemForm', [item, '_ipaddresses', true, false]) %}
+                  {% set show_child = call('IPAddress::showChildsForItemForm', [item, '_ipaddresses', true, false]) %}
+
+                  {{ fields.htmlField(
+                     '_vrtual',
+                     show_child|raw,
+                     ip_label ~ add_child,
+                     field_options
+                  ) }}
+
+               {% endblock %}
+            </div> {# .row #}
+         </div> {# .row #}
+      </div> {# .flex-row #}
+   </div> {# .flex-column #}
+</div> {# .flex-wrap #}
+{% if item_type == 'Contract' %}
+   {{ include('components/form/support_hours.html.twig') }}
+{% endif %}
+{{ include('components/form/buttons.html.twig') }}
+{% if no_inventory_footer is not defined or no_inventory_footer == false %}
+   {{ include('components/form/inventory_info.html.twig') }}
+{% endif %}
+
+{% if params['formfooter'] is null or params['formfooter'] == true %}
+   <div class="card-footer mx-n2 mb-n2 mt-4">
+      {{ include('components/form/dates.html.twig') }}
+   </div>
+{% endif %}
