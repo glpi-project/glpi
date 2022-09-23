@@ -687,7 +687,7 @@ class Agent extends CommonDBTM
      *
      * @global object $DB
      * @param object $task
-     * @return boolean true if successful, otherwise false
+     * @return boolean
      * @copyright 2010-2022 by the FusionInventory Development Team.
      */
     public static function cronCleanoldagents($task = null)
@@ -719,7 +719,7 @@ class Agent extends CommonDBTM
                     $task->addVolume(1);
                     $cron_status = true;
                 }
-            } else if ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['stale_agents_status'])) {
+            } elseif ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['stale_agents_status'])) {
                 //change status of agents linked assets
                 foreach ($iterator as $data) {
                     $itemtype = $data['itemtype'];
@@ -728,7 +728,8 @@ class Agent extends CommonDBTM
                         if ($item->getFromDB($data['items_id'])) {
                             $item->update([
                                 'id' => $data['items_id'],
-                                'states_id' => $config['agents_status']
+                                'states_id' => $config['stale_agents_status'],
+                                'is_dynamic' => 1
                             ]);
                             $task->addVolume(1);
                             $cron_status = true;
