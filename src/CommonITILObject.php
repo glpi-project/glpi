@@ -4294,7 +4294,7 @@ abstract class CommonITILObject extends CommonDBTM
             AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
             AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND 
                  ' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
-                 OR (' . $DB->quoteName($table . '.takeintoaccountdelaydate') . ' IS NULL AND
+                 OR (' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NULL AND
                  ' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . '
                         > TIMESTAMPDIFF(SECOND,
                                         ' . $DB->quoteName($table . '.date') . ',
