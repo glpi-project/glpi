@@ -6233,13 +6233,11 @@ JAVASCRIPT;
         $now                      = time();
         $date_creation            = strtotime($this->fields['date'] ?? '');
        // Tickets created before 10.0.4 do not have takeintoaccountdate field, use old and incorrect computation for those cases
-        $date_takeintoaccount     = $date_creation + $this->fields['takeintoaccount_delay_stat'];
-        if ($date_takeintoaccount == $date_creation) {
-            $date_takeintoaccount  = 0;
-        }
-       // If takeintoaccountdate was saved use it
-        if(!empty($this->fields['takeintoaccountdate'])) {
+        $date_takeintoaccount     = 0;
+        if ($this->fields['takeintoaccountdate'] !== null) {
             $date_takeintoaccount = strtotime($this->fields['takeintoaccountdate']);
+        } elseif ($this->fields['takeintoaccount_delay_stat'] > 0) {
+            $date_takeintoaccount = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         }
         $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
         $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
