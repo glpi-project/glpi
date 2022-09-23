@@ -1187,6 +1187,43 @@ class User extends \DbTestCase
             'use_date_range'     => true,
             'expected'           => false,
         ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => (new DateTime())->add(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
+            'substitution_start_date' => (new DateTime())->sub(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => true,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_start_date' => (new DateTime())->sub(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => true,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => (new DateTime())->add(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => true,
+        ];
     }
 
     /**
