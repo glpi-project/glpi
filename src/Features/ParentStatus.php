@@ -47,28 +47,28 @@ use Session;
  */
 trait ParentStatus
 {
-    public function updateParentStatus(): void
+    public function updateParentStatus(CommonITILObject $parentitem, array $input): void
     {
         $parentitem = $this->input['_job'];
         $needupdateparent = false;
 
        // Set pending reason data on parent and self
-        if ($this->input['pending'] ?? 0) {
+        if ($input['pending'] ?? 0) {
             PendingReason_Item::createForItem($parentitem, [
-                'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+                'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
+                'followup_frequency'          => $input['followup_frequency'] ?? 0,
+                'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
             ]);
             PendingReason_Item::createForItem($this, [
-                'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
+                'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
+                'followup_frequency'          => $input['followup_frequency'] ?? 0,
+                'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
             ]);
         }
 
         if (
-            isset($this->input["_close"])
-            && $this->input["_close"]
+            isset($input["_close"])
+            && $input["_close"]
             && ($parentitem->isSolved())
         ) {
             $update = [
@@ -79,29 +79,29 @@ trait ParentStatus
             ];
 
            // Use update method for history
-            $this->input["_job"]->update($update);
+            $input["_job"]->update($update);
         }
 
        // Set parent status to pending
-        if ($this->input['pending'] ?? 0) {
-            $this->input['_status'] = CommonITILObject::WAITING;
+        if ($input['pending'] ?? 0) {
+            $input['_status'] = CommonITILObject::WAITING;
         } elseif ($parentitem->fields["status"] == CommonITILObject::WAITING) {
-            $this->input["_reopen"] = true;
+            $input["_reopen"] = true;
         }
 
        //manage reopening of ITILObject
         $reopened = false;
-        if (!isset($this->input['_status'])) {
-            $this->input['_status'] = $parentitem->fields["status"];
+        if (!isset($input['_status'])) {
+            $input['_status'] = $parentitem->fields["status"];
         }
        // if reopen set (from followup form or mailcollector)
        // and status is reopenable and not changed in form
-        $is_set_pending = $this->input['pending'] ?? 0;
+        $is_set_pending = $input['pending'] ?? 0;
         if (
-            isset($this->input["_reopen"])
-            && $this->input["_reopen"]
+            isset($input["_reopen"])
+            && $input["_reopen"]
             && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
-            && $this->input['_status'] == $parentitem->fields["status"]
+            && $input['_status'] == $parentitem->fields["status"]
             && !$is_set_pending
         ) {
             if (
@@ -144,20 +144,20 @@ trait ParentStatus
 
         if (
             !empty($this->fields['begin'])
-            && $this->input["_job"]->isStatusExists(CommonITILObject::PLANNED)
-            && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
-              || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED)
+            && $input["_job"]->isStatusExists(CommonITILObject::PLANNED)
+            && (($input["_job"]->fields["status"] == CommonITILObject::INCOMING)
+              || ($input["_job"]->fields["status"] == CommonITILObject::ASSIGNED)
               || $needupdateparent)
         ) {
-            $this->input['_status'] = CommonITILObject::PLANNED;
+            $input['_status'] = CommonITILObject::PLANNED;
         }
 
        //change ITILObject status only if imput change
         if (
             !$reopened
-            && $this->input['_status'] != $parentitem->fields['status']
+            && $input['_status'] != $parentitem->fields['status']
         ) {
-            $update['status'] = $this->input['_status'];
+            $update['status'] = $input['_status'];
             $update['id']     = $parentitem->fields['id'];
 
            // don't notify on ITILObject - update event

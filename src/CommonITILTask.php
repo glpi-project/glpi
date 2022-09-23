@@ -621,7 +621,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
         }
 
-        $this->updateParentStatus();
+        $this->updateParentStatus($this->input['_job'], $this->input);
 
         if ($donotif) {
             $options = ['task_id'             => $this->fields["id"],

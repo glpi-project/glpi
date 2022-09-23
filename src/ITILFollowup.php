@@ -253,7 +253,7 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-        $this->updateParentStatus();
+        $this->updateParentStatus($this->input['_job'], $this->input);
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],
