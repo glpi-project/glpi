@@ -2489,6 +2489,7 @@ class Ticket extends DbTestCase
         $this->boolean($ticket->getFromDB($ticketId))->isTrue();
        // Validate that "takeintoaccount_delay_stat" is not automatically defined
         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
        // Login with tested user
         $this->login($user['login'], $user['password']);
        // Apply specific rights if defined
@@ -2512,6 +2513,7 @@ class Ticket extends DbTestCase
             )
         )->isTrue();
         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
 
        // Check that computation of "takeintoaccount_delay_stat" is done if user can take into account
         $this->boolean(
@@ -2524,8 +2526,10 @@ class Ticket extends DbTestCase
         )->isTrue();
         if (!$expected) {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+            $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
         } else {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+            $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
         }
     }
 
@@ -2784,8 +2788,10 @@ class Ticket extends DbTestCase
 
         if (!$computed) {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+            $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
         } else {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+            $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
         }
     }
 
@@ -2817,6 +2823,7 @@ class Ticket extends DbTestCase
 
        // Validate that "takeintoaccount_delay_stat" is not automatically defined
         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
 
        // Login with tech to be sure to be have rights to take into account
         $this->login('tech', 'tech');
@@ -2835,8 +2842,10 @@ class Ticket extends DbTestCase
 
         if (!$computed) {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+            $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
         } else {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+            $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
         }
     }
 
