@@ -155,8 +155,7 @@ class Dropdown
             $name = $params['toadd'][$params['value']];
         } else if (
             !$params['multiple']
-            && $params['value'] > 0
-            || ($itemtype == "Entity" && $params['value'] >= 0)
+            && ($params['value'] > 0 || ($itemtype == "Entity" && $params['value'] >= 0))
         ) {
             $tmpname = self::getDropdownName($table, $params['value'], 1);
 
