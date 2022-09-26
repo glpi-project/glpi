@@ -31,12 +31,12 @@
  * ---------------------------------------------------------------------
  */
 
+$picker-text-color: $dark;
+$picker-bg: $card-bg;
+
 @if $is-dark {
     $picker-text-color: $light;
     $picker-bg: $dark-mode-darken;
-} @else {
-    $picker-text-color: $dark;
-    $picker-bg: $card-bg;
 }
 
 $picker-color-accent: rgba($link-color, 0.5) !default;

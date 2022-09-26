@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-@import "~@fontsource/inter/scss/mixins";
+@import "@fontsource/inter/scss/mixins";
 
 $fontDir: "../css/lib/fontsource/inter/files";
 
@@ -48,4 +48,4 @@ $fontDir: "../css/lib/fontsource/inter/files";
 $font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
 $ti-font-path: "../css/lib/tabler/icons/iconfont/fonts";
 
-@import "~@tabler/icons/iconfont/tabler-icons";
+@import "@tabler/icons/iconfont/tabler-icons.scss";

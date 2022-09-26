@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-@import "~select2/src/scss/core";
+@import "select2/src/scss/core";
 
 .select2-container {
     display: inline-block;
@@ -55,12 +55,12 @@
             }
         }
 
-        .select2-container--focus& {
+        &.select2-container--focus {
             border-color: $input-focus-border-color;
             box-shadow: $input-focus-box-shadow;
         }
 
-        .select2-container--disabled& {
+        &.select2-container--disabled {
             background-color: $input-disabled-bg;
             border-color: $input-border-color;
             box-shadow: none;
