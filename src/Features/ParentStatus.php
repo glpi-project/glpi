@@ -49,7 +49,6 @@ trait ParentStatus
 {
     public function updateParentStatus(CommonITILObject $parentitem, array $input): void
     {
-        $parentitem = $this->input['_job'];
         $needupdateparent = false;
 
        // Set pending reason data on parent and self
@@ -79,7 +78,7 @@ trait ParentStatus
             ];
 
            // Use update method for history
-            $input["_job"]->update($update);
+            $parentitem->update($update);
         }
 
        // Set parent status to pending
@@ -144,9 +143,9 @@ trait ParentStatus
 
         if (
             !empty($this->fields['begin'])
-            && $input["_job"]->isStatusExists(CommonITILObject::PLANNED)
-            && (($input["_job"]->fields["status"] == CommonITILObject::INCOMING)
-              || ($input["_job"]->fields["status"] == CommonITILObject::ASSIGNED)
+            && $parentitem->isStatusExists(CommonITILObject::PLANNED)
+            && (($parentitem->fields["status"] == CommonITILObject::INCOMING)
+              || ($parentitem->fields["status"] == CommonITILObject::ASSIGNED)
               || $needupdateparent)
         ) {
             $input['_status'] = CommonITILObject::PLANNED;
