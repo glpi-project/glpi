@@ -90,6 +90,7 @@ class Lock extends CommonGLPI
             echo "</th>";
             echo "<th>" . $lockedfield->getTypeName() . "</th>";
             echo "<th>" . __('Itemtype') . "</th>";
+            echo "<th>" . __('Link') . "</th>";
             echo "<th>" . __('Last inventoried value')  . "</th></tr>";
 
             $subquery = [];
@@ -210,6 +211,11 @@ class Lock extends CommonGLPI
                 }
                 echo "<td class='left'>" . $field_label . "</td>";
                 echo "<td class='left'>" . $row['itemtype']::getTypeName() . "</td>";
+
+                //load object
+                $object = new $row['itemtype']();
+                $object->getFromDB($row['items_id']);
+                echo "<td class='left'>" . $object->getLink() . "</td>";
                 echo "<td class='left'>" . $row['value'] . "</td>";
                 echo "</tr>\n";
             }
