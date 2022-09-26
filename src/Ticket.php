@@ -1529,20 +1529,21 @@ class Ticket extends CommonITILObject
             && $this->canTakeIntoAccount()
             && !$this->isNew()
         ) {
-            $this->updates[]				= "takeintoaccountdate";
-            $this->fields['takeintoaccountdate'] = $_SESSION["glpi_currenttime"];
+            $this->updates[]                            = "takeintoaccountdate";
+            $this->fields['takeintoaccountdate']        = $_SESSION["glpi_currenttime"];
             $this->updates[]                            = "takeintoaccount_delay_stat";
             $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
         }
 
-	if(in_array("takeintoaccount_delay_stat",$this->updates) &&
+        if (
+            in_array("takeintoaccount_delay_stat", $this->updates) &&
             $this->fields['takeintoaccount_delay_stat'] == 0
-	) {
-	    if (!in_array("takeintoaccountdate",$this->updates)) {
-	        $this->updates[] = "takeintoaccountdate";
-	    }
-	    $this->fields["takeintoaccountdate"] = null;
-	}
+        ) {
+            if (!in_array("takeintoaccountdate", $this->updates)) {
+                $this->updates[] = "takeintoaccountdate";
+            }
+            $this->fields["takeintoaccountdate"] = null;
+        }
 
         parent::pre_updateInDB();
     }
@@ -2339,7 +2340,7 @@ class Ticket extends CommonITILObject
                     [
                         'id'                         => $ID,
                         'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),
-			'takeintoaccountdate'        => $_SESSION["glpi_currenttime"],
+                        'takeintoaccountdate'        => $_SESSION["glpi_currenttime"],
                         '_disablenotif'              => true
                     ]
                 );
