@@ -490,8 +490,12 @@ $CFG_GLPI['inventory_types'] = [
 ];
 
 $CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Item_SoftwareLicense',
-    'Item_SoftwareVersion', 'Item_Disk', 'ComputerVirtualMachine',
-    'NetworkPort', 'NetworkName', 'IPAddress', 'Item_OperatingSystem'
+    'Item_SoftwareVersion', 'Item_Disk', 'ComputerVirtualMachine','ComputerAntivirus',
+    'NetworkPort', 'NetworkName', 'IPAddress', 'Item_OperatingSystem', 'Item_DeviceBattery', 'Item_DeviceCase',
+    'Item_DeviceControl', 'Item_DeviceDrive', 'Item_DeviceFirmware', 'Item_DeviceGeneric', 'Item_DeviceGraphicCard',
+    'Item_DeviceHardDrive', 'Item_DeviceMemory', 'Item_DeviceMotherboard', 'Item_DeviceNetworkCard', 'Item_DevicePci',
+    'Item_DevicePowerSupply', 'Item_DeviceProcessor', 'Item_DeviceSensor', 'Item_DeviceSimcard', 'Item_DeviceSoundCard',
+    'DatabaseInstance', 'Item_RemoteManagement'
 ];
 
 $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',

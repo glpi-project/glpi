@@ -111,14 +111,10 @@ class Lock extends CommonGLPI
                 ]
             ]);
 
-            //get other locked related to curren itemtype
-            //where GLPI allows to update their data
-            $inventory_lockable_objects = [
-                Item_OperatingSystem::class,
-                Item_Disk::class
-            ];
-
-            foreach ($inventory_lockable_objects as $lockable_itemtype) {
+            //get locked field for other lockable object
+            //they are managed later
+            foreach ($CFG_GLPI['inventory_lockable_objects'] as $lockable_itemtype) {
+                $lockable_object = new $lockable_itemtype();
                 $query  = [
                     'SELECT' => $lockedfield->getTable() . ".*",
                     'FROM'   => $lockedfield->getTable(),
@@ -139,11 +135,36 @@ class Lock extends CommonGLPI
                                 $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
                                 $lockedfield->getTable() . '.is_global' => 1
                             ]
-                        ],
-                        getTableForItemType($lockable_itemtype) . '.itemtype' => $itemtype,
-                        getTableForItemType($lockable_itemtype) . '.items_id' => $ID
+                        ]
                     ]
                 ];
+
+                if (
+                    is_a($lockable_itemtype, CommonDBConnexity::class, true)
+                    && (
+                        (property_exists($lockable_object, 'items_id') && $lockable_object::$items_id == "items_id")
+                        || (property_exists($lockable_object, 'items_id_1') && $lockable_object::$items_id_1 == "items_id")
+                        || (property_exists($lockable_object, 'items_id_2') && $lockable_object::$items_id_2 == "items_id")
+                    )
+                ) {
+                    $query['WHERE'][] = [
+                        getTableForItemType($lockable_itemtype) . '.itemtype' => $itemtype,
+                        getTableForItemType($lockable_itemtype) . '.items_id' => $ID
+                    ];
+                } else {
+                    if (
+                        property_exists($lockable_object, 'items_id')
+                        && getForeignKeyFieldForItemType($itemtype) == $lockable_object::$items_id
+                    ) {
+                        $query['WHERE'][] = [getTableForItemType($lockable_itemtype) . '.' . $lockable_object::$items_id => $ID];
+                    } elseif (property_exists($lockable_object, 'items_id_1') && getForeignKeyFieldForItemType($itemtype) == $lockable_object::$items_id_1) {
+                        $query['WHERE'][] = [getTableForItemType($lockable_itemtype) . '.' . $lockable_object::$items_id_1 => $ID];
+                    } else {
+                        // ::$items_id != getForeignKeyFieldForItemType($itemtype)
+                        // ex: get ComputerVirtualMachine from NetworkEquipement
+                        continue;
+                    }
+                }
                 $subquery[] = new \QuerySubQuery($query);
             }
 
