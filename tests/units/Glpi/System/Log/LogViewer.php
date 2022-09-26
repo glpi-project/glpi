@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace tests\units\Glpi\System\Log;
 
 use org\bovigo\vfs\vfsStream;
 
@@ -70,7 +70,7 @@ LOG,
 
         $this->when(
             function () {
-                $log = new \LogViewer('invalidlog', vfsStream::url('glpi_logs'));
+                $log = new \Glpi\System\Log\LogViewer('invalidlog', vfsStream::url('glpi_logs'));
             }
         )
         ->error()
@@ -79,7 +79,7 @@ LOG,
 
         $this->when(
             function () {
-                $log = new \LogViewer('test', vfsStream::url('glpi_logs'));
+                $log = new \Glpi\System\Log\LogViewer('test', vfsStream::url('glpi_logs'));
             }
         )
         ->error()
@@ -90,7 +90,7 @@ LOG,
     public function testGetLogsFilesList()
     {
         touch(vfsStream::url('glpi_logs/test.log'), strtotime('2022-09-20 00:00:00'));
-        $this->array(\LogViewer::getLogsFilesList(vfsStream::url('glpi_logs')))
+        $this->array(\Glpi\System\Log\LogViewer::getLogsFilesList(vfsStream::url('glpi_logs')))
             ->isIdenticalTo(
                 [
                     'test' => [
@@ -105,7 +105,7 @@ LOG,
 
     public function testParseLogFile()
     {
-        $log = new \LogViewer('test', vfsStream::url('glpi_logs'));
+        $log = new \Glpi\System\Log\LogViewer('test', vfsStream::url('glpi_logs'));
 
         $log_entries = $log->parseLogFile();
         $this->array($log_entries)
@@ -133,7 +133,7 @@ LOG,
 
     public function testDownloadFile()
     {
-        $log = new \LogViewer('test', vfsStream::url('glpi_logs'));
+        $log = new \Glpi\System\Log\LogViewer('test', vfsStream::url('glpi_logs'));
 
         $this->output(
             function () use ($log) {
@@ -147,7 +147,7 @@ LOG,
 
     public function testEmptyFile()
     {
-        $log = new \LogViewer('test', vfsStream::url('glpi_logs'));
+        $log = new \Glpi\System\Log\LogViewer('test', vfsStream::url('glpi_logs'));
 
         $this->boolean($log->empty())->isTrue();
         $this->string(file_get_contents(vfsStream::url('glpi_logs/test.log')))

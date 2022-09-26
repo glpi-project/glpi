@@ -44,8 +44,6 @@ use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Infocom;
-use LogViewer;
-use Search;
 use Session;
 use Toolbox;
 
