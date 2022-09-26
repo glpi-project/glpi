@@ -807,7 +807,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 'itemtype',
                 'name'
             ]
-        ] + self::getVisibilityCriteria();
+        ] + self::getVisibilityCriteriaForMine();
 
         if ($itemtype != null) {
             if (!$inverse) {
@@ -1315,22 +1315,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $sql;
     }
 
-    /**
-     * Return visibility joins to add to DBIterator parameters
-     *
-     * @since 9.4
-     *
-     * @param boolean $forceall force all joins (false by default)
-     *
-     * @return array
-     */
-    public static function getVisibilityCriteria(bool $forceall = false): array
+    private static function getVisibilityCriteriaForMine(): array
     {
         $criteria = ['WHERE' => []];
-        if (Session::haveRight('config', UPDATE)) {
-            return $criteria;
-        }
-
         $restrict = [
             self::getTable() . '.is_private' => 1,
             self::getTable() . '.users_id'    => Session::getLoginUserID()
@@ -1347,6 +1334,24 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
         $criteria['WHERE'] = $restrict;
         return $criteria;
+    }
+
+    /**
+     * Return visibility joins to add to DBIterator parameters
+     *
+     * @since 9.4
+     *
+     * @param boolean $forceall force all joins (false by default)
+     *
+     * @return array
+     */
+    public static function getVisibilityCriteria(bool $forceall = false): array
+    {
+        if (Session::haveRight('config', UPDATE)) {
+            return ['WHERE' => []];
+        }
+
+        return self::getVisibilityCriteriaForMine();
     }
 
 
