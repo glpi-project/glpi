@@ -178,12 +178,12 @@
         }
     }
 
-    .select2-container--focus .select2-selection {
+    &.select2-container--focus .select2-selection {
         border-color: $input-focus-border-color;
         box-shadow: $input-focus-box-shadow;
     }
 
-    .select2-container--disabled .select2-selection {
+    &.select2-container--disabled .select2-selection {
         background-color: $input-disabled-bg;
         border-color: $input-border-color;
         box-shadow: none;
