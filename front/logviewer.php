@@ -41,36 +41,30 @@ include('../inc/includes.php');
 
 Session::checkRight("logs", READ);
 
-$filepath = $_GET['filepath'] ?? null;
+$filepath = $_REQUEST['filepath'] ?? null;
 
 if ($filepath === null || !file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir(GLPI_LOG_DIR . '/' . $filepath)) {
     Response::sendError(404, 'Not found', Response::CONTENT_TYPE_TEXT_HTML);
 }
 
-switch ($_GET['action'] ?? "") {
-    case 'download':
-        $logparser = new LogParser();
-        $logparser->download($filepath);
-        exit;
+if (($_GET['action'] ?? '') === 'download') {
+    $logparser = new LogParser();
+    $logparser->download($filepath);
+} elseif (($_POST['action'] ?? '') === 'empty') {
+    $logparser = new LogParser();
+    $logparser->empty($filepath);
+    Html::back();
+} else {
+    Html::header(
+        LogViewer::getTypeName(Session::getPluralNumber()),
+        $_SERVER['PHP_SELF'],
+        'admin',
+        'logviewer',
+        'logfile'
+    );
 
-    case 'empty':
-        $logparser = new LogParser();
-        $logparser->empty($filepath);
-        Html::back();
-        break;
+    $logviewer = new LogViewer();
+    $logviewer->showLogFile($filepath);
 
-    default:
-        Html::header(
-            LogViewer::getTypeName(Session::getPluralNumber()),
-            $_SERVER['PHP_SELF'],
-            'admin',
-            'logviewer',
-            'logfile'
-        );
-
-        $logviewer = new LogViewer();
-        $logviewer->showLogFile($filepath);
-
-        Html::footer();
-        break;
+    Html::footer();
 }

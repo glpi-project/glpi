@@ -82,33 +82,38 @@
     <div class="spinner-border mt-3" id="auto-refresh-indicator" role="status"></div>
 {% else %}
     <div class="d-inline-flex flex-wrap flex-md-nowrap align-items-center mb-2">
-        <div class="input-group">
-            <select class="form-select w-auto" id="change-file">
-            {% for log_file in log_files %}
-                {% set log_file_filepath = log_file['filepath'] %}
-                <option value="{{ log_file_filepath }}"
-                        {{ log_file_filepath == filepath ? 'selected="selected"' : '' }}>
-                    {{ log_file_filepath }}
-                </option>
-            {% endfor %}
-            </select>
+        <form action="{{ path('/front/logviewer.php') }}" method="post" class="d-inline">
+            <div class="input-group">
+                <select class="form-select w-auto" id="change-file">
+                {% for log_file in log_files %}
+                    {% set log_file_filepath = log_file['filepath'] %}
+                    <option value="{{ log_file_filepath }}"
+                            {{ log_file_filepath == filepath ? 'selected="selected"' : '' }}>
+                        {{ log_file_filepath }}
+                    </option>
+                {% endfor %}
+                </select>
 
-            <a href="?action=download_log_file&amp;filepath={{ filepath|url_encode }}"
-               class="btn btn-outline-secondary"
-               title="{{ __("Download file") }}"
-               data-bs-toggle="tooltip" data-bs-placement="bottom">
-                <i class="ti ti-file-download"></i>
-            </a>
-
-            {% if can_clear %}
-                <a href="?action=empty&amp;filepath={{ filepath|url_encode }}"
-                class="btn btn-outline-secondary"
-                title="{{ __("Empty file") }}"
-                data-bs-toggle="tooltip" data-bs-placement="bottom">
-                    <i class="ti ti-trash-x"></i>
+                <a href="?action=download_log_file&amp;filepath={{ filepath|url_encode }}"
+                   class="btn btn-outline-secondary"
+                   title="{{ __("Download file") }}"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <i class="ti ti-file-download"></i>
                 </a>
-            {% endif %}
-        </div>
+
+                {% if can_clear %}
+                    <button type="submit" name="action" value="empty"
+                            class="btn btn-outline-secondary"
+                            title="{{ __("Empty file") }}"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="ti ti-trash-x"></i>
+                    </button>
+
+                    <input type="hidden" name="filepath" value="{{ filepath }}">
+                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                {% endif %}
+            </div>
+        </form>
 
         <span class="d-inline-flex ms-3">
             <small class="d-inline-flex text-muted text-nowrap me-3"
