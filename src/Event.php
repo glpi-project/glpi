@@ -55,11 +55,11 @@ class Event extends CommonDBTM
     public static $rightname = 'logs';
 
 
-
     public static function getTypeName($nb = 0)
     {
-        return _n('Log', 'Logs', $nb);
+        return _n('Event log', 'Event logs', $nb);
     }
+
 
 
     public function prepareInputForAdd($input)

@@ -33,20 +33,38 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
+use Glpi\Http\Response;
+use Glpi\System\Log\LogParser;
+use Glpi\System\Log\LogViewer;
 
 include('../inc/includes.php');
 
 Session::checkRight("logs", READ);
 
-Html::header(
-    Event::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
-    "admin",
-    "logviewer",
-    "Glpi\\Event"
-);
+$filepath = $_REQUEST['filepath'] ?? null;
 
-Search::show(Event::class);
+if ($filepath === null || !file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir(GLPI_LOG_DIR . '/' . $filepath)) {
+    Response::sendError(404, 'Not found', Response::CONTENT_TYPE_TEXT_HTML);
+}
 
-Html::footer();
+if (($_GET['action'] ?? '') === 'download') {
+    $logparser = new LogParser();
+    $logparser->download($filepath);
+} elseif (($_POST['action'] ?? '') === 'empty') {
+    $logparser = new LogParser();
+    $logparser->empty($filepath);
+    Html::back();
+} else {
+    Html::header(
+        LogViewer::getTypeName(Session::getPluralNumber()),
+        $_SERVER['PHP_SELF'],
+        'admin',
+        'logviewer',
+        'logfile'
+    );
+
+    $logviewer = new LogViewer();
+    $logviewer->showLogFile($filepath);
+
+    Html::footer();
+}

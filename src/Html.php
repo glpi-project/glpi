@@ -1350,6 +1350,11 @@ HTML;
                 Html::requireJs('masonry');
             }
 
+            if (in_array('prism', $jslibs)) {
+                Html::requireJs('prismjs');
+                $tpl_vars['css_files'][] = ['path' => 'public/lib/prismjs.css'];
+            }
+
             if (in_array('sortable', $jslibs)) {
                 Html::requireJs('sortable');
             }
@@ -1510,7 +1515,7 @@ HTML;
                 'title' => __('Administration'),
                 'types' => [
                     'User', 'Group', 'Entity', 'Rule',
-                    'Profile', 'QueuedNotification', 'Glpi\\Event', 'Glpi\Inventory\Inventory'
+                    'Profile', 'QueuedNotification', 'Glpi\System\Log\LogViewer', 'Glpi\Inventory\Inventory'
                 ],
                 'icon'  => 'ti ti-shield-check'
             ],
@@ -6360,6 +6365,9 @@ HTML;
                 break;
             case 'leaflet':
                 $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';
+                break;
+            case 'prismjs':
+                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/prismjs.js';
                 break;
             case 'log_filters':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';

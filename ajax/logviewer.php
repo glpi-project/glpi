@@ -33,20 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
+use Glpi\System\Log\LogViewer;
 
 include('../inc/includes.php');
 
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
+
 Session::checkRight("logs", READ);
 
-Html::header(
-    Event::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
-    "admin",
-    "logviewer",
-    "Glpi\\Event"
-);
-
-Search::show(Event::class);
-
-Html::footer();
+if (($_POST['action'] ?? "") == "refresh_log_file") {
+    $logviewer = new LogViewer();
+    $logviewer->showLogFile($_POST['filepath'], true);
+}

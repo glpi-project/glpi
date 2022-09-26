@@ -2584,15 +2584,21 @@ class Toolbox
      *
      * @param string $string String to slugify
      * @param string $prefix Prefix to use (anchors cannot begin with a number)
+     * @param bool   $force_special_dash Replace all special chars by a dash
      *
      * @return string
      */
-    public static function slugify($string, $prefix = 'slug_')
+    public static function slugify(string $string = "", string $prefix = 'slug_', bool $force_special_dash = false): string
     {
         $string = transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $string);
         $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
         $string = preg_replace('~[^0-9a-z_\.]+~i', '-', $string);
         $string = trim($string, '-');
+
+        if ($force_special_dash) {
+            $string = preg_replace('~[^-\w]+~', '-', $string);
+        }
+
         if ($string == '') {
            //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
            //harcoded prefix string because html @id must begin with a letter
