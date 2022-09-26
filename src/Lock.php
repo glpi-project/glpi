@@ -112,7 +112,6 @@ class Lock extends CommonGLPI
             ]);
 
             //get locked field for other lockable object
-            //they are managed later
             foreach ($CFG_GLPI['inventory_lockable_objects'] as $lockable_itemtype) {
                 $lockable_object = new $lockable_itemtype();
                 $query  = [
