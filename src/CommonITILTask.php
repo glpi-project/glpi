@@ -43,6 +43,7 @@ use Sabre\VObject\Component\VCalendar;
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItemInterface
 {
+    use Glpi\Features\ParentStatus;
     use Glpi\Features\PlanningEvent;
     use VobjectConverterTrait;
 
@@ -620,49 +621,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
         }
 
-       // Set pending reason data on parent and self
-        if ($this->input['pending'] ?? 0) {
-            PendingReason_Item::createForItem($this->input["_job"], [
-                'pendingreasons_id'           => $this->input['pendingreasons_id'],
-                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
-            ]);
-            PendingReason_Item::createForItem($this, [
-                'pendingreasons_id'           => $this->input['pendingreasons_id'],
-                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
-            ]);
-
-           // Set parent status to pending
-            $this->input['_status'] = CommonITILObject::WAITING;
-        }
-
-       //change status only if input change
-        if (
-            isset($this->input['_status'])
-            && ($this->input['_status'] != $this->input['_job']->fields['status'])
-        ) {
-            $update = [
-                'status'        => $this->input['_status'],
-                'id'            => $this->input['_job']->fields['id'],
-                '_disablenotif' => true
-            ];
-            $this->input['_job']->update($update);
-        }
-
-        if (
-            !empty($this->fields['begin'])
-            && $this->input["_job"]->isStatusExists(CommonITILObject::PLANNED)
-            && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
-              || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED))
-        ) {
-            $input2 = [
-                'id'            => $this->input["_job"]->getID(),
-                'status'        => CommonITILObject::PLANNED,
-                '_disablenotif' => true,
-            ];
-            $this->input["_job"]->update($input2);
-        }
+        $this->updateParentStatus($this->input['_job'], $this->input);
 
         if ($donotif) {
             $options = ['task_id'             => $this->fields["id"],
