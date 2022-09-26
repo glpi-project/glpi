@@ -39,47 +39,26 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Session;
-use Toolbox;
 
 final class LogViewer extends CommonGLPI
 {
-    protected $baselogdir = "";
-    protected $fileslug   = "";
-    protected $filename   = "";
-    protected $filepath   = "";
-    protected $datemod    = "";
-    protected $filesize   = 0;
-
-    protected static $logs_files = [];
+    /**
+     * @var LogParser
+     */
+    private $log_parser;
 
     public static $rightname = 'logs';
 
-
-    public function __construct(string $fileslug = null, string $baselogdir = GLPI_LOG_DIR)
+    public function __construct()
     {
-        $this->baselogdir = $baselogdir;
-        $this->fileslug = $fileslug;
-        $logfiles = self::getLogsFilesList($baselogdir);
-        $this->filename = $logfiles[$this->fileslug]['filename'] ?? "";
-        $this->filepath = $this->baselogdir . "/" . $this->filename;
-
-        if (is_dir($this->filepath) || !file_exists($this->filepath)) {
-            trigger_error(
-                "Invalid log file",
-                E_USER_ERROR
-            );
-        }
-
-        $this->datemod  = date('Y-m-d H:i:s', filemtime($this->filepath));
-        $this->filesize = filesize($this->filepath);
+        $this->log_parser = new LogParser();
+        parent::__construct();
     }
-
 
     public static function getTypeName($nb = 0)
     {
         return _n('Log', 'Logs', $nb);
     }
-
 
     public static function getMenuContent()
     {
@@ -111,14 +90,17 @@ final class LogViewer extends CommonGLPI
         return $menu;
     }
 
-
     /**
-     * Display a link for events and a list of log files links
+     * Display a link for events and a list of log files links.
+     *
+     * @param string $order Field used to sort list.
+     * @param string $sort  Sort order ('asc' or 'desc').
+     *
+     * @return void
      */
-    public static function displayList(string $order = "filename", string $sort = "asc")
+    public function displayList(string $order = "filename", string $sort = "asc"): void
     {
-
-        $logs = self::getLogsFilesList();
+        $logs = $this->log_parser->getLogsFilesList();
 
         $order_key_values = array_column($logs, $order);
         if (count($order_key_values)) {
@@ -139,138 +121,53 @@ final class LogViewer extends CommonGLPI
         );
     }
 
-
-    /** get a list of log files of GLPI
+    /**
+     * Display a log file content.
      *
-     * @return array of [slug => filename.log]
-     */
-    public static function getLogsFilesList(string $baselogdir = GLPI_LOG_DIR): array
-    {
-        if (count(self::$logs_files) > 0) {
-            return self::$logs_files;
-        }
-
-        $raw_logs_files = scandir($baselogdir);
-        self::$logs_files = [];
-        foreach ($raw_logs_files as $log_filename) {
-            if (preg_match('/^(.+)\.log$/', $log_filename, $matches)) {
-                $filename = $matches[1];
-                $filekey  = Toolbox::slugify($filename, '', true);
-                self::$logs_files[$filekey] = [
-                    'filename' => "$filename.log",
-                    'datemod'  => date('Y-m-d H:i:s', filemtime("{$baselogdir}/{$filename}.log")),
-                    'size'     => filesize("{$baselogdir}/{$filename}.log"),
-                ];
-            }
-        }
-        return self::$logs_files;
-    }
-
-
-    /** Display a log file content
-     *  We try to explode the log file by searching datetime patterns
+     * @param string $filepath      Path of file to display (relative to log directory)
+     * @param bool $only_content    If true, don't return the html layout.
      *
-     * @param bool $only_content if true, don't return the html layout
+     * @return void
      */
-    public function showLogFile(bool $only_content = false)
+    public function showLogFile(string $filepath, bool $only_content = false): void
     {
+        $file_info   = $this->log_parser->getLogFileInfo($filepath);
+        $log_entries = $this->log_parser->parseLogFile($filepath);
+
+        $log_files = $this->log_parser->getLogsFilesList();
+
         TemplateRenderer::getInstance()->display(
             'pages/admin/log_viewer.html.twig',
             [
-                'fileslug'     => $this->fileslug,
-                'filename'     => $this->filename,
-                'datemod'      => $this->datemod,
-                'filesize'     => $this->filesize,
-                'log_entries'  => $this->parseLogFile(),
-                'log_files'    => self::getLogsFilesList(),
+                'filepath'     => $filepath,
+                'datemod'      => $file_info['datemod'] ?? null,
+                'filesize'     => $file_info['size'] ?? null,
+                'log_entries'  => $log_entries,
+                'log_files'    => $log_files,
                 'only_content' => $only_content,
                 'can_clear'    => Session::haveRight('config', UPDATE),
-                'href'         => self::getSearchURL() . "?fileslug={$this->fileslug}&",
+                'href'         => self::getSearchURL() . '?filepath=' . urlencode($filepath) . '&',
             ]
         );
-    }
-
-
-    /** Parse a log file and return an array of log entries
-     *
-     * @param int $max_nb_lines
-     *
-     * @return array of log entries
-     */
-    public function parseLogFile(int $max_nb_lines = null): array
-    {
-        global $CFG_GLPI;
-
-        // set max content for files to avoid performance issues
-        $max_bytes = 1024 * 1000;
-        if ($max_bytes > filesize($this->filepath)) {
-            $max_bytes = 0;
-        }
-        if (is_null($max_nb_lines)) {
-            $max_nb_lines = $_SESSION['glpilist_limit'] ?? $CFG_GLPI['list_limit'];
-        }
-
-        // explode log files by datetime pattern
-        $logs  = file_get_contents($this->filepath, false, null, -$max_bytes);
-        $datetime_pattern = "\[*\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\]*";
-        $rawlines = preg_split(
-            "/^(?=$datetime_pattern)/m",
-            $logs,
-            -1,
-            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
-        );
-
-        $rawlines = array_splice($rawlines, -$max_nb_lines);
-
-        $lines = [];
-        $index = 0;
-        foreach ($rawlines as $line) {
-            $last_date = "";
-            $line = preg_replace_callback(
-                "/$datetime_pattern/",
-                function ($matches) use (&$last_date) {
-                    $last_date = $matches[0];
-                    return "";
-                },
-                $line
-            );
-            $last_date = trim($last_date, "[] ");
-            $lines[] = [
-                'id'       => Toolbox::slugify($last_date, "date_{$index}_", true),
-                'datetime' => $last_date,
-                'text'     => trim($line),
-            ];
-            $index++;
-        }
-
-        return $lines;
-    }
-
-
-    /**
-     * Send a log file as attachment to the browser
-     */
-    public function download()
-    {
-        header('Content-Type: application/octet-stream');
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-disposition: attachment; filename=\"" . basename($this->filepath) . "\"");
-        readfile($this->filepath);
-    }
-
-
-    /** clear a log file
-     *
-     * @return bool
-     */
-    public function empty(): bool
-    {
-        return file_put_contents($this->filepath, '') >= 0;
     }
 
 
     public static function getIcon()
     {
         return "ti ti-news";
+    }
+
+    public static function getSearchURL($full = true)
+    {
+        global $CFG_GLPI;
+
+        return implode(
+            '/',
+            [
+                $full ? $CFG_GLPI['root_doc'] : '',
+                'front',
+                'logviewer.php'
+            ]
+        );
     }
 }

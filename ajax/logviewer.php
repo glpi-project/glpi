@@ -42,6 +42,6 @@ Html::header_nocache();
 Session::checkRight("logs", READ);
 
 if (($_POST['action'] ?? "") == "refresh_log_file") {
-    $logs = new LogViewer($_POST['fileslug'] ?? null);
-    $logs->showLogFile(true);
+    $logviewer = new LogViewer();
+    $logviewer->showLogFile($_POST['filepath'], true);
 }

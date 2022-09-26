@@ -33,21 +33,29 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Http\Response;
+use Glpi\System\Log\LogParser;
 use Glpi\System\Log\LogViewer;
 
 include('../inc/includes.php');
 
 Session::checkRight("logs", READ);
 
-$log = new LogViewer($_GET['fileslug'] ?? null);
+$filepath = $_GET['filepath'] ?? null;
+
+if ($filepath === null || !file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir(GLPI_LOG_DIR . '/' . $filepath)) {
+    Response::sendError(404, 'Not found', Response::CONTENT_TYPE_TEXT_HTML);
+}
 
 switch ($_GET['action'] ?? "") {
     case 'download':
-        $log->download();
+        $logparser = new LogParser();
+        $logparser->download($filepath);
         exit;
 
     case 'empty':
-        $log->empty();
+        $logparser = new LogParser();
+        $logparser->empty($filepath);
         Html::back();
         break;
 
@@ -60,7 +68,8 @@ switch ($_GET['action'] ?? "") {
             'logfile'
         );
 
-        $log->showLogFile();
+        $logviewer = new LogViewer();
+        $logviewer->showLogFile($filepath);
 
         Html::footer();
         break;

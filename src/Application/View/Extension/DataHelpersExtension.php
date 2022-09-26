@@ -131,6 +131,9 @@ class DataHelpersExtension extends AbstractExtension
      */
     public function getFormattedSize($number): string
     {
+        if (!is_numeric($number)) {
+            return '';
+        }
         return Toolbox::getSize($number);
     }
 

@@ -84,16 +84,16 @@
     <div class="d-inline-flex flex-wrap flex-md-nowrap align-items-center mb-2">
         <div class="input-group">
             <select class="form-select w-auto" id="change-file">
-            {% for log_slug, log_file in log_files %}
-                {% set log_file_filename = log_file['filename'] %}
-                <option value="{{ log_slug }}"
-                        {{ log_file_filename == filename ? 'selected="selected"' : '' }}>
-                    {{ log_file_filename }}
+            {% for log_file in log_files %}
+                {% set log_file_filepath = log_file['filepath'] %}
+                <option value="{{ log_file_filepath }}"
+                        {{ log_file_filepath == filepath ? 'selected="selected"' : '' }}>
+                    {{ log_file_filepath }}
                 </option>
             {% endfor %}
             </select>
 
-            <a href="?action=download_log_file&amp;fileslug={{ fileslug }}"
+            <a href="?action=download_log_file&amp;filepath={{ filepath|url_encode }}"
                class="btn btn-outline-secondary"
                title="{{ __("Download file") }}"
                data-bs-toggle="tooltip" data-bs-placement="bottom">
@@ -101,7 +101,7 @@
             </a>
 
             {% if can_clear %}
-                <a href="?action=empty&amp;fileslug={{ fileslug }}"
+                <a href="?action=empty&amp;filepath={{ filepath|url_encode }}"
                 class="btn btn-outline-secondary"
                 title="{{ __("Empty file") }}"
                 data-bs-toggle="tooltip" data-bs-placement="bottom">
@@ -170,7 +170,7 @@
     $(function () {
         // change log file
         $("#change-file").on('change', function () {
-            window.location.href = "?fileslug=" + $(this).val();
+            window.location.href = "?filepath=" + encodeURIComponent($(this).val());
         });
 
         // manage auto-refresh of log
@@ -181,7 +181,7 @@
                 const reloadContent = function() {
                     log_entries.load('{{ path("/ajax/logviewer.php") }}', {
                         action: 'refresh_log_file',
-                        fileslug: '{{ fileslug }}'
+                        filepath: '{{ filepath }}'
                     }, function() {
                         log_entries.animate({ 'scrollTop': log_entries.prop("scrollHeight")}, 1000);
                     });

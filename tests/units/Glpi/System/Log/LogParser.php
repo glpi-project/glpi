@@ -37,7 +37,7 @@ namespace tests\units\Glpi\System\Log;
 
 use org\bovigo\vfs\vfsStream;
 
-class LogViewer extends \GLPITestCase
+class LogParser extends \GLPITestCase
 {
     public function beforeTestMethod($method)
     {
@@ -67,34 +67,24 @@ LOG,
 
     public function testConstructor()
     {
-
-        $this->when(
+        $this->exception(
             function () {
-                $log = new \Glpi\System\Log\LogViewer('invalidlog', vfsStream::url('glpi_logs'));
+                $this->newTestedInstance('/dir/not/exists');
             }
-        )
-        ->error()
-        ->exists()
-        ->withType(E_USER_ERROR);
-
-        $this->when(
-            function () {
-                $log = new \Glpi\System\Log\LogViewer('test', vfsStream::url('glpi_logs'));
-            }
-        )
-        ->error()
-        ->notExists();
+        )->hasMessage('Invalid directory "/dir/not/exists".');
     }
 
 
     public function testGetLogsFilesList()
     {
+        $this->newTestedInstance(vfsStream::url('glpi_logs'));
+
         touch(vfsStream::url('glpi_logs/test.log'), strtotime('2022-09-20 00:00:00'));
-        $this->array(\Glpi\System\Log\LogViewer::getLogsFilesList(vfsStream::url('glpi_logs')))
+        $this->array($this->testedInstance->getLogsFilesList())
             ->isIdenticalTo(
                 [
-                    'test' => [
-                        'filename' => 'test.log',
+                    'test.log' => [
+                        'filepath' => 'test.log',
                         'datemod'  => '2022-09-20 00:00:00',
                         'size'     => 229,
                     ]
@@ -105,9 +95,9 @@ LOG,
 
     public function testParseLogFile()
     {
-        $log = new \Glpi\System\Log\LogViewer('test', vfsStream::url('glpi_logs'));
+        $this->newTestedInstance(vfsStream::url('glpi_logs'));
 
-        $log_entries = $log->parseLogFile();
+        $log_entries = $this->testedInstance->parseLogFile('test.log');
         $this->array($log_entries)
             ->isIdenticalTo(
                 [
@@ -133,23 +123,23 @@ LOG,
 
     public function testDownloadFile()
     {
-        $log = new \Glpi\System\Log\LogViewer('test', vfsStream::url('glpi_logs'));
+        $this->newTestedInstance(vfsStream::url('glpi_logs'));
 
         $this->output(
-            function () use ($log) {
-                $log->download();
+            function () {
+                $this->testedInstance->download('test.log');
             }
         )
-        ->isNotEmpty()
-        ->isEqualToContentsOfFile(vfsStream::url('glpi_logs/test.log'));
+            ->isNotEmpty()
+            ->isEqualToContentsOfFile(vfsStream::url('glpi_logs/test.log'));
     }
 
 
     public function testEmptyFile()
     {
-        $log = new \Glpi\System\Log\LogViewer('test', vfsStream::url('glpi_logs'));
+        $this->newTestedInstance(vfsStream::url('glpi_logs'));
 
-        $this->boolean($log->empty())->isTrue();
+        $this->boolean($this->testedInstance->empty('test.log'))->isTrue();
         $this->string(file_get_contents(vfsStream::url('glpi_logs/test.log')))
             ->isEmpty();
     }

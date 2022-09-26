@@ -32,32 +32,32 @@
  #}
 
 <div class="container px-4">
-	<div class="row mb-2">
-		<div class="col-12 col-xxl-6">
-			<div class="card">
-				<div class="card-header">
-					<a href="event.php">
-						<i class="fa-fw {{ call('Glpi\\Event::getIcon') }} me-1"></i>
-						<span>
-							{{ "Glpi\\Event"|itemtype_name(get_plural_number()) }}
-						</span>
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-12 col-xxl-6">
-			<div class="card">
-				<div class="card-header justify-content-between">
-					<h3>{{ __("Log files") }}</h3>
+    <div class="row mb-2">
+        <div class="col-12 col-xxl-6">
+            <div class="card">
+                <div class="card-header">
+                    <a href="event.php">
+                        <i class="fa-fw {{ call('Glpi\\Event::getIcon') }} me-1"></i>
+                        <span>
+                            {{ "Glpi\\Event"|itemtype_name(get_plural_number()) }}
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-xxl-6">
+            <div class="card">
+                <div class="card-header justify-content-between">
+                    <h3>{{ __("Log files") }}</h3>
 
-					<div class="d-inline-flex">
-						{% set sort_controls = [
+                    <div class="d-inline-flex">
+                        {% set sort_controls = [
                             {
-                                'key': 'filename',
+                                'key': 'filepath',
                                 'icon': 'ti ti-alphabet-latin',
-                                'label': __("Sort by filename")
+                                'label': __("Sort by file path")
                             }, {
                                 'key': 'size',
                                 'icon': 'ti ti-file',
@@ -69,7 +69,7 @@
                             }
                         ] %}
 
-						{% for sort_control in sort_controls %}
+                        {% for sort_control in sort_controls %}
                             {% set active_order = (sort_control['key'] == order) %}
                             {% set curr_sort = 'asc' %}
                             {% set next_sort = 'asc' %}
@@ -80,37 +80,37 @@
                                 {% endif %}
                             {% endif %}
 
-							<a href="?order={{ sort_control['key'] }}&amp;sort={{ next_sort }}"
+                            <a href="?order={{ sort_control['key'] }}&amp;sort={{ next_sort }}"
                                class="btn {{ active_order ? "btn-outline-secondary" : "btn-ghost-secondary" }}  btn-sm me-1"
                                title="{{ sort_control['label'] }}"
                                data-bs-toggle="tooltip" data-bs-placement="bottom">
-								<i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}"></i>
-								<i class="{{ sort_control['icon'] }}"></i>
-							</a>
-						{% endfor %}
-					</div>
-				</div>
-				<div class="list-group list-group-flush">
-					{% for slug, log in logs %}
-						<a class="list-group-item list-group-item-action d-flex justify-content-between" href="logviewer.php?fileslug={{ slug }}">
-							<span class="text-truncate">
-								<i class="fa-fw ti ti-file me-1"></i>
-								<span>{{ log['filename'] }}</span>
-							</span>
-							<span class="d-inline-flex">
-								<span class="badge badge-outline text-muted border fw-normal bg-azure-lt me-1"
+                                <i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}"></i>
+                                <i class="{{ sort_control['icon'] }}"></i>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for log in logs %}
+                        <a class="list-group-item list-group-item-action d-flex justify-content-between" href="logviewer.php?filepath={{ log['filepath']|url_encode }}">
+                            <span class="text-truncate">
+                                <i class="fa-fw ti ti-file me-1"></i>
+                                <span>{{ log['filepath'] }}</span>
+                            </span>
+                            <span class="d-inline-flex">
+                                <span class="badge badge-outline text-muted border fw-normal bg-azure-lt me-1"
                                       title="{{ __("file size") }}">
-									{{ log['size']|formatted_size }}
-								</span>
-								<span class="badge badge-outline text-muted border fw-normal bg-blue-lt"
+                                    {{ log['size']|formatted_size }}
+                                </span>
+                                <span class="badge badge-outline text-muted border fw-normal bg-blue-lt"
                                       title="{{ __("date of last modification") }}">
-									{{ log['datemod']|formatted_datetime }}
-								</span>
-							</span>
-						</a>
-					{% endfor %}
-				</div>
-			</div>
-		</div>
-	</div>
+                                    {{ log['datemod']|formatted_datetime }}
+                                </span>
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
