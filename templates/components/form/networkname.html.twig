@@ -71,16 +71,18 @@
                      </a>
 
                   {% endset %}
+
+                  {{ fields.htmlField(
+                     '_virtual',
+                     display_recursive_items_link|raw,
+                     recursive_items_type_data,
+                     field_options|merge({
+                        add_field_html: unaffect_btn
+                     })
+                  ) }}
                {% endif %}
 
-               {{ fields.htmlField(
-                  '_virtual',
-                  display_recursive_items_link|raw,
-                  recursive_items_type_data,
-                  field_options|merge({
-                     add_field_html: unaffect_btn
-                  })
-               ) }}
+
 
                {% set table_from_foreignkey = call('getTableNameForForeignKeyField', ["fqdns_id"]) %}
                {% set table_from_itemtype = call('getItemTypeForTable', [table_from_foreignkey]) %}
