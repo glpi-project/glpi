@@ -511,10 +511,11 @@ class Event extends CommonDBTM
         $itemtypes = [];
         foreach (self::getUsedItemtypes() as $value) {
             $itemtype = self::getItemtypeFromType($value);
-            if ($itemtype) {
+            if (is_a($itemtype, CommonGLPI::class, true)) {
                 $itemtypes[$value] = $itemtype::getTypeName(1);
             } else {
                 trigger_error("Unsupported type: $value", E_USER_WARNING);
+                $itemtypes[$value] = $value
             }
         }
 
