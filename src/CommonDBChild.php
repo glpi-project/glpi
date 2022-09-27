@@ -897,7 +897,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void|boolean (display) Returns false if there is a rights error.
      **/
-    public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, $display = true)
+    public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
     {
         global $DB;
 
