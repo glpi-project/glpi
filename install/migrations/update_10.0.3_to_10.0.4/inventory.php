@@ -43,7 +43,6 @@ use Glpi\Inventory\Conf;
 //fix database schema inconsistency is_dynamic without is_deleted
 $tables = ["glpi_items_remotemanagements", "glpi_items_devicecameras_imageresolutions", "glpi_items_devicecameras_imageformats"];
 foreach ($tables as $table) {
-  $migration->addField($table, 'is_deleted', 'bool', ['value' => 0, 'after' => 'is_dynamic']);
-  $migration->addKey($table, "is_deleted");
+   $migration->addField($table, 'is_deleted', 'bool', ['value' => 0, 'after' => 'is_dynamic']);
+   $migration->addKey($table, "is_deleted");
 }
-
