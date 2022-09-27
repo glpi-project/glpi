@@ -112,7 +112,7 @@
                   "IPNetwork",
                   "ipnetworks_id",
                   item.fields["ipnetworks_id"],
-                  ipnetwork_label,
+                  'IPNetwork'|itemtype_name(get_plural_number()),
                   field_options|merge({'entity' : item.getEntityID(),
                      'rand' : rand,
                      'value' : item.fields["ipnetworks_id"],
