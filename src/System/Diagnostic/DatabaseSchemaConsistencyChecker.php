@@ -59,6 +59,14 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
                         $missing_columns[] = 'date_mod';
                     }
                     break;
+                case 'is_dynamic':
+                    $exclude_table = ['glpi_useremails', 'glpi_profiles_users', 'glpi_groups_users'];
+                    if (!in_array($table_name, $exclude_table)) {
+                        if (!in_array('is_deleted', $columns)) {
+                            $missing_columns[] = 'is_deleted';
+                        }
+                    }
+                    break;
                 case 'date_mod':
                     if ($table_name === 'glpi_logs') {
                       // Logs cannot be modified and their date is stored on `date_mod`.

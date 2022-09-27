@@ -116,9 +116,10 @@ class Ticket_Contract extends CommonDBRelation
             echo "<tr class='tab_bg_2'><td class='right'>";
             echo "<input type='hidden' name='$item_a_fkey' value='$ID'>";
             $linked_itemtype::dropdown([
-                'used'        => $used,
-                'displaywith' => ['id'],
-                'entity'      => $item->fields['entities_id'],
+                'used'         => $used,
+                'displaywith'  => ['id'],
+                'entity'       => $item->fields['entities_id'],
+                'nochecklimit' => true,
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
