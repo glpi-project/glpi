@@ -1491,11 +1491,11 @@ class Item_Devices extends CommonDBRelation
         $options['canedit'] =  Session::haveRight('device', UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/item_device.html.twig', [
-            'item'                      => $this,
+            'item'                   => $this,
             'item1'                  => $item1,
-            'device'                => $device,
-            'params'                    => $options,
-            'specificities_fields'                    => $specificities_fields,
+            'device'                 => $device,
+            'params'                 => $options,
+            'specificities_fields'   => $specificities_fields,
         ]);
 
         return true;

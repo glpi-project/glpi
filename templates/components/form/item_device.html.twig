@@ -108,7 +108,7 @@
                         {% set field_options = field_options|merge({'helper': specificities['tooltip']}) %}
                      {% endif %}
 
-                     {% if specificities['attribute'] == "dropdown" %}
+                     {% if specificities['datatype'] == "dropdown" %}
                         {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [specificities['field']]) %}
                         {{ fields.dropdownField(
                            dropdown_itemtype,
