@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Inventory\Conf;
-
 /**
  * @var DB $DB
  * @var Migration $migration
