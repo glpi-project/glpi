@@ -60,7 +60,7 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
                     }
                     break;
                 case 'is_dynamic':
-                    $exclude_table = ['glpi_useremails', 'glpi_profiles_users'];
+                    $exclude_table = ['glpi_useremails', 'glpi_profiles_users', 'glpi_groups_users'];
                     if (!in_array($table_name, $exclude_table)) {
                         if (!in_array('is_deleted', $columns)) {
                             $missing_columns[] = 'is_deleted';
