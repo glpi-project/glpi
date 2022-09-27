@@ -492,6 +492,59 @@ class Event extends CommonDBTM
         return $tab;
     }
 
+    /**
+     * Get the possibles values for the 'Source' search option, which target
+     * the `type` column in glpi_events.
+     * Possibles values are :
+     * - Some specials types (see self::logArray)
+     * - Used itemtypes
+     *
+     * @return array
+     */
+    private static function getTypeValuesForDropdown(): array
+    {
+        // Get specials types
+        $specials = self::logArray()[0];
+
+        // Get itemtypes and build their display names
+        $itemtypes = [];
+        foreach (self::getUsedItemtypes() as $value) {
+            $itemtype = self::getItemtypeFromType($value);
+            $itemtypes[$value] = $itemtype::getTypeName(1);
+        }
+
+        return [
+            __('Special') => $specials,
+            __('Items') => $itemtypes,
+        ];
+    }
+
+    /**
+     * Get all itemtypes referenced in the `type` columns of glpi_events
+     * Note that these values are not real itemtypes but strings like "users".
+     * You need to call self::getItemtypeFromType() to get a valid GLPI itemtype
+     *
+     * @return array
+     */
+    private static function getUsedItemtypes(): array
+    {
+        global $DB;
+
+        // These values are not itemtypes
+        $blacklist = array_keys(self::logArray()[0]);
+
+        $data = $DB->request([
+            'SELECT'   => ['type'],
+            'DISTINCT' => 'true',
+            'FROM'     => self::getTable(),
+            'WHERE'    => [
+                'NOT' => ['type' => $blacklist]
+            ]
+        ]);
+
+        return array_column(iterator_to_array($data), 'type');
+    }
+
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if ($field === 'service') {
@@ -509,7 +562,7 @@ class Event extends CommonDBTM
             if (empty($value)) {
                 $value = 0;
             }
-            return \Dropdown::showFromArray($name, self::logArray()[0], [
+            return \Dropdown::showFromArray($name, self::getTypeValuesForDropdown(), [
                 'value' => $value,
                 'display' => false,
                 'display_emptychoice' => true
