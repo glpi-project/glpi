@@ -212,28 +212,38 @@ class Lock extends CommonGLPI
                 }
                 echo "<td class='left'>" . $field_label . "</td>";
 
-                $itemtype_label = $row['itemtype']::getTypeName();
-                //get real type name from CommonDBRelation
-                if (is_a($row['itemtype'], CommonDBRelation::class, true)) {
-                    $itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
-                }
-                echo "<td class='left'>" . $itemtype_label . "</td>";
-
                 //load object
                 $object = new $row['itemtype']();
                 $object->getFromDB($row['items_id']);
 
-                if (is_a($row['itemtype'], Item_Devices::class, true)) {
-                    $device_class = $object::$itemtype_2;
-                    $related_object = new $device_class();
-                    $related_object->getFromDB($object->fields[$object::$items_id_2]);
-                    echo "<td class='left'>";
-                    echo "<a href='" . $object->getLinkURL() . "'" . $related_object->getName() . ">" . $related_object->getName() . "</a>";
-                    echo "</td>";
-                } else {
-                    echo "<td class='left'>" . $object->getLink() . "</td>";
+                $default_itemtype_label = $row['itemtype']::getTypeName();
+                $default_object_link    = $object->getLink();
+                $default_itemtype       = $row['itemtype'];
+
+                //get real type name from Item_Devices
+                // exemple : get 'Hard drives' instead of 'Hard drive items'
+                if (get_parent_class($row['itemtype']) == Item_Devices::class) {
+                    $default_itemtype =  $row['itemtype']::$itemtype_2;
+                    $default_items_id =  $row['itemtype']::$items_id_2;
+                    $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
+                //get real type name from CommonDBRelation
+                // exemple : get 'Operating System' instead of 'Item operating systems'
+                } elseif (get_parent_class($row['itemtype']) == CommonDBRelation::class) {
+                    $default_itemtype =  $row['itemtype']::$itemtype_1;
+                    $default_items_id =  $row['itemtype']::$items_id_1;
+                    $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
                 }
 
+                // specific link for CommonDBRelation itemtype (get 'real' object name inside URL name)
+                // exemple : get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
+                if (is_a($row['itemtype'], CommonDBRelation::class, true)) {
+                    $related_object = new $default_itemtype();
+                    $related_object->getFromDB($object->fields[$default_items_id]);
+                    $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $related_object->getName() . ">" . $related_object->getName() . "</a>";
+                }
+
+                echo "<td class='left'>" . $default_itemtype_label . "</td>";
+                echo "<td class='left'>" . $default_object_link . "</td>";
                 echo "<td class='left'>" . $row['value'] . "</td>";
                 echo "</tr>\n";
             }
