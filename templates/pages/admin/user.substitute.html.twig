@@ -33,12 +33,11 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set id      = item.fields['id'] ?? -1 %}
-{% set canedit = item.canEdit(user.fields['id']) %}
 
 <div class="asset">
 
 {% if canedit %}
-   <form name="asset_form" method="post" action="{{ item.getFormURL( }}" enctype="multipart/form-data" data-submit-once>
+   <form name="asset_form" method="post" action="{{ item.getFormURL() }}" enctype="multipart/form-data" data-submit-once>
 {% endif %}
 
    <div id="mainformtable">

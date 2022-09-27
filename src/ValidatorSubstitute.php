@@ -120,30 +120,14 @@ final class ValidatorSubstitute extends CommonDBTM
         return $this->fields['users_id'] == Session::getLoginUserID();
     }
 
-    public function canEdit($ID)
-    {
-        if ($ID == Session::getLoginUserID()) {
-            return true;
-        }
-
-        $user = new User();
-        if ($user->currentUserHaveMoreRightThan($ID)) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function showForUser(User $user): bool
     {
         if ($user->isNewItem()) {
             return false;
         }
 
-        if (
-            ($user->fields['id'] != Session::getLoginUserID())
-            && !$user->currentUserHaveMoreRightThan($user->fields['id'])
-        ) {
+        $can_edit = ($user->fields['id'] == Session::getLoginUserID());
+        if (!$can_edit) {
             return false;
         }
 
@@ -152,6 +136,7 @@ final class ValidatorSubstitute extends CommonDBTM
             'user'        => $user,
             'substitutes' => $user->getSubstitutes(),
             'delegators'  => $user->getDelegators(),
+            'canedit'     => $can_edit,
         ]);
 
         return true;

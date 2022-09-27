@@ -36,8 +36,12 @@
 include('../inc/includes.php');
 
 if (isset($_POST['update'])) {
-    $validator_substitute = new ValidatorSubstitute();
-    if (!$validator_substitute->canEdit($_POST['users_id'] ?? 0)) {
+    $validator_substitute = ValidatorSubstitute::getById($_POST['id'] ?? -1);
+    if (!($validator_substitute instanceof ValidatorSubstitute)) {
+        Html::back();
+    }
+
+    if (!$validator_substitute->canUpdateItem($_POST['users_id'] ?? 0)) {
         $info = 'User failed to update validator substitutes or associated date range';
         Html::displayRightError($info);
     }
