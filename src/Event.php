@@ -44,6 +44,7 @@ use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Infocom;
+use ITILSolution;
 use Session;
 use Toolbox;
 
@@ -510,7 +511,12 @@ class Event extends CommonDBTM
         $itemtypes = [];
         foreach (self::getUsedItemtypes() as $value) {
             $itemtype = self::getItemtypeFromType($value);
-            $itemtypes[$value] = $itemtype::getTypeName(1);
+            if (is_a($itemtype, CommonGLPI::class, true)) {
+                $itemtypes[$value] = $itemtype::getTypeName(1);
+            } else {
+                trigger_error("Unsupported type: $value", E_USER_WARNING);
+                $itemtypes[$value] = $value;
+            }
         }
 
         return [
@@ -648,6 +654,10 @@ class Event extends CommonDBTM
         if (is_a($fallback_type, CommonGLPI::class, true)) {
             $mapping[$type] = $fallback_type;
             return $fallback_type;
+        }
+
+        if ($type == 'solution') {
+            return ITILSolution::class;
         }
 
         return null;
