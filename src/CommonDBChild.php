@@ -267,7 +267,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @param string $elementToDisplay  what to display : 'Type', 'Name', 'Link'
      * @param bool $display  display html or return html
      **/
-    public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, $display = true)
+    public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, bool $display = true)
     {
 
         if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
