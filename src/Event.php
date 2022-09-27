@@ -515,7 +515,7 @@ class Event extends CommonDBTM
                 $itemtypes[$value] = $itemtype::getTypeName(1);
             } else {
                 trigger_error("Unsupported type: $value", E_USER_WARNING);
-                $itemtypes[$value] = $value
+                $itemtypes[$value] = $value;
             }
         }
 
