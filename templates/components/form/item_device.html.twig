@@ -121,10 +121,10 @@
                         {% if specificities['protected'] %}
 
                            {% set btn_group %}
-                              &nbsp;<i class="far fa-eye pointer disclose" onmousedown="showField('{{specificities['field'] ~ specificities['rand']}}')"
-                              onmouseup="hideField('{{specificities['field'] ~ specificities['rand']}}')"
-                              onmouseout="hideField('{{specificities['field'] ~ specificities['rand']}}')"></i>
-                              &nbsp;<i class="fa fa-paste pointer disclose" onclick="copyToClipboard('{{specificities['field'] ~ specificities['rand']}}')"></i>
+                              &nbsp;<i class="far fa-eye pointer disclose" onmousedown="showField('{{ specificities['field'] ~ specificities['rand'] }}')"
+                              onmouseup="hideField('{{ specificities['field'] ~ specificities['rand'] }}')"
+                              onmouseout="hideField('{{ specificities['field'] ~ specificities['rand'] }}')"></i>
+                              &nbsp;<i class="fa fa-paste pointer disclose" onclick="copyToClipboard('{{ specificities['field'] ~ specificities['rand'] }}')"></i>
                            {% endset %}
 
                            {{ fields.passwordField(
