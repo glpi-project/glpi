@@ -332,6 +332,9 @@ class RuleImportEntity extends DbTestCase
         ]);
         $this->integer($entities_id_a)->isGreaterThan(0);
 
+        $all_entities = getAllDataFromTable($entity->getTable());
+        $count_entities = count($all_entities);
+
         // Add a rule for get entity tag (1)
         $rule = new \Rule();
         $input = [
@@ -421,5 +424,8 @@ class RuleImportEntity extends DbTestCase
                 )
             );
         }
+
+        $all_entities = getAllDataFromTable($entity->getTable());
+        $this->integer(count($all_entities))->isIdenticalTo($count_entities);
     }
 }
