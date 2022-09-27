@@ -501,7 +501,7 @@ class Event extends CommonDBTM
      *
      * @return array
      */
-    public static function getTypeValuesForDropdown(): array
+    private static function getTypeValuesForDropdown(): array
     {
         // Get specials types
         $specials = self::logArray()[0];
@@ -526,7 +526,7 @@ class Event extends CommonDBTM
      *
      * @return array
      */
-    public static function getUsedItemtypes(): array
+    private static function getUsedItemtypes(): array
     {
         global $DB;
 
