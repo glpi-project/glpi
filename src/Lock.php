@@ -90,7 +90,7 @@ class Lock extends CommonGLPI
             echo "</th>";
             echo "<th>" . $lockedfield->getTypeName() . "</th>";
             echo "<th>" . __('Itemtype') . "</th>";
-            echo "<th>" . __('Link') . "</th>";
+            echo "<th>" . _n('Link', 'Links', Session::getPluralNumber()) . "</th>";
             echo "<th>" . __('Last inventoried value')  . "</th></tr>";
 
             $subquery = [];
