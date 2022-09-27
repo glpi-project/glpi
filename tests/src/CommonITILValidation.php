@@ -454,7 +454,6 @@ abstract class CommonITILValidation extends DbTestCase
                     'items_id_target' => 1,
                     'comment_submission' => 'test',
                     'status' => \CommonITILValidation::WAITING,
-                    'users_id_validate' => 1,
                 ],
             ],
             [
