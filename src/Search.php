@@ -3939,29 +3939,36 @@ JAVASCRIPT;
             case "glpi_users.name":
                 if ($itemtype != 'User') {
                     if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                        $addaltemail = "";
+                        $adduserinfos = "";
                         if (
-                            (($itemtype == 'Ticket') || ($itemtype == 'Problem'))
+                            in_array($itemtype, ['Ticket', 'Change', 'Problem'])
                             && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
-                            && (($searchopt[$ID]['joinparams']['beforejoin']['table']
-                            == 'glpi_tickets_users')
-                            || ($searchopt[$ID]['joinparams']['beforejoin']['table']
-                                == 'glpi_problems_users')
-                            || ($searchopt[$ID]['joinparams']['beforejoin']['table']
-                                == 'glpi_changes_users'))
-                        ) { // For tickets_users
-                             $ticket_user_table
+                            && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
+                        ) { // For itemtype_users
+                             $itemtype_user_table
                              = $searchopt[$ID]['joinparams']['beforejoin']['table'] .
                              "_" . self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
                                                                    ['joinparams']) . $addmeta;
-                               $addaltemail
-                              = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
-                                                        `$ticket_user_table`.`alternative_email`)
+
+                             $order = isset($CFG_GLPI["names_format"]) ? $CFG_GLPI["names_format"] : User::REALNAME_BEFORE;
+                            if (isset($_SESSION["glpinames_format"])) {
+                                $order = $_SESSION["glpinames_format"];
+                            }
+                             $user_complete_name = "`$table$addtable`.`realname`, ' ', `$table$addtable`.`firstname`";
+                            if ($order == User::FIRSTNAME_BEFORE) {
+                                $user_complete_name = "`$table$addtable`.`firstname`, ' ', `$table$addtable`.`realname`";
+                            }
+
+                             $adduserinfos
+                              = "GROUP_CONCAT(DISTINCT CONCAT(`$itemtype_user_table`.`users_id`, ' ',
+                                                        `$itemtype_user_table`.`alternative_email`, ' ',
+                                                        `$table$addtable`.`name`, ' ',
+                                                        $user_complete_name)
                                                         SEPARATOR '" . self::LONGSEP . "') AS `" . $NAME . "_2`, ";
                         }
                         return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '" . self::LONGSEP . "')
                                        AS `" . $NAME . "`,
-                           $addaltemail
+                           $adduserinfos
                            $ADDITONALFIELDS";
                     }
                     return " `$table$addtable`.`$field` AS `" . $NAME . "`,
@@ -4542,6 +4549,7 @@ JAVASCRIPT;
 
         global $DB;
 
+        $origin_nott = $nott;
         $searchopt = &self::getOptions($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return false;
@@ -4720,6 +4728,64 @@ JAVASCRIPT;
                     $name2 = 'firstname';
                 }
 
+                if (
+                    $searchopt[$ID]["datatype"] == 'dropdown'
+                    && is_a($itemtype, CommonITILObject::class, true)
+                    && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
+                    && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
+                    && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
+                    && ((in_array($searchtype, ['equals', 'contains']) && $origin_nott) || (in_array($searchtype, ['notequals', 'notcontains']) && !$origin_nott))
+                ) {
+                   // could it be useful for other itemtypes and/or for other linked items (like glpi_groups_tickets)?
+                   // this block will be executed only when one negation is used (if two are used then it will not be executed)
+
+                    $link_table = $searchopt[$ID]['joinparams']['beforejoin']['table'];
+                    $orig_fk_field = getForeignKeyFieldForTable($orig_table);
+                    $inittable_fk_field = getForeignKeyFieldForTable($inittable);
+                    $addcondition = '';
+                    if (isset($searchopt[$ID]['joinparams']['beforejoin']['joinparams']) && isset($searchopt[$ID]['joinparams']['beforejoin']['joinparams']['condition'])) {
+                        $condition = $searchopt[$ID]['joinparams']['beforejoin']['joinparams']['condition'];
+                        if (is_array($condition)) {
+                            $it = new DBmysqlIterator(null);
+                            $condition = ' AND ' . $it->analyseCrit($condition);
+                        }
+
+                        $from         = ["`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE"];
+                        $to           = ["`$orig_table`", "`$orig_table`", "`$link_table`", "`$link_table`"];
+                        $addcondition = str_replace($from, $to, $condition);
+                        $addcondition = $addcondition . " ";
+                    }
+
+                    $join = '';
+                    $crit = '';
+                    $notstr = 'NOT';
+                    $equalstr = '=';
+                   // crit for equals and notequals
+                    if (in_array($searchtype, ['equals', 'notequals'])) {
+                        if ($val == 0) {
+                           // $val == 0 special value to tell that there is no choice (= empty) in the dropdown
+                            $equalstr = 'IS NOT NULL';
+                            $val = '';
+                            $notstr = '';
+                        }
+                        $crit = "`$link_table`.`$orig_fk_field` = `$orig_table`.`id`
+                              $addcondition
+                              AND (`$link_table`.`$inittable_fk_field` $equalstr $val)";
+                    } else {
+                       // crit for contains and notcontains
+                        $SEARCH = self::makeTextSearch($val, false);
+                        $join = "LEFT JOIN `$inittable` ON `$inittable`.`id` = `$link_table`.`$inittable_fk_field`";
+                        $crit = "`$link_table`.`$orig_fk_field` = `$orig_table`.`id`
+                                 $addcondition
+                                 AND (`$inittable`.`$name1` $SEARCH
+                                    OR `$inittable`.`$name2` $SEARCH
+                                    OR `$inittable`.`$field` $SEARCH
+                                    OR CONCAT(`$inittable`.`$name1`, ' ', `$inittable`.`$name2`) $SEARCH)";
+                    }
+                    return " $link ($notstr EXISTS(SELECT 1 FROM `$link_table` $join WHERE $crit))";
+                }
+
+
                 if (in_array($searchtype, ['equals', 'notequals'])) {
                     return " $link (`$table`.`id`" . $SEARCH .
                                (($val == 0) ? " OR `$table`.`id` IS" .
@@ -4736,12 +4802,7 @@ JAVASCRIPT;
                     if (
                         isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                         && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
-                        && (($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                         == 'glpi_tickets_users')
-                        || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                             == 'glpi_problems_users')
-                        || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                             == 'glpi_changes_users'))
+                        && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                     ) {
                         $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                         $linktable = $bj['table'] . '_' . self::computeComplexJoinID($bj['joinparams']) . $addmeta;

@@ -994,6 +994,17 @@ class Search extends DbTestCase
                            `glpi_users`.`id` AS `ITEM_Computer_70_id`, `glpi_users`.`firstname` AS `ITEM_Computer_70_firstname`,'
             ]
             ],
+            'userinfo_for_watcher' => [[
+                'itemtype'  => 'Ticket',
+                'ID'        => 66, // watcher users_id
+                'sql'       => "GROUP_CONCAT(DISTINCT `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`id` SEPARATOR '$$##$$') AS `ITEM_Ticket_66`,
+                           GROUP_CONCAT(DISTINCT CONCAT(`glpi_tickets_users_9c6b5b644d74a9e8013c7c2ea051dffd`.`users_id`, ' ',
+                                                        `glpi_tickets_users_9c6b5b644d74a9e8013c7c2ea051dffd`.`alternative_email`, ' ',
+                                                        `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`name`, ' ',
+                                                        `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`realname`, ' ', `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`firstname`)
+                                                        SEPARATOR '$$##$$') AS `ITEM_Ticket_66_2`,"
+            ]
+            ],
         ];
     }
 
@@ -1727,6 +1738,69 @@ class Search extends DbTestCase
                 'val' => '70.5%',
                 'meta' => false,
                 'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.5%'  )",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Ticket::class,
+                'ID' => 66, // Search ID 66 (watcher)
+                'searchtype' => 'equals',
+                'val' => '4',
+                'meta' => false,
+                'expected' => "  AND  (`glpi_users_2d8dddf177c82bdbeae2643568f74658`.`id` = '4') ",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 1,
+                'itemtype' => \Ticket::class,
+                'ID' => 66, // Search ID 66 (watcher)
+                'searchtype' => 'notequals',
+                'val' => '4',
+                'meta' => false,
+                'expected' => "  AND  (`glpi_users_2d8dddf177c82bdbeae2643568f74658`.`id` = '4') ",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 1,
+                'itemtype' => \Ticket::class,
+                'ID' => 66, // Search ID 66 (watcher)
+                'searchtype' => 'equals',
+                'val' => '4',
+                'meta' => false,
+                'expected' => "  AND  (NOT EXISTS(SELECT 1 FROM `glpi_tickets_users`  WHERE `glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
+                               AND `glpi_tickets_users`.`type` = '3'
+                              AND (`glpi_tickets_users`.`users_id` = 4)))",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Ticket::class,
+                'ID' => 66, // Search ID 66 (watcher)
+                'searchtype' => 'notcontains',
+                'val' => '4',
+                'meta' => false,
+                'expected' => "AND (NOT EXISTS(SELECT 1 FROM `glpi_tickets_users`
+                                               LEFT JOIN `glpi_users` ON `glpi_users`.`id` = `glpi_tickets_users`.`users_id`
+                                               WHERE `glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
+                                                   AND `glpi_tickets_users`.`type` = '3'
+                                                   AND (`glpi_users`.`realname` LIKE '%4%'
+                                                        OR `glpi_users`.`firstname` LIKE '%4%'
+                                                        OR `glpi_users`.`name` LIKE '%4%'
+                                                        OR CONCAT(`glpi_users`.`realname`, ' ', `glpi_users`.`firstname`) LIKE '%4%' )))",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 1,
+                'itemtype' => \Ticket::class,
+                'ID' => 66, // Search ID 66 (watcher)
+                'searchtype' => 'notcontains',
+                'val' => '4',
+                'meta' => false,
+                'expected' => "AND (((`glpi_users_2d8dddf177c82bdbeae2643568f74658`.`realname` LIKE '%4%' 
+                                      OR `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`firstname` LIKE '%4%' 
+                                      OR `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`name` LIKE '%4%' 
+                                      OR CONCAT(`glpi_users_2d8dddf177c82bdbeae2643568f74658`.`realname`, ' ', `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`firstname`) LIKE '%4%' ) ) 
+                                    OR (`glpi_tickets_users_9c6b5b644d74a9e8013c7c2ea051dffd`.`alternative_email` LIKE '%4%' ))",
             ]
         ];
     }
@@ -1737,7 +1811,7 @@ class Search extends DbTestCase
     public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected)
     {
         $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
-        $this->string($output)->isEqualTo($expected);
+        $this->string($this->cleanSQL($output))->isEqualTo($this->cleanSQL($expected));
 
         if ($meta) {
             return; // Do not know how to run search on meta here
