@@ -211,7 +211,13 @@ class Lock extends CommonGLPI
                     $field_label .= ' (' . __('Global') . ')';
                 }
                 echo "<td class='left'>" . $field_label . "</td>";
-                echo "<td class='left'>" . $row['itemtype']::getTypeName() . "</td>";
+
+                $itemtype_label = $row['itemtype']::getTypeName();
+                //get real type name from CommonDBRelation
+                if (is_a($row['itemtype'], CommonDBRelation::class, true)) {
+                    $itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
+                }
+                echo "<td class='left'>" . $itemtype_label . "</td>";
 
                 //load object
                 $object = new $row['itemtype']();
