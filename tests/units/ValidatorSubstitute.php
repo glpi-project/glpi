@@ -77,43 +77,6 @@ class ValidatorSubstitute extends DbTestCase
         $this->string($output)->isEqualTo($expected);
     }
 
-    public function providerCanEdit()
-    {
-        $this->login('post-only', 'postonly');
-        yield [
-            'id' => User::getIdByName('tech'),
-            'expected' => false,
-        ];
-
-        // Normal has more rights than post-only
-        // @see Profile::currentUserHaveMoreRightThan
-        $this->login('normal', 'normal');
-        yield [
-            'id' => User::getIdByName('post-only'),
-            'expected' => true,
-        ];
-
-        yield [
-            'id' => User::getIdByName('normal'), // normal user
-            'expected' => true,
-        ];
-    }
-
-    /**
-     * @dataProvider providerCanEdit
-     *
-     * @param integer $id
-     * @param boolean $expected
-     * @return void
-     */
-    public function testCanEdit(int $id, bool $expected)
-    {
-        $instance = $this->newTestedInstance;
-
-        $output = $instance->canEdit($id);
-        $this->boolean($output)->isEqualTo($expected);
-    }
-
     public function providerCanCreateItem()
     {
         yield [
