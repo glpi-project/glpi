@@ -215,7 +215,16 @@ class Lock extends CommonGLPI
                 //load object
                 $object = new $row['itemtype']();
                 $object->getFromDB($row['items_id']);
-                echo "<td class='left'>" . $object->getLink() . "</td>";
+
+                if (is_a($row['itemtype'], Item_Devices::class, true)) {
+                    $device_class = $object::$itemtype_2;
+                    $related_object = new $device_class();
+                    $related_object->getFromDB($object->fields[$object::$items_id_2]);
+                    echo "<td class='left'>" . $related_object->getLink() . "</td>";
+                } else {
+                    echo "<td class='left'>" . $object->getLink() . "</td>";
+                }
+
                 echo "<td class='left'>" . $row['value'] . "</td>";
                 echo "</tr>\n";
             }
