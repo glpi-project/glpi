@@ -85,10 +85,11 @@ class Lock extends CommonGLPI
             echo "<table class='tab_cadre_fixehov'>";
 
             echo "<tr>";
+            echo "<tr><th colspan='2'>" . __('Locked fields') . "</th></tr>";
             echo "<th width='10'>";
             Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $lockedfield::getType()]]);
             echo "</th>";
-            echo "<th>" . $lockedfield->getTypeName() . "</th>";
+            echo "<th>" . _n('Field', 'Fields', Session::getPluralNumber())  . "</th>";
             echo "<th>" . __('Itemtype') . "</th>";
             echo "<th>" . _n('Link', 'Links', Session::getPluralNumber()) . "</th>";
             echo "<th>" . __('Last inventoried value')  . "</th></tr>";
