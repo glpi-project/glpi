@@ -124,14 +124,14 @@
                      'ram',
                      item.fields['ram'],
                      __('%1$s (%2$s)')|format(_n('Memory', 'Memories', 1), __('Mio')),
-                     field_options|merge({'min':0})
+                     field_options|merge({'min': 0})
                   ) }}
 
                   {{ fields.numberField(
                      'vcpu',
                      item.fields['vcpu'],
                      _x('quantity', 'Processors number'),
-                     field_options|merge({'min':0})
+                     field_options|merge({'min': 0})
                   ) }}
 
                </div> {# .row #}
