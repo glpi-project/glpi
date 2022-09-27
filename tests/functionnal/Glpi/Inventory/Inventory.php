@@ -123,7 +123,8 @@ class Inventory extends InventoryTestCase
             'items_id' => $computer->fields['id'],
             'remoteid' => '123456789',
             'type' => 'teamviewer',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
+            'is_deleted' => 0
         ]);
 
         //connections
