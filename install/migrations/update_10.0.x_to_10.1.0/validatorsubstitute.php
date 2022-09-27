@@ -54,23 +54,6 @@ if (!$DB->tableExists('glpi_validatorsubstitutes')) {
     $DB->queryOrDie($query, "add table glpi_validatorsubstitutes");
 }
 
-$validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];
-
-foreach ($validation_tables as $validation_table) {
-    $migration->addfield(
-        $validation_table,
-        'users_id_actual_validate',
-        "int {$default_key_sign} NOT NULL DEFAULT '0'",
-        [
-            'after' => 'timeline_position',
-            'comment' => 'User who did the validation',
-            'update' => $DB->quoteName('users_id_validate'),
-            'condition' => "WHERE `status` IN (3, 4)",
-        ]
-    );
-    $migration->addKey($validation_table, 'users_id_actual_validate');
-}
-
 $table = 'glpi_users';
 $migration->addField($table, 'substitution_start_date', 'timestamp', ['after' => 'nickname']);
 $migration->addField($table, 'substitution_end_date', 'timestamp', ['after' => 'substitution_start_date']);

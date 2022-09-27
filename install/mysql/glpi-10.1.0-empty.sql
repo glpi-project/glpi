@@ -847,7 +847,6 @@ CREATE TABLE `glpi_changevalidations` (
   `submission_date` timestamp NULL DEFAULT NULL,
   `validation_date` timestamp NULL DEFAULT NULL,
   `timeline_position` tinyint NOT NULL DEFAULT '0',
-  `users_id_actual_validate` int unsigned NOT NULL DEFAULT '0',
   `last_reminder_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
@@ -857,7 +856,6 @@ CREATE TABLE `glpi_changevalidations` (
   KEY `item_target` (`itemtype_target`,`items_id_target`),
   KEY `changes_id` (`changes_id`),
   KEY `submission_date` (`submission_date`),
-  KEY `users_id_actual_validate` (`users_id_actual_validate`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7518,7 +7516,6 @@ CREATE TABLE `glpi_ticketvalidations` (
   `submission_date` timestamp NULL DEFAULT NULL,
   `validation_date` timestamp NULL DEFAULT NULL,
   `timeline_position` tinyint NOT NULL DEFAULT '0',
-  `users_id_actual_validate` int unsigned NOT NULL DEFAULT '0',
   `last_reminder_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
@@ -7527,7 +7524,6 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `item_target` (`itemtype_target`,`items_id_target`),
   KEY `tickets_id` (`tickets_id`),
   KEY `submission_date` (`submission_date`),
-  KEY `users_id_actual_validate` (`users_id_actual_validate`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

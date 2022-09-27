@@ -1078,7 +1078,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $colonnes = ['', _x('item', 'State'), __('Request date'), __('Approval requester'),
             __('Request comments'), __('Approval status'),
             __('Requested approver type'), __('Requested approver'),
-            __('Approver'), __('Actual approver'), __('Approval comments'), __('Documents')
         ];
         $nb_colonnes = count($colonnes);
 
@@ -1169,7 +1168,6 @@ abstract class CommonITILValidation extends CommonDBChild
                 echo "<td>" . $target_name . "</td>";
                 $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
                 echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>";
-                echo "<td>" . getUserName($row["users_id_actual_validate"]) . "</td>";
                 $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
                 echo "<td><div class='rich_text_container'>" . $comment_validation . "</div></td>";
 
@@ -1323,16 +1321,6 @@ abstract class CommonITILValidation extends CommonDBChild
             'field'              => 'itemtype_target',
             'name'               => __('Requested approver type'),
             'datatype'           => 'dropdown',
-        ];
-
-        $tab[] = [
-            'id'                 => '9',
-            'table'              => 'glpi_users',
-            'field'              => 'name',
-            'linkfield'          => 'users_id_actual_validate',
-            'name'               => __('Actual approver'),
-            'datatype'           => 'itemlink',
-            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
         ];
 
         return $tab;
