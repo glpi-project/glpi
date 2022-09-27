@@ -1465,6 +1465,7 @@ class Item_Devices extends CommonDBRelation
 
             if ($canRead) {
                 $specificities['field'] = $field;
+                $specificities['rand'] = $rand;
                 $specificities['value'] = $this->fields[$field];
                 switch ($attributs['datatype']) {
                     case 'dropdown':
@@ -1482,16 +1483,6 @@ class Item_Devices extends CommonDBRelation
                         if ($specificities['protected']) {
                             $specificities['protected_field_id'] =  $field . $rand;
                         }
-                }
-
-                if ($specificities['protected']) {
-                    $btn_group = '&nbsp;<i class="far fa-eye pointer disclose" ';
-                    $btn_group .= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
-                    $btn_group .= 'onmouseup="hideField(\'' . $field . $rand . '\')" ';
-                    $btn_group .= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i>';
-                    $btn_group .= '&nbsp;<i class="fa fa-paste pointer disclose" ';
-                    $btn_group .= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
-                    $specificities['label'] = $specificities['label'] . $btn_group;
                 }
             }
             $specificities_fields[] = $specificities;
