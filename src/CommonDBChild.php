@@ -265,6 +265,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @param array  $recursiveItems    items of the current elements (see recursivelyGetItems())
      * @param string $elementToDisplay  what to display : 'Type', 'Name', 'Link'
+     * @param string $display  display html or return html
      **/
     public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, $display = true)
     {

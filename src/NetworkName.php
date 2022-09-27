@@ -102,25 +102,25 @@ class NetworkName extends FQDNLabel
             $options['entities_id'] = $lastItem->getField('entities_id');
         }
 
-        $recursiveItemsTypeData = _n('Associated element', 'Associated elements', Session::getPluralNumber());
+        $recursive_items_type_data = _n('Associated element', 'Associated elements', Session::getPluralNumber());
         if (count($recursiveItems) > 0) {
-            $recursiveItemsTypeData = $this->displayRecursiveItems($recursiveItems, 'Type', false);
+            $recursive_items_type_data = $this->displayRecursiveItems($recursiveItems, 'Type', false);
         }
 
-        $displayRecursiveItemsLink = $this->displayRecursiveItems($recursiveItems, 'Link', false);
-        $displayDissociateBtn = false;
+        $display_recursive_items_link = $this->displayRecursiveItems($recursiveItems, 'Link', false);
+        $display_dissociate_btn = false;
         if ((count($recursiveItems) > 0) && $this->canUpdate()) {
-            $displayDissociateBtn = true;
+            $display_dissociate_btn = true;
         }
 
 
         TemplateRenderer::getInstance()->display('components/form/networkname.html.twig', [
-            'ID'                        => $ID,
-            'displayDissociateBtn'      => $displayDissociateBtn,
-            'recursiveItemsTypeData'    => $recursiveItemsTypeData,
-            'displayRecursiveItemsLink' => $displayRecursiveItemsLink,
-            'item'                      => $this,
-            'params'                    => $options,
+            'ID'                            => $ID,
+            'display_dissociate_btn'        => $display_dissociate_btn,
+            'recursive_items_type_data'     => $recursive_items_type_data,
+            'display_recursive_items_link'  => $display_recursive_items_link,
+            'item'                          => $this,
+            'params'                        => $options,
         ]);
 
         return true;
