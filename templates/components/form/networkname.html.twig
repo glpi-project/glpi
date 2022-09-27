@@ -91,7 +91,7 @@
                   table_from_itemtype,
                   "fqdns_id",
                   item.fields["fqdns_id"],
-                  fqdn_label,
+                  'FQDN'|itemtype_name,
                   field_options|merge({'entity': item.getEntityID(), 'displaywith': ['view']})
                ) }}
 
