@@ -159,7 +159,6 @@ if (isset($_POST["add"])) {
     if ($validation->canValidate($validation->fields[$validation::$items_id])) {
         $validation->update($_POST + [
             'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED,
-            'users_id_actual_validate' => Session::getLoginUserID(),
         ]);
         Html::back();
     }
