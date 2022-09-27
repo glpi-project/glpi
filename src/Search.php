@@ -3942,7 +3942,7 @@ JAVASCRIPT;
             case "glpi_users.name":
                 if ($itemtype != 'User') {
                     if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                        $addaltemail = "";
+                        $adduserinfos = "";
                         if (
                             (($itemtype == 'Ticket') || ($itemtype == 'Problem'))
                             && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
@@ -3952,19 +3952,31 @@ JAVASCRIPT;
                                 == 'glpi_problems_users')
                             || ($searchopt[$ID]['joinparams']['beforejoin']['table']
                                 == 'glpi_changes_users'))
-                        ) { // For tickets_users
-                             $ticket_user_table
+                        ) { // For itemtype_users
+                             $itemtype_user_table
                              = $searchopt[$ID]['joinparams']['beforejoin']['table'] .
                              "_" . self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
                                                                    ['joinparams']) . $addmeta;
-                               $addaltemail
-                              = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
-                                                        `$ticket_user_table`.`alternative_email`)
+
+                             $order = isset($CFG_GLPI["names_format"]) ? $CFG_GLPI["names_format"] : User::REALNAME_BEFORE;
+                            if (isset($_SESSION["glpinames_format"])) {
+                                $order = $_SESSION["glpinames_format"];
+                            }
+                             $user_complete_name = "`$table$addtable`.`realname`, ' ', `$table$addtable`.`firstname`";
+                            if ($order == User::FIRSTNAME_BEFORE) {
+                                $user_complete_name = "`$table$addtable`.`firstname`, ' ', `$table$addtable`.`realname`";
+                            }
+
+                             $adduserinfos
+                              = "GROUP_CONCAT(DISTINCT CONCAT(`$itemtype_user_table`.`users_id`, ' ',
+                                                        `$itemtype_user_table`.`alternative_email`, ' ',
+                                                        `$table$addtable`.`name`, ' ',
+                                                        $user_complete_name)
                                                         SEPARATOR '" . self::LONGSEP . "') AS `" . $NAME . "_2`, ";
                         }
                         return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '" . self::LONGSEP . "')
                                        AS `" . $NAME . "`,
-                           $addaltemail
+                           $adduserinfos
                            $ADDITONALFIELDS";
                     }
                     return " `$table$addtable`.`$field` AS `" . $NAME . "`,

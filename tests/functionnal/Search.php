@@ -995,6 +995,17 @@ class Search extends DbTestCase
                            `glpi_users`.`id` AS `ITEM_Computer_70_id`, `glpi_users`.`firstname` AS `ITEM_Computer_70_firstname`,'
             ]
             ],
+            'userinfo_for_watcher' => [[
+                'itemtype'  => 'Ticket',
+                'ID'        => 66, // watcher users_id
+                'sql'       => "GROUP_CONCAT(DISTINCT `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`id` SEPARATOR '$$##$$') AS `ITEM_Ticket_66`,
+                           GROUP_CONCAT(DISTINCT CONCAT(`glpi_tickets_users_9c6b5b644d74a9e8013c7c2ea051dffd`.`users_id`, ' ',
+                                                        `glpi_tickets_users_9c6b5b644d74a9e8013c7c2ea051dffd`.`alternative_email`, ' ',
+                                                        `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`name`, ' ',
+                                                        `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`realname`, ' ', `glpi_users_2d8dddf177c82bdbeae2643568f74658`.`firstname`)
+                                                        SEPARATOR '$$##$$') AS `ITEM_Ticket_66_2`,"
+            ]
+            ],
         ];
     }
 
