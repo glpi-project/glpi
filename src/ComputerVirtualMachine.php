@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Virtual machine management
  */
@@ -105,6 +107,51 @@ class ComputerVirtualMachine extends CommonDBChild
     }
 
 
+        /**
+     * Display form for antivirus
+     *
+     * @param integer $ID      id of the antivirus
+     * @param array   $options
+     *
+     * @return boolean TRUE if form is ok
+     **/
+    public function showForm($ID, array $options = [])
+    {
+        if (!Session::haveRight("computer", UPDATE)) {
+            return false;
+        }
+
+        $comp = new Computer();
+
+        if ($ID > 0) {
+            $this->check($ID, READ);
+            $comp->getFromDB($this->fields['computers_id']);
+        } else {
+           // Create item
+            $this->check(-1, CREATE, $options);
+            $comp->getFromDB($options['computers_id']);
+        }
+
+        $linked_computer = "";
+        if ($link_computer = self::findVirtualMachine($this->fields)) {
+            $computer = new Computer();
+            if ($computer->getFromDB($link_computer)) {
+                $linked_computer = $computer->getLink(['comments' => true]);
+            }
+        }
+
+        $options['canedit'] = Session::haveRight("computer", UPDATE);
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/computervirtualmachine.html.twig', [
+            'item'                      => $this,
+            'computer'                  => $comp,
+            'params'                    => $options,
+            'linked_computer'           => $linked_computer,
+        ]);
+
+        return true;
+    }
+
     /**
      * Print the version form
      *
@@ -115,7 +162,7 @@ class ComputerVirtualMachine extends CommonDBChild
      *
      * @return true if displayed  false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showFormv1($ID, array $options = [])
     {
 
         if (!Session::haveRight("computer", UPDATE)) {
