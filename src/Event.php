@@ -528,15 +528,21 @@ class Event extends CommonDBTM
      */
     public static function getUsedItemtypes(): array
     {
+        global $DB;
+
         // These values are not itemtypes
         $blacklist = array_keys(self::logArray()[0]);
 
-        $events = new self();
-        $data = $events->find([
-            'NOT' => ['type' => $blacklist]
+        $data = $DB->request([
+            'SELECT'   => ['type'],
+            'DISTINCT' => 'true',
+            'FROM'     => self::getTable(),
+            'WHERE'    => [
+                'NOT' => ['type' => $blacklist]
+            ]
         ]);
 
-        return array_column($data, 'type');
+        return array_column(iterator_to_array($data), 'type');
     }
 
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
