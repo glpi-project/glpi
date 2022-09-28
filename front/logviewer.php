@@ -63,7 +63,7 @@ if (($_GET['action'] ?? '') === 'download') {
         LogViewer::getTypeName(Session::getPluralNumber()),
         $_SERVER['PHP_SELF'],
         'admin',
-        'logviewer',
+        'glpi\system\log\logviewer',
         'logfile'
     );
 
