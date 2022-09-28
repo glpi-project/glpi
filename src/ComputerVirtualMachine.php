@@ -109,7 +109,7 @@ class ComputerVirtualMachine extends CommonDBChild
     }
 
 
-        /**
+    /**
      * Display form for antivirus
      *
      * @param integer $ID      id of the antivirus
@@ -150,121 +150,6 @@ class ComputerVirtualMachine extends CommonDBChild
             'params'                    => $options,
             'linked_computer'           => $linked_computer,
         ]);
-
-        return true;
-    }
-
-    /**
-     * Print the version form
-     *
-     * @param $ID        integer ID of the item
-     * @param $options   array
-     *     - target for the Form
-     *     - computers_id ID of the computer for add process
-     *
-     * @return true if displayed  false if item not found or not right to display
-     **/
-    public function showFormv1($ID, array $options = [])
-    {
-
-        if (!Session::haveRight("computer", UPDATE)) {
-            return false;
-        }
-
-        $comp = new Computer();
-
-        if ($ID > 0) {
-            $this->check($ID, READ);
-            $comp->getFromDB($this->fields['computers_id']);
-        } else {
-           // Create item
-            $this->check(-1, CREATE, $options);
-            $comp->getFromDB($options['computers_id']);
-        }
-
-        $this->showFormHeader($options);
-
-        if ($this->isNewID($ID)) {
-            echo "<input type='hidden' name='computers_id' value='" . $options['computers_id'] . "'>";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . Computer::getTypeName(1) . "</td>";
-        echo "<td>" . $comp->getLink() . "</td>";
-        $this->autoinventoryInformation();
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td><td rowspan='4'>" . __('Comments') . "</td>";
-        echo "<td rowspan='4'>";
-        echo "<textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . VirtualMachineType::getTypeName(1) . "</td>";
-        echo "<td>";
-        VirtualMachineType::dropdown(['value' => $this->fields['virtualmachinetypes_id']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . VirtualMachineSystem::getTypeName(1) . "</td>";
-        echo "<td>";
-        VirtualMachineSystem::dropdown(['value' => $this->fields['virtualmachinesystems_id']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . VirtualMachineState::getTypeName(1) . "</td>";
-        echo "<td>";
-        VirtualMachineState::dropdown(['value' => $this->fields['virtualmachinestates_id']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('UUID') . "</td>";
-        echo "<td>";
-        echo Html::input('uuid', ['value' => $this->fields['uuid']]);
-        echo "</td>";
-
-        echo "<td>" . __('Machine') . "</td>";
-        echo "<td>";
-        if ($link_computer = self::findVirtualMachine($this->fields)) {
-            $computer = new Computer();
-            if ($computer->getFromDB($link_computer)) {
-                echo $computer->getLink(['comments' => true]);
-            } else {
-                echo NOT_AVAILABLE;
-            }
-        }
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')) . "</td>";
-        echo "<td>";
-        echo Html::input(
-            'ram',
-            [
-                'value' => $this->fields['ram'],
-                'type' => 'number',
-                'min'    => 0,
-            ]
-        );
-        echo "</td>";
-
-        echo "<td>" . _x('quantity', 'Processors number') . "</td>";
-        echo "<td>";
-        echo Html::input(
-            'vcpu',
-            [
-                'value' => $this->fields['vcpu'],
-                'type' => 'number',
-                'min'    => 0,
-            ]
-        );
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
 
         return true;
     }
