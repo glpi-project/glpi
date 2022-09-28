@@ -76,13 +76,21 @@ class Printer_CartridgeInfo extends CommonDBChild
         $tags = $asset->knownTags();
 
         foreach ($info as $row) {
-            $property = $row['property'];
+            $property   = $row['property'];
+            $value      = $row['value'];
 
             preg_match("/^toner(\w+.*$)/", $property, $matches);
             $bar_color = $matches[1] ?? 'green';
             $text_color = ($bar_color == "black") ? 'white' : 'black';
 
-            $value = $row['value'];
+            $pics_info = '';
+            if ($value < 50) {
+                $pics_info = "<i class='orange ti ti-alert-triangle' ></i>";
+            }
+            if ($value < 25) {
+                $pics_info = "<i class='red ti ti-alert-circle'></i>";
+            }
+
             echo "<tr>";
             echo sprintf("<td>%s</td>", $tags[$property]['name'] ?? $property);
 
@@ -102,16 +110,29 @@ class Printer_CartridgeInfo extends CommonDBChild
                     'percent_text'      => $value,
                     'background-color'  => $bar_color,
                     'text-color'        => $text_color,
-                    'text'              => ''
+                    'text'              => '',
+                    'pics_info'         => $pics_info
                 ];
 
-                $out = "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;
-                     border: 1px solid #9BA563; position: relative;' >";
-                $out .= "<div style='position:absolute; color: {$progressbar_data['text-color']};'>";
-                $out .= "&nbsp;{$progressbar_data['percent_text']}%</div>";
-                $out .= "<div class='center' style='background-color: {$progressbar_data['background-color']};
-                     width: {$progressbar_data['percent']}%; height: 20px' ></div>";
-                $out .= "</div>";
+
+                $out = <<<HTML
+                    <span class='text-nowrap'>
+                    {$progressbar_data['text']}
+                    </span>
+                    <div class="progress" style="height: 16px">
+                        <div class="progress-bar progress-bar-striped" role="progressbar"
+                            style="width: {$progressbar_data['percent']}%; background-color:
+                            {$progressbar_data['background-color']}; color: {$progressbar_data['text-color']};"
+                            aria-valuenow="{$progressbar_data['percent']}"
+                            aria-valuemin="0" aria-valuemax="100">
+                            {$progressbar_data['percent_text']}%
+                        </div>
+
+                    </div>
+                    <span class='text-nowrap'>
+                    {$progressbar_data['pics_info']}
+                    </span>
+                HTML;
             } else {
                 $out = $value;
             }
