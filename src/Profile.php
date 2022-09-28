@@ -1789,6 +1789,14 @@ class Profile extends CommonDBTM
                 'label'     => __('Inventory'),
                 'field'     => 'inventory'
             ], [
+                'itemtype'  => 'LockedField',
+                'label'     => Lockedfield::getTypeName(Session::getPluralNumber()),
+                'field'     => 'locked_field',
+                'rights'  => [
+                    CREATE  => __('Create'),
+                    PURGE  => __('Purge')
+                ],
+            ], [
                 'itemtype'  => 'Log',
                 'label'     => Log::getTypeName(Session::getPluralNumber()),
                 'field'     => 'logs'

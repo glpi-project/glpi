@@ -44,3 +44,6 @@ foreach ($tables as $table) {
     $migration->addField($table, 'is_deleted', 'bool', ['value' => 0, 'after' => 'is_dynamic']);
     $migration->addKey($table, "is_deleted");
 }
+
+//new right value for locked_field (previously based on config UPDATE)
+$migration->addRight('locked_field', CREATE | PURGE, ['config' => UPDATE]);

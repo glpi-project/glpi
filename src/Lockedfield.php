@@ -46,7 +46,7 @@ class Lockedfield extends CommonDBTM
    // From CommonDBTM
     public $dohistory                   = false;
 
-    public static $rightname                   = 'config';
+    public static $rightname                   = 'locked_field';
 
     public static function getTypeName($nb = 0)
     {
@@ -251,7 +251,7 @@ class Lockedfield extends CommonDBTM
 
     public static function canPurge()
     {
-        return Session::haveRight(static::$rightname, UPDATE);
+        return Session::haveRight(static::$rightname, PURGE);
     }
 
     public function prepareInputForAdd($input)
@@ -291,7 +291,7 @@ class Lockedfield extends CommonDBTM
     public static function canCreate()
     {
         if (static::$rightname) {
-            return Session::haveRight(static::$rightname, UPDATE);
+            return Session::haveRight(static::$rightname, CREATE);
         }
         return false;
     }
