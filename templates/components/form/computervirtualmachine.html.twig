@@ -67,11 +67,10 @@
                   {% set is_dynamic_value = call('Dropdown::getYesNo', [item.fields['is_dynamic']]) %}
                   {{ fields.field('is_dynamic', is_dynamic_value, __('Automatic Inventory')) }}
 
-                  {{ fields.autoNameField(
+                  {{ fields.textField(
                      'name',
                      item,
-                     (item_type == 'Contact' ? __('Surname') : __('Name')),
-                     withtemplate,
+                     __('Name'),
                      field_options
                   ) }}
 
