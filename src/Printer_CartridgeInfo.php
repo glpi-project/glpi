@@ -77,6 +77,11 @@ class Printer_CartridgeInfo extends CommonDBChild
 
         foreach ($info as $row) {
             $property = $row['property'];
+
+            preg_match("/^toner(\w+.*$)/", $property, $matches);
+            $bar_color = $matches[1] ?? 'green';
+            $text_color = ($bar_color == "black") ? 'white' : 'black';
+
             $value = $row['value'];
             echo "<tr>";
             echo sprintf("<td>%s</td>", $tags[$property]['name'] ?? $property);
@@ -92,19 +97,20 @@ class Printer_CartridgeInfo extends CommonDBChild
             }
 
             if (is_numeric($value)) {
-                $bar_color = 'green';
                 $progressbar_data = [
-                    'percent'      => $value,
-                    'percent_text' => $value,
-                    'color'        => $bar_color,
-                    'text'         => ''
+                    'percent'           => $value,
+                    'percent_text'      => $value,
+                    'background-color'  => $bar_color,
+                    'text-color'        => $text_color,
+                    'text'              => ''
                 ];
 
                 $out = "{$progressbar_data['text']}<div class='center' style='background-color: #ffffff; width: 100%;
                      border: 1px solid #9BA563; position: relative;' >";
-                $out .= "<div style='position:absolute;'>&nbsp;{$progressbar_data['percent_text']}%</div>";
-                $out .= "<div class='center' style='background-color: {$progressbar_data['color']};
-                     width: {$progressbar_data['percent']}%; height: 12px' ></div>";
+                $out .= "<div style='position:absolute; color: {$progressbar_data['text-color']};'>";
+                $out .= "&nbsp;{$progressbar_data['percent_text']}%</div>";
+                $out .= "<div class='center' style='background-color: {$progressbar_data['background-color']};
+                     width: {$progressbar_data['percent']}%; height: 20px' ></div>";
                 $out .= "</div>";
             } else {
                 $out = $value;
