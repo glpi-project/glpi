@@ -105,13 +105,23 @@
                     <button type="submit" name="action" value="empty"
                             class="btn btn-outline-secondary"
                             title="{{ __("Empty file") }}"
+                            onclick="return confirm('{{ __("Are you sure you want to clear this file?") }}')"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="ti ti-file-off"></i>
+                    </button>
+                {% if can_delete %}
+                {% endif %}
+                    <button type="submit" name="action" value="delete"
+                            class="btn btn-outline-secondary"
+                            title="{{ __("Delete file") }}"
+                            onclick="return confirm('{{ __("Are you sure you want to delete this file?") }}')"
                             data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <i class="ti ti-trash-x"></i>
                     </button>
-
-                    <input type="hidden" name="filepath" value="{{ filepath }}">
-                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                 {% endif %}
+
+                <input type="hidden" name="filepath" value="{{ filepath }}">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             </div>
         </form>
 

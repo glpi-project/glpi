@@ -50,9 +50,13 @@ if ($filepath === null || !file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir
 if (($_GET['action'] ?? '') === 'download') {
     $logparser = new LogParser();
     $logparser->download($filepath);
-} elseif (($_POST['action'] ?? '') === 'empty') {
+} elseif (($_REQUEST['action'] ?? '') === 'empty') {
     $logparser = new LogParser();
     $logparser->empty($filepath);
+    Html::back();
+} elseif (($_REQUEST['action'] ?? '') === 'delete') {
+    $logparser = new LogParser();
+    $logparser->delete($filepath);
     Html::back();
 } else {
     Html::header(

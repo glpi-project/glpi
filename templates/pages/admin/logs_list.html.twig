@@ -81,7 +81,7 @@
                             {% endif %}
 
                             <a href="?order={{ sort_control['key'] }}&amp;sort={{ next_sort }}"
-                               class="btn {{ active_order ? "btn-outline-secondary" : "btn-ghost-secondary" }}  btn-sm me-1"
+                               class="btn {{ active_order ? "btn-outline-secondary" : "btn-ghost-secondary" }} btn-sm me-1"
                                title="{{ sort_control['label'] }}"
                                data-bs-toggle="tooltip" data-bs-placement="bottom">
                                 <i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}"></i>
@@ -92,11 +92,12 @@
                 </div>
                 <div class="list-group list-group-flush">
                     {% for log in logs %}
-                        <a class="list-group-item list-group-item-action d-flex justify-content-between" href="logviewer.php?filepath={{ log['filepath']|url_encode }}">
-                            <span class="text-truncate">
+                        <span class="list-group-item list-group-item-action d-flex justify-content-between">
+                            <a class="text-truncate"
+                               href="logviewer.php?filepath={{ log['filepath']|url_encode }}">
                                 <i class="fa-fw ti ti-file me-1"></i>
                                 <span>{{ log['filepath'] }}</span>
-                            </span>
+                            </a>
                             <span class="d-inline-flex">
                                 <span class="badge badge-outline text-muted border fw-normal bg-azure-lt me-1"
                                       title="{{ __("file size") }}">
@@ -106,8 +107,40 @@
                                       title="{{ __("date of last modification") }}">
                                     {{ log['datemod']|formatted_datetime }}
                                 </span>
+
+                                {% if can_clear or can_delete %}
+                                    <span>
+                                        <a class="btn btn-sm ms-1 btn-ghost-secondary"
+                                        data-bs-toggle="dropdown"
+                                        title="{{ __("File actions") }}">
+                                            <i class="fas ti ti-dots-vertical"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            {% if can_clear %}
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="{{ path('/front/logviewer.php?filepath=' ~ log['filepath']|url_encode ~ '&action=empty') }}"
+                                                       onclick="return confirm('{{ __("Are you sure you want to clear this file?") }}')">
+                                                        <i class="ti ti-file-off"></i>
+                                                        <span>{{ __("Empty file") }}</span>
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if can_delete %}
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="{{ path('/front/logviewer.php?filepath=' ~ log['filepath']|url_encode ~ '&action=delete') }}"
+                                                       onclick="return confirm('{{ __("Are you sure you want to delete this file?") }}')">
+                                                        <i class="ti ti-trash-x"></i>
+                                                        <span>{{ __("Delete file") }}</span>
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </span>
+                                {% endif %}
                             </span>
-                        </a>
+                        </span>
                     {% endfor %}
                 </div>
             </div>
