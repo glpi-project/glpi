@@ -63,11 +63,10 @@
                      <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
                   {% endif %}
 
-                  {{ fields.autoNameField(
+                  {{ fields.textField(
                      'name',
                      item,
                      __('Name'),
-                     withtemplate,
                      field_options
                   ) }}
 
