@@ -112,7 +112,7 @@ class ComputerVirtualMachine extends CommonDBChild
     /**
      * Display form
      *
-     * @param integer $ID      id of the antivirus
+     * @param integer $ID
      * @param array   $options
      *
      * @return boolean TRUE if form is ok
