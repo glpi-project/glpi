@@ -1794,7 +1794,9 @@ class Profile extends CommonDBTM
                 'field'     => 'locked_field',
                 'rights'  => [
                     CREATE  => __('Create'),
-                    PURGE  => __('Purge')
+                    PURGE   => ['short' => __('Purge'),
+                        'long'  => _x('button', 'Delete permanently')
+                    ]
                 ],
             ], [
                 'itemtype'  => 'Log',
