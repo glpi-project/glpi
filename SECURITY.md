@@ -25,3 +25,10 @@ You may also provide a script that can be used to check the issue exists.
 Once the report will be handled, and if the issue is not yet fixed (or in progress)
 we'll add it to the GitHub security tab, and add you as observer. Meanwhile,
 you will reserve a CVE for the issue.
+
+
+# Reporting a Vulnerability
+
+If you discover a security vulnerability in glpi please disclose it via [our huntr page](https://huntr.dev/repos/glpi-project/glpi/). Bounty eligibility, CVE assignment, response times and past reports are all there.
+
+Thank you for improving the security of glpi.
