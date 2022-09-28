@@ -83,14 +83,6 @@ class Printer_CartridgeInfo extends CommonDBChild
             $bar_color = $matches[1] ?? 'green';
             $text_color = ($bar_color == "black") ? 'white' : 'black';
 
-            $pics_info = '';
-            if ($value < 50) {
-                $pics_info = "<i class='orange ti ti-alert-triangle' ></i>";
-            }
-            if ($value < 25) {
-                $pics_info = "<i class='red ti ti-alert-circle'></i>";
-            }
-
             echo "<tr>";
             echo sprintf("<td>%s</td>", $tags[$property]['name'] ?? $property);
 
@@ -110,8 +102,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                     'percent_text'      => $value,
                     'background-color'  => $bar_color,
                     'text-color'        => $text_color,
-                    'text'              => '',
-                    'pics_info'         => $pics_info
+                    'text'              => ''
                 ];
 
 
@@ -129,9 +120,6 @@ class Printer_CartridgeInfo extends CommonDBChild
                         </div>
 
                     </div>
-                    <span class='text-nowrap'>
-                    {$progressbar_data['pics_info']}
-                    </span>
                 HTML;
             } else {
                 $out = $value;
