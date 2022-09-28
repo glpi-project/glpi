@@ -120,7 +120,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                         </div>
 
                     </div>
-                HTML;
+HTML;
             } else {
                 $out = $value;
             }
