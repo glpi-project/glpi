@@ -249,11 +249,6 @@ class Lockedfield extends CommonDBTM
         return ['update', 'clone'];
     }
 
-    public static function canPurge()
-    {
-        return Session::haveRight(static::$rightname, PURGE);
-    }
-
     public function prepareInputForAdd($input)
     {
         return $this->prepareInput($input);
@@ -288,13 +283,6 @@ class Lockedfield extends CommonDBTM
         return true;
     }
 
-    public static function canCreate()
-    {
-        if (static::$rightname) {
-            return Session::haveRight(static::$rightname, CREATE);
-        }
-        return false;
-    }
 
     /**
      * List of itemtypes/fields that can be locked globally
