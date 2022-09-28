@@ -1011,7 +1011,7 @@ class Html
 
 
     /**
-     * Manage progresse bars
+     * Manage progress bars
      *
      * @since 0.85
      *

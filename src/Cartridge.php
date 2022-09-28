@@ -619,7 +619,7 @@ class Cartridge extends CommonDBRelation
 
 
     /**
-     * count how many cartbridge unused for the cartridge item $tID
+     * count how many cartridge unused for the cartridge item $tID
      *
      * @param $tID integer: cartridge item identifier.
      *
