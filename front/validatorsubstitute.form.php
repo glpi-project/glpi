@@ -41,7 +41,7 @@ if (isset($_POST['update'])) {
         Html::back();
     }
 
-    if (!$validator_substitute->canUpdateItem($_POST['users_id'] ?? 0)) {
+    if (!$validator_substitute->canUpdateItem()) {
         $info = 'User failed to update validator substitutes or associated date range';
         Html::displayRightError($info);
     }
