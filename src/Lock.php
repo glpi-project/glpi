@@ -177,14 +177,15 @@ class Lock extends CommonGLPI
             //get fields labels
             $search_options = Search::getOptions($itemtype);
             foreach ($search_options as $search_option) {
-                //exclude SO added by dropdown part (to get real name)
-                //ex : Manufacturer != Firmware : Manufacturer
-                if (isset($search_option['table']) && $search_option['table'] == getTableForItemType($itemtype)) {
-                    if (isset($search_option['linkfield'])) {
-                        $so_fields[$search_option['linkfield']] = $search_option['name'];
-                    } else if (isset($search_option['field'])) {
-                        $so_fields[$search_option['field']] = $search_option['name'];
-                    }
+                //get name from 'field' first and continue if found
+                if (isset($search_option['field'])) {
+                    $so_fields[$search_option['field']] = $search_option['name'];
+                    continue;
+                }
+                //else get name from 'linkfield' if not found from 'field'
+                if (isset($search_option['linkfield'])) {
+                    $so_fields[$search_option['linkfield']] = $search_option['name'];
+                    continue;
                 }
             }
 
@@ -221,21 +222,22 @@ class Lock extends CommonGLPI
                 $default_itemtype       = $row['itemtype'];
 
                 //get real type name from Item_Devices
-                // exemple : get 'Hard drives' instead of 'Hard drive items'
+                // ex: get 'Hard drives' instead of 'Hard drive items'
                 if (get_parent_class($row['itemtype']) == Item_Devices::class) {
                     $default_itemtype =  $row['itemtype']::$itemtype_2;
                     $default_items_id =  $row['itemtype']::$items_id_2;
                     $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
                 //get real type name from CommonDBRelation
-                // exemple : get 'Operating System' instead of 'Item operating systems'
+                // ex: get 'Operating System' instead of 'Item operating systems'
                 } elseif (get_parent_class($row['itemtype']) == CommonDBRelation::class) {
                     $default_itemtype =  $row['itemtype']::$itemtype_1;
                     $default_items_id =  $row['itemtype']::$items_id_1;
                     $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
                 }
 
-                // specific link for CommonDBRelation itemtype (get 'real' object name inside URL name)
-                // exemple : get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
+                // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)
+                // get 'real' object name inside URL name
+                // ex: get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
                 if (is_a($row['itemtype'], CommonDBRelation::class, true)) {
                     $related_object = new $default_itemtype();
                     $related_object->getFromDB($object->fields[$default_items_id]);
