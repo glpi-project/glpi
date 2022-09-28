@@ -85,6 +85,8 @@ class ComputerVirtualMachine extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Lock', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
     }
