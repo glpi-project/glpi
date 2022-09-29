@@ -110,41 +110,42 @@
 
                                 {% if can_clear or can_delete %}
                                     <form action="{{ path('/front/logviewer.php') }}" method="post" class="d-inline">
-                                    <input type="hidden" name="filepath" value="{{ filepath }}">
-                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                                    <span>
-                                        <a class="btn btn-sm ms-1 btn-ghost-secondary"
-                                        data-bs-toggle="dropdown"
-                                        title="{{ __("File actions") }}">
-                                            <i class="fas ti ti-dots-vertical"></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            {% if can_clear %}
-                                                <li>
-                                                    <button type="submit" name="action" value="empty"
-                                                                 class="dropdown-item"
-                                                                 title="{{ __("Empty file") }}"
-                                                                 onclick="return confirm('{{ __("Are you sure you want to clear this file?") }}')"
-                                                                 data-bs-toggle="tooltip" data-bs-placement="bottom">
-                                                        <i class="ti ti-file-off"></i>
-                                                        <span>{{ __("Empty file") }}</span>
-                                                    </button>
-                                                </li>
-                                            {% endif %}
-                                            {% if can_delete %}
-                                                <li>
-                                                    <button type="submit" name="action" value="delete"
-                                                                 class="dropdown-item"
-                                                                 title="{{ __("Empty file") }}"
-                                                                 onclick="return confirm('{{ __("Are you sure you want to delete this file?") }}')"
-                                                                 data-bs-toggle="tooltip" data-bs-placement="bottom">
-                                                        <i class="ti ti-trash-x"></i>
-                                                        <span>{{ __("Delete file") }}</span>
-                                                    </button>
-                                                </li>
-                                            {% endif %}
-                                        </ul>
-                                    </span>
+                                        <input type="hidden" name="filepath" value="{{ log['filepath'] }}">
+                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                        <span>
+                                            <a class="btn btn-sm ms-1 btn-ghost-secondary"
+                                            data-bs-toggle="dropdown"
+                                            title="{{ __("File actions") }}">
+                                                <i class="fas ti ti-dots-vertical"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                {% if can_clear %}
+                                                    <li>
+                                                        <button type="submit" name="action" value="empty"
+                                                                     class="dropdown-item"
+                                                                     title="{{ __("Empty file") }}"
+                                                                     onclick="return confirm('{{ __("Are you sure you want to clear this file?") }}')"
+                                                                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                                            <i class="ti ti-file-off"></i>
+                                                            <span>{{ __("Empty file") }}</span>
+                                                        </button>
+                                                    </li>
+                                                {% endif %}
+                                                {% if can_delete %}
+                                                    <li>
+                                                        <button type="submit" name="action" value="delete"
+                                                                     class="dropdown-item"
+                                                                     title="{{ __("Empty file") }}"
+                                                                     onclick="return confirm('{{ __("Are you sure you want to delete this file?") }}')"
+                                                                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                                            <i class="ti ti-trash-x"></i>
+                                                            <span>{{ __("Delete file") }}</span>
+                                                        </button>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </span>
+                                    </form>
                                 {% endif %}
                             </span>
                         </span>
