@@ -49,7 +49,7 @@ class Inventory extends InventoryTestCase
         $this->array($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
 
-        $cmodels = $DB->request(['FROM' => \ComputerModel::getTable(), 'WHERE' => ['name' => 'XPS 13 9350']])->current();
+        $cmodels = $DB->request(['FROM' => \ComputerModel::getTable(), 'WHERE' => ['name' => 'XPS 13 9350 (07TYC2)']])->current();
         $this->array($cmodels);
         $computermodels_id = $cmodels['id'];
 
