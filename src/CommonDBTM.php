@@ -5438,8 +5438,8 @@ class CommonDBTM extends CommonGLPI
                 $is_recursive = $input['_job']->fields['is_recursive'];
             }
 
-           // Check for duplicate
-            if ($doc->getDuplicateOf($entities_id, $filename)) {
+           // Check for duplicate and availability (e.g. file deleted in _files)
+            if ($doc->getDuplicateOf($entities_id, $filename) && $doc->checkAvailability($filename)) {
                 $docID = $doc->fields["id"];
                // File already exist, we replace the tag by the existing one
                 if (
