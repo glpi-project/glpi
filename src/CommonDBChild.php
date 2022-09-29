@@ -265,8 +265,9 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @param array  $recursiveItems    items of the current elements (see recursivelyGetItems())
      * @param string $elementToDisplay  what to display : 'Type', 'Name', 'Link'
+     * @param bool $display  display html or return html
      **/
-    public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay)
+    public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, bool $display = true)
     {
 
         if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
@@ -277,7 +278,11 @@ abstract class CommonDBChild extends CommonDBConnexity
         switch ($elementToDisplay) {
             case 'Type':
                 $masterItem = $recursiveItems[count($recursiveItems) - 1];
-                echo $masterItem->getTypeName(1);
+                if ($display) {
+                    echo $masterItem->getTypeName(1);
+                } else {
+                    return $masterItem->getTypeName(1);
+                }
                 break;
 
             case 'Name':
@@ -290,7 +295,11 @@ abstract class CommonDBChild extends CommonDBConnexity
                         $items_elements[] = $item->getLink();
                     }
                 }
-                echo implode(' &lt; ', $items_elements);
+                if ($display) {
+                    echo implode(' &lt; ', $items_elements);
+                } else {
+                    return implode(' &lt; ', $items_elements);
+                }
                 break;
         }
     }
@@ -782,7 +791,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function showChildForItemForm($canedit, $field_name, $id)
+    public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
 
         if ($this->isNewID($this->getID())) {
@@ -792,9 +801,15 @@ abstract class CommonDBChild extends CommonDBConnexity
         }
         $field_name = $field_name . "[$id]";
         if ($canedit) {
-            echo "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
+            $out = "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
         } else {
-            echo "<input type='hidden' name='$field_name' value='$value'>$value";
+            $out = "<input type='hidden' name='$field_name' value='$value'>$value";
+        }
+
+        if ($display) {
+            echo $out;
+        } else {
+            return $out;
         }
     }
 
@@ -882,12 +897,12 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void|boolean (display) Returns false if there is a rights error.
      **/
-    public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null)
+    public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
     {
         global $DB;
 
         $items_id = $item->getID();
-
+        $result = '';
         if (is_null($canedit)) {
             if ($item->isNewItem()) {
                 if (!$item->canCreate()) {
@@ -934,21 +949,27 @@ abstract class CommonDBChild extends CommonDBConnexity
             $current_item->fields = $data;
 
             if ($count) {
-                echo '<br>';
+                $result .= '<br>';
             }
             $count++;
 
-            $current_item->showChildForItemForm($canedit, $field_name, $current_item->getID());
+            $result .= $current_item->showChildForItemForm($canedit, $field_name, $current_item->getID(), false);
         }
 
         if ($canedit) {
-            echo "<div id='$div_id'>";
+            $result .= "<div id='$div_id'>";
            // No Child display field
             if ($count == 0) {
                 $current_item->getEmpty();
-                $current_item->showChildForItemForm($canedit, $field_name, -1);
+                $result .= $current_item->showChildForItemForm($canedit, $field_name, -1, false);
             }
-            echo "</div>";
+            $result .= "</div>";
+        }
+
+        if ($display) {
+            echo $result;
+        } else {
+            return $result;
         }
     }
 
