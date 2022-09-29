@@ -51,10 +51,12 @@ if (($_GET['action'] ?? '') === 'download') {
     $logparser = new LogParser();
     $logparser->download($filepath);
 } elseif (($_POST['action'] ?? '') === 'empty') {
+    Session::checkRight('config', UPDATE);
     $logparser = new LogParser();
     $logparser->empty($filepath);
     Html::back();
 } elseif (($_POST['action'] ?? '') === 'delete') {
+    Session::checkRight('config', UPDATE);
     $logparser = new LogParser();
     $logparser->delete($filepath);
     Html::back();
