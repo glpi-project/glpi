@@ -686,12 +686,17 @@ class Toolbox
         $etag = md5_file($file);
         $lastModified = filemtime($file);
 
-       // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
-       // If there is any extra data, the sent file will be corrupted.
-        while (ob_get_level() > 0) {
+        // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
+        // If there is any extra data, the sent file will be corrupted.
+        // 1. Turn off any extra buffuring level. Keep one buffering level if PHP output_buffering directive is "on".
+        $max_buffering_level = (int)ini_get('output_buffering');
+        while (ob_get_level() > $max_buffering_level) {
             ob_end_clean();
         }
-       // Now send the file with header() magic
+        // 2. Clean any buffered output in remaining level (output_buffering="on" case).
+        ob_clean();
+
+        // Now send the file with header() magic
         header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastModified) . " GMT");
         header("Etag: $etag");
         header_remove('Pragma');
