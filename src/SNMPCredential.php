@@ -49,6 +49,36 @@ class SNMPCredential extends CommonDBTM
         return _n('SNMP credential', 'SNMP credentials', $nb);
     }
 
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'                => 'snmpcredential',
+            'name'              => SNMPCredential::getTypeName(0)
+        ];
+
+        $tab[] = [
+            'id'                => '106',
+            'table'             => 'glpi_snmpcredentials',
+            'field'             => 'name',
+            'name'              => __('Name'),
+            'datatype'          => 'dropdown',
+            'massiveaction'     => false,
+        ];
+
+        $tab[] = [
+            'id'                => '107',
+            'table'             => 'glpi_snmpcredentials',
+            'field'             => 'community',
+            'name'              => __('Community'),
+            'datatype'          => 'string',
+            'massiveaction'     => false,
+        ];
+
+        return $tab;
+    }
+
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();

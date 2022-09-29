@@ -444,6 +444,16 @@
                         {{ fields.textareaField('sysdescr', item.fields['sysdescr'], __('Sysdescr')) }}
                      {% endif %}
 
+                     {% if item.isField('snmpcredentials_id') %}
+                        {{ fields.dropdownField(
+                           'SNMPCredential',
+                           'snmpcredentials_id',
+                           item.fields['snmpcredentials_id'],
+                           'SNMPCredential'|itemtype_name,
+                           field_options
+                        ) }}
+                     {% endif %}
+
                      {% if item.isField('users_id') %}
                         {{ fields.dropdownField(
                            'User',
