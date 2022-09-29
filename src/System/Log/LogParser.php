@@ -63,6 +63,17 @@ final class LogParser extends CommonGLPI
         $this->directory = $directory;
     }
 
+
+    /**
+     * can we write new log file in the log directory ?
+     *
+     * @return bool
+     */
+    public function canWriteLogs(): bool
+    {
+        return is_writable($this->directory);
+    }
+
     /**
      * Get information about all log files located in given directory.
      *
@@ -206,6 +217,25 @@ final class LogParser extends CommonGLPI
         }
 
         return file_put_contents($fullpath, '') === 0;
+    }
+
+
+    /**
+     * Delete a log file.
+     *
+     * @param string $filepath
+     *
+     * @return bool
+     */
+    public function delete(string $filepath): bool
+    {
+        $fullpath = $this->getFullPath($filepath);
+
+        if ($fullpath === null) {
+            return false;
+        }
+
+        return unlink($fullpath);
     }
 
     /**

@@ -43,7 +43,7 @@ Html::header(
     LogViewer::getTypeName(Session::getPluralNumber()),
     $_SERVER['PHP_SELF'],
     "admin",
-    "logviewer"
+    'glpi\system\log\logviewer'
 );
 
 $logviewer = new LogViewer();

@@ -111,12 +111,16 @@ final class LogViewer extends CommonGLPI
             );
         }
 
+        $can_config = Session::haveRight('config', UPDATE);
+
         TemplateRenderer::getInstance()->display(
             'pages/admin/logs_list.html.twig',
             [
-                'logs'  => $logs,
-                'order' => $order,
-                'sort'  => $sort,
+                'logs'       => $logs,
+                'order'      => $order,
+                'sort'       => $sort,
+                'can_clear'  => $can_config,
+                'can_delete' => $can_config && $this->log_parser->canWriteLogs(),
             ]
         );
     }
@@ -135,6 +139,7 @@ final class LogViewer extends CommonGLPI
         $log_entries = $this->log_parser->parseLogFile($filepath);
 
         $log_files = $this->log_parser->getLogsFilesList();
+        $can_config = Session::haveRight('config', UPDATE);
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/log_viewer.html.twig',
@@ -145,7 +150,8 @@ final class LogViewer extends CommonGLPI
                 'log_entries'  => $log_entries,
                 'log_files'    => $log_files,
                 'only_content' => $only_content,
-                'can_clear'    => Session::haveRight('config', UPDATE),
+                'can_clear'    => $can_config,
+                'can_delete'   => $can_config && $this->log_parser->canWriteLogs(),
                 'href'         => self::getSearchURL() . '?filepath=' . urlencode($filepath) . '&',
             ]
         );

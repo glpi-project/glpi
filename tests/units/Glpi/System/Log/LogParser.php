@@ -143,4 +143,14 @@ LOG,
         $this->string(file_get_contents(vfsStream::url('glpi_logs/test.log')))
             ->isEmpty();
     }
+
+
+    public function testDeleteFile()
+    {
+        $this->newTestedInstance(vfsStream::url('glpi_logs'));
+
+        $this->boolean($this->testedInstance->delete('test.log'))->isTrue();
+        $this->boolean(file_exists(vfsStream::url('glpi_logs/test.log')))
+            ->isFalse();
+    }
 }
