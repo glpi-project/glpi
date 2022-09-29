@@ -357,12 +357,16 @@ abstract class MainAsset extends InventoryAsset
         $smodel = property_exists($bios, 'smodel') ? $bios->smodel : '';
         $mmodel = property_exists($bios, 'mmodel') ? $bios->mmodel : '';
         $model = null;
-        if (!empty($smodel) && empty($mmodel)) {
+        if (!empty($smodel) && (empty($mmodel))) {
             $model = $smodel;
-        } elseif (empty($smodel) && !empty($nmodel)) {
-            $model = $nmodel;
-        } elseif (!empty($smodel) && !empty($nmodel)) {
-            $model = sprintf("%s (%s)", $smodel, $nmodel);
+        } elseif (empty($smodel) && !empty($mmodel)) {
+            $model = $mmodel;
+        } elseif (!empty($smodel) && !empty($mmodel)) {
+            if($smodel != $mmodel) {
+                $model = sprintf('%s (%s)', $smodel, $mmodel);
+            } else {
+                $model = $smodel;
+            }
         }
         if (!empty($model)) {
             $val->$models_id = $model;
