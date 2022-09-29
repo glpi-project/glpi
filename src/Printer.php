@@ -658,6 +658,8 @@ class Printer extends CommonDBTM
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
 
+        $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd(get_class($this)));
+
         return $tab;
     }
 
