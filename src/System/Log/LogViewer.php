@@ -39,7 +39,6 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Session;
-use Toolbox;
 
 final class LogViewer extends CommonGLPI
 {
