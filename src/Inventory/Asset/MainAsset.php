@@ -353,11 +353,18 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $models_id = $this->getModelsFieldName();
-        if (property_exists($bios, 'smodel') && $bios->smodel != '') {
-            $val->$models_id = $bios->smodel;
-        } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
-            $val->$models_id = $bios->mmodel;
-            $val->model = $bios->mmodel;
+
+        $smodel = property_exists($bios, 'smodel') ? $bios->smodel : '';
+        $mmodel = property_exists($bios, 'mmodel') ? $bios->mmodel : '';
+        $model = array_unique(array_filter([$smodel, $mmodel]));
+        if ($model) {
+            if (count($model) == 1) {
+                $model = implode('', $model);
+            } else {
+                $model = sprintf("%s (%s)", ...$model);
+            }
+            $val->$models_id = $model;
+            $val->model = $model;
         }
 
         if (property_exists($bios, 'ssn')) {
