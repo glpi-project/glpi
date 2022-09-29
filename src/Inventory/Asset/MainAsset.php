@@ -362,7 +362,7 @@ abstract class MainAsset extends InventoryAsset
         } elseif (empty($smodel) && !empty($mmodel)) {
             $model = $mmodel;
         } elseif (!empty($smodel) && !empty($mmodel)) {
-            if($smodel != $mmodel) {
+            if ($smodel != $mmodel) {
                 $model = sprintf('%s (%s)', $smodel, $mmodel);
             } else {
                 $model = $smodel;
