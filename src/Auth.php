@@ -1578,7 +1578,7 @@ class Auth extends CommonGLPI
            //TRANS: for CAS SSO system
             echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Version') . "</td>";
             echo "<td>";
-            Auth::dropdownCasVersion($CFG_GLPI["cas_version"]);
+            Auth::dropdownCasVersion($CFG_GLPI["cas_version"] ?? null);
             echo "</td>";
             echo "</tr>";
            //TRANS: for CAS SSO system
