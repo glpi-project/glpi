@@ -5423,5 +5423,4 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->boolean($manufacturer->getFromDB($computer->fields['manufacturers_id']))->isTrue();
         $this->string($manufacturer->fields['name'])->isIdenticalTo('Dictionary manufacturer');
     }
-
 }
