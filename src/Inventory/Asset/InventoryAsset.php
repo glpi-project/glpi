@@ -205,6 +205,11 @@ abstract class InventoryAsset
                     continue;
                 }
 
+
+                $known_key = md5($key . $val);
+                //keep raw values...
+                $this->raw_links[$known_key] = $val;
+
                 //do not process field if it's locked
                 foreach ($locks as $lock) {
                     if ($key == $lock) {
@@ -214,15 +219,15 @@ abstract class InventoryAsset
 
                 if ($key == "manufacturers_id" || $key == 'bios_manufacturers_id') {
                     $manufacturer = new Manufacturer();
+                    unset($this->raw_links[$known_key]);
                     $val  = $manufacturer->processName($val);
+                    $known_key = md5($key . $val);
+                    //keep raw values...
+                    $this->raw_links[$known_key] = $val;
                     if ($key == 'bios_manufacturers_id') {
                         $foreignkey_itemtype[$key] = getItemtypeForForeignKeyField('manufacturers_id');
                     }
                 }
-
-                $known_key = md5($key . $val);
-                //keep raw values...
-                $this->raw_links[$known_key] = $val;
 
                 if (!isset($this->known_links[$known_key])) {
                     $entities_id = $this->entities_id;
