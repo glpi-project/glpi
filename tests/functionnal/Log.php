@@ -739,4 +739,60 @@ class Log extends DbTestCase
     {
         $this->array(\Log::convertFiltersValuesToSqlCriteria($filters_values))->isIdenticalTo($expected_result);
     }
+
+    protected function userNameFormattingProvider()
+    {
+        return [
+            [TU_USER, TU_PASS, TU_USER],
+            ['jsmith123', TU_PASS, 'Smith John']
+        ];
+    }
+
+    /**
+     * @dataProvider userNameFormattingProvider
+     */
+    public function testUserNameFormatting(string $username, string $password, string $expected_name)
+    {
+        global $DB, $CFG_GLPI;
+
+        $this->login($username, $password);
+        $rand = mt_rand(90000, 99999);
+        $log_event = function() use ($rand, $DB) {
+            \Log::history($rand, 'Computer', [4, '', '']);
+            // Get last log entry for itemtype=Computer and items_id=$rand
+            $iterator = $DB->request([
+                'FROM'   => \Log::getTable(),
+                'WHERE'  => [
+                    'itemtype'  => 'Computer',
+                    'items_id'  => $rand,
+                ],
+                'ORDER'  => 'id DESC',
+                'LIMIT'  => 1
+            ]);
+            $this->integer(count($iterator))->isIdenticalTo(1);
+            return $iterator->current();
+        };
+
+        $user_id = \Session::getLoginUserID();
+
+        // ID should always be displayed regardless of user preferences or server default
+        $_SESSION['glpiis_ids_visible'] = false;
+        $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
+        $_SESSION['glpiis_ids_visible'] = true;
+        $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
+        $CFG_GLPI['is_ids_visible'] = false;
+        $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
+        $CFG_GLPI['is_ids_visible'] = true;
+        $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
+
+        // Name order should always be realname firstname regardless of user preferences or server default
+        $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
+        $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
+        $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
+        $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
+        $CFG_GLPI['names_format'] = \User::FIRSTNAME_BEFORE;
+        $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
+        $CFG_GLPI['names_format'] = \User::REALNAME_BEFORE;
+        $this->string($log_event()['user_name'])->isIdenticalTo($expected_name . " ($user_id)");
+    }
 }

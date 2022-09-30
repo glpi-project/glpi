@@ -1716,6 +1716,42 @@ final class DbUtils
     }
 
     /**
+     * Get name of the user with ID
+     *
+     * @param integer|string $ID   ID of the user.
+     *
+     * @return string username string (realname if not empty and name if realname is empty).
+     */
+    public function getUserNameForLog(int $ID)
+    {
+        global $DB;
+
+        $iterator = $DB->request(
+            'glpi_users',
+            [
+                'WHERE' => ['id' => $ID]
+            ]
+        );
+
+        if (count($iterator) === 1) {
+            $data     = $iterator->current();
+
+            if ($data['realname'] !== null && strlen($data['realname']) > 0) {
+                $formatted = $data['realname'];
+
+                if (strlen($data["firstname"]) > 0) {
+                    $formatted .= " " . $data["firstname"];
+                }
+            } else {
+                $formatted = $data["name"];
+            }
+            return sprintf(__('%1$s (%2$s)'), $formatted, $ID);
+        }
+
+        return __('Unknown user');
+    }
+
+    /**
      * Create a new name using a autoname field defined in a template
      *
      * @param string  $objectName  autoname template
