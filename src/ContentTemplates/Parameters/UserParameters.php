@@ -80,7 +80,7 @@ class UserParameters extends AbstractParameters
             new AttributeParameter("mobile", __('Mobile')),
             new AttributeParameter("firstname", __('First name')),
             new AttributeParameter("realname", __('Surname')),
-            new AttributeParameter("responsible", __('Responsible')),
+            new AttributeParameter("responsible", __('Supervisor')),
             new ObjectParameter(new LocationParameters()),
             new ObjectParameter(new UserTitleParameters()),
             new ObjectParameter(new UserCategoryParameters()),

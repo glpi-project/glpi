@@ -964,7 +964,7 @@ class AuthLDAP extends CommonDBTM
         echo "<td><input type='text' class='form-control' name='location_field' value='" . $this->fields["location_field"] . "'>";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('Responsible') . "</td>";
+        echo "<tr class='tab_bg_2'><td>" . __('Supervisor') . "</td>";
         echo "<td><input type='text' class='form-control' name='responsible_field' value='" .
            $this->fields["responsible_field"] . "'></td>";
         echo "<td colspan='2'></td></tr>";
@@ -1305,7 +1305,7 @@ class AuthLDAP extends CommonDBTM
             'id'                 => '29',
             'table'              => $this->getTable(),
             'field'              => 'responsible_field',
-            'name'               => __('Responsible'),
+            'name'               => __('Supervisor'),
             'massiveaction'      => false,
             'datatype'           => 'string'
         ];

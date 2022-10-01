@@ -760,7 +760,7 @@ abstract class RuleCommonITILObject extends Rule
         $actions['responsible_id_validate']['name']                 = sprintf(
             __('%1$s - %2$s'),
             __('Send an approval request'),
-            __('Responsible of the requester')
+            __('Supervisor of the requester')
         );
         $actions['responsible_id_validate']['type']                 = 'yesno';
         $actions['responsible_id_validate']['force_actions']        = ['add_validation'];
