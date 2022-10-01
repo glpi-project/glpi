@@ -2754,16 +2754,16 @@
         },
         {
             "name": "sabre/uri",
-            "version": "2.3.1",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/uri.git",
-                "reference": "2ec3dcec9e1586893c9820a12f573f73a71200f4"
+                "reference": "eceb4a1b8b680b45e215574222d6ca00be541970"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/uri/zipball/2ec3dcec9e1586893c9820a12f573f73a71200f4",
-                "reference": "2ec3dcec9e1586893c9820a12f573f73a71200f4",
+                "url": "https://api.github.com/repos/sabre-io/uri/zipball/eceb4a1b8b680b45e215574222d6ca00be541970",
+                "reference": "eceb4a1b8b680b45e215574222d6ca00be541970",
                 "shasum": ""
             },
             "require": {
@@ -2807,7 +2807,7 @@
                 "issues": "https://github.com/sabre-io/uri/issues",
                 "source": "https://github.com/fruux/sabre-uri"
             },
-            "time": "2022-08-30T14:00:42+00:00"
+            "time": "2022-09-19T11:58:52+00:00"
         },
         {
             "name": "sabre/vobject",
