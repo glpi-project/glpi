@@ -2779,7 +2779,7 @@ JAVASCRIPT;
 
                 echo "</td>";
                 $userrand = mt_rand();
-                echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __('Responsible') . "</label></td><td>";
+                echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __('Supervisor') . "</label></td><td>";
 
                 User::dropdown(['name'   => 'users_id_supervisor',
                     'value'  => $this->fields["users_id_supervisor"],
@@ -3885,7 +3885,7 @@ JAVASCRIPT;
             'table'              => 'glpi_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_supervisor',
-            'name'               => __('Responsible'),
+            'name'               => __('Supervisor'),
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
             'additionalfields'   => [
