@@ -883,16 +883,16 @@
         },
         {
             "name": "iamcal/lib_autolink",
-            "version": "v1.7",
+            "version": "v1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/iamcal/lib_autolink.git",
-                "reference": "b3a86d8437e5d635fb85b155a86288d94f6a924d"
+                "reference": "6a9e44d17f836806301b40723af673971a1a5112"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/iamcal/lib_autolink/zipball/b3a86d8437e5d635fb85b155a86288d94f6a924d",
-                "reference": "b3a86d8437e5d635fb85b155a86288d94f6a924d",
+                "url": "https://api.github.com/repos/iamcal/lib_autolink/zipball/6a9e44d17f836806301b40723af673971a1a5112",
+                "reference": "6a9e44d17f836806301b40723af673971a1a5112",
                 "shasum": ""
             },
             "type": "library",
@@ -913,9 +913,9 @@
             ],
             "support": {
                 "issues": "https://github.com/iamcal/lib_autolink/issues",
-                "source": "https://github.com/iamcal/lib_autolink/tree/master"
+                "source": "https://github.com/iamcal/lib_autolink/tree/v1.9"
             },
-            "time": "2015-05-22T17:10:41+00:00"
+            "time": "2022-09-12T16:35:05+00:00"
         },
         {
             "name": "laminas/laminas-i18n",
