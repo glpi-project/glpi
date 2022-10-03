@@ -1893,4 +1893,26 @@ class Document extends CommonDBTM
 
         return true;
     }
+
+
+    /**
+     * It checks if a file exists and is readable
+     *
+     * @param string filename The name of the file to check.
+     *
+     * @return boolean
+     */
+    public function checkAvailability(string $filename): bool
+    {
+        $file = GLPI_DOC_DIR . '/' . $filename;
+        if (!file_exists($file)) {
+            return false;
+        }
+
+        if (!is_readable($file)) {
+            return false;
+        }
+
+        return true;
+    }
 }
