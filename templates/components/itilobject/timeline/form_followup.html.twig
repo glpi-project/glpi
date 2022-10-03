@@ -53,6 +53,13 @@
          </div>
 
          <div class="timeline-badges">
+            {% if entry_i['requesttypes_id'] %}
+               <span class="badge bg-blue-lt" title="{{ __('Source of followup') }}">
+                  <i class="fas fa-inbox me-1"></i>
+                  {{ get_item_name('RequestType', entry_i['requesttypes_id']) }}
+               </span>
+            {% endif %}
+
             {% if entry_i['sourceitems_id'] %}
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
