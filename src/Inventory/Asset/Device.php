@@ -110,14 +110,15 @@ abstract class Device extends InventoryAsset
                     'itemtype'           => $this->item->getType(),
                     'items_id'           => $this->item->fields['id'],
                 ]);
-                $itemdevice_data = $input_data + $this->handleInput($val, $itemdevice);
 
                 //check if link between device and asset exist
                 if ($itemdevice->getFromDBByCrit($input_data)) {
+                    $itemdevice_data = $input_data + $this->handleInput($val, $itemdevice);
                     $itemdevice_data['id'] = $itemdevice->fields['id'];
                     $itemdevice->update($itemdevice_data, true, []);
                     unset($existing[$device_id]);
                 } else {
+                    $itemdevice_data = $input_data + $this->handleInput($val, $itemdevice);
                     $itemdevice->add($itemdevice_data, [], false);
                     $this->itemdeviceAdded($itemdevice, $val);
                     unset($existing[$device_id]);
@@ -126,14 +127,14 @@ abstract class Device extends InventoryAsset
 
             foreach ($existing as $deviceid => $data) {
                 //first, remove items
-                if ($data['is_dynamic'] == 1) {
+                //if ($data['is_dynamic'] == 1) {
                     $DB->delete(
                         $itemdevice->getTable(),
                         [
                             $fk => $deviceid
                         ]
                     );
-                }
+                //}
             }
         }
     }
