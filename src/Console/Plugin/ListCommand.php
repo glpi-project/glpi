@@ -87,7 +87,8 @@ class ListCommand extends AbstractCommand implements ForceNoPluginsOptionCommand
             $is_marketplace = file_exists(GLPI_MARKETPLACE_DIR . "/" . $plugin['directory']);
             $record['install_method'] = $is_marketplace ? Controller::getTypeName() : __("Manually installed");
             if ($input->getOption('path')) {
-                $record['path'] = $is_marketplace ? GLPI_MARKETPLACE_DIR . "/" . $plugin['directory'] : GLPI_ROOT . "/plugins/" . $plugin['directory'];
+                $dir_sep = DIRECTORY_SEPARATOR;
+                $record['path'] = $is_marketplace ? GLPI_MARKETPLACE_DIR . $dir_sep . $plugin['directory'] : GLPI_ROOT . "{$dir_sep}plugins{$dir_sep}" . $plugin['directory'];
             }
             $data[] = $record;
         }
