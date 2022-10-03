@@ -63,6 +63,14 @@ class ListCommand extends AbstractCommand implements ForceNoPluginsOptionCommand
             'Output format (table or json)',
             'table'
         );
+
+        // Add option to include the path to the plugins
+        $this->addOption(
+            'path',
+            'p',
+            InputOption::VALUE_NONE,
+            'Include the path to the plugins'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -72,10 +80,15 @@ class ListCommand extends AbstractCommand implements ForceNoPluginsOptionCommand
         $data = [];
         foreach ($pluglist as $plugin) {
             $record = [];
-            $record['name'] = Toolbox::stripTags($plugin['name']);
-            $record['version'] = Toolbox::stripTags($plugin['version']);
+            $record['key'] = $plugin['directory'];
+            $record['name'] = $plugin['name'];
+            $record['version'] = $plugin['version'];
             $record['state'] = Plugin::getState($plug->isLoadable($plugin['directory']) ? $plugin['state'] : Plugin::TOBECLEANED);
-            $record['install_method'] = file_exists(GLPI_MARKETPLACE_DIR . "/" . $plugin['directory']) ? Controller::getTypeName() : __("Manually installed");
+            $is_marketplace = file_exists(GLPI_MARKETPLACE_DIR . "/" . $plugin['directory']);
+            $record['install_method'] = $is_marketplace ? Controller::getTypeName() : __("Manually installed");
+            if ($input->getOption('path')) {
+                $record['path'] = $is_marketplace ? GLPI_MARKETPLACE_DIR . "/" . $plugin['directory'] : GLPI_ROOT . "/plugins/" . $plugin['directory'];
+            }
             $data[] = $record;
         }
         $format = $input->getOption('format');
@@ -84,7 +97,11 @@ class ListCommand extends AbstractCommand implements ForceNoPluginsOptionCommand
             $output->writeln(json_encode($data));
         } else {
             $table = new Table($output);
-            $table->setHeaders(['Name', 'Version', 'State', 'Install method']);
+            $headers = [__('Plugin Key'), __('Name'), __('Version'), __('Status'), __('Install method')];
+            if ($input->getOption('path')) {
+                $headers[] = __('Path');
+            }
+            $table->setHeaders($headers);
             $table->setRows($data);
             $table->render();
         }
