@@ -1736,10 +1736,10 @@ final class DbUtils
         if (count($iterator) === 1) {
             $data     = $iterator->current();
 
-            if ($data['realname'] !== null && strlen($data['realname']) > 0) {
+            if (!empty($data['realname'])) {
                 $formatted = $data['realname'];
 
-                if (strlen($data["firstname"]) > 0) {
+                if (!empty($data['firstname'])) {
                     $formatted .= " " . $data["firstname"];
                 }
             } else {
