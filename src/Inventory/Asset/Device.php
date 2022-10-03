@@ -88,7 +88,6 @@ abstract class Device extends InventoryAsset
             $fk              = getForeignKeyFieldForTable($devicetable);
 
             $existing = $this->getExisting($itemdevicetable, $fk);
-            $deleted_items = [];
 
             foreach ($value as $val) {
                 if (!isset($val->designation) || $val->designation == '') {
