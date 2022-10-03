@@ -102,14 +102,26 @@ abstract class Device extends InventoryAsset
                 }
 
                 //create device or get existing device ID
-                $device_id = $device->import(\Toolbox::addslashes_deep($this->handleInput($val, $device)) + ['with_history' => false]);
+                $input_device = \Toolbox::addslashes_deep($this->handleInput($val, $device)) + ['with_history' => false];
+                $device_id = $device->import($input_device);
 
                 //prepare data
                 $input_data = \Toolbox::addslashes_deep([
                     $fk                  => $device_id,
                     'itemtype'           => $this->item->getType(),
                     'items_id'           => $this->item->fields['id'],
+                    'is_dynamic'         => 1,
                 ]);
+
+                //add serial if available (usefull for memories)
+                if (property_exists($val, "serial")) {
+                    $input_data['serial'] = $val->serial;
+                }
+
+                //add serial if available (usefull for memories)
+                if (property_exists($val, "otherserial")) {
+                    $input_data['otherserial'] = $val->otherserial;
+                }
 
                 //check if link between device and asset exist
                 if ($itemdevice->getFromDBByCrit($input_data)) {
@@ -127,14 +139,14 @@ abstract class Device extends InventoryAsset
 
             foreach ($existing as $deviceid => $data) {
                 //first, remove items
-                //if ($data['is_dynamic'] == 1) {
+                if ($data['is_dynamic'] == 1) {
                     $DB->delete(
                         $itemdevice->getTable(),
                         [
                             $fk => $deviceid
                         ]
                     );
-                //}
+                }
             }
         }
     }
