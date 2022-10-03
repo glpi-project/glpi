@@ -689,9 +689,10 @@ class Toolbox
         // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
         // If there is any extra data, the sent file will be corrupted.
         // 1. Turn off any extra buffering level. Keep one buffering level if PHP output_buffering directive is not "off".
-        $max_buffering_level = ini_get('output_buffering') === false || strtolower(ini_get('output_buffering')) === 'off' || (int)ini_get('output_buffering') === 0
-            ? 0
-            : 1;
+        $ob_config = ini_get('output_buffering');
+        $max_buffering_level = $ob_config !== false && (strtolower($ob_config) === 'on' || (is_numeric($ob_config) && (int)$ob_config > 0))
+            ? 1
+            : 0;
         while (ob_get_level() > $max_buffering_level) {
             ob_end_clean();
         }
