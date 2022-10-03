@@ -697,7 +697,9 @@ class Toolbox
             ob_end_clean();
         }
         // 2. Clean any buffered output in remaining level (output_buffering="on" case).
-        ob_clean();
+        if (ob_get_level() > 0) {
+            ob_clean();
+        }
 
         // Now send the file with header() magic
         header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastModified) . " GMT");
