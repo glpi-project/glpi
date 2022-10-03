@@ -106,33 +106,38 @@ abstract class Device extends InventoryAsset
                 $device_id = $device->import($input_device);
 
                 //prepare data
-                $input_data = \Toolbox::addslashes_deep([
+                $input_item_device = [];
+                $input_item_device = \Toolbox::addslashes_deep([
                     $fk                  => $device_id,
                     'itemtype'           => $this->item->getType(),
                     'items_id'           => $this->item->fields['id'],
-                    'is_dynamic'         => 1,
                 ]);
+                $input_item_device = $input_item_device + $this->handleInput($val, $itemdevice);
 
-                //add serial if available (usefull for memories)
-                if (property_exists($val, "serial")) {
-                    $input_data['serial'] = $val->serial;
+                //add fields if available for reconciliation
+                $input_data_for_check = $input_item_device;
+                $itemdevice->getEmpty();
+
+                foreach ($input_item_device as $key_item_device => $value_item_device) {
+                    if (!array_key_exists($key_item_device, $itemdevice->fields)) {
+                        unset($input_data_for_check[$key_item_device]);
+                    }
                 }
 
-                //add serial if available (usefull for memories)
-                if (property_exists($val, "otherserial")) {
-                    $input_data['otherserial'] = $val->otherserial;
-                }
+                var_dump($input_data_for_check);
+                var_dump($val);
+
 
                 //check if link between device and asset exist
-                if ($itemdevice->getFromDBByCrit($input_data)) {
-                    $itemdevice_data = $input_data + $this->handleInput($val, $itemdevice);
-                    $itemdevice_data['id'] = $itemdevice->fields['id'];
-                    $itemdevice->update($itemdevice_data, true, []);
+                if (!$itemdevice->getFromDBByCrit($input_data_for_check)) {
+                    $input_item_device['is_dynamic'] = 1;
+                    $itemdevice->add($input_item_device, [], false);
+                    $this->itemdeviceAdded($itemdevice, $val);
                     unset($existing[$device_id]);
                 } else {
-                    $itemdevice_data = $input_data + $this->handleInput($val, $itemdevice);
-                    $itemdevice->add($itemdevice_data, [], false);
-                    $this->itemdeviceAdded($itemdevice, $val);
+                    $input_item_device['is_dynamic'] = 1;
+                    $input_item_device['id'] = $itemdevice->fields['id'];
+                    $itemdevice->update($input_item_device, true, []);
                     unset($existing[$device_id]);
                 }
             }
