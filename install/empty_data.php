@@ -151,6 +151,7 @@ $empty_data_builder = new class
             'cas_port' => '443',
             'cas_uri' => '',
             'cas_logout' => '',
+            'cas_version' => 'CAS_VERSION_2_0',
             'existing_auth_server_field_clean_domain' => '0',
             'planning_begin' => '08:00:00',
             'planning_end' => '20:00:00',
