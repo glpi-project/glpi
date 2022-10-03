@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
+use SimplePie\SimplePie;
 
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
@@ -1059,7 +1060,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         $output .= "</thead>";
 
         if ($nb) {
-            usort($items, ['SimplePie', 'sort_items']);
+            usort($items, [SimplePie::class, 'sort_items']);
             foreach ($items as $item) {
                 $output .= "<tr class='tab_bg_1'><td>";
                 $output .= Html::convDateTime($item->get_date('Y-m-d H:i:s'));
