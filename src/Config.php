@@ -40,6 +40,7 @@ use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
+use SimplePie\SimplePie;
 
 /**
  *  Config class
@@ -2267,8 +2268,6 @@ HTML;
      */
     public static function getLibraries($all = false)
     {
-        $sp = new SimplePie();
-
        // use same name that in composer.json
         $deps = [[ 'name'    => 'htmlawed/htmlawed',
             'version' => hl_version() ,
@@ -2278,8 +2277,8 @@ HTML;
                 'check'   => 'Symfony/Mailer'
             ],
             [ 'name'    => 'simplepie/simplepie',
-                'version' => SIMPLEPIE_VERSION,
-                'check'   => $sp
+                'version' => SimplePie::VERSION,
+                'check'   => SimplePie::class,
             ],
             [ 'name'      => 'tecnickcom/tcpdf',
                 'version' => TCPDF_STATIC::getTCPDFVersion(),
