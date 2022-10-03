@@ -124,10 +124,6 @@ abstract class Device extends InventoryAsset
                     }
                 }
 
-                var_dump($input_data_for_check);
-                var_dump($val);
-
-
                 //check if link between device and asset exist
                 if (!$itemdevice->getFromDBByCrit($input_data_for_check)) {
                     $input_item_device['is_dynamic'] = 1;
