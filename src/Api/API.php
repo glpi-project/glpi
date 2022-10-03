@@ -282,7 +282,7 @@ abstract class API
 
         $noAuto = true;
         if (isset($params['user_token']) && !empty($params['user_token'])) {
-            $_REQUEST['user_token'] = $params['user_token'];
+            $_REQUEST['user_token'] = Sanitizer::dbEscape($params['user_token']);
             $noAuto = false;
         } else if (!$CFG_GLPI['enable_api_login_credentials']) {
             $this->returnError(
