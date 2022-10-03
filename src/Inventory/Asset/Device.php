@@ -105,28 +105,24 @@ abstract class Device extends InventoryAsset
                 //create device or get existing device ID
                 $device_id = $device->import(\Toolbox::addslashes_deep($this->handleInput($val, $device)) + ['with_history' => false]);
 
-                //remove all existing instances
-                if (!isset($deleted_items[$device_id])) {
-                    $DB->delete(
-                        $itemdevice->getTable(),
-                        [
-                            $fk => $device_id,
-                            'items_id'     => $this->item->fields['id'],
-                            'itemtype'     => $this->item->getType(),
-                        ]
-                    );
-                    $deleted_items[$device_id] = $device_id;
-                }
-
-                $itemdevice_data = \Toolbox::addslashes_deep([
+                //prepare data
+                $input_data = \Toolbox::addslashes_deep([
                     $fk                  => $device_id,
                     'itemtype'           => $this->item->getType(),
                     'items_id'           => $this->item->fields['id'],
-                    'is_dynamic'         => 1
-                ] + $this->handleInput($val, $itemdevice));
-                $itemdevice->add($itemdevice_data, [], false);
-                $this->itemdeviceAdded($itemdevice, $val);
-                unset($existing[$device_id]);
+                ]);
+                $itemdevice_data = $input_data + $this->handleInput($val, $itemdevice);
+
+                //check if link between device and asset exist
+                if ($itemdevice->getFromDBByCrit($input_data)) {
+                    $itemdevice_data['id'] = $itemdevice->fields['id'];
+                    $itemdevice->update($itemdevice_data, true, []);
+                    unset($existing[$device_id]);
+                } else {
+                    $itemdevice->add($itemdevice_data, [], false);
+                    $this->itemdeviceAdded($itemdevice, $val);
+                    unset($existing[$device_id]);
+                }
             }
 
             foreach ($existing as $deviceid => $data) {
