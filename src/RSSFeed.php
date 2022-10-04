@@ -916,55 +916,62 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
 
     /**
-     * Get a specific RSS feed
+     * Get a specific RSS feed.
      *
-     * @param $url             string/array   URL of the feed or array of URL
-     * @param $cache_duration  timestamp      cache duration (default DAY_TIMESTAMP)
+     * @param string    $url            URL of the feed or array of URL
+     * @param int       $cache_duration Cache duration, in seconds
      *
-     * @return feed object
+     * @return SimplePie|false
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
-        global $CFG_GLPI;
-
-        if (!Toolbox::isUrlSafe($url)) {
-            return false;
-        }
+        global $GLPI_CACHE;
 
         if (Sanitizer::isHtmlEncoded($url)) {
             $url = Sanitizer::decodeHtmlSpecialChars($url);
         }
-        $feed = new SimplePie();
-        $feed->set_cache_location(GLPI_RSS_DIR);
-        $feed->set_cache_duration($cache_duration);
 
-       // proxy support
-        if (!empty($CFG_GLPI["proxy_name"])) {
-            $prx_opt = [];
-            $prx_opt[CURLOPT_PROXY]     = $CFG_GLPI["proxy_name"];
-            $prx_opt[CURLOPT_PROXYPORT] = $CFG_GLPI["proxy_port"];
-            if (!empty($CFG_GLPI["proxy_user"])) {
-                $prx_opt[CURLOPT_HTTPAUTH]     = CURLAUTH_ANYSAFE;
-                $prx_opt[CURLOPT_PROXYUSERPWD] = $CFG_GLPI["proxy_user"] . ":" .
-                                             (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]);
+        // Fetch feed data, unless it is already cached
+        $cache_key = sha1($url);
+        $update_cache = false;
+        if (($raw_data = $GLPI_CACHE->get($cache_key)) === null) {
+            if (!Toolbox::isUrlSafe($url)) {
+                return false;
             }
-            $feed->set_curl_options($prx_opt);
+
+            $error_msg  = null;
+            $curl_error = null;
+            $raw_data = Toolbox::callCurl($url, [], $error_msg, $curl_error, true);
+            if (empty($raw_data)) {
+                return false;
+            }
+
+            $doc = new DOMDocument();
+            if (!@$doc->loadXML($raw_data)) {
+                // Prevent exception on invalid XML (see https://github.com/simplepie/simplepie/pull/747)
+                return false;
+            }
+
+            $update_cache = true;
         }
 
-        $feed->enable_cache(true);
-        $feed->set_feed_url($url);
+        $feed = new SimplePie();
+        $feed->enable_cache(false);
+        $feed->set_raw_data($raw_data);
         $feed->force_feed(true);
-       // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and
-       // all that other good stuff.  The feed's information will not be available to SimplePie before
-       // this is called.
+        // Initialize the whole SimplePie object. Read the feed, process it, parse it, cache it, and
+        // all that other good stuff. The feed's information will not be available to SimplePie before
+        // this is called.
         $feed->init();
 
-       // We'll make sure that the right content type and character encoding gets set automatically.
-       // This function will grab the proper character encoding, as well as set the content type to text/html.
-        $feed->handle_content_type();
         if ($feed->error()) {
             return false;
         }
+
+        if ($update_cache) {
+            $GLPI_CACHE->set($cache_key, $raw_data, $cache_duration);
+        }
+
         return $feed;
     }
 
