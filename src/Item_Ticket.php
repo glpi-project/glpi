@@ -351,7 +351,7 @@ class Item_Ticket extends CommonItilObject_Item
                     $result .= " <i class='fas fa-times-circle pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
                 }
                 if ($params['kblink']) {
-                    $result .= ' ' . $item->getKBLinks();
+                    $result .= $item->getKBLinks();
                 }
                 $result .= "</div>";
             } else {

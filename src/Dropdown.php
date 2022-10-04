@@ -386,7 +386,7 @@ class Dropdown
                     $item->getFromDB($params['value']);
                 }
                 $kb_link_icon .= "<span id='$kblink_id'>";
-                $kb_link_icon .= '&nbsp;' . $item->getLinks();
+                $kb_link_icon .= $item->getLinks();
                 $kb_link_icon .= "</span>";
                 $kb_link_icon .= '</div>';
                 $icon_array[] = $kb_link_icon;
