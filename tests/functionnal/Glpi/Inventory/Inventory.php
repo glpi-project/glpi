@@ -5349,4 +5349,78 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
         $this->checkComputer1Batteries($computer, $capacities);
     }
+
+    public function testDictionnaryManufacturer()
+    {
+        global $DB;
+
+        //create manufacturer dictionary entry
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+        $collection = new \RuleDictionnaryManufacturerCollection();
+        $manufacturer = new \Manufacturer();
+        //$manufacturers_id = $manufacturer->importExternal('Mozilla');
+
+        $rules_id = $rule->add(['name' => 'Set manufacturer',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => 'RuleDictionnaryManufacturer',
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => ''
+        ]);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $this->integer(
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'name',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern' => 'Dell Inc.'
+            ])
+        )->isGreaterThan(0);
+
+        $this->integer(
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => 'name',
+                'value' => 'Dictionary manufacturer'
+            ])
+        )->isGreaterThan(0);
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+
+        $nb_computers = countElementsInTable(\Computer::getTable());
+        $inventory = $this->doInventory($json);
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(4)
+            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory');
+
+        //check we add only one computer
+        ++$nb_computers;
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['name']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['items_id']->isGreaterThan(0);
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $manufacturer = new \Manufacturer();
+        $this->boolean($manufacturer->getFromDB($computer->fields['manufacturers_id']))->isTrue();
+        $this->string($manufacturer->fields['name'])->isIdenticalTo('Dictionary manufacturer');
+    }
 }
