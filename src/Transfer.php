@@ -3832,7 +3832,7 @@ class Transfer extends CommonDBTM
                     } else {
                         foreach ($iterator as $data) {
                           // Not a copy -> only update socket
-                            if ($data['sockets_id']) {
+                            if (isset($data['sockets_id']) && $data['sockets_id']) {
                                  $socket = new Socket();
                                 if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
                                     if ($socket->getID()) {
