@@ -171,7 +171,7 @@ abstract class CommonDBVisible extends CommonDBTM
             if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
                 foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
                     // All the profile
-                    if ($profile['no_entity_restriction'] < 0) {
+                    if ($profile['no_entity_restriction']) {
                         return true;
                     }
                     // Restrict to entities
