@@ -136,7 +136,7 @@ abstract class CommonDBVisible extends CommonDBTM
                 foreach ($data as $group) {
                     if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
                       // All the group
-                        if ($group['entities_id'] < 0) {
+                        if ($group['no_entity_restriction']) {
                              return true;
                         }
                       // Restrict to entities
