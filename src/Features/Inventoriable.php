@@ -36,6 +36,7 @@
 namespace Glpi\Features;
 
 use Agent;
+use AutoUpdateSystem;
 use CommonDBTM;
 use Computer;
 use Computer_Item;
@@ -75,7 +76,7 @@ trait Inventoriable
 
         if ($this->isField('autoupdatesystems_id')) {
             $source = new \AutoUpdateSystem();
-            $source->getFromDBByCrit(['name' => 'GLPI Native Inventory']);
+            $source->getFromDBByCrit(['name' => AutoUpdateSystem::NATIVE_INVENTORY]);
 
             if (
                 !$this->isDynamic()
