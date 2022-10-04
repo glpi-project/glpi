@@ -59,7 +59,7 @@ class SNMPCredential extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                => '106',
+            'id'                => '108',
             'table'             => 'glpi_snmpcredentials',
             'field'             => 'name',
             'name'              => __('Name'),
@@ -68,7 +68,7 @@ class SNMPCredential extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                => '107',
+            'id'                => '109',
             'table'             => 'glpi_snmpcredentials',
             'field'             => 'community',
             'name'              => __('Community'),
