@@ -98,7 +98,7 @@ class ListCommand extends AbstractCommand implements ForceNoPluginsOptionCommand
             $output->writeln(json_encode($data));
         } else {
             $table = new Table($output);
-            $headers = [__('Plugin Key'), __('Name'), __('Version'), __('Status'), __('Install method')];
+            $headers = [__('Plugin Key'), __('Name'), _n('Version', 'Versions', 1), __('Status'), __('Install method')];
             if ($input->getOption('path')) {
                 $headers[] = __('Path');
             }
