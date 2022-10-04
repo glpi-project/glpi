@@ -1,0 +1,235 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set no_header = no_header|default(not item.isNewItem() and not _get._in_modal|default(false)) %}
+{% set bg = '' %}
+{% if item.isDeleted() %}
+   {% set bg = 'asset-deleted' %}
+{% endif %}
+
+<div class="asset {{ bg }}">
+   {{ include('components/form/header.html.twig', {'in_twig': true}) }}
+
+   {% set params  = params ?? [] %}
+   {% set field_options = {
+         'locked_fields': item.getLockedFields(),
+   } %}
+
+   <div class="card-body d-flex flex-wrap">
+      <div class="col-12 col-xxl-12 flex-column">
+         <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+            <div class="row flex-row align-items-start flex-grow-1">
+               <div class="row flex-row">
+                  <script>
+                     function showField(item) {
+                        $("#" + item).prop("type", "text");
+                     }
+                     function hideField(item) {
+                        $("#" + item).prop("type", "password");
+                     }
+                     function copyToClipboard(item) {
+                        showField(item);
+                        $("#" + item).select();
+                        try {
+                           document.execCommand("copy");
+                        } catch (e) {
+                           alert("Copy to clipboard failed'");
+                        }
+                        hideField(item);
+                     }
+                  </script>
+
+                  {% set field_options = field_options|merge(params) %}
+
+                  <input type="hidden" name={{ get_static(item, 'itemtype_1') }} value={{ item.fields[get_static(item, 'itemtype_1')] }}>
+
+
+
+                  {% if item1 %}
+                     {{ fields.htmlField(
+                        get_static(item, 'itemtype_1'),
+                        item1.getLink(),
+                        item1.getTypeName(1),
+                        field_options
+                     ) }}
+                  {% else %}
+                     {{ fields.htmlField(
+                        '',
+                        __('No associated item'),
+                        __('Itemtype'),
+                        field_options
+                     ) }}
+                  {% endif %}
+
+                  {% if device %}
+                     {{ fields.htmlField(
+                        get_static(item, 'itemtype_2'),
+                        device.getLink(),
+                        _n('Component', 'Components', 1),
+                        field_options
+                     ) }}
+                  {% else %}
+                     {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [get_static(item, 'items_id_2')]) %}
+                     {{ fields.dropdownField(
+                        dropdown_itemtype,
+                        get_static(item, 'items_id_2'),
+                        item.fields[get_static(item, 'items_id_2')],
+                        _n('Component', 'Components', 1),
+                        field_options
+                     ) }}
+                  {% endif %}
+
+                  {% for specificities in specificities_fields %}
+                     {% if specificities['canread'] %}
+
+                        {% if specificities['tooltip'] is defined %}
+                           {% set field_options = field_options|merge({'helper': specificities['tooltip']}) %}
+                        {% endif %}
+
+                        {% if specificities['datatype'] == "dropdown" %}
+                           {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [specificities['field']]) %}
+                           {{ fields.dropdownField(
+                              dropdown_itemtype,
+                              specificities['field'],
+                              specificities['value'],
+                              specificities['label'],
+                              specificities['dropdown_options']|merge(field_options)
+                           ) }}
+                        {% else %}
+                           {% if specificities['protected'] %}
+
+                              {% set btn_group %}
+                                 &nbsp;<i class="far fa-eye pointer disclose" onmousedown="showField('{{ specificities['field'] ~ specificities['rand'] }}')"
+                                 onmouseup="hideField('{{ specificities['field'] ~ specificities['rand'] }}')"
+                                 onmouseout="hideField('{{ specificities['field'] ~ specificities['rand'] }}')"></i>
+                                 &nbsp;<i class="fa fa-paste pointer disclose" onclick="copyToClipboard('{{ specificities['field'] ~ specificities['rand'] }}')"></i>
+                              {% endset %}
+
+                              {{ fields.passwordField(
+                                 specificities['field'],
+                                 specificities['value'],
+                                 specificities['label'] ~ btn_group,
+                                 field_options|merge({'id': specificities['protected_field_id']})
+                              ) }}
+                           {% else %}
+                              {{ fields.textField(
+                                 specificities['field'],
+                                 specificities['value'],
+                                 specificities['label'],
+                                 field_options
+                              ) }}
+                           {% endif %}
+                        {% endif %}
+                     {% endif %}
+                  {% endfor %}
+
+                  {% if item.isField('serial') %}
+                     {{ fields.textField(
+                        'serial',
+                        item.fields['serial'],
+                        __('Serial number'),
+                        field_options
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('otherserial') %}
+                     {{ fields.autoNameField(
+                        'otherserial',
+                        item,
+                        __('Inventory number'),
+                        0,
+                        field_options
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('locations_id') %}
+                     {{ fields.dropdownField(
+                        'Location',
+                        'locations_id',
+                        item.fields['locations_id'],
+                        'Location'|itemtype_name,
+                        field_options|merge({
+                           'entity': item.fields['entities_id'],
+                        })
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('states_id') %}
+                     {% set condition = item.getType() in config('state_types') ? {('is_visible_' ~ item.getType()|lower): 1} : {} %}
+                     {{ fields.dropdownField(
+                        'State',
+                        'states_id',
+                        item.fields['states_id'],
+                        __('Status'),
+                        field_options|merge({
+                           'entity': item.fields['entities_id'],
+                           'condition': condition
+                        })
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('users_id') %}
+                     {{ fields.dropdownField(
+                        'User',
+                        'users_id',
+                        item.fields['users_id'],
+                        'User'|itemtype_name,
+                        field_options|merge({
+                           'entity': item.fields['entities_id'],
+                           'right': 'all',
+                        })
+                     ) }}
+                  {% endif %}
+
+                  {% if item.isField('groups_id') %}
+                     {{ fields.dropdownField(
+                        'Group',
+                        'groups_id',
+                        item.fields['groups_id'],
+                        'Group'|itemtype_name,
+                        field_options|merge({
+                           'entity': item.fields['entities_id'],
+                           'condition': {'is_itemgroup': 1},
+                        })
+                     ) }}
+                  {% endif %}
+               </div> {# .row #}
+            </div> {# .row #}
+         </div> {# .flex-row #}
+      </div> {# .flex-column #}
+   </div> {# .flex-wrap #}
+
+
+   {{ include('components/form/buttons.html.twig') }}
+</div>

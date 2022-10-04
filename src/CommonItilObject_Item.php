@@ -418,6 +418,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $header_end .= "<th>" . __('Serial number') . "</th>";
         $header_end .= "<th>" . __('Inventory number') . "</th>";
         $header_end .= "<th>" . __('Knowledge base entries') . "</th>";
+        $header_end .= "<th>" . State::getTypeName(1) . "</th>";
+        $header_end .= "<th>" . Location::getTypeName(1) . "</th>";
         echo "<tr>";
         echo $header_begin . $header_top . $header_end;
 
@@ -471,6 +473,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
                     $item->getFromDB($data["id"]);
                     echo "<td class='center'>" . $item->getKBLinks() . "</td>";
+                    echo "<td class='center'>";
+                    echo Dropdown::getDropdownName("glpi_states", $data['states_id']) . "</td>";
+                    echo "<td class='center'>";
+                    echo Dropdown::getDropdownName("glpi_locations", $data['locations_id']) . "</td>";
                     echo "</tr>";
                 }
                 $totalnb += $nb;

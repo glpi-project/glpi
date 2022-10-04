@@ -1,0 +1,166 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set no_header = no_header|default(not item.isNewItem() and not _get._in_modal|default(false)) %}
+{% set bg = '' %}
+{% if item.isDeleted() %}
+   {% set bg = 'asset-deleted' %}
+{% endif %}
+
+<div class="asset {{ bg }}">
+   {{ include('components/form/header.html.twig', {'in_twig': true}) }}
+
+   {% set params  = params ?? [] %}
+   {% set no_header = true %}
+   {% set field_options = {
+         'locked_fields': item.getLockedFields(),
+   } %}
+
+   <div class="card-body d-flex flex-wrap">
+      <div class="col-12 col-xxl-12 flex-column">
+         <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+            <div class="row flex-row align-items-start flex-grow-1">
+               <div class="row flex-row">
+                  {% set field_options = field_options|merge(params) %}
+                  {% set session_get_plural = call('Session::getPluralNumber', []) %}
+                  {% set rand = random() %}
+
+                  {% if ID %}
+                     <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
+                     <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
+                  {% endif %}
+
+                  {{ fields.textField(
+                     'name',
+                     item.fields['name'],
+                     __('Name'),
+                     field_options
+                  ) }}
+
+                  {% if display_dissociate_btn %}
+                     {% set unaffect_btn %}
+                        <a class="btn btn-sm btn-outline-danger"
+                        onclick=" submitGetLink('{{ item.getFormURL }}', {'unaffect': 'unaffect', 'id': '{{ ID }}', '_glpi_csrf_token': '{{ csrf_token() }}', '_glpi_simple_form': '1'});">
+                           <span class="fas fa-unlink " title={{ __('Dissociate') }}>
+                              <span class="sr-only">{{ __('Dissociate') }}</span>
+                           </span>
+                        </a>
+
+                     {% endset %}
+
+                     {{ fields.htmlField(
+                        '_virtual',
+                        display_recursive_items_link|raw,
+                        recursive_items_type_data,
+                        field_options|merge({
+                           add_field_html: unaffect_btn
+                        })
+                     ) }}
+                  {% endif %}
+
+
+
+                  {% set table_from_foreignkey = call('getTableNameForForeignKeyField', ["fqdns_id"]) %}
+                  {% set table_from_itemtype = call('getItemTypeForTable', [table_from_foreignkey]) %}
+                  {% set fqdn_label = call('FQDN::getTypeName', [0]) %}
+                  {{ fields.dropdownField(
+                     table_from_itemtype,
+                     "fqdns_id",
+                     item.fields["fqdns_id"],
+                     'FQDN'|itemtype_name,
+                     field_options|merge({'entity': item.getEntityID(), 'displaywith': ['view']})
+                  ) }}
+
+                  {{ fields.textareaField(
+                     'comment',
+                     item.fields['comment'],
+                     _n('Comment', 'Comments', get_plural_number()),
+                     field_options
+                  ) }}
+
+
+                  {% set ipnetwork_label = call('IPNetwork::getTypeName', [session_get_plural]) %}
+                  {% set span_for_ajax %}
+                     <span id='show_ipnetwork_{{ rand }}'></span>
+                  {% endset %}
+
+                  {{ fields.dropdownField(
+                     "IPNetwork",
+                     "ipnetworks_id",
+                     item.fields["ipnetworks_id"],
+                     'IPNetwork'|itemtype_name(get_plural_number()),
+                     field_options|merge({'entity' : item.getEntityID(),
+                        'rand' : rand,
+                        'value' : item.fields["ipnetworks_id"],
+                        'helper' : __('IP network is not included in the database. However, you can see current available networks.'),
+                        add_field_html : span_for_ajax
+                        })
+                  ) }}
+
+                  {% do call('Ajax::updateItemOnSelectEvent', [
+                     'dropdown_ipnetworks_id' ~ rand,
+                     'show_ipnetwork_' ~ rand,
+                     config('root_doc') ~ '/ajax/dropdownShowIPNetwork.php',
+                     {
+                        'ipnetworks_id': '__VALUE__',
+                     }
+                  ]) %}
+
+                  {% if item.fields["ipnetworks_id"] %}
+                     {% do call('Ajax::updateItem', [
+                        'show_ipnetwork_' ~ rand,
+                        config('root_doc') ~ '/ajax/dropdownShowIPNetwork.php',
+                        {'ipnetworks_id': item.fields["ipnetworks_id"]}
+                     ]) %}
+                  {% endif %}
+
+                  {% set ip_label = 'IPAddress'|itemtype_name(get_plural_number()) %}
+                  {% set add_child = call('IPAddress::showAddChildButtonForItemForm', [item, '_ipaddresses', true, false]) %}
+                  {% set show_child = call('IPAddress::showChildsForItemForm', [item, '_ipaddresses', true, false]) %}
+
+                  {{ fields.htmlField(
+                     '_vrtual',
+                     show_child|raw,
+                     ip_label ~ add_child,
+                     field_options
+                  ) }}
+               </div> {# .row #}
+            </div> {# .row #}
+         </div> {# .flex-row #}
+      </div> {# .flex-column #}
+   </div> {# .flex-wrap #}
+   {{ include('components/form/buttons.html.twig') }}
+</div>

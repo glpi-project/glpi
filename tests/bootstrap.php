@@ -353,7 +353,8 @@ function loadDataset()
                 'comment'      => 'Comment for location _location01'
             ],
             [
-                'name'         => '_location01 > _sublocation01',
+                'name'         => '_sublocation01',
+                'locations_id' => '_location01',
                 'comment'      => 'Comment for location _sublocation01'
             ],
             [

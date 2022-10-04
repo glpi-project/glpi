@@ -1528,8 +1528,7 @@ class CommonGLPI implements CommonGLPIInterface
             $kbitem->getFromDB(reset($found_kbitem)['id']);
             $ret .= "<div class='faqadd_block'>";
             $ret .= "<label for='display_faq_chkbox$rand'>";
-            $ret .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/faqadd.png' class='middle pointer'
-                    alt=\"$title\" title=\"$title\">";
+            $ret .= "<i class='ti ti-zoom-question'></i>";
             $ret .= "</label>";
             $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
             $ret .= "<div class='faqadd_entries' style='position:relative;'>";

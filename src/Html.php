@@ -3956,7 +3956,9 @@ JS;
                quickbars_selection_toolbar: richtext_layout == 'inline'
                   ? 'bold italic | styles | forecolor backcolor '
                   : false,
-               contextmenu: 'copy paste | emoticons table image link | undo redo | code fullscreen',
+               contextmenu: richtext_layout == 'classic'
+                  ? false
+                  : 'copy paste | emoticons table image link | undo redo | code fullscreen',
 
                // Content settings
                entity_encoding: 'raw',

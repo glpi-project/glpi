@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * @since 0.84
  */
@@ -1402,12 +1404,12 @@ class Item_Devices extends CommonDBRelation
         $this->addDefaultFormTab($ong);
         $this->addStandardTab('Infocom', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
 
         return $ong;
     }
-
 
     /**
      * @since 0.85
@@ -1420,60 +1422,23 @@ class Item_Devices extends CommonDBRelation
            // Create item
             $this->check(-1, CREATE);
         }
-        $this->showFormHeader($options);
 
         /** @var CommonDBTM  */
-        $item   = $this->getOnePeer(0);
+        $item1   = $this->getOnePeer(0);
         /** @var CommonDBTM  */
         $device = $this->getOnePeer(1);
 
-        echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
-        echo "<td>";
-        echo Html::hidden(self::$itemtype_1, ['value' => $this->fields[self::$itemtype_1] ?? '']);
-        if ($item === false) {
-            echo __('No associated item');
-        } else {
-            echo $item->getLink();
-        }
-        echo "</td>";
+        $specificities_fields = [];
 
-        echo "<td>" . _n('Component', 'Components', 1) . "</td>";
-        echo "<td>";
-        if (false === $device) {
-            Dropdown::show(
-                static::$itemtype_2,
-                [
-                    'name'   => static::$items_id_2
-                ]
-            );
-        } else {
-            echo $device->getLink();
-        }
-        echo "</td>";
-        echo "</tr>";
-        $even = 0;
-        $nb = count(static::getSpecificities());
-        echo Html::scriptBlock('function showField(item) {
-            $("#" + item).prop("type", "text");
-         }
-         function hideField(item) {
-            $("#" + item).prop("type", "password");
-         }
-         function copyToClipboard(item) {
-            showField(item);
-            $("#" + item).select();
-            try {
-               document.execCommand("copy");
-            } catch (e) {
-               alert("' . addslashes(__('Copy to clipboard failed')) . '");
-            }
-            hideField(item);
-         }');
         foreach (static::getSpecificities() as $field => $attributs) {
-            if (($even % 2) == 0) {
-                echo "<tr class='tab_bg_1'>";
+            //exclude some field already handle by generic_show_form.html.twig
+            $exclude_fields = ["locations_id", "states_id", "otherserial", "serial", "users_id", "groups_id"];
+            if (in_array($field, $exclude_fields)) {
+                continue;
             }
-            $out = '';
+
+            $specificities = [];
+            $rand = rand();
 
             // Can the user view the value of the field ?
             if (!isset($attributs['right'])) {
@@ -1481,105 +1446,57 @@ class Item_Devices extends CommonDBRelation
             } else {
                 $canRead = (Session::haveRightsOr($attributs['right'], [READ, UPDATE]));
             }
+            $specificities['canread'] =  $canRead;
 
             if (!isset($attributs['datatype'])) {
                 $attributs['datatype'] = 'text';
             }
 
-            $rand = mt_rand();
-            echo "<td>";
-            if ($canRead) {
-                switch ($attributs['datatype']) {
-                    case 'dropdown':
-                        $fieldType = 'dropdown';
-                        break;
-
-                    default:
-                         $fieldType = 'textfield';
-                }
-                echo "<label for='{$fieldType}_{$field}{$rand}'>" . $attributs['long name'] . "</label>";
-            } else {
-                echo $attributs['long name'];
-            }
-            echo "</td><td>";
-
-            echo "<div class='btn-group btn-group-sm' role='group'>";
-
-           // Do the field needs a user action to display ?
-            if (isset($attributs['protected']) && $attributs['protected']) {
-                $protected = true;
-                $out .= '<span class="disclosablefield btn-group btn-group-sm">';
-            } else {
-                $protected = false;
-            }
+            $specificities['datatype'] =  $attributs['datatype'];
+            $specificities['label'] = $attributs['long name'];
+            $specificities['protected'] = (isset($attributs['protected']) && $attributs['protected']) ?? false;
 
             if (isset($attributs['tooltip']) && strlen($attributs['tooltip']) > 0) {
                 $tooltip = $attributs['tooltip'];
             } else {
                 $tooltip = null;
             }
+            $specificities['tooltip'] = $tooltip;
 
             if ($canRead) {
-                $value = $this->fields[$field];
+                $specificities['field'] = $field;
+                $specificities['rand'] = $rand;
+                $specificities['value'] = $this->fields[$field];
                 switch ($attributs['datatype']) {
                     case 'dropdown':
-                        $dropdownType = getItemtypeForForeignKeyField($field);
                         $dropdown_options = [
-                            'value'    => $value,
+                            'value'    => $specificities['value'],
                             'rand'     => $rand,
                             'entity'   => $this->fields["entities_id"],
-                            'display'  => false
                         ];
                         if (array_key_exists('dropdown_options', $attributs) && is_array($attributs['dropdown_options'])) {
                             $dropdown_options = array_merge($dropdown_options, $attributs['dropdown_options']);
                         }
-                         $out .= $dropdownType::dropdown($dropdown_options);
+                        $specificities['dropdown_options'] = $dropdown_options;
                         break;
                     default:
-                        if (!$protected) {
-                            $out .= Html::input(
-                                $field,
-                                [
-                                    'value' => $value,
-                                    'id'    => "textfield_$field$rand",
-                                    'size'  => $attributs['size'],
-                                ]
-                            );
-                        } else {
-                            $out .= '<input class="protected form-control" type="password" autocomplete="new-password" name="' . $field . '" ';
-                            $out .= 'id="' . $field . $rand . '" value="' . $value . '">';
+                        if ($specificities['protected']) {
+                            $specificities['protected_field_id'] =  $field . $rand;
                         }
                 }
-                if ($tooltip !== null) {
-                    $comment_id      = Html::cleanId("comment_" . $field . $rand);
-                    $link_id         = Html::cleanId("comment_link_" . $field . $rand);
-                    $options_tooltip = ['contentid' => $comment_id,
-                        'linkid'    => $link_id,
-                        'display'   => false
-                    ];
-                    $out .= '&nbsp;' . Html::showToolTip($tooltip, $options_tooltip);
-                }
-                if ($protected) {
-                      $out .= '<div class="btn btn-outline-secondary"><i class="far fa-eye pointer disclose" ';
-                      $out .= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
-                      $out .= 'onmouseup="hideField(\'' . $field . $rand . '\')" ';
-                      $out .= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i></div>';
-                      $out .= '<div class="btn btn-outline-secondary"><i class="fa fa-paste pointer disclose" ';
-                      $out .= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
-                      $out .= '</div>';
-                }
-                echo $out;
-            } else {
-                echo NOT_AVAILABLE;
             }
-            echo "</div></td>";
-            $even++;
-            if (($even == $nb) && (($nb % 2) != 0) && $nb > 1) {
-                echo "<td></td><td></td></tr>";
-            }
+            $specificities_fields[] = $specificities;
         }
+
         $options['canedit'] =  Session::haveRight('device', UPDATE);
-        $this->showFormButtons($options);
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/item_device.html.twig', [
+            'item'                   => $this,
+            'item1'                  => $item1,
+            'device'                 => $device,
+            'params'                 => $options,
+            'specificities_fields'   => $specificities_fields,
+        ]);
 
         return true;
     }

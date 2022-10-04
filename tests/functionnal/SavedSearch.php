@@ -41,6 +41,16 @@ use DbTestCase;
 
 class SavedSearch extends DbTestCase
 {
+    public function testGetVisibilityCriteria()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // No restrictions when having the config UPDATE right
+        $this->array(\SavedSearch::getVisibilityCriteria())->isEqualTo(['WHERE' => []]);
+        $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
+        $this->array(\SavedSearch::getVisibilityCriteria()['WHERE'])->isNotEmpty();
+    }
     public function testAddVisibilityRestrict()
     {
        //first, as a super-admin
@@ -128,8 +138,8 @@ class SavedSearch extends DbTestCase
                 'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
             ])
         )->isTrue();
-        // With UPDATE 'config' right, we can see all bookmarks
-        $this->integer(count($bk->getMine()))->isEqualTo(3);
+        // With UPDATE 'config' right, we still shouldn't see other user's private searches
+        $this->integer(count($bk->getMine()))->isEqualTo(2);
         $_SESSION["glpiactiveprofile"]['config'] = $_SESSION["glpiactiveprofile"]['config'] & ~UPDATE;
         $this->integer(count($bk->getMine()))->isEqualTo(2);
 

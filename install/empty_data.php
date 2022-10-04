@@ -278,7 +278,7 @@ $empty_data_builder = new class
             'savedsearches_pinned' => '0',
             'timeline_order' => 'natural',
             'itil_layout' => '',
-            'richtext_layout' => 'inline',
+            'richtext_layout' => 'classic',
             'lock_use_lock_item' => '0',
             'lock_autolock_mode' => '1',
             'lock_directunlock_notification' => '0',
@@ -7915,6 +7915,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'recurrentchange',
                 'rights' => READ,
             ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'locked_field',
+                'rights' => CREATE | PURGE,
+            ]
         ];
 
 

@@ -1716,7 +1716,7 @@ class User extends CommonDBTM
             $ldap_connection,
             $ldap_method["basedn"],
             $user_tmp,
-            $ldap_method["group_condition"],
+            Sanitizer::unsanitize($ldap_method["group_condition"]),
             $ldap_method["group_member_field"],
             $ldap_method["use_dn"],
             $ldap_method["login_field"]

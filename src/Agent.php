@@ -761,7 +761,8 @@ class Agent extends CommonDBTM
      *
      * @global object $DB
      * @param object $task
-     * @return boolean true if at least partially successful, otherwise false
+     * @return boolean
+     *
      * @copyright 2010-2022 by the FusionInventory Development Team.
      */
     public static function cronCleanoldagents($task = null)

@@ -2056,10 +2056,12 @@ CREATE TABLE `glpi_items_devicecameras_imageformats` (
   `item_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
   `imageformats_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item_devicecameras_id` (`item_devicecameras_id`),
   KEY `imageformats_id` (`imageformats_id`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_items_devicecameras_imageresolutions`;
@@ -2068,10 +2070,12 @@ CREATE TABLE `glpi_items_devicecameras_imageresolutions` (
   `item_devicecameras_id` int unsigned NOT NULL DEFAULT '0',
   `imageresolutions_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item_devicecameras_id` (`item_devicecameras_id`),
   KEY `imageresolutions_id` (`imageresolutions_id`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -3785,9 +3789,11 @@ CREATE TABLE `glpi_items_processes` (
   `tty` varchar(100) DEFAULT NULL,
   `user` varchar(100) DEFAULT NULL,
   `virtualmemory` int NOT NULL DEFAULT '1',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
+  KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -3801,9 +3807,11 @@ CREATE TABLE `glpi_items_environments` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `key` varchar(255) DEFAULT NULL,
   `value` text,
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
+  KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -7170,6 +7178,7 @@ CREATE TABLE `glpi_tickets` (
   `date` timestamp NULL DEFAULT NULL,
   `closedate` timestamp NULL DEFAULT NULL,
   `solvedate` timestamp NULL DEFAULT NULL,
+  `takeintoaccountdate` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   `status` int NOT NULL DEFAULT '1',
@@ -7216,6 +7225,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `entities_id` (`entities_id`),
   KEY `users_id_recipient` (`users_id_recipient`),
   KEY `solvedate` (`solvedate`),
+  KEY `takeintoaccountdate` (`takeintoaccountdate`),
   KEY `urgency` (`urgency`),
   KEY `impact` (`impact`),
   KEY `global_validation` (`global_validation`),
@@ -9087,8 +9097,10 @@ CREATE TABLE `glpi_items_remotemanagements` (
   `remoteid` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `is_dynamic` (`is_dynamic`),
+  KEY `is_deleted` (`is_deleted`),
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

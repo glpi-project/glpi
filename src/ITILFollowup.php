@@ -41,6 +41,8 @@ use Glpi\Toolbox\Sanitizer;
  */
 class ITILFollowup extends CommonDBChild
 {
+    use Glpi\Features\ParentStatus;
+
    // From CommonDBTM
     public $auto_message_on_action = false;
     public static $rightname              = 'followup';
@@ -251,110 +253,7 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-       // Set pending reason data on parent and self
-        if ($this->input['pending'] ?? 0) {
-            PendingReason_Item::createForItem($parentitem, [
-                'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
-            ]);
-            PendingReason_Item::createForItem($this, [
-                'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
-            ]);
-        }
-
-        if (
-            isset($this->input["_close"])
-            && $this->input["_close"]
-            && ($parentitem->isSolved())
-        ) {
-            $update = [
-                'id'        => $parentitem->fields['id'],
-                'status'    => CommonITILObject::CLOSED,
-                'closedate' => $_SESSION["glpi_currenttime"],
-                '_accepted' => true,
-            ];
-
-           // Use update method for history
-            $this->input["_job"]->update($update);
-            $donotif = false; // Done for ITILObject update (new status)
-        }
-
-       // Set parent status to pending
-        if ($this->input['pending'] ?? 0) {
-            $this->input['_status'] = CommonITILObject::WAITING;
-        }
-
-       //manage reopening of ITILObject
-        $reopened = false;
-        if (!isset($this->input['_status'])) {
-            $this->input['_status'] = $parentitem->fields["status"];
-        }
-       // if reopen set (from followup form or mailcollector)
-       // and status is reopenable and not changed in form
-        $is_set_pending = $this->input['pending'] ?? 0;
-        if (
-            isset($this->input["_reopen"])
-            && $this->input["_reopen"]
-            && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
-            && $this->input['_status'] == $parentitem->fields["status"]
-            && !$is_set_pending
-        ) {
-            $needupdateparent = false;
-            if (
-                isset($parentitem::getAllStatusArray($parentitem->getType())[CommonITILObject::ASSIGNED])
-                && (
-                    ($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
-                    || ($parentitem->countGroups(CommonITILActor::ASSIGN) > 0)
-                    || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)
-                )
-            ) {
-               //check if lifecycle allowed new status
-                if (
-                    Session::isCron()
-                    || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
-                ) {
-                    $needupdateparent = true;
-                    $update['status'] = CommonITILObject::ASSIGNED;
-                }
-            } else {
-               //check if lifecycle allowed new status
-                if (
-                    Session::isCron()
-                    || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
-                ) {
-                    $needupdateparent = true;
-                    $update['status'] = CommonITILObject::INCOMING;
-                }
-            }
-
-            if ($needupdateparent) {
-                $update['id'] = $parentitem->fields['id'];
-
-               // Use update method for history
-                $parentitem->update($update);
-                $reopened     = true;
-            }
-        }
-
-       //change ITILObject status only if imput change
-        if (
-            !$reopened
-            && $this->input['_status'] != $parentitem->fields['status']
-        ) {
-            $update['status'] = $this->input['_status'];
-            $update['id']     = $parentitem->fields['id'];
-
-           // don't notify on ITILObject - update event
-            $update['_disablenotif'] = true;
-
-           // Use update method for history
-            $parentitem->update($update);
-        }
+        $this->updateParentStatus($this->input['_job'], $this->input);
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],

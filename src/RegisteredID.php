@@ -87,7 +87,7 @@ class RegisteredID extends CommonDBChild
     /**
      * @see CommonDBChild::showChildForItemForm()
      **/
-    public function showChildForItemForm($canedit, $field_name, $id)
+    public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
 
         if ($this->isNewID($this->getID())) {
@@ -95,32 +95,39 @@ class RegisteredID extends CommonDBChild
         } else {
             $value = $this->getName();
         }
+        $result            = "";
         $main_field        = $field_name . "[$id]";
         $type_field        = $field_name . "_type[$id]";
         $registeredIDTypes = self::getRegisteredIDTypes();
 
         if ($canedit) {
-            echo "<select name='$type_field'>";
-            echo "<option value=''>" . Dropdown::EMPTY_VALUE . "</option>";
+            $result .= "<select name='$type_field'>";
+            $result .= "<option value=''>" . Dropdown::EMPTY_VALUE . "</option>";
             foreach ($registeredIDTypes as $name => $label) {
-                echo "<option value='$name'";
+                $result .= "<option value='$name'";
                 if ($this->fields['device_type'] == $name) {
-                    echo " selected";
+                    $result .= " selected";
                 }
-                echo ">$label</option>";
+                $result .= ">$label</option>";
             }
-            echo "</select> : <input type='text' size='30' name='$main_field' value='$value'>\n";
+            $result .= "</select> : <input type='text' size='30' name='$main_field' value='$value'>\n";
         } else {
-            echo "<input type='hidden' name='$main_field' value='$value'>";
+            $result .= "<input type='hidden' name='$main_field' value='$value'>";
             if (!empty($this->fields['device_type'])) {
-                printf(
+                $result .= sprintf(
                     __('%1$s: %2$s'),
                     $registeredIDTypes[$this->fields['device_type']],
                     $value
                 );
             } else {
-                echo $value;
+                $result .= $value;
             }
+        }
+
+        if ($display) {
+            echo $result;
+        } else {
+            return $result;
         }
     }
 }

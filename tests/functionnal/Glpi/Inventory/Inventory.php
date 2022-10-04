@@ -123,7 +123,8 @@ class Inventory extends InventoryTestCase
             'items_id' => $computer->fields['id'],
             'remoteid' => '123456789',
             'type' => 'teamviewer',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
+            'is_deleted' => 0
         ]);
 
         //connections
@@ -1106,7 +1107,8 @@ class Inventory extends InventoryTestCase
             ->string['version']->isIdenticalTo('2.5.2-1.fc31')
             ->string['itemtype']->isIdenticalTo('Computer')
             ->string['tag']->isIdenticalTo('000005')
-            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id'])
+            ->integer['items_id']->isGreaterThan(0);
 
         //check created computer
         $computer = $this->checkComputer1($agent['items_id']);
@@ -4795,9 +4797,33 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
          ->string['deviceid']->isIdenticalTo('Mi9TPro-TéléphoneM-2019-12-18-14-30-16')
          ->string['name']->isIdenticalTo('Mi9TPro-TéléphoneM-2019-12-18-14-30-16')
          ->string['itemtype']->isIdenticalTo('Phone')
-         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id'])
+         ->integer['items_id']->isGreaterThan(0);
 
-        //get computer models, manufacturer, ...
+        //check matchedlogs
+        $mlogs = new \RuleMatchedLog();
+        $found = $mlogs->find();
+        $this->array($found)->hasSize(1);
+
+        $criteria = [
+            'FROM' => \RuleMatchedLog::getTable(),
+            'LEFT JOIN' => [
+                \Rule::getTable() => [
+                    'ON' => [
+                        \RuleMatchedLog::getTable() => 'rules_id',
+                        \Rule::getTable() => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => ['itemtype' => \Phone::getType()]
+        ];
+
+        $iterator = $DB->request($criteria);
+        $this->integer(count($iterator))->isIdenticalTo(1);
+        $this->string($iterator->current()['name'])->isIdenticalTo('Global import (by serial)');
+        $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
+
+        //get phone models, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
         $this->array($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
@@ -4814,17 +4840,17 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->array($cmanuf);
         $manufacturers_id = $cmanuf['id'];
 
-        //check created computer
-        $computers_id = $inventory->getAgent()->fields['items_id'];
-        $this->integer($computers_id)->isGreaterThan(0);
-        $computer = new \Phone();
-        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        //check created phone
+        $phones_id = $inventory->getAgent()->fields['items_id'];
+        $this->integer($phones_id)->isGreaterThan(0);
+        $phone = new \Phone();
+        $this->boolean($phone->getFromDB($phones_id))->isTrue();
 
         $expected = [
-            'id' => $computers_id,
+            'id' => $phones_id,
             'entities_id' => 0,
             'name' => 'Mi9TPro-TéléphoneM',
-            'date_mod' => $computer->fields['date_mod'],
+            'date_mod' => $phone->fields['date_mod'],
             'contact' => 'builder',
             'contact_num' => null,
             'users_id_tech' => 0,
@@ -4852,15 +4878,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'is_dynamic' => 1,
             'autoupdatesystems_id' => $autoupdatesystems_id,
             'uuid' => 'af8d3fcfa6fe4784',
-            'date_creation' => $computer->fields['date_creation'],
+            'date_creation' => $phone->fields['date_creation'],
             'is_recursive' => 0,
-            'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_inventory_update' => $phone->fields['last_inventory_update'],
         ];
-        $this->array($computer->fields)->isIdenticalTo($expected);
+        $this->array($phone->fields)->isIdenticalTo($expected);
 
         //operating system
         $ios = new \Item_OperatingSystem();
-        $iterator = $ios->getFromItem($computer);
+        $iterator = $ios->getFromItem($phone);
         $record = $iterator->current();
 
         $expected = [
@@ -4874,12 +4900,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //remote management
         $mgmt = new \Item_RemoteManagement();
-        $iterator = $mgmt->getFromItem($computer);
+        $iterator = $mgmt->getFromItem($phone);
         $this->integer(count($iterator))->isIdenticalTo(0);
 
         //volumes
         $idisks = new \Item_Disk();
-        $iterator = $idisks->getFromItem($computer);
+        $iterator = $idisks->getFromItem($phone);
         $this->integer(count($iterator))->isIdenticalTo(4);
 
         $expecteds = [
@@ -4914,7 +4940,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'encryption_tool' => null,
                 'encryption_algorithm' => null,
                 'encryption_type' => null,
-                'items_id'     => $computers_id,
+                'items_id'     => $phones_id,
                 'itemtype'     => 'Phone',
                 'entities_id'  => 0,
                 'is_deleted'   => 0,
@@ -4930,7 +4956,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $iterator = $DB->request([
             'FROM'   => \NetworkPort::getTable(),
             'WHERE'  => [
-                'items_id'           => $computers_id,
+                'items_id'           => $phones_id,
                 'itemtype'           => 'Phone',
             ],
         ]);
@@ -4970,7 +4996,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
             $expected = $expecteds[$i];
             $expected = $expected + [
-                'items_id' => $computers_id,
+                'items_id' => $phones_id,
                 'itemtype' => 'Phone',
                 'entities_id' => 0,
                 'is_recursive' => 0,
@@ -5033,7 +5059,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $allcount = 0;
         foreach (\Item_Devices::getItemAffinities('Computer') as $link_type) {
             $link        = getItemForItemtype($link_type);
-            $iterator = $DB->request($link->getTableGroupCriteria($computer));
+            $iterator = $DB->request($link->getTableGroupCriteria($phone));
             $allcount += count($iterator);
             $components[$link_type] = [];
 
@@ -5073,7 +5099,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'Item_DeviceMotherboard' => [],
             'Item_DeviceFirmware' => [
                 [
-                    'items_id' => $computers_id,
+                    'items_id' => $phones_id,
                     'itemtype' => 'Phone',
                     'devicefirmwares_id' => 104,
                     'is_deleted' => 0,
@@ -5088,7 +5114,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ],
             'Item_DeviceProcessor' => [
                 [
-                    'items_id' => $computers_id,
+                    'items_id' => $phones_id,
                     'itemtype' => 'Phone',
                     'deviceprocessors_id' => 3060400,
                     'frequency' => 1785,
@@ -5107,7 +5133,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ],
             'Item_DeviceMemory' => [
                 [
-                    'items_id' => $computers_id,
+                    'items_id' => $phones_id,
                     'itemtype' => 'Phone',
                     'devicememories_id' => 4,
                     'size' => 5523,
@@ -5125,7 +5151,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'Item_DeviceHardDrive' => [],
             'Item_DeviceNetworkCard' => [
                 [
-                    'items_id' => $computers_id,
+                    'items_id' => $phones_id,
                     'itemtype' => 'Phone',
                     'devicenetworkcards_id' => 66,
                     'mac' => 'e0:dc:ff:ed:09:59',
@@ -5143,7 +5169,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'Item_DeviceDrive' => [],
             'Item_DeviceBattery' => [
                 [
-                    'items_id' => $computers_id,
+                    'items_id' => $phones_id,
                     'itemtype' => 'Phone',
                     'devicebatteries_id' => 70,
                     'manufacturing_date' => null,
@@ -5167,7 +5193,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'Item_DeviceGeneric' => [],
             'Item_DeviceSimcard' => [
                 [
-                    'items_id' => $computers_id,
+                    'items_id' => $phones_id,
                     'itemtype' => 'Phone',
                     'devicesimcards_id' => 68,
                     'is_deleted' => 0,
@@ -5190,7 +5216,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ],
             'Item_DeviceCamera' => [
                 [
-                    'items_id' => $computers_id,
+                    'items_id' => $phones_id,
                     'itemtype' => 'Phone',
                     'devicecameras_id' => 4,
                     'is_deleted' => 0,
@@ -5198,7 +5224,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'entities_id' => 0,
                     'is_recursive' => 0,
                 ], [
-                    'items_id' => $computers_id,
+                    'items_id' => $phones_id,
                     'itemtype' => 'Phone',
                     'devicecameras_id' => 4,
                     'is_deleted' => 0,
@@ -5224,7 +5250,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //software
         $isoft = new \Item_SoftwareVersion();
-        $iterator = $isoft->getFromItem($computer);
+        $iterator = $isoft->getFromItem($phone);
         $this->integer(count($iterator))->isIdenticalTo(3);
 
         $expecteds = [
@@ -5322,5 +5348,79 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             40570,
         ];
         $this->checkComputer1Batteries($computer, $capacities);
+    }
+
+    public function testDictionnaryManufacturer()
+    {
+        global $DB;
+
+        //create manufacturer dictionary entry
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+        $collection = new \RuleDictionnaryManufacturerCollection();
+        $manufacturer = new \Manufacturer();
+        //$manufacturers_id = $manufacturer->importExternal('Mozilla');
+
+        $rules_id = $rule->add(['name' => 'Set manufacturer',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => 'RuleDictionnaryManufacturer',
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => ''
+        ]);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $this->integer(
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'name',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern' => 'Dell Inc.'
+            ])
+        )->isGreaterThan(0);
+
+        $this->integer(
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => 'name',
+                'value' => 'Dictionary manufacturer'
+            ])
+        )->isGreaterThan(0);
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+
+        $nb_computers = countElementsInTable(\Computer::getTable());
+        $inventory = $this->doInventory($json);
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(4)
+            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory');
+
+        //check we add only one computer
+        ++$nb_computers;
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['name']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['items_id']->isGreaterThan(0);
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $manufacturer = new \Manufacturer();
+        $this->boolean($manufacturer->getFromDB($computer->fields['manufacturers_id']))->isTrue();
+        $this->string($manufacturer->fields['name'])->isIdenticalTo('Dictionary manufacturer');
     }
 }

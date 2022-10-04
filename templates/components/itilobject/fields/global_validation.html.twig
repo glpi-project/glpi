@@ -82,9 +82,7 @@
                 'global_validation',
                 call('TicketValidation::getStatus', [item.fields['global_validation'], true]),
                 "CommonITILValidation"|itemtype_name,
-                {
-                    'full_width': true,
-                }
+                field_options
             ) }}
         {% endif %}
    {% endif %}

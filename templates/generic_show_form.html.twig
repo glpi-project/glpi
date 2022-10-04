@@ -328,16 +328,16 @@
                      {% endif %}
 
                      {% if item.isField('date_expiration') %}
-                        {% if item_type == 'Certificate' %}
+                        {% if item_type == 'Certificate' or item_type == 'ComputerAntivirus' %}
                            {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                               'helper': __('Empty for infinite'),
                               'checkIsExpired': true
-                           }) }}
+                           }|merge(field_options)) }}
                         {% else %}
                            {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                               'helper': __('Empty for infinite'),
                               'checkIsExpired': true
-                           }) }}
+                           }|merge(field_options)) }}
                         {% endif %}
                      {% endif %}
 
@@ -439,6 +439,16 @@
 
                      {% if item.isField('sysdescr') %}
                         {{ fields.textareaField('sysdescr', item.fields['sysdescr'], __('Sysdescr')) }}
+                     {% endif %}
+
+                     {% if item.isField('snmpcredentials_id') %}
+                        {{ fields.dropdownField(
+                           'SNMPCredential',
+                           'snmpcredentials_id',
+                           item.fields['snmpcredentials_id'],
+                           'SNMPCredential'|itemtype_name,
+                           field_options
+                        ) }}
                      {% endif %}
 
                      {% if item.isField('users_id') %}

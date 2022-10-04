@@ -495,11 +495,16 @@ class Location extends CommonTreeDropdown
                 'FROM'   => $table,
                 'WHERE'  => [
                     "$table.locations_id"   => $locations_id,
-                ] + getEntitiesRestrictCriteria($table, 'entities_id')
+                ]
             ];
             if ($item->maybeDeleted()) {
                 $itemtype_criteria['WHERE']['is_deleted'] = 0;
             }
+
+            if ($item->isEntityAssign()) {
+                $itemtype_criteria['WHERE'] + getEntitiesRestrictCriteria($table, 'entities_id');
+            }
+
             $queries[] = $itemtype_criteria;
         }
         $criteria = count($queries) === 1 ? $queries[0] : ['FROM' => new \QueryUnion($queries)];

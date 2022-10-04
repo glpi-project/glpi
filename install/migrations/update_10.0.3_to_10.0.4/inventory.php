@@ -38,29 +38,12 @@
  * @var Migration $migration
  */
 
-$default_charset = DBConnection::getDefaultCharset();
-$default_collation = DBConnection::getDefaultCollation();
-$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
-
-if (!$DB->tableExists('glpi_items_processes')) {
-    $query = "CREATE TABLE `glpi_items_processes` (
-      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-      `itemtype` varchar(100) DEFAULT NULL,
-      `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-      `cmd` text,
-      `cpuusage` float NOT NULL DEFAULT '0',
-      `memusage` float NOT NULL DEFAULT '0',
-      `pid` int NOT NULL DEFAULT '1',
-      `started` timestamp NULL DEFAULT NULL,
-      `tty` varchar(100) DEFAULT NULL,
-      `user` varchar(100) DEFAULT NULL,
-      `virtualmemory` int NOT NULL DEFAULT '1',
-      `is_deleted` tinyint NOT NULL DEFAULT '0',
-      `is_dynamic` tinyint NOT NULL DEFAULT '0',
-      PRIMARY KEY (`id`),
-      KEY `item` (`itemtype`,`items_id`),
-      KEY `is_deleted` (`is_deleted`),
-      KEY `is_dynamic` (`is_dynamic`)
-    ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->queryOrDie($query, "10.0 add table glpi_items_processes");
+//fix database schema inconsistency is_dynamic without is_deleted
+$tables = ["glpi_items_remotemanagements", "glpi_items_devicecameras_imageresolutions", "glpi_items_devicecameras_imageformats"];
+foreach ($tables as $table) {
+    $migration->addField($table, 'is_deleted', 'bool', ['value' => 0, 'after' => 'is_dynamic']);
+    $migration->addKey($table, "is_deleted");
 }
+
+//new right value for locked_field (previously based on config UPDATE)
+$migration->addRight('locked_field', CREATE | PURGE, ['config' => UPDATE]);

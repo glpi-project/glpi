@@ -645,6 +645,7 @@
    .faqadd_block {
       position: relative;
       display: inline-block;
+      width: max-content;
 
       .display_faq_chkbox {
          display: none;

@@ -45,6 +45,10 @@ if (!isset($_GET["id"])) {
 
 $language = new NotificationTemplateTranslation();
 
+$template = new NotificationTemplate();
+$template->getFromDB($_GET["notificationtemplates_id"]);
+$_SESSION['glpilisturl'][NotificationTemplateTranslation::getType()] = $template->getLinkURL();
+
 if (isset($_POST["add"])) {
     $language->check(-1, CREATE, $_POST);
     $newID = $language->add($_POST);

@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Auth;
+use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
 use Dropdown;
@@ -128,7 +129,7 @@ abstract class MainAsset extends InventoryAsset
             $val = new \stdClass();
 
             //set update system
-            $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
+            $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? AutoUpdateSystem::NATIVE_INVENTORY;
             $val->last_inventory_update = $_SESSION["glpi_currenttime"];
 
             if (isset($this->extra_data['hardware'])) {
@@ -589,11 +590,19 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (!is_numeric($input['autoupdatesystems_id'])) {
-            $input['autoupdatesystems_id'] = Dropdown::importExternal(
-                getItemtypeForForeignKeyField('autoupdatesystems_id'),
-                addslashes($input['autoupdatesystems_id']),
-                $input['entities_id']
-            );
+            $system_name = addslashes($input['autoupdatesystems_id']);
+            $auto_update_system = new AutoUpdateSystem();
+            if ($auto_update_system->getFromDBByCrit(['name' => $system_name])) {
+                // Load from DB
+                $input['autoupdatesystems_id'] = $auto_update_system->getID();
+            } else {
+                // Import
+                $input['autoupdatesystems_id'] = Dropdown::importExternal(
+                    getItemtypeForForeignKeyField('autoupdatesystems_id'),
+                    $system_name,
+                    $input['entities_id']
+                );
+            }
         }
         $refused_input['autoupdatesystems_id'] = $input['autoupdatesystems_id'];
 
@@ -634,6 +643,8 @@ abstract class MainAsset extends InventoryAsset
         }
         // append data from RuleLocation
         foreach ($this->rulelocation_data as $attribute => $value) {
+            $known_key = md5($attribute . $value);
+            $this->known_links[$known_key] = $value;
             $val->{$attribute} = $value;
         }
 

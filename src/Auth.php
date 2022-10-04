@@ -816,7 +816,7 @@ class Auth extends CommonGLPI
                                      'basedn'            => $ldap_method["basedn"],
                                      'login_field'       => $ldap_method['login_field'],
                                      'search_parameters' => $params,
-                                     'condition'         => $ldap_method["condition"],
+                                     'condition'         => Sanitizer::unsanitize($ldap_method["condition"]),
                                      'user_params'       => [
                                          'method' => AuthLDAP::IDENTIFIER_LOGIN,
                                          'value'  => $login_name

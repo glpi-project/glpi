@@ -53,6 +53,13 @@
          </div>
 
          <div class="timeline-badges">
+            {% if entry_i['requesttypes_id'] %}
+               <span class="badge bg-blue-lt" title="{{ __('Source of followup') }}">
+                  <i class="fas fa-inbox me-1"></i>
+                  {{ get_item_name('RequestType', entry_i['requesttypes_id']) }}
+               </span>
+            {% endif %}
+
             {% if entry_i['sourceitems_id'] %}
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
@@ -223,13 +230,16 @@
                                  <input type="checkbox" name="pending" value="1" class="form-check-input"
                                        id="enable-pending-reasons-{{ rand }}"
                                        role="button"
+                                       {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
                                        data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
                               </label>
                            </span>
 
-                           <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
-                              {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
-                           </div>
+                           {% if item.fields['status'] != constant('CommonITILObject::WAITING') %}
+                              <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
+                                 {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
+                              </div>
+                           {% endif %}
                         </span>
                      {% endif %}
                   </div>

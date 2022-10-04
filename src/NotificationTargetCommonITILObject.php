@@ -1204,10 +1204,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $users[] = $user_tmp->getName();
 
                     // Legacy authors data
-                    $author = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'author');
-                    $author['##author.title##'] = $author['##author.usertitle##'];
-                    $author['##author.category##'] = $author['##author.usercategory##'];
-                    $data['authors'][] = $author;
+                    $actor_data = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'author');
+                    $actor_data['##author.title##'] = $actor_data['##author.usertitle##'];
+                    $actor_data['##author.category##'] = $actor_data['##author.usercategory##'];
+                    $data['authors'][] = $actor_data;
 
                     $data['actors'][]  = self::getActorData($user_tmp, CommonITILActor::REQUESTER, 'actor');
                 } else {
@@ -1230,9 +1230,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $suppliers[] = $supplier->getName();
 
                     // Legacy suppliers data
-                    $supplier = self::getActorData($supplier, CommonITILActor::ASSIGN, 'supplier');
-                    $supplier['##supplier.type##'] = $supplier['##supplier.suppliertype##'];
-                    $data['suppliers'][] = $supplier;
+                    $actor_data = self::getActorData($supplier, CommonITILActor::ASSIGN, 'supplier');
+                    $actor_data['##supplier.type##'] = $actor_data['##supplier.suppliertype##'];
+                    $data['suppliers'][] = $actor_data;
 
                     $data['actors'][]    = self::getActorData($supplier, CommonITILActor::ASSIGN, 'actor');
                 }
@@ -1270,9 +1270,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                         $users[$uid] = $user_tmp->getName();
                     }
 
-                    $actor = self::getActorData($user_tmp, CommonITILActor::ASSIGN, 'actor');
-                    $actor['##actor.name##'] = $users[$uid]; // Use anonymized name
-                    $data['actors'][] = $actor;
+                    $actor_data = self::getActorData($user_tmp, CommonITILActor::ASSIGN, 'actor');
+                    $actor_data['##actor.name##'] = $users[$uid]; // Use anonymized name
+                    $data['actors'][] = $actor_data;
                 }
             }
             $data["##$objettype.assigntousers##"] = implode(', ', $users);

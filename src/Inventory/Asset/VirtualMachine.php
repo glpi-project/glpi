@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use AutoUpdateSystem;
 use Computer;
 use ComputerVirtualMachine;
 use Glpi\Inventory\Conf;
@@ -90,7 +91,7 @@ class VirtualMachine extends InventoryAsset
             }
 
             if (!property_exists($vm_val, 'autoupdatesystems_id')) {
-                $vm_val->autoupdatesystems_id = 'GLPI Native Inventory';
+                $vm_val->autoupdatesystems_id = AutoUpdateSystem::NATIVE_INVENTORY;
             }
 
             // Hack for BSD jails

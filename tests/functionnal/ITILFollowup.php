@@ -250,10 +250,9 @@ class ITILFollowup extends DbTestCase
             'itemtype'                        => \Ticket::class,
         ]));
 
-        $this->boolean($ticket->getFromDB($ticketID))
-         ->isTrue();
-        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])
-         ->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticketID))->isTrue();
+        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+        $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
 
        // Now using the _do_not_compute_takeintoaccount flag
         $ticketID = $this->getNewITILObject('Ticket');
@@ -269,11 +268,9 @@ class ITILFollowup extends DbTestCase
             'itemtype'                        => \Ticket::class,
         ]));
 
-        $this->boolean($ticket->getFromDB($ticketID))
-         ->isTrue();
-
-        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])
-         ->isEqualTo(0);
+        $this->boolean($ticket->getFromDB($ticketID))->isTrue();
+        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
 
        // Reset conf
         $_SESSION['glpiset_default_tech']      = $oldConf['glpiset_default_tech'];

@@ -661,6 +661,8 @@ class Printer extends CommonDBTM
 
         $tab = array_merge($tab, Printer_CartridgeInfo::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd(get_class($this)));
+
         return $tab;
     }
 

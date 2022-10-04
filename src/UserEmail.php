@@ -164,7 +164,7 @@ class UserEmail extends CommonDBChild
      * @param $field_name
      * @param $id
      **/
-    public function showChildForItemForm($canedit, $field_name, $id)
+    public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
 
         if ($this->isNewID($this->getID())) {
@@ -172,25 +172,31 @@ class UserEmail extends CommonDBChild
         } else {
             $value = Html::entities_deep($this->fields['email']);
         }
-
+        $result = "";
         $field_name = $field_name . "[$id]";
-        echo "<div class='d-flex align-items-center'>";
-        echo "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
+        $result .= "<div class='d-flex align-items-center'>";
+        $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
              value='" . $this->getID() . "'";
         if (!$canedit) {
-            echo " disabled";
+            $result .= " disabled";
         }
         if ($this->fields['is_default']) {
-            echo " checked";
+            $result .= " checked";
         }
-        echo ">&nbsp;";
+        $result .= ">&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
-            echo "<input type='hidden' name='$field_name' value='$value'>";
-            printf(__('%1$s %2$s'), $value, "<span class='b'>(" . __('D') . ")</span>");
+            $result .= "<input type='hidden' name='$field_name' value='$value'>";
+            $result .= sprintf(__('%1$s %2$s'), $value, "<span class='b'>(" . __('D') . ")</span>");
         } else {
-            echo "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
+            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
         }
-        echo "</div>";
+        $result .= "</div>";
+
+        if ($display) {
+            echo $result;
+        } else {
+            return $result;
+        }
     }
 
 

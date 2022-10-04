@@ -35,6 +35,8 @@
 
 class AutoUpdateSystem extends CommonDropdown
 {
+    public const NATIVE_INVENTORY = "GLPI Native Inventory";
+
     public static function getTypeName($nb = 0)
     {
         return _n('Update Source', 'Update Sources', $nb);

@@ -141,6 +141,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             );
         }
 
+        $rand = mt_rand();
         if ($canedit && $ok_state) {
             echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
             echo "<div class='center'>";

@@ -5444,7 +5444,7 @@ class CommonDBTM extends CommonGLPI
                 $is_recursive = $input['_job']->fields['is_recursive'];
             }
 
-           // Check for duplicate
+           // Check for duplicate and availability (e.g. file deleted in _files)
             if ($doc->getDuplicateOf($entities_id, $filename)) {
                 $docID = $doc->fields["id"];
                // File already exist, we replace the tag by the existing one
@@ -5459,6 +5459,14 @@ class CommonDBTM extends CommonGLPI
                         $input[$options['content_field']]
                     );
                     $docadded[$docID]['tag'] = $doc->fields["tag"];
+                }
+                if (!$doc->checkAvailability($filename)) {
+                    $doc->update([
+                        'id'                      => $docID,
+                        '_only_if_upload_succeed' => 1,
+                        '_filename'               => [$file],
+                        'current_filepath'        => $filename,
+                    ]);
                 }
             } else {
                 if ($this->getType() == 'Ticket') {
