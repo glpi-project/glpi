@@ -93,10 +93,14 @@ var Dashboard = {
         // compute the width offset of gridstack container relatively to viewport
         var elem_domRect = this.elem_dom.getBoundingClientRect();
         var width_offset = elem_domRect.left + (window.innerWidth - elem_domRect.right) + 0.02;
+        var max_row = options.rows;
+        if (!options.is_mini) {
+            max_row++; // +1 for a hidden item at bottom (to fix height)
+        }
 
         Dashboard.grid = GridStack.init({
             column: options.cols,
-            maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
+            maxRow: max_row,
             margin : this.cell_margin,
             float: true, // widget can be placed anywhere on the grid, not only on top
             animate: false, // as we don't move widget automatically, we don't need animation
