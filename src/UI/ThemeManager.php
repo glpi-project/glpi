@@ -40,6 +40,9 @@ final class ThemeManager
     public const DEFAULT_THEME = 'auror';
     public const CORE_THEME_ROOT = GLPI_ROOT . '/css/palettes/';
 
+    private array $core_themes = [];
+    private array $custom_themes = [];
+
     public static function getInstance(): self
     {
         static $instance = null;
@@ -55,9 +58,8 @@ final class ThemeManager
      */
     public function getCoreThemes(): array
     {
-        static $result = null;
-        if ($result === null) {
-            $result = [
+        if (empty($this->core_themes)) {
+            $this->core_themes = [
                 new Theme('aerialgreen', _x('theme', 'Aerial Green'), false, false),
                 new Theme('auror', _x('theme', 'Auror'), false, false),
                 new Theme('auror_dark', _x('theme', 'Dark Auror'), true, false),
@@ -79,7 +81,7 @@ final class ThemeManager
             ];
         }
 
-        return $result;
+        return $this->core_themes;
     }
 
     /**
@@ -88,11 +90,7 @@ final class ThemeManager
      */
     public function getCustomThemes(): array
     {
-        static $custom_themes = null;
-
-        if ($custom_themes === null) {
-            $custom_themes = [];
-
+        if (empty($this->custom_themes)) {
             $file_matches = [];
             // Cannot use GLOB_BRACE on some platforms (like the docker environment used for tests)
             $patterns = [
@@ -131,11 +129,11 @@ final class ThemeManager
                     $file_content = file_get_contents($file);
                     $is_dark = preg_match('/^\s*\$is-dark:\s*true;\s*$/im', $file_content);
                     $theme_name = ucfirst(str_replace('_', ' ', $file_name));
-                    $custom_themes[] = new Theme($file_name, $theme_name, $is_dark, true);
+                    $this->custom_themes[] = new Theme($file_name, $theme_name, $is_dark, true);
                 }
             }
         }
-        return $custom_themes;
+        return $this->custom_themes;
     }
 
     /**
