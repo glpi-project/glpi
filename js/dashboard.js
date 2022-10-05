@@ -320,6 +320,7 @@ var Dashboard = {
             glpi_ajax_dialog({
                 title: __("Edit this card"),
                 url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                dialogclass: 'modal-lg',
                 params: {
                     action:       'display_edit_widget',
                     gridstack_id: item.attr('gs-id'),
@@ -502,7 +503,9 @@ var Dashboard = {
         // prepare options
         form_data.card_options.color        = form_data.color || null;
         form_data.card_options.widgettype   = form_data.widgettype || null;
+        form_data.card_options.palette      = form_data.palette || null;
         form_data.card_options.use_gradient = form_data.use_gradient || 0;
+        form_data.card_options.palette      = form_data.palette || '';
         form_data.card_options.labels       = form_data.labels || 0;
         form_data.card_options.point_labels = form_data.point_labels || 0;
         form_data.card_options.legend       = form_data.legend || 0;

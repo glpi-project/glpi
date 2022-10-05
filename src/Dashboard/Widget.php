@@ -43,7 +43,6 @@ use Laminas\Json\Json;
 use Mexitek\PHPColors\Color;
 use Michelf\MarkdownExtra;
 use Plugin;
-use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\DomCrawler\Crawler;
 use Search;
 use Toolbox;
@@ -54,42 +53,6 @@ use Toolbox;
 class Widget
 {
     public static $animation_duration = 1000; // in millseconds
-
-    public static $palette_10 = [
-        "#4e79a7",
-        "#f28e2c",
-        "#e15759",
-        "#76b7b2",
-        "#59a14f",
-        "#edc949",
-        "#af7aa1",
-        "#ff9da7",
-        "#9c755f",
-        "#bab0ab",
-    ];
-
-    public static $palette_20 = [
-        '#1f77b4',
-        '#aec7e8',
-        '#ff7f0e',
-        '#ffbb78',
-        '#2ca02c',
-        '#98df8a',
-        '#d62728',
-        '#ff9896',
-        '#9467bd',
-        '#c5b0d5',
-        '#8c564b',
-        '#c49c94',
-        '#e377c2',
-        '#f7b6d2',
-        '#7f7f7f',
-        '#c7c7c7',
-        '#bcbd22',
-        '#dbdb8d',
-        '#17becf',
-        '#9edae5',
-    ];
 
 
     /**
@@ -109,6 +72,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::pie',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/pie.png',
                 'gradient' => true,
+                'palette'  => '',
                 'limit'    => true,
                 'legend'   => true,
                 'labels'   => true,
@@ -120,6 +84,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::donut',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/donut.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'legend'   => true,
                 'labels'   => true,
@@ -131,6 +96,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::halfPie',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/halfpie.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'legend'   => true,
                 'labels'   => true,
@@ -142,6 +108,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::halfDonut',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/halfdonut.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'legend'   => true,
                 'labels'   => true,
@@ -153,6 +120,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::simpleBar',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/bar.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -163,6 +131,7 @@ class Widget
                 'label'    => \Line::getTypeName(1),
                 'function' => 'Glpi\\Dashboard\\Widget::simpleLine',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/line.png',
+                'palette'  => false,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -174,6 +143,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::multipleLines',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/line.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -184,6 +154,8 @@ class Widget
                 'label'    => __("Area"),
                 'function' => 'Glpi\\Dashboard\\Widget::simpleArea',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/area.png',
+                'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -195,6 +167,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::multipleAreas',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/area.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -206,6 +179,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::multipleBars',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/bar.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -217,6 +191,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::multipleHBars',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/hbar.png',
                 'gradient' => true,
+                'palette'  => '',
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -228,6 +203,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::StackedBars',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/stacked.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -239,6 +215,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::stackedHBars',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/hstacked.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -250,6 +227,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::simpleHbar',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/hbar.png',
                 'gradient' => true,
+                'palette'  => true,
                 'limit'    => true,
                 'pointlbl' => true,
                 'legend'   => true,
@@ -260,6 +238,7 @@ class Widget
                 'label'    => __("Big number"),
                 'function' => 'Glpi\\Dashboard\\Widget::bigNumber',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/bignumber.png',
+                'palette'  => false,
             ],
             'multipleNumber' => [
                 'label'    => __("Multiple numbers"),
@@ -267,6 +246,7 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/multiplenumbers.png',
                 'limit'    => true,
                 'gradient' => true,
+                'palette'  => true,
                 'width'    => 3,
                 'height'   => 3,
             ],
@@ -276,12 +256,14 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/markdown.png',
                 'width'    => 4,
                 'height'   => 4,
+                'palette'  => false,
             ],
             'searchShowList' => [
                 'label'    => __("Search result"),
                 'function' => 'Glpi\\Dashboard\\Widget::searchShowList',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/table.png',
                 'limit'    => true,
+                'palette'  => false,
                 'width'    => 5,
                 'height'   => 4,
             ],
@@ -291,6 +273,7 @@ class Widget
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/summarynumber.png',
                 'limit'    => true,
                 'gradient' => true,
+                'palette'  => false,
                 'width'    => 4,
                 'height'   => 2,
             ],
@@ -299,6 +282,7 @@ class Widget
                 'function' => 'Glpi\\Dashboard\\Widget::articleList',
                 'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/articles.png',
                 'limit'    => true,
+                'palette'  => false,
                 'width'    => 3,
                 'height'   => 4,
             ],
@@ -579,6 +563,7 @@ HTML;
             'donut'        => false,
             'half'         => false,
             'use_gradient' => false,
+            'palette'      => '',
             'limit'        => 99999,
             'filters'      => [],
             'rand'         => mt_rand(),
@@ -657,7 +642,7 @@ HTML;
 
         $labels = json_encode($labels);
 
-        $colors = self::getDefaultPalette($nb_series);
+        $colors = self::getPalette($p['palette'], $nb_series);
         if ($p['use_gradient']) {
             $palette = self::getGradientPalette(
                 $p['color'],
@@ -1011,6 +996,7 @@ JAVASCRIPT;
             'horizontal'   => false,
             'distributed'  => false,
             'use_gradient' => false,
+            'palette'      => '',
             'point_labels' => false,
             'limit'        => 99999,
             'filters'      => [],
@@ -1048,7 +1034,7 @@ JAVASCRIPT;
         }
 
         $nb_series = count($series);
-        $palette = self::getDefaultPalette($nb_series);
+        $palette = self::getPalette($p['palette'], $nb_series);
         if ($p['use_gradient']) {
             $nb_colors = $p['distributed'] ? $nb_labels : $nb_series;
             $palette = self::getGradientPalette(
@@ -1388,6 +1374,7 @@ JAVASCRIPT;
             'legend'       => false,
             'multiple'     => false,
             'use_gradient' => false,
+            'palette'      => '',
             'show_points'  => true,
             'point_labels' => false,
             'line_width'   => 4,
@@ -1413,7 +1400,7 @@ JAVASCRIPT;
             array_splice($series[0], 0, -$nb_labels);
         }
 
-        $palette = self::getDefaultPalette($nb_series);
+        $palette = self::getPalette($p['palette'], $nb_series);
         if ($p['use_gradient']) {
             $palette = self::getGradientPalette(
                 $p['color'],
@@ -1852,6 +1839,13 @@ JAVASCRIPT;
     }
 
 
+    public static function getPalette(string $palette_name, int $nb_series = 0): array
+    {
+        $palette_obj = new Palette($palette_name);
+        return $palette_obj->get($nb_series);
+    }
+
+
     /**
      * Get a non-gradient palette based on the number of series
      * @param int $nb_series
@@ -1862,9 +1856,13 @@ JAVASCRIPT;
     {
         $palette = [];
 
+        $palettes = Palette::getAllPalettes();
+        $default10 = $palettes['tab10'];
+        $default20 = $palettes['tab20'];
+
         while (count($palette) < $nb_series) {
             $current_nb_series = abs(count($palette) - $nb_series);
-            $new_palette = $current_nb_series <= 10 ? self::$palette_10 : self::$palette_20;
+            $new_palette = $current_nb_series <= 10 ? $default10 : $default20;
 
             $palette = array_merge($palette, $new_palette);
         }

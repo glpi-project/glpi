@@ -698,6 +698,7 @@ HTML;
         $widgettype   = $cardopt['widgettype'] ?? "";
         $widget_def   = $widgettypes[$widgettype] ?? [];
         $use_gradient = $cardopt['use_gradient'] ?? 0;
+        $palette      = $cardopt['palette'] ?? '';
         $labels       = $cardopt['labels'] ?? 0;
         $point_labels = $cardopt['point_labels'] ?? 1;
         $legend       = $cardopt['legend'] ?? 1;
@@ -735,6 +736,7 @@ HTML;
             'color'        => $color,
             'card_id'      => $card_id,
             'use_gradient' => $use_gradient,
+            'palette'      => $palette,
             'labels'       => $labels,
             'point_labels' => $point_labels,
             'legend'       => $legend,
