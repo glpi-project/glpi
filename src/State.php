@@ -556,6 +556,12 @@ class State extends CommonTreeDropdown
             return true;
         }
 
+        // Apply collate
+        if (isset($where['name'])) {
+            $collate = $DB->use_utf8mb4 ? "utf8mb4_bin" : "utf8_bin";
+            $where['name'] = new QueryExpression($DB->quoteValue(addslashes($where['name'])) . " COLLATE $collate");
+        }
+
         $query = [
             'FROM'   => $this->getTable(),
             'COUNT'  => 'cpt',
