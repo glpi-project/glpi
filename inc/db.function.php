@@ -456,19 +456,6 @@ function getUserName($ID, $link = 0, $disable_anon = false)
     return $dbu->getUserName($ID, $link, $disable_anon);
 }
 
-/**
- * Get name of the user with ID
- *
- * @param integer $ID   ID of the user.
- *
- * @return string username string (realname if not empty and name if realname is empty).
- */
-function getUserNameForLog(int $ID)
-{
-    $dbu = new DbUtils();
-    return $dbu->getUserNameForLog($ID);
-}
-
 
 /**
  * Determine if an index exists in database
