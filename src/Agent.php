@@ -248,6 +248,13 @@ class Agent extends CommonDBTM
             'datatype'   => 'text',
         ] + $baseopts;
 
+        $tab[] = [
+            'id'         => 905,
+            'field'      => 'remote_addr',
+            'name'       => __('Public contact address'),
+            'datatype'   => 'text',
+        ] + $baseopts;
+
         return $tab;
     }
 
