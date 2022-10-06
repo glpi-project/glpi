@@ -105,11 +105,12 @@ class Agent extends DbTestCase
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
          ->string['action']->isIdenticalTo('inventory')
+         ->variable['port']->isIdenticalTo(null)
          ->string['tag']->isIdenticalTo('000005');
         $this->array($metadata['provider'])->hasSize(10);
 
@@ -202,11 +203,12 @@ class Agent extends DbTestCase
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
             ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
             ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
             ->string['itemtype']->isIdenticalTo('Computer')
             ->string['action']->isIdenticalTo('inventory')
+            ->variable['port']->isIdenticalTo(null)
             ->string['tag']->isIdenticalTo('000005');
         $this->array($metadata['provider'])->hasSize(10);
 
@@ -255,11 +257,12 @@ class Agent extends DbTestCase
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
             ->string['deviceid']->isIdenticalTo('glpixps-2022-01-17-11-36-53')
             ->string['version']->isIdenticalTo('GLPI-Agent_v1')
             ->string['itemtype']->isIdenticalTo('Computer')
             ->string['action']->isIdenticalTo('inventory')
+            ->variable['port']->isIdenticalTo(null)
             ->string['tag']->isIdenticalTo('000005');
         $this->array($metadata['provider'])->hasSize(10);
 
@@ -308,9 +311,10 @@ class Agent extends DbTestCase
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(5)
+        $this->array($metadata)->hasSize(6)
             ->string['itemtype']->isIdenticalTo('Computer')
             ->string['action']->isIdenticalTo('inventory')
+            ->variable['port']->isIdenticalTo(null)
             ->string['tag']->isIdenticalTo('000005');
 
         global $DB;
