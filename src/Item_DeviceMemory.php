@@ -68,4 +68,13 @@ class Item_DeviceMemory extends Item_Devices
             'busID'  => parent::getSpecificities('busID')
         ];
     }
+
+    public function getImportCriteria() :array
+    {
+        return [
+            'size' => 'equal',
+            'serial' => 'equal',
+            'busID' => 'equal',
+        ];
+    }
 }
