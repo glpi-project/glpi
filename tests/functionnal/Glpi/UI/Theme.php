@@ -36,12 +36,14 @@
 namespace tests\units\Glpi\UI;
 
 use DbTestCase;
+use Glpi\UI\ThemeManager;
+use org\bovigo\vfs\vfsStream;
 
 class Theme extends DbTestCase
 {
     public function testGetCoreThemes()
     {
-        $themes = \Glpi\UI\ThemeManager::getInstance()->getCoreThemes();
+        $themes = ThemeManager::getInstance()->getCoreThemes();
         $this->integer(count($themes))->isGreaterThan(0);
         // Each element should be a Theme object
         foreach ($themes as $theme) {
@@ -49,9 +51,33 @@ class Theme extends DbTestCase
         }
     }
 
+    public function testGetCustomThemes()
+    {
+        vfsStream::setup('custom_themes', null, [
+            'my_theme.scss' => '',
+            'my_dark_theme.scss' => <<<SCSS
+\$is-dark: true;
+SCSS
+        ]);
+        $theme_manager = new \mock\Glpi\UI\ThemeManager();
+        $this->calling($theme_manager)->getCustomThemesDirectory = static function () {
+            return vfsStream::url('custom_themes');
+        };
+        $custom_themes = $theme_manager->getCustomThemes();
+        $this->integer(count($custom_themes))->isIdenticalTo(2);
+        $my_theme = $theme_manager->getTheme('my_theme');
+        $this->object($my_theme)->isNotNull();
+        $this->boolean($my_theme->isDarkTheme())->isFalse();
+        $this->string($my_theme->getName())->isIdenticalTo('My theme');
+        $my_dark_theme = $theme_manager->getTheme('my_dark_theme');
+        $this->object($my_dark_theme)->isNotNull();
+        $this->boolean($my_dark_theme->isDarkTheme())->isTrue();
+        $this->string($my_dark_theme->getName())->isIdenticalTo('My dark theme');
+    }
+
     public function testGetAllThemes()
     {
-        $themes = \Glpi\UI\ThemeManager::getInstance()->getCoreThemes();
+        $themes = ThemeManager::getInstance()->getCoreThemes();
         $this->integer(count($themes))->isGreaterThan(0);
         // Each element should be a Theme object
         foreach ($themes as $theme) {
@@ -62,27 +88,27 @@ class Theme extends DbTestCase
     public function testGetCurrentTheme()
     {
         $this->login();
-        $theme = \Glpi\UI\ThemeManager::getInstance()->getCurrentTheme();
+        $theme = ThemeManager::getInstance()->getCurrentTheme();
         $this->object($theme)->isInstanceOf(\Glpi\UI\Theme::class);
         $this->string($theme->getKey())->isEqualTo('auror');
     }
 
     public function testGetTheme()
     {
-        $theme = \Glpi\UI\ThemeManager::getInstance()->getTheme('auror');
+        $theme = ThemeManager::getInstance()->getTheme('auror');
         $this->object($theme)->isInstanceOf(\Glpi\UI\Theme::class);
         $this->string($theme->getKey())->isEqualTo('auror');
     }
 
     public function testProperties()
     {
-        $theme_auror = \Glpi\UI\ThemeManager::getInstance()->getTheme('auror');
+        $theme_auror = ThemeManager::getInstance()->getTheme('auror');
         $this->string($theme_auror->getKey())->isEqualTo('auror');
         $this->string($theme_auror->getName())->isEqualTo('Auror');
         $this->boolean($theme_auror->isCustomTheme())->isFalse();
         $this->boolean($theme_auror->isDarkTheme())->isFalse();
 
-        $theme_midnight = \Glpi\UI\ThemeManager::getInstance()->getTheme('midnight');
+        $theme_midnight = ThemeManager::getInstance()->getTheme('midnight');
         $this->string($theme_midnight->getKey())->isEqualTo('midnight');
         $this->string($theme_midnight->getName())->isEqualTo('Midnight');
         $this->boolean($theme_midnight->isCustomTheme())->isFalse();
@@ -91,7 +117,7 @@ class Theme extends DbTestCase
 
     public function testConfigGetPalletes()
     {
-        $themes = \Glpi\UI\ThemeManager::getInstance()->getAllThemes();
+        $themes = ThemeManager::getInstance()->getAllThemes();
         $palettes = (new \Config())->getPalettes();
         $this->integer(count($palettes))->isEqualTo(count($themes));
         foreach ($themes as $theme) {

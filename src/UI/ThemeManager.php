@@ -35,7 +35,10 @@
 
 namespace Glpi\UI;
 
-final class ThemeManager
+/**
+ * Class that manages the core and custom themes (palettes).
+ */
+class ThemeManager
 {
     public const DEFAULT_THEME = 'auror';
     public const CORE_THEME_ROOT = GLPI_ROOT . '/css/palettes/';
@@ -85,18 +88,48 @@ final class ThemeManager
     }
 
     /**
+     * Get the path to the custom themes directory
+     * @return string
+     */
+    public function getCustomThemesDirectory(): string
+    {
+        return GLPI_THEMES_DIR;
+    }
+
+    /**
      * Get all themes present in the "palettes" directory that aren't core themes
      * @return Theme[]
      */
     public function getCustomThemes(): array
     {
         if (empty($this->custom_themes)) {
+            $custom_themes_dir = $this->getCustomThemesDirectory();
             $file_matches = [];
             // Cannot use GLOB_BRACE on some platforms (like the docker environment used for tests)
             $patterns = [
                 '*.css',
                 '*.scss'
             ];
+            /**
+             * PHP glob function calls libc glob which won't be aware of streams like vfsStream
+             *
+             * This workaround is needed for getting custom themes as the directory is mocked in tests
+             * @param $directory
+             * @param $filePattern
+             * @return array
+             */
+            $streamSafeGlob = static function ($directory, $filePattern) {
+                $files = scandir($directory);
+                $found = [];
+
+                foreach ($files as $filename) {
+                    if (fnmatch($filePattern, $filename)) {
+                        $found[] = $directory . '/' . $filename;
+                    }
+                }
+
+                return $found;
+            };
             foreach ($patterns as $pattern) {
                 foreach (glob(self::CORE_THEME_ROOT . $pattern) as $file) {
                     $file_name = pathinfo($file, PATHINFO_FILENAME);
@@ -105,7 +138,7 @@ final class ThemeManager
                     }
                     $file_matches[$file_name] = $file;
                 }
-                foreach (glob(GLPI_THEMES_DIR . '/' . $pattern) as $file) {
+                foreach ($streamSafeGlob($custom_themes_dir, $pattern) as $file) {
                     $file_name = pathinfo($file, PATHINFO_FILENAME);
                     if (str_starts_with($file_name, '_')) {
                         continue;
@@ -123,7 +156,7 @@ final class ThemeManager
             foreach ($file_matches as $file_name => $file) {
                 if (!in_array($file_name, $core_keys, true)) {
                     if (str_contains($file, self::CORE_THEME_ROOT)) {
-                        \Toolbox::deprecated('Custom theme file "' . $file_name . '" should be moved to ' . GLPI_THEMES_DIR);
+                        \Toolbox::deprecated('Custom theme file "' . $file_name . '" should be moved to ' . $custom_themes_dir);
                     }
                     // Guess dark mode based on if the file contains "$is-dark: true;"
                     $file_content = file_get_contents($file);
