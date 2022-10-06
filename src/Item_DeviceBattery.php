@@ -73,7 +73,7 @@ class Item_DeviceBattery extends Item_Devices
     {
         return [
             'serial' => 'equal',
-            'real_capacity' => 'delta:10'
+            //'real_capacity' => 'delta:10'
         ];
     }
 }

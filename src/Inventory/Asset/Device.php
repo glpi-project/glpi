@@ -155,6 +155,7 @@ abstract class Device extends InventoryAsset
                             ] + $this->handleInput($val, $itemdevice));
                         $itemdevice->update($itemdevice_data, false);
                         unset($existing[$device_id][$key]);
+                        break;
                     }
                 }
 
