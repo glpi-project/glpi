@@ -78,6 +78,10 @@ class OperatingSystem extends InventoryAsset
             $val->operatingsystems_id = $val->full_name;
         }
 
+        if (property_exists($val, 'install_date')) {
+            $val->install_date = $val->install_date;
+        }
+
         if (
             property_exists($val, 'operatingsystemarchitectures_id')
             && $val->operatingsystemarchitectures_id != ''
@@ -123,7 +127,7 @@ class OperatingSystem extends InventoryAsset
             //OS exists, check for updates
             $same = true;
             foreach ($input_os as $key => $value) {
-                if (isset($ios->fields[$key]) && $ios->fields[$key] != $value) {
+                if (array_key_exists($key, $ios->fields) && $ios->fields[$key] != $value) {
                     $same = false;
                     break;
                 }

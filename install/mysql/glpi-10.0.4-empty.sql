@@ -1145,6 +1145,7 @@ CREATE TABLE `glpi_items_operatingsystems` (
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `install_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`items_id`,`itemtype`,`operatingsystems_id`,`operatingsystemarchitectures_id`),
   KEY `item` (`itemtype`,`items_id`),
