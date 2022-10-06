@@ -403,7 +403,7 @@ class Computer extends AbstractInventoryAsset
         $computer = new \Computer();
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
 
-        //check serial came from "MSN" node.
+        //check last_boot came from "operatingsystem->boot_time" node.
         $this->string($computer->fields['last_boot'])->isIdenticalTo('2020-06-09 07:58:08');
     }
 }

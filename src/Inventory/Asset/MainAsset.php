@@ -762,7 +762,7 @@ abstract class MainAsset extends InventoryAsset
 
         $input = $this->handleInput($val, $this->item);
 
-        //try to get loast boot only available from operatingsystem node
+        //try to get "last_boot" only available from "operatingsystem->boot_time" node
         if (property_exists($this->raw_data->content, 'operatingsystem')) {
             if (property_exists($this->raw_data->content->operatingsystem, 'boot_time')) {
                 $input['last_boot'] = $this->raw_data->content->operatingsystem->boot_time;
