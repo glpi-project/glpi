@@ -294,6 +294,12 @@ class NotificationEventMailing extends NotificationEventAbstract
                                     $custom_width = $initial_width * $custom_height / $initial_height;
                                 }
 
+                                //if both are null keep initial size
+                                if (is_null($custom_height) && is_null($custom_width)) {
+                                    $custom_width = $initial_width;
+                                    $custom_height = $initial_height;
+                                }
+
                                 $image_path = Document::getImage(
                                     GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
                                     'mail',
