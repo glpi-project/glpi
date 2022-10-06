@@ -60,7 +60,8 @@ class Agent extends DbTestCase
             'deviceid'  => 'glpixps-2018-07-09-09-07-13',
             'version'   => 'FusionInventory-Agent_v2.5.2-1.fc31',
             'itemtype'  => 'Computer',
-            'tag'       => '000005'
+            'tag'       => '000005',
+            'port'       => '62354'
         ];
 
         $this
@@ -81,8 +82,10 @@ class Agent extends DbTestCase
         // In the case the agent is used to submit another item type, we still
         // need to have access to agent tag but no item should be linked
         $tag = $this->testedInstance->fields['tag'];
+        $port = $this->testedInstance->fields['port'];
         $items_id = $this->testedInstance->fields['items_id'];
         $this->string($tag)->isIdenticalTo('000005');
+        $this->string($port)->isIdenticalTo('62354');
         $this->integer($items_id)->isIdenticalTo(0);
     }
 
