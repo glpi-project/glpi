@@ -52,4 +52,11 @@ class Item_DeviceSensor extends Item_Devices
             'states_id'    => parent::getSpecificities('states_id'),
         ];
     }
+
+    public function getImportCriteria() :array
+    {
+        return [
+            'serial' => 'equal'
+        ];
+    }
 }

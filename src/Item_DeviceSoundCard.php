@@ -59,4 +59,12 @@ class Item_DeviceSoundCard extends Item_Devices
             'busID'  => parent::getSpecificities('busID')
         ];
     }
+
+    public function getImportCriteria() :array
+    {
+        return [
+            'serial' => 'serial',
+            'busID' => 'busID',
+        ];
+    }
 }

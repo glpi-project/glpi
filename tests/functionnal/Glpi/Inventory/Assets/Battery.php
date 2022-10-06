@@ -280,6 +280,7 @@ class Battery extends AbstractInventoryAsset
             'itemtype'     => 'Computer',
             'devicebatteries_id' => $battery_3_id
         ]);
+        $this->integer($item_battery_3_id)->isGreaterThan(0);
 
         $disks = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($disks))->isIdenticalTo(3);
