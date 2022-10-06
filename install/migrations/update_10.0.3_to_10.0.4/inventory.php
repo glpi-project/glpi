@@ -49,4 +49,4 @@ foreach ($tables as $table) {
 $migration->addRight('locked_field', CREATE | PURGE, ['config' => UPDATE]);
 
 //add date_install
-$migration->addField(getTableForItemType(Item_OperatingSystem::class), 'install_date', 'datetime');
+$migration->addField(getTableForItemType(Item_OperatingSystem::class), 'install_date', 'date');
