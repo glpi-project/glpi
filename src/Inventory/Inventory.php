@@ -195,7 +195,7 @@ class Inventory
 
         $this->metadata = [
             'deviceid'  => $this->raw_data->deviceid,
-            'port'      => $this->raw_data->port ?? null,
+            'port'      => $this->raw_data->{'httpd-port'} ?? null,
             'version'   => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
             'itemtype'  => $this->raw_data->itemtype ?? 'Computer',
         ];
