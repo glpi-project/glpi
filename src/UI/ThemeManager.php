@@ -184,12 +184,21 @@ class ThemeManager
      * Get the Theme object for the current $_SESSION['glpipalette'] value.
      *
      * If the "glpipalette" value is not set, the defautl theme is used.
-     * @return Theme|null
+     * @return Theme
      */
-    public function getCurrentTheme(): ?Theme
+    public function getCurrentTheme(): Theme
     {
         $current = $_SESSION['glpipalette'] ?? self::DEFAULT_THEME;
-        return $this->getTheme($current);
+        $theme = $this->getTheme($current);
+        if ($theme === null) {
+            // Force trying to get the default theme
+            $theme = $this->getTheme(self::DEFAULT_THEME);
+        }
+        // If the theme is still null, trigger an error
+        if ($theme === null) {
+            trigger_error('Theme "' . $current . '" not found', E_USER_ERROR);
+        }
+        return $theme;
     }
 
     /**
