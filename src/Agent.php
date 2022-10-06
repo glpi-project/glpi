@@ -343,10 +343,13 @@ class Agent extends CommonDBTM
 
         $remote_ip = "";
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            //Managing IP through a PROXY
             $remote_ip = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
         } elseif (isset($_SERVER['HTTP_X_REAL_IP'])) {
+            //try with X-Real-IP
             $remote_ip = $_SERVER['HTTP_X_REAL_IP'];
         } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            //then get connected IP
             $remote_ip = $_SERVER['REMOTE_ADDR'];
         }
 
