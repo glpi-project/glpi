@@ -441,6 +441,19 @@ class Item_OperatingSystem extends CommonDBRelation
         ];
 
         $tab[] = [
+            'id'                 => '66',
+            'table'              => 'glpi_items_operatingsystems',
+            'field'              => 'install_date',
+            'name'               => __('Installation date'),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'specific_itemtype'  => $itemtype
+            ]
+        ];
+
+        $tab[] = [
             'id'                 => '61',
             'table'              => 'glpi_operatingsystemarchitectures',
             'field'              => 'name',
