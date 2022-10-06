@@ -1634,8 +1634,8 @@ DROP TABLE IF EXISTS `glpi_dashboards_items`;
 CREATE TABLE `glpi_dashboards_items` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `dashboards_dashboards_id` int unsigned NOT NULL,
-  `gridstack_id` varchar(100) NOT NULL,
-  `card_id` varchar(100) NOT NULL,
+  `gridstack_id` varchar(255) NOT NULL,
+  `card_id` varchar(255) NOT NULL,
   `x` int DEFAULT NULL,
   `y` int DEFAULT NULL,
   `width` int DEFAULT NULL,
