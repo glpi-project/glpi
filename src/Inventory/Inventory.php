@@ -194,9 +194,10 @@ class Inventory
         }
 
         $this->metadata = [
-            'deviceid' => $this->raw_data->deviceid,
-            'version' => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
-            'itemtype' => $this->raw_data->itemtype ?? 'Computer',
+            'deviceid'  => $this->raw_data->deviceid,
+            'port'      => $this->raw_data->port ?? null,
+            'version'   => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
+            'itemtype'  => $this->raw_data->itemtype ?? 'Computer',
         ];
 
         if (property_exists($this->raw_data, 'content') && property_exists($this->raw_data->content, 'versionprovider')) {

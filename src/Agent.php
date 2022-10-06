@@ -329,6 +329,10 @@ class Agent extends CommonDBTM
             $input['tag'] = $metadata['tag'];
         }
 
+        if (isset($metadata['port']) && !is_null($metadata['port'])) {
+            $input['port'] = $metadata['port'];
+        }
+
         $has_expected_agent_type = in_array($metadata['itemtype'], $CFG_GLPI['agent_types']);
         if ($deviceid === 'foo' || (!$has_expected_agent_type && !$aid)) {
             $input += [
