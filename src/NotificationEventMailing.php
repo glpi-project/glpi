@@ -284,7 +284,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 $initial_width = $img_infos[0];
                                 $initial_height = $img_infos[1];
 
-                                //computer height if need
+                                //compute height if need
                                 if ($custom_width && is_null($custom_height)) {
                                     $custom_height = $initial_height * $custom_width / $initial_width;
                                 }
