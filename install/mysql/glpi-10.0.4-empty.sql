@@ -8757,6 +8757,7 @@ CREATE TABLE `glpi_agents` (
   `useragent` varchar(255) DEFAULT NULL,
   `tag` varchar(255) DEFAULT NULL,
   `port` varchar(6) DEFAULT NULL,
+  `remote_addr` varchar(255) DEFAULT NULL,
   `threads_networkdiscovery` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network discovery',
   `threads_networkinventory` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network inventory',
   `timeout_networkdiscovery` int NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
