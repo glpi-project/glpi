@@ -761,6 +761,13 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = $this->handleInput($val, $this->item);
+
+        //try to get loast boot only available from operatingsystem node
+        if (property_exists($this->raw_data->content, 'operatingsystem')) {
+            if (property_exists($this->raw_data->content->operatingsystem, 'boot_time')) {
+                $input['last_boot'] = $this->raw_data->content->operatingsystem->boot_time;
+            }
+        }
         $this->item->update(Toolbox::addslashes_deep($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
