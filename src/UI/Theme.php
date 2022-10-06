@@ -77,8 +77,22 @@ final class Theme
         return $this->is_custom;
     }
 
-    public function getPreviewPath(): string
+    private function getBaseDir(bool $relative = true): string
     {
-        return ThemeManager::CORE_THEME_ROOT . '/previews/' . $this->getKey() . '.png';
+        $path = $this->is_custom ? ThemeManager::getInstance()->getCustomThemesDirectory() : ThemeManager::CORE_THEME_ROOT;
+        if ($relative) {
+            $path = str_replace(GLPI_ROOT, '', $path);
+        }
+        return $path;
+    }
+
+    public function getPreviewPath(bool $relative = true): string
+    {
+        return $this->getBaseDir($relative) . '/previews/' . $this->getKey() . '.png';
+    }
+
+    public function getPath(bool $relative = true): string
+    {
+        return $this->getBaseDir($relative) . '/' . $this->getKey() . '.scss';
     }
 }

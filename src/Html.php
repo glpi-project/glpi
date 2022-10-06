@@ -1262,12 +1262,12 @@ HTML;
        // Send extra expires header
         self::header_nocache();
 
-        $theme = $_SESSION['glpipalette'] ?? 'auror';
+        $theme = ThemeManager::getInstance()->getCurrentTheme();
 
         $tpl_vars = [
             'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
             'title'     => $title,
-            'theme'     => ThemeManager::getInstance()->getCurrentTheme(),
+            'theme'     => $theme,
             'css_files' => [],
             'js_files'  => [],
         ];
@@ -1428,7 +1428,7 @@ HTML;
                 }
             }
         }
-        $tpl_vars['css_files'][] = ['path' => 'css/palettes/' . $theme . '.scss'];
+        $tpl_vars['css_files'][] = ['path' => $theme->getPath()];
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
 
@@ -3878,7 +3878,8 @@ JS;
         $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs6/' . $language . '.js';
 
        // Apply all GLPI styles to editor content
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss(('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror') . '.scss', ['force_no_version' => true]))
+        $theme = ThemeManager::getInstance()->getCurrentTheme();
+        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($theme->getPath(), ['force_no_version' => true]))
          . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
