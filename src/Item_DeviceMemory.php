@@ -72,9 +72,9 @@ class Item_DeviceMemory extends Item_Devices
     public function getImportCriteria() :array
     {
         return [
-            'size' => 'equal',
+            'size' => 'delta:10',
             'serial' => 'equal',
-            'busID' => 'equal',
+            //'busID' => 'equal',
         ];
     }
 }

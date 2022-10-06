@@ -135,8 +135,8 @@ abstract class Device extends InventoryAsset
 
                             case 'delta':
                                 if (
-                                    $i_input[$field] - (int)$compare[1] < $existing_item[$field]
-                                    || $i_input[$field] + (int)$compare[1] > $existing_item[$field]
+                                    $i_input[$field] - (int)$compare[1] > $existing_item[$field]
+                                    && $i_input[$field] + (int)$compare[1] < $existing_item[$field]
                                 ) {
                                     $equals = false;
                                 }

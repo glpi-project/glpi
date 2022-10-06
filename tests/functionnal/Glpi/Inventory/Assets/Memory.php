@@ -189,14 +189,18 @@ class Memory extends AbstractInventoryAsset
         $item_mem_1_id = $item_mem->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicememories_id' => $mem_1_id
+            'devicememories_id' => $mem_1_id,
+            'serial' => '97842456',
+            'size' => '8192'
         ]);
         $this->integer($item_mem_1_id)->isGreaterThan(0);
 
         $item_mem_2_id = $item_mem->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicememories_id' => $mem_1_id
+            'devicememories_id' => $mem_1_id,
+            'serial' => '97842457',
+            'size' => '8192'
         ]);
         $this->integer($item_mem_2_id)->isGreaterThan(0);
 
