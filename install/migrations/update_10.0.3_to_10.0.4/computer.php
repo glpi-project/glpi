@@ -38,4 +38,4 @@
  * @var Migration $migration
  */
 
-$migration->addField(getTableForItemType(Computer::class), 'last_boot', 'datetime');
+$migration->addField('glpi_computers', 'last_boot', 'datetime');
