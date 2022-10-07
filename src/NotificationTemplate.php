@@ -309,7 +309,7 @@ class NotificationTemplate extends CommonDBTM
                          <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
                          <title>" . Html::entities_deep($lang['subject']) . "</title>
                          <style type='text/css'>
-                           " . $this->fields['css'] . "
+                           " . Sanitizer::decodeHtmlSpecialChars($this->fields['css']) . "
                          </style>
                         </head>
                         <body>\n" . (!empty($add_header) ? $add_header . "\n<br><br>" : '') .
