@@ -138,15 +138,14 @@ class Device extends AbstractInventoryAsset
 
         //check item_device_memory is the same from first step
         foreach ($data_to_check as $data_value) {
-          $memories = $item_mem->find(['id' => $data_value['items_id'], "itemtype" => \Computer::class, 'is_dynamic' => 1]);
-          $this->integer(count($memories))->isIdenticalTo(1);
+            $memories = $item_mem->find(['id' => $data_value['items_id'], "itemtype" => \Computer::class, 'is_dynamic' => 1]);
+            $this->integer(count($memories))->isIdenticalTo(1);
         }
 
         //check infocom still exists
         foreach ($data_to_check as $data_value) {
-          $info_coms = $info_com->find(['id' => $data_value['id'], "buy_date" => $infocom_buy_date, "value" => $infocom_value]);
-          $this->integer(count($info_coms))->isIdenticalTo(1);
+            $info_coms = $info_com->find(['id' => $data_value['id'], "buy_date" => $infocom_buy_date, "value" => $infocom_value]);
+            $this->integer(count($info_coms))->isIdenticalTo(1);
         }
-
     }
 }

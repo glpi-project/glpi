@@ -118,7 +118,7 @@ abstract class Device extends InventoryAsset
                 }
 
                 //check if deviceitem should be updated or added.
-                foreach($existing[$device_id] ?? [] as $key => $existing_item) {
+                foreach ($existing[$device_id] ?? [] as $key => $existing_item) {
                     $equals = true;
                     foreach ($i_criteria as $field => $compare) {
                         if ($equals === false) {
@@ -151,12 +151,12 @@ abstract class Device extends InventoryAsset
                     if ($equals === true) {
                         $itemdevice->getFromDB($existing_item['id']);
                         $itemdevice_data = \Toolbox::addslashes_deep([
-                                'id'                 => $existing_item['id'],
-                                $fk                  => $device_id,
-                                'itemtype'           => $this->item->getType(),
-                                'items_id'           => $this->item->fields['id'],
-                                'is_dynamic'         => 1
-                            ] + $this->handleInput($val, $itemdevice));
+                            'id'                 => $existing_item['id'],
+                            $fk                  => $device_id,
+                            'itemtype'           => $this->item->getType(),
+                            'items_id'           => $this->item->fields['id'],
+                            'is_dynamic'         => 1
+                        ] + $this->handleInput($val, $itemdevice));
                         $itemdevice->update($itemdevice_data, false);
                         unset($existing[$device_id][$key]);
                         break;
@@ -166,11 +166,11 @@ abstract class Device extends InventoryAsset
                 if (($equals ?? false) !== true) {
                     $itemdevice->getEmpty();
                     $itemdevice_data = \Toolbox::addslashes_deep([
-                            $fk => $device_id,
-                            'itemtype' => $this->item->getType(),
-                            'items_id' => $this->item->fields['id'],
-                            'is_dynamic' => 1
-                        ] + $this->handleInput($val, $itemdevice));
+                        $fk => $device_id,
+                        'itemtype' => $this->item->getType(),
+                        'items_id' => $this->item->fields['id'],
+                        'is_dynamic' => 1
+                    ] + $this->handleInput($val, $itemdevice));
                     $itemdevice->add($itemdevice_data, [], false);
                     $this->itemdeviceAdded($itemdevice, $val);
                 }
