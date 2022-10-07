@@ -69,7 +69,7 @@ class Item_DeviceBattery extends Item_Devices
         ];
     }
 
-    public function getImportCriteria() :array
+    public function getImportCriteria(): array
     {
         return [
             'serial' => 'equal',

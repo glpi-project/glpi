@@ -53,7 +53,7 @@ class Item_DevicePowerSupply extends Item_Devices
         ];
     }
 
-    public function getImportCriteria() :array
+    public function getImportCriteria(): array
     {
         return [
             'serial' => 'equal',

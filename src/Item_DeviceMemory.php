@@ -69,7 +69,7 @@ class Item_DeviceMemory extends Item_Devices
         ];
     }
 
-    public function getImportCriteria() :array
+    public function getImportCriteria(): array
     {
         return [
             'size' => 'delta:10',

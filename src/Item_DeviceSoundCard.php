@@ -60,7 +60,7 @@ class Item_DeviceSoundCard extends Item_Devices
         ];
     }
 
-    public function getImportCriteria() :array
+    public function getImportCriteria(): array
     {
         return [
             'serial' => 'serial',

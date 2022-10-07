@@ -66,7 +66,7 @@ class Item_DeviceNetworkCard extends Item_Devices
         ];
     }
 
-    public function getImportCriteria() :array
+    public function getImportCriteria(): array
     {
         return [
             'mac' => 'equal',

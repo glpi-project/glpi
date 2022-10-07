@@ -53,7 +53,7 @@ class Item_DeviceFirmware extends Item_Devices
         ];
     }
 
-    public function getImportCriteria() :array
+    public function getImportCriteria(): array
     {
         return [
             'serial' => 'equal'

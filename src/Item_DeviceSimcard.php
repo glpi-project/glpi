@@ -136,7 +136,7 @@ class Item_DeviceSimcard extends Item_Devices
         return 'serial';
     }
 
-    public function getImportCriteria() :array
+    public function getImportCriteria(): array
     {
         return [
             'serial' => 'equal',
