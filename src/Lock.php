@@ -172,15 +172,14 @@ class Lock extends CommonGLPI
             //get fields labels
             $search_options = Search::getOptions($itemtype);
             foreach ($search_options as $search_option) {
-                //get name from 'field' first and continue if found
-                if (isset($search_option['field'])) {
-                    $so_fields[$search_option['field']] = $search_option['name'];
-                    continue;
-                }
-                //else get name from 'linkfield' if not found from 'field'
-                if (isset($search_option['linkfield'])) {
-                    $so_fields[$search_option['linkfield']] = $search_option['name'];
-                    continue;
+                //exclude SO added by dropdown part (to get real name)
+                //ex : Manufacturer != Firmware : Manufacturer
+                if (isset($search_option['table']) && $search_option['table'] == getTableForItemType($itemtype)) {
+                    if (isset($search_option['linkfield'])) {
+                        $so_fields[$search_option['linkfield']] = $search_option['name'];
+                    } else if (isset($search_option['field'])) {
+                        $so_fields[$search_option['field']] = $search_option['name'];
+                    }
                 }
             }
 
