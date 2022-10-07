@@ -49,12 +49,20 @@ class InstallationNotOverriden extends AbstractRequirement
 
     protected function check()
     {
+        $version_folder = GLPI_ROOT . '/.version/';
         try {
-            $file_iterator = new FilesystemIterator(GLPI_ROOT . '/.version', FilesystemIterator::SKIP_DOTS);
-        } catch (\UnexpectedValueException $th) {
+            $file_iterator = new FilesystemIterator($version_folder);
+        } catch (\UnexpectedValueException $e) {
             $this->validated = false;
             $this->validation_messages[] = __("`.version` folder doesn't exist.");
             $this->optional = true;
+            return;
+        }
+
+        if (iterator_count($file_iterator) == 0) {
+            $this->validated = false;
+            $this->optional  = true;
+            $this->validation_messages[] = __("Cannot check as no version file found.");
             return;
         }
 
@@ -64,6 +72,19 @@ class InstallationNotOverriden extends AbstractRequirement
             $this->validation_messages[] = __("We detected files of previous versions of GLPI.");
             $this->validation_messages[] = __("This can lead to security issues or bugs.");
             $this->validation_messages[] = __("Please update your instance according to the recommanded procedure.");
+            return;
+        }
+
+        $file_iterator->rewind();
+        $file_version = $file_iterator->current()->getFilename();
+        $current_version = preg_replace('/^(\d+\.\d+\.\d+)(-.+)?$/', '$1', GLPI_VERSION);
+        if (!file_exists($version_folder . $current_version)) {
+            $this->validated = false;
+            $this->validation_messages[] = sprintf(
+                __("GLPI version found base in filesystem (%s) mismatches the one defined in includes (%s)."),
+                $file_version,
+                $current_version
+            );
             return;
         }
 
