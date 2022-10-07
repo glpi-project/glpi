@@ -222,19 +222,20 @@ class Html
     /**
      * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
      *
-     * @param string       $time    Datetime to convert
-     * @param integer|null $format  Datetime format
+     * @param string       $time            Datetime to convert
+     * @param integer|null $format          Datetime format
+     * @param bool         $with_seconds    Indicates if seconds should be present in output
      *
      * @return null|string
      **/
-    public static function convDateTime($time, $format = null)
+    public static function convDateTime($time, $format = null, bool $with_seconds = false)
     {
 
         if (is_null($time) || ($time == 'NULL')) {
             return null;
         }
 
-        return self::convDate($time, $format) . ' ' . substr($time, 11, 5);
+        return self::convDate($time, $format) . ' ' . substr($time, 11, $with_seconds ? 8 : 5);
     }
 
 
