@@ -37,10 +37,7 @@ namespace Glpi\System\Requirement;
 
 use FilesystemIterator;
 
-/**
- * @since 9.5.0
- */
-class InstallationNotOverriden extends AbstractRequirement
+final class InstallationNotOverriden extends AbstractRequirement
 {
     public function __construct()
     {
@@ -77,7 +74,7 @@ class InstallationNotOverriden extends AbstractRequirement
 
         $file_iterator->rewind();
         $file_version = $file_iterator->current()->getFilename();
-        $current_version = preg_replace('/^(\d+\.\d+\.\d+)(-.+)?$/', '$1', GLPI_VERSION);
+        $current_version = \Glpi\Toolbox\VersionParser::getNormalizedVersion(GLPI_VERSION, false);
         if (!file_exists($version_folder . $current_version)) {
             $this->validated = false;
             $this->validation_messages[] = sprintf(
