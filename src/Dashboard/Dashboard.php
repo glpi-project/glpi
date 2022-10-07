@@ -476,12 +476,16 @@ class Dashboard extends \CommonDBTM
         ];
         $rights = array_merge_recursive($default_rights, $rights);
 
+        if (!Session::getLoginUserID()) {
+            return false;
+        }
+
        // check specific rights
         if (
-            count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities'] ?? []))
-            || in_array($_SESSION["glpiactiveprofile"]['id'] ?? null, $rights['profiles_id'])
-            || in_array($_SESSION['glpiID'] ?? null, $rights['users_id'])
-            || count(array_intersect($rights['groups_id'], $_SESSION['glpigroups'] ?? []))
+            count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities']))
+            || in_array($_SESSION["glpiactiveprofile"]['id'], $rights['profiles_id'])
+            || in_array($_SESSION['glpiID'], $rights['users_id'])
+            || count(array_intersect($rights['groups_id'], $_SESSION['glpigroups']))
         ) {
             return true;
         }
