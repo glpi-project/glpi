@@ -36,6 +36,7 @@
 namespace test\units;
 
 use DbTestCase;
+use Generator;
 use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/knowbaseitem.class.php */
@@ -507,5 +508,319 @@ HTML
             $category_ids[] = $row['knowbaseitemcategories_id'];
         }
         $this->array($category_ids)->containsValues([$kb_cat_id1, $kb_cat_id2]);
+    }
+
+    protected function testGetVisibilityCriteriaProvider(): Generator
+    {
+        yield from $this->testGetVisibilityCriteriaProvider_FAQ();
+        yield from $this->testGetVisibilityCriteriaProvider_KB();
+    }
+
+    protected function testGetVisibilityCriteriaProvider_FAQ(): Generator
+    {
+        global $DB, $CFG_GLPI;
+
+        // Removing existing data
+        $DB->delete(\KnowbaseItem::getTable(), [1]);
+        $this->integer(countElementsInTable(\KnowbaseItem::getTable()))->isEqualTo(0);
+
+        // Create set of test subjects
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->createItems("KnowbaseItem", [
+            [
+                'name'     => 'FAQ 1',
+                'answer'   => 'FAQ 1',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 2',
+                'answer'   => 'FAQ 2',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 3',
+                'answer'   => 'FAQ 3',
+                'is_faq'   => false, // Not really a FAQ article
+                'users_id' => $glpi_user,
+            ]
+        ]);
+
+        // Set entity for FAQ 2
+        $faq_2 = getItemByTypeName("KnowbaseItem", "FAQ 2", true);
+        $this->createItem("Entity_KnowbaseItem", [
+            'knowbaseitems_id' => $faq_2,
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+        ]);
+
+        // First FAQ test case: public FAQ disabled
+        $CFG_GLPI['use_public_faq'] = false;
+        yield ['articles' => []];
+
+        // Second FAQ test case: public FAQ enabled + multi entities
+        if (!isset($_SESSION['glpi_multientitiesmode'])) {
+            $_SESSION['glpi_multientitiesmode'] = 1;
+        }
+        $this->integer($_SESSION['glpi_multientitiesmode'])->isEqualTo(1);
+        $CFG_GLPI['use_public_faq'] = true;
+        yield ['articles' => ['FAQ 2']];
+
+        // Third FAQ test case: public FAQ enabled + single entity
+        $_SESSION['glpi_multientitiesmode'] = 0;
+        yield ['articles' => ['FAQ 1', 'FAQ 2']];
+
+        // Revert session / config
+        $_SESSION['glpi_multientitiesmode'] = 1;
+        $CFG_GLPI['use_public_faq'] = false;
+    }
+
+    protected function testGetVisibilityCriteriaProvider_KB(): Generator
+    {
+        // Create set of test subjects
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $tech_user = getItemByTypeName("User", "tech", true);
+        $this->createItems("KnowbaseItem", [
+            [
+                'name'     => 'KB 1',
+                'answer'   => 'KB 1',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 2',
+                'answer'   => 'KB 2',
+                'is_faq'   => false,
+                'users_id' => $tech_user, // Specific author (our test user)
+            ],
+            [
+                'name'     => 'KB 3',
+                'answer'   => 'KB 3',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 4',
+                'answer'   => 'KB 4',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 5',
+                'answer'   => 'KB 5',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 6',
+                'answer'   => 'KB 6',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 7',
+                'answer'   => 'KB 7',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 8',
+                'answer'   => 'KB 8',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 9',
+                'answer'   => 'KB 9',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 10',
+                'answer'   => 'KB 10',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 11',
+                'answer'   => 'KB 11',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 12',
+                'answer'   => 'KB 12',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'KB 13',
+                'answer'   => 'KB 13',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+            ],
+        ]);
+
+        // First three KB article will be visible only for a given user
+        $kb_1 = getItemByTypeName("KnowbaseItem", "KB 1", true);
+        $kb_2 = getItemByTypeName("KnowbaseItem", "KB 2", true);
+        $kb_3 = getItemByTypeName("KnowbaseItem", "KB 3", true);
+        $normal_user = getItemByTypeName("User", "normal", true);
+        $this->createItems("KnowbaseItem_User", [
+            [
+                'knowbaseitems_id' => $kb_1,
+                'users_id' => $normal_user,
+            ],
+            [
+                'knowbaseitems_id' => $kb_2,
+                'users_id' => $normal_user,
+            ],
+            [
+                'knowbaseitems_id' => $kb_3,
+                'users_id' => $tech_user, // Allowed for our test user
+            ],
+        ]);
+
+        // Add group restrictions for articles 4 to 7
+        $kb_4 = getItemByTypeName("KnowbaseItem", "KB 4", true);
+        $kb_5 = getItemByTypeName("KnowbaseItem", "KB 5", true);
+        $kb_6 = getItemByTypeName("KnowbaseItem", "KB 6", true);
+        $kb_7 = getItemByTypeName("KnowbaseItem", "KB 7", true);
+        $group_a = $this->createItem("Group", [
+            "name" => "Group KB A",
+            'is_recursive' => 1,
+        ])->fields['id'];
+        $group_b = $this->createItem("Group", [
+            "name" => "Group KB A",
+            'is_recursive' => 1,
+        ])->fields['id'];
+        $this->createItem("Group_User", ['users_id' => $tech_user, 'groups_id' => $group_a]);
+        $this->createItems("Group_KnowbaseItem", [
+            [
+                'knowbaseitems_id' => $kb_4,
+                'groups_id' => $group_a, // Our test user is part of this group
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                'no_entity_restriction' => false,
+            ],
+            [
+                'knowbaseitems_id' => $kb_5,
+                'groups_id' => $group_b,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                'no_entity_restriction' => false,
+            ],
+            [
+                'knowbaseitems_id' => $kb_6,
+                'groups_id' => $group_a, // Our test user is part of this group
+                'entities_id' => 0,
+                'is_recursive' => 0,
+                'no_entity_restriction' => false,
+            ],
+            [
+                'knowbaseitems_id' => $kb_7,
+                'groups_id' => $group_a, // Our test user is part of this group
+                'entities_id' => 0,
+                'is_recursive' => 0,
+                'no_entity_restriction' => true,
+            ],
+        ]);
+
+        // Add profiles restrictions for article 8 to 11
+        $kb_8 = getItemByTypeName("KnowbaseItem", "KB 8", true);
+        $kb_9 = getItemByTypeName("KnowbaseItem", "KB 9", true);
+        $kb_10 = getItemByTypeName("KnowbaseItem", "KB 10", true);
+        $kb_11 = getItemByTypeName("KnowbaseItem", "KB 11", true);
+        $this->createItems("KnowbaseItem_Profile", [
+            [
+                'knowbaseitems_id' => $kb_8,
+                'profiles_id' => getItemByTypeName("Profile", "Technician", true), // our test user have this profile
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                'no_entity_restriction' => false,
+            ],
+            [
+                'knowbaseitems_id' => $kb_9,
+                'profiles_id' => getItemByTypeName("Profile", "Technician", true), // our test user have this profile
+                'entities_id' => 0,
+                'is_recursive' => 0,
+                'no_entity_restriction' => false,
+            ],
+            [
+                'knowbaseitems_id' => $kb_10,
+                'profiles_id' => getItemByTypeName("Profile", "Technician", true), // our test user have this profile
+                'entities_id' => 0,
+                'is_recursive' => 0,
+                'no_entity_restriction' => true,
+            ],
+            [
+                'knowbaseitems_id' => $kb_11,
+                'profiles_id' => getItemByTypeName("Profile", "Hotliner", true),
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                'no_entity_restriction' => false,
+            ],
+        ]);
+
+        // Add entity restriction for articles 12 and 13
+        $kb_12 = getItemByTypeName("KnowbaseItem", "KB 12", true);
+        $kb_13 = getItemByTypeName("KnowbaseItem", "KB 13", true);
+        $this->createItems("Entity_KnowbaseItem", [
+            [
+                'knowbaseitems_id' => $kb_12,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+            ],
+            [
+                'knowbaseitems_id' => $kb_13,
+                'entities_id' => 0,
+                'is_recursive' => 0,
+            ],
+        ]);
+
+        // Check articles visible for "tech" user
+        $this->login('tech', 'tech');
+        yield [
+            'articles' => [
+                'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 6', 'KB 7', 'KB 8', 'KB 9',
+                'KB 10', 'KB 12', 'KB 13',
+            ]
+        ];
+
+        // Switch entities
+        $this->setEntity("_test_child_1", true);
+        yield [
+            'articles' => [
+                'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 7', 'KB 8', 'KB 10', 'KB 12'
+            ]
+        ];
+
+        // Last test, admin should see all articles
+        $this->login('glpi', 'glpi');
+        yield [
+            'articles' => [
+                'FAQ 1', 'FAQ 2', 'FAQ 3', 'KB 1', 'KB 2', 'KB 3', 'KB 4',
+                'KB 5', 'KB 6', 'KB 7', 'KB 8', 'KB 9', 'KB 10', 'KB 11',
+                'KB 12', 'KB 13',
+            ]
+        ];
+    }
+
+    /**
+     * @dataprovider testGetVisibilityCriteriaProvider
+     */
+    public function testGetVisibilityCriteria(array $articles)
+    {
+        global $DB;
+
+        $criteria = array_merge(\KnowbaseItem::getVisibilityCriteria(false), [
+            'SELECT' => 'name',
+            'FROM'   => \KnowbaseItem::getTable()
+        ]);
+
+        $data = $DB->request($criteria);
+        $result = array_column(iterator_to_array($data), "name");
+        $this->array($result)->isEqualTo($articles);
     }
 }
