@@ -146,19 +146,6 @@ class Lock extends CommonGLPI
                         continue;
                     }
                     $query['WHERE'][] = $connexity_criteria['WHERE'];
-                } else {
-                    if (
-                        property_exists($lockable_object, 'items_id')
-                        && getForeignKeyFieldForItemType($itemtype) == $lockable_object::$items_id
-                    ) {
-                        $query['WHERE'][] = [getTableForItemType($lockable_itemtype) . '.' . $lockable_object::$items_id => $ID];
-                    } elseif (property_exists($lockable_object, 'items_id_1') && getForeignKeyFieldForItemType($itemtype) == $lockable_object::$items_id_1) {
-                        $query['WHERE'][] = [getTableForItemType($lockable_itemtype) . '.' . $lockable_object::$items_id_1 => $ID];
-                    } else {
-                        // ::$items_id != getForeignKeyFieldForItemType($itemtype)
-                        // ex: get ComputerVirtualMachine from NetworkEquipement
-                        continue;
-                    }
                 }
 
                 $subquery[] = new \QuerySubQuery($query);
