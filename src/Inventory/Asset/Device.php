@@ -126,6 +126,10 @@ abstract class Device extends InventoryAsset
                             break;
                         }
                         $compare = explode(':', $compare);
+                        if (!isset($i_input[$field]) && !isset($existing_item[$field])) {
+                            //field not present, skip
+                            continue;
+                        }
                         switch ($compare[0]) {
                             case 'equal':
                                 if (!isset($i_input[$field]) || $i_input[$field] != $existing_item[$field]) {
