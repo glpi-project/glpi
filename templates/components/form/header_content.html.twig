@@ -101,7 +101,7 @@
          {% endif %}
       </span>
       {% if item.isField('is_dynamic') and item.fields['is_dynamic'] %}
-      <span {% if in_navheader %} class="mx-1 bg-secondary status rounded-1" title="{{ __('Is dynamic') }}"
+      <span {% if in_navheader %} class="mx-1 bg-secondary status rounded-1" title="{{ __('Automatic Inventory') }}"
                      data-bs-toggle="tooltip" {% endif %}>
          {% if in_navheader %}
             <i class="{{ call('Agent::getIcon') }}"></i>
