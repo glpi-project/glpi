@@ -1139,7 +1139,8 @@ class Dropdown
                 __('Management') => [
                     'DocumentCategory' => null,
                     'DocumentType' => null,
-                    'BusinessCriticity' => null
+                    'BusinessCriticity' => null,
+                    'DatabaseInstanceCategory' => null,
                 ],
 
                 __('Tools') => [
