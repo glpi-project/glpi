@@ -5905,7 +5905,8 @@ HTML;
             $number_columns += 1;
         }
 
-       // count checked
+        // count checked
+        $nb_cb_per_col = [];
         foreach ($columns as $col_name => $column) {
             $nb_cb_per_col[$col_name] = [
                 'total'   => 0,
@@ -5913,6 +5914,7 @@ HTML;
             ];
         }
 
+        $nb_cb_per_row = [];
         foreach ($rows as $row_name => $row) {
             if ((!is_string($row)) && (!is_array($row))) {
                 continue;
