@@ -158,6 +158,6 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_dashboard_items':
-        echo $grid->getGridItemsHtml(true, $_REQUEST['embed'] ?? false);
+        echo $grid->getGridItemsHtml(!$_REQUEST['is_mini'], $_REQUEST['embed'] ?? false);
         break;
 }

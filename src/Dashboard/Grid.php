@@ -55,13 +55,13 @@ class Grid
     protected $current         = "";
     protected $dashboard       = null;
     protected $items           = [];
-    protected $context         = '';
-    protected $is_mini         = false;
+    protected $context            = '';
 
     public static $embed              = false;
     public static $all_dashboards     = [];
+    public static $is_mini            = false;
 
-    public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core', bool $is_mini = false)
+    public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
     {
 
         $this->current   = $dashboard_key;
@@ -70,7 +70,6 @@ class Grid
 
         $this->dashboard = new Dashboard($dashboard_key);
         $this->context   = $context;
-        $this->is_mini   = $is_mini;
     }
 
 
@@ -259,7 +258,7 @@ HTML;
 
         if ($mini) {
             $this->cell_margin = 3;
-            $this->is_mini     = true;
+            self::$is_mini     = true;
         }
 
         $embed_str     = self::$embed ? "true" : "false";
@@ -419,7 +418,6 @@ HTML;
 
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string '] ?? "");
-        $is_mini    = $this->is_mini ? "true" : "false";
 
         $js = <<<JAVASCRIPT
       $(function () {
@@ -435,7 +433,7 @@ HTML;
             all_widgets: {$all_widgets_json},
             context:     "{$this->context}",
             cache_key:   "{$cache_key}",
-            is_mini:     {$is_mini},
+            is_mini:     "{$mini}",
          })
       });
 JAVASCRIPT;
