@@ -485,6 +485,11 @@
 {% endmacro %}
 
 {% macro hiddenField(name, value, label = '', options = {}) %}
+   {% if options.no_label %}
+      {% set options = {
+         mb: 'mb-0'
+      }|merge(options) %}
+   {% endif %}
    {% set field %}
       <input type="hidden" id="%id%"
              class="form-control"

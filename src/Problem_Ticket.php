@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class Problem_Ticket extends CommonDBRelation
 {
    // From CommonDBRelation
@@ -295,28 +297,21 @@ class Problem_Ticket extends CommonDBRelation
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-               action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a ticket') . "</th></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo "<input type='hidden' name='problems_id' value='$ID'>";
-            Ticket::dropdown([
-                'used'        => $used,
-                'entity'      => $problem->getEntityID(),
-                'entity_sons' => $problem->isRecursive(),
-                'displaywith' => ['id'],
+            echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_type' => __CLASS__,
+                'source_type' => Problem::class,
+                'source_id' => $ID,
+                'target_type' => Ticket::class,
+                'dropdown_options' => [
+                    'entity'      => $problem->getEntityID(),
+                    'entity_sons' => $problem->isRecursive(),
+                    'rand'        => $rand,
+                    'used'        => $used,
+                    'displaywith' => ['id'],
+                ],
+                'create_link' => false
             ]);
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
         }
 
         echo "<div class='spaced'>";
@@ -406,33 +401,22 @@ class Problem_Ticket extends CommonDBRelation
             $used[$problem['id']] = $problem['id'];
         }
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='3'>" . __('Add a problem') . "</th></tr>";
-            echo "<tr class='tab_bg_2'><td>";
-            echo "<input type='hidden' name='tickets_id' value='$ID'>";
-
-            Problem::dropdown([
-                'used'      => $used,
-                'entity'    => $ticket->getEntityID(),
-                'condition' => Problem::getOpenCriteria(),
-                'displaywith' => ['id'],
+            echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_type' => __CLASS__,
+                'source_type' => Ticket::class,
+                'source_id' => $ID,
+                'target_type' => Problem::class,
+                'dropdown_options' => [
+                    'entity'      => $ticket->getEntityID(),
+                    'entity_sons' => $ticket->isRecursive(),
+                    'condition'   => Problem::getOpenCriteria(),
+                    'rand'        => $rand,
+                    'used'        => $used,
+                    'displaywith' => ['id'],
+                ],
+                'create_link' => Session::haveRight(Problem::$rightname, CREATE)
             ]);
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td><td>";
-            if (Session::haveRight('problem', CREATE)) {
-                echo "<a href='" . Toolbox::getItemTypeFormURL('Problem') . "?tickets_id=$ID'>";
-                echo __('Create a problem from this ticket');
-                echo "</a>";
-            }
-
-            echo "</td></tr></table>";
-            Html::closeForm();
-            echo "</div>";
         }
 
         echo "<div class='spaced'>";
