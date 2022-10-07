@@ -740,7 +740,7 @@ class Lock extends CommonGLPI
             ]);
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='2'>" . __('No locked item') . "</td></tr>";
+            echo "<td class='center' colspan='4'>" . __('No locked item') . "</td></tr>";
             echo "</table>";
         }
         Html::closeForm();
