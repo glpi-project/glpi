@@ -85,7 +85,7 @@ class Lock extends CommonGLPI
             echo "<table class='tab_cadre_fixehov'>";
 
             echo "<tr>";
-            echo "<tr><th colspan='5'>" . __('Locked fields') . "</th></tr>";
+            echo "<tr><th colspan='5'  class='center'>" . __('Locked fields') . "</th></tr>";
             echo "<th width='10'>";
             Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $lockedfield::getType()]]);
             echo "</th>";
@@ -237,12 +237,12 @@ class Lock extends CommonGLPI
             Html::closeForm();
         }
 
-        echo "<div width='100%'>";
+        echo "</br><div width='100%'>";
         echo "<form method='post' id='lock_form' name='lock_form' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
         echo "<input type='hidden' name='id' value='$ID'>\n";
         echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='5'>" . __('Locked items') . "</th></tr>";
+        echo "<table class='tab_cadre_fixehov'>";
+        echo "<tr><th colspan='5' class='center'>" . __('Locked items') . "</th></tr>";
 
         //reset_header
         $header = false;
