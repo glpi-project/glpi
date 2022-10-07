@@ -132,6 +132,17 @@ abstract class MainAsset extends InventoryAsset
             $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? AutoUpdateSystem::NATIVE_INVENTORY;
             $val->last_inventory_update = $_SESSION["glpi_currenttime"];
 
+            //try to get "last_boot" only available from "operatingsystem->boot_time" node
+            if (
+                $this->raw_data instanceof stdClass
+                && property_exists($this->raw_data, 'content')
+                && property_exists($this->raw_data->content, 'operatingsystem')
+                && property_exists($this->raw_data->content->operatingsystem, 'boot_time')
+            ) {
+                $val->last_boot = $entry->content->operatingsystem->boot_time;
+            }
+
+
             if (isset($this->extra_data['hardware'])) {
                 $this->prepareForHardware($val);
             }
@@ -761,14 +772,6 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = $this->handleInput($val, $this->item);
-
-        //try to get "last_boot" only available from "operatingsystem->boot_time" node
-        if (
-            property_exists($this->raw_data->content, 'operatingsystem')
-            && property_exists($this->raw_data->content->operatingsystem, 'boot_time')
-        ) {
-            $input['last_boot'] = $this->raw_data->content->operatingsystem->boot_time;
-        }
         $this->item->update(Toolbox::addslashes_deep($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
