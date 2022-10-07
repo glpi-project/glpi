@@ -58,7 +58,12 @@
         field_options
     ) }}
 
-    {{ fields.nullField() }}
+    {{ fields.htmlField(
+        "Agent",
+        item.fields['remote_addr'],
+        __('Public contact address'),
+        field_options
+    ) }}
 
     {{ fields.dropdownArrayField(
         'itemtype',

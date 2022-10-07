@@ -157,6 +157,14 @@ class Agent extends CommonDBTM
                 'additionalfields' => ['itemtype'],
                 'joinparams'       => ['jointype' => 'child']
             ],
+            [
+                'id'            => '16',
+                'table'         => $this->getTable(),
+                'field'         => 'remote_addr',
+                'name'          => __('Public contact address'),
+                'datatype'      => 'text',
+                'massiveaction' => false,
+            ],
 
         ];
 
@@ -237,6 +245,13 @@ class Agent extends CommonDBTM
             'id'         => 904,
             'field'      => 'deviceid',
             'name'       => __('Device id'),
+            'datatype'   => 'text',
+        ] + $baseopts;
+
+        $tab[] = [
+            'id'         => 905,
+            'field'      => 'remote_addr',
+            'name'       => __('Public contact address'),
             'datatype'   => 'text',
         ] + $baseopts;
 
@@ -332,6 +347,24 @@ class Agent extends CommonDBTM
         if (isset($metadata['port'])) {
             $input['port'] = $metadata['port'];
         }
+
+        $remote_ip = "";
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            //Managing IP through a PROXY
+            $remote_ip = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+        } elseif (isset($_SERVER['HTTP_X_REAL_IP'])) {
+            //try with X-Real-IP
+            $remote_ip = $_SERVER['HTTP_X_REAL_IP'];
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            //then get connected IP
+            $remote_ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        $remote_ip = new IPAddress($remote_ip);
+        if ($remote_ip->is_valid()) {
+            $input['remote_addr'] = $remote_ip->getTextual();
+        }
+
 
         $has_expected_agent_type = in_array($metadata['itemtype'], $CFG_GLPI['agent_types']);
         if ($deviceid === 'foo' || (!$has_expected_agent_type && !$aid)) {

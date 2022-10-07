@@ -82,6 +82,15 @@
          </div>
 
          <div class="mb-3 col-12 col-sm-6">
+            <label class="form-label" >{{ __('Public contact address') }}</label>
+            <span>{{ agent.fields['remote_addr']|verbatim_value }}</span>
+         </div>
+
+
+         <div class="mb-3 col-12 col-sm-6">
+         </div>
+
+         <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >
                {{ __('Agent status') }}
                <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Ask agent about its current status') }}"></i>
