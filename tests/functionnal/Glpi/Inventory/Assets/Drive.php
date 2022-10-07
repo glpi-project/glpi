@@ -410,7 +410,8 @@ class Drive extends AbstractInventoryAsset
         $item_harddrive_1_id = $item_hdd->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'deviceharddrives_id' => $harddrive_1_id
+            'deviceharddrives_id' => $harddrive_1_id,
+            'serial'       => 'S29NNXAH146764'
         ]);
         $this->integer($item_harddrive_1_id)->isGreaterThan(0);
 
@@ -425,7 +426,8 @@ class Drive extends AbstractInventoryAsset
         $item_harddrive_2_id = $item_hdd->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'deviceharddrives_id' => $harddrive_2_id
+            'deviceharddrives_id' => $harddrive_2_id,
+            'serial'       => '131005TF0401Y11K4NNN'
         ]);
         $this->integer($item_harddrive_2_id)->isGreaterThan(0);
 

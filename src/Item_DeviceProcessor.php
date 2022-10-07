@@ -79,8 +79,8 @@ class Item_DeviceProcessor extends Item_Devices
         return [
             'serial' => 'equal',
             'frequency' => 'delta:100',
-            'nbcores' => 'equal',
-            'nbthreads' => 'equal',
+            //'nbcores' => 'equal',
+            //'nbthreads' => 'equal',
             'busID' => 'equal',
         ];
     }
