@@ -1590,11 +1590,12 @@ class Inventory extends InventoryTestCase
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
             ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
             ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.20')
             ->string['itemtype']->isIdenticalTo('Computer')
             ->string['tag']->isIdenticalTo('000005')
+            ->variable['port']->isIdenticalTo(null)
             ->string['action']->isIdenticalTo('inventory');
         ;
         $this->array($metadata['provider'])->hasSize(9);
