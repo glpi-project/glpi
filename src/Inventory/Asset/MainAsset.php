@@ -142,7 +142,6 @@ abstract class MainAsset extends InventoryAsset
                 $val->last_boot = $entry->content->operatingsystem->boot_time;
             }
 
-
             if (isset($this->extra_data['hardware'])) {
                 $this->prepareForHardware($val);
             }
