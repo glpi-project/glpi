@@ -445,7 +445,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'table'              => 'glpi_items_operatingsystems',
             'field'              => 'install_date',
             'name'               => __('Installation date'),
-            'datatype'           => 'string',
+            'datatype'           => 'datetime',
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
