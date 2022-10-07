@@ -136,7 +136,7 @@ abstract class CommonDBVisible extends CommonDBTM
                 foreach ($data as $group) {
                     if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
                       // All the group
-                        if ($group['entities_id'] < 0) {
+                        if ($group['no_entity_restriction']) {
                              return true;
                         }
                       // Restrict to entities
@@ -171,7 +171,7 @@ abstract class CommonDBVisible extends CommonDBTM
             if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
                 foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
                     // All the profile
-                    if ($profile['entities_id'] < 0) {
+                    if ($profile['no_entity_restriction']) {
                         return true;
                     }
                     // Restrict to entities
