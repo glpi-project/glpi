@@ -2138,7 +2138,7 @@ class User extends CommonDBTM
                     case "email4":
                         // Manage multivaluable fields
                         if (!preg_match('/count/', $_SERVER[$value])) {
-                            $this->fields["_emails"][] = addslashes($_SERVER[$value]);
+                            $this->fields["_emails"][] = Sanitizer::sanitize($_SERVER[$value]);
                         }
                         // Only get them once if duplicated
                         $this->fields["_emails"] = array_unique($this->fields["_emails"]);
@@ -2153,12 +2153,12 @@ class User extends CommonDBTM
 
                     case "title":
                         $this->fields['usertitles_id']
-                        = Dropdown::importExternal('UserTitle', addslashes($_SERVER[$value]));
+                        = Dropdown::importExternal('UserTitle', Sanitizer::sanitize($_SERVER[$value]));
                         break;
 
                     case "category":
                         $this->fields['usercategories_id']
-                        = Dropdown::importExternal('UserCategory', addslashes($_SERVER[$value]));
+                        = Dropdown::importExternal('UserCategory', Sanitizer::sanitize($_SERVER[$value]));
                         break;
 
                     default:
