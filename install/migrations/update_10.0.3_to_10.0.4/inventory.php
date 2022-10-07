@@ -47,3 +47,6 @@ foreach ($tables as $table) {
 
 //new right value for locked_field (previously based on config UPDATE)
 $migration->addRight('locked_field', CREATE | PURGE, ['config' => UPDATE]);
+
+//add date_install
+$migration->addField(getTableForItemType(Item_OperatingSystem::class), 'install_date', 'date');
