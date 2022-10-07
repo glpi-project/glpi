@@ -983,6 +983,7 @@ CREATE TABLE `glpi_computers` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `last_inventory_update` timestamp NULL DEFAULT NULL,
+  `last_boot` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),

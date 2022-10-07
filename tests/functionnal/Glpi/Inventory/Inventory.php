@@ -95,6 +95,7 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_boot' => '2020-06-09 07:58:08',
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1272,6 +1273,7 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_boot' => "2017-02-20 08:11:53",
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1484,6 +1486,7 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_boot' => "2017-02-20 08:11:53",
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1643,6 +1646,7 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_boot' => "2017-06-08 07:06:47",
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1757,10 +1761,10 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4443);
+        $this->integer(count($logs))->isIdenticalTo(4444);
 
         $expected_types_count = [
-            0 => 3, //Agent version, disks usage
+            0 => 4, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3243,//network port/name, ip address, VMs, Software
