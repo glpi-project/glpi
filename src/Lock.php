@@ -140,18 +140,12 @@ class Lock extends CommonGLPI
                     ]
                 ];
 
-                if (
-                    is_a($lockable_itemtype, CommonDBConnexity::class, true)
-                    && (
-                        (property_exists($lockable_object, 'items_id') && $lockable_object::$items_id == "items_id")
-                        || (property_exists($lockable_object, 'items_id_1') && $lockable_object::$items_id_1 == "items_id")
-                        || (property_exists($lockable_object, 'items_id_2') && $lockable_object::$items_id_2 == "items_id")
-                    )
-                ) {
-                    $query['WHERE'][] = [
-                        getTableForItemType($lockable_itemtype) . '.itemtype' => $itemtype,
-                        getTableForItemType($lockable_itemtype) . '.items_id' => $ID
-                    ];
+                if ($lockable_object instanceof CommonDBConnexity) {
+                    $connexity_criteria = $lockable_itemtype::getSQLCriteriaToSearchForItem($itemtype, $ID);
+                    if ($connexity_criteria === null) {
+                        continue;
+                    }
+                    $query['WHERE'][] = $connexity_criteria['WHERE'];
                 } else {
                     if (
                         property_exists($lockable_object, 'items_id')
@@ -166,6 +160,7 @@ class Lock extends CommonGLPI
                         continue;
                     }
                 }
+
                 $subquery[] = new \QuerySubQuery($query);
             }
 
