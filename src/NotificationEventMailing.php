@@ -284,24 +284,17 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 $initial_width = $img_infos[0];
                                 $initial_height = $img_infos[1];
 
-                                if ($custom_width && $custom_height) {
-                                    //compute height if need
-                                    if ($custom_width && is_null($custom_height)) {
-                                        $custom_height = $initial_height * $custom_width / $initial_width;
-                                    }
-
+                                if ($custom_width !== null && $custom_height === null) {
+                                    //compute height if needed
+                                    $custom_height = $initial_height * $custom_width / $initial_width;
+                                } elseif ($custom_height !== null && $custom_width === null) {
                                     //compute width if needed
-                                    if ($custom_height && is_null($custom_width)) {
-                                        $custom_width = $initial_width * $custom_height / $initial_height;
-                                    }
-
+                                    $custom_width = $initial_width * $custom_height / $initial_height;
+                                } elseif ($custom_height === null && $custom_width === null) {
                                     //if both are null keep initial size
-                                    if (is_null($custom_height) && is_null($custom_width)) {
-                                        $custom_width = $initial_width;
-                                        $custom_height = $initial_height;
-                                    }
+                                    $custom_width = $initial_width;
+                                    $custom_height = $initial_height;
                                 }
-
 
                                 $image_path = Document::getImage(
                                     GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
