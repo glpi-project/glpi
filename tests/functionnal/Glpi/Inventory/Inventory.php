@@ -95,7 +95,6 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
-            'last_boot' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1275,7 +1274,6 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
-            'last_boot' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1488,7 +1486,6 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
-            'last_boot' => null,
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
