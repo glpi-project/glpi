@@ -252,7 +252,6 @@ class Lock extends CommonGLPI
         ]);
         $header |= $results['header'];
 
-
         //Special locks for computers only
         if ($itemtype == 'Computer') {
             //computer_item
@@ -333,8 +332,6 @@ class Lock extends CommonGLPI
                 echo "<td class='left'>" . Dropdown::getYesNo($item_disk->fields['is_dynamic']) . "</td>";
                 echo "</tr>\n";
             }
-
-
 
             $computer_vm = new ComputerVirtualMachine();
             $params = ['is_dynamic'    => 1,
@@ -535,7 +532,6 @@ class Lock extends CommonGLPI
             echo "</tr>";
         }
 
-
         $first  = true;
         $networkport = new NetworkPort();
         $params = ['is_dynamic' => 1,
@@ -570,7 +566,6 @@ class Lock extends CommonGLPI
             echo "<td class='left'>" . Dropdown::getYesNo($networkport->fields['is_dynamic']) . "</td>";
             echo "</tr>\n";
         }
-
 
         $first = true;
         $networkname = new NetworkName();
