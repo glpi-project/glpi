@@ -426,7 +426,7 @@ class Lock extends CommonGLPI
                 echo "<tr>";
                 echo "<th width='10'></th>";
                 echo "<th>" . Software::getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . __('Version') . "</th>";
+                echo "<th>" . SoftwareVersion::getTypeName(Session::getPluralNumber()) . "</th>";
                 echo "<th>" . __('Installation date') . "</th>";
                 echo "<th>" . __('Automatic inventory') . "</th>";
                 echo "</tr>";
@@ -495,7 +495,7 @@ class Lock extends CommonGLPI
                 echo "<th width='10'></th>";
                 echo "<th>" . SoftwareLicense::getTypeName(Session::getPluralNumber()) . "</th>";
                 echo "<th>" . __('Version in use') . "</th>";
-                echo "<th>" . __('Software') . "</th>";
+                echo "<th>" . Software::getTypeName(Session::getPluralNumber()) . "</th>";
                 echo "<th>" . __('Automatic inventory') . "</th>";
                 echo "</tr>";
                 $first = false;
@@ -635,7 +635,7 @@ class Lock extends CommonGLPI
                 echo "<tr>";
                 echo "<th width='10'></th>";
                 echo "<th>" . $ipaddress->getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . __('Version') . "</th>";
+                echo "<th>" . SoftwareVersion::getTypeName(Session::getPluralNumber()) . "</th>";
                 echo "<th></th>";
                 echo "<th>" . __('Automatic inventory') . "</th>";
                 echo "</tr>";
