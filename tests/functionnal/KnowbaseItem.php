@@ -36,7 +36,6 @@
 namespace test\units;
 
 use DbTestCase;
-use Generator;
 use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/knowbaseitem.class.php */
@@ -510,13 +509,13 @@ HTML
         $this->array($category_ids)->containsValues([$kb_cat_id1, $kb_cat_id2]);
     }
 
-    protected function testGetVisibilityCriteriaProvider(): Generator
+    protected function testGetVisibilityCriteriaProvider(): iterable
     {
         yield from $this->testGetVisibilityCriteriaProvider_FAQ();
         yield from $this->testGetVisibilityCriteriaProvider_KB();
     }
 
-    protected function testGetVisibilityCriteriaProvider_FAQ(): Generator
+    protected function testGetVisibilityCriteriaProvider_FAQ(): iterable
     {
         global $DB, $CFG_GLPI;
 
@@ -573,7 +572,7 @@ HTML
         $CFG_GLPI['use_public_faq'] = false;
     }
 
-    protected function testGetVisibilityCriteriaProvider_KB(): Generator
+    protected function testGetVisibilityCriteriaProvider_KB(): iterable
     {
         // Create set of test subjects
         $glpi_user = getItemByTypeName("User", "glpi", true);
