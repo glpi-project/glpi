@@ -86,10 +86,9 @@ $break_tablet: 1400px;
     &.mini {
         padding-top: 0;
         margin: 0 auto;
-        margin-bottom: -10px;
+        margin-bottom: -45px !important;
         z-index: 1;
         box-sizing: content-box;
-        height: 100px;
 
         & + .search_page {
             z-index: 2;
@@ -101,7 +100,6 @@ $break_tablet: 1400px;
 
         .grid-guide {
             top: 0;
-            bottom: 0 !important;
         }
 
         .main-icon {
