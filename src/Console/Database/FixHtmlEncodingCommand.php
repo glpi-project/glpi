@@ -44,7 +44,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class FixHtmlEncodingCommand extends AbstractCommand
 {
     /**
-     * Error code returned when a specified iteltype does not exists
+     * Error code returned when a specified itemtype does not exists
      *
      * @var integer
      */
@@ -84,9 +84,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
             null,
             InputOption::VALUE_REQUIRED,
             __('Itemtype to fix')
-            . PHP_EOL
-            . __('"--itemtype ITILFollowup" will fix an item of type ITILFollowup')
-            . PHP_EOL
         );
 
         $this->addOption(
@@ -94,9 +91,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
             null,
             InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
             __('Id of the item to fix')
-            . PHP_EOL
-            . __('"--id 42 will fix the item with id 42')
-            . PHP_EOL
         );
 
         $this->addOption(
@@ -104,9 +98,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
             null,
             InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
             __('Field of the item to fix')
-            . PHP_EOL
-            . __('"--field content" will fix the field "content"')
-            . PHP_EOL
         );
 
         $this->addUsage('--itemtype=ITILFollowup --id=42 --field=content');
@@ -148,13 +139,13 @@ class FixHtmlEncodingCommand extends AbstractCommand
 
         $fields = $input->getOption('field');
 
-        // Checl all fields exist
+        // Check all fields exist
         if (count($fields) < 1) {
             $this->output->writeln(
                 '<error>' . sprintf(__('Field not specified')) . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
-            return self::ERROR_ITEM_ID_NOT_FOUND;
+            return self::ERROR_FIELD_NOT_FOUND;
         }
         foreach ($fields as $field) {
             if (!$DB->fieldExists($itemtype::getTable(), $field)) {
@@ -184,7 +175,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
                     '<error>' . sprintf(__('Unable to update item %s'), $item_id) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
-                $this->outputSessionBufferedMessages([WARNING]);
                 return self::ERROR_UPDATE_FAILED;
             }
         }
