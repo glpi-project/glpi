@@ -821,6 +821,11 @@ HTML
 
         $data = $DB->request($criteria);
         $result = array_column(iterator_to_array($data), "name");
+
+        // We need to sort data before comparing or the tests will fails on mariaDB
+        sort($articles);
+        sort($result);
+
         $this->array($result)->isEqualTo($articles);
     }
 }
