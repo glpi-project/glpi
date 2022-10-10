@@ -80,6 +80,12 @@ class Server extends DbTestCase
                 'groups' => [],
                 'seeall' => true,
             ],
+            getItemByTypeName('User', 'jsmith123', true) => [
+                'name'   => 'jsmith123',
+                'pass'   => TU_PASS,
+                'groups' => [],
+                'seeall' => true,
+            ],
         ];
 
         ksort($users);
