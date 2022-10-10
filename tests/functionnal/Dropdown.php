@@ -1173,9 +1173,14 @@ class Dropdown extends DbTestCase
                             'id'     => (int)getItemByTypeName('User', 'tech', true),
                             'text'   => 'tech',
                             'title'  => 'tech - tech',
+                        ],
+                        6 => [
+                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'text'   => 'Smith John',
+                            'title'  => 'Smith John - jsmith123',
                         ]
                     ],
-                    'count' => 5
+                    'count' => 6
                 ]
             ], [
                 'params'    => [
@@ -1204,9 +1209,14 @@ class Dropdown extends DbTestCase
                             'id'     => (int)getItemByTypeName('User', 'post-only', true),
                             'text'   => 'post-only',
                             'title'  => 'post-only - post-only',
+                        ],
+                        4 => [
+                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'text'   => 'Smith John',
+                            'title'  => 'Smith John - jsmith123',
                         ]
                     ],
-                    'count' => 3
+                    'count' => 4
                 ]
             ], [
                 'params'    => [
@@ -1228,9 +1238,14 @@ class Dropdown extends DbTestCase
                             'id'     => (int)getItemByTypeName('User', '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
+                        ],
+                        2 => [
+                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'text'   => 'Smith John',
+                            'title'  => 'Smith John - jsmith123',
                         ]
                     ],
-                    'count' => 1
+                    'count' => 2
                 ]
             ]
         ];
