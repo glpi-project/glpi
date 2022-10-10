@@ -1043,7 +1043,7 @@ var Dashboard = {
 
     generateCss: function() {
         var dash_width    = Math.floor(this.element.width());
-        var cell_length   = dash_width / this.cols;
+        var cell_length   = (dash_width - 1) / this.cols;
         var cell_height   = cell_length;
         var cell_fullsize = (dash_width / this.cols);
         var width_percent = 100 / this.cols;
