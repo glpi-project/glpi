@@ -311,7 +311,7 @@ class Lock extends CommonGLPI
                     echo "<tr>";
                     echo "<th width='10'></th>";
                     echo "<th>" . $item_disk->getTypeName(Session::getPluralNumber()) . "</th>";
-                    echo "<th>" . __('Partitiont') . "</th>";
+                    echo "<th>" . __('Partition') . "</th>";
                     echo "<th>" . __('Mount point') . "</th>";
                     echo "<th>" . __('Automatic inventory') . "</th>";
                     echo "</tr>";
