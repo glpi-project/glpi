@@ -44,6 +44,7 @@ class GLPITestCase extends atoum
 {
     private $int;
     private $str;
+
     protected $has_failed = false;
 
     /**
@@ -56,8 +57,18 @@ class GLPITestCase extends atoum
      */
     private $sql_log_handler;
 
+    /**
+     * Configuration backup.
+     * @var array
+     */
+    private $cfg_backup;
+
     public function beforeTestMethod($method)
     {
+        // Backup config (to restore it after test).
+        global $CFG_GLPI;
+        $this->cfg_backup = $CFG_GLPI;
+
         // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
@@ -81,7 +92,7 @@ class GLPITestCase extends atoum
         // Reset session and configuration.
         // It have to be done before calling asserters, as asserters may stop method execution.
         $this->resetSession();
-        $CFG_GLPI = [];
+        $CFG_GLPI = $this->cfg_backup;
 
         // Ensure there is no unexpected session messages
         if (!$this->has_failed) {
