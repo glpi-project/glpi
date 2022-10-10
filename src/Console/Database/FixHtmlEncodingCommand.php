@@ -193,7 +193,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
     }
 
     /**
-     * Remove double encoding og HTML tags
+     * Remove double encoding of HTML tags
      * character < is encoded &#38;lt; but should  be encoded &#60;
      * character > is encoded &#38;gt; but should  be encoded &#62;
      *
