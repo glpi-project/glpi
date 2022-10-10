@@ -560,10 +560,7 @@ HTML
         yield ['articles' => []];
 
         // Second FAQ test case: public FAQ enabled + multi entities
-        if (!isset($_SESSION['glpi_multientitiesmode'])) {
-            $_SESSION['glpi_multientitiesmode'] = 1;
-        }
-        $this->integer($_SESSION['glpi_multientitiesmode'])->isEqualTo(1);
+        $_SESSION['glpi_multientitiesmode'] = 1;
         $CFG_GLPI['use_public_faq'] = true;
         yield ['articles' => ['FAQ 2']];
 
@@ -692,7 +689,7 @@ HTML
             'is_recursive' => 1,
         ])->fields['id'];
         $group_b = $this->createItem("Group", [
-            "name" => "Group KB A",
+            "name" => "Group KB B",
             'is_recursive' => 1,
         ])->fields['id'];
         $this->createItem("Group_User", ['users_id' => $tech_user, 'groups_id' => $group_a]);
