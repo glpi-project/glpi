@@ -84,7 +84,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
 
         $this->setName('glpi:database:fix_html_encoding');
         $this->setAliases(['db:fix_html']);
-        $this->setDescription(__('Fix Html encoding in database.'));
+        $this->setDescription(__('Fix HTML encoding in database.'));
 
         $this->addOption(
             'itemtype',
