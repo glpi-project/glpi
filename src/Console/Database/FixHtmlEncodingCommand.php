@@ -182,7 +182,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
                     $itemtype::getTable(),
                     $object_state,
                     ['id' => $item_id],
-                ) . PHP_EOL . PHP_EOL;
+                ) . ';' . PHP_EOL;
             }
 
             // update the item
