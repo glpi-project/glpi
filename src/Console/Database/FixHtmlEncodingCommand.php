@@ -104,7 +104,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
             'dump',
             null,
             InputOption::VALUE_OPTIONAL,
-            __('Field of the item to fix')
+            __('Path of file containing dump of existing values.')
         );
 
         $this->addUsage('--itemtype=ITILFollowup --id=42 --field=content [--dump=file_path.sql]');
