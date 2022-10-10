@@ -168,6 +168,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
             return self::ERROR_UPDATE_FAILED;
         }
 
+        $output->writeln('<info>' . __('HTML encoding has been fixed.') . '</info>');
         return 0;
     }
 
