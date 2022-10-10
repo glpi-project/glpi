@@ -218,7 +218,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
                 );
             } else {
                 $this->output->writeln(
-                    '<comment>' . sprintf(__('Failed to write rollback SQL queries file %s'), $dump_file_name) . '</comment>',
+                    '<comment>' . sprintf(__('Failed to write rollback SQL queries file %s.'), $dump_file_name) . '</comment>',
                     OutputInterface::VERBOSITY_QUIET
                 );
             }
