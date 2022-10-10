@@ -157,6 +157,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
             }
         }
 
+        $failed_items = [];
         foreach ($item_ids as $item_id) {
             $item = new $itemtype();
             $item->getFromDB($item_id);
@@ -171,12 +172,22 @@ class FixHtmlEncodingCommand extends AbstractCommand
                 ['id' => $item->fields['id']],
             );
             if (!$success) {
+                $failed_items[] = $item_id;
+            }
+        }
+
+        if (count($failed_items) > 0) {
+            $this->output->writeln(
+                '<error>' . sprintf(__('Unable to update %s items'), count($failed_items)) . '</error>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+            foreach ($failed_items as $item_id) {
                 $this->output->writeln(
-                    '<error>' . sprintf(__('Unable to update item %s'), $item_id) . '</error>',
+                    '<error>' . sprintf(__('Itemtype %s ID %s'), $itemtype, $item_id) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
-                return self::ERROR_UPDATE_FAILED;
             }
+            return self::ERROR_UPDATE_FAILED;
         }
 
         return 0;
