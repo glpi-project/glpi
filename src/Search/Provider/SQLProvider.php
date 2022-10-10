@@ -5218,6 +5218,8 @@ HTML;
                         // Trans field exists
                         if (isset($field_data['trans']) && !empty($field_data['trans'])) {
                             $out .= $field_data['trans'];
+                        } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
+                            $out .= \CommonTreeDropdown::sanitizeSeparatorInCompletename($field_data['trans_completename']);
                         } else {
                             $value = $field_data['name'];
                             $out .= $so['field'] === 'completename'

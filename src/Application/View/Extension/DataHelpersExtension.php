@@ -69,15 +69,16 @@ class DataHelpersExtension extends AbstractExtension
      * Return date formatted to user preferred format.
      *
      * @param mixed $datetime
+     * @param bool $with_seconds
      *
      * @return string|null
      */
-    public function getFormattedDatetime($datetime): ?string
+    public function getFormattedDatetime($datetime, bool $with_seconds = false): ?string
     {
         if (!is_string($datetime)) {
             return null;
         }
-        return Html::convDateTime($datetime);
+        return Html::convDateTime($datetime, null, $with_seconds);
     }
 
     /**

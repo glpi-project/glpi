@@ -6666,4 +6666,40 @@ JAVASCRIPT;
 
         return $user;
     }
+
+    /**
+     * Get name of the user with ID
+     *
+     * @param integer $ID   ID of the user.
+     *
+     * @return string username string (realname if not empty and name if realname is empty).
+     */
+    public static function getNameForLog(int $ID): string
+    {
+        global $DB;
+
+        $iterator = $DB->request(
+            'glpi_users',
+            [
+                'WHERE' => ['id' => $ID]
+            ]
+        );
+
+        if (count($iterator) === 1) {
+            $data     = $iterator->current();
+
+            if (!empty($data['realname'])) {
+                $formatted = $data['realname'];
+
+                if (!empty($data['firstname'])) {
+                    $formatted .= " " . $data["firstname"];
+                }
+            } else {
+                $formatted = $data["name"];
+            }
+            return sprintf(__('%1$s (%2$s)'), $formatted, $ID);
+        }
+
+        return __('Unknown user');
+    }
 }

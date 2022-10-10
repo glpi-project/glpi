@@ -47,3 +47,9 @@ foreach ($tables as $table) {
 
 //new right value for locked_field (previously based on config UPDATE)
 $migration->addRight('locked_field', CREATE | PURGE, ['config' => UPDATE]);
+
+//add date_install
+$migration->addField("glpi_items_operatingsystems", 'install_date', 'date');
+
+//add remote_addr
+$migration->addField("glpi_agents", 'remote_addr', 'string');

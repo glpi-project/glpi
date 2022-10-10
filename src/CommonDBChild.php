@@ -66,14 +66,16 @@ abstract class CommonDBChild extends CommonDBConnexity
      **/
     public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
     {
+        $table = static::getTable();
+
         $criteria = [
             'SELECT' => [
                 static::getIndexName(),
                 static::$items_id . ' AS items_id'
             ],
-            'FROM'   => static::getTable(),
+            'FROM'   => $table,
             'WHERE'  => [
-                static::$items_id  => $items_id
+                $table . '.' . static::$items_id  => $items_id
             ]
         ];
 
@@ -81,7 +83,7 @@ abstract class CommonDBChild extends CommonDBConnexity
         $request = false;
         if (preg_match('/^itemtype/', static::$itemtype)) {
             $criteria['SELECT'][] = static::$itemtype . ' AS itemtype';
-            $criteria['WHERE'][static::$itemtype] = $itemtype;
+            $criteria['WHERE'][$table . '.' . static::$itemtype] = $itemtype;
             $request = true;
         } else {
             $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype . "' AS itemtype");

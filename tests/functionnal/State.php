@@ -33,37 +33,54 @@
  * ---------------------------------------------------------------------
  */
 
-// Using sglobal instead of global as it is a PHP keyword.
-// This is fixed in php 8 so to be changed back when we no longer support php 7.
+namespace tests\units;
 
-namespace Glpi\Stat\Data\Sglobal;
+use DbTestCase;
+use Generator;
 
-use Glpi\Stat\StatDataAlwaysDisplay;
-use Session;
-
-class StatDataSatisfaction extends StatDataAlwaysDisplay
+class State extends DbTestCase
 {
-    public function __construct(array $params)
+    protected function testIsUniqueProvider(): Generator
     {
-        parent::__construct($params);
+        // Insert test data
+        $this->createItems("State", [
+            ['name' => "Test"],
+            ['name' => "Tést 2"],
+            ['name' => "abcdefg"],
+        ]);
 
-        $opensatisfaction   = $this->getDataByType($params, "inter_opensatisfaction");
-        $answersatisfaction = $this->getDataByType($params, "inter_answersatisfaction");
+        yield [
+            'input'  => ['name' => 'Test'],
+            'expected' => false,
+        ];
 
-        $this->labels = array_keys($opensatisfaction);
-        $this->series = [
-            [
-                'name' => _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
-                'data' => $opensatisfaction,
-            ], [
-                'name' => _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
-                'data' => $answersatisfaction,
-            ]
+        yield [
+            'input'  => ['name' => "Test'"],
+            'expected' => true,
+        ];
+
+        yield [
+            'input'  => ['name' => "Tést"],
+            'expected' => true,
+        ];
+
+        yield [
+            'input'  => ['name' => "Test 2"],
+            'expected' => true,
+        ];
+
+        yield [
+            'input'  => ['name' => "Tést 2"],
+            'expected' => false,
         ];
     }
 
-    public function getTitle(): string
+    /**
+     * @dataprovider testIsUniqueProvider
+     */
+    public function testIsUnique(array $input, bool $expected)
     {
-        return __('Satisfaction survey') . " - " .  __('Tickets');
+        $state = new \State();
+        $this->boolean($state->isUnique($input))->isEqualTo($expected);
     }
 }

@@ -132,6 +132,16 @@ abstract class MainAsset extends InventoryAsset
             $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? AutoUpdateSystem::NATIVE_INVENTORY;
             $val->last_inventory_update = $_SESSION["glpi_currenttime"];
 
+            //try to get "last_boot" only available from "operatingsystem->boot_time" node
+            if (
+                $this->raw_data instanceof stdClass
+                && property_exists($this->raw_data, 'content')
+                && property_exists($this->raw_data->content, 'operatingsystem')
+                && property_exists($this->raw_data->content->operatingsystem, 'boot_time')
+            ) {
+                $val->last_boot = $entry->content->operatingsystem->boot_time;
+            }
+
             if (isset($this->extra_data['hardware'])) {
                 $this->prepareForHardware($val);
             }
@@ -703,12 +713,14 @@ abstract class MainAsset extends InventoryAsset
             if ($doTransfer > 0 && $transfer->getFromDB($doTransfer)) {
                 $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
                 $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
+                //and set new entity in session
+                $_SESSION['glpiactiveentities']        = [$entities_id];
+                $_SESSION['glpiactiveentities_string'] = $entities_id;
+                $_SESSION['glpiactive_entity']         = $entities_id;
+            } else {
+                //no transfert so revert to old entities_id
+                $val->entities_id = $this->item->fields['entities_id'];
             }
-
-            //and set new entity in session
-            $_SESSION['glpiactiveentities']        = [$entities_id];
-            $_SESSION['glpiactiveentities_string'] = $entities_id;
-            $_SESSION['glpiactive_entity']         = $entities_id;
         }
 
         if ($this->is_discovery === true && !$this->isNew()) {

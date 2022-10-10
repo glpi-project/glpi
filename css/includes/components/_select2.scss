@@ -65,6 +65,10 @@
             border-color: $input-border-color;
             box-shadow: none;
             cursor: not-allowed;
+
+            .select2-selection__rendered {
+                color: $text-muted;
+            }
         }
 
         &.select2-selection--single {

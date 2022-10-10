@@ -102,4 +102,10 @@
         __('Serial number'),
         field_options
     ) }}
+
+    {{ fields.htmlField(
+        'install_date',
+        item.fields['install_date']|formatted_datetime,
+        __('Installation date')
+    ) }}
 {% endblock %}

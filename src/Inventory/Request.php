@@ -201,7 +201,7 @@ class Request extends AbstractRequest
             ];
         } else {
             $response = [
-                'PROLOG_FREQ'  => self::DEFAULT_FREQUENCY,
+                'PROLOG_FREQ'  => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
                 'RESPONSE'     => 'SEND'
             ];
         }

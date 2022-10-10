@@ -95,6 +95,7 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_boot' => '2020-06-09 07:58:08',
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1089,10 +1090,11 @@ class Inventory extends InventoryTestCase
 
        //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
             ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
             ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->variable['port']->isIdenticalTo(null)
             ->string['tag']->isIdenticalTo('000005');
         $this->array($metadata['provider'])->hasSize(10);
 
@@ -1166,10 +1168,11 @@ class Inventory extends InventoryTestCase
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
             ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
             ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.19')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->variable['port']->isIdenticalTo(null)
             ->string['tag']->isIdenticalTo('000005');
         $this->array($metadata['provider'])->hasSize(9);
 
@@ -1272,6 +1275,7 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_boot' => "2017-02-20 08:11:53",
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1484,6 +1488,7 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_boot' => "2017-02-20 08:11:53",
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1588,11 +1593,12 @@ class Inventory extends InventoryTestCase
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
             ->string['deviceid']->isIdenticalTo('LF014-2017-02-20-12-19-56')
             ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.3.20')
             ->string['itemtype']->isIdenticalTo('Computer')
             ->string['tag']->isIdenticalTo('000005')
+            ->variable['port']->isIdenticalTo(null)
             ->string['action']->isIdenticalTo('inventory');
         ;
         $this->array($metadata['provider'])->hasSize(9);
@@ -1643,6 +1649,7 @@ class Inventory extends InventoryTestCase
             'date_creation' => $computer->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $computer->fields['last_inventory_update'],
+            'last_boot' => "2017-06-08 07:06:47",
         ];
         $this->array($computer->fields)->isIdenticalTo($expected);
 
@@ -1757,10 +1764,10 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4443);
+        $this->integer(count($logs))->isIdenticalTo(4444);
 
         $expected_types_count = [
-            0 => 3, //Agent version, disks usage
+            0 => 4, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3243,//network port/name, ip address, VMs, Software
@@ -1826,10 +1833,11 @@ class Inventory extends InventoryTestCase
         //check inventory metadata
         $metadata = $inventory->getMetadata();
 
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('foo')
          ->string['version']->isIdenticalTo('4.1')
          ->string['itemtype']->isIdenticalTo('NetworkEquipment')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('netinventory');
 
         global $DB;
@@ -2166,10 +2174,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check inventory metadata
         $metadata = $inventory->getMetadata();
 
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('3k-1-pa3.glpi-project.infra-2020-12-31-11-28-51')
          ->string['version']->isIdenticalTo('4.1')
          ->string['itemtype']->isIdenticalTo('NetworkEquipment')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('netinventory');
 
         global $DB;
@@ -2654,10 +2663,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check inventory metadata
         $metadata = $inventory->getMetadata();
 
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('HP-2530-48G-2020-12-31-11-28-51')
          ->string['version']->isIdenticalTo('2.5')
          ->string['itemtype']->isIdenticalTo('NetworkEquipment')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('netinventory');
 
         global $DB;
@@ -3326,10 +3336,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
        //check inventory metadata
         $metadata = $inventory->getMetadata();
 
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('CH-GV1-DSI-WLC-INSID-1-2020-12-31-11-28-51')
          ->string['version']->isIdenticalTo('4.1')
          ->string['itemtype']->isIdenticalTo('NetworkEquipment')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('netinventory');
 
         global $DB;
@@ -3706,10 +3717,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //check inventory metadata
         $metadata = $inventory->getMetadata();
 
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('DGS-3420-52T-2020-12-31-11-28-51')
          ->string['version']->isIdenticalTo('4.1')
          ->string['itemtype']->isIdenticalTo('NetworkEquipment')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('netinventory');
 
         global $DB;
@@ -4044,11 +4056,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
          ->string['tag']->isIdenticalTo('000005')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('inventory');
         $this->array($metadata['provider'])->hasSize(10);
 
@@ -4215,11 +4228,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(6)
+        $this->array($metadata)->hasSize(7)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
          ->string['tag']->isIdenticalTo('000005')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('inventory');
         $this->array($metadata['provider'])->hasSize(10);
 
@@ -4360,9 +4374,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
          ->string['itemtype']->isIdenticalTo('Computer')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('inventory');
 
         //check we add only one computer
@@ -4383,9 +4398,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
          ->string['itemtype']->isIdenticalTo('Computer')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('inventory');
 
         //check we add main computer and one computer per vm
@@ -4440,9 +4456,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
             ->string['deviceid']->isIdenticalTo('lxc-server-2022-08-09-17-49-51')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->variable['port']->isIdenticalTo(null)
             ->string['action']->isIdenticalTo('inventory');
 
         //check created agent
@@ -4567,9 +4584,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
             ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->variable['port']->isIdenticalTo(null)
             ->string['action']->isIdenticalTo('inventory');
 
         global $DB;
@@ -4592,9 +4610,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
             ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->variable['port']->isIdenticalTo(null)
             ->string['action']->isIdenticalTo('inventory');
 
         //partial inventory: add databases
@@ -4782,10 +4801,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
          ->string['deviceid']->isIdenticalTo('Mi9TPro-TéléphoneM-2019-12-18-14-30-16')
          ->string['version']->isIdenticalTo('example-app-java')
          ->string['itemtype']->isIdenticalTo('Phone')
+         ->variable['port']->isIdenticalTo(null)
          ->string['action']->isIdenticalTo('inventory');
 
         //check created agent
@@ -5293,7 +5313,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(5)
+        $this->array($metadata)->hasSize(6)
          ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
          ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
          ->string['itemtype']->isIdenticalTo('Computer')
@@ -5397,9 +5417,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check inventory metadata
         $metadata = $inventory->getMetadata();
-        $this->array($metadata)->hasSize(4)
+        $this->array($metadata)->hasSize(5)
             ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
             ->string['itemtype']->isIdenticalTo('Computer')
+            ->variable['port']->isIdenticalTo(null)
             ->string['action']->isIdenticalTo('inventory');
 
         //check we add only one computer

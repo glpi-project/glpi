@@ -81,16 +81,27 @@ class Html extends \GLPITestCase
         $this->variable(\Html::convDateTime(null))->isNull();
         $this->variable(\Html::convDateTime('NULL'))->isNull;
 
-        $mydate = date('Y-m-d H:i:s');
+        $timestamp = time();
 
-        $expected = date('Y-m-d H:i');
+        $mydate = date('Y-m-d H:i:s', $timestamp);
+
+        $expected = date('Y-m-d H:i', $timestamp);
         $this->string(\Html::convDateTime($mydate))->isIdenticalTo($expected);
 
-        $expected = date('d-m-Y H:i');
+        $expected = date('Y-m-d H:i:s', $timestamp);
+        $this->string(\Html::convDateTime($mydate, null, true))->isIdenticalTo($expected);
+
+        $expected = date('d-m-Y H:i', $timestamp);
         $this->string(\Html::convDateTime($mydate, 1))->isIdenticalTo($expected);
 
-        $expected = date('m-d-Y H:i');
+        $expected = date('d-m-Y H:i:s', $timestamp);
+        $this->string(\Html::convDateTime($mydate, 1, true))->isIdenticalTo($expected);
+
+        $expected = date('m-d-Y H:i', $timestamp);
         $this->string(\Html::convDateTime($mydate, 2))->isIdenticalTo($expected);
+
+        $expected = date('m-d-Y H:i:s', $timestamp);
+        $this->string(\Html::convDateTime($mydate, 2, true))->isIdenticalTo($expected);
     }
 
     public function testCleanInputText()

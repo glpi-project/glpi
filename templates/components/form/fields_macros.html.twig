@@ -107,6 +107,10 @@
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
+   {% set options = {
+      'center': true,
+   }|merge(options) %}
+
    {% set field %}
       <input type="hidden"   name="{{ name }}" value="0" />
       <input type="checkbox" name="{{ name }}" value="1" class="form-check-input" id="%id%"

@@ -197,6 +197,7 @@ class Inventory
             'deviceid' => $this->raw_data->deviceid,
             'version' => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
             'itemtype' => $this->raw_data->itemtype ?? 'Computer',
+            'port'      => $this->raw_data->{'httpd-port'} ?? null,
         ];
 
         if (property_exists($this->raw_data, 'content') && property_exists($this->raw_data->content, 'versionprovider')) {
