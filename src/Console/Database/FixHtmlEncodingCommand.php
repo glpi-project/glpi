@@ -121,14 +121,14 @@ class FixHtmlEncodingCommand extends AbstractCommand
     {
         global $DB;
 
-        $this->checkArguments($input);
+        $this->checkArguments();
 
         $itemtype = $input->getOption('itemtype');
         $item_ids = $input->getOption('id');
         $fields = $input->getOption('field');
 
         if ($input->getOption('dump')) {
-            $this->dumpObjects($input);
+            $this->dumpObjects();
         }
 
         $failed_items = [];
@@ -174,15 +174,14 @@ class FixHtmlEncodingCommand extends AbstractCommand
     /**
      * Check that the arguments are correct
      *
-     * @param InputInterface $input
      * @return void
      */
-    private function checkArguments(InputInterface $input)
+    private function checkArguments()
     {
         global $DB;
 
         // Check itemtype exists
-        $itemtype = $input->getOption('itemtype');
+        $itemtype = $this->input->getOption('itemtype');
         if (empty($itemtype) || !class_exists($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . sprintf(__('Itemtype %s not found'), $itemtype) . '</error>',
@@ -191,7 +190,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
         }
 
         // Check all items exists
-        $item_ids = $input->getOption('id');
+        $item_ids = $this->input->getOption('id');
         if (count($item_ids) < 1) {
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . sprintf(__('Item id not specified')) . '</error>',
@@ -209,7 +208,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
         }
 
         // Check all fields exist
-        $fields = $input->getOption('field');
+        $fields = $this->input->getOption('field');
         if (count($fields) < 1) {
             throw new \Glpi\Console\Exception\EarlyExitException(
                 '<error>' . sprintf(__('Field not specified')) . '</error>',
@@ -229,16 +228,15 @@ class FixHtmlEncodingCommand extends AbstractCommand
     /**
      * Dump items
      *
-     * @param InputInterface $input
      * @return void
      */
-    private function dumpObjects(InputInterface $input)
+    private function dumpObjects()
     {
         global $DB;
 
-        $itemtype = $input->getOption('itemtype');
-        $item_ids = $input->getOption('id');
-        $fields = $input->getOption('field');
+        $itemtype = $this->input->getOption('itemtype');
+        $item_ids = $this->input->getOption('id');
+        $fields = $this->input->getOption('field');
 
         $dump_content = '';
 
@@ -262,7 +260,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
         }
 
         // Save the rollback SQL queries dump
-        $dump_file_name = $input->getOption('dump');
+        $dump_file_name = $this->input->getOption('dump');
         if (@file_put_contents($dump_file_name, $dump_content) == strlen($dump_content)) {
             $this->output->writeln(
                 '<comment>' . sprintf(__('File %s contains SQL queries that can be used to rollback command.'), $dump_file_name) . '</comment>',
