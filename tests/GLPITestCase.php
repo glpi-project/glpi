@@ -58,10 +58,7 @@ class GLPITestCase extends atoum
 
     public function beforeTestMethod($method)
     {
-       // By default, no session, not connected
-        $this->resetSession();
-
-       // Ensure cache is clear
+        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
@@ -76,19 +73,31 @@ class GLPITestCase extends atoum
 
     public function afterTestMethod($method)
     {
-        if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
-            unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
-            $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
+        global $CFG_GLPI;
+
+        // Store messages prior to session reset.
+        $session_messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];
+
+        // Reset session and configuration.
+        // It have to be done before calling asserters, as asserters may stop method execution.
+        $this->resetSession();
+        $CFG_GLPI = [];
+
+        // Ensure there is no unexpected session messages
+        if (!$this->has_failed) {
+            unset($session_messages[INFO]);
+            $this->array($session_messages)->isIdenticalTo(
                 [],
                 sprintf(
                     "Some messages has not been handled in %s::%s:\n%s",
                     static::class,
                     $method,
-                    print_r($_SESSION['MESSAGE_AFTER_REDIRECT'], true)
+                    print_r($session_messages, true)
                 )
             );
         }
 
+        // Ensure there is no unexpected error log entry
         if (!$this->has_failed) {
             foreach ([$this->php_log_handler, $this->sql_log_handler] as $log_handler) {
                 $this->array($log_handler->getRecords())->isEmpty(
