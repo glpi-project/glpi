@@ -77,7 +77,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
 
         $this->setName('glpi:database:fix_html_encoding');
         $this->setAliases(['db:fix_html']);
-        $this->setDescription(__('Enable timezones usage.'));
+        $this->setDescription(__('Fix Html encoding in database.'));
 
         $this->addOption(
             'itemtype',
@@ -109,7 +109,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
             . PHP_EOL
         );
 
-        $this->addUsage('--field name --field content');
+        $this->addUsage('--itemtype=ITILFollowup --id=42 --field=content');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -122,7 +122,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
                 '<error>' . sprintf(__('Itemtype %s not found'), $itemtype) . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
-            $this->outputSessionBufferedMessages([WARNING, ERROR]);
             return self::ERROR_ITEMTYPE_NOT_FOUND;
         }
 
@@ -134,7 +133,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
                 '<error>' . sprintf(__('Item id not specified')) . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
-            $this->outputSessionBufferedMessages([WARNING, ERROR]);
             return self::ERROR_ITEM_ID_NOT_FOUND;
         }
         foreach ($item_ids as $item_id) {
@@ -144,7 +142,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
                     '<error>' . sprintf(__('Item id %s not found'), $item_id) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
-                $this->outputSessionBufferedMessages([WARNING, ERROR]);
                 return self::ERROR_ITEM_ID_NOT_FOUND;
             }
         }
@@ -157,7 +154,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
                 '<error>' . sprintf(__('Field not specified')) . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
-            $this->outputSessionBufferedMessages([WARNING, ERROR]);
             return self::ERROR_ITEM_ID_NOT_FOUND;
         }
         foreach ($fields as $field) {
@@ -166,7 +162,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
                     '<error>' . sprintf(__('Field %s not found'), $field) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
-                $this->outputSessionBufferedMessages([WARNING, ERROR]);
                 return self::ERROR_FIELD_NOT_FOUND;
             }
         }
