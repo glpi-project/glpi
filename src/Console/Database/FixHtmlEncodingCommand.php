@@ -71,6 +71,13 @@ class FixHtmlEncodingCommand extends AbstractCommand
      */
     const ERROR_UPDATE_FAILED = 4;
 
+    /**
+     * Error code returned when rollback file cound not be created
+     *
+     * @var integer
+     */
+    const ERROR_ROLLBACK_FILE_FAILED = 5;
+
     protected function configure()
     {
         parent::configure();
@@ -114,76 +121,20 @@ class FixHtmlEncodingCommand extends AbstractCommand
     {
         global $DB;
 
+        $this->checkArguments($input);
+
         $itemtype = $input->getOption('itemtype');
-        if (empty($itemtype) || !class_exists($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
-            $this->output->writeln(
-                '<error>' . sprintf(__('Itemtype %s not found'), $itemtype) . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return self::ERROR_ITEMTYPE_NOT_FOUND;
-        }
-
         $item_ids = $input->getOption('id');
-
-        // Check all items exists
-        if (count($item_ids) < 1) {
-            $this->output->writeln(
-                '<error>' . sprintf(__('Item id not specified')) . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return self::ERROR_ITEM_ID_NOT_FOUND;
-        }
-        foreach ($item_ids as $item_id) {
-            $item = new $itemtype();
-            if (!$item->getFromDB($item_id)) {
-                $this->output->writeln(
-                    '<error>' . sprintf(__('Item id %s not found'), $item_id) . '</error>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-                return self::ERROR_ITEM_ID_NOT_FOUND;
-            }
-        }
-
         $fields = $input->getOption('field');
 
-        // Check all fields exist
-        if (count($fields) < 1) {
-            $this->output->writeln(
-                '<error>' . sprintf(__('Field not specified')) . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return self::ERROR_FIELD_NOT_FOUND;
+        if ($input->getOption('dump')) {
+            $this->dumpObjects($input);
         }
-        foreach ($fields as $field) {
-            if (!$DB->fieldExists($itemtype::getTable(), $field)) {
-                $this->output->writeln(
-                    '<error>' . sprintf(__('Field %s not found'), $field) . '</error>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-                return self::ERROR_FIELD_NOT_FOUND;
-            }
-        }
-
-        $dump_content = '';
 
         $failed_items = [];
         foreach ($item_ids as $item_id) {
             $item = new $itemtype();
             $item->getFromDB($item_id);
-
-            // Create the rollback SQL query
-            if ($input->getOption('dump')) {
-                $object_state = [];
-                foreach ($fields as $field) {
-                    $object_state[$field] = $DB->escape($item->fields[$field]);
-                }
-
-                $item_rollback = $DB->buildUpdate(
-                    $itemtype::getTable(),
-                    $object_state,
-                    ['id' => $item_id],
-                ) . ';' . PHP_EOL;
-            }
 
             // update the item
             $update = [];
@@ -200,27 +151,6 @@ class FixHtmlEncodingCommand extends AbstractCommand
             if (!$success) {
                 $failed_items[] = $item_id;
                 continue;
-            }
-
-            // feed the rollback SQL queries dump
-            if ($input->getOption('dump')) {
-                $dump_content .= $item_rollback;
-            }
-        }
-
-        // Save the rollback SQL queries dump
-        if ($input->getOption('dump')) {
-            $dump_file_name = $input->getOption('dump');
-            if (file_put_contents($dump_file_name, $dump_content) == strlen($dump_content)) {
-                $this->output->writeln(
-                    '<comment>' . sprintf(__('File %s contains SQL queries that can be used to rollback command.'), $dump_file_name) . '</comment>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
-            } else {
-                $this->output->writeln(
-                    '<comment>' . sprintf(__('Failed to write rollback SQL queries file %s.'), $dump_file_name) . '</comment>',
-                    OutputInterface::VERBOSITY_QUIET
-                );
             }
         }
 
@@ -239,6 +169,111 @@ class FixHtmlEncodingCommand extends AbstractCommand
         }
 
         return 0;
+    }
+
+    /**
+     * Check that the arguments are correct
+     *
+     * @param InputInterface $input
+     * @return void
+     */
+    private function checkArguments(InputInterface $input)
+    {
+        global $DB;
+
+        // Check itemtype exists
+        $itemtype = $input->getOption('itemtype');
+        if (empty($itemtype) || !class_exists($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . sprintf(__('Itemtype %s not found'), $itemtype) . '</error>',
+                self::ERROR_ITEMTYPE_NOT_FOUND
+            );
+        }
+
+        // Check all items exists
+        $item_ids = $input->getOption('id');
+        if (count($item_ids) < 1) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . sprintf(__('Item id not specified')) . '</error>',
+                self::ERROR_ITEM_ID_NOT_FOUND
+            );
+        }
+        foreach ($item_ids as $item_id) {
+            $item = new $itemtype();
+            if (!$item->getFromDB($item_id)) {
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . sprintf(__('Item id %s not found'), $item_id) . '</error>',
+                    self::ERROR_ITEM_ID_NOT_FOUND
+                );
+            }
+        }
+
+        // Check all fields exist
+        $fields = $input->getOption('field');
+        if (count($fields) < 1) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<error>' . sprintf(__('Field not specified')) . '</error>',
+                self::ERROR_FIELD_NOT_FOUND
+            );
+        }
+        foreach ($fields as $field) {
+            if (!$DB->fieldExists($itemtype::getTable(), $field)) {
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . sprintf(__('Field %s not found'), $field) . '</error>',
+                    self::ERROR_FIELD_NOT_FOUND
+                );
+            }
+        }
+    }
+
+    /**
+     * Dump items
+     *
+     * @param InputInterface $input
+     * @return void
+     */
+    private function dumpObjects(InputInterface $input)
+    {
+        global $DB;
+
+        $itemtype = $input->getOption('itemtype');
+        $item_ids = $input->getOption('id');
+        $fields = $input->getOption('field');
+
+        $dump_content = '';
+
+        foreach ($item_ids as $item_id) {
+            // Get the item to save
+            $item = new $itemtype();
+            $item->getFromDB($item_id);
+
+            // read the fields to save
+            $object_state = [];
+            foreach ($fields as $field) {
+                $object_state[$field] = $DB->escape($item->fields[$field]);
+            }
+
+            // Build the SQL query
+            $dump_content .= $DB->buildUpdate(
+                $itemtype::getTable(),
+                $object_state,
+                ['id' => $item_id],
+            ) . ';' . PHP_EOL;
+        }
+
+        // Save the rollback SQL queries dump
+        $dump_file_name = $input->getOption('dump');
+        if (@file_put_contents($dump_file_name, $dump_content) == strlen($dump_content)) {
+            $this->output->writeln(
+                '<comment>' . sprintf(__('File %s contains SQL queries that can be used to rollback command.'), $dump_file_name) . '</comment>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+        } else {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<comment>' . sprintf(__('Failed to write rollback SQL queries file %s'), $dump_file_name) . '</comment>',
+                self::ERROR_ROLLBACK_FILE_FAILED
+            );
+        }
     }
 
     /**
