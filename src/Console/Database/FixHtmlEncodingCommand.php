@@ -100,7 +100,14 @@ class FixHtmlEncodingCommand extends AbstractCommand
             __('Field of the item to fix')
         );
 
-        $this->addUsage('--itemtype=ITILFollowup --id=42 --field=content');
+        $this->addOption(
+            'dump',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            __('Field of the item to fix')
+        );
+
+        $this->addUsage('--itemtype=ITILFollowup --id=42 --field=content [--dump=file_path.sql]');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -157,15 +164,34 @@ class FixHtmlEncodingCommand extends AbstractCommand
             }
         }
 
+        $dump_content = '';
+
         $failed_items = [];
         foreach ($item_ids as $item_id) {
             $item = new $itemtype();
             $item->getFromDB($item_id);
+
+            // Create the rollback SQL query
+            if ($input->getOption('dump')) {
+                $object_state = [];
+                foreach ($fields as $field) {
+                    $object_state[$field] = $DB->escape($item->fields[$field]);
+                }
+
+                $item_rollback = $DB->buildUpdate(
+                    $itemtype::getTable(),
+                    $object_state,
+                    ['id' => $item_id],
+                ) . PHP_EOL . PHP_EOL;
+            }
+
+            // update the item
             $update = [];
             foreach ($fields as $field) {
                 $update[$field] = $this->doubleEncoding($item->fields[$field]);
                 $update[$field] = $DB->escape($update[$field]);
             }
+
             $success = $DB->update(
                 $itemtype::getTable(),
                 $update,
@@ -173,6 +199,28 @@ class FixHtmlEncodingCommand extends AbstractCommand
             );
             if (!$success) {
                 $failed_items[] = $item_id;
+                continue;
+            }
+
+            // feed the rollback SQL queries dump
+            if ($input->getOption('dump')) {
+                $dump_content .= $item_rollback;
+            }
+        }
+
+        // Save the rollback SQL queries dump
+        if ($input->getOption('dump')) {
+            $dump_file_name = $input->getOption('dump');
+            if (file_put_contents($dump_file_name, $dump_content) == strlen($dump_content)) {
+                $this->output->writeln(
+                    '<comment>' . sprintf(__('File %s contains SQL queries that can be used to rollback command.'), $dump_file_name) . '</comment>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
+            } else {
+                $this->output->writeln(
+                    '<comment>' . sprintf(__('Failed to write rollback SQL queries file %s'), $dump_file_name) . '</comment>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
             }
         }
 
@@ -203,7 +251,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
      * @param string $input
      * @return string
      */
-    private function doubleEncoding($input): string
+    private function doubleEncoding(string $input): string
     {
         // Prepare the double encoding fix of HTML tag
         $pattern = [
