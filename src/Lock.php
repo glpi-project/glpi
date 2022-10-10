@@ -444,13 +444,13 @@ class Lock extends CommonGLPI
             $sversion = new SoftwareVersion();
             $sversion->getFromDB($item_sv->fields['softwareversions_id']);
 
-            $softawre = new Software();
-            $softawre->getFromDB($sversion->fields['softwares_id']);
+            $software = new Software();
+            $software->getFromDB($sversion->fields['softwares_id']);
 
             echo "</td>";
-            echo "<td class='left'>" . $softawre->fields['name'] . "</td>"; //no form for item software version
+            echo "<td class='left'>" . $software->fields['name'] . "</td>"; //no form for item software version
             echo "<td class='left'>" . $sversion->fields['name'] . "</td>";
-            echo "<td class='left'>" . $item_sv->fields['date_install'] . "</td>";
+            echo "<td class='left'>" . Html::convDateTime($item_sv->fields['date_install']) . "</td>";
             echo "<td class='left'>" . Dropdown::getYesNo($item_sv->fields['is_dynamic']) . "</td>";
             echo "</tr>";
         }
@@ -605,8 +605,8 @@ class Lock extends CommonGLPI
             if ($fqdn->getFromDB($networkname->fields['fqdns_id'])) {
                 $fqdn_name = $fqdn->fields['name'];
             }
-            echo "<td class='left'></td>";
             echo "<td class='left'>" . $fqdn_name . "</td>";
+            echo "<td class='left'></td>";
             echo "<td class='left'>" . Dropdown::getYesNo($networkname->fields['is_dynamic']) . "</td>";
             echo "</tr>\n";
         }
@@ -646,7 +646,7 @@ class Lock extends CommonGLPI
             echo "<td class='center' width='10'>";
             if ($ipaddress->can($line['id'], UPDATE) || $ipaddress->can($line['id'], PURGE)) {
                 $header = true;
-                echo "<input type='checkbox' name='Item_Disk[" . $line['id'] . "]'>";
+                echo "<input type='checkbox' name='IPAddress[" . $line['id'] . "]'>";
             }
             echo "</td>";
             echo "<td class='left'>" . $ipaddress->fields['name'] . "</td>"; //no form for IP address
@@ -740,7 +740,7 @@ class Lock extends CommonGLPI
             ]);
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='4'>" . __('No locked item') . "</td></tr>";
+            echo "<td class='center' colspan='5'>" . __('No locked item') . "</td></tr>";
             echo "</table>";
         }
         Html::closeForm();
