@@ -854,6 +854,10 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
+        if ($this instanceof CommonITILObject && $this->isNewItem()) {
+            $this->restoreInputAndDefaults($ID, $options, null);
+        }
+
         $target         = $_SERVER['PHP_SELF'];
         $extraparamhtml = "";
         $withtemplate   = "";
@@ -870,7 +874,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
             if ($this instanceof CommonITILObject && $this->isNewItem()) {
                 $this->input = $cleaned_options;
-                //$this->saveInput();
+                $this->saveInput();
                // $extraparamhtml can be too long in case of ticket with content
                // (passed in GET in ajax request)
                 unset($cleaned_options['content']);
