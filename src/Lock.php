@@ -759,7 +759,7 @@ class Lock extends CommonGLPI
         if ($header) {
             echo "<tr><th>";
             //echo Html::getCheckAllAsCheckbox('lock_form');
-            echo "</th><th>&nbsp</th></tr>\n";
+            echo "</th><th colspan='4'>&nbsp</th></tr>\n";
             echo "</table>";
             Html::openArrowMassives('lock_form', true);
             Html::closeArrowMassives(['unlock' => _sx('button', 'Unlock'),
