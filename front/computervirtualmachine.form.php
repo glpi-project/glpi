@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-}  else if (isset($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
     $computer_vm->check($_POST["id"], DELETE);
     $computer_vm->delete($_POST);
 

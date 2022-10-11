@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-}  else if (isset($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
     $nn->check($_POST["id"], DELETE);
     $nn->delete($_POST);
 
