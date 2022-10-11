@@ -58,11 +58,6 @@ class ComputerVirtualMachine extends CommonDBChild
         return __('Virtualization');
     }
 
-    /**
-     * @see CommonDBTM::useDeletedToLockIfDynamic()
-     *
-     * @since 0.84
-     **/
     public function useDeletedToLockIfDynamic()
     {
         return false;
