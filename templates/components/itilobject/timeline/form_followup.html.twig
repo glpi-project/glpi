@@ -230,7 +230,7 @@
                                  <input type="checkbox" name="pending" value="1" class="form-check-input"
                                        id="enable-pending-reasons-{{ rand }}"
                                        role="button"
-                                       {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
+                                       {{ item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen ? 'checked' : '' }}
                                        data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
                               </label>
                            </span>
