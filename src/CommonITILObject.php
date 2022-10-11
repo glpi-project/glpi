@@ -8586,7 +8586,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 $ticket_table => [
                                     'ON'  => [
                                         $ticket_table  => 'id',
-                                        $tt_table      => 'tickets_id_1'
+                                        $tt_table      => 'tickets_id_2'
                                     ]
                                 ]
                             ],
@@ -8672,7 +8672,7 @@ abstract class CommonITILObject extends CommonDBTM
            // Core content
             $content .= "<div class='kanban-core-content'>";
             if (isset($item['_steps']) && count($item['_steps'])) {
-                $done = count(array_filter($item['_steps'], static function ($l) {
+                $done = count(array_filter($item['_steps'], static function ($l) use ($item) {
                     return in_array($l['status'], static::getClosedStatusArray());
                 }));
                 $total = count($item['_steps']);
