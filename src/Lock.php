@@ -253,7 +253,6 @@ class Lock extends CommonGLPI
                 echo "</tbody>";
                 echo "</table>";
             }
-
         }
         echo "</br><div width='100%'>";
         echo "<form method='post' id='lock_form' name='lock_form' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
