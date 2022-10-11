@@ -76,8 +76,9 @@ class Lock extends CommonGLPI
         echo "<div class='alert alert-primary d-flex align-items-center' role='alert'>";
         echo "<i class='fas fa-info-circle fa-xl'></i>";
         echo "<span class='ms-2'>";
-        echo __("Here the locked fields are displayed.<br> A locked field is a manually modified field.
-        <br>The automatic inventory will no longer modify this field, unless you unlock it.");
+        echo __("A locked field is a manually modified field.");
+        echo "<br>";
+        echo __("The automatic inventory will no longer modify this field, unless you unlock it.");
         echo "</span>";
         echo "</div>";
 
@@ -248,7 +249,7 @@ class Lock extends CommonGLPI
             } else {
                 echo "<table class='tab_cadre_fixehov'>";
                 echo "<tbody>";
-                echo "<tr><th colspan='5' class='center'>" . __('Locked fields') . "</th></tr>";
+                echo "<tr><th colspan='5' class='center'>" . _n('Locked field', 'Locked fields', Session::getPluralNumber()) . "</th></tr>";
                 echo "<tr class='tab_bg_2'><td class='center' colspan='5'>" . __('No locked fields') . "</td></tr>";
                 echo "</tbody>";
                 echo "</table>";
@@ -272,8 +273,9 @@ class Lock extends CommonGLPI
         echo "<div class='alert alert-primary d-flex align-items-center' role='alert'>";
         echo "<i class='fas fa-info-circle fa-xl'></i>";
         echo "<span class='ms-2'>";
-        echo __("Here the locked items are displayed.<br> A locked items is a manually deleted items (example: a monitor).
-        <br>The automatic inventory will no longer handle this item, unless you unlock it.");
+        echo __("A locked items is a manually deleted items (example: a monitor).");
+        echo "<br>";
+        echo __("The automatic inventory will no longer handle this item, unless you unlock it.");
         echo "</span>";
         echo "</div>";
 
