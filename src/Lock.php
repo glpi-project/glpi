@@ -270,7 +270,7 @@ class Lock extends CommonGLPI
         ]);
         $header |= $results['header'];
 
-        echo "<div class='alert alert-primary d-flex align-items-center' role='alert'>";
+        echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
         echo "<i class='fas fa-info-circle fa-xl'></i>";
         echo "<span class='ms-2'>";
         echo __("A locked items is a manually deleted items (example: a monitor).");
