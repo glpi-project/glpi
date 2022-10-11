@@ -272,8 +272,11 @@ final class RichText
             'images_gallery' => false,
             'user_mentions'  => true,
             'images_lazy'    => true,
+            'text_maxsize'   => 2000,
         ];
         $p = array_replace($p, $params);
+
+        $content_size = strlen($content);
 
        // Sanitize content first (security and to decode HTML entities)
         $content = self::getSafeHtml($content);
@@ -288,6 +291,17 @@ final class RichText
 
         if ($p['images_gallery']) {
             $content = self::replaceImagesByGallery($content);
+        }
+
+        if ($content_size > $p['text_maxsize']) {
+            $content = <<<HTML
+<div class="long_text">$content
+    <p class='read_more'>
+        <span class='read_more_button'>...</span>
+    </p>
+</div>
+HTML;
+            $content .= HTML::scriptBlock('$(function() { read_more(); });');
         }
 
         return $content;
