@@ -63,11 +63,6 @@ class Item_Disk extends CommonDBChild
     }
 
 
-    /**
-     * @see CommonDBTM::useDeletedToLockIfDynamic()
-     *
-     * @since 0.84
-     **/
     public function useDeletedToLockIfDynamic()
     {
         return false;
