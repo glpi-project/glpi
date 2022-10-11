@@ -771,6 +771,7 @@ class CommonDBTM extends CommonGLPI
     {
         global $DB;
 
+
         if (
             ($force == 1)
             || !$this->maybeDeleted()

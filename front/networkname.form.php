@@ -56,6 +56,22 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
+}  else if (isset($_POST["delete"])) {
+    $nn->check($_POST["id"], DELETE);
+    $nn->delete($_POST);
+
+    Event::log(
+        $_POST["id"],
+        $_POST['itemtype'],
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+    );
+    if ($_SESSION['glpibackcreated']) {
+        Html::redirect($nn->getLinkURL());
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
     $nn->check($_POST['id'], PURGE);
     $nn->delete($_POST, 1);

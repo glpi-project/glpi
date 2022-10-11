@@ -69,6 +69,16 @@ class NetworkName extends FQDNLabel
         return _n('Network name', 'Network names', $nb);
     }
 
+    /**
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
+     *
+     * @since 0.84
+     **/
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+
 
     public function defineTabs($options = [])
     {
