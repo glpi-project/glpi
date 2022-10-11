@@ -58,6 +58,10 @@ class ComputerVirtualMachine extends CommonDBChild
         return __('Virtualization');
     }
 
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
