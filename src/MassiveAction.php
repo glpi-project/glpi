@@ -116,7 +116,7 @@ class MassiveAction
      * Items remaining in current process.
      * @var array
      */
-    private $remainings = [];
+    private $remainings = null;
 
     /**
      * Fields to remove after reload.
@@ -403,7 +403,9 @@ class MassiveAction
 
        // Add process elements
         if ($stage == 'process') {
-            $this->remainings = $this->items;
+            if (!isset($this->remainings)) {
+                $this->remainings = $this->items;
+            }
 
             $this->fields_to_remove_when_reload = ['fields_to_remove_when_reload'];
 
@@ -568,7 +570,7 @@ class MassiveAction
      **/
     public function getRemainings()
     {
-        return $this->remainings;
+        return $this->remainings ?? [];
     }
 
 
