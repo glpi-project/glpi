@@ -289,13 +289,13 @@ class Lockedfield extends CommonDBTM
      *
      * @param string $itemtype asset type
      * @param int    $items_id asset ID
-     * @return Nothing
+     * @return boolean
      * @since 10.0.4
      */
     public static function releaseLockForAsset($itemtype, $items_id)
     {
         global $DB;
-        $DB->delete(
+        return $DB->delete(
             Lockedfield::getTable(),
             [
                 'itemtype' => $itemtype,
