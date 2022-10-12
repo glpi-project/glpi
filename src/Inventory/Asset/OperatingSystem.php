@@ -79,7 +79,7 @@ class OperatingSystem extends InventoryAsset
         }
 
         if (property_exists($val, 'install_date')) {
-            $val->install_date = $val->install_date;
+            $val->install_date = date('Y-m-d', strtotime($val->install_date));
         }
 
         if (
