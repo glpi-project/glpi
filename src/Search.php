@@ -7438,6 +7438,8 @@ HTML;
                             $out .= $data[$ID][$k]['trans'];
                         } elseif (isset($data[$ID][$k]['trans_completename']) && !empty($data[$ID][$k]['trans_completename'])) {
                             $out .= CommonTreeDropdown::sanitizeSeparatorInCompletename($data[$ID][$k]['trans_completename']);
+                        } elseif (isset($data[$ID][$k]['trans_name']) && !empty($data[$ID][$k]['trans_name'])) {
+                            $out .= $data[$ID][$k]['trans_name'];
                         } else {
                             $value = $data[$ID][$k]['name'];
                             $out .= $so['field'] === 'completename'
