@@ -1107,9 +1107,7 @@ HTML;
         global $CFG_GLPI;
 
        // anonymous fct for adding relevant filters to cards
-        $add_filters_fct = static function ($itemtable) {
-            $DB = DBConnection::getReadConnection();
-
+        $add_filters_fct = static function ($itemtable, $DB) {
             $add_filters = [];
             if ($DB->fieldExists($itemtable, "ititlcategories_id")) {
                   $add_filters[] = "itilcategory";
@@ -1138,6 +1136,7 @@ HTML;
         if ($cards === null || $force) {
             $cards = [];
             $menu_itemtypes = $this->getMenuItemtypes();
+            $DB_read = DBConnection::getReadConnection();
 
             foreach ($menu_itemtypes as $firstlvl => $itemtypes) {
                 foreach ($itemtypes as $itemtype) {
@@ -1151,7 +1150,7 @@ HTML;
                         'filters'    => array_merge([
                             'dates',
                             'dates_mod',
-                        ], $add_filters_fct($itemtype::getTable()))
+                        ], $add_filters_fct($itemtype::getTable(), $DB_read))
                     ];
                 }
             }
@@ -1173,7 +1172,7 @@ HTML;
                     'filters'    => array_merge([
                         'dates',
                         'dates_mod',
-                    ], $add_filters_fct($itemtype::getTable()))
+                    ], $add_filters_fct($itemtype::getTable(), $DB_read))
                 ];
 
                 $clean_itemtype = str_replace('\\', '_', $itemtype);
@@ -1186,7 +1185,7 @@ HTML;
                     'filters'    => array_merge([
                         'dates',
                         'dates_mod',
-                    ], $add_filters_fct($itemtype::getTable()))
+                    ], $add_filters_fct($itemtype::getTable(), $DB_read))
                 ];
             }
 
@@ -1201,7 +1200,7 @@ HTML;
                     'filters'    => array_merge([
                         'dates',
                         'dates_mod',
-                    ], $add_filters_fct($itemtype::getTable()))
+                    ], $add_filters_fct($itemtype::getTable(), $DB_read))
                 ];
             }
 
@@ -1238,7 +1237,7 @@ HTML;
                         'filters'    => array_merge([
                             'dates',
                             'dates_mod',
-                        ], $add_filters_fct($itemtype::getTable()))
+                        ], $add_filters_fct($itemtype::getTable(), $DB_read))
                     ];
                 }
             }
