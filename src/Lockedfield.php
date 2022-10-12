@@ -285,6 +285,26 @@ class Lockedfield extends CommonDBTM
 
 
     /**
+     * Clean locks for an asset
+     *
+     * @param string $itemtype asset type
+     * @param int    $items_id asset ID
+     * @return Nothing
+     * @since 10.0.4
+     */
+    public static function releaseLockForAsset($itemtype, $items_id) {
+        global $DB;
+        $DB->delete(
+            Lockedfield::getTable(),
+            [
+                'itemtype' => $itemtype,
+                'items_id'  => $items_id
+            ]
+        );
+    }
+
+
+    /**
      * List of itemtypes/fields that can be locked globally
      *
      * @return array
