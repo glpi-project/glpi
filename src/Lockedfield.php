@@ -292,7 +292,8 @@ class Lockedfield extends CommonDBTM
      * @return Nothing
      * @since 10.0.4
      */
-    public static function releaseLockForAsset($itemtype, $items_id) {
+    public static function releaseLockForAsset($itemtype, $items_id)
+    {
         global $DB;
         $DB->delete(
             Lockedfield::getTable(),
