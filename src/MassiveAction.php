@@ -570,7 +570,7 @@ class MassiveAction
      **/
     public function getRemainings()
     {
-        return $this->remainings;
+        return $this->remainings ?? [];
     }
 
 
