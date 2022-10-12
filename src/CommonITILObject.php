@@ -8586,7 +8586,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 $ticket_table => [
                                     'ON'  => [
                                         $ticket_table  => 'id',
-                                        $tt_table      => 'tickets_id_1'
+                                        $tt_table      => 'tickets_id_2'
                                     ]
                                 ]
                             ],
