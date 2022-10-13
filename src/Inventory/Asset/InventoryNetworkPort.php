@@ -396,22 +396,19 @@ trait InventoryNetworkPort
                     continue;
                 }
 
-                //check for logical number change
-                $update_input = [
-                    "id" => $keydb
-                ];
                 if (property_exists($data, 'logical_number') && $data->logical_number != $db_lnumber) {
-                    $update_input['logical_number'] = $data->logical_number;
+                    $networkport->update(
+                        [
+                            'id'              => $keydb,
+                            'logical_number'  => $data->logical_number
+                        ]
+                    );
                 }
 
-                //check for instantiation_type number change
+                //check for instantiation_type switch for NetworkPort
                 if (property_exists($data, 'instantiation_type') && $data->instantiation_type != $db_instantiation_type) {
-                    $update_input['instantiation_type'] = $data->instantiation_type;
-                }
-
-                //update if needed
-                if (count($update_input) > 1) {
-                    $networkport->update($update_input);
+                    $networkport->getFromDB($keydb);
+                    $networkport->switchInstantiationType($data->instantiation_type);
                 }
 
                //handle instantiation type
