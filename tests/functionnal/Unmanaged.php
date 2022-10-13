@@ -113,7 +113,6 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         $data = json_decode($converter->convert($net_xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -161,7 +160,6 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
 
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($source);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {

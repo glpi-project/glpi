@@ -848,8 +848,7 @@ class Entity extends DbTestCase
         ]);
         $this->integer($solutions_id)->isGreaterThan(0);
 
-       // Save and replace session data
-        $old_interface = $_SESSION['glpiactiveprofile']['interface'];
+       // Replace session data
         $_SESSION['glpiactiveprofile']['interface'] = $interface;
 
        // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
@@ -915,9 +914,6 @@ class Entity extends DbTestCase
                 );
             }
         }
-
-       // Reset session
-        $_SESSION['glpiactiveprofile']['interface'] = $old_interface;
     }
 
     public function testDefaultContractConfig()

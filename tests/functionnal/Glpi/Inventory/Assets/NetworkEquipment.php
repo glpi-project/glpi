@@ -379,7 +379,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -462,7 +461,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -526,7 +524,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -642,7 +639,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -743,7 +739,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -848,7 +843,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -940,7 +934,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1059,7 +1052,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1202,7 +1194,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1347,7 +1338,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1481,7 +1471,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1609,7 +1598,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1737,7 +1725,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = json_decode($converter->convert($xml_source));
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->boolean($inventory->inError())->isFalse();
         $this->array($inventory->getErrors())->isIdenticalTo([]);
@@ -1872,7 +1859,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //$json = json_decode($data);
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->boolean($inventory->inError())->isFalse();
         $this->array($inventory->getErrors())->isIdenticalTo([]);

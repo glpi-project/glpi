@@ -786,13 +786,9 @@ class Dropdown extends DbTestCase
     {
         $this->login();
 
-        $bkp_params = [];
        //set session params if any
         if (count($session_params)) {
             foreach ($session_params as $param => $value) {
-                if (isset($_SESSION[$param])) {
-                    $bkp_params[$param] = $_SESSION[$param];
-                }
                 $_SESSION[$param] = $value;
             }
         }
@@ -800,17 +796,6 @@ class Dropdown extends DbTestCase
         $params['_idor_token'] = $this->generateIdor($params);
 
         $result = \Dropdown::getDropdownValue($params, false);
-
-       //reset session params before executing test
-        if (count($session_params)) {
-            foreach ($session_params as $param => $value) {
-                if (isset($bkp_params[$param])) {
-                    $_SESSION[$param] = $bkp_params[$param];
-                } else {
-                    unset($_SESSION[$param]);
-                }
-            }
-        }
 
         $this->array($result)->isIdenticalTo($expected);
     }
@@ -953,13 +938,9 @@ class Dropdown extends DbTestCase
     {
         $this->login();
 
-        $bkp_params = [];
        //set session params if any
         if (count($session_params)) {
             foreach ($session_params as $param => $value) {
-                if (isset($_SESSION[$param])) {
-                    $bkp_params[$param] = $_SESSION[$param];
-                }
                 $_SESSION[$param] = $value;
             }
         }
@@ -967,17 +948,6 @@ class Dropdown extends DbTestCase
         $params['_idor_token'] = $this->generateIdor($params);
 
         $result = \Dropdown::getDropdownConnect($params, false);
-
-       //reset session params before executing test
-        if (count($session_params)) {
-            foreach ($session_params as $param => $value) {
-                if (isset($bkp_params[$param])) {
-                    $_SESSION[$param] = $bkp_params[$param];
-                } else {
-                    unset($_SESSION[$param]);
-                }
-            }
-        }
 
         $this->array($result)->isIdenticalTo($expected);
     }
@@ -1131,10 +1101,8 @@ class Dropdown extends DbTestCase
     public function testGetDropdownNumber($params, $expected)
     {
         global $CFG_GLPI;
-        $orig_max = $CFG_GLPI['dropdown_max'];
         $CFG_GLPI['dropdown_max'] = 10;
         $result = \Dropdown::getDropdownNumber($params, false);
-        $CFG_GLPI['dropdown_max'] = $orig_max;
         $this->array($result)->isIdenticalTo($expected);
     }
 

@@ -229,10 +229,6 @@ class ITILFollowup extends DbTestCase
         $this->login();
 
         $ticket = new \Ticket();
-        $oldConf = [
-            'glpiset_default_tech'      => $_SESSION['glpiset_default_tech'],
-            'glpiset_default_requester' => $_SESSION['glpiset_default_requester'],
-        ];
 
         $_SESSION['glpiset_default_tech'] = 0;
         $_SESSION['glpiset_default_requester'] = 0;
@@ -271,10 +267,6 @@ class ITILFollowup extends DbTestCase
         $this->boolean($ticket->getFromDB($ticketID))->isTrue();
         $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
         $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
-
-       // Reset conf
-        $_SESSION['glpiset_default_tech']      = $oldConf['glpiset_default_tech'];
-        $_SESSION['glpiset_default_requester'] = $oldConf['glpiset_default_requester'];
     }
 
     protected function testIsFromSupportAgentProvider()
@@ -333,7 +325,6 @@ class ITILFollowup extends DbTestCase
         global $CFG_GLPI, $DB;
 
        // Disable notifications
-        $old_conf = $CFG_GLPI['use_notifications'];
         $CFG_GLPI['use_notifications'] = false;
 
         $this->login();
@@ -386,9 +377,6 @@ class ITILFollowup extends DbTestCase
        // Execute test
         $result = $fup->isFromSupportAgent();
         $this->boolean($result)->isEqualTo($expected);
-
-       // Reset conf
-        $CFG_GLPI['use_notifications'] = $old_conf;
     }
 
     public function testScreenshotConvertedIntoDocument()

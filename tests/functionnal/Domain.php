@@ -168,7 +168,6 @@ class Domain extends DbTestCase
             [$domains_id]
         );
         $transfer->moveItems(['Domain' => [$domains_id]], $entities_id, [$domains_id]);
-        unset($_SESSION['glpitransfer_list']);
 
         $this->boolean($domain->getFromDB($domains_id))->isTrue();
         $this->integer((int)$domain->fields['entities_id'])->isidenticalTo($entities_id);

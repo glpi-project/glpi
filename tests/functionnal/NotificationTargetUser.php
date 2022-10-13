@@ -107,14 +107,13 @@ class NotificationTargetUser extends DbTestCase
         $user = new \mock\User();
         $this->calling($user)->getPasswordExpirationTime = $expiration_time;
 
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;$target = new \NotificationTargetUser(
+        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
+        $target = new \NotificationTargetUser(
             getItemByTypeName('Entity', '_test_root_entity', true),
             'passwordexpires',
             $user
         );
         $target->addDataForTemplate('passwordexpires');
-        $CFG_GLPI = $cfg_backup;
 
         $this->checkTemplateData($target->data, $expected);
     }

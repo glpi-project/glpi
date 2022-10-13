@@ -60,10 +60,8 @@ class Reminder extends DbTestCase
                             AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'))
                                   OR  (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))"));
 
-        $bkp_groups = $_SESSION['glpigroups'];
         $_SESSION['glpigroups'] = [42, 1337];
         $str = \Reminder::addVisibilityRestrict();
-        $_SESSION['glpigroups'] = $bkp_groups;
         $this->string(trim(preg_replace('/\s+/', ' ', $str)))
          ->isIdenticalTo(preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'  OR `glpi_reminders_users`.`users_id` = '4'  OR (`glpi_groups_reminders`.`groups_id`
                                  IN ('42', '1337')

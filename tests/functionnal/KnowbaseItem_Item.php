@@ -186,9 +186,6 @@ class KnowbaseItem_Item extends DbTestCase
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
         $kbs = \KnowbaseItem_Item::getItems($ticket3);
         $this->array($kbs)->hasSize(0);
-
-        $_SESSION['glpishowallentities'] = 1;
-        unset($_SESSION['glpiactiveentities']);
     }
 
     public function testGetTabNameForItem()

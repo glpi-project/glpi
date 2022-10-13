@@ -852,15 +852,12 @@ class User extends \DbTestCase
         $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
         $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
 
-        $cfg_backup = $CFG_GLPI;
         $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
         $CFG_GLPI['password_expiration_notice'] = $expiration_notice;
 
         $expiration_time = $user->getPasswordExpirationTime();
         $should_change_password = $user->shouldChangePassword();
         $has_password_expire = $user->hasPasswordExpired();
-
-        $CFG_GLPI = $cfg_backup;
 
         $this->variable($expiration_time)->isEqualTo($expected_expiration_time);
         $this->boolean($should_change_password)->isEqualTo($expected_should_change_password);
@@ -988,14 +985,12 @@ class User extends \DbTestCase
         $this->boolean($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'))->isTrue();
         $crontask->fields['param'] = $cron_limit;
 
-        $cfg_backup = $CFG_GLPI;
         $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
         $CFG_GLPI['password_expiration_notice'] = $notice_delay;
         $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
         $CFG_GLPI['use_notifications']  = true;
         $CFG_GLPI['notifications_ajax'] = 1;
         $result = \User::cronPasswordExpiration($crontask);
-        $CFG_GLPI = $cfg_backup;
 
         $this->integer($result)->isEqualTo($expected_result);
         $this->integer(

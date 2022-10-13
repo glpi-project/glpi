@@ -75,7 +75,6 @@ class Computer extends DbTestCase
     public function testUpdate()
     {
         global $CFG_GLPI;
-        $saveconf = $CFG_GLPI;
 
         $computer = $this->getNewComputer();
         $printer  = $this->getNewPrinter();
@@ -158,9 +157,7 @@ class Computer extends DbTestCase
             $this->variable($printer->getField($k))->isEqualTo($in[$k]);
         }
 
-       // Restore configuration
         $computer = $this->getNewComputer();
-        $CFG_GLPI = $saveconf;
 
        //update devices
         $cpu = new \DeviceProcessor();
@@ -237,9 +234,6 @@ class Computer extends DbTestCase
            // Check the printer and test propagation DOES NOT occurs
             $this->variable($link->getField($k))->isEqualTo($in[$k]);
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     /**
@@ -252,7 +246,6 @@ class Computer extends DbTestCase
         global $CFG_GLPI;
 
         $computer = $this->getNewComputer();
-        $saveconf = $CFG_GLPI;
 
         $CFG_GLPI['is_contact_autoupdate']  = 1;
         $CFG_GLPI['is_user_autoupdate']     = 1;
@@ -332,9 +325,6 @@ class Computer extends DbTestCase
            // Check the printer and test propagation occurs
             $this->variable($link->getField($k))->isEqualTo($v);
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     public function testGetFromIter()
@@ -537,10 +527,8 @@ class Computer extends DbTestCase
         // clone!
         $computer = new \Computer(); //$computer->fields contents is already escaped!
         $this->boolean($computer->getFromDB($id))->isTrue();
-        $infocom_auto_create_original = $CFG_GLPI["infocom_auto_create"] ?? 0;
         $CFG_GLPI["infocom_auto_create"] = 1;
         $added = $computer->clone();
-        $CFG_GLPI["infocom_auto_create"] = $infocom_auto_create_original;
         $this->integer((int)$added)->isGreaterThan(0);
         $this->integer($added)->isNotEqualTo($computer->fields['id']);
 
@@ -678,7 +666,6 @@ class Computer extends DbTestCase
             [$cid]
         );
         $transfer->moveItems(['Computer' => [$cid]], $entities_id, [$cid, 'keep_software' => 1]);
-        unset($_SESSION['glpitransfer_list']);
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->integer((int)$computer->fields['entities_id'])->isidenticalTo($entities_id);

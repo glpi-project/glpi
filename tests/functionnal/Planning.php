@@ -80,8 +80,6 @@ class Planning extends \DbTestCase
 
         $this->login();
 
-        $session_backup = $_SESSION['glpi_plannings'];
-
         \Planning::initSessionForCurrentUser();
 
        // Expected results
@@ -161,8 +159,6 @@ class Planning extends \DbTestCase
                 'end'   => '2019-11-30 23:59:59',
             ]
         );
-
-        $_SESSION['glpi_plannings'] = $session_backup;
 
         foreach ($expected_events_keys as $list_var => $events_keys) {
             $events_list = $$list_var;

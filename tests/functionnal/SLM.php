@@ -631,8 +631,6 @@ class SLM extends DbTestCase
     {
         $this->login();
 
-        $currenttime_bak = $_SESSION['glpi_currenttime'];
-
        // Create SLM with TTR/TTO OLA/SLA
         $slm = new \SLM();
         $slm_id = $slm->add(
@@ -759,7 +757,6 @@ class SLM extends DbTestCase
                 'date_mod'    => date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + 1),
             ]
         );
-        $_SESSION['glpi_currenttime'] = $currenttime_bak;
 
         $this->boolean($updated)->isTrue();
 

@@ -134,10 +134,5 @@ class NotificationSettingConfig extends DbTestCase
          ->contains('Notification templates')
          ->contains('Browser followups configuration')
          ->contains('Email followups configuration');
-
-       //reset
-        $CFG_GLPI['use_notifications'] = 0;
-        $CFG_GLPI['notifications_mailing'] = 0;
-        $CFG_GLPI['notifications_ajax'] = 0;
     }
 }

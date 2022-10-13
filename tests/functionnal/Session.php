@@ -45,13 +45,15 @@ class Session extends \DbTestCase
         $warn_msg = 'There was a warning. Be carefull.';
         $info_msg = 'All goes well. Or not... Who knows ;)';
 
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        // By default, $_SESSION contains empty 'MESSAGE_AFTER_REDIRECT' key (forced in `inc/cincludes.php`)
+        $this->array($_SESSION)->hasKey('MESSAGE_AFTER_REDIRECT');
+        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
        //test add message in cron mode
         $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
        //adding a message in "cron mode" does not add anything in the session
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
        //set not running from cron
         unset($_SESSION['glpicronuserrunning']);
@@ -189,11 +191,9 @@ class Session extends \DbTestCase
         $this->login('normal', 'normal');
 
        // Test groups from whole entity tree
-        $session_backup = $_SESSION;
         $_SESSION['glpiactiveentities'] = $entities_ids;
         \Session::loadGroups();
         $groups = $_SESSION['glpigroups'];
-        $_SESSION = $session_backup;
         $expected_groups = array_map(
             function ($group) {
                 return (string)$group['id'];
@@ -214,11 +214,9 @@ class Session extends \DbTestCase
                 }
             }
 
-            $session_backup = $_SESSION;
             $_SESSION['glpiactiveentities'] = [$entid];
             \Session::loadGroups();
             $groups = $_SESSION['glpigroups'];
-            $_SESSION = $session_backup;
             $this->array($groups)->isEqualTo($expected_groups);
         }
     }
@@ -305,14 +303,12 @@ class Session extends \DbTestCase
         $this->integer($user_id)->isGreaterThan(0);
         $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
 
-        $cfg_backup = $CFG_GLPI;
         $CFG_GLPI['password_expiration_delay'] = $expiration_delay;
         $CFG_GLPI['password_expiration_lock_delay'] = -1;
         \Session::destroy();
         \Session::start();
         $auth = new \Auth();
         $is_logged = $auth->login($username, 'test', true);
-        $CFG_GLPI = $cfg_backup;
 
         $this->boolean($is_logged)->isEqualTo(true);
         $this->boolean(\Session::mustChangePassword())->isEqualTo($expected_result);
@@ -363,7 +359,6 @@ class Session extends \DbTestCase
         global $CFG_GLPI;
 
         $header_backup = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
-        $cfg_backup = $CFG_GLPI;
 
         if ($header !== null) {
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $header;
@@ -375,7 +370,6 @@ class Session extends \DbTestCase
         if ($header_backup !== null) {
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $header_backup;
         }
-        $CFG_GLPI = $cfg_backup;
 
         $this->string($result)->isEqualTo($expected);
     }

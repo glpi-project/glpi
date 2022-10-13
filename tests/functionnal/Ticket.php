@@ -2133,11 +2133,8 @@ class Ticket extends DbTestCase
            ->isEqualto(\CommonITILObject::INCOMING);
 
        // drop UPDATE right to TU_USER and redo "associate myself"
-        $saverights = $_SESSION['glpiactiveprofile'];
         $_SESSION['glpiactiveprofile']['ticket'] -= \UPDATE;
         $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
-       // restore rights
-        $_SESSION['glpiactiveprofile'] = $saverights;
        //check ticket creation
         $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
 
@@ -2168,8 +2165,6 @@ class Ticket extends DbTestCase
                                                + \Ticket::READGROUP
                                                + \Ticket::OWN; // OWN right must allow self-assign
         $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
-       // restore rights
-        $_SESSION['glpiactiveprofile'] = $saverights;
        //check ticket creation
         $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
 

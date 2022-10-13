@@ -63,7 +63,6 @@ class Search extends DbTestCase
         }
 
        // force session in debug mode (to store & retrieve sql errors)
-        $glpi_use_mode             = $_SESSION['glpi_use_mode'];
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
 
        // don't compute last request from session
@@ -79,9 +78,6 @@ class Search extends DbTestCase
             $data['last_errors'] = implode(', ', $DEBUG_SQL['errors']);
             unset($DEBUG_SQL['errors']);
         }
-
-       // restore glpi mode to previous
-        $_SESSION['glpi_use_mode'] = $glpi_use_mode;
 
        // do not store this search from session
         \Search::resetSaveSearch();
@@ -1586,10 +1582,6 @@ class Search extends DbTestCase
         $data = $this->doSearch('State', $search_params);
 
         $this->integer($data['data']['totalcount'])->isIdenticalTo(1);
-
-        $conf->setConfigurationValues('core', ['translate_dropdowns' => 0]);
-        $CFG_GLPI['translate_dropdowns'] = 0;
-        unset($_SESSION['glpi_dropdowntranslations']);
     }
 
     public function dataInfocomOptions()

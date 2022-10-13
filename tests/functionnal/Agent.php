@@ -245,7 +245,6 @@ class Agent extends DbTestCase
 
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($json);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {

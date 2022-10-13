@@ -589,9 +589,7 @@ class Html extends \GLPITestCase
     public function testManageRefreshPage()
     {
        //no session refresh, no args => no timer
-        if (isset($_SESSION['glpirefresh_views'])) {
-            unset($_SESSION['glpirefresh_views']);
-        }
+        unset($_SESSION['glpirefresh_views']);
 
         $base_script = \Html::scriptBlock("window.setInterval(function() {
                ##CALLBACK##

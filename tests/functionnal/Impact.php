@@ -140,20 +140,17 @@ class Impact extends \DbTestCase
 
     public function testGetTabNameForItem_tabCountDisabled()
     {
-        $old_session = $_SESSION['glpishow_count_on_tabs'];
         $_SESSION['glpishow_count_on_tabs'] = false;
 
         $impact = new \Impact();
         $computer = new Computer();
         $tab_name = $impact->getTabNameForItem($computer);
-        $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
         $this->string($tab_name)->isEqualTo("Impact analysis");
     }
 
     public function testGetTabNameForItem_enabledAsset()
     {
-        $old_session = $_SESSION['glpishow_count_on_tabs'];
         $_SESSION['glpishow_count_on_tabs'] = true;
 
         $impact = new \Impact();
@@ -167,14 +164,12 @@ class Impact extends \DbTestCase
         $this->addDbEdge($computer1, $computer2);
         $this->addDbEdge($computer2, $computer3);
         $tab_name = $impact->getTabNameForItem($computer2);
-        $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
         $this->string($tab_name)->isEqualTo("Impact analysis <span class='badge'>2</span>");
     }
 
     public function testGetTabNameForItem_ITILObject()
     {
-        $old_session = $_SESSION['glpishow_count_on_tabs'];
         $_SESSION['glpishow_count_on_tabs'] = true;
 
         $impact = new \Impact();
@@ -203,7 +198,6 @@ class Impact extends \DbTestCase
         $ticket->getFromDB($ticket_id);
 
         $tab_name = $impact->getTabNameForItem($ticket);
-        $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
         $this->string($tab_name)->isEqualTo("Impact analysis");
     }

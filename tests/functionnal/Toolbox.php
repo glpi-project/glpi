@@ -664,18 +664,10 @@ class Toolbox extends DbTestCase
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
         $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
 
-       // Save old config
         global $CFG_GLPI;
-        $old_url_base = $CFG_GLPI['url_base'];
 
-       // Get result
         $CFG_GLPI['url_base'] = $url_base;
         $result = \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]]);
-
-       // Restore config
-        $CFG_GLPI['url_base'] = $old_url_base;
-
-       // Validate result
         $this->string($result)->isEqualTo($expected_result);
     }
 

@@ -136,8 +136,5 @@ class NotificationAjax extends DbTestCase
         $this->array($notifs)->hasSize(1);
         $this->string($notifs[0]['url'])
          ->isIdenticalTo($computer->getFormURLWithID($computer->fields['id'], false));
-
-       //reset
-        $CFG_GLPI['notifications_ajax'] = 0;
     }
 }

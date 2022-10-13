@@ -160,7 +160,6 @@ class IPAddress extends DbTestCase
             "1..3.4",
         ];
 
-        unset($_SESSION['glpicronuserrunning']);
         foreach ($IPV4ShouldNotWork as $name) {
             $ipAdress = new \IPAddress();
             $id = $ipAdress->add([
@@ -174,8 +173,7 @@ class IPAddress extends DbTestCase
                 "Invalid IP address: " . $name,
             ];
 
-            $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expectedSession);
-            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+            $this->hasSessionMessages(ERROR, ["Invalid IP address: " . $name]);
         }
     }
 
@@ -275,7 +273,6 @@ class IPAddress extends DbTestCase
             "12345::6:7:8" //more than 4 digit
         ];
 
-        unset($_SESSION['glpicronuserrunning']);
         foreach ($IPV6ShouldNotWork as $name) {
             $ipAdress = new \IPAddress();
             $id = $ipAdress->add([
@@ -289,8 +286,7 @@ class IPAddress extends DbTestCase
                 "Invalid IP address: " . $name,
             ];
 
-            $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo($expectedSession);
-            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+            $this->hasSessionMessages(ERROR, ["Invalid IP address: " . $name]);
         }
     }
 }

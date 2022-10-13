@@ -214,7 +214,6 @@ class MassiveAction extends DbTestCase
     ) {
         $base_comment = "test comment";
         $amendment = "test amendment";
-        $old_session = $_SESSION['glpiactiveentities'] ?? [];
 
        // Set rights if needed
         if ($has_right) {
@@ -266,8 +265,6 @@ class MassiveAction extends DbTestCase
             ->string($item->fields['comment'])
             ->isIdenticalTo("$base_comment\n\n$amendment");
         }
-
-        $_SESSION['glpiactiveentities'] = $old_session;
     }
 
     protected function addNoteProvider()
@@ -296,7 +293,6 @@ class MassiveAction extends DbTestCase
 
        // Init vars
         $new_note_content = "Test add note";
-        $old_session = $_SESSION['glpiactiveprofile'][$item::$rightname] ?? 0;
         $note_search = [
             'items_id' => $item->fields['id'],
             'itemtype' => $item->getType(),
@@ -339,8 +335,6 @@ class MassiveAction extends DbTestCase
             $new_count = countElementsInTable(Notepad::getTable(), $note_search);
             $this->integer($new_count)->isIdenticalTo($count_notes + 1);
         }
-
-        $_SESSION['glpiactiveprofile'][$item::$rightname] = $old_session;
     }
 
     protected function linkToProblemProvider()
@@ -388,7 +382,6 @@ class MassiveAction extends DbTestCase
         bool $has_right
     ) {
        // Set up session rights
-        $old_session = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
         if ($has_right) {
             $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
         }
@@ -426,9 +419,6 @@ class MassiveAction extends DbTestCase
             $expected_ko,
             Ticket::class
         );
-
-       // Reset rights
-        $_SESSION['glpiactiveprofile'][Problem::$rightname] = $old_session;
     }
 
     protected function resolveTicketsProvider()
@@ -488,7 +478,6 @@ class MassiveAction extends DbTestCase
         $this->login(); // must be logged as ITILSolution uses Session::getLoginUserID()
 
        // Set up session rights
-        $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
         if ($has_right) {
             $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
         } else {
@@ -519,9 +508,6 @@ class MassiveAction extends DbTestCase
             $expected_ko,
             Ticket::class
         );
-
-       // Reset rights
-        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_session;
     }
 
     protected function addContractProvider()

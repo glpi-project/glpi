@@ -141,9 +141,6 @@ class NotificationTargetTicket extends DbTestCase
         ];
 
         $this->array($ret['tasks'])->isIdenticalTo($expected);
-
-       // switch back to default language
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
     }
 
 

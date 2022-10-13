@@ -234,6 +234,5 @@ class Notification_NotificationTemplate extends DbTestCase
         $this->boolean(\Notification_NotificationTemplate::hasActiveMode())->isFalse();
         $CFG_GLPI['notifications_ajax'] = 1;
         $this->boolean(\Notification_NotificationTemplate::hasActiveMode())->isTrue();
-        $CFG_GLPI['notifications_ajax'] = 0;
     }
 }

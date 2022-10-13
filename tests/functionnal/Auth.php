@@ -164,12 +164,10 @@ class Auth extends DbTestCase
         $this->integer($user_id)->isGreaterThan(0);
         $this->boolean($user->update(['id' => $user_id, 'password_last_update' => $last_update]))->isTrue();
 
-        $cfg_backup = $CFG_GLPI;
         $CFG_GLPI['password_expiration_delay'] = $exp_delay;
         $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
         $auth = new \Auth();
         $is_logged = $auth->login($username, 'test', true);
-        $CFG_GLPI = $cfg_backup;
 
         $this->boolean($is_logged)->isEqualTo(!$expected_lock);
         $this->boolean($user->getFromDB($user->fields['id']))->isTrue();

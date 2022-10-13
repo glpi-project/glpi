@@ -220,9 +220,5 @@ TEXT,
             'mode' => 'ajax'
         ];
         $this->array($data)->isIdenticalTo($expected);
-
-       //reset
-        $CFG_GLPI['use_notifications'] = 0;
-        $CFG_GLPI['notifications_ajax'] = 0;
     }
 }

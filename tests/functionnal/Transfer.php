@@ -165,7 +165,6 @@ class Transfer extends DbTestCase
                 [$id]
             );
             $transfer->moveItems([$itemtype => [$id]], $dentity, [$id]);
-            unset($_SESSION['glpitransfer_list']);
 
             $this->boolean($obj->getFromDB($id))->isTrue();
             $this->integer((int)$obj->fields['entities_id'])->isidenticalTo($dentity, "Transfer has failed on $itemtype");
@@ -239,7 +238,6 @@ class Transfer extends DbTestCase
             [$did]
         );
         $transfer->moveItems(['Domain' => [$did]], $dentity, [$did]);
-        unset($_SESSION['glpitransfer_list']);
 
         $this->boolean($domain->getFromDB($did))->isTrue();
         $this->integer((int)$domain->fields['entities_id'])->isidenticalTo($dentity);

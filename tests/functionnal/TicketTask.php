@@ -264,7 +264,6 @@ class TicketTask extends DbTestCase
             function () {
                 $_SESSION['glpidisplay_count_on_home'] = 2;
                 \TicketTask::showCentralList(0, 'todo', false);
-                unset($_SESSION['glpidisplay_count_on_home']);
             }
         )
          ->contains("Ticket tasks to do <span class='primary-bg primary-fg count'>2 on 4</span>")

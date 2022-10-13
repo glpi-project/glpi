@@ -110,8 +110,5 @@ class NotificationAjaxSetting extends DbTestCase
                 $instance->showFormConfig();
             }
         )->notContains('Notifications are disabled.');
-
-       //rest to defaults
-        $CFG_GLPI['notifications_ajax'] = 0;
     }
 }

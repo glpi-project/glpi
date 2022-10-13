@@ -204,8 +204,6 @@ class Config extends DbTestCase
 
         $CFG_GLPI['password_min_length'] = strlen('mypass');
         $this->boolean(\Config::validatePassword('mypass'))->isFalse();
-        $CFG_GLPI['password_min_length'] = 8; //reset
-
         $this->hasSessionMessages(ERROR, $expected);
 
         $expected = [
@@ -217,7 +215,6 @@ class Config extends DbTestCase
 
         $CFG_GLPI['password_need_number'] = 0;
         $this->boolean(\Config::validatePassword('mypassword'))->isFalse();
-        $CFG_GLPI['password_need_number'] = 1; //reset
         $this->hasSessionMessages(ERROR, $expected);
 
         $expected = [
@@ -228,7 +225,6 @@ class Config extends DbTestCase
 
         $CFG_GLPI['password_need_caps'] = 0;
         $this->boolean(\Config::validatePassword('my1password'))->isFalse();
-        $CFG_GLPI['password_need_caps'] = 1; //reset
         $this->hasSessionMessages(ERROR, $expected);
 
         $this->boolean(\Config::validatePassword('my1paSsw@rd'))->isTrue();
@@ -236,7 +232,6 @@ class Config extends DbTestCase
 
         $CFG_GLPI['password_need_symbol'] = 0;
         $this->boolean(\Config::validatePassword('my1paSsword'))->isTrue();
-        $CFG_GLPI['password_need_symbol'] = 1; //reset
         $this->hasNoSessionMessage(ERROR);
     }
 
@@ -709,7 +704,6 @@ class Config extends DbTestCase
        // check that activation of password expiration reset `password_last_update` to current date
        // for all local users but not for external users
        // and activate passwordexpiration crontask
-        $current_time = $_SESSION['glpi_currenttime'];
         $update_datetime = date('Y-m-d H:i:s', strtotime('-15 days')); // arbitrary date
         $_SESSION['glpi_currenttime'] = $update_datetime;
         $conf->update(
@@ -718,7 +712,6 @@ class Config extends DbTestCase
                 'password_expiration_delay' => 30
             ]
         );
-        $_SESSION['glpi_currenttime'] = $current_time;
         $values = \Config::getConfigurationValues('core');
         $this->array($values)->hasKey('password_expiration_delay');
         $this->integer((int)$values['password_expiration_delay'])->isIdenticalTo(30);
@@ -739,7 +732,6 @@ class Config extends DbTestCase
 
        // check that changing password expiration delay does not reset `password_last_update` to current date
        // if password expiration was already active
-        $current_time = $_SESSION['glpi_currenttime'];
         $new_update_datetime = date('Y-m-d H:i:s', strtotime('-5 days')); // arbitrary date
         $_SESSION['glpi_currenttime'] = $new_update_datetime;
         $conf->update(
@@ -748,7 +740,6 @@ class Config extends DbTestCase
                 'password_expiration_delay' => 45
             ]
         );
-        $_SESSION['glpi_currenttime'] = $current_time;
         $values = \Config::getConfigurationValues('core');
         $this->array($values)->hasKey('password_expiration_delay');
         $this->integer((int)$values['password_expiration_delay'])->isIdenticalTo(45);
@@ -863,8 +854,6 @@ class Config extends DbTestCase
         ];
         $infocom_types = array_diff($infocom_types, $excluded_types);
 
-        $infocom_auto_create_original = $CFG_GLPI["infocom_auto_create"] ?? 0;
-
         $infocom = new \Infocom();
         foreach ($infocom_types as $asset_type) {
             $CFG_GLPI['auto_create_infocoms'] = 1;
@@ -876,7 +865,6 @@ class Config extends DbTestCase
                 'itemtype'              => 'Computer', // Random item type for testing Item_DeviceSimcard
                 'devicesimcards_id'     => 1, // Random ID for testing Item_DeviceSimcard
             ]);
-            $CFG_GLPI['auto_create_infocoms'] = $infocom_auto_create_original;
             // Verify an Infocom object exists for the newly created asset
             $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id);
             $this->boolean($infocom_exists)->isTrue();
@@ -890,7 +878,6 @@ class Config extends DbTestCase
                 'itemtype'              => 'Computer', // Random item type for testing Item_DeviceSimcard
                 'devicesimcards_id'     => 1, // Random ID for testing Item_DeviceSimcard
             ]);
-            $CFG_GLPI['auto_create_infocoms'] = $infocom_auto_create_original;
             $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id2);
             $this->boolean($infocom_exists)->isFalse();
         }

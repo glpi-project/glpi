@@ -274,19 +274,13 @@ class Knowbase extends DbTestCase
 
        // Check that tree contains root only (FAQ is not public) for anonymous user
        // Force session reset
-        $session_bck = $_SESSION;
         $this->resetSession();
         $tree_with_no_public_faq = \Knowbase::getTreeCategoryList();
 
        // Check that tree contains root + category branch containing FAQ item (FAQ is public) for anonymous user
         global $CFG_GLPI;
-        $use_public_faq_bck = $CFG_GLPI['use_public_faq'];
         $CFG_GLPI['use_public_faq'] = 1;
         $tree_with_public_faq = \Knowbase::getTreeCategoryList();
-
-       // Put back globals
-        $_SESSION = $session_bck;
-        $CFG_GLPI['use_public_faq'] = $use_public_faq_bck;
 
         $this->array($tree_with_no_public_faq)->isEqualTo([$expected_root_cat]);
         $this->array($tree_with_public_faq)->isEqualTo(

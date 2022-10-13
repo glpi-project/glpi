@@ -111,8 +111,5 @@ class NotificationMailingSetting extends DbTestCase
                 $instance->showFormConfig();
             }
         )->notContains('Notifications are disabled.');
-
-       //rest to defaults
-        $CFG_GLPI['notifications_mailing'] = 0;
     }
 }

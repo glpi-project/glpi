@@ -68,8 +68,6 @@ class AuthLDAP extends DbTestCase
 
     public function afterTestMethod($method)
     {
-        unset($_SESSION['ldap_import']);
-
        //make sure bootstrapped ldap is not active and is default
         $this->boolean(
             $this->ldap->update([
@@ -1517,7 +1515,6 @@ class AuthLDAP extends DbTestCase
          ->hasSize(2)
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
          ->variable['id']->isEqualTo($uid);
-        $CFG_GLPI['user_deleted_ldap'] = 0;
 
        //check that user no longer exists
         $this->boolean($user->getFromDB($uid))->isTrue();
@@ -1584,11 +1581,9 @@ class AuthLDAP extends DbTestCase
             )
         )->isTrue();
 
-        $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap'] ?? 0;
        //put deleted LDAP users in trashbin
         $CFG_GLPI['user_deleted_ldap'] = 1;
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $CFG_GLPI['user_deleted_ldap'] = $user_deleted_ldap_original;
         $this->array($synchro)
          ->hasSize(2)
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
@@ -1617,10 +1612,8 @@ class AuthLDAP extends DbTestCase
             )
         )->isTrue();
 
-        $user_restored_ldap_original = $CFG_GLPI['user_restored_ldap'] ?? 0;
         $CFG_GLPI['user_restored_ldap'] = 1;
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $CFG_GLPI['user_restored_ldap'] = $user_restored_ldap_original;
         $this->array($synchro)
          ->hasSize(2)
          ->integer['action']->isIdenticalTo(\AuthLDAP::USER_RESTORED_LDAP)
@@ -1663,11 +1656,6 @@ class AuthLDAP extends DbTestCase
         $auth = new \Auth();
         $this->boolean($auth->login("", ""))->isTrue();
         $this->string($_SESSION['glpiname'])->isEqualTo('brazil6');
-
-       //reset config
-        \Config::setConfigurationValues('core', [
-            'ssovariables_id' => $config_values['ssovariables_id']
-        ]);
     }
 
     public function testSyncLongDN()

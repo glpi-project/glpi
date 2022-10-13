@@ -189,11 +189,10 @@ class CommonDBTM extends DbTestCase
         $this->array($comp->fields)->isEmpty();
 
         $this->boolean($comp->getEmpty())->isTrue();
-        $this->array($comp->fields)->integer['entities_id']->isEqualTo(0);
+        $this->array($comp->fields)->string['entities_id']->isEqualTo(''); // No default 'entities_id' if session is not initialized
 
         $_SESSION["glpiactive_entity"] = 12;
         $this->boolean($comp->getEmpty())->isTrue();
-        unset($_SESSION['glpiactive_entity']);
         $this->array($comp->fields)
          ->integer['entities_id']->isIdenticalTo(12);
     }
@@ -856,7 +855,6 @@ class CommonDBTM extends DbTestCase
     {
         $computer = new \Computer();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
-        $bkp_current = $_SESSION['glpi_currenttime'];
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
@@ -892,15 +890,12 @@ class CommonDBTM extends DbTestCase
         $this->string($computer->fields['date_creation'])->isEqualTo('2000-01-01 00:00:00');
         $this->string($computer->fields['date_mod'])->isEqualTo('2000-01-01 00:00:00');
         $this->string($computer->fields['name'])->isIdenticalTo("Computer01 '");
-
-        $_SESSION['glpi_currenttime'] = $bkp_current;
     }
 
     public function testUpdate()
     {
         $computer = new \Computer();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
-        $bkp_current = $_SESSION['glpi_currenttime'];
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
@@ -1086,10 +1081,8 @@ class CommonDBTM extends DbTestCase
         $this->integer($relation_item_2_id)->isGreaterThan(0);
         $this->boolean($relation_item->getFromDB($relation_item_2_id))->isTrue();
 
-        $cfg_backup = $CFG_GLPI;
         $CFG_GLPI[$config_name] = [$computer->getType()];
         $computer->delete(['id' => $computer_1_id], true);
-        $CFG_GLPI = $cfg_backup;
 
        // Relation with deleted item has been cleaned
         $this->boolean($relation_item->getFromDB($relation_item_1_id))->isFalse();
@@ -1158,9 +1151,6 @@ class CommonDBTM extends DbTestCase
 
         $res = \CommonDBTM::checkTemplateEntity($data, $parent_id, $parent_itemtype);
         $this->array($res)->isEqualTo($expected);
-
-       // Reset session
-        unset($_SESSION['glpiactiveentities']);
     }
 
     public function testGetById()
