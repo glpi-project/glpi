@@ -35,6 +35,7 @@
 
 namespace Glpi\Dashboard;
 
+use DateInterval;
 use DBConnection;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
@@ -116,10 +117,10 @@ class Grid
     /**
      * Init dashboards cards
      * A define.php constant (GLPI_AJAX_DASHBOARD) exists to control how the cards should be loaded
-     *  - if true: only the parent block will be initialized and the content will be load by ajax
-     *    pros: if a widget fails, only this one will crash
-     * - else: load all html
-     *    pros: better perfs
+     *  - if true: load all cards in seperate ajax request
+     *    pros: slow cards wont impact the others
+     * - else: load all cards in a single ajax request
+     *    pros: less strain for the server
      *
      * @return void
      */
@@ -143,16 +144,11 @@ class Grid
                 'card_id' => $card_id
             ];
 
-            if (GLPI_AJAX_DASHBOARD) {
-                $card_html    = <<<HTML
+            $card_html    = <<<HTML
             <div class="loading-card">
                <i class="fas fa-spinner fa-spin fa-3x"></i>
             </div>
 HTML;
-            } else {
-                $card_html = $this->getCardHtml($card_id, ['args' => $card_options]);
-            }
-
            // manage cache
             $dashboard_key = $this->current;
             $footprint = sha1(serialize($card_options) .
@@ -245,6 +241,8 @@ HTML;
      */
     public function show(bool $mini = false)
     {
+        global $GLPI_CACHE;
+
         $rand = mt_rand();
 
         if (!self::$embed && !$this->dashboard->canViewCurrent()) {
@@ -279,7 +277,12 @@ HTML;
             }
         }
 
-       // prepare all available cards
+        // Force clear the cards cache in debug mode
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $GLPI_CACHE->delete('getAllDasboardCards');
+        }
+
+        // prepare all available cards
         $cards = $this->getAllDasboardCards();
         $cards_json = json_encode($cards);
 
@@ -927,12 +930,10 @@ HTML;
 
             if ($use_cache) {
                 // browser cache
-                if (GLPI_AJAX_DASHBOARD) {
-                    header_remove('Pragma');
-                    header('Cache-Control: public');
-                    header('Cache-Control: max-age=' . $cache_age);
-                    header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
-                }
+                header_remove('Pragma');
+                header('Cache-Control: public');
+                header('Cache-Control: max-age=' . $cache_age);
+                header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
 
                 // server cache
                 $dashboard_cards = $GLPI_CACHE->get($cache_key, []);
@@ -1104,36 +1105,36 @@ HTML;
      */
     public function getAllDasboardCards($force = false): array
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $GLPI_CACHE;
 
-       // anonymous fct for adding relevant filters to cards
-        $add_filters_fct = static function ($itemtable, $DB) {
-            $add_filters = [];
-            if ($DB->fieldExists($itemtable, "ititlcategories_id")) {
-                  $add_filters[] = "itilcategory";
-            }
-            if ($DB->fieldExists($itemtable, "requesttypes_id")) {
-                 $add_filters[] = "requesttype";
-            }
-            if ($DB->fieldExists($itemtable, "locations_id")) {
-                $add_filters[] = "location";
-            }
-            if ($DB->fieldExists($itemtable, "manufacturers_id")) {
-                $add_filters[] = "manufacturer";
-            }
-            if ($DB->fieldExists($itemtable, "groups_id_tech")) {
-                $add_filters[] = "group_tech";
-            }
-            if ($DB->fieldExists($itemtable, "users_id_tech")) {
-                $add_filters[] = "user_tech";
-            }
-
-            return $add_filters;
-        };
-
-        static $cards = null;
+        $cards = $GLPI_CACHE->get('getAllDasboardCards');
 
         if ($cards === null || $force) {
+            // anonymous fct for adding relevant filters to cards
+            $add_filters_fct = static function ($itemtable, $DB) {
+                $add_filters = [];
+                if ($DB->fieldExists($itemtable, "ititlcategories_id")) {
+                    $add_filters[] = "itilcategory";
+                }
+                if ($DB->fieldExists($itemtable, "requesttypes_id")) {
+                    $add_filters[] = "requesttype";
+                }
+                if ($DB->fieldExists($itemtable, "locations_id")) {
+                    $add_filters[] = "location";
+                }
+                if ($DB->fieldExists($itemtable, "manufacturers_id")) {
+                    $add_filters[] = "manufacturer";
+                }
+                if ($DB->fieldExists($itemtable, "groups_id_tech")) {
+                    $add_filters[] = "group_tech";
+                }
+                if ($DB->fieldExists($itemtable, "users_id_tech")) {
+                    $add_filters[] = "user_tech";
+                }
+
+                return $add_filters;
+            };
+
             $cards = [];
             $menu_itemtypes = $this->getMenuItemtypes();
             $DB_read = DBConnection::getReadConnection();
@@ -1204,7 +1205,7 @@ HTML;
                 ];
             }
 
-           // add multiple width for Assets itemtypes grouped by their foreign keys
+            // add multiple width for Assets itemtypes grouped by their foreign keys
             $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
             foreach ($assets as $itemtype) {
                 $fk_itemtypes = [
@@ -1292,7 +1293,7 @@ HTML;
                 ];
             }
 
-           // add specific ticket's cases
+            // add specific ticket's cases
             $cards["nb_opened_ticket"] = [
                 'widgettype' => ['line', 'area', 'bar'],
                 'itemtype'   => "\\Ticket",
@@ -1441,11 +1442,12 @@ HTML;
                     'content' => __("Toggle edit mode to edit content"),
                 ]
             ];
+            $GLPI_CACHE->set('getAllDasboardCards', $cards);
+        }
 
-            $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);
-            if (is_array($more_cards)) {
-                $cards = array_merge($cards, $more_cards);
-            }
+        $more_cards = Plugin::doHookFunction(Hooks::DASHBOARD_CARDS);
+        if (is_array($more_cards)) {
+            $cards = array_merge($cards, $more_cards);
         }
 
         return $cards;

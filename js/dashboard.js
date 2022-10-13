@@ -118,12 +118,7 @@ var Dashboard = {
         Dashboard.initFilters();
         Dashboard.refreshDashboard();
 
-        // retieve cards content by ajax
-        if (Dashboard.ajax_cards) {
-            Dashboard.getCardsAjax();
-        }
-
-        // animate the dashboards
+        // animate the dashboards once all card are loaded (single ajax mode)
         if (!Dashboard.ajax_cards) {
             Dashboard.fitNumbers();
             Dashboard.animateNumbers();
@@ -626,10 +621,7 @@ var Dashboard = {
             gridstack.find('.grid-stack-item').each(function() {
                 Dashboard.grid.makeWidget($(this)[0]);
             });
-
-            if (Dashboard.ajax_cards) {
-                Dashboard.getCardsAjax();
-            }
+            Dashboard.getCardsAjax();
         });
     },
 
@@ -959,7 +951,8 @@ var Dashboard = {
     getCardsAjax: function(specific_one) {
         specific_one = specific_one || "";
 
-        var filters = Dashboard.getFiltersFromDB();
+        const filters = Dashboard.getFiltersFromDB();
+        const force = (specific_one.length > 0 ? 1 : 0);
 
         let requested_cards = [];
         let card_ajax_data = [];
@@ -981,53 +974,82 @@ var Dashboard = {
 
             card_ajax_data.push({
                 'card_id': card_id,
-                'force': (specific_one.length > 0 ? 1 : 0),
+                'force': force,
                 'args': card_opt,
                 'c_cache_key': card_opt.cache_key || ""
             });
             requested_cards.push({
                 'card_el': card,
-                'card_id': card_id
+                'card_id': card_id,
+                'args': card_opt,
             });
         });
 
-        return $.ajax({
-            url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
-            method: 'POST',
-            data: {
-                'action': 'get_cards',
-                data: JSON.stringify({ //Preserve integers
-                    'dashboard': Dashboard.current_name,
-                    'force': (specific_one.length > 0 ? 1 : 0),
-                    'embed': (Dashboard.embed ? 1 : 0),
+        if (Dashboard.ajax_cards) {
+            // Multi ajax mode, spawn a request for each card
+            const promises = [];
+            requested_cards.forEach(function(requested_card) {
+                const card = requested_card.card_el;
+                promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", {
+                    'action':      'get_card',
+                    'dashboard':   Dashboard.current_name,
+                    'card_id':     requested_card.card_id,
+                    'force':       force,
+                    'embed':       (Dashboard.embed ? 1 : 0),
+                    'args':        requested_card.args,
                     'd_cache_key': Dashboard.cache_key,
-                    'cards': card_ajax_data
-                })
-            }
-        }).then(function(results) {
-            $.each(requested_cards, (i2, crd) => {
-                let has_result = false;
-                const card = crd.card_el;
-                $.each(results, (card_id, card_result) => {
-                    if (crd.card_id === card_id) {
-                        const html = card_result;
-                        has_result = true;
-                        card.children('.grid-stack-item-content').html(html);
+                    'c_cache_key': requested_card.args.cache_key || ""
+                }).then(function(html) {
+                    card.children('.grid-stack-item-content').html(html);
 
-                        Dashboard.fitNumbers(card);
-                        Dashboard.animateNumbers(card);
+                    Dashboard.fitNumbers(card);
+                    Dashboard.animateNumbers(card);
+                }).fail(function() {
+                    card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+                }));
+            });
+
+            return promises;
+        } else {
+            // Single ajax mode, spawn a single request
+            return $.ajax({
+                url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                method: 'POST',
+                data: {
+                    'action': 'get_cards',
+                    data: JSON.stringify({ //Preserve integers
+                        'dashboard': Dashboard.current_name,
+                        'force': (specific_one.length > 0 ? 1 : 0),
+                        'embed': (Dashboard.embed ? 1 : 0),
+                        'd_cache_key': Dashboard.cache_key,
+                        'cards': card_ajax_data
+                    })
+                }
+            }).then(function(results) {
+                $.each(requested_cards, (i2, crd) => {
+                    let has_result = false;
+                    const card = crd.card_el;
+                    $.each(results, (card_id, card_result) => {
+                        if (crd.card_id === card_id) {
+                            const html = card_result;
+                            has_result = true;
+                            card.children('.grid-stack-item-content').html(html);
+
+                            Dashboard.fitNumbers(card);
+                            Dashboard.animateNumbers(card);
+                        }
+                    });
+                    if (!has_result) {
+                        card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
                     }
                 });
-                if (!has_result) {
+            }).fail(function() {
+                $.each(requested_cards, (i2, crd) => {
+                    const card = crd.card_el;
                     card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
-                }
+                });
             });
-        }).fail(function() {
-            $.each(requested_cards, (i2, crd) => {
-                const card = crd.card_el;
-                card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
-            });
-        });
+        }
     },
 
     easter: function() {
