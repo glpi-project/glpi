@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Sabre\DAV\Exception\Locked;
 
 /**
  *  Locked fields for inventory
