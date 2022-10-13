@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Sabre\DAV\Exception\Locked;
 
 /**
  *  Locked fields for inventory
@@ -294,14 +295,13 @@ class Lockedfield extends CommonDBTM
      */
     public static function releaseLockForAsset($itemtype, $items_id)
     {
-        global $DB;
-        return $DB->delete(
-            Lockedfield::getTable(),
+        $lf = new Lockedfield();
+        $lf->deleteByCriteria([
             [
                 'itemtype' => $itemtype,
                 'items_id'  => $items_id
             ]
-        );
+            ]);
     }
 
 
