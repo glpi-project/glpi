@@ -103,7 +103,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
 
       // Other constants
-        'GLPI_AJAX_DASHBOARD'         => '1',
+        'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
         'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
         'GLPI_DEMO_MODE'              => '0',
         'GLPI_CENTRAL_WARNINGS'       => '1', // display (1), or not (0), warnings on GLPI Central page
