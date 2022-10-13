@@ -3463,12 +3463,10 @@ class Ticket extends DbTestCase
         $ticket = new \Ticket();
         $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
 
-        $session_backup = $_SESSION['glpiactiveprofile'];
         foreach ($rights as $rightname => $rightvalue) {
             $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
         }
         $crit = $ticket->getAssociatedDocumentsCriteria($bypass_rights);
-        $_SESSION['glpiactiveprofile'] = $session_backup;
 
         $it = new \DBmysqlIterator(null);
         $it->execute('glpi_tickets', $crit);

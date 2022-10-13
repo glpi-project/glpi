@@ -214,6 +214,7 @@ class MassiveAction extends DbTestCase
     ) {
         $base_comment = "test comment";
         $amendment = "test amendment";
+        $old_session = $_SESSION['glpiactiveentities'] ?? [];
 
        // Set rights if needed
         if ($has_right) {
@@ -265,6 +266,8 @@ class MassiveAction extends DbTestCase
             ->string($item->fields['comment'])
             ->isIdenticalTo("$base_comment\n\n$amendment");
         }
+
+        $_SESSION['glpiactiveentities'] = $old_session;
     }
 
     protected function addNoteProvider()
