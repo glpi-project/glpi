@@ -295,7 +295,7 @@ class Lockedfield extends CommonDBTM
     public static function releaseLockForAsset(string $itemtype, int $items_id): bool
     {
         $lf = new Lockedfield();
-        $lf->deleteByCriteria([
+        return $lf->deleteByCriteria([
             'itemtype' => $itemtype,
             'items_id'  => $items_id
         ]);
