@@ -1064,7 +1064,6 @@ class Migration extends \GLPITestCase
             "UPDATE `glpi_stuffs` SET `itemtype_source` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
             "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
         ]);
-
     }
 
     public function testChangeSearchOption()
