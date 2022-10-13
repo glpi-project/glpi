@@ -358,7 +358,7 @@ trait InventoryNetworkPort
             if (preg_match("/[^a-zA-Z0-9 \-_\(\)]+/", $row['name'])) {
                 $row['name'] = Toolbox::addslashes_deep($row['name']);
             }
-            foreach (['name', 'mac', 'instantiation_type'] as $field) {
+            foreach (['name', 'mac'] as $field) {
                 if ($row[$field] !== null) {
                     $row[$field] = strtolower($row[$field]);
                 }
@@ -374,12 +374,16 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $key => $data) {
             foreach ($db_ports as $keydb => $datadb) {
-               //keep trace of logical number from db
+                //keep trace of logical number from db
                 $db_lnumber = $datadb['logical_number'];
                 unset($datadb['logical_number']);
 
+                //keep trace of instantiation_type from db
+                $db_instantiation_type = $datadb['instantiation_type'];
+                unset($datadb['instantiation_type']);
+
                 $comp_data = [];
-                foreach (['name', 'mac', 'instantiation_type'] as $field) {
+                foreach (['name', 'mac'] as $field) {
                     if (property_exists($data, $field)) {
                         $comp_data[$field] = strtolower($data->$field);
                     } else {
@@ -392,15 +396,25 @@ trait InventoryNetworkPort
                     continue;
                 }
 
-               //check for logical number change
+                //check for logical number change
+                $update_input = [
+                    "id" => $keydb
+                ];
                 if (property_exists($data, 'logical_number') && $data->logical_number != $db_lnumber) {
-                    $networkport->update(
-                        [
-                            'id'              => $keydb,
-                            'logical_number'  => $data->logical_number
-                        ]
-                    );
+                    $update_input['logical_number'] = $data->logical_number;
                 }
+
+                //check for logical number change
+                if (property_exists($data, 'instantiation_type') && $data->instantiation_type != $db_instantiation_type) {
+                    $update_input['instantiation_type'] = $data->instantiation_type;
+
+                }
+
+                //update if needed
+                if (count($update_input) > 1) {
+                    $networkport->update($update_input);
+                }
+
 
                //handle instantiation type
                 if (property_exists($data, 'instantiation_type')) {
