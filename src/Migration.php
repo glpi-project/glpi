@@ -1430,11 +1430,11 @@ class Migration
 
         $this->displayMessage(sprintf(__('Renaming "%s" itemtype to "%s"...'), $old_itemtype, $new_itemtype));
 
-        if ($update_structure) {
-            $old_table = getTableForItemType($old_itemtype);
-            $new_table = getTableForItemType($new_itemtype);
-            $old_fkey  = getForeignKeyFieldForItemType($old_itemtype);
-            $new_fkey  = getForeignKeyFieldForItemType($new_itemtype);
+        $old_table = getTableForItemType($old_itemtype);
+        $new_table = getTableForItemType($new_itemtype);
+        if ($old_table !== $new_table && $update_structure) {
+            $old_fkey  = getForeignKeyFieldForTable($old_table);
+            $new_fkey  = getForeignKeyFieldForTable($new_table);
 
            // Check prerequisites
             if (!$DB->tableExists($old_table)) {
