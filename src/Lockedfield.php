@@ -296,10 +296,8 @@ class Lockedfield extends CommonDBTM
     {
         $lf = new Lockedfield();
         $lf->deleteByCriteria([
-            [
-                'itemtype' => $itemtype,
-                'items_id'  => $items_id
-            ]
+            'itemtype' => $itemtype,
+            'items_id'  => $items_id
         ]);
     }
 
