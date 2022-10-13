@@ -404,17 +404,15 @@ trait InventoryNetworkPort
                     $update_input['logical_number'] = $data->logical_number;
                 }
 
-                //check for logical number change
+                //check for instantiation_type number change
                 if (property_exists($data, 'instantiation_type') && $data->instantiation_type != $db_instantiation_type) {
                     $update_input['instantiation_type'] = $data->instantiation_type;
-
                 }
 
                 //update if needed
                 if (count($update_input) > 1) {
                     $networkport->update($update_input);
                 }
-
 
                //handle instantiation type
                 if (property_exists($data, 'instantiation_type')) {
