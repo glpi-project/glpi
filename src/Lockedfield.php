@@ -301,7 +301,7 @@ class Lockedfield extends CommonDBTM
                 'itemtype' => $itemtype,
                 'items_id'  => $items_id
             ]
-            ]);
+        ]);
     }
 
 
