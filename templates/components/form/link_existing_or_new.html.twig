@@ -38,7 +38,7 @@
    <form id="{{ link_itemtype|lower ~ "_form" ~ rand }}" name="{{ link_itemtype|lower ~ "_form" ~ rand }}" method="post" action="{{ link_itemtype|itemtype_form_path }}">
       <table class="tab_cadre_fixe">
          <tr class="tab_bg_2">
-            <th colspan="5">{{ __("Add a %s")|format(target_itemtype|itemtype_name|lower) }}</th>
+            <th colspan="5">{{ __("Add a %s")|format(target_itemtype|itemtype_name) }}</th>
          </tr>
          <tr class="tab_bg_2">
             <td class="right">
@@ -75,7 +75,7 @@
                   {% set target_form_path = (target_itemtype|itemtype_form_path ~ "?_" ~ source_itemtype|itemtype_foreign_key ~ "=" ~ source_items_id) %}
                   {% set create_url = create_link['url'] is defined ? create_link['url'] : target_form_path %}
                   <a href="{{ create_url }}" class="btn btn-primary">
-                     {{ __("Create a %s from this %s")|format(target_itemtype|itemtype_name|lower, source_itemtype|itemtype_name|lower) }}
+                     {{ __("Create a %s from this %s")|format(target_itemtype|itemtype_name, source_itemtype|itemtype_name) }}
                   </a>
                {% endif %}
             </td>
