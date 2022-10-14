@@ -365,14 +365,15 @@
                         }
                      </script>
                      <div class="col-12">
-                        <button id="plan{{ rand }}" class="btn btn-outline-secondary mb-2 text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
+                        <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
                            <i class="fas fa-calendar"></i>
                            <span>{{ __('Plan this task') }}</span>
                         </button>
                         {% if subitem.can(id, constant('UPDATE')) %}
-                           <button class="btn btn-outline-danger me-2" type="submit" name="unplan"
+                           <button class="btn btn-outline-warning" type="submit" name="unplan"
                                  onclick="return confirm('{{ __('Confirm the deletion of planning?') }}');">
-                              <i class="fas fa-trash-alt"></i>
+                              <i class="fas ti ti-calendar-off"></i>
+                              <span>{{ __('Unplan') }}</span>
                            </button>
                         {% endif %}
                         <div id="viewplan{{ rand }}"></div>
