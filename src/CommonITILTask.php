@@ -1831,4 +1831,20 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         return $input;
     }
+
+    public function unplan()
+    {
+        global $DB;
+        $DB->update(
+            $this->getTable(),
+            [
+                'begin'      => null,
+                'end'        => null,
+                'actiontime' => 0,
+            ],
+            [
+                'id' => $this->fields['id'],
+            ]
+        );
+    }
 }
