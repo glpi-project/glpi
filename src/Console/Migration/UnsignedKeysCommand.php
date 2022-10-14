@@ -265,7 +265,7 @@ class UnsignedKeysCommand extends AbstractCommand
                 }
                 $message .= "\n";
                 $message .= sprintf(
-                    '<comment>' . __('Some errors were related to following plugins: %s.') . '</comment>',
+                    '<comment>' . __('Some errors are related to following plugins: %s.') . '</comment>',
                     implode(', ', $plugins_names)
                 );
                 $message .= "\n";
