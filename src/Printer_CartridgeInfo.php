@@ -248,12 +248,12 @@ HTML;
         $printer = new Printer();
         if (str_starts_with($field, '_virtual_')) {
             $type = preg_match('/_virtual_(.*)_.*_percent/', $field, $matches) ? $matches[1] : '';
-            $color = preg_match('/_virtual_'.$type.'_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+            $color = preg_match('/_virtual_' . $type . '_(.*)_percent/', $field, $matches) ? $matches[1] : '';
             $search_option_id = $printer->getSearchOptionIDByField('field', $field);
             $raw_search_opt_values = $options['raw_data']['Printer_' . $search_option_id];
 
             $get_percent_remaining = static function ($color, $raw_search_opt_values, $type) {
-                $used_field = $type.$color;
+                $used_field = $type . $color;
 
                 if ($raw_search_opt_values !== null) {
                     unset($raw_search_opt_values['count']);
