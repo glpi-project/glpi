@@ -271,14 +271,13 @@ class Change_Ticket extends CommonDBRelation
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_type' => __CLASS__,
-                'source_type' => Change::class,
-                'source_id' => $ID,
-                'target_type' => Ticket::class,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => Change::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Ticket::class,
                 'dropdown_options' => [
                     'entity'      => $change->getEntityID(),
                     'entity_sons' => $change->isRecursive(),
-                    'rand'        => $rand,
                     'used'        => $used,
                     'displaywith' => ['id']
                 ],
@@ -398,14 +397,13 @@ class Change_Ticket extends CommonDBRelation
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_type' => __CLASS__,
-                'source_type' => Ticket::class,
-                'source_id' => $ID,
-                'target_type' => Change::class,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => Ticket::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Change::class,
                 'dropdown_options' => [
                     'entity'      => $ticket->getEntityID(),
                     'entity_sons' => $ticket->isRecursive(),
-                    'rand'        => $rand,
                     'used'        => $used,
                     'displaywith' => ['id']
                 ],

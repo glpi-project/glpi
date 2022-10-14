@@ -176,14 +176,13 @@ class ProjectTask_Ticket extends CommonDBRelation
             ];
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_type' => __CLASS__,
-                'source_type' => ProjectTask::class,
-                'source_id' => $ID,
-                'target_type' => Ticket::class,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => ProjectTask::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Ticket::class,
                 'dropdown_options' => [
                     'entity'      => $projecttask->getEntityID(),
                     'entity_sons' => $projecttask->isRecursive(),
-                    'rand'        => $rand,
                     'used'        => $used,
                     'displaywith' => ['id'],
                     'condition'   => $condition
@@ -342,16 +341,15 @@ class ProjectTask_Ticket extends CommonDBRelation
 
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_type' => __CLASS__,
-                'source_type' => Ticket::class,
-                'source_id' => $ID,
-                'target_type' => ProjectTask::class,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => Ticket::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => ProjectTask::class,
                 'dropdown_options' => [
                     "itemtype" => Project::class,
                     'entity'      => $ticket->getEntityID(),
                     'entity_sons' => $ticket->isRecursive(),
                     'condition'   => ['NOT' => ['glpi_projects.projectstates_id' => $finished_states_ids]],
-                    'rand'        => $rand
                 ],
                 'ajax_dropdown' => [
                     'toobserve' => "dropdown_projects_id$rand",

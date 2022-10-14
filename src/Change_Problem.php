@@ -162,14 +162,13 @@ class Change_Problem extends CommonDBRelation
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_type' => __CLASS__,
-                'source_type' => Problem::class,
-                'source_id' => $ID,
-                'target_type' => Change::class,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => Problem::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Change::class,
                 'dropdown_options' => [
                     'entity'      => $problem->getEntityID(),
                     'entity_sons' => $problem->isRecursive(),
-                    'rand'        => $rand,
                     'used'        => $used,
                     'displaywith' => ['id']
                 ],
@@ -273,14 +272,13 @@ class Change_Problem extends CommonDBRelation
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_type' => __CLASS__,
-                'source_type' => Change::class,
-                'source_id' => $ID,
-                'target_type' => Problem::class,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => Change::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Problem::class,
                 'dropdown_options' => [
                     'entity'      => $change->getEntityID(),
                     'entity_sons' => $change->isRecursive(),
-                    'rand'        => $rand,
                     'used'        => $used,
                     'displaywith' => ['id']
                 ],
