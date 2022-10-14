@@ -402,7 +402,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $update_done = true;
 
                 if (in_array("actiontime", $this->updates)) {
-                    $item->updateActionTime($this->input[$item->getForeignKeyField()]);
+                    $item->updateActionTime($this->fields[$item->getForeignKeyField()]);
                 }
 
                // change ticket status (from splitted button)
