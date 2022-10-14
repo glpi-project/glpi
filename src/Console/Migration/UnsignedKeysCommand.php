@@ -265,9 +265,11 @@ class UnsignedKeysCommand extends AbstractCommand
                 }
                 $message .= "\n";
                 $message .= sprintf(
-                    '<comment>' . __('You should try to update following plugins to their latest version and run the command again: %s.') . '</comment>',
+                    '<comment>' . __('Some errors are related to following plugins: %s.') . '</comment>',
                     implode(', ', $plugins_names)
                 );
+                $message .= "\n";
+                $message .= '<comment>' . __('You should try to update these plugins to their latest version and run the command again.') . '</comment>';
             }
             throw new \Glpi\Console\Exception\EarlyExitException(
                 $message,
