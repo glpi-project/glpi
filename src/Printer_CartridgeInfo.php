@@ -222,41 +222,23 @@ HTML;
             $search_option_id = $printer->getSearchOptionIDByField('field', $field);
             $raw_search_opt_values = $options['raw_data']['Printer_' . $search_option_id];
 
-            $get_percent_remaining = static function ($color, $field, $raw_search_opt_values) {
-                $max_field = "toner{$color}max";
-                $used_field = "toner{$color}used";
-                $remaining_field = "toner{$color}remaining";
+            $get_percent_remaining = static function ($color, $raw_search_opt_values) {
+                $used_field = "toner{$color}";
 
                 if ($raw_search_opt_values !== null) {
                     unset($raw_search_opt_values['count']);
-                    // Get the max and used values (stored in property key and value key of elements)
-                    $max_value = null;
-                    $used_value = null;
-                    $remaining_value = null;
                     foreach ($raw_search_opt_values as $raw_search_opt_value) {
-                        if ($raw_search_opt_value['property'] === $max_field) {
-                            $max_value = $raw_search_opt_value['value'];
-                        } elseif ($raw_search_opt_value['property'] === $used_field) {
-                            $used_value = $raw_search_opt_value['value'];
-                        } elseif ($raw_search_opt_value['property'] === $remaining_field) {
-                            $remaining_value = $raw_search_opt_value['value'];
+                        if ($raw_search_opt_value['property'] === $used_field) {
+                            return $raw_search_opt_value['value'];
                         }
-                    }
-                    // If max is not set or 0, we cannot display anything
-                    if ($max_value !== null && (int)$max_value > 0) {
-                        // If remaining is not set, we can calculate it from used
-                        if ($remaining_value === null && $used_value !== null) {
-                            $remaining_value = $max_value - $used_value;
-                        }
-                        return round(($remaining_value / $max_value) * 100);
                     }
                 }
                 return null;
             };
 
-            $percent_remaining = $get_percent_remaining($color, $field, $raw_search_opt_values);
+            $percent_remaining = $get_percent_remaining($color, $raw_search_opt_values);
             if ($percent_remaining === null && array_key_exists($color, $color_aliases)) {
-                $percent_remaining = $get_percent_remaining($color_aliases[$color], $field, $raw_search_opt_values);
+                $percent_remaining = $get_percent_remaining($color_aliases[$color], $raw_search_opt_values);
             }
 
             if ($percent_remaining !== null) {
