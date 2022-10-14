@@ -103,6 +103,20 @@ if (isset($_POST["add"])) {
     );
     $redirect = $itemtype::getFormURLWithID($task->getField($fk));
     $handled = true;
+} else if (isset($_POST["unplan"])) {
+    $task->check($_POST["id"], UPDATE);
+    $task->unplan();
+
+    Event::log(
+        $task->getField($fk),
+        strtolower($itemtype),
+        4,
+        "tracking",
+        //TRANS: %s is the user login
+        sprintf(__('%s unplans a task'), $_SESSION["glpiname"])
+    );
+    $redirect = $itemtype::getFormURLWithID($task->getField($fk));
+    $handled = true;
 }
 
 if ($handled) {
