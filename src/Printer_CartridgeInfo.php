@@ -267,6 +267,12 @@ HTML;
             };
 
             $percent_remaining = $get_percent_remaining($color, $raw_search_opt_values, $type);
+
+            //return value id not null and not numeric  "OK" "WARNING"
+            if ($percent_remaining !== null && ! is_numeric($percent_remaining)) {
+                return $percent_remaining;
+            }
+
             if ($percent_remaining === null && array_key_exists($color, $color_aliases)) {
                 $percent_remaining = $get_percent_remaining($color_aliases[$color], $raw_search_opt_values, $type);
             }
