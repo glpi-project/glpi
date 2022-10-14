@@ -173,8 +173,8 @@ HTML;
             return [
                 'id'                => (string) $ID,
                 'table'             => self::getTable(),
-                'field'             => "_virtual_toner_{$color_key}_percent",
-                'name'              => sprintf(__('%s toner percentage'), $color_name),
+                'field'             => "_virtual_drum_{$color_key}_percent",
+                'name'              => sprintf(__('%s drum percentage'), $color_name),
                 'datatype'          => 'specific',
                 'massiveaction'     => false,
                 'nosearch'          => true,
