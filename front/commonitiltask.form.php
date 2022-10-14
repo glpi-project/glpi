@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
     $handled = true;
 } else if (isset($_POST["unplan"])) {
     $task->check($_POST["id"], UPDATE);
-    $task->unplan($_POST);
+    $task->unplan();
 
     Event::log(
         $task->getField($fk),

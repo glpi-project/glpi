@@ -350,6 +350,7 @@
                      <script type="text/javascript">
                         function showPlanUpdate{{ rand }}(e) {
                            $('#plan{{ rand }}').hide();
+                           $('#unplan{{ rand }}').hide();
                            $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
                               action: "add_event_classic_form",
                               form: "followups", // Was followups for tasks before. Can't find where this is used.
@@ -369,8 +370,8 @@
                            <i class="fas fa-calendar"></i>
                            <span>{{ __('Plan this task') }}</span>
                         </button>
-                        {% if subitem.can(id, constant('UPDATE')) %}
-                           <button class="btn btn-outline-warning" type="submit" name="unplan"
+                        {% if subitem.can(id, constant('UPDATE')) and subitem.fields['begin'] %}
+                           <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
                                  onclick="return confirm('{{ __('Confirm the deletion of planning?') }}');">
                               <i class="fas ti ti-calendar-off"></i>
                               <span>{{ __('Unplan') }}</span>
