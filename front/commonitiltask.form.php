@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
         4,
         "tracking",
         //TRANS: %s is the user login
-        sprintf(__('%s updates a task'), $_SESSION["glpiname"])
+        sprintf(__('%s unplan a task'), $_SESSION["glpiname"])
     );
     $redirect = $itemtype::getFormURLWithID($task->getField($fk));
     $handled = true;
