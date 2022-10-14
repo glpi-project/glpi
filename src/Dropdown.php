@@ -1561,6 +1561,7 @@ class Dropdown
      *    - showItemSpecificity : given an item, the AJAX file to open if there is special
      *                            treatment. For instance, select a Item_Device* for CommonDevice
      *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+     *    - display_emptychoice : display empty choice, cannot be used when "multiple" option set to true (default true)
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - display             : true : display directly, false return the html
      *
@@ -1581,6 +1582,7 @@ class Dropdown
             'checkright'                => false,
             'showItemSpecificity'       => '',
             'emptylabel'                => self::EMPTY_VALUE,
+            'display_emptychoice'       => true,
             'used'                      => [],
             'ajax_page'                 => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
             'display'                   => true,
@@ -1595,12 +1597,13 @@ class Dropdown
         }
 
         $select = self::showItemType($params['itemtypes'], [
-            'checkright'    => $params['checkright'],
-            'name'          => $params['itemtype_name'],
-            'emptylabel'    => $params['emptylabel'],
-            'display'       => $params['display'],
-            'rand'          => $params['rand'],
-            'track_changes' => $params['itemtype_track_changes'],
+            'checkright'          => $params['checkright'],
+            'name'                => $params['itemtype_name'],
+            'emptylabel'          => $params['emptylabel'],
+            'display_emptychoice' => $params['display_emptychoice'],
+            'display'             => $params['display'],
+            'rand'                => $params['rand'],
+            'track_changes'       => $params['itemtype_track_changes'],
         ]);
 
         $p_ajax = [
