@@ -361,52 +361,13 @@ JAVASCRIPT;
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
             $js = "
-         var loadTabContents = function (tablink, force_reload = false) {
-            var url = tablink.attr('href');
-            var target = tablink.attr('data-bs-target');
-            var index = tablink.closest('.nav-item').index();
-
-            const updateCurrentTab = () => {
-                $.get(
-                  '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
-                  {
-                     itemtype: '" . addslashes($type) . "',
-                     id: '$ID',
-                     tab: index,
-                  }
-               );
-            }
-            if ($(target).html() && !force_reload) {
-                updateCurrentTab();
-                return;
-            }
-            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50\"></i>');
-
-            $.get(url, function(data) {
-               $(target).html(data);
-
-               $(target).closest('main').trigger('glpi.tab.loaded');
-
-               updateCurrentTab();
-            });
-         };
-
-         var reloadTab = function (add) {
-            var active_link = $('main #tabspanel .nav-item .nav-link.active');
-
-            // Update href and load tab contents
-            var currenthref = active_link.attr('href');
-            active_link.attr('href', currenthref + '&' + add);
-            loadTabContents(active_link, true);
-
-            // Restore href
-            active_link.attr('href', currenthref);
-         };
-
          $(function() {
+            var itemtype = '" . addslashes($type) ."';
+            document.querySelector('#$tabdiv_id').itemtype = itemtype;
+            document.querySelector('#$tabdiv_id').item_id = '" . $ID . "';
             $('a[data-bs-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
                e.preventDefault();
-               loadTabContents($(this));
+               loadTabContents($(this), false, itemtype, '" . $ID . "');
             });
 
             // load initial tab

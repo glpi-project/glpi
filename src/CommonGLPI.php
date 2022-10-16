@@ -918,8 +918,12 @@ class CommonGLPI implements CommonGLPIInterface
                 ];
             }
 
+            $tabs_panel = 'tabspanel';
+            if (!($options['show_nav_header'] ?? true)) {
+                $tabs_panel = 'modaltabspanel';
+            }
             Ajax::createTabs(
-                'tabspanel',
+                $tabs_panel,
                 'tabcontent',
                 $tabs,
                 $this->getType(),
@@ -1187,6 +1191,7 @@ class CommonGLPI implements CommonGLPIInterface
 
        // manage custom options passed to tabs
         if (isset($_REQUEST['tab_params']) && is_array($_REQUEST['tab_params'])) {
+            unset($_REQUEST['tab_params']['show_nav_header']); // Shall not be set from browser
             $options += $_REQUEST['tab_params'];
         }
 

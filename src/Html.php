@@ -1404,6 +1404,9 @@ HTML;
        // load glpi dailog everywhere
         Html::requireJs('glpi_dialog');
 
+       // load glpi tabs everywhere
+        Html::requireJs('glpi_tabs');
+
        // load log filters everywhere
         Html::requireJs('log_filters');
 
@@ -6305,6 +6308,9 @@ HTML;
         switch ($name) {
             case 'glpi_dialog':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/glpi_dialog.js';
+                break;
+            case 'glpi_tabs':
+                $_SESSION['glpi_js_toload'][$name][] = 'js/glpi_tabs.js';
                 break;
             case 'clipboard':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
