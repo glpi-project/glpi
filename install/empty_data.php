@@ -7787,7 +7787,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'locked_field',
-                'rights' => CREATE | PURGE,
+                'rights' => CREATE | UPDATE,
             ],
             [
                 'profiles_id' => self::PROFILE_HOTLINER,
