@@ -1785,6 +1785,16 @@ class Profile extends CommonDBTM
                 'label'     => __('Notification queue'),
                 'field'     => 'queuednotification'
             ], [
+                'itemtype'  => 'Log',
+                'label'     => Log::getTypeName(Session::getPluralNumber()),
+                'field'     => 'logs'
+            ]
+        ];
+        $matrix_options['title'] = __('Administration');
+        $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
+        $rights = [
+            [
                 'itemtype'  => 'Glpi\Inventory\Conf',
                 'label'     => __('Inventory'),
                 'field'     => 'inventory'
@@ -1796,10 +1806,6 @@ class Profile extends CommonDBTM
                     CREATE => __('Create'), // For READ / CREATE
                     UPDATE => __('Update'), //for CREATE / PURGE global lock
                 ],
-            ], [
-                'itemtype'  => 'Log',
-                'label'     => Log::getTypeName(Session::getPluralNumber()),
-                'field'     => 'logs'
             ], [
                 'itemtype'  => 'SNMPCredential',
                 'label'     => SNMPCredential::getTypeName(Session::getPluralNumber()),
@@ -1828,7 +1834,7 @@ class Profile extends CommonDBTM
                 ],
             ]
         ];
-        $matrix_options['title'] = __('Administration');
+        $matrix_options['title'] = __('Inventory');
         $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
         $rights = [['itemtype'  => 'Rule',
