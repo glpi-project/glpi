@@ -7737,7 +7737,7 @@ HTML;
      *
      * @return array The reference to the array of search options for the given item type
      **/
-    public static function getOptions($itemtype, $withplugins = true)
+    public static function &getOptions($itemtype, $withplugins = true)
     {
         global $CFG_GLPI;
 
