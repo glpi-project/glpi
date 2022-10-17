@@ -169,6 +169,35 @@ HTML;
         $tab[] = $create_toner_percent_option(1406, 'grey', __('Grey'));
         $tab[] = $create_toner_percent_option(1407, 'darkgrey', __('Dark grey'));
 
+        $create_drum_percent_option = static function (int $ID, string $color_key, string $color_name): array {
+            return [
+                'id'                => (string) $ID,
+                'table'             => self::getTable(),
+                'field'             => "_virtual_drum_{$color_key}_percent",
+                'name'              => sprintf(__('%s drum percentage'), $color_name),
+                'datatype'          => 'specific',
+                'massiveaction'     => false,
+                'nosearch'          => true,
+                'joinparams'        => [
+                    'jointype' => 'child'
+                ],
+                'additionalfields'  => ['property', 'value'],
+                'forcegroupby'      => true,
+                'aggregate'         => true,
+                'searchtype'        => ['contains'],
+                'nosort'            => true
+            ];
+        };
+
+        $tab[] = $create_drum_percent_option(1408, 'black', __('Black'));
+        $tab[] = $create_drum_percent_option(1409, 'cyan', __('Cyan'));
+        $tab[] = $create_drum_percent_option(1410, 'cyanlight', __('Light cyan'));
+        $tab[] = $create_drum_percent_option(1411, 'magenta', __('Magenta'));
+        $tab[] = $create_drum_percent_option(1412, 'magentalight', __('Light magenta'));
+        $tab[] = $create_drum_percent_option(1413, 'yellow', __('Yellow'));
+        $tab[] = $create_drum_percent_option(1414, 'grey', __('Grey'));
+        $tab[] = $create_drum_percent_option(1415, 'darkgrey', __('Dark grey'));
+
         return $tab;
     }
 
@@ -217,13 +246,14 @@ HTML;
             'darkgrey'  => 'darkgray'
         ];
         $printer = new Printer();
-        if (str_starts_with($field, '_virtual_toner')) {
-            $color = preg_match('/_virtual_toner_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+        if (str_starts_with($field, '_virtual_')) {
+            $type = preg_match('/_virtual_(.*)_.*_percent/', $field, $matches) ? $matches[1] : '';
+            $color = preg_match('/_virtual_' . $type . '_(.*)_percent/', $field, $matches) ? $matches[1] : '';
             $search_option_id = $printer->getSearchOptionIDByField('field', $field);
             $raw_search_opt_values = $options['raw_data']['Printer_' . $search_option_id];
 
-            $get_percent_remaining = static function ($color, $raw_search_opt_values) {
-                $used_field = "toner{$color}";
+            $get_percent_remaining = static function ($color, $raw_search_opt_values, $type) {
+                $used_field = $type . $color;
 
                 if ($raw_search_opt_values !== null) {
                     unset($raw_search_opt_values['count']);
@@ -236,9 +266,15 @@ HTML;
                 return null;
             };
 
-            $percent_remaining = $get_percent_remaining($color, $raw_search_opt_values);
+            $percent_remaining = $get_percent_remaining($color, $raw_search_opt_values, $type);
+
+            //return value if not null and not numeric  "OK" "WARNING"
+            if ($percent_remaining !== null && ! is_numeric($percent_remaining)) {
+                return $percent_remaining;
+            }
+
             if ($percent_remaining === null && array_key_exists($color, $color_aliases)) {
-                $percent_remaining = $get_percent_remaining($color_aliases[$color], $raw_search_opt_values);
+                $percent_remaining = $get_percent_remaining($color_aliases[$color], $raw_search_opt_values, $type);
             }
 
             if ($percent_remaining !== null) {
