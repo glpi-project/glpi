@@ -63,7 +63,7 @@ class Agent extends CommonDBTM
     public $dohistory = true;
 
     /** @var string */
-    public static $rightname = 'computer';
+    public static $rightname = 'agent';
    //static $rightname = 'inventory';
 
     private static $found_adress = false;

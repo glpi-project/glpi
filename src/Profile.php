@@ -1817,6 +1817,10 @@ class Profile extends CommonDBTM
                         'long'  => _x('button', 'Delete permanently')
                     ]
                 ],
+            ], [
+                'itemtype'  => 'Agent',
+                'label'     => Agent::getTypeName(Session::getPluralNumber()),
+                'field'     => 'agent',
             ]
         ];
         $matrix_options['title'] = __('Administration');
