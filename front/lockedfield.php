@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("config", READ);
+Session::checkRight("locked_field", READ);
 
 Html::header(Lockedfield::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "lockedfield");
 
