@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("locked_field", READ);
+Session::checkRight("locked_field", CREATE);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
@@ -47,7 +47,7 @@ $lockedfield = new Lockedfield();
 
 //Add a new locked field
 if (isset($_POST["add"])) {
-    $lockedfield->check(-1, CREATE, $_POST);
+    $lockedfield->check(-1, UPDATE, $_POST);
     if ($newID = $lockedfield->add($_POST)) {
         Event::log(
             $newID,
@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else if (isset($_POST["purge"])) {
-    $lockedfield->check($_POST['id'], PURGE);
+    $lockedfield->check($_POST['id'], UPDATE);
     if ($lockedfield->delete($_POST, 1)) {
         Event::log(
             $_POST["id"],
