@@ -1793,14 +1793,8 @@ class Profile extends CommonDBTM
                 'label'     => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'field'     => 'locked_field',
                 'rights'  => [
-                    READ  => __('Read'),
-                    CREATE  => __('Create'),
-                    UPDATE  => __('Update'),
-                    PURGE   => ['short' => __('Purge'),
-                        'long'  => _x('button', 'Delete permanently')
-                    ],
-                    Lockedfield::CREATE_GLOBAL_LOCKED_FIELD  => __('Create global locked field'),
-                    Lockedfield::PURGE_GLOBAL_LOCKED_FIELD  => __('Create global locked field'),
+                    CREATE => __('Create'), // For READ / CREATE
+                    UPDATE => __('Update'), //for CREATE / PURGE global lock
                 ],
             ], [
                 'itemtype'  => 'Log',

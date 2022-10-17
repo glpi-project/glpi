@@ -494,7 +494,7 @@ class Inventory
             ];
         }
 
-        if (Session::haveRight(Lockedfield::$rightname, Lockedfield::CREATE_GLOBAL_LOCKED_FIELD)) {
+        if (Session::haveRight(Lockedfield::$rightname, UPDATE)) {
             $menu['options']['lockedfield'] = [
                 'icon'  => Lockedfield::getIcon(),
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),

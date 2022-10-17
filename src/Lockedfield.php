@@ -48,9 +48,6 @@ class Lockedfield extends CommonDBTM
 
     public static $rightname                   = 'locked_field';
 
-    public const CREATE_GLOBAL_LOCKED_FIELD     = 1024;
-    public const PURGE_GLOBAL_LOCKED_FIELD       = 2048;
-
     public static function getTypeName($nb = 0)
     {
         return _n('Locked field', 'Locked fields', $nb);
@@ -58,12 +55,12 @@ class Lockedfield extends CommonDBTM
 
     public static function canPurge()
     {
-        return Session::haveRight(self::$rightname, self::PURGE_GLOBAL_LOCKED_FIELD);
+        return Session::haveRight(self::$rightname, UPDATE);
     }
 
     public static function canCreate()
     {
-        return Session::haveRight(self::$rightname, self::CREATE_GLOBAL_LOCKED_FIELD);
+        return Session::haveRight(self::$rightname, UPDATE);
     }
 
     public function rawSearchOptions()
