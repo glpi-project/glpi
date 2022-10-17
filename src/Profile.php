@@ -1802,6 +1802,10 @@ class Profile extends CommonDBTM
                 'itemtype'  => 'Log',
                 'label'     => Log::getTypeName(Session::getPluralNumber()),
                 'field'     => 'logs'
+            ], [
+                'itemtype'  => 'SNMPCredential',
+                'label'     => SNMPCredential::getTypeName(Session::getPluralNumber()),
+                'field'     => 'snmpcredential',
             ]
         ];
         $matrix_options['title'] = __('Administration');

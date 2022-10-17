@@ -53,3 +53,6 @@ $migration->addField("glpi_items_operatingsystems", 'install_date', 'date');
 
 //add remote_addr
 $migration->addField("glpi_agents", 'remote_addr', 'string');
+
+//new right value for snmpcredential (previously based on config UPDATE)
+$migration->addRight('snmpcredential', ALLSTANDARDRIGHT, ['config' => UPDATE]);
