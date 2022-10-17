@@ -93,40 +93,6 @@ if (isset($_POST["add"])) {
                 sprintf(__('%s adds an approval'), $_SESSION["glpiname"])
             );
         }
-    } else if ($_POST['validatortype'] == 'requester_supervisor') {
-        if (!isset($_POST['itemtype'])) {
-            Html::back();
-        }
-        $itemtype = $_POST['itemtype'];
-        $itemtypeFk = $itemtype::getForeignKeyField();
-        if (!isset($_POST[$itemtypeFk])) {
-            Html::back();
-        }
-
-        $itilObject = new $itemtype();
-        if (!$itilObject->getFromDB($_POST[$itemtypeFk])) {
-            Html::back();
-        }
-        $primaryRequester = $itilObject->getPrimaryRequesterUser();
-        if ($primaryRequester === null) {
-            Html::back();
-        }
-        if ($primaryRequester->fields['users_id_supervisor'] == 0) {
-            // TRANS: $1%s us the friendly user name
-            Session::addMessageAfterRedirect(sprintf(__('%1$s does not have a responsible'), $primaryRequester->getFriendlyName()));
-            Html::back();
-        }
-        $_POST['itemtype_target'] = User::class;
-        $_POST['items_id_target'] = $primaryRequester->fields['users_id_supervisor'];
-        $validation->add($_POST);
-        Event::log(
-            $validation->getField($fk),
-            strtolower($itemtype),
-            4,
-            "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds an approval'), $_SESSION["glpiname"])
-        );
     }
     Html::back();
 } else if (isset($_POST["update"])) {

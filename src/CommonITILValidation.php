@@ -1757,21 +1757,6 @@ abstract class CommonITILValidation extends CommonDBChild
             'Group_User' => __('Group user(s)'),
             'Group'      => Group::getTypeName(1),
         ];
-        if (isset($params['parents_id'])) {
-            $parent_itil_object = new static::$itemtype();
-            $parent_itil_object->getFromDB($params['parents_id']);
-            $requester_user = $parent_itil_object->getPrimaryRequesterUser();
-            if ($requester_user !== null) {
-                $supervisor_user = User::getById($requester_user->fields['users_id_supervisor']);
-                if ($supervisor_user instanceof User) {
-                    $validators['requester_supervisor'] =  sprintf(
-                        __('Responsible of %s (%s)'),
-                        $requester_user->getFriendlyName(),
-                        $supervisor_user->getFriendlyName()
-                    );
-                }
-            }
-        }
 
         $out = Dropdown::showFromArray($validatortype_name, $validators, [
             'value'               => $validatortype,
