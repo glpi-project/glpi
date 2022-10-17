@@ -66,7 +66,7 @@ class Agent extends CommonDBTM
     public static $rightname = 'computer';
    //static $rightname = 'inventory';
 
-    private static $found_adress = false;
+    private static $found_address = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -453,7 +453,7 @@ class Agent extends CommonDBTM
     }
 
     /**
-     * Guess possible adresses the agent should answer on
+     * Guess possible addresses the agent should answer on
      *
      * @return array
      */
@@ -461,20 +461,20 @@ class Agent extends CommonDBTM
     {
         global $DB;
 
-        $adresses = [];
+        $addresses = [];
 
        //retrieve linked items
         $item = $this->getLinkedItem();
         if ((int)$item->getID() > 0) {
             $item_name = $item->getFriendlyName();
-            $adresses[] = $item_name;
+            $addresses[] = $item_name;
 
            //deviceid should contains machines name
             $matches = [];
             preg_match('/^(\s)+-\d{4}(-\d{2}){5}$/', $this->fields['deviceid'], $matches);
             if (isset($matches[1])) {
-                if (!in_array($matches[1], $adresses)) {
-                    $adresses[] = $matches[1];
+                if (!in_array($matches[1], $addresses)) {
+                    $addresses[] = $matches[1];
                 }
             }
 
@@ -521,12 +521,12 @@ class Agent extends CommonDBTM
                 ]
             ]);
             foreach ($ports_iterator as $row) {
-                if (!in_array($row['name'], $adresses)) {
+                if (!in_array($row['name'], $addresses)) {
                     if ($row['version'] == 4) {
-                        $adresses[] = $row['name'];
+                        $addresses[] = $row['name'];
                     } else {
                         //surrounds IPV6 with '[' and ']'
-                        $adresses[] = "[" . $row['name'] . "]";
+                        $addresses[] = "[" . $row['name'] . "]";
                     }
                 }
             }
@@ -550,11 +550,11 @@ class Agent extends CommonDBTM
             ]);
 
             foreach ($iterator as $row) {
-                 $adresses[] = sprintf('%s.%s', $item_name, $row['name']);
+                 $addresses[] = sprintf('%s.%s', $item_name, $row['name']);
             }
         }
 
-        return $adresses;
+        return $addresses;
     }
 
     /**
@@ -564,7 +564,7 @@ class Agent extends CommonDBTM
      */
     public function getAgentURLs(): array
     {
-        $adresses = $this->guessAddresses();
+        $addresses = $this->guessAddresses();
         $protocols = ['http', 'https'];
         $port = (int)$this->fields['port'];
         if ($port === 0) {
@@ -573,7 +573,7 @@ class Agent extends CommonDBTM
 
         $urls = [];
         foreach ($protocols as $protocol) {
-            foreach ($adresses as $address) {
+            foreach ($addresses as $address) {
                 $urls[] = sprintf(
                     '%s://%s:%s',
                     $protocol,
@@ -597,16 +597,16 @@ class Agent extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        if (self::$found_adress !== false) {
-            $adresses = [self::$found_adress];
+        if (self::$found_address !== false) {
+            $addresses = [self::$found_address];
         } else {
-            $adresses = $this->getAgentURLs();
+            $addresses = $this->getAgentURLs();
         }
 
         $response = null;
-        foreach ($adresses as $adress) {
+        foreach ($addresses as $address) {
             $options = [
-                'base_uri'        => sprintf('%s/%s', $adress, $endpoint),
+                'base_uri'        => $address,
                 'connect_timeout' => self::TIMEOUT,
             ];
 
@@ -623,11 +623,10 @@ class Agent extends CommonDBTM
             $httpClient = new Guzzle_Client($options);
             try {
                 $response = $httpClient->request('GET', $endpoint, []);
-                self::$found_adress = $adress;
+                self::$found_address = $address;
                 break;
             } catch (Exception $e) {
-                //many adresses will be incorrect
-                $cs = true;
+                //many addresses will be incorrect
             }
         }
 
