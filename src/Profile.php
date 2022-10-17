@@ -1806,6 +1806,17 @@ class Profile extends CommonDBTM
                 'itemtype'  => 'SNMPCredential',
                 'label'     => SNMPCredential::getTypeName(Session::getPluralNumber()),
                 'field'     => 'snmpcredential',
+            ], [
+                'itemtype'  => 'RefusedEquipment',
+                'label'     => RefusedEquipment::getTypeName(Session::getPluralNumber()),
+                'field'     => 'refusedequipment',
+                'rights'  => [
+                    READ  => __('Read'),
+                    UPDATE  => __('Update'),
+                    PURGE   => ['short' => __('Purge'),
+                        'long'  => _x('button', 'Delete permanently')
+                    ]
+                ],
             ]
         ];
         $matrix_options['title'] = __('Administration');
