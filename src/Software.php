@@ -1160,20 +1160,15 @@ class Software extends CommonDBTM
     public function handleCategoryRules(array &$input)
     {
        //If category was not set by user (when manually adding a user)
-        if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
-            $softcatrule = new RuleSoftwareCategoryCollection();
-            $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
+        $softcatrule = new RuleSoftwareCategoryCollection();
+        $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
 
-            if (!empty($result) && !isset($result['_ignore_import'])) {
-                if (isset($result["softwarecategories_id"])) {
-                    $input["softwarecategories_id"] = $result["softwarecategories_id"];
-                } else if (isset($result["_import_category"]) && isset($input['_system_category'])) {
-                    $softCat = new SoftwareCategory();
-                    $input["softwarecategories_id"] = $softCat->importExternal($input["_system_category"]);
-                }
-            }
-            if (!isset($input["softwarecategories_id"])) {
-                $input["softwarecategories_id"] = 0;
+        if (!empty($result) && !isset($result['_ignore_import'])) {
+            if (isset($result["softwarecategories_id"])) {
+                $input["softwarecategories_id"] = $result["softwarecategories_id"];
+            } else if (isset($result["_import_category"]) && isset($input['_system_category'])) {
+                $softCat = new SoftwareCategory();
+                $input["softwarecategories_id"] = $softCat->importExternal($input["_system_category"]);
             }
         }
     }
