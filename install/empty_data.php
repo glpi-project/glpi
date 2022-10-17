@@ -7888,6 +7888,46 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'refusedequipment',
                 'rights' => self::RIGHT_NONE,
             ],
+            [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'agent',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'agent',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'agent',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'agent',
+                'rights' => READ | UPDATE | PURGE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'agent',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'agent',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'agent',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'agent',
+                'rights' => self::RIGHT_NONE,
+            ]
         ];
 
 

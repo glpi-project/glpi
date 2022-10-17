@@ -59,3 +59,6 @@ $migration->addRight('snmpcredential', ALLSTANDARDRIGHT, ['config' => UPDATE]);
 
 //new right value for refusedequipment (previously based on config UPDATE)
 $migration->addRight('refusedequipment', READ | UPDATE | PURGE, ['config' => UPDATE]);
+
+//new right value for agent (previously based on config UPDATE)
+$migration->addRight('agent', READ | UPDATE | PURGE, ['config' => UPDATE]);
