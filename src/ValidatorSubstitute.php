@@ -37,11 +37,18 @@ use Glpi\Application\View\TemplateRenderer;
 
 final class ValidatorSubstitute extends CommonDBTM
 {
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Authorized substitute', 'Authorized substitutes', $nb);
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case Preference::class:
-                return __('Authorized substitute');
+                $user = User::getById(Session::getLoginUserID());
+                $nb = count($user->getSubstitutes());
+                return self::createTabEntry(self::getTypeName($nb), $nb);
         }
 
         return '';
