@@ -56,3 +56,6 @@ $migration->addField("glpi_agents", 'remote_addr', 'string');
 
 //new right value for snmpcredential (previously based on config UPDATE)
 $migration->addRight('snmpcredential', ALLSTANDARDRIGHT, ['config' => UPDATE]);
+
+//new right value for refusedequipment (previously based on config UPDATE)
+$migration->addRight('refusedequipment', READ | UPDATE | PURGE, ['config' => UPDATE]);
