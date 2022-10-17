@@ -695,7 +695,7 @@ class Software extends InventoryAsset
 
                 //if the rule engine returns a different category
                 if ($soft_input['softwarecategories_id'] != $db_soft_input['softwarecategories_id']) {
-                    $software->update( \Toolbox::addslashes_deep([
+                    $software->update(\Toolbox::addslashes_deep([
                         'id' => $skey
                     ] + $soft_input));
                 }
