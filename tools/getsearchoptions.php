@@ -70,7 +70,7 @@ if (isset($_GET['lang'])) {
     Session::loadLanguage($_GET['lang']);
 }
 
-$opts = &Search::getOptions($_GET['type']);
+$opts = Search::getOptions($_GET['type']);
 $sort = [];
 $group = 'N/A';
 
