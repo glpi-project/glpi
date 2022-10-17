@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("config", READ);
+Session::checkRight("snmpcredential", READ);
 
 Html::header(SNMPCredential::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory", "snmpcredential");
 

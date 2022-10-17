@@ -7808,6 +7808,45 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'locked_field',
                 'rights' => self::RIGHT_NONE,
+            ],            [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'snmpcredential',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'snmpcredential',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'snmpcredential',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'snmpcredential',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'snmpcredential',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'snmpcredential',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'snmpcredential',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'snmpcredential',
+                'rights' => self::RIGHT_NONE,
             ],
         ];
 
