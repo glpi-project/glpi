@@ -53,6 +53,16 @@ class Lockedfield extends CommonDBTM
         return _n('Locked field', 'Locked fields', $nb);
     }
 
+    public static function canPurge()
+    {
+        return Session::haveRight(self::$rightname, UPDATE);
+    }
+
+    public static function canCreate()
+    {
+        return Session::haveRight(self::$rightname, UPDATE);
+    }
+
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();

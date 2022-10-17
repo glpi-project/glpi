@@ -494,7 +494,7 @@ class Inventory
             ];
         }
 
-        if (Session::haveRight(Lockedfield::$rightname, READ)) {
+        if (Session::haveRight(Lockedfield::$rightname, UPDATE)) {
             $menu['options']['lockedfield'] = [
                 'icon'  => Lockedfield::getIcon(),
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
