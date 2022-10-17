@@ -47,7 +47,7 @@ final class ValidatorSubstitute extends CommonDBTM
         switch ($item->getType()) {
             case Preference::class:
                 $user = User::getById(Session::getLoginUserID());
-                $nb = count($user->getSubstitutes());
+                $nb = $_SESSION['glpishow_count_on_tabs'] ? count($user->getSubstitutes()) : 0;
                 return self::createTabEntry(self::getTypeName($nb), $nb);
         }
 
