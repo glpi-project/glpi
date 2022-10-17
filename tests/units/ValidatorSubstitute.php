@@ -35,11 +35,13 @@
 
 namespace tests\units;
 
+use Auth;
 use DbTestCase;
 use CommonGLPI;
 use Computer;
 use Preference;
 use DbUtils;
+use Session;
 use User;
 
 /* Test for inc/RuleRight.class.php */
@@ -51,6 +53,10 @@ class ValidatorSubstitute extends DbTestCase
 {
     public function providerGetTabNameForItem()
     {
+        //login to get session
+        $auth = new Auth();
+        $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
+
         yield [
             'item' => new Computer(),
             'expected' => '',
@@ -58,7 +64,44 @@ class ValidatorSubstitute extends DbTestCase
 
         yield [
             'item' => new Preference(),
-            'expected' => 'Authorized substitute',
+            'expected' => 'Authorized substitutes',
+        ];
+
+        $validatorSubstitute = new $this->newTestedInstance();
+        $validatorSubstitute->add([
+            'users_id' => Session::getLoginUserId(),
+            'users_id_substitute' => User::getIdByName('glpi'),
+        ]);
+
+        yield [
+            'item' => new Preference(),
+            'expected' => "Authorized substitute <span class='badge'>1</span>",
+        ];
+
+        $_SESSION['glpishow_count_on_tabs'] = 0;
+
+        yield [
+            'item' => new Preference(),
+            'expected' => "Authorized substitutes",
+        ];
+
+        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $validatorSubstitute = new $this->newTestedInstance();
+        $validatorSubstitute->add([
+            'users_id' => Session::getLoginUserId(),
+            'users_id_substitute' => User::getIdByName('tech'),
+        ]);
+
+        yield [
+            'item' => new Preference(),
+            'expected' => "Authorized substitutes <span class='badge'>2</span>",
+        ];
+
+        $_SESSION['glpishow_count_on_tabs'] = 0;
+
+        yield [
+            'item' => new Preference(),
+            'expected' => "Authorized substitutes",
         ];
     }
 
