@@ -362,7 +362,7 @@ JAVASCRIPT;
             echo "</div>"; // .container-fluid
             $js = "
          $(function() {
-            var itemtype = '" . addslashes($type) ."';
+            var itemtype = '" . addslashes($type) . "';
             document.querySelector('#$tabdiv_id').itemtype = itemtype;
             document.querySelector('#$tabdiv_id').item_id = '" . $ID . "';
             $('a[data-bs-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
