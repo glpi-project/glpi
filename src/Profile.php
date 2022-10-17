@@ -1821,6 +1821,13 @@ class Profile extends CommonDBTM
                 'itemtype'  => 'Agent',
                 'label'     => Agent::getTypeName(Session::getPluralNumber()),
                 'field'     => 'agent',
+                'rights'  => [
+                    READ    => __('Read'),
+                    UPDATE  => __('Update'),
+                    PURGE   => ['short' => __('Purge'),
+                        'long'  => _x('button', 'Delete permanently')
+                    ]
+                ],
             ]
         ];
         $matrix_options['title'] = __('Administration');

@@ -7906,7 +7906,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'agent',
-                'rights' => ALLSTANDARDRIGHT,
+                'rights' => READ | UPDATE | PURGE,
             ],
             [
                 'profiles_id' => self::PROFILE_HOTLINER,
