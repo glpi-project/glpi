@@ -688,6 +688,17 @@ class Software extends InventoryAsset
                     \Log::HISTORY_CREATE_ITEM
                 );
                 $this->softwares[$skey] = $softwares_id;
+            } else {
+                //handle Category Rules if needed
+                $soft_input = $db_soft_input = $this->cleanInputToPrepare((array)$val, $soft_fields);
+                $software->handleCategoryRules($soft_input);
+
+                //if the rule engine returns a different category
+                if ($soft_input['softwarecategories_id'] != $db_soft_input['softwarecategories_id']) {
+                    $software->update( \Toolbox::addslashes_deep([
+                        'id' => $skey
+                    ] + $soft_input));
+                }
             }
         }
 
