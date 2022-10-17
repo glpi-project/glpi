@@ -46,7 +46,7 @@ foreach ($tables as $table) {
 }
 
 //new right value for locked_field (previously based on config UPDATE)
-$migration->addRight('locked_field', UPDATE | PURGE, ['config' => UPDATE]);
+$migration->addRight('locked_field', CREATE | UPDATE, ['config' => UPDATE]);
 
 //add date_install
 $migration->addField("glpi_items_operatingsystems", 'install_date', 'date');
