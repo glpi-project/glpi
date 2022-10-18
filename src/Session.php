@@ -1859,12 +1859,11 @@ class Session
      *
      * @since 10.0.4
      *
-     * @return int
+     * @return void
      */
     public static function cleanOnLogout()
     {
         Session::destroy();
-
         //Remove cookie to allow new login
         Auth::setRememberMeCookie('');
     }
