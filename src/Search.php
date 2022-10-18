@@ -6220,7 +6220,7 @@ JAVASCRIPT;
                     if ($before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity'])) {
                         $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
                         if ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime']) {
-                            $out = " class=\"shadow-none\" style=\"background-color: #d63939\" ";
+                            $out = " class=\"shadow-none\" style=\"color: white; background-color: #d63939\" ";
                         } elseif ($data[$NAME][0]['name'] < $before) {
                             $out = " class=\"shadow-none\"  style=\"background-color: #de5d06\" ";
                         } elseif ($data[$NAME][0]['name'] >= $before) {
