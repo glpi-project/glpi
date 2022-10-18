@@ -1605,7 +1605,7 @@ final class DbUtils
             ($link == 1)
             && ($ID > 0)
         ) {
-            $before = "<a title=\"" . Toolbox::addslashes_deep($formatted) . "\"
+            $before = "<a title=\"" . htmlspecialchars($formatted) . "\"
                        href='" . User::getFormURLWithID($ID) . "'>";
             $after  = "</a>";
         }
