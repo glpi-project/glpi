@@ -6211,11 +6211,11 @@ JAVASCRIPT;
                     $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
                 }
                 break;
-
             case "glpi_certificates.date_expiration" :
-                if (!in_array($ID, [151, 158, 181, 186])
-                    && !empty($data[$NAME][0]['name'])) {
-
+                if (
+                    !in_array($ID, [151, 158, 181, 186])
+                    && !empty($data[$NAME][0]['name'])
+                    ) {
                     $out = "";
                     if ($before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity'])) {
                         $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
