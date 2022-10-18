@@ -2327,8 +2327,8 @@ class Search
                 continue;
             }
             if ($key === 'ticket_types' && $item instanceof CommonITILObject) {
-               // Linked are filtered by CommonITILObject::getAllTypesForHelpdesk()
-                $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk()));
+                // Linked are filtered by CommonITILObject::getAllTypesForHelpdesk()
+                $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk([Entity::class])));
                 continue;
             }
 

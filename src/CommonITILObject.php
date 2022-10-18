@@ -4292,7 +4292,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'time_to_own':
                 return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
             AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND 
+            AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND
                  ' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
                  OR (' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NULL AND
                  ' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . '
@@ -4873,8 +4873,10 @@ abstract class CommonITILObject extends CommonDBTM
 
     /**
      * Get all available types to which an ITIL object can be assigned
+     *
+     * @param array $extra Extra items to add (must be done here to be properly sorted)
      **/
-    public static function getAllTypesForHelpdesk()
+    public static function getAllTypesForHelpdesk(array $extra = [])
     {
         global $PLUGIN_HOOKS, $CFG_GLPI;
 
@@ -4904,6 +4906,16 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
         }
+
+        // Add specified extra types
+        foreach ($extra as $itemtype) {
+            if (!is_a($itemtype, CommonDBTM::class, true)) {
+                // Skip invalid vaues
+                continue;
+            }
+            $types[$itemtype::getType()] = $itemtype::getTypeName(1);
+        }
+
         asort($types); // core type first... asort could be better ?
 
        // Drop not available plugins
