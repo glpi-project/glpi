@@ -51,6 +51,12 @@
                   <div class="row flex-row">
                      <input type="hidden" name="users_id" value={{ user.fields['id'] }} />
 
+                     <div class="form-field row col-12 col-sm-12 mb-2">
+                        <div class="center">
+                        {{ __('Substitutes are users who can approve or refuse tickets on your behalf.') }}
+                        </div>
+                     </div>
+
                      {{ fields.datetimeField(
                         'substitution_start_date',
                         user.fields['substitution_start_date'],
@@ -82,6 +88,13 @@
                         <div class="card border-0 shadow-none p-0 m-0 mt-2 mb-2">
                            <div class="card-header mb-1 p-0 ps-3">{{ __('Validation delegators') }}</div>
                         </div>
+
+                        <div class="form-field row col-12 col-sm-12 mb-2">
+                           <div class="center">
+                           {{ __('Delegators are users who gave you the right to approve or refuse tickets on their behalf.') }}
+                           </div>
+                        </div>
+
                         <table class="table card-table table-hover table-striped">
                         <thead>
                            <tr>
