@@ -692,7 +692,7 @@ class Search
         $data['sql']['count']  = [];
         $data['sql']['search'] = '';
 
-        $searchopt        = &self::getOptions($data['itemtype']);
+        $searchopt        = self::getOptions($data['itemtype']);
 
         $blacklist_tables = [];
         $orig_table = self::getOrigTableName($data['itemtype']);
@@ -1166,7 +1166,7 @@ class Search
             ) {
                 $itemtype = $criterion['itemtype'];
                 $meta = true;
-                $meta_searchopt = &self::getOptions($itemtype);
+                $meta_searchopt = self::getOptions($itemtype);
             } else {
                // Not a meta, use the same search option everywhere
                 $meta_searchopt = $searchopt;
@@ -1377,7 +1377,7 @@ class Search
             }
 
             $m_itemtype = $criterion['itemtype'];
-            $metaopt = &self::getOptions($m_itemtype);
+            $metaopt = self::getOptions($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
            //add toview for meta criterion
@@ -1507,7 +1507,7 @@ class Search
            // Get columns
             $data['data']['cols'] = [];
 
-            $searchopt = &self::getOptions($data['itemtype']);
+            $searchopt = self::getOptions($data['itemtype']);
 
             foreach ($data['toview'] as $opt_id) {
                 $data['data']['cols'][] = [
@@ -1521,7 +1521,7 @@ class Search
 
            // manage toview column for criteria with meta flag
             foreach ($data['meta_toview'] as $m_itemtype => $toview) {
-                $searchopt = &self::getOptions($m_itemtype);
+                $searchopt = self::getOptions($m_itemtype);
                 foreach ($toview as $opt_id) {
                     $data['data']['cols'][] = [
                         'itemtype'  => $m_itemtype,
@@ -1543,7 +1543,7 @@ class Search
                         && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)
                     ) {
                         if (!isset($already_printed[$metacriteria['itemtype'] . $metacriteria['field']])) {
-                            $searchopt = &self::getOptions($metacriteria['itemtype']);
+                            $searchopt = self::getOptions($metacriteria['itemtype']);
 
                             $data['data']['cols'][] = [
                                 'itemtype'  => $metacriteria['itemtype'],
@@ -2011,9 +2011,9 @@ class Search
 
             foreach ($data['search']['criteria'] as $criteria) {
                 if (isset($criteria['itemtype'])) {
-                    $searchopt = &self::getOptions($criteria['itemtype']);
+                    $searchopt = self::getOptions($criteria['itemtype']);
                 } else {
-                    $searchopt = &self::getOptions($data['itemtype']);
+                    $searchopt = self::getOptions($data['itemtype']);
                 }
                 $titlecontain = '';
 
@@ -2157,7 +2157,7 @@ class Search
         ) {
             $metanames = [];
             foreach ($data['search']['metacriteria'] as $metacriteria) {
-                $searchopt = &self::getOptions($metacriteria['itemtype']);
+                $searchopt = self::getOptions($metacriteria['itemtype']);
                 if (!isset($metanames[$metacriteria['itemtype']])) {
                     if ($metaitem = getItemForItemtype($metacriteria['itemtype'])) {
                         $metanames[$metacriteria['itemtype']] = $metaitem->getTypeName();
@@ -3429,7 +3429,7 @@ JAVASCRIPT;
 
         global $DB;
 
-        $searchopt  = &self::getOptions($itemtype);
+        $searchopt  = self::getOptions($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return false;
         }
@@ -3595,7 +3595,7 @@ JAVASCRIPT;
         }
 
         $orderby_criteria = [];
-        $searchopt = &self::getOptions($itemtype);
+        $searchopt = self::getOptions($itemtype);
 
         foreach ($sort_fields as $sort_field) {
             $ID = $sort_field['searchopt_id'];
@@ -3850,7 +3850,7 @@ JAVASCRIPT;
     {
         global $DB, $CFG_GLPI;
 
-        $searchopt   = &self::getOptions($itemtype);
+        $searchopt   = self::getOptions($itemtype);
         $table       = $searchopt[$ID]["table"];
         $field       = $searchopt[$ID]["field"];
         $addtable    = "";
@@ -4287,7 +4287,7 @@ JAVASCRIPT;
                 $condition = '';
                 if (!Session::haveRight("ticket", Ticket::READALL)) {
                     $searchopt
-                    = &self::getOptions($itemtype);
+                    = self::getOptions($itemtype);
                     $requester_table
                     = '`glpi_tickets_users_' .
                      self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
@@ -4378,7 +4378,7 @@ JAVASCRIPT;
                // Same structure in addDefaultJoin
                 $condition = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
-                    $searchopt       = &self::getOptions($itemtype);
+                    $searchopt       = self::getOptions($itemtype);
                     if (Session::haveRight("$right", $itemtype::READMY)) {
                         $requester_table      = '`glpi_' . $table . '_users_' .
                                           self::computeComplexJoinID($searchopt[4]['joinparams']
@@ -4542,7 +4542,7 @@ JAVASCRIPT;
 
         global $DB;
 
-        $searchopt = &self::getOptions($itemtype);
+        $searchopt = self::getOptions($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return false;
         }
@@ -5300,7 +5300,7 @@ JAVASCRIPT;
             case 'Ticket':
                // Same structure in addDefaultWhere
                 if (!Session::haveRight("ticket", Ticket::READALL)) {
-                    $searchopt = &self::getOptions($itemtype);
+                    $searchopt = self::getOptions($itemtype);
 
                    // show mine : requester
                     $out .= self::addLeftJoin(
@@ -5434,7 +5434,7 @@ JAVASCRIPT;
                // Same structure in addDefaultWhere
                 $out = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
-                    $searchopt = &self::getOptions($itemtype);
+                    $searchopt = self::getOptions($itemtype);
 
                     if (Session::haveRight("$right", $itemtype::READMY)) {
                        // show mine : requester
@@ -6137,7 +6137,7 @@ JAVASCRIPT;
     public static function displayConfigItem($itemtype, $ID, $data = [])
     {
 
-        $searchopt  = &self::getOptions($itemtype);
+        $searchopt  = self::getOptions($itemtype);
 
         $table      = $searchopt[$ID]["table"];
         $field      = $searchopt[$ID]["field"];
@@ -6268,7 +6268,7 @@ JAVASCRIPT;
     ) {
         global $CFG_GLPI;
 
-        $searchopt = &self::getOptions($itemtype);
+        $searchopt = self::getOptions($itemtype);
         if (
             isset($CFG_GLPI["union_search_type"][$itemtype])
             && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])
@@ -6283,7 +6283,7 @@ JAVASCRIPT;
 
            // Search option may not exists in subtype
            // This is the case for "Inventory number" for a Software listed from ReservationItem search
-            $subtype_so = &self::getOptions($data["TYPE"]);
+            $subtype_so = self::getOptions($data["TYPE"]);
             if (!array_key_exists($ID, $subtype_so)) {
                 return '';
             }
@@ -7643,7 +7643,7 @@ HTML;
     {
         global $CFG_GLPI;
 
-        $options = &self::getOptions($itemtype, $withplugins);
+        $options = self::getOptions($itemtype, $withplugins);
         $todel   = [];
 
         if (
@@ -7714,7 +7714,7 @@ HTML;
     {
 
         $table = $itemtype::getTable();
-        $opts  = &self::getOptions($itemtype);
+        $opts  = self::getOptions($itemtype);
 
         foreach ($opts as $num => $opt) {
             if (
@@ -8033,7 +8033,7 @@ HTML;
     public static function getActionsFor($itemtype, $field_num)
     {
 
-        $searchopt = &self::getOptions($itemtype);
+        $searchopt = self::getOptions($itemtype);
         $actions   = [
             'contains'    => __('contains'),
             'notcontains' => __('not contains'),
