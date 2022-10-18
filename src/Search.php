@@ -6215,8 +6215,7 @@ JAVASCRIPT;
                 if (
                     !in_array($ID, [151, 158, 181, 186])
                     && !empty($data[$NAME][0]['name'])
-                    )
-                    {
+                ) {
                     $out = "";
                     if ($before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity'])) {
                         $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
