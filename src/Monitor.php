@@ -136,14 +136,6 @@ class Monitor extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-
-        $this->deleteChildrenAndRelationsFromDb(
-            [
-                Computer_Item::class,
-                Item_Project::class,
-            ]
-        );
-
         Item_Devices::cleanItemDeviceDBOnItemDelete(
             $this->getType(),
             $this->fields['id'],

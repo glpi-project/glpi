@@ -308,14 +308,9 @@ class Computer extends CommonDBTM
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Certificate_Item::class,
                 Computer_Item::class,
-                Item_SoftwareLicense::class,
-                Item_SoftwareVersion::class,
                 ComputerAntivirus::class,
                 ComputerVirtualMachine::class,
-                Item_Disk::class,
-                Item_Project::class,
             ]
         );
 

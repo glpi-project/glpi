@@ -1097,6 +1097,90 @@ class CommonDBTM extends DbTestCase
         $this->boolean($relation_item->getFromDB($relation_item_2_id))->isTrue();
     }
 
+    public function testCleanRelationDataForPolymorphicRelations()
+    {
+        $this->login();
+
+        $entity_id     = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $computer_1    = getItemByTypeName(\Computer::class, '_test_pc01');
+        $computer_id_1 = $computer_1->getID();
+        $computer_2    = getItemByTypeName(\Computer::class, '_test_pc02');
+        $computer_id_2 = $computer_2->getID();
+        $phone         = getItemByTypeName(\Phone::class, '_test_phone_1');
+        $phone_id      = $phone->getID();
+
+        $device_battery_1 = $this->createItem(
+            \DeviceBattery::class,
+            [
+                'designation'         => 'Battery 1',
+                'entities_id'         => $entity_id,
+            ]
+        );
+        $device_battery_1_id = $device_battery_1->getID();
+        $device_battery_2 = $this->createItem(
+            \DeviceBattery::class,
+            [
+                'designation'         => 'Battery 2',
+                'entities_id'         => $entity_id,
+            ]
+        );
+        $device_battery_2_id = $device_battery_2->getID();
+
+        // Attach both softwares to items
+        $items = [
+            [
+                'itemtype' => \Computer::class,
+                'items_id' => $computer_id_1,
+            ],
+            [
+                'itemtype' => \Computer::class,
+                'items_id' => $computer_id_2,
+            ],
+            [
+                'itemtype' => \Phone::class,
+                'items_id' => $phone_id,
+            ],
+        ];
+        foreach ($items as $item) {
+            foreach ([$device_battery_1_id, $device_battery_2_id] as $device_battery_id) {
+                $this->createItem(
+                    \Item_DeviceBattery::class,
+                    $item + [
+                        'devicebatteries_id' => $device_battery_id,
+                        'entities_id'        => $entity_id,
+                    ]
+                );
+            }
+        }
+
+        // Check that only created relations exists
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_1])
+        )->isEqualTo(2);
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_2])
+        )->isEqualTo(2);
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Phone::class, 'items_id' => $phone_id])
+        )->isEqualTo(2);
+
+        $computer_1->cleanRelationData();
+
+        // Check that only relations to computer were cleaned
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_1])
+        )->isEqualTo(0);
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => null, 'items_id' => 0])
+        )->isEqualTo(2);
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Computer::class, 'items_id' => $computer_id_2])
+        )->isEqualTo(2);
+        $this->integer(
+            countElementsInTable(\Item_DeviceBattery::getTable(), ['itemtype' => \Phone::class, 'items_id' => $phone_id])
+        )->isEqualTo(2);
+    }
+
 
     protected function testCheckTemplateEntityProvider()
     {

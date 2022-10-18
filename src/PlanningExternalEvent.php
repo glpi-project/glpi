@@ -389,16 +389,6 @@ JAVASCRIPT;
         return $values;
     }
 
-    public function cleanDBonPurge()
-    {
-
-        $this->deleteChildrenAndRelationsFromDb(
-            [
-                VObject::class,
-            ]
-        );
-    }
-
     public static function getGroupItemsAsVCalendars($groups_id)
     {
 

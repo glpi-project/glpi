@@ -43,4 +43,13 @@ class OperatingSystem extends CommonDropdown
     {
         return _n('Operating system', 'Operating systems', $nb);
     }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_OperatingSystem::class
+            ]
+        );
+    }
 }

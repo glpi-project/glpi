@@ -103,14 +103,6 @@ class NetworkEquipment extends CommonDBTM
      **/
     public function cleanDBonPurge()
     {
-
-        $this->deleteChildrenAndRelationsFromDb(
-            [
-                Certificate_Item::class,
-                Item_Project::class,
-            ]
-        );
-
         Item_Devices::cleanItemDeviceDBOnItemDelete(
             $this->getType(),
             $this->fields['id'],

@@ -540,6 +540,14 @@ class NetworkPort extends CommonDBChild
                 NetworkName::class,
                 NetworkPort_NetworkPort::class,
                 NetworkPort_Vlan::class,
+                NetworkPortAggregate::class,
+                NetworkPortAlias::class,
+                NetworkPortDialup::class,
+                NetworkPortEthernet::class,
+                NetworkPortFiberchannel::class,
+                NetworkPortLocal::class,
+                NetworkPortMetrics::class,
+                NetworkPortWifi::class,
             ]
         );
     }

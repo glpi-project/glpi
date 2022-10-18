@@ -165,7 +165,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             [
                 ProjectTask_Ticket::class,
                 ProjectTaskTeam::class,
-                VObject::class,
                 ProjectTaskLink::class,
             ]
         );

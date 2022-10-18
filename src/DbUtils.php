@@ -150,6 +150,7 @@ final class DbUtils
         $rules = [
          //'plural'           => 'singular'
             'pdus$'              => 'pdu', // special case for acronym pdu (to avoid us rule)
+            'Metrics$'           => 'Metrics',// Special case
             'metrics$'           => 'metrics',// Special case
             'ches$'              => 'ch',
             'ch$'                => 'ch',
@@ -2004,7 +2005,186 @@ final class DbUtils
         if (count($plug_rel) > 0) {
             $RELATION = array_merge_recursive($RELATION, $plug_rel);
         }
-        return $RELATION;
+
+        $normalized_relations = [];
+        foreach ($RELATION as $source_table => $table_relations) {
+            if ($source_table === '_virtual_device') {
+                // '_virtual_device' special case, not normalized for now.
+                // FIXME Add some checks on it
+                $normalized_relations['_virtual_device'] = $table_relations;
+                continue;
+            }
+
+            $source_itemtype = getItemTypeForTable($source_table);
+            if (!is_a($source_itemtype, CommonDBTM::class, true)) {
+                trigger_error(
+                    sprintf(
+                        'Invalid relations declared for "%s" table. Table does not correspond to a known itemtype.',
+                        $source_table
+                    ),
+                    E_USER_WARNING
+                );
+                continue;
+            }
+
+            $normalized_relations[$source_table] = [];
+
+            foreach ($table_relations as $target_table_key => $target_fields) {
+                $normalized_relations[$source_table][$target_table_key] = [];
+
+                $target_table = preg_replace('/^_/', '', $target_table_key);
+
+                // Harmonize relations specs.
+                // Can be:
+                // 1 - a string representing a unique forign key relation: e.g. 'users_id'
+                // 2 - an array representing a unique polymorphic relation: e.g. ['itemtype', 'items_id']
+                // 3 - an array containing one element per relation: e.g. ['users_id', 'users_id_tech', ['itemtype', 'items_id']]
+                //
+                // Result should always be an array containing one element per relation.
+                if (
+                    !is_array($target_fields)
+                    || (
+                        // 'itemtype'/'items_id' (polymorphic relationship)
+                        count($target_fields) === 2
+                        && count(array_filter($target_fields, 'is_array')) === 0 // ensure array elements are only strings
+                        && count(preg_grep('/^itemtype/', $target_fields)) === 1
+                        && count(preg_grep('/^items_id/', $target_fields)) === 1
+                    )
+                    || (
+                        // glpi_ipaddresses relationship that does not respect naming conventions
+                        count($target_fields) === 2
+                        && count(array_filter($target_fields, 'is_array')) === 0 // ensure array elements are only strings
+                        && in_array('mainitemtype', $target_fields)
+                        && in_array('mainitems_id', $target_fields)
+                    )
+                ) {
+                    $target_fields = [$target_fields];
+                }
+
+                $target_itemtype = getItemTypeForTable($target_table);
+                if (!is_a($target_itemtype, CommonDBTM::class, true)) {
+                    trigger_error(
+                        sprintf(
+                            'Invalid relations declared for "%s" table. Target table "%s" does not correspond to a known itemtype.',
+                            $source_table,
+                            $target_table
+                        ),
+                        E_USER_WARNING
+                    );
+                    continue;
+                }
+
+                foreach ($target_fields as $target_field) {
+                    if (is_string($target_field)) {
+                        if (!str_starts_with($target_table_key, '_') && $target_itemtype::getIndexName() === $target_field) {
+                            // Relation is declared on ID field of the item.
+                            // This is an unexpected case that we cannot support.
+                            // Indeed, we would have to pass the current ID value (used to load the item before saving it)
+                            // and the new field value (used to update the value) in the same array key. This is not possible.
+                            trigger_error(
+                                sprintf(
+                                    'Relation between "%s" and "%s" table based on "%s" field cannot be handled automatically as "%s" also corresponds to index field of the target table.',
+                                    $source_table,
+                                    $target_table,
+                                    $target_field,
+                                    $target_field
+                                ),
+                                E_USER_WARNING
+                            );
+                            continue;
+                        }
+
+                        if (
+                            in_array($source_table, ['glpi_authldaps', 'glpi_authmails'])
+                            && $target_table === 'glpi_users'
+                            && $target_field === 'auths_id'
+                        ) {
+                            // Ignore this specific case.
+                            // FIXME `auths_id` should be replaced by a polymorphic `itemtype_auth`/`items_id_auth` relation.
+                            continue;
+                        }
+                        if (
+                            $source_table === 'glpi_requesttypes'
+                            && $target_table === 'glpi_users'
+                            && $target_field === 'default_requesttypes_id'
+                        ) {
+                            // Ignore this specific case.
+                            // FIXME `default_requesttypes_id` should be renamed to `requesttypes_id_default` to respect naming conventions.
+                            continue;
+                        }
+                        if (
+                            $source_table === 'glpi_knowbaseitems_comments'
+                            && $target_table === 'glpi_knowbaseitems_comments'
+                            && $target_field === 'parent_comment_id'
+                        ) {
+                            // Ignore this specific case.
+                            // FIXME `parent_comment_id` should be renamed to `knowbaseitems_comments_id_parent` to respect naming conventions.
+                            continue;
+                        }
+
+                        $target_field_itemtype = isForeignKeyField($target_field)
+                            ? getItemtypeForForeignKeyField($target_field)
+                            : null;
+                        if (!is_a($target_field_itemtype, CommonDBTM::class, true)) {
+                            // Relation is declared in a field that does not seems to be a foreign key.
+                            trigger_error(
+                                sprintf(
+                                    'Invalid relations declared between "%s" and "%s" table. Target field "%s" is not a foreign key field.',
+                                    $source_table,
+                                    $target_table,
+                                    $target_field
+                                ),
+                                E_USER_WARNING
+                            );
+                            continue;
+                        }
+
+                        if ($target_field_itemtype !== $source_itemtype) {
+                            // Relation is made on a field that is not a foreign key of the source object.
+                            trigger_error(
+                                sprintf(
+                                    'Invalid relations declared between "%s" and "%s" table. Target field "%s" is not a foreign key field of "%s".',
+                                    $source_table,
+                                    $target_table,
+                                    $target_field,
+                                    $source_itemtype
+                                ),
+                                E_USER_WARNING
+                            );
+                            continue;
+                        }
+                    } else {
+                        $is_array = is_array($target_field);
+                        $is_polymorphic_relation = $is_array
+                            && count($target_field) === 2
+                            && count(preg_grep('/^itemtype/', $target_field)) === 1
+                            && count(preg_grep('/^items_id/', $target_field)) === 1;
+                        $is_ipaddress_relation = $is_array
+                            && $target_table === 'glpi_ipaddresses'
+                            && count($target_field) === 2
+                            && in_array('mainitemtype', $target_field)
+                            && in_array('mainitems_id', $target_field);
+                        if (!$is_array && !$is_polymorphic_relation && !$is_ipaddress_relation) {
+                            trigger_error(
+                                sprintf(
+                                    'Invalid relations declared between "%s" and "%s" table. %s is not valid a valid relation.',
+                                    $source_table,
+                                    $target_table,
+                                    json_encode($target_field)
+                                ),
+                                E_USER_WARNING
+                            );
+                            continue;
+                        }
+                    }
+
+                    // If code reach this point, then no exception case was detected.
+                    // Relation si so preserved.
+                    $normalized_relations[$source_table][$target_table_key][] = $target_field;
+                }
+            }
+        }
+        return $normalized_relations;
     }
 
     /**

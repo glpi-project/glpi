@@ -286,4 +286,13 @@ class PendingReason extends CommonDropdown
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                PendingReason_Item::class,
+            ]
+        );
+    }
 }

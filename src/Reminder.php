@@ -175,7 +175,6 @@ class Reminder extends CommonDBVisible implements
                 PlanningRecall::class,
                 Profile_Reminder::class,
                 Reminder_User::class,
-                VObject::class,
                 ReminderTranslation::class,
             ]
         );
