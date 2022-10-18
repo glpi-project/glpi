@@ -331,10 +331,16 @@
                      {% endif %}
 
                      {% if item.isField('date_expiration') %}
-                        {% if item_type == 'Certificate' or item_type == 'ComputerAntivirus' %}
+                        {% if item_type == 'Certificate' %}
                            {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                               'helper': __('Empty for infinite'),
-                              'checkIsExpired': true
+                              'checkIsExpired': false,
+                              'expiration_class' : params.expiration_class
+                           }|merge(field_options)) }}
+                        {% elseif item_type == 'ComputerAntivirus' %}
+                           {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                              'helper': __('Empty for infinite'),
+                              'checkIsExpired': true,
                            }|merge(field_options)) }}
                         {% else %}
                            {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
