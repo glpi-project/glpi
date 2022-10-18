@@ -87,14 +87,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                                 ? editor.dom.select('img[data-upload_id="' + uploaded_image.upload_id + '"]')
                                 : [];
                             if (matching_image.length > 0) {
-                                editor.dom.setAttribs(
-                                    matching_image,
-                                    {
-                                        id: tag_data.tag.replace(/#/g, ''),
-                                        // Ensure URL is a blob, to not pollute DOM with base64 data URL
-                                        src: URL.createObjectURL(file),
-                                    }
-                                );
+                                editor.dom.setAttrib(matching_image, 'id', tag_data.tag.replace(/#/g, ''));
                             } else if(Object.prototype.hasOwnProperty.call(insertIntoEditor, file.name) && insertIntoEditor[file.name]) {
                                 // Legacy behaviour
                                 // FIXME deprecate this in GLPI 10.1.
@@ -396,6 +389,22 @@ if (typeof tinyMCE != 'undefined') {
 
             // Update HTML to paste to include "data-upload_id" attributes on images.
             event.content = fragment.html();
+        });
+
+        $(editor.formElement).on('submit', function() {
+            // Remove base64 src from images that were handled by upload process.
+            // This will prevent sending too many data on server and will also prevent issues with
+            // regex that are not correctly handling huge strings (see #8044).
+            var fragment = $('<div></div>');
+            fragment.append($(editor.targetElm).val());
+            fragment.find('img').each(function() {
+                const image = $(this);
+                const upload_id = image.attr('data-upload_id');
+                if (upload_id !== undefined) {
+                    image.removeAttr('src');
+                }
+            });
+            $(editor.targetElm).val(fragment.html());
         });
     });
 }
