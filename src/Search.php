@@ -6226,6 +6226,10 @@ JAVASCRIPT;
                         } elseif ($data[$NAME][0]['name'] >= $before) {
                             $out = " class=\"shadow-none\"  style=\"background-color: #a1cf66\" ";
                         }
+                    } else {
+                        if ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime']) {
+                            $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
+                        }
                     }
                 }
                 break;
@@ -6247,7 +6251,6 @@ JAVASCRIPT;
                 break;
 
             case "glpi_domains.date_expiration":
-            case "glpi_certificates.date_expiration":
                 if (
                     !empty($data[$NAME][0]['name'])
                     && ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime'])
