@@ -2328,7 +2328,7 @@ class Search
             }
             if ($key === 'ticket_types' && $item instanceof CommonITILObject) {
                 // Linked are filtered by CommonITILObject::getAllTypesForHelpdesk()
-                $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk([Entity::class])));
+                $linked = array_merge($linked, array_keys($item::getAllTypesForHelpdesk()));
                 continue;
             }
 
@@ -2336,11 +2336,16 @@ class Search
                 if ($itemtype === $config_itemtype::getType()) {
                    // List is related to source itemtype, all types of list are so linked
                     $linked = array_merge($linked, $values);
-                } else if (in_array($itemtype, $values)) {
+                } elseif (in_array($itemtype, $values)) {
                    // Source itemtype is inside list, type corresponding to list is so linked
                     $linked[] = $config_itemtype::getType();
                 }
             }
+        }
+
+        // Add entity meta is needed
+        if ($item->isField('entities_id') && !($item instanceof Entity)) {
+            $linked[] = Entity::getType();
         }
 
         return array_unique($linked);

@@ -4873,10 +4873,8 @@ abstract class CommonITILObject extends CommonDBTM
 
     /**
      * Get all available types to which an ITIL object can be assigned
-     *
-     * @param array $extra Extra items to add (must be done here to be properly sorted)
      **/
-    public static function getAllTypesForHelpdesk(array $extra = [])
+    public static function getAllTypesForHelpdesk()
     {
         global $PLUGIN_HOOKS, $CFG_GLPI;
 
@@ -4906,16 +4904,6 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
         }
-
-        // Add specified extra types
-        foreach ($extra as $itemtype) {
-            if (!is_a($itemtype, CommonDBTM::class, true)) {
-                // Skip invalid vaues
-                continue;
-            }
-            $types[$itemtype::getType()] = $itemtype::getTypeName(1);
-        }
-
         asort($types); // core type first... asort could be better ?
 
        // Drop not available plugins
