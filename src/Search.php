@@ -2343,7 +2343,7 @@ class Search
             }
         }
 
-        // Add entity meta is needed
+        // Add entity meta if needed
         if ($item->isField('entities_id') && !($item instanceof Entity)) {
             $linked[] = Entity::getType();
         }
