@@ -1863,7 +1863,6 @@ class Session
      */
     public static function cleanOnLogout()
     {
-        //@session_start();
         Session::destroy();
 
         //Remove cookie to allow new login
