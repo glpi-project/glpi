@@ -1,0 +1,18 @@
+--- templates/generic_show_form.html.twig
++++ templates/generic_show_form.html.twig
+@@ -333,12 +333,13 @@
+                         {% if item_type == 'Certificate' %}
+                            {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                               'helper': __('Empty for infinite'),
+-                              'checkIsExpired': true
++                              'checkIsExpired': true,
++                              'expiration_class': params.expiration_class
+                            }) }}
+                         {% else %}
+                            {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                               'helper': __('Empty for infinite'),
+-                              'checkIsExpired': true
++                              'checkIsExpired': false
+                            }) }}
+                         {% endif %}
+                      {% endif %}

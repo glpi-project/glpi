@@ -283,11 +283,7 @@
          {% set class = 'warn' %}
       {% endif %}
    {% else %}
-      {% if options.expiration_class is defined %}
-         {% set class = options.expiration_class %}
-      {% else %}
-         {% set class = '' %}
-      {% endif %}
+      {% set class = '' %}
    {% endif %}
 
    <div class="input-group flex-grow-1 flatpickr" id="{{ options.id }}">
