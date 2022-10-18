@@ -44,7 +44,7 @@ if (
     $CFG_GLPI["ssovariables_id"] > 0
     && strlen($CFG_GLPI['ssologout_url']) > 0
 ) {
-    Session::logOut();
+    Session::cleanOnLogout();
     Html::redirect($CFG_GLPI["ssologout_url"]);
 }
 
@@ -62,7 +62,6 @@ if (
         false
     );
     phpCAS::setServerLogoutURL(strval($CFG_GLPI["cas_logout"]));
-    Session::logOut();
     phpCAS::logout();
 }
 
@@ -84,7 +83,7 @@ if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
     $toADD .= "noAUTO=1";
 }
 
-Session::logOut();
+Session::cleanOnLogout();
 
 // Redirect to the login-page
 Html::redirect($CFG_GLPI["root_doc"] . "/index.php" . $toADD);

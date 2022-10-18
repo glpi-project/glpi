@@ -1861,7 +1861,7 @@ class Session
      *
      * @return int
      */
-    public static function logOut()
+    public static function cleanOnLogout()
     {
         //@session_start();
         Session::destroy();
