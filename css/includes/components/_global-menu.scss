@@ -70,6 +70,8 @@
         border: 0;
         font-size: 1em;
         font-weight: 400;
+        margin-left: 1.5rem !important;
+        padding: 3px;
     }
 }
 
@@ -86,6 +88,7 @@
     #navbar-menu {
         .nav-item {
             .nav-link {
+                padding: 0 1.5rem !important;
                 color: rgba($color: $mainmenu-fg, $alpha: 80%);
                 border-left: 3px solid transparent;
                 border-radius: unset;
