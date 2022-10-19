@@ -44,6 +44,7 @@ use CommonTreeDropdown;
 use CommonDevice;
 use Config;
 use DBConnection;
+use Glpi\Search\SearchOption;
 use Group;
 use Group_Ticket;
 use ITILCategory;
@@ -1624,7 +1625,7 @@ class Provider
 
     private static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {
-        $data = Search::getOptions(getItemTypeForTable($table), true);
+        $data = SearchOption::getOptionsForItemtype(getItemTypeForTable($table), true);
         $sort = [];
         foreach ($data as $ref => $opt) {
             if (isset($opt['field'])) {

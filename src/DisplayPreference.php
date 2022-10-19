@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
+
 class DisplayPreference extends CommonDBTM
 {
    // From CommonGLPI
@@ -176,7 +178,7 @@ class DisplayPreference extends CommonDBTM
             }
         } else {
            // No items in the global config
-            $searchopt = Search::getOptions($input["itemtype"]);
+            $searchopt = SearchOption::getOptionsForItemtype($input["itemtype"]);
             if (count($searchopt) > 1) {
                 $done = false;
 

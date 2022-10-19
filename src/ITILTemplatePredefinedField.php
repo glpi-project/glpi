@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
+
 /**
  * ITILTemplatePredefinedField Class
  *
@@ -256,7 +258,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         $fields        = array_diff_key($fields, self::getExcludedFields());
 
         $itil_class    = static::$itiltype;
-        $searchOption  = Search::getOptions($itil_class);
+        $searchOption  = SearchOption::getOptionsForItemtype($itil_class);
         $itil_object   = new $itil_class();
         $rand          = mt_rand();
 

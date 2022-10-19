@@ -39,6 +39,7 @@ use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -4110,7 +4111,7 @@ class CommonDBTM extends CommonGLPI
     {
 
         if (!$this->searchopt) {
-            $this->searchopt = Search::getOptions($this->getType());
+            $this->searchopt = SearchOption::getOptionsForItemtype(static::getType());
         }
 
         return $this->searchopt;

@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -126,7 +127,7 @@ class Log extends CommonDBTM
         }
        // needed to have  $SEARCHOPTION
         list($real_type, $real_id) = $item->getLogTypeID();
-        $searchopt                 = Search::getOptions($real_type);
+        $searchopt                 = SearchOption::getOptionsForItemtype($real_type);
         if (!is_array($searchopt)) {
             return false;
         }
@@ -356,7 +357,7 @@ class Log extends CommonDBTM
         $items_id  = $item->getField('id');
         $itemtable = $item->getTable();
 
-        $SEARCHOPTION = Search::getOptions($itemtype);
+        $SEARCHOPTION = SearchOption::getOptionsForItemtype($itemtype);
 
         $query = [
             'FROM'   => self::getTable(),
@@ -952,7 +953,8 @@ class Log extends CommonDBTM
                 }
             } else {
                // It's not an internal device
-                foreach (Search::getOptions($itemtype) as $search_opt_key => $search_opt_val) {
+                $opts = SearchOption::getOptionsForItemtype($itemtype);
+                foreach ($opts as $search_opt_key => $search_opt_val) {
                     if ($search_opt_key == $data["id_search_option"]) {
                         $key = 'id_search_option::' . $data['id_search_option'] . ';';
                         $value = $search_opt_val["name"];

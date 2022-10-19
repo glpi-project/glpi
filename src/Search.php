@@ -769,7 +769,8 @@ class Search
      **/
     public static function &getOptions($itemtype, $withplugins = true)
     {
-        return SearchOption::getOptionsForItemtype($itemtype, $withplugins);
+        $optionsForItemtype = SearchOption::getOptionsForItemtype($itemtype, $withplugins);
+        return $optionsForItemtype;
     }
 
     /**

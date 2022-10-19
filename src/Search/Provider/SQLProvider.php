@@ -137,7 +137,7 @@ final class SQLProvider implements SearchProviderInterface
     {
         global $DB, $CFG_GLPI;
 
-        $searchopt   = &SearchOption::getOptionsForItemtype($itemtype);
+        $searchopt   = SearchOption::getOptionsForItemtype($itemtype);
         $table       = $searchopt[$ID]["table"];
         $field       = $searchopt[$ID]["field"];
         $addtable    = "";
@@ -578,7 +578,7 @@ final class SQLProvider implements SearchProviderInterface
                 $condition = '';
                 if (!Session::haveRight("ticket", \Ticket::READALL)) {
                     $searchopt
-                        = &SearchOption::getOptionsForItemtype($itemtype);
+                        = SearchOption::getOptionsForItemtype($itemtype);
                     $requester_table
                         = '`glpi_tickets_users_' .
                         self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
@@ -671,7 +671,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Same structure in addDefaultJoin
                 $condition = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
-                    $searchopt       = &SearchOption::getOptionsForItemtype($itemtype);
+                    $searchopt       = SearchOption::getOptionsForItemtype($itemtype);
                     if (Session::haveRight("$right", $itemtype::READMY)) {
                         $requester_table      = '`glpi_' . $table . '_users_' .
                             self::computeComplexJoinID($searchopt[4]['joinparams']
@@ -835,7 +835,7 @@ final class SQLProvider implements SearchProviderInterface
 
         global $DB;
 
-        $searchopt = &SearchOption::getOptionsForItemtype($itemtype);
+        $searchopt = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return false;
         }
@@ -1623,7 +1623,7 @@ final class SQLProvider implements SearchProviderInterface
             case 'Ticket':
                 // Same structure in addDefaultWhere
                 if (!Session::haveRight("ticket", \Ticket::READALL)) {
-                    $searchopt = &SearchOption::getOptionsForItemtype($itemtype);
+                    $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
                     // show mine : requester
                     $out .= self::addLeftJoin(
@@ -1757,7 +1757,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Same structure in addDefaultWhere
                 $out = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
-                    $searchopt = &SearchOption::getOptionsForItemtype($itemtype);
+                    $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
                     if (Session::haveRight("$right", $itemtype::READMY)) {
                         // show mine : requester
@@ -2536,7 +2536,7 @@ final class SQLProvider implements SearchProviderInterface
 
         global $DB;
 
-        $searchopt  = &SearchOption::getOptionsForItemtype($itemtype);
+        $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return false;
         }
@@ -2702,7 +2702,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         $orderby_criteria = [];
-        $searchopt = &SearchOption::getOptionsForItemtype($itemtype);
+        $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
         foreach ($sort_fields as $sort_field) {
             $ID = $sort_field['searchopt_id'];
@@ -2873,7 +2873,7 @@ final class SQLProvider implements SearchProviderInterface
         $data['sql']['count']  = [];
         $data['sql']['search'] = '';
 
-        $searchopt        = &SearchOption::getOptionsForItemtype($data['itemtype']);
+        $searchopt        = SearchOption::getOptionsForItemtype($data['itemtype']);
 
         $blacklist_tables = [];
         $orig_table = SearchEngine::getOrigTableName($data['itemtype']);
@@ -3334,7 +3334,7 @@ final class SQLProvider implements SearchProviderInterface
             ) {
                 $itemtype = $criterion['itemtype'];
                 $meta = true;
-                $meta_searchopt = &SearchOption::getOptionsForItemtype($itemtype);
+                $meta_searchopt = SearchOption::getOptionsForItemtype($itemtype);
             } else {
                 // Not a meta, use the same search option everywhere
                 $meta_searchopt = $searchopt;
@@ -3543,7 +3543,7 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $m_itemtype = $criterion['itemtype'];
-            $metaopt = &SearchOption::getOptionsForItemtype($m_itemtype);
+            $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
             //add toview for meta criterion
@@ -3670,7 +3670,7 @@ final class SQLProvider implements SearchProviderInterface
             // Get columns
             $data['data']['cols'] = [];
 
-            $searchopt = &SearchOption::getOptionsForItemtype($data['itemtype']);
+            $searchopt = SearchOption::getOptionsForItemtype($data['itemtype']);
 
             foreach ($data['toview'] as $opt_id) {
                 $data['data']['cols'][] = [
@@ -3684,7 +3684,7 @@ final class SQLProvider implements SearchProviderInterface
 
             // manage toview column for criteria with meta flag
             foreach ($data['meta_toview'] as $m_itemtype => $toview) {
-                $searchopt = &SearchOption::getOptionsForItemtype($m_itemtype);
+                $searchopt = SearchOption::getOptionsForItemtype($m_itemtype);
                 foreach ($toview as $opt_id) {
                     $data['data']['cols'][] = [
                         'itemtype'  => $m_itemtype,
@@ -3706,7 +3706,7 @@ final class SQLProvider implements SearchProviderInterface
                         && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)
                     ) {
                         if (!isset($already_printed[$metacriteria['itemtype'] . $metacriteria['field']])) {
-                            $searchopt = &SearchOption::getOptionsForItemtype($metacriteria['itemtype']);
+                            $searchopt = SearchOption::getOptionsForItemtype($metacriteria['itemtype']);
 
                             $data['data']['cols'][] = [
                                 'itemtype'  => $metacriteria['itemtype'],
@@ -4003,7 +4003,7 @@ final class SQLProvider implements SearchProviderInterface
     ) {
         global $CFG_GLPI;
 
-        $searchopt = &SearchOption::getOptionsForItemtype($itemtype);
+        $searchopt = SearchOption::getOptionsForItemtype($itemtype);
         if (
             isset($CFG_GLPI["union_search_type"][$itemtype])
             && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])
@@ -4018,7 +4018,7 @@ final class SQLProvider implements SearchProviderInterface
 
             // Search option may not exists in subtype
             // This is the case for "Inventory number" for a Software listed from ReservationItem search
-            $subtype_so = &SearchOption::getOptionsForItemtype($data["TYPE"]);
+            $subtype_so = SearchOption::getOptionsForItemtype($data["TYPE"]);
             if (!array_key_exists($ID, $subtype_so)) {
                 return '';
             }
