@@ -35,6 +35,7 @@
 
 namespace Glpi\Search\Input;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
@@ -857,7 +858,6 @@ JAVASCRIPT;
         $p           = $request['p'];
         $randrow     = mt_rand();
         $rowid       = 'searchrow' . $request['itemtype'] . $randrow;
-        $addclass    = $num == 0 ? ' headerRow' : '';
         $prefix      = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
 
@@ -867,37 +867,13 @@ JAVASCRIPT;
             ];
         }
 
-        echo "<div class='list-group-item p-2 border-0 normalcriteria$addclass' id='$rowid'>";
-        echo "<div class='row g-1'>";
-        echo "<div class='col-auto'>";
-        echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'
-                    data-bs-toggle='tooltip' data-bs-placement='left'
-                    title=\"" . __s('Delete a rule') . "\"
-      >
-         <i class='ti ti-square-minus' alt='-'></i>
-      </button>";
-        echo "</div>";
-        echo "<div class='col-auto'>";
-        \Dropdown::showFromArray("criteria{$prefix}[$num][link]", SearchEngine::getLogicalOperators(), [
-            'value' => isset($criteria["link"]) ? $criteria["link"] : '',
-        ]);
-        echo "</div>";
-
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
-        array_push($parents_num, $num);
-        $params = [
-            'mainform'    => false,
-            'prefix_crit' => "{$prefix}[$num][criteria]",
+        TemplateRenderer::getInstance()->display('components/search/query_builder/criteria_group.html.twig', [
+            'num' => $num,
+            'row_id' => $rowid,
+            'prefix' => $prefix,
+            'criteria' => $criteria,
             'parents_num' => $parents_num,
-            'criteria'    => $criteria['criteria'],
-        ];
-
-        echo "<div class='col-auto'>";
-        self::showGenericSearch($request['itemtype'], $params);
-        echo "</div>";
-
-        echo "</div>";//.row
-        echo "</div>";//.list-group-item
+        ]);
     }
 
     /**
