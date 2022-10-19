@@ -524,7 +524,7 @@ class ValidatorSubstitute extends DbTestCase
                 'return' => false,
                 'rows' => [
                 ],
-                'messages' => ['Cannot add a user as substitute of himself.'],
+                'messages' => ['A user cannot be their own substitute.'],
             ],
         ];
     }
