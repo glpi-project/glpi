@@ -39,9 +39,6 @@ use GLPITestCase;
 
 class FixHtmlEncodingCommand extends GLPITestCase
 {
-
-
-
     public function providerDoubleEncoding()
     {
         yield [
