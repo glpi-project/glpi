@@ -98,6 +98,12 @@ abstract class CommonITILObject extends CommonDBTM
     const TIMELINE_ORDER_NATURAL = 'natural';
     const TIMELINE_ORDER_REVERSE = 'reverse';
 
+    /**
+     * Can be set to true to allow specific code to run without taking into account
+     * the current user rights (e.g. assigning a group from a self-service session, ...)
+     */
+    protected bool $disable_rights_checks = false;
+
     abstract public static function getTaskClass();
 
     public function post_getFromDB()
@@ -674,6 +680,10 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function canAdminActors()
     {
+        if ($this->disable_rights_checks) {
+            return true;
+        }
+
         if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1) {
             return false;
         }
@@ -688,6 +698,10 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function canAssign()
     {
+        if ($this->disable_rights_checks) {
+            return true;
+        }
+
         if (
             isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
             || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
@@ -705,6 +719,10 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function canAssignToMe()
     {
+        if ($this->disable_rights_checks) {
+            return true;
+        }
+
         if (
             isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
             || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
@@ -724,6 +742,9 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function canApprove()
     {
+        if ($this->disable_rights_checks) {
+            return true;
+        }
 
         return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
@@ -740,6 +761,10 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function canAddFollowups()
     {
+        if ($this->disable_rights_checks) {
+            return true;
+        }
+
         return (
          (
             Session::haveRight("followup", ITILFollowup::ADDMYTICKET)
@@ -859,6 +884,9 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function canSolve()
     {
+        if ($this->disable_rights_checks) {
+            return true;
+        }
 
         return ((Session::haveRight(static::$rightname, UPDATE)
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -876,6 +904,9 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function maySolve()
     {
+        if ($this->disable_rights_checks) {
+            return true;
+        }
 
         return ((Session::haveRight(static::$rightname, UPDATE)
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -1350,6 +1381,10 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function handleTemplateFields(array $input)
     {
+        if ($this->disable_rights_checks) {
+            return $input;
+        }
+
        //// check mandatory fields
        // First get ticket template associated : entity and type/category
         if (isset($input['entities_id'])) {
@@ -4292,7 +4327,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'time_to_own':
                 return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
             AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND 
+            AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND
                  ' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
                  OR (' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NULL AND
                  ' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . '
@@ -9218,5 +9253,15 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         return $input;
+    }
+
+    public function disableRightsChecks(): void
+    {
+        $this->disable_rights_checks = true;
+    }
+
+    public function enableRightsChecks(): void
+    {
+        $this->disable_rights_checks = false;
     }
 }
