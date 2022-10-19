@@ -77,6 +77,7 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`
 - `Toolbox::seems_utf8()`
+- `Search::getOptions()` no longer returns a reference
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
