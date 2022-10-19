@@ -37,6 +37,7 @@ namespace Glpi\Console\Database;
 
 use CommonDBTM;
 use ITILFollowup;
+use Ticket;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -300,7 +301,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
 
         $new_value = $this->doubleEncoding($new_value);
 
-        if ($item::getType() == ITILFollowup::getType() && $field == 'content') {
+        if (in_array($item::getType(), [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
             $new_value = $this->emailsInOutlookGenetaredContent($new_value);
         }
 
