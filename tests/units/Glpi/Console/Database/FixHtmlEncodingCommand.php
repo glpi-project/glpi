@@ -59,7 +59,7 @@ class FixHtmlEncodingCommand extends GLPITestCase
         $this->string($output)->isEqualTo($expected);
     }
 
-    public function providerEmailsInOutlookGenetaredContent()
+    public function providerFixEmailHeadersEncoding()
     {
         yield [
             'input' => '&amp;lt;helpdesk@some-domain.com&amp;gt;',
@@ -73,16 +73,16 @@ class FixHtmlEncodingCommand extends GLPITestCase
     }
 
     /**
-     * @DataProvider providerEmailsInOutlookGenetaredContent
+     * @DataProvider providerFixEmailHeadersEncoding
      *
      * @param string $input
      * @param string $expected
      * @return void
      */
-    public function testEmailsInOutlookGenetaredContent($input, $expected)
+    public function testFixEmailHeadersEncoding($input, $expected)
     {
         $instance = $this->newTestedInstance();
-        $output = $this->callPrivateMethod($instance, 'emailsInOutlookGenetaredContent', $input);
+        $output = $this->callPrivateMethod($instance, 'fixEmailHeadersEncoding', $input);
         $this->string($output)->isEqualTo($expected);
     }
 }

@@ -302,7 +302,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
         $new_value = $this->doubleEncoding($new_value);
 
         if (in_array($item::getType(), [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
-            $new_value = $this->emailsInOutlookGenetaredContent($new_value);
+            $new_value = $this->fixEmailHeadersEncoding($new_value);
         }
 
         return $new_value;
@@ -339,7 +339,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
      * @param string $input
      * @return string
      */
-    private function emailsInOutlookGenetaredContent(string $input)
+    private function fixEmailHeadersEncoding(string $input)
     {
         $output = $input;
 
