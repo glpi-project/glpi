@@ -1012,7 +1012,7 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<div class='navigationheader justify-content-sm-between'>";
 
             // First set of header pagination actions, displayed on the left side of the page
-            echo "<div>";
+            echo "<div class='left-icons'>";
 
             if (!$glpilisttitle) {
                 $glpilisttitle = __s('List');
@@ -1083,7 +1083,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
 
             // Second set of header pagination actions, displayed on the right side of the page
-            echo "<div>";
+            echo "<div class='right-icons>";
 
             echo "<span class='py-1 px-3 " . ($current !== false ? '' : 'bs-invisible') . "'>" . ($current + 1) . "/" . count($glpilistitems ?? []) . "</span>";
 
