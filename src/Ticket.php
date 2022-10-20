@@ -4241,7 +4241,7 @@ JAVASCRIPT;
 
         $JOINS = [];
         $WHERE = [
-            'is_deleted' => 0
+            'glpi_tickets.is_deleted' => 0
         ];
         $search_users_id = [
             'glpi_tickets_users.users_id' => Session::getLoginUserID(),
@@ -4313,7 +4313,7 @@ JAVASCRIPT;
                             'glpi_ticketvalidations'   => 'tickets_id',
                             'glpi_tickets'             => 'id'
                         ]
-                    ]
+                    ],
                 ];
                 $WHERE = array_merge(
                     $WHERE,
@@ -4622,9 +4622,21 @@ JAVASCRIPT;
                         $options['criteria'][0]['value']      = CommonITILValidation::WAITING;
                         $options['criteria'][0]['link']       = 'AND';
 
-                        $options['criteria'][1]['field']      = 59; // validation aprobator
-                        $options['criteria'][1]['searchtype'] = 'equals';
-                        $options['criteria'][1]['value']      = Session::getLoginUserID();
+                        $options['criteria'][1]['criteria'][0]['field']      = 59; // validation aprobator user
+                        $options['criteria'][1]['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][1]['criteria'][0]['value']      = 'myself'; // Resolved as current user's ID
+                        $options['criteria'][1]['criteria'][1]['field']      = 195; // validation aprobator substitute user
+                        $options['criteria'][1]['criteria'][1]['searchtype'] = 'equals';
+                        $options['criteria'][1]['criteria'][1]['value']      = 'myself'; // Resolved as current user's ID
+                        $options['criteria'][1]['criteria'][1]['link']       = 'OR';
+                        $options['criteria'][1]['criteria'][2]['field']      = 196; // validation aprobator group
+                        $options['criteria'][1]['criteria'][2]['searchtype'] = 'equals';
+                        $options['criteria'][1]['criteria'][2]['value']      = 'mygroups'; // Resolved as groups the current user belongs to
+                        $options['criteria'][1]['criteria'][2]['link']       = 'OR';
+                        $options['criteria'][1]['criteria'][3]['field']      = 197; // validation aprobator group
+                        $options['criteria'][1]['criteria'][3]['searchtype'] = 'equals';
+                        $options['criteria'][1]['criteria'][3]['value']      = 'myself'; // Resolved as groups the current user belongs to
+                        $options['criteria'][1]['criteria'][3]['link']       = 'OR';
                         $options['criteria'][1]['link']       = 'AND';
 
                         $options['criteria'][2]['field']      = 12; // validation aprobator
@@ -5060,6 +5072,18 @@ JAVASCRIPT;
             $opt['criteria'][1]['field']      = 59; // validation aprobator
             $opt['criteria'][1]['searchtype'] = 'equals';
             $opt['criteria'][1]['value']      = Session::getLoginUserID();
+            $opt['criteria'][1]['link']       = 'AND';
+            $opt['criteria'][1]['criteria'][1]['field']      = 195; // validation aprobator substitute user
+            $opt['criteria'][1]['criteria'][1]['searchtype'] = 'equals';
+            $opt['criteria'][1]['criteria'][1]['value']      = 'myself'; // Resolved as current user's ID
+            $opt['criteria'][1]['criteria'][2]['field']      = 196; // validation aprobator group
+            $opt['criteria'][1]['criteria'][2]['searchtype'] = 'equals';
+            $opt['criteria'][1]['criteria'][2]['value']      = 'mygroups'; // Resolved as groups the current user belongs to
+            $opt['criteria'][1]['criteria'][2]['link']       = 'OR';
+            $opt['criteria'][1]['criteria'][3]['field']      = 197; // validation aprobator group
+            $opt['criteria'][1]['criteria'][3]['searchtype'] = 'equals';
+            $opt['criteria'][1]['criteria'][3]['value']      = 'myself'; // Resolved as groups the current user belongs to
+            $opt['criteria'][1]['criteria'][3]['link']       = 'OR';
             $opt['criteria'][1]['link']       = 'AND';
 
             $twig_params['items'][] = [

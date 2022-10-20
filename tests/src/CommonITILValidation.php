@@ -193,12 +193,12 @@ abstract class CommonITILValidation extends DbTestCase
         $this->integer($validations_id_1)->isGreaterThan(0);
         $this->boolean($validation::canValidate($itil_items_id))->isTrue();
 
-        // Add user approval for other  user
+        // Add user approval for other user
         $validation = new $validation_class();
         $validations_id_2 = $validation->add([
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
-            'items_id_target'                   => $_SESSION['glpiID'] + 1, // Other user. Doesn't need to exist
+            'items_id_target'                   => \User::getIdByName('normal'), // Other user.
             'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id_2)->isGreaterThan(0);
@@ -208,6 +208,83 @@ abstract class CommonITILValidation extends DbTestCase
         // Remove user approval for current user
         $this->boolean($validation->delete(['id' => $validations_id_1]))->isTrue();
         // Test the current user cannot still approve since the remaining approval isn't for them
+        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // without substitution period
+        $validator_substitute = new \ValidatorSubstitute();
+        $validator_substitute->add([
+            'users_id' => \User::getIdByName('normal'),
+            'users_id_substitute' => $_SESSION['glpiID'],
+        ]);
+        $this->boolean($validator_substitute->isNewItem())->isFalse();
+        $other_user = new \User();
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => 'NULL',
+            'substitution_end_date' => 'NULL',
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period start date only
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => '2021-01-01 00:00:00',
+            'substitution_end_date' => 'NULL',
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period start date only excluding now
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
+            'substitution_end_date' => 'NULL',
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period end date only
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => 'NULL',
+            'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period end date only excluding now
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => 'NULL',
+            'substitution_end_date' => '2021-01-01 00:00:00',
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => '2021-01-01 00:00:00',
+            'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => '2021-01-01 00:00:00',
+            'substitution_end_date' => (new \DateTime())->modify("-1 month")->format("Y-m-d h:i:s"),
+        ]);
         $this->boolean($validation::canValidate($itil_items_id))->isFalse();
     }
 
@@ -232,9 +309,15 @@ abstract class CommonITILValidation extends DbTestCase
         // Create a test group
         $group = new \Group();
         $groups_id = $group->add([
-            'name' => __FUNCTION__,
+            'name' => __FUNCTION__ . ' group',
         ]);
         $this->integer($groups_id)->isGreaterThan(0);
+
+        $other_group = new \Group();
+        $other_groups_id = $group->add([
+            'name' => __FUNCTION__ . ' other group',
+        ]);
+        $this->integer($other_groups_id)->isGreaterThan(0);
 
         // Add current user to the group
         $group_user = new \Group_User();
@@ -258,7 +341,7 @@ abstract class CommonITILValidation extends DbTestCase
         $validations_id_2 = $validation->add([
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'Group',
-            'items_id_target'                   => $groups_id + 1, // Other group. Doesn't need to exist
+            'items_id_target'                   => $other_groups_id, // Other group.
             'comment_submission'                => __FUNCTION__,
         ]);
         $this->integer($validations_id_2)->isGreaterThan(0);
@@ -269,68 +352,89 @@ abstract class CommonITILValidation extends DbTestCase
         $this->boolean($validation->delete(['id' => $validations_id_1]))->isTrue();
         // Test the current user cannot still approve since the remaining approval isn't for them
         $this->boolean($validation::canValidate($itil_items_id))->isFalse();
-    }
 
-    public function testIsCurrentUserValidationTarget()
-    {
-        $this->login();
-
-        // Create ITIL Object
-        $itil_class = $this->getITILObjectClass();
-        $itil_item = new $itil_class();
-        $itil_items_id = $itil_item->add([
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'name'      => __FUNCTION__,
-            'content'   => __FUNCTION__,
-        ]);
-        $this->integer($itil_items_id)->isGreaterThan(0);
-
-        // Add validation for current user
-        $validation = $this->newTestedInstance();
-        $validations_id = $validation->add([
-            $itil_class::getForeignKeyField()   => $itil_items_id,
-            'itemtype_target'                   => 'User',
-            'items_id_target'                   => $_SESSION['glpiID'],
-            'comment_submission'                => __FUNCTION__,
-        ]);
-        $this->integer($validations_id)->isGreaterThan(0);
-
-        // Test the current user is the validation target
-        $this->boolean($validation->isCurrentUserValidationTarget())->isTrue();
-
-        // Delete validation
-        $this->boolean($validation->delete(['id' => $validations_id]))->isTrue();
-
-        // Create a test group
-        $group = new \Group();
-        $groups_id = $group->add([
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'name' => __FUNCTION__,
-        ]);
-        $this->integer($groups_id)->isGreaterThan(0);
-        // Add current user to the group
+        // Add normal user to the other group
         $group_user = new \Group_User();
         $this->integer($group_user->add([
-            'groups_id' => $groups_id,
-            'users_id'  => $_SESSION['glpiID'],
+            'groups_id' => $other_groups_id,
+            'users_id'  => \User::getIdByName('normal'),
         ]))->isGreaterThan(0);
 
-        // Force reload of group memberships is current session
-        \Session::loadGroups();
-
-        // Add validation for group
-        $validations_id = $validation->add([
-            $itil_class::getForeignKeyField()   => $itil_items_id,
-            'itemtype_target'                   => 'Group',
-            'items_id_target'                   => $groups_id,
-            'comment_submission'                => __FUNCTION__,
+        // Add current user as a substitute of norrmal (member of other group)
+        $validator_substitute = new \ValidatorSubstitute();
+        $validator_substitute->add([
+            'users_id' => \User::getIdByName('normal'),
+            'users_id_substitute' => $_SESSION['glpiID'],
         ]);
-        $this->integer($validations_id)->isGreaterThan(0);
+        $this->boolean($validator_substitute->isNewItem())->isFalse();
+        $other_user = new \User();
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => 'NULL',
+            'substitution_end_date' => 'NULL',
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
 
-        // Test the current user is the validation target
-        $this->boolean($validation->isCurrentUserValidationTarget(true))->isTrue();
-        // Test the current user is not the validation target when groups are not considered
-        $this->boolean($validation->isCurrentUserValidationTarget(false))->isFalse();
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period start date only
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => '2021-01-01 00:00:00',
+            'substitution_end_date' => 'NULL',
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period start date only excluding now
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
+            'substitution_end_date' => 'NULL',
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period end date only
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => 'NULL',
+            'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period end date only excluding now
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => 'NULL',
+            'substitution_end_date' => '2021-01-01 00:00:00',
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => '2021-01-01 00:00:00',
+            'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isTrue();
+
+        // Test the current user, as a substitute of the validator, can approve
+        // with substitution period
+        $other_user->getFromDBbyName('normal');
+        $other_user->update([
+            'id' => $other_user->getID(),
+            'substitution_start_date' => '2021-01-01 00:00:00',
+            'substitution_end_date' => (new \DateTime())->modify("-1 month")->format("Y-m-d h:i:s"),
+        ]);
+        $this->boolean($validation::canValidate($itil_items_id))->isFalse();
     }
 
     protected function prepareInputForAddProvider()
@@ -350,7 +454,6 @@ abstract class CommonITILValidation extends DbTestCase
                     'items_id_target' => 1,
                     'comment_submission' => 'test',
                     'status' => \CommonITILValidation::WAITING,
-                    'users_id_validate' => 1,
                 ],
             ],
             [
@@ -479,14 +582,20 @@ abstract class CommonITILValidation extends DbTestCase
             }
         }
         unset($array);
+        $itilObject = new $validation::$itemtype();
+        $itilObject->getFromDb(1);
+        $this->boolean($itilObject->isNewItem())->isFalse();
+        $validation->add([
+            'users_id' => \Session::getLoginUserID(),
+            $validation::$items_id => $itilObject->getID(),
+            'users_id_validate' => \Session::getLoginUserID(),
+            'itemtype_target' => \User::class,
+            'items_id_target' => \Session::getLoginUserID(),
+            'status' => $input['status'],
+            'timeline_position' => '1',
+        ]);
+        $this->boolean($validation->isNewItem())->isFalse();
         if (!empty($expected)) {
-            // Inject target fields into fields so isCurrentUserValidationTarget will work
-            if (isset($input['itemtype_target'])) {
-                $validation->fields['itemtype_target'] = $input['itemtype_target'];
-            }
-            if (isset($input['items_id_target'])) {
-                $validation->fields['items_id_target'] = $input['items_id_target'];
-            }
             $result = $validation->prepareInputForUpdate($input);
             $this->array($result)->hasKeys(array_keys($expected));
             foreach ($result as $k => $v) {

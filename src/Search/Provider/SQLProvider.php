@@ -804,6 +804,13 @@ final class SQLProvider implements SearchProviderInterface
 
                 break;
 
+            case 'ValidatorSubstitute':
+                if (Session::getLoginUserID() !== false) {
+                    $condition = "users_id = '" . Session::getLoginUserID() . "'" ;
+                }
+
+                break;
+
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {

@@ -33,29 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-// class Preference for the current connected User
-class Preference extends CommonGLPI
-{
-    public static function getTypeName($nb = 0)
-    {
-       // Always plural
-        return __('Settings');
+include('../inc/includes.php');
+
+if (isset($_POST['update'])) {
+    $validator_substitute = new ValidatorSubstitute();
+    $validator_substitute->check(-1, UPDATE, $_POST);
+    if (!isset($_POST['substitutes']) && isset($_POST['_substitutes_defined'])) {
+        // When the substitutes multiselect is empty
+        $_POST['substitutes'] = [];
     }
-
-
-    public function defineTabs($options = [])
-    {
-
-        $ong = [];
-        $this->addStandardTab('User', $ong, $options);
-        if (Session::haveRightsOr('personalization', [READ, UPDATE])) {
-            $this->addStandardTab('Config', $ong, $options);
-        }
-        $this->addStandardTab('ValidatorSubstitute', $ong, $options);
-        $this->addStandardTab('DisplayPreference', $ong, $options);
-
-        $ong['no_all_tab'] = true;
-
-        return $ong;
-    }
+    $validator_substitute->updateSubstitutes($_POST);
 }
+Html::back();

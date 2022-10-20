@@ -1410,6 +1410,7 @@ $RELATION = [
             'users_id_validate',
         ],
         '_glpi_useremails'              => 'users_id',
+        'glpi_users'                    => 'users_id_supervisor',
     ],
 
     'glpi_usertitles' => [

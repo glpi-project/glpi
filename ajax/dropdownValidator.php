@@ -81,12 +81,34 @@ if (isset($_POST["validatortype"])) {
 
     switch (strtolower($_POST['validatortype'])) {
         case 'user':
+            $itilObjectType = $validation_class::$itemtype;
+            $itilObject = $itilObjectType::getById($_POST['parents_id']);
+            $requester_users = $itilObject->getUsers(CommonITILActor::REQUESTER);
+            $added_supervisors = [];
+            foreach ($requester_users as $requester) {
+                $requester = User::getById($requester['users_id']);
+                if (!is_object($requester) || User::isNewId($requester->fields['users_id_supervisor'])) {
+                    // the user is not found or has no supervisor
+                    continue;
+                }
+                $supervisor = User::getById($requester->fields['users_id_supervisor']);
+                if (!is_object($supervisor)) {
+                    // the user does not have any supervisor
+                    continue;
+                }
+                $added_supervisors[] = [
+                    'id'    => $supervisor->getID(),
+                    'text'  => sprintf(__('%1$s (supervisor of %2$s)'), $supervisor->getFriendlyName(), $requester->getFriendlyName()),
+                    'title' => sprintf(__('%1$s - %2$s'), $supervisor->getFriendlyName(), $supervisor->getID()),
+                ];
+            }
             User::dropdown([
                 'name'   => $items_id_name,
                 'entity' => $_POST['entity'],
                 'value'  => $_POST['items_id_target'],
                 'right'  => $_POST['right'],
                 'width'  => '100%',
+                'toadd'  => $added_supervisors,
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
             break;

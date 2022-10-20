@@ -272,6 +272,7 @@ class User extends CommonDBTM
 
         switch ($item->getType()) {
             case __CLASS__:
+                /** @var User $item */
                 $item->showItems($tabnum == 2);
                 return true;
 
@@ -438,11 +439,11 @@ class User extends CommonDBTM
 
         $this->dropPictureFiles($this->fields['picture']);
 
-       // Ticket rules use various _users_id_*
+        // Ticket rules use various _users_id_*
         Rule::cleanForItemAction($this, '_users_id%');
         Rule::cleanForItemCriteria($this, '_users_id%');
 
-       // Alert does not extends CommonDBConnexity
+        // Alert does not extends CommonDBConnexity
         $alert = new Alert();
         $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
     }
@@ -3893,6 +3894,22 @@ JAVASCRIPT;
             ]
         ];
 
+        $tab[] = [
+            'id'                => 130,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_start_date',
+            'name'              => __('Substitution start date'),
+            'datatype'          => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'                => 131,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_end_date',
+            'name'              => __('Substitution end date'),
+            'datatype'          => 'datetime',
+        ];
+
        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
@@ -6666,8 +6683,7 @@ JAVASCRIPT;
 
         return $user;
     }
-
-    /**
+        /**
      * Get name of the user with ID
      *
      * @param integer $ID   ID of the user.
@@ -6701,5 +6717,108 @@ JAVASCRIPT;
         }
 
         return __('Unknown user');
+    }
+
+    /**
+     * Get all validation substitutes
+     *
+     * @return int[]
+     */
+    final public function getSubstitutes(): array
+    {
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $substitutes = [];
+        $rows = (new ValidatorSubstitute())->find([
+            'users_id' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $substitutes[] = $row['users_id_substitute'];
+        }
+
+        return $substitutes;
+    }
+
+    /**
+     * Get all delegators
+     *
+     * @return int[]
+     */
+    final public function getDelegators(): array
+    {
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $delegators = [];
+        $rows = (new ValidatorSubstitute())->find([
+            'users_id_substitute' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $delegators[] = $row['users_id'];
+        }
+
+        return $delegators;
+    }
+
+    /**
+     * Is a substitute of an other user ?
+     *
+     * @param integer $users_id_delegator
+     * @param bool    $use_date_range
+     *
+     * @return bool
+     */
+    final public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
+    {
+        global $DB;
+
+        if ($this->isNewItem()) {
+            return false;
+        }
+
+        $request = [
+            'FROM' => ValidatorSubstitute::getTable(),
+            'WHERE' => [
+                ValidatorSubstitute::getTableField('users_id')            => $users_id_delegator,
+                ValidatorSubstitute::getTableField('users_id_substitute') => $this->fields['id'],
+            ],
+        ];
+        if ($use_date_range) {
+            // add date range check
+            $request['INNER JOIN'] = [
+                self::getTable() => [
+                    'ON' => [
+                        self::getTable() => 'id',
+                        ValidatorSubstitute::getTable() => 'users_id',
+                    ],
+                    'AND' => [
+                        [
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_end_date') => null
+                                ], [
+                                    self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ], [
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_start_date') => null,
+                                ], [
+                                    self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ]
+                    ]
+                ],
+            ];
+        }
+
+        $result = $DB->request($request);
+
+        return (count($result) > 0);
     }
 }
