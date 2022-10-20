@@ -42,16 +42,20 @@
          </button>
       </div>
       <div class="col-auto">
-         {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][link]", criteria["link"] ?? '', call('\\Glpi\\Search\\SearchEngine::getLogicalOperators')) }}
+         {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][link]", criteria["link"] ?? '', call('\\Glpi\\Search\\SearchEngine::getLogicalOperators'), '', {
+            full_width: true,
+            input_class: 'col-12',
+            full_width_adapt_column: false,
+         }) }}
       </div>
       <div class="col-auto">
          {% set parents_num = (parents_num|default([]))|merge([num]) %}
-         {% include 'components/search/query_builder/main.html.twig' with {
+         {{ call("Glpi\\Search\\Input\\QueryBuilder::showGenericSearch", [{
             mainform: false,
             prefix_crit: prefix ~ '[' ~ num ~ '][criteria]',
             parents_num: parents_num,
             criteria: criteria['criteria'],
-         } %}
+         }]) }}
       </div>
    </div>
 </div>

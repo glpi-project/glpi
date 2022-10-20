@@ -37,14 +37,18 @@
 {% if actions|length > 0 %}
    {% set searchtype_name = fieldname ~ prefix ~ "[" ~ num ~ "][searchtype]" %}
    <div class="col-auto">
-      {{ fields.dropdownArrayField(searchtype_name, searchtype, actions, {
+      {{ fields.dropdownArrayField(searchtype_name, searchtype, actions, '', {
          rand: rand,
+         full_width: true,
+         input_class: 'col-12',
+         full_width_adapt_column: false,
+         no_label: true,
       }) }}
    </div>
 {% endif %}
 
 <div class="col-auto" id="{{ dropdownname }}" data-itemtype="{{ itemtype }}" data-fieldname="{{ fieldname }}" data-prefix="{{ prefix }}" data-num="{{ num }}">
-   {% include 'components/search/query_builder/search_option_value.html.twig' with {
+   {% set params = {
       value: value,
       searchopt: searchopt,
       searchtype: searchtype,
@@ -55,6 +59,7 @@
       field: field,
       p: p
    } %}
+   {{ call('Glpi\\Search\\Input\\QueryBuilder::displaySearchoptionValue', [params]) }}
 </div>
 
 {% do call('Ajax::getItemOnSelect', [

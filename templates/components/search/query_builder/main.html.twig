@@ -43,11 +43,142 @@
 <div class="{{ card_class }} {{ session('glpifold_search') ? 'd-none' : '' }}">
    <div id="searchcriteria{{ rand }}" class="{{ main_block_class }}">
       {# init criteria count #}
+      {% set nbsearchcountvar = "nbcriteria" ~ normalized_itemtype ~ random() %}
       <script>
-         let nbcriteria{{ normalized_itemtype ~ random() }} = {{ criteria|length }};
+         let {{ nbsearchcountvar }} = {{ criteria|length }};
       </script>
       <div class="list-group list-group-flush list-group-hoverable criteria-list pt-2" id="criteriatable{{ normalized_itemtype }}{{ random() }}">
-
+         {% for i in p['criteria']|keys %}
+            {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteria", [{
+               itemtype: itemtype,
+               num: i,
+               p: p
+            }]) }}
+         {% endfor %}
+         <a id="more-criteria{{ rand }}" role="button" class="normalcriteria fold-search list-group-item p-2 b-0 d-none"></a>
       </div>
+      {% if _get['savedsearches_id'] is defined %}
+         <input type="hidden" name="savedsearches_id" value="{{ _get['savedsearches_id'] }}">
+      {% endif %}
+      <div class="card-footer d-flex search_actions">
+         <button id="addsearchcriteria{{ rand }}" class="btn btn-sn btn-outline-secondary me-1" type="button">
+            <i class="ti ti-square-plus"></i>
+            <span class="d-none d-sm-block">{{ __('rule') }}</span>
+         </button>
+         {% if linked is defined and linked|length > 0 %}
+            <button id="addmetasearchcriteria{{ rand }}" class="btn btn-sn btn-outline-secondary me-1" type="button">
+               <i class="ti ti-circle-plus"></i>
+               <span class="d-none d-sm-block">{{ __('global rule') }}</span>
+            </button>
+         {% endif %}
+         <button id="addcriteriagroup{{ rand }}" class="btn btn-sn btn-outline-secondary me-1" type="button">
+            <i class="ti ti-code-plus"></i>
+            <span class="d-none d-sm-block">{{ __('group') }}</span>
+         </button>
+         {% if mainform %}
+            {# Display submit button #}
+            <button class="btn btn-sm btn-primary me-1" type="submit" name="{{ p['actionname'] }}">
+               <i class="ti ti-list-search"></i>
+               <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
+            </button>
+            {% if p['showbookmark'] %}
+               {{ call('SavedSearch::showSaveButton', [constant('SavedSearch::SEARCH'), itemtype, _get['savedsearches_id'] is defined]) }}
+            {% endif %}
+            {% if p['showreset'] %}
+               <a class="btn btn-ghost-secondary btn-icon btn-sm me-1 search-reset" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                  href="{{ p['target'] ~ ('?' in p['target'] ? '&amp;' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
+                  <i class="ti ti-circle-x"></i>
+               </a>
+            {% endif %}
+         {% endif %}
+      </div>
+
+      {# TODO These tokens could be data attributes on the related elements #}
+      {% set idor_display_criteria = idor_token(itemtype) %}
+      {% set idor_display_meta_criteria = idor_token(itemtype) %}
+      {% set idor_display_criteria_group = idor_token(itemtype) %}
+      {% set itemtype_escaped = itemtype|escape('js') %}
+
+      {# TODO JS could probably be moved to a JS file #}
+      {% set ajax_url = config('root_doc') ~ "/ajax/search.php" %}
+      <script>
+         $('#addsearchcriteria{{ rand }}').on('click', function(event) {
+             event.preventDefault();
+             $.post("{{ ajax_url }}", {
+                 'action': 'display_criteria',
+                 'itemtype': "{{ itemtype_escaped }}",
+                 'num': {{ nbsearchcountvar }},
+                 'p': {{ p|json_encode|raw }},
+                 '_idor_token': "{{ idor_display_criteria }}"
+             }).done(function (data) {
+               $(data).insertBefore('#more-criteria{{ rand }}');
+               {{ nbsearchcountvar }} = {{ nbsearchcountvar }} + 1;
+             });
+         });
+         $('#addmetasearchcriteria{{ rand }}').on('click', function(event) {
+             event.preventDefault();
+             $.post("{{ ajax_url }}", {
+                 'action': 'display_meta_criteria',
+                 'itemtype': "{{ itemtype_escaped }}",
+                 'num': {{ nbsearchcountvar }},
+                 'p': {{ p|json_encode|raw }},
+                 '_idor_token': "{{ idor_display_criteria }}"
+             }).done(function (data) {
+                 $(data).insertBefore('#more-criteria{{ rand }}');
+                {{ nbsearchcountvar }} = {{ nbsearchcountvar }} + 1;
+             });
+         });
+         $('#addcriteriagroup{{ rand }}').on('click', function(event) {
+             event.preventDefault();
+             $.post("{{ ajax_url }}", {
+                 'action': 'display_criteria_group',
+                 'itemtype': "{{ itemtype_escaped }}",
+                 'num': {{ nbsearchcountvar }},
+                 'p': {{ p|json_encode|raw }},
+                 '_idor_token': "{{ idor_display_criteria }}"
+             }).done(function (data) {
+                 $(data).insertBefore('#more-criteria{{ rand }}');
+                {{ nbsearchcountvar }} = {{ nbsearchcountvar }} + 1;
+             });
+         });
+
+         {% if mainform %}
+            const toggle_fold_search = function(show_search) {
+                $('#searchcriteria{{ rand }}').closest('.search-form').toggle(show_search);
+            };
+            // Init search_criteria state
+         const search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');
+         if (search_criteria_visibility !== undefined && search_criteria_visibility !== 'false') {
+             $('.fold-search').click();
+         }
+         $(document).on("click", ".remove-search-criteria", function() {
+             // force removal of tooltip
+             const tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
+             if (tooltip !== null) {
+                 tooltip.dispose();
+             }
+
+             const rowID = $(this).data('rowid');
+             $('#' + rowID).remove();
+             $('#searchcriteria{{ rand }} .criteria-list .list-group-item:first-child').addClass('headerRow').show();
+         });
+         {% endif %}
+      </script>
+
+      {% if p['addhidden']|length > 0 %}
+         {% for key, val in p['addhidden'] %}
+            <input type="hidden" name="{{ key }}" value="{{ val }}">
+         {% endfor %}
+      {% endif %}
+
+      {% if mainform %}
+         <input type="hidden" name="itemtype" value="{{ itemtype }}">
+         <input type="hidden" name="start" value="0">
+      {% endif %}
    </div>
 </div>
+
+{% if mainform %}
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+{% endif %}
