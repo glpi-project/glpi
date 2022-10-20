@@ -658,7 +658,7 @@
       box-shadow: 0px 1px 2px 1px #D2D2D2;
       position: absolute;
       padding: 5px;
-      width: 450px;
+      width: 420px;
       height: 40vh;
       right: -5px;
       z-index: 1000;
@@ -700,13 +700,17 @@
    }
 
    .faqadd_block_content {
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: auto;
       position: absolute;
       top: 40px;
       bottom: 0;
       left: 0;
       right: 0;
+   }
+
+   .faqadd_entries,
+   .faqadd_entries:hover {
+      color: initial;
    }
 
    .faqadd_entries {
