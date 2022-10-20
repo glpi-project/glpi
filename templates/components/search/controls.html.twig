@@ -101,7 +101,7 @@
                <i id="export_dropdown_icon" class="ti fa-lg ti-file-download"></i>
             </span>
          </button>
-      {% set exporthref = path('/front/report.dynamic.php') ~ '?item_type=' ~ itemtype ~ '&sort[]=' ~ sort[0] ~ '&order[]=' ~ order[0]  ~ '&start=' ~ start ~ '&' ~ posthref %}
+      {% set exporthref = path('/front/report.dynamic.php') ~ '?item_type=' ~ itemtype ~ '&sort[]=' ~ sort[0] ~ '&order[]=' ~ order[0] ~ '&start=' ~ start ~ '&' ~ posthref %}
       <ul class="dropdown-menu" aria-labelledby="dropdown-export">
          <li><a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
             <i class="far fa-lg fa-file-pdf"></i>
