@@ -88,14 +88,21 @@ class FixHtmlEncodingCommand extends GLPITestCase
 
     public function providerFixQuoteEntityWithoutSemicolon()
     {
-        // Sample from a real case. We ignore the ugly backquotes and the double-quotes added twice (out of topic if the tested method).
+        // Sample from a real case. We ignore the ugly backquotes and the double-quotes added twice (out of topic of the tested method).
         yield [
-            'input' => '&lt;td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot100%`""&gt;',
+            'input'    => '&lt;td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot100%`""&gt;',
             'expected' => '&lt;td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot;100%`""&gt;',
         ];
 
+        // Same sample, with some HTML tags before and after
         yield [
-            'input' => '&lt;td&gt;&quot&lt;/td&gt;',
+            'input'    => '&lt;/td&gt; &lt;td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot100%`""&gt; &lt;div&gt;',
+            'expected' => '&lt;/td&gt; &lt;td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot;100%`""&gt; &lt;div&gt;',
+        ];
+
+        // Sample with a malformed quote between HTML tags
+        yield [
+            'input'    => '&lt;td&gt;&quot&lt;/td&gt;',
             'expected' => '&lt;td&gt;&quot&lt;/td&gt;',
         ];
     }
