@@ -61,6 +61,10 @@ body.mce-content-body {
         max-width: 100%;
     }
 
+    table {
+        word-break: normal;
+    }
+
     a[target="_blank"]::before {
         font-family: tabler-icons;
         content: "\ea99";
