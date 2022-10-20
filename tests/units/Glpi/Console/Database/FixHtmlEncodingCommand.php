@@ -103,7 +103,7 @@ class FixHtmlEncodingCommand extends GLPITestCase
         // Sample with a malformed quote between HTML tags
         yield [
             'input'    => '&lt;td&gt;&quot&lt;/td&gt;',
-            'expected' => '&lt;td&gt;&quot&lt;/td&gt;',
+            'expected' => '&lt;td&gt;&quot;&lt;/td&gt;',
         ];
     }
 

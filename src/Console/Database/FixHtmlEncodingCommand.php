@@ -382,8 +382,8 @@ class FixHtmlEncodingCommand extends AbstractCommand
         $output = $input;
 
         // Add the missing semicolon to &quot; HTML entity
-        $pattern = '/&lt;((.(?!&gt;))*?)&quot(?!;)(.*?)&gt;/s';
-        $replace = '&lt;${1}&quot;${3}&gt;';
+        $pattern = '/&quot(?!;)/';
+        $replace = '&quot;';
         $output = preg_replace($pattern, $replace, $output);
 
         return $output;
