@@ -305,6 +305,8 @@ class FixHtmlEncodingCommand extends AbstractCommand
             $new_value = $this->fixEmailHeadersEncoding($new_value);
         }
 
+        $new_value = $this->fixQuoteEntityWithoutSemicolon($new_value);
+
         return $new_value;
     }
 
@@ -339,7 +341,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
      * @param string $input
      * @return string
      */
-    private function fixEmailHeadersEncoding(string $input)
+    private function fixEmailHeadersEncoding(string $input): string
     {
         $output = $input;
 
@@ -360,6 +362,28 @@ class FixHtmlEncodingCommand extends AbstractCommand
         // 3: Double encoded > character
         $pattern = '/(&amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&amp;gt;)/';
         $replace = '&lt;${2}&gt;';
+        $output = preg_replace($pattern, $replace, $output);
+
+        return $output;
+    }
+
+    /**
+     * Fix &quot; HTML entity without its final semicolon
+     * @see https://github.com/glpi-project/glpi/pull/6084
+     *
+     * The pattern searches for &quot (without semicolon) found only between encoded < and >
+     * Therefore any ocurence found between HTML tabs are ignored
+     *
+     * @param string $input
+     * @return string
+     */
+    private function fixQuoteEntityWithoutSemicolon(string $input): string
+    {
+        $output = $input;
+
+        // Add the missing semicolon to &quot; HTML entity
+        $pattern = '/&lt;((.(?!&gt;))*?)&quot(?!;)(.*?)&gt;/s';
+        $replace = '&lt;${1}&quot;${3}&gt;';
         $output = preg_replace($pattern, $replace, $output);
 
         return $output;

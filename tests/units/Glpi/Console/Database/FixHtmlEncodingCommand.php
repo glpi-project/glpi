@@ -85,4 +85,32 @@ class FixHtmlEncodingCommand extends GLPITestCase
         $output = $this->callPrivateMethod($instance, 'fixEmailHeadersEncoding', $input);
         $this->string($output)->isEqualTo($expected);
     }
+
+    public function providerFixQuoteEntityWithoutSemicolon()
+    {
+        // Sample from a real case. We ignore the ugly backquotes and the double-quotes added twice (out of topic if the tested method).
+        yield [
+            'input' => '&lt;td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot100%`""&gt;',
+            'expected' => '&lt;td style="width:100.0%;background:#FDF2F4;padding:5.25pt 3.75pt 5.25pt 11.25pt; word-wrap:break-word; width: `&quot;100%`""&gt;',
+        ];
+
+        yield [
+            'input' => '&lt;td&gt;&quot&lt;/td&gt;',
+            'expected' => '&lt;td&gt;&quot&lt;/td&gt;',
+        ];
+    }
+
+    /**
+     * @DataProvider providerFixQuoteEntityWithoutSemicolon
+     *
+     * @param string $input
+     * @param string $expected
+     * @return void
+     */
+    public function testFixQuoteEntityWithoutSemicolon(string $input, string $expected)
+    {
+        $instance = $this->newTestedInstance();
+        $output = $this->callPrivateMethod($instance, 'fixQuoteEntityWithoutSemicolon', $input);
+        $this->string($output)->isEqualTo($expected);
+    }
 }
