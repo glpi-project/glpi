@@ -136,12 +136,12 @@ var libsConfig = {
          'main',
       ],
       fallback: {
-        "tty": require.resolve("tty-browserify"),
-        "util": require.resolve("util/"),
-        "assert": require.resolve("assert/"),
-        "stream": require.resolve("stream-browserify"),
-        "os": require.resolve("os-browserify"),
-        "buffer": require.resolve("buffer/"),
+         "tty": require.resolve("tty-browserify"),
+         "util": require.resolve("util/"),
+         "assert": require.resolve("assert/"),
+         "stream": require.resolve("stream-browserify"),
+         "os": require.resolve("os-browserify"),
+         "buffer": require.resolve("buffer/"),
       },
    },
 };
