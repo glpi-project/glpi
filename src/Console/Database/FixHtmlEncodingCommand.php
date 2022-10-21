@@ -335,7 +335,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
     }
 
     /**
-     * Fix double encoded HTML entities in old followups generated from Outlook
+     * Fix double encoded HTML entities in old followups
      * @see https://github.com/glpi-project/glpi/issues/8330
      *
      * @param string $input
