@@ -54,13 +54,13 @@ var loadTabContents = function (tablink, force_reload = false) {
                 id: id,
                 tab: index,
             }
-       );
-    }
+        );
+    };
     if ($(target).html() && !force_reload) {
         updateCurrentTab();
         return;
     }
-    $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50\"></i>');
+    $(target).html('<i class="fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50"></i>');
 
     $.get(url, function(data) {
         $(target).html(data);

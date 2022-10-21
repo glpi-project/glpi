@@ -60,36 +60,36 @@ var bindFilterChange = function (target) {
     // Workaround to prevent opening of dropdown when removing item using the "x" button.
     // Without this workaround, orphan dropdowns remains in page when reloading tab.
     $(target)
-    .off('select2:unselecting', '.filter_row .select2-hidden-accessible')
-    .on('select2:unselecting', '.filter_row .select2-hidden-accessible', function(ev) {
-        if (ev.params.args.originalEvent) {
-            ev.params.args.originalEvent.stopPropagation();
-        }
-    });
+        .off('select2:unselecting', '.filter_row .select2-hidden-accessible')
+        .on('select2:unselecting', '.filter_row .select2-hidden-accessible', function(ev) {
+            if (ev.params.args.originalEvent) {
+                ev.params.args.originalEvent.stopPropagation();
+            }
+        });
 
     $(target)
-    .off('input', '.filter_row [name^="filters\\["]')
-    .on('input', '.filter_row [name^="filters\\["]', function() {
-        clearTimeout(delay_timer);
-        delay_timer = setTimeout(function() {
-            handleFilterChange(target);
-        }, 800);
-    });
+        .off('input', '.filter_row [name^="filters\\["]')
+        .on('input', '.filter_row [name^="filters\\["]', function() {
+            clearTimeout(delay_timer);
+            delay_timer = setTimeout(function() {
+                handleFilterChange(target);
+            }, 800);
+        });
     $(target)
-    .off('change', '.filter_row select[name^="filters\\["]')
-    .on('change', '.filter_row select[name^="filters\\["]', function(event) {
-        handleFilterChange(target);
-    });
+        .off('change', '.filter_row select[name^="filters\\["]')
+        .on('change', '.filter_row select[name^="filters\\["]', function(event) {
+            handleFilterChange(target);
+        });
 
     // prevent submit of parent form when pressing enter
     $(target)
-    .off('keypress', '.filter_row [name^="filters\\["]')
-    .on('keypress', '.filter_row [name^="filters\\["]', function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            handleFilterChange(target);
-        }
-    });
+        .off('keypress', '.filter_row [name^="filters\\["]')
+        .on('keypress', '.filter_row [name^="filters\\["]', function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                handleFilterChange(target);
+            }
+        });
 };
 
 var handleFilterChange = function (target) {
