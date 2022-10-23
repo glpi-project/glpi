@@ -90,6 +90,7 @@ The present file will list all changes made to the project; according to the
 - `Search::getMetaReferenceItemtype()`
 - `Search::outputData()`
 - `Search::sylk_clean()`
+- Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 
 ## [10.0.6] unreleased
 

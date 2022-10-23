@@ -40,7 +40,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
 {
     /**
      * DBmysql object
-     * @var DBmysql
+     * @var ?DBmysql
      */
     private $conn;
    // Current SQL query
@@ -82,13 +82,15 @@ class DBmysqlIterator implements SeekableIterator, Countable
         'NOT LIKE BINARY',
         'NOT REGEX',
         '&',
-        '|'
+        '|',
+        'IN',
+        'NOT IN',
     ];
 
     /**
      * Constructor
      *
-     * @param DBmysql $dbconnexion Database Connnexion (must be a CommonDBTM object)
+     * @param ?DBmysql $dbconnexion Database Connnexion (must be a CommonDBTM object)
      *
      * @return void
      */
@@ -588,7 +590,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                         throw new \RuntimeException('Empty IN are not allowed');
                     }
                    // Array of Values
-                    return "IN (" . $this->analyseCriterionValue($value) . ")";
+                    return "IN " . $this->analyseCriterionValue($value);
                 }
             } else {
                 $comparison = ($value instanceof \AbstractQuery ? 'IN' : '=');
@@ -634,7 +636,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             foreach ($value as $k => $v) {
                 $value[$k] = DBmysql::quoteValue($v);
             }
-            $crit_value = implode(', ', $value);
+            $crit_value = '(' . implode(', ', $value) . ')';
         } else {
             $crit_value = DBmysql::quoteValue($value);
         }
@@ -705,9 +707,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $f1 = $values[$t1];
                 $t2 = $keys[1];
                 $f2 = $values[$t2];
-                if ($f2 instanceof QuerySubQuery) {
+                if ($f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression) {
                     return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
-                    $f2->getQuery();
+                    $f2;
                 } else {
                     return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
                     (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
@@ -715,7 +717,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
             } else if (count($values) == 3) {
                 $condition = array_pop($values);
                 $fkey = $this->analyseFkey($values);
-                return $fkey . ' ' . key($condition) . ' ' . $this->analyseCrit(current($condition));
+                $condition_value = $this->analyseCrit(current($condition));
+                if (!empty(trim($condition_value))) {
+                    return $fkey . ' ' . key($condition) . ' ' . $condition_value;
+                }
+                return $fkey;
             }
         }
         trigger_error("BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]]", E_USER_ERROR);

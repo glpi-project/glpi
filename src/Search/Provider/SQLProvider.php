@@ -35,12 +35,24 @@
 
 namespace Glpi\Search\Provider;
 
+use Change;
+use CommonDBTM;
+use CommonITILObject;
+use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
+use Group;
+use ITILFollowup;
+use Problem;
+use QueryExpression;
+use QueryFunction;
 use Session;
+use Software;
+use Ticket;
+use User;
 
 /**
  *
@@ -59,11 +71,11 @@ final class SQLProvider implements SearchProviderInterface
     {
         // request currentuser for SQL supervision, not displayed
         $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . \Toolbox::addslashes_deep($_SESSION['glpiname'] ?? '') . "' AS currentuser,
-                        " . self::addDefaultSelect($data['itemtype']);
+                        " . \Search::addDefaultSelect($data['itemtype']);
 
         // Add select for all toview item
         foreach ($data['toview'] as $val) {
-            $SELECT .= self::addSelect($data['itemtype'], $val);
+            $SELECT .= \Search::addSelect($data['itemtype'], $val);
         }
 
         $as_map = isset($data['search']['as_map']) && (int)$data['search']['as_map'] === 1;
@@ -75,13 +87,11 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * Generic Function to add default select to a request
-     *
-     * @param string $itemtype device type
-     *
-     * @return string Select string
-     **/
-    public static function addDefaultSelect($itemtype)
+     * Generic function to get the default SELECT criteria for an item type
+     * @param class-string<CommonDBTM> $itemtype
+     * @return array
+     */
+    public static function getDefaultSelectCriteria(string $itemtype): array
     {
         global $DB;
 
@@ -92,65 +102,62 @@ final class SQLProvider implements SearchProviderInterface
             $item           = getItemForItemtype($itemtype);
             $mayberecursive = $item->maybeRecursive();
         }
-        $ret = "";
+        $ret = [];
         switch ($itemtype) {
             case 'FieldUnicity':
-                $ret = "`glpi_fieldunicities`.`itemtype` AS ITEMTYPE,";
+                $ret[] = "`glpi_fieldunicities`.`itemtype` AS ITEMTYPE";
                 break;
 
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
-                    $ret = \Plugin::doOneHook(
-                        $plug['plugin'],
-                        'addDefaultSelect',
-                        $itemtype
-                    );
+                    $ret[] = new QueryExpression(\Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype));
                 }
         }
-        if ($itemtable == 'glpi_entities') {
-            $ret .= "`$itemtable`.`id` AS entities_id, '1' AS is_recursive, ";
+        if ($itemtable === 'glpi_entities') {
+            $ret[] = "`$itemtable`.`id` AS entities_id";
+            $ret[] = "'1' AS is_recursive";
         } else if ($mayberecursive) {
             if ($item->isField('entities_id')) {
-                $ret .= $DB->quoteName("$itemtable.entities_id") . ", ";
+                $ret[] = $DB::quoteName("$itemtable.entities_id");
             }
             if ($item->isField('is_recursive')) {
-                $ret .= $DB->quoteName("$itemtable.is_recursive") . ", ";
+                $ret[] = $DB::quoteName("$itemtable.is_recursive");
             }
         }
         return $ret;
     }
 
     /**
-     * Generic Function to add select to a request
+     * Generic function to create SELECT criteria
      *
-     * @since 9.4: $num param has been dropped
-     *
-     * @param string  $itemtype     item type
-     * @param integer $ID           ID of the item to add
-     * @param boolean $meta         boolean is a meta
-     * @param integer $meta_type    meta type table ID (default 0)
-     *
-     * @return string Select string
-     **/
-    public static function addSelect($itemtype, $ID, $meta = 0, $meta_type = 0)
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param int $ID Search option ID
+     * @param bool $meta If true, this is for a meta relation
+     * @param class-string<CommonDBTM> $meta_type Meta item type
+     * @return array
+     */
+    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = ''): array
     {
         global $DB, $CFG_GLPI;
 
-        $searchopt   = SearchOption::getOptionsForItemtype($itemtype);
-        $table       = $searchopt[$ID]["table"];
-        $field       = $searchopt[$ID]["field"];
+        $opt_arrays = SearchOption::getOptionsForItemtype($itemtype);
+        $opt = new SearchOption($opt_arrays[$ID]);
+        $table       = $opt["table"];
+        $field       = $opt["field"];
+        $is_virtual  = $opt->isVirtual();
+
         $addtable    = "";
         $addtable2   = "";
         $NAME        = "ITEM_{$itemtype}_{$ID}";
         $complexjoin = '';
 
-        if (isset($searchopt[$ID]['joinparams'])) {
-            $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+        if (isset($opt['joinparams'])) {
+            $complexjoin = self::computeComplexJoinID($opt['joinparams']);
         }
 
-        $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
-            && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
+        $is_fkey_composite_on_self = getTableNameForForeignKeyField($opt["linkfield"]) == $table
+            && $opt["linkfield"] != getForeignKeyFieldForTable($table);
 
         $orig_table = SearchEngine::getOrigTableName($itemtype);
         if (
@@ -158,9 +165,9 @@ final class SQLProvider implements SearchProviderInterface
                     && (!isset($CFG_GLPI["union_search_type"][$itemtype])
                         || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
                 || !empty($complexjoin))
-            && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))
+            && ($opt["linkfield"] != getForeignKeyFieldForTable($table))
         ) {
-            $addtable .= "_" . $searchopt[$ID]["linkfield"];
+            $addtable .= "_" . $opt["linkfield"];
         }
 
         if (!empty($complexjoin)) {
@@ -171,7 +178,7 @@ final class SQLProvider implements SearchProviderInterface
         $addmeta = "";
         if ($meta) {
             // $NAME = "META";
-            if ($meta_type::getTable() != $table) {
+            if ($meta_type::getTable() !== $table) {
                 $addmeta = "_" . $meta_type;
                 $addtable  .= $addmeta;
                 $addtable2 .= $addmeta;
@@ -180,203 +187,209 @@ final class SQLProvider implements SearchProviderInterface
 
         // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
-            $out = \Plugin::doOneHook(
-                $plug['plugin'],
-                'addSelect',
-                $itemtype,
-                $ID,
-                "{$itemtype}_{$ID}"
-            );
+            $out = \Plugin::doOneHook($plug['plugin'], 'addSelect', $itemtype, $ID, "{$itemtype}_{$ID}");
             if (!empty($out)) {
-                return $out;
+                return new QueryExpression($out);
             }
         }
 
         $tocompute      = "`$table$addtable`.`$field`";
         $tocomputeid    = "`$table$addtable`.`id`";
+        $tocomputetrans = "IFNULL(`$table" . $addtable . "_trans_" . $field . "`.`value`,'" . \Search::NULLVALUE . "')";
 
-        $tocomputetrans = "IFNULL(`$table" . $addtable . "_trans_" . $field . "`.`value`,'" . \Search::NULLVALUE . "') ";
-
-        $ADDITONALFIELDS = '';
+        $ADDITONALFIELDS = [];
         if (
-            isset($searchopt[$ID]["additionalfields"])
-            && count($searchopt[$ID]["additionalfields"])
+            isset($opt["additionalfields"])
+            && count($opt["additionalfields"])
         ) {
-            foreach ($searchopt[$ID]["additionalfields"] as $key) {
-                if (
-                    $meta
-                    || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])
-                ) {
-                    $ADDITONALFIELDS .= " IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL(`$table$addtable`.`$key`,
-                                                                         '" . \Search::NULLVALUE . "'),
-                                                   '" . \Search::SHORTSEP . "', $tocomputeid)ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'), '" . \Search::NULLVALUE . \Search::SHORTSEP . "')
-                                    AS `" . $NAME . "_$key`, ";
+            foreach ($opt["additionalfields"] as $key) {
+                if ($meta || $opt->isForceGroupBy()) {
+                    $ADDITONALFIELDS[] = new QueryExpression("
+                        IFNULL(
+                            GROUP_CONCAT(
+                                DISTINCT CONCAT(
+                                    IFNULL(`$table$addtable`.`$key`, '" . \Search::NULLVALUE . "'),
+                                    '" . \Search::SHORTSEP . "', $tocomputeid
+                                ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
+                            ), '" . \Search::NULLVALUE . \Search::SHORTSEP . "'
+                        ) AS `{$NAME}_$key`");
                 } else {
-                    $ADDITONALFIELDS .= "`$table$addtable`.`$key` AS `" . $NAME . "_$key`, ";
+                    $ADDITONALFIELDS[] = "`$table$addtable`.`$key` AS `" . $NAME . "_$key`";
                 }
             }
         }
 
         // Virtual display no select : only get additional fields
-        if (\Search::isVirtualField($field)) {
+        if ($is_virtual) {
             return $ADDITONALFIELDS;
         }
 
         switch ($table . "." . $field) {
             case "glpi_users.name":
-                if ($itemtype != 'User') {
-                    if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+                if ($itemtype !== User::class) {
+                    if ($opt->isForceGroupBy()) {
                         $addaltemail = "";
+                        $itilobject_tables = [Ticket::getTable(), Change::getTable(), Problem::getTable()];
                         if (
                             in_array($itemtype, ['Ticket', 'Change', 'Problem'])
-                            && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
-                            && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
+                            && isset($opt['joinparams']['beforejoin']['table'])
+                            && in_array($opt['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                         ) { // For tickets_users
-                            $ticket_user_table
-                                = $searchopt[$ID]['joinparams']['beforejoin']['table'] .
-                                "_" . \Search::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
-                                ['joinparams']) . $addmeta;
+                            $before_join = $opt['joinparams']['beforejoin'];
+                            $ticket_user_table = $before_join['table'] . "_" . \Search::computeComplexJoinID($before_join['joinparams']) . $addmeta;
                             $addaltemail
                                 = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
                                                         `$ticket_user_table`.`alternative_email`)
-                                                        SEPARATOR '" . \Search::LONGSEP . "') AS `" . $NAME . "_2`, ";
+                                                        SEPARATOR '" . \Search::LONGSEP . "') AS `" . $NAME . "_2`";
                         }
-                        return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '" . \Search::LONGSEP . "')
-                                       AS `" . $NAME . "`,
-                           $addaltemail
-                           $ADDITONALFIELDS";
+                        $SELECT = [
+                            new QueryExpression("GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}`")
+                        ];
+                        if (!empty($addaltemail)) {
+                            $SELECT[] = new QueryExpression($addaltemail);
+                        }
+                        return array_merge($SELECT, $ADDITONALFIELDS);
                     }
-                    return " `$table$addtable`.`$field` AS `" . $NAME . "`,
-                        `$table$addtable`.`realname` AS `" . $NAME . "_realname`,
-                        `$table$addtable`.`id`  AS `" . $NAME . "_id`,
-                        `$table$addtable`.`firstname` AS `" . $NAME . "_firstname`,
-                        $ADDITONALFIELDS";
+                    $SELECT = [
+                        "`$table$addtable`.`$field` AS `{$NAME}`",
+                        "`$table$addtable`.`realname` AS `{$NAME}_realname`",
+                        "`$table$addtable`.`id` AS `{$NAME}_id`",
+                        "`$table$addtable`.`firstname` AS `{$NAME}_firstname`",
+                    ];
+                    return array_merge($SELECT, $ADDITONALFIELDS);
                 }
                 break;
 
             case "glpi_softwarelicenses.number":
-                if ($meta) {
-                    return " FLOOR(SUM(`$table$addtable2`.`$field`)
-                              * COUNT(DISTINCT `$table$addtable2`.`id`)
-                              / COUNT(`$table$addtable2`.`id`)) AS `" . $NAME . "`,
-                        MIN(`$table$addtable2`.`$field`) AS `" . $NAME . "_min`,
-                         $ADDITONALFIELDS";
-                } else {
-                    return " FLOOR(SUM(`$table$addtable`.`$field`)
-                              * COUNT(DISTINCT `$table$addtable`.`id`)
-                              / COUNT(`$table$addtable`.`id`)) AS `" . $NAME . "`,
-                        MIN(`$table$addtable`.`$field`) AS `" . $NAME . "_min`,
-                         $ADDITONALFIELDS";
-                }
+                $_table_add_table = $table . ($meta ? $addtable2 : $addtable);
+                $SELECT = [
+                    new QueryExpression("FLOOR(SUM(`$_table_add_table`.`$field`)
+                          * COUNT(DISTINCT `$_table_add_table`.`id`)
+                          / COUNT(`$_table_add_table`.`id`)) AS `{$NAME}`"),
+                    new QueryExpression("MIN(`$_table_add_table`.`$field`) AS `{$NAME}_min`"),
+                ];
+                return array_merge($SELECT, $ADDITONALFIELDS);
 
             case "glpi_profiles.name":
-                if (
-                    ($itemtype == 'User')
-                    && ($ID == 20)
-                ) {
+                if ($itemtype === User::class && $ID === 20) {
                     $addtable2 = '';
                     if ($meta) {
                         $addtable2 = "_" . $meta_type;
                     }
-                    return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '" . \Search::LONGSEP . "') AS `" . $NAME . "`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`entities_id` SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "_entities_id`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "_is_dynamic`,
-                        $ADDITONALFIELDS";
+                    $SELECT = [
+                        new QueryExpression("GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}`"),
+                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`entities_id` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_entities_id`"),
+                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_is_recursive`"),
+                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_is_dynamic`"),
+                    ];
+                    return array_merge($SELECT, $ADDITONALFIELDS);
                 }
                 break;
 
             case "glpi_entities.completename":
-                if (
-                    ($itemtype == 'User')
-                    && ($ID == 80)
-                ) {
+                if ($itemtype === User::class && $ID === 80) {
                     $addtable2 = '';
                     if ($meta) {
                         $addtable2 = "_" . $meta_type;
                     }
-                    return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`profiles_id` SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "_profiles_id`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "_is_dynamic`,
-                        $ADDITONALFIELDS";
+                    $SELECT = [
+                        new QueryExpression("GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}`"),
+                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`profiles_id` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_profiles_id`"),
+                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_is_recursive`"),
+                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_is_dynamic`"),
+                    ];
+                    return array_merge($SELECT, $ADDITONALFIELDS);
                 }
                 break;
 
             case "glpi_auth_tables.name":
                 $user_searchopt = SearchOption::getOptionsForItemtype('User');
-                return " `glpi_users`.`authtype` AS `" . $NAME . "`,
-                     `glpi_users`.`auths_id` AS `" . $NAME . "_auths_id`,
-                     `glpi_authldaps" . $addtable . "_" .
-                    \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . $addmeta . "`.`$field`
-                              AS `" . $NAME . "_" . $ID . "_ldapname`,
-                     `glpi_authmails" . $addtable . "_" .
-                    \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . $addmeta . "`.`$field`
-                              AS `" . $NAME . "_mailname`,
-                     $ADDITONALFIELDS";
+                $SELECT = [
+                    "`glpi_users`.`authtype` AS `{$NAME}`",
+                    "`glpi_users`.`auths_id` AS `{$NAME}_auths_id`",
+                    "`glpi_authldaps{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . "{$addmeta}`.`{$field}` AS `{$NAME}_{$ID}_ldapname`",
+                    "`glpi_authmails{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . "{$addmeta}`.`{$field}` AS `{$NAME}_{$ID}_mailname`",
+                ];
+                return array_merge($SELECT, $ADDITONALFIELDS);
 
             case "glpi_softwareversions.name":
-                if ($meta && ($meta_type == 'Software')) {
-                    return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable2`.`$field`, '" . \Search::SHORTSEP . "',
-                                                     `$table$addtable2`.`id`) SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "`,
-                        $ADDITONALFIELDS";
+                if ($meta && $meta_type === Software::class) {
+                    $SELECT = [
+                        new QueryExpression("
+                            GROUP_CONCAT(
+                                DISTINCT CONCAT(
+                                    `glpi_softwares`.`name`, ' - ',
+                                    `$table$addtable2`.`$field`, '" . \Search::SHORTSEP . "',
+                                    `$table$addtable2`.`id`
+                                ) SEPARATOR '" . \Search::LONGSEP . "'
+                            ) AS `{$NAME}`")
+                    ];
+                    return array_merge($SELECT, $ADDITONALFIELDS);
                 }
                 break;
 
             case "glpi_softwareversions.comment":
-                if ($meta && ($meta_type == 'Software')) {
-                    return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable2`.`$field`,'" . \Search::SHORTSEP . "',
-                                                     `$table$addtable2`.`id`) SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "`,
-                        $ADDITONALFIELDS";
-                }
-                return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`name`, ' - ',
-                                                  `$table$addtable`.`$field`, '" . \Search::SHORTSEP . "',
-                                                  `$table$addtable`.`id`) SEPARATOR '" . \Search::LONGSEP . "')
-                                 AS `" . $NAME . "`,
-                     $ADDITONALFIELDS";
+                $_table = ($meta && $meta_type === Software::class) ? 'glpi_softwares' : ($table . $addtable);
+                $_table_add_table = $table . (($meta && $meta_type === Software::class) ? $addtable2 : $addtable);
+                $SELECT = [
+                    new QueryExpression("
+                        GROUP_CONCAT(
+                            DISTINCT CONCAT(
+                                `$_table`.`name`,
+                                ' - ',
+                                `$_table_add_table`.`$field`,
+                                '" . \Search::SHORTSEP . "',
+                                `$_table_add_table`.`id`
+                            ) SEPARATOR '" . \Search::LONGSEP . "'
+                        ) AS `{$NAME}`"),
+                ];
+                return array_merge($SELECT, $ADDITONALFIELDS);
 
             case "glpi_states.name":
-                if ($meta && ($meta_type == 'Software')) {
-                    return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `glpi_softwareversions$addtable`.`name`, ' - ',
-                                                     `$table$addtable2`.`$field`, '" . \Search::SHORTSEP . "',
-                                                     `$table$addtable2`.`id`) SEPARATOR '" . \Search::LONGSEP . "')
-                                     AS `" . $NAME . "`,
-                        $ADDITONALFIELDS";
-                } else if ($itemtype == 'Software') {
-                    return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`,'" . \Search::SHORTSEP . "',
-                                                     `$table$addtable`.`id`) SEPARATOR '" . \Search::LONGSEP . "')
-                                    AS `" . $NAME . "`,
-                        $ADDITONALFIELDS";
+                if ($meta && $meta_type === Software::class) {
+                    $SELECT = [
+                        new QueryExpression("
+                            GROUP_CONCAT(
+                                DISTINCT CONCAT(
+                                    `glpi_softwares`.`name`, ' - ',
+                                    `glpi_softwareversions$addtable`.`name`, ' - ',
+                                    `$table$addtable2`.`$field`, '" . \Search::SHORTSEP . "',
+                                    `$table$addtable2`.`id`
+                                ) SEPARATOR '" . \Search::LONGSEP . "'
+                            ) AS `{$NAME}`")
+                    ];
+                    return array_merge($SELECT, $ADDITONALFIELDS);
+                } else if ($meta_type === Software::class) {
+                    $SELECT = [
+                        new QueryExpression("
+                            GROUP_CONCAT(
+                                DISTINCT CONCAT(
+                                    `glpi_softwareversions`.`name`, ' - ',
+                                    `$table$addtable`.`$field`,'" . \Search::SHORTSEP . "',
+                                    `$table$addtable`.`id`
+                                ) SEPARATOR '" . \Search::LONGSEP . "'
+                            ) AS `{$NAME}`")
+                    ];
+                    return array_merge($SELECT, $ADDITONALFIELDS);
                 }
                 break;
 
             case "glpi_itilfollowups.content":
             case "glpi_tickettasks.content":
             case "glpi_changetasks.content":
-                if (is_subclass_of($itemtype, "CommonITILObject")) {
+                if (is_subclass_of($itemtype, CommonITILObject::class)) {
                     // force ordering by date desc
-                    return " GROUP_CONCAT(
-                  DISTINCT CONCAT(
-                     IFNULL($tocompute, '" . \Search::NULLVALUE . "'),
-                     '" . \Search::SHORTSEP . "',
-                     $tocomputeid
-                  )
-                  ORDER BY `$table$addtable`.`date` DESC
-                  SEPARATOR '" . \Search::LONGSEP . "'
-               ) AS `" . $NAME . "`, $ADDITONALFIELDS";
+                    $SELECT = [
+                        new QueryExpression("
+                            GROUP_CONCAT(
+                                DISTINCT CONCAT(
+                                    IFNULL($tocompute, '" . \Search::NULLVALUE . "'),
+                                    '" . \Search::SHORTSEP . "',
+                                    $tocomputeid
+                                ) ORDER BY `$table$addtable`.`date` DESC SEPARATOR '" . \Search::LONGSEP . "'
+                            ) AS `{$NAME}`")
+                    ];
+                    return array_merge($SELECT, $ADDITONALFIELDS);
                 }
                 break;
 
@@ -386,111 +399,131 @@ final class SQLProvider implements SearchProviderInterface
 
         //// Default cases
         // Link with plugin tables
-        if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
-            if (count($matches) == 2) {
-                $plug     = $matches[1];
-                $out = \Plugin::doOneHook(
-                    $plug,
-                    'addSelect',
-                    $itemtype,
-                    $ID,
-                    "{$itemtype}_{$ID}"
-                );
-                if (!empty($out)) {
-                    return $out;
-                }
+        $plugin_table_pattern = "/^glpi_plugin_([a-z0-9]+)/";
+        if (preg_match($plugin_table_pattern, $table, $matches) && count($matches) === 2) {
+            $plug     = $matches[1];
+            $out = \Plugin::doOneHook($plug, 'addSelect', $itemtype, $ID, "{$itemtype}_{$ID}");
+            if (!empty($out)) {
+                return [new QueryExpression($out)];
             }
         }
 
-        if (isset($searchopt[$ID]["computation"])) {
-            $tocompute = $searchopt[$ID]["computation"];
-            $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
-            $tocompute = str_replace("TABLE", $DB->quoteName("$table$addtable"), $tocompute);
+        if (isset($opt["computation"])) {
+            $tocompute = $opt["computation"];
+            $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
+            $tocompute = str_replace("TABLE", $DB::quoteName("$table$addtable"), $tocompute);
         }
         // Preformat items
-        if (isset($searchopt[$ID]["datatype"])) {
-            switch ($searchopt[$ID]["datatype"]) {
+        if (isset($opt["datatype"])) {
+            switch ($opt["datatype"]) {
                 case "count":
-                    return " COUNT(DISTINCT `$table$addtable`.`$field`) AS `" . $NAME . "`,
-                     $ADDITONALFIELDS";
+                    return array_merge([
+                        new QueryExpression("COUNT(DISTINCT `$table$addtable`.`$field`) AS `{$NAME}`")
+                    ], $ADDITONALFIELDS);
 
                 case "date_delay":
-                    $interval = "MONTH";
-                    if (isset($searchopt[$ID]['delayunit'])) {
-                        $interval = $searchopt[$ID]['delayunit'];
-                    }
+                    $interval = $opt['delayunit'] ?? "MONTH";
 
                     $add_minus = '';
-                    if (isset($searchopt[$ID]["datafields"][3])) {
-                        $add_minus = "-`$table$addtable`.`" . $searchopt[$ID]["datafields"][3] . "`";
+                    if (isset($opt["datafields"][3])) {
+                        $add_minus = "-`$table$addtable`.`" . $opt["datafields"][3] . "`";
                     }
-                    if (
-                        $meta
-                        || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])
-                    ) {
-                        return " GROUP_CONCAT(DISTINCT ADDDATE(`$table$addtable`.`" .
-                            $searchopt[$ID]["datafields"][1] . "`,
-                                                         INTERVAL (`$table$addtable`.`" .
-                            $searchopt[$ID]["datafields"][2] .
-                            "` $add_minus) $interval)
-                                         SEPARATOR '" . \Search::LONGSEP . "') AS `" . $NAME . "`,
-                           $ADDITONALFIELDS";
+                    if ($meta || $opt->isForceGroupBy()) {
+                        return array_merge([
+                            new QueryExpression("
+                                GROUP_CONCAT(
+                                    DISTINCT ADDDATE(
+                                        `$table$addtable`.`" .  $opt["datafields"][1] . "`,
+                                        INTERVAL (`$table$addtable`.`" . $opt["datafields"][2] . "` $add_minus) $interval
+                                    ) SEPARATOR '" . \Search::LONGSEP . "'
+                                ) AS `{$NAME}`")
+                        ], $ADDITONALFIELDS);
                     }
-                    return "ADDDATE(`$table$addtable`.`" . $searchopt[$ID]["datafields"][1] . "`,
-                               INTERVAL (`$table$addtable`.`" . $searchopt[$ID]["datafields"][2] .
-                        "` $add_minus) $interval) AS `" . $NAME . "`,
-                       $ADDITONALFIELDS";
+                    return array_merge([
+                        new QueryExpression("
+                            ADDDATE(
+                                `$table$addtable`.`" .  $opt["datafields"][1] . "`,
+                                INTERVAL (`$table$addtable`.`" . $opt["datafields"][2] . "` $add_minus) $interval
+                            ) AS `{$NAME}`")
+                    ], $ADDITONALFIELDS);
 
                 case "itemlink":
-                    if (
-                        $meta
-                        || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])
-                    ) {
+                    if ($meta || $opt->isForceGroupBy()) {
                         $TRANS = '';
                         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                            $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '" . \Search::NULLVALUE . "'),
-                                                             '" . \Search::SHORTSEP . "',$tocomputeid) ORDER BY $tocomputeid
-                                             SEPARATOR '" . \Search::LONGSEP . "')
-                                     AS `" . $NAME . "_trans_" . $field . "`, ";
+                            $TRANS = "
+                                GROUP_CONCAT(
+                                    DISTINCT CONCAT(
+                                        IFNULL($tocomputetrans, '" . \Search::NULLVALUE . "'),
+                                        '" . \Search::SHORTSEP . "',$tocomputeid
+                                    ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
+                                ) AS `{$NAME}_trans_{$field}`
+                            ";
                         }
-
-                        return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '" . \Search::SHORTSEP . "' ,
-                                                        `$table$addtable`.`id`) ORDER BY `$table$addtable`.`id`
-                                        SEPARATOR '" . \Search::LONGSEP . "') AS `" . $NAME . "`,
-                           $TRANS
-                           $ADDITONALFIELDS";
+                        $SELECT = [
+                            new QueryExpression("
+                                GROUP_CONCAT(
+                                    DISTINCT CONCAT(
+                                        $tocompute, '" . \Search::SHORTSEP . "' ,
+                                        `$table$addtable`.`id`
+                                    ) ORDER BY `$table$addtable`.`id` SEPARATOR '" . \Search::LONGSEP . "'
+                                ) AS `{$NAME}`
+                            ")
+                        ];
+                        if (!empty($TRANS)) {
+                            $SELECT[] = new QueryExpression($TRANS);
+                        }
+                        return array_merge($SELECT, $ADDITONALFIELDS);
                     }
-                    return " $tocompute AS `" . $NAME . "`,
-                        `$table$addtable`.`id` AS `" . $NAME . "_id`,
-                        $ADDITONALFIELDS";
+                    return array_merge([
+                        "$tocompute AS `{$NAME}`",
+                        "`$table$addtable`.`id` AS `{$NAME}_id`"
+                    ], $ADDITONALFIELDS);
             }
         }
 
         // Default case
         if (
             $meta
-            || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
-                && (!isset($searchopt[$ID]["computation"])
-                    || isset($searchopt[$ID]["computationgroupby"])
-                    && $searchopt[$ID]["computationgroupby"]))
+            || ($opt->isForceGroupBy()
+                && (!isset($opt["computation"])
+                    || $opt->isComputationGroupBy()))
         ) { // Not specific computation
             $TRANS = '';
             if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '" . \Search::NULLVALUE . "'),
-                                                   '" . \Search::SHORTSEP . "',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "')
-                                  AS `" . $NAME . "_trans_" . $field . "`, ";
+                $TRANS = "
+                    GROUP_CONCAT(
+                        DISTINCT CONCAT(
+                            IFNULL($tocomputetrans, '" . \Search::NULLVALUE . "'),
+                            '" . \Search::SHORTSEP . "',
+                            $tocomputeid
+                        ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
+                    ) AS `" . $NAME . "_trans_" . $field . "`, 
+                ";
             }
-            return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '" . \Search::NULLVALUE . "'),
-                                               '" . \Search::SHORTSEP . "',$tocomputeid) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "')
-                              AS `" . $NAME . "`,
-                  $TRANS
-                  $ADDITONALFIELDS";
+            $SELECT = [
+                new QueryExpression("
+                    GROUP_CONCAT(
+                        DISTINCT CONCAT(
+                            IFNULL($tocompute, '" . \Search::NULLVALUE . "'),
+                            '" . \Search::SHORTSEP . "',
+                            $tocomputeid
+                        ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
+                    ) AS `{$NAME}`
+                ")
+            ];
+            if (!empty($TRANS)) {
+                $SELECT[] = new QueryExpression($TRANS);
+            }
+            return array_merge($SELECT, $ADDITONALFIELDS);
         }
-        $TRANS = '';
+        $SELECT = [
+            "$tocompute AS `{$NAME}`",
+        ];
         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-            $TRANS = $tocomputetrans . " AS `" . $NAME . "_trans_" . $field . "`, ";
+            $SELECT[] = $tocomputetrans . " AS `{$NAME}_trans_{$field}`";
         }
-        return "$tocompute AS `" . $NAME . "`, $TRANS $ADDITONALFIELDS";
+        return array_merge($SELECT, $ADDITONALFIELDS);
     }
 
     private static function buildFrom(string $itemtable): string
@@ -501,30 +534,32 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic Function to add default where to a request
      *
-     * @param string $itemtype device type
+     * @param class-string<CommonDBTM> $itemtype device type
      *
-     * @return string Where string
+     * @return array WHERE criteria array
      **/
-    public static function addDefaultWhere($itemtype)
+    public static function getDefaultWhereCriteria(string $itemtype): array
     {
-        $condition = '';
+        $criteria = [];
 
         switch ($itemtype) {
             case 'Reservation':
-                $condition = getEntitiesRestrictRequest("", \ReservationItem::getTable(), '', '', true);
+                $criteria = getEntitiesRestrictCriteria(\ReservationItem::getTable(), '', '', true);
                 break;
 
             case 'Reminder':
-                $condition = \Reminder::addVisibilityRestrict();
+                $criteria = \Reminder::getVisibilityCriteria()['WHERE'];
                 break;
 
             case 'RSSFeed':
-                $condition = \RSSFeed::addVisibilityRestrict();
+                $criteria = \RSSFeed::getVisibilityCriteria()['WHERE'];
                 break;
 
             case 'Notification':
                 if (!\Config::canView()) {
-                    $condition = " `glpi_notifications`.`itemtype` NOT IN ('CronTask', 'DBConnection') ";
+                    $criteria = [
+                        'NOT' => ['`glpi_notifications`.`itemtype`' => ['CronTask', 'DBConnection']]
+                    ];
                 }
                 break;
 
@@ -532,45 +567,58 @@ final class SQLProvider implements SearchProviderInterface
             case 'User':
                 // View all entities
                 if (!Session::canViewAllEntities()) {
-                    $condition = getEntitiesRestrictRequest("", "glpi_profiles_users", '', '', true);
+                    $criteria = getEntitiesRestrictCriteria("glpi_profiles_users", '', '', true);
                 }
                 break;
 
             case 'ProjectTask':
-                $condition  = '';
                 $teamtable  = 'glpi_projecttaskteams';
-                $condition .= "`glpi_projects`.`is_template` = 0";
-                $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
-                             AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
+                $group_criteria = [];
                 if (count($_SESSION['glpigroups'])) {
-                    $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
-                                    AND `$teamtable`.`items_id`
-                                       IN (" . implode(",", $_SESSION['glpigroups']) . "))";
+                    $group_criteria = [
+                        "`$teamtable`.`itemtype`" => Group::class,
+                        "`$teamtable`.`items_id`" => $_SESSION['glpigroups']
+                    ];
                 }
-                $condition .= ") ";
+                $user_criteria = [
+                    "`$teamtable`.`itemtype`" => User::class,
+                    "`$teamtable`.`items_id`" => Session::getLoginUserID()
+                ];
+                $criteria = [
+                    "`glpi_projects`.`is_template`" => 0,
+                    'OR' => [
+                        $user_criteria
+                    ]
+                ];
+                if (!empty($group_criteria)) {
+                    $criteria['OR'][] = $group_criteria;
+                }
                 break;
 
             case 'Project':
-                $condition = '';
                 if (!Session::haveRight("project", \Project::READALL)) {
                     $teamtable  = 'glpi_projectteams';
-                    $condition .= "(`glpi_projects`.users_id = '" . Session::getLoginUserID() . "'
-                               OR (`$teamtable`.`itemtype` = 'User'
-                                   AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
-                    if (count($_SESSION['glpigroups'])) {
-                        $condition .= " OR (`glpi_projects`.`groups_id`
-                                       IN (" . implode(",", $_SESSION['glpigroups']) . "))";
-                        $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
-                                      AND `$teamtable`.`items_id`
-                                          IN (" . implode(",", $_SESSION['glpigroups']) . "))";
-                    }
-                    $condition .= ") ";
+                    $user_criteria = [
+                        "`$teamtable`.`itemtype`" => User::class,
+                        "`$teamtable`.`items_id`" => Session::getLoginUserID()
+                    ];
+                    $group_criteria = [
+                        "`$teamtable`.`itemtype`" => Group::class,
+                        "`$teamtable`.`items_id`" => $_SESSION['glpigroups']
+                    ];
+                    $criteria = [
+                        "OR" => [
+                            "`glpi_projects`.users_id" => Session::getLoginUserID(),
+                            $user_criteria,
+                            "`glpi_projects`.`groups_id`" => $_SESSION['glpigroups'],
+                            $group_criteria
+                        ]
+                    ];
                 }
                 break;
 
             case 'Ticket':
                 // Same structure in addDefaultJoin
-                $condition = '';
                 if (!Session::haveRight("ticket", \Ticket::READALL)) {
                     $searchopt
                         = SearchOption::getOptionsForItemtype($itemtype);
@@ -603,35 +651,53 @@ final class SQLProvider implements SearchProviderInterface
 
                     $condition = "(";
 
+                    $criteria = [
+                        'OR' => []
+                    ];
                     if (Session::haveRight("ticket", \Ticket::READMY)) {
-                        $condition .= " $requester_table.users_id = '" . Session::getLoginUserID() . "'
-                                    OR $observer_table.users_id = '" . Session::getLoginUserID() . "'
-                                    OR `glpi_tickets`.`users_id_recipient` = '" . Session::getLoginUserID() . "'";
+                        $criteria['OR'][] = [
+                            'OR' => [
+                                "$requester_table.users_id" => Session::getLoginUserID(),
+                                "$observer_table.users_id" => Session::getLoginUserID(),
+                                "glpi_tickets.users_id_recipient" => Session::getLoginUserID()
+                            ]
+                        ];
                     } else {
-                        $condition .= "0=1";
+                        $criteria['OR'][] = [
+                            '0' => '1'
+                        ];
                     }
 
                     if (Session::haveRight("ticket", \Ticket::READGROUP)) {
                         if (count($_SESSION['glpigroups'])) {
-                            $condition .= " OR $requestergroup_table.`groups_id`
-                                             IN (" . implode(",", $_SESSION['glpigroups']) . ")";
-                            $condition .= " OR $observergroup_table.`groups_id`
-                                             IN (" . implode(",", $_SESSION['glpigroups']) . ")";
+                            $criteria['OR'][] = [
+                                'OR' => [
+                                    "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
+                                    "$observergroup_table.groups_id" => $_SESSION['glpigroups']
+                                ]
+                            ];
                         }
                     }
 
                     if (Session::haveRight("ticket", \Ticket::OWN)) {// Can own ticket : show assign to me
-                        $condition .= " OR $assign_table.users_id = '" . Session::getLoginUserID() . "' ";
+                        $criteria['OR'][] = [
+                            "$assign_table.users_id" => Session::getLoginUserID()
+                        ];
                     }
 
                     if (Session::haveRight("ticket", \Ticket::READASSIGN)) { // assign to me
-                        $condition .= " OR $assign_table.`users_id` = '" . Session::getLoginUserID() . "'";
+                        $criteria['OR'][] = [
+                            "$assign_table.users_id" => Session::getLoginUserID()
+                        ];
                         if (count($_SESSION['glpigroups'])) {
-                            $condition .= " OR $assigngroup_table.`groups_id`
-                                             IN (" . implode(",", $_SESSION['glpigroups']) . ")";
+                            $criteria['OR'][] = [
+                                "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
+                            ];
                         }
                         if (Session::haveRight('ticket', \Ticket::ASSIGN)) {
-                            $condition .= " OR `glpi_tickets`.`status`='" . \CommonITILObject::INCOMING . "'";
+                            $criteria['OR'][] = [
+                                'glpi_tickets.status' => \CommonITILObject::INCOMING
+                            ];
                         }
                     }
 
@@ -643,22 +709,31 @@ final class SQLProvider implements SearchProviderInterface
                             ]
                         )
                     ) {
-                        $condition .= " OR (`glpi_ticketvalidations`.`itemtype_target` = 'User' AND `glpi_ticketvalidations`.`items_id_target` = '" . Session::getLoginUserID() . "')";
+                        $criteria['OR'][] = [
+                            'AND' => [
+                                "`glpi_ticketvalidations`.`itemtype_target`" => User::class,
+                                "`glpi_ticketvalidations`.`items_id_target`" => Session::getLoginUserID()
+                            ]
+                        ];
                         if (count($_SESSION['glpigroups'])) {
-                            $condition .= " OR (`glpi_ticketvalidations`.`itemtype_target` = 'Group' AND `glpi_ticketvalidations`.`items_id_target` IN (" . implode(",", $_SESSION['glpigroups']) . "))";
+                            $criteria['OR'][] = [
+                                'AND' => [
+                                    "`glpi_ticketvalidations`.`itemtype_target`" => Group::class,
+                                    "`glpi_ticketvalidations`.`items_id_target`" => $_SESSION['glpigroups']
+                                ]
+                            ];
                         }
                     }
-                    $condition .= ") ";
                 }
                 break;
 
             case 'Change':
             case 'Problem':
-                if ($itemtype == 'Change') {
+                if ($itemtype === Change::class) {
                     $right       = 'change';
                     $table       = 'changes';
                     $groupetable = "`glpi_changes_groups_";
-                } else if ($itemtype == 'Problem') {
+                } else if ($itemtype === Problem::class) {
                     $right       = 'problem';
                     $table       = 'problems';
                     $groupetable = "`glpi_groups_problems_";
@@ -689,35 +764,43 @@ final class SQLProvider implements SearchProviderInterface
                             self::computeComplexJoinID($searchopt[8]['joinparams']
                             ['beforejoin']['joinparams']) . '`';
                     }
-                    $condition = "(";
+                    $criteria = [
+                        'OR' => []
+                    ];
 
-                    if (Session::haveRight("$right", $itemtype::READMY)) {
-                        $condition .= " $requester_table.users_id = '" . Session::getLoginUserID() . "'
-                                 OR $observer_table.users_id = '" . Session::getLoginUserID() . "'
-                                 OR $assign_table.users_id = '" . Session::getLoginUserID() . "'
-                                 OR `glpi_" . $table . "`.`users_id_recipient` = '" . Session::getLoginUserID() . "'";
+                    if (Session::haveRight($right, $itemtype::READMY)) {
+                        $criteria['OR'][] = [
+                            'OR' => [
+                                "$requester_table.users_id" => Session::getLoginUserID(),
+                                "$observer_table.users_id" => Session::getLoginUserID(),
+                                "$assign_table.users_id" => Session::getLoginUserID(),
+                                "glpi_" . $table . ".users_id_recipient" => Session::getLoginUserID()
+                            ]
+                        ];
                         if (count($_SESSION['glpigroups'])) {
-                            $my_groups_keys = "'" . implode("','", $_SESSION['glpigroups']) . "'";
-                            $condition .= " OR $requestergroup_table.groups_id IN ($my_groups_keys)
-                                 OR $observergroup_table.groups_id IN ($my_groups_keys)
-                                 OR $assigngroup_table.groups_id IN ($my_groups_keys)";
+                            $criteria['OR'][] = [
+                                'OR' => [
+                                    "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
+                                    "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
+                                    "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
+                                ]
+                            ];
                         }
                     } else {
-                        $condition .= "0=1";
+                        $criteria['OR'][] = [
+                            '0' => '1'
+                        ];
                     }
-
-                    $condition .= ") ";
                 }
                 break;
 
             case 'Config':
                 $availableContexts = ['core'] + \Plugin::getPlugins();
-                $availableContexts = implode("', '", $availableContexts);
-                $condition = "`context` IN ('$availableContexts')";
+                $criteria = ["`context`" => $availableContexts];
                 break;
 
             case 'SavedSearch':
-                $condition = \SavedSearch::addVisibilityRestrict();
+                $criteria = \SavedSearch::getVisibilityCriteria()['WHERE'];
                 break;
 
             case 'TicketTask':
@@ -732,70 +815,68 @@ final class SQLProvider implements SearchProviderInterface
 
                 // If the user can't see public and private
                 if (!count($allowed_is_private)) {
-                    $condition = "0 = 1";
+                    $criteria = [
+                        '0' => '1'
+                    ];
                     break;
                 }
 
-                $in = "IN ('" . implode("','", $allowed_is_private) . "')";
-                $condition = "(`glpi_tickettasks`.`is_private` $in ";
-
-                // Check for assigned or created tasks
-                $condition .= "OR `glpi_tickettasks`.`users_id` = " . Session::getLoginUserID() . " ";
-                $condition .= "OR `glpi_tickettasks`.`users_id_tech` = " . Session::getLoginUserID() . " ";
+                $criteria = [
+                    'OR' => [
+                        'glpi_tickettasks.is_private' => $allowed_is_private,
+                        // Check for assigned or created tasks
+                        'glpi_tickettasks.users_id' => Session::getLoginUserID(),
+                        'glpi_tickettasks.users_id_tech' => Session::getLoginUserID(),
+                    ]
+                ];
 
                 // Check for parent item visibility unless the user can see all the
                 // possible parents
                 if (!Session::haveRight('ticket', \Ticket::READALL)) {
-                    $condition .= "AND " . \TicketTask::buildParentCondition();
+                    $criteria[] = [
+                        new QueryExpression(\TicketTask::buildParentCondition())
+                    ];
                 }
-
-                $condition .= ")";
 
                 break;
 
             case 'ITILFollowup':
                 // Filter on is_private
                 $allowed_is_private = [];
-                if (Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPRIVATE)) {
+                if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                     $allowed_is_private[] = 1;
                 }
-                if (Session::haveRight(\ITILFollowup::$rightname, \ITILFollowup::SEEPUBLIC)) {
+                if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC)) {
                     $allowed_is_private[] = 0;
                 }
 
                 // If the user can't see public and private
                 if (!count($allowed_is_private)) {
-                    $condition = "0 = 1";
+                    $criteria = [
+                        '0' => '1'
+                    ];
                     break;
                 }
 
                 $in = "IN ('" . implode("','", $allowed_is_private) . "')";
-                $condition = "(`glpi_itilfollowups`.`is_private` $in ";
-
-                // Now filter on parent item visiblity
-                $condition .= "AND (";
-
-                // Filter for "ticket" parents
-                $condition .= \ITILFollowup::buildParentCondition(\Ticket::getType());
-                $condition .= "OR ";
-
-                // Filter for "change" parents
-                $condition .= \ITILFollowup::buildParentCondition(
-                    \Change::getType(),
-                    'changes_id',
-                    "glpi_changes_users",
-                    "glpi_changes_groups"
-                );
-                $condition .= "OR ";
-
-                // Fitler for "problem" parents
-                $condition .= \ITILFollowup::buildParentCondition(
-                    \Problem::getType(),
-                    'problems_id',
-                    "glpi_problems_users",
-                    "glpi_groups_problems"
-                );
-                $condition .= "))";
+                $criteria = [
+                    'glpi_itilfollowups.is_private' => $allowed_is_private,
+                    'OR' => [
+                        new QueryExpression(ITILFollowup::buildParentCondition(Ticket::getType())),
+                        new QueryExpression(ITILFollowup::buildParentCondition(
+                            Change::getType(),
+                            'changes_id',
+                            "glpi_changes_users",
+                            "glpi_changes_groups"
+                        )),
+                        new QueryExpression(ITILFollowup::buildParentCondition(
+                            Problem::getType(),
+                            'problems_id',
+                            "glpi_problems_users",
+                            "glpi_problems_groups"
+                        )),
+                    ]
+                ];
 
                 break;
 
@@ -809,57 +890,46 @@ final class SQLProvider implements SearchProviderInterface
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
-                    $condition = \Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
+                    $criteria = [new QueryExpression(\Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype))];
                 }
                 break;
         }
 
         /* Hook to restrict user right on current itemtype */
-        [$itemtype, $condition] = \Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
-        return $condition;
+        //TODO Plugin call works on raw SQL, should use criteria array instead
+        [$itemtype, $criteria] = \Plugin::doHookFunction('add_default_where', [$itemtype, $criteria]);
+        return $criteria;
     }
 
-    /**
-     * Generic Function to add where to a request
-     *
-     * @param string  $link         Link string
-     * @param boolean $nott         Is it a negative search ?
-     * @param string  $itemtype     Item type
-     * @param integer $ID           ID of the item to search
-     * @param string  $searchtype   Searchtype used (equals or contains)
-     * @param string  $val          Item num in the request
-     * @param integer $meta         Is a meta search (meta=2 in search.class.php) (default 0)
-     *
-     * @return string Where string
-     **/
-    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
+    public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = 0): ?array
     {
-
         global $DB;
 
         $searchopt = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
-            return false;
+            return [];
         }
-        $table     = $searchopt[$ID]["table"];
-        $field     = $searchopt[$ID]["field"];
+        $opt = new SearchOption($searchopt[$ID]);
+
+        $table     = $opt["table"];
+        $field     = $opt["field"];
 
         $inittable = $table;
         $addtable  = '';
-        $is_fkey_composite_on_self = getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) == $table
-            && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table);
+        $is_fkey_composite_on_self = getTableNameForForeignKeyField($opt["linkfield"]) === $table
+            && $opt["linkfield"] !== getForeignKeyFieldForTable($table);
         $orig_table = SearchEngine::getOrigTableName($itemtype);
         if (
-            ($table != 'asset_types')
-            && ($is_fkey_composite_on_self || $table != $orig_table)
-            && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))
+            ($table !== 'asset_types')
+            && ($is_fkey_composite_on_self || $table !== $orig_table)
+            && ($opt["linkfield"] !== getForeignKeyFieldForTable($table))
         ) {
-            $addtable = "_" . $searchopt[$ID]["linkfield"];
+            $addtable = "_" . $opt["linkfield"];
             $table   .= $addtable;
         }
 
-        if (isset($searchopt[$ID]['joinparams'])) {
-            $complexjoin = \Search::computeComplexJoinID($searchopt[$ID]['joinparams']);
+        if (isset($opt['joinparams'])) {
+            $complexjoin = \Search::computeComplexJoinID($opt['joinparams']);
 
             if (!empty($complexjoin)) {
                 $table .= "_" . $complexjoin;
@@ -867,30 +937,37 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         $addmeta = "";
-        if (
-            $meta
-            && ($itemtype::getTable() != $inittable)
-        ) {
+        if ($meta && $itemtype::getTable() !== $inittable) {
             $addmeta = "_" . $itemtype;
             $table .= $addmeta;
         }
 
         // Hack to allow search by ID on every sub-table
         if (preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
-            return $link . " (`$table`.`id` " . ($nott ? "<>" : "=") . $regs[1] . " " .
-                (($regs[1] == 0) ? " OR `$table`.`id` IS NULL" : '') . ") ";
+            $criteria = [
+                'OR' => [
+                    "`table`.`id`" => [$nott ? "<>" : "=", $regs[1]],
+                ]
+            ];
+            if ((int) $regs[1] === 0) {
+                $criteria['OR'][] = "`table`.`id` IS NULL";
+            }
+            return $criteria;
         }
 
+        $SEARCH = [];
+        $RAW_SEARCH = null;
+
         // Preparse value
-        if (isset($searchopt[$ID]["datatype"])) {
-            switch ($searchopt[$ID]["datatype"]) {
+        if (isset($opt["datatype"])) {
+            switch ($opt["datatype"]) {
                 case "datetime":
                 case "date":
                 case "date_delay":
                     $force_day = true;
                     if (
-                        $searchopt[$ID]["datatype"] == 'datetime'
-                        && !(strstr($val, 'BEGIN') || strstr($val, 'LAST') || strstr($val, 'DAY'))
+                        $opt["datatype"] === 'datetime'
+                        && !(str_contains($val, 'BEGIN') || str_contains($val, 'LAST') || str_contains($val, 'DAY'))
                     ) {
                         $force_day = false;
                     }
@@ -901,11 +978,12 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
         switch ($searchtype) {
+            /** @noinspection PhpMissingBreakStatementInspection */
             case "notcontains":
                 $nott = !$nott;
             //negated, use contains case
             case "contains":
-                if (isset($searchopt[$ID]["datatype"]) && ($searchopt[$ID]["datatype"] === 'decimal')) {
+                if (isset($opt["datatype"]) && ($opt["datatype"] === 'decimal')) {
                     $matches = [];
                     if (preg_match('/^(\d+.?\d?)/', $val, $matches)) {
                         $val = $matches[1];
@@ -914,55 +992,41 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
                 }
-                $SEARCH = self::makeTextSearch($val, $nott);
+                $SEARCH = [$nott ? "NOT LIKE" : "LIKE", self::makeTextSearchValue($val)];
                 break;
 
             case "equals":
-                if ($nott) {
-                    $SEARCH = " <> " . \DBmysql::quoteValue($val);
-                } else {
-                    $SEARCH = " = " . \DBmysql::quoteValue($val);
-                }
+                $SEARCH = [$nott ? "<>>" : "=", $val];
                 break;
 
             case "notequals":
-                if ($nott) {
-                    $SEARCH = " = " . \DBmysql::quoteValue($val);
-                } else {
-                    $SEARCH = " <> " . \DBmysql::quoteValue($val);
-                }
+                $SEARCH = [$nott ? "=" : "<>", $val];
                 break;
 
             case "under":
-                if ($nott) {
-                    $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
-                } else {
-                    $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
-                }
+                $SEARCH = [$nott ? "NOT IN" : "IN", getSonsOf($inittable, $val)];
                 break;
 
             case "notunder":
-                if ($nott) {
-                    $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
-                } else {
-                    $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
-                }
+                $SEARCH = [$nott ? "IN" : "NOT IN", getSonsOf($inittable, $val)];
                 break;
 
             case "empty":
                 if ($nott) {
-                    $SEARCH = " IS NOT NULL";
+                    $RAW_SEARCH = "%s IS NOT NULL";
                 } else {
-                    $SEARCH = " IS NULL";
+                    $SEARCH = null;
                 }
                 break;
         }
 
         //Check in current item if a specific where is defined
         if (method_exists($itemtype, 'addWhere')) {
-            $out = $itemtype::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val);
+            $out = $itemtype::addWhere('AND', $nott, $itemtype, $ID, $searchtype, $val);
+            // Remove 'AND' from the beginning of the string. There may be extra spaces around it.
+            $out = preg_replace('/^\s*AND\s*/', '', $out);
             if (!empty($out)) {
-                return $out;
+                return [new QueryExpression($out)];
             }
         }
 
@@ -971,7 +1035,7 @@ final class SQLProvider implements SearchProviderInterface
             $out = \Plugin::doOneHook(
                 $plug['plugin'],
                 'addWhere',
-                $link,
+                '',
                 $nott,
                 $itemtype,
                 $ID,
@@ -979,41 +1043,77 @@ final class SQLProvider implements SearchProviderInterface
                 $searchtype
             );
             if (!empty($out)) {
-                return $out;
+                return [new QueryExpression($out)];
             }
         }
 
+        /**
+         * @param array &$criteria
+         * @param string|QueryFunction $value
+         * @return void
+         */
+        $append_criterion_with_search = static function (array &$criteria, $value) use ($SEARCH, $RAW_SEARCH, $DB): void {
+            if ($RAW_SEARCH !== null) {
+                $criteria[] = new QueryExpression(sprintf($RAW_SEARCH, $value));
+            }
+            if ($SEARCH === []) {
+                return;
+            }
+            if (is_a($value, QueryFunction::class)) {
+                $search_str = '';
+                $iterator = new DBmysqlIterator(null);
+                foreach ($SEARCH as $token) {
+                    if ($iterator->isOperator($token)) {
+                        $search_str .= " $token ";
+                    } else {
+                        $search_str .= $DB::quoteValue($token);
+                    }
+                }
+                $criteria[] = new QueryExpression($value . ' ' . trim($search_str));
+            } else if (isset($criteria[$value])) {
+                $criteria[] = [$value => $SEARCH];
+            } else {
+                $criteria[$value] = $SEARCH;
+            }
+        };
         switch ($inittable . "." . $field) {
             // case "glpi_users_validation.name" :
 
             case "glpi_users.name":
-                if ($val == 'myself') {
+                if ($val === 'myself') {
                     switch ($searchtype) {
                         case 'equals':
-                            return " $link (`$table`.`id` =  " . $DB->quoteValue($_SESSION['glpiID']) . ") ";
+                            return [
+                                "$table.id" => $_SESSION['glpiID']
+                            ];
 
                         case 'notequals':
-                            return " $link (`$table`.`id` <>  " . $DB->quoteValue($_SESSION['glpiID']) . ") ";
+                            return [
+                                "$table.id" => ['<>', $_SESSION['glpiID']]
+                            ];
                     }
                 }
 
-                if ($itemtype == 'User') { // glpi_users case / not link table
+                if ($itemtype === User::class) { // glpi_users case / not link table
+                    $criteria = [
+                        'OR' => []
+                    ];
                     if (in_array($searchtype, ['equals', 'notequals'])) {
-                        $search_str = "`$table`.`id`" . $SEARCH;
+                        $append_criterion_with_search($criteria['OR'], "$table.id");
 
-                        if ($searchtype == 'notequals') {
+                        if ($searchtype === 'notequals') {
                             $nott = !$nott;
                         }
 
                         // Add NULL if $val = 0 and not negative search
                         // Or negative search on real value
                         if ((!$nott && ($val == 0)) || ($nott && ($val != 0))) {
-                            $search_str .= " OR `$table`.`id` IS NULL";
+                            $criteria['OR'][] = ["$table.id" => null];
                         }
 
-                        return " $link ($search_str)";
+                        return $criteria;
                     }
-                    return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+                    return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
                 }
                 if ($_SESSION["glpinames_format"] == \User::FIRSTNAME_BEFORE) {
                     $name1 = 'firstname';
@@ -1024,11 +1124,26 @@ final class SQLProvider implements SearchProviderInterface
                 }
 
                 if (in_array($searchtype, ['equals', 'notequals'])) {
-                    return " $link (`$table`.`id`" . $SEARCH .
-                        (($val == 0) ? " OR `$table`.`id` IS" .
-                            (($searchtype == "notequals") ? " NOT" : "") . " NULL" : '') . ') ';
-                } else if ($searchtype == 'empty') {
-                    return " $link (`$table`.`id` $SEARCH)";
+                    $criteria = [
+                        'OR' => []
+                    ];
+                    $append_criterion_with_search($criteria['OR'], "$table.id");
+                    if ($val == 0) {
+                        if ($searchtype === 'notequals') {
+                            $criteria['OR'][] = [
+                                'NOT' => ["$table.id" => null]
+                            ];
+                        } else {
+                            $criteria['OR'][] = [
+                                "$table.id" => null
+                            ];
+                        }
+                    }
+                    return $criteria;
+                } else if ($searchtype === 'empty') {
+                    $criteria = [];
+                    $append_criterion_with_search($criteria, "$table.id");
+                    return $criteria;
                 }
                 $toadd   = '';
 
@@ -1038,12 +1153,10 @@ final class SQLProvider implements SearchProviderInterface
                 }
 
                 if (is_a($itemtype, \CommonITILObject::class, true)) {
-                    if (
-                        isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
-                        && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
-                        && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
-                    ) {
-                        $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
+                    $itil_user_tables = ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'];
+                    $has_join         = isset($opt["joinparams"]["beforejoin"]["table"], $opt["joinparams"]["beforejoin"]["joinparams"]);
+                    if ($has_join && in_array($opt["joinparams"]["beforejoin"]["table"], $itil_user_tables, true)) {
+                        $bj        = $opt["joinparams"]["beforejoin"];
                         $linktable = $bj['table'] . '_' . \Search::computeComplexJoinID($bj['joinparams']) . $addmeta;
                         //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
                         $toadd     = self::makeTextCriteria(
@@ -1052,39 +1165,57 @@ final class SQLProvider implements SearchProviderInterface
                             $nott,
                             $tmplink
                         );
-                        if ($val == '^$') {
-                            return $link . " ((`$linktable`.`users_id` IS NULL)
-                            OR `$linktable`.`alternative_email` IS NULL)";
+                        // Remove $tmplink (may have spaces around it) from front of $toadd
+                        $toadd = preg_replace('/^\s*' . preg_quote($tmplink, '/') . '\s*/', '', $toadd);
+                        if ($val === '^$') {
+                            return [
+                                'OR' => [
+                                    "$linktable.users_id" => null,
+                                    "$linktable.alternative_email" => null
+                                ]
+                            ];
                         }
                     }
                 }
-                $toadd2 = '';
-                if (
-                    $nott
-                    && ($val != 'NULL') && ($val != 'null')
-                ) {
-                    $toadd2 = " OR `$table`.`$field` IS NULL";
+                $criteria = [
+                    $tmplink => []
+                ];
+                $append_criterion_with_search($criteria[$tmplink], "$table.$name1");
+                $append_criterion_with_search($criteria[$tmplink], "$table.$name2");
+                $append_criterion_with_search($criteria[$tmplink], "$table.$field");
+                $append_criterion_with_search(
+                    $criteria[$tmplink],
+                    QueryFunction::concat([
+                        $DB::quoteName("$table.$name1"),
+                        $DB::quoteValue(' '),
+                        $DB::quoteName("$table.$name2")
+                    ])
+                );
+                if ($nott && ($val !== 'NULL') && ($val !== 'null')) {
+                    $criteria = [
+                        $tmplink => [
+                            'OR' => [
+                                $criteria,
+                                "$table.$field" => null
+                            ],
+                            new QueryExpression($toadd)
+                        ]
+                    ];
                 }
-                return $link . " (((`$table`.`$name1` $SEARCH
-                            $tmplink `$table`.`$name2` $SEARCH
-                            $tmplink `$table`.`$field` $SEARCH
-                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH )
-                            $toadd2) $toadd)";
+                return $criteria;
 
             case "glpi_groups.completename":
-                if ($val == 'mygroups') {
+                if ($val === 'mygroups') {
                     switch ($searchtype) {
                         case 'equals':
-                            return " $link (`$table`.`id` IN ('" . implode(
-                                "','",
-                                $_SESSION['glpigroups']
-                            ) . "')) ";
+                            return [
+                                "$table.id" => $_SESSION['glpigroups']
+                            ];
 
                         case 'notequals':
-                            return " $link (`$table`.`id` NOT IN ('" . implode(
-                                "','",
-                                $_SESSION['glpigroups']
-                            ) . "')) ";
+                            return [
+                                "$table.id" => ['NOT IN', $_SESSION['glpigroups']]
+                            ];
 
                         case 'under':
                             $groups = $_SESSION['glpigroups'];
@@ -1092,7 +1223,9 @@ final class SQLProvider implements SearchProviderInterface
                                 $groups += getSonsOf($inittable, $g);
                             }
                             $groups = array_unique($groups);
-                            return " $link (`$table`.`id` IN ('" . implode("','", $groups) . "')) ";
+                            return [
+                                "$table.id" => $groups
+                            ];
 
                         case 'notunder':
                             $groups = $_SESSION['glpigroups'];
@@ -1100,10 +1233,14 @@ final class SQLProvider implements SearchProviderInterface
                                 $groups += getSonsOf($inittable, $g);
                             }
                             $groups = array_unique($groups);
-                            return " $link (`$table`.`id` NOT IN ('" . implode("','", $groups) . "')) ";
+                            return [
+                                "$table.id" => ['NOT IN', $groups]
+                            ];
 
                         case 'empty':
-                            return " $link (`$table`.`id` $SEARCH) ";
+                            $criteria = [];
+                            $append_criterion_with_search($criteria, "$table.id");
+                            return $criteria;
                     }
                 }
                 break;
@@ -1114,12 +1251,14 @@ final class SQLProvider implements SearchProviderInterface
                 if ($nott) {
                     $tmplink = 'AND';
                 }
-                return $link . " (`glpi_authmails" . $addtable . "_" .
-                    \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . $addmeta . "`.`name`
-                           $SEARCH
-                           $tmplink `glpi_authldaps" . $addtable . "_" .
-                    \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . $addmeta . "`.`name`
-                           $SEARCH ) ";
+                $criteria = [
+                    $tmplink => []
+                ];
+                $c_field_1 = "glpi_authmails.{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . "$addmeta.name";
+                $c_field_2 = "glpi_authldaps.{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . "$addmeta.name";
+                $append_criterion_with_search($criteria[$tmplink], $c_field_1);
+                $append_criterion_with_search($criteria[$tmplink], $c_field_2);
+                return $criteria;
 
             case "glpi_ipaddresses.name":
                 $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
@@ -1132,7 +1271,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
                     $regs[1] .= $regs[2];
-                    return $link . " (INET_ATON(`$table`.`$field`) " . $regs[1] . " INET_ATON('" . $regs[3] . "')) ";
+                    return [new QueryExpression("(INET_ATON(`$table`.`$field`) " . $regs[1] . " INET_ATON('" . $regs[3] . "'))")];
                 }
                 break;
 
@@ -1148,8 +1287,8 @@ final class SQLProvider implements SearchProviderInterface
                             break;
 
                         case 'notclosed':
-                            $tocheck = $item->getAllStatusArray();
-                            foreach ($item->getClosedStatusArray() as $status) {
+                            $tocheck = $item::getAllStatusArray();
+                            foreach ($item::getClosedStatusArray() as $status) {
                                 if (isset($tocheck[$status])) {
                                     unset($tocheck[$status]);
                                 }
@@ -1159,8 +1298,8 @@ final class SQLProvider implements SearchProviderInterface
 
                         case 'old':
                             $tocheck = array_merge(
-                                $item->getSolvedStatusArray(),
-                                $item->getClosedStatusArray()
+                                $item::getSolvedStatusArray(),
+                                $item::getClosedStatusArray()
                             );
                             break;
 
@@ -1169,13 +1308,13 @@ final class SQLProvider implements SearchProviderInterface
                             break;
 
                         case 'all':
-                            $tocheck = array_keys($item->getAllStatusArray());
+                            $tocheck = array_keys($item::getAllStatusArray());
                             break;
                     }
                 }
 
-                if (count($tocheck) == 0) {
-                    $statuses = $item->getAllStatusArray();
+                if (count($tocheck) === 0) {
+                    $statuses = $item::getAllStatusArray();
                     if (isset($statuses[$val])) {
                         $tocheck = [$val];
                     }
@@ -1183,9 +1322,13 @@ final class SQLProvider implements SearchProviderInterface
 
                 if (count($tocheck)) {
                     if ($nott) {
-                        return $link . " `$table`.`$field` NOT IN ('" . implode("','", $tocheck) . "')";
+                        return [
+                            "$table.$field" => ['NOT IN', $tocheck]
+                        ];
                     }
-                    return $link . " `$table`.`$field` IN ('" . implode("','", $tocheck) . "')";
+                    return [
+                        "$table.$field" => $tocheck
+                    ];
                 }
                 break;
 
@@ -1204,10 +1347,10 @@ final class SQLProvider implements SearchProviderInterface
                     $toadd2 = " OR `$table`.`$field` IS NULL";
                 }
 
-                return $link . " (((`$table`.`tickets_id_1` $compare '$val'
+                return new QueryExpression(" (((`$table`.`tickets_id_1` $compare '$val'
                               $tmplink `$table`.`tickets_id_2` $compare '$val')
                              AND `glpi_tickets`.`id` <> '$val')
-                            $toadd2)";
+                            $toadd2)");
 
             case "glpi_tickets.priority":
             case "glpi_tickets.impact":
@@ -1222,24 +1365,30 @@ final class SQLProvider implements SearchProviderInterface
                 if (is_numeric($val)) {
                     if ($val > 0) {
                         $compare = ($nott ? '<>' : '=');
-                        return $link . " `$table`.`$field` $compare '$val'";
+                        return [
+                            "$table.$field" => [$compare, $val]
+                        ];
                     }
                     if ($val < 0) {
                         $compare = ($nott ? '<' : '>=');
-                        return $link . " `$table`.`$field` $compare '" . abs($val) . "'";
+                        return [
+                            "$table.$field" => [$compare, abs($val)]
+                        ];
                     }
                     // Show all
                     $compare = ($nott ? '<' : '>=');
-                    return $link . " `$table`.`$field` $compare '0' ";
+                    return [
+                        "$table.$field" => [$compare, 0]
+                    ];
                 }
-                return "";
+                return [];
 
             case "glpi_tickets.global_validation":
             case "glpi_ticketvalidations.status":
             case "glpi_changes.global_validation":
             case "glpi_changevalidations.status":
                 if ($val == 'all') {
-                    return "";
+                    return [];
                 }
                 $tocheck = [];
                 switch ($val) {
@@ -1256,18 +1405,28 @@ final class SQLProvider implements SearchProviderInterface
                 }
                 if (count($tocheck)) {
                     if ($nott) {
-                        return $link . " `$table`.`$field` NOT IN ('" . implode("','", $tocheck) . "')";
+                        return [
+                            "$table.$field" => ['NOT IN', $tocheck]
+                        ];
                     }
-                    return $link . " `$table`.`$field` IN ('" . implode("','", $tocheck) . "')";
+                    return [
+                        "$table.$field" => $tocheck
+                    ];
                 }
                 break;
 
             case "glpi_notifications.event":
                 if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, \Search::SHORTSEP)) {
                     $not = 'notequals' === $searchtype ? 'NOT' : '';
-                    list($itemtype_val, $event_val) = explode(\Search::SHORTSEP, $val);
-                    return " $link $not(`$table`.`event` = '$event_val'
-                               AND `$table`.`itemtype` = '$itemtype_val')";
+                    [$itemtype_val, $event_val] = explode(\Search::SHORTSEP, $val);
+                    $criteria = [
+                        "$table.event" => $event_val,
+                        "$table.itemtype" => $itemtype_val
+                    ];
+                    if ($not) {
+                        $criteria = ['NOT' => $criteria];
+                    }
+                    return $criteria;
                 }
                 break;
         }
@@ -1281,7 +1440,7 @@ final class SQLProvider implements SearchProviderInterface
                 $out = \Plugin::doOneHook(
                     $plug,
                     'addWhere',
-                    $link,
+                    '',
                     $nott,
                     $itemtype,
                     $ID,
@@ -1289,57 +1448,61 @@ final class SQLProvider implements SearchProviderInterface
                     $searchtype
                 );
                 if (!empty($out)) {
-                    return $out;
+                    return [new QueryExpression($out)];
                 }
             }
         }
 
         $tocompute      = "`$table`.`$field`";
         $tocomputetrans = "`" . $table . "_trans_" . $field . "`.`value`";
-        if (isset($searchopt[$ID]["computation"])) {
-            $tocompute = $searchopt[$ID]["computation"];
-            $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
-            $tocompute = str_replace("TABLE", $DB->quoteName("$table"), $tocompute);
+        if (isset($opt["computation"])) {
+            $tocompute = $opt["computation"];
+            $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
+            $tocompute = str_replace("TABLE", $DB::quoteName("$table"), $tocompute);
         }
 
         // Preformat items
-        if (isset($searchopt[$ID]["datatype"])) {
-            if ($searchopt[$ID]["datatype"] == "mio") {
+        if (isset($opt["datatype"])) {
+            if ($opt["datatype"] === "mio") {
                 // Parse value as it may contain a few different formats
                 $val = \Toolbox::getMioSizeFromString($val);
             }
 
-            switch ($searchopt[$ID]["datatype"]) {
+            switch ($opt["datatype"]) {
                 case "itemtypename":
                     if (in_array($searchtype, ['equals', 'notequals'])) {
-                        return " $link (`$table`.`$field`" . $SEARCH . ') ';
+                        $criteria = [];
+                        $append_criterion_with_search($criteria, "$table.$field");
+                        return $criteria;
                     }
                     break;
 
                 case "itemlink":
                     if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty'])) {
-                        return " $link (`$table`.`id`" . $SEARCH . ') ';
+                        $criteria = [];
+                        $append_criterion_with_search($criteria, "$table.id");
+                        return $criteria;
                     }
                     break;
 
                 case "datetime":
                 case "date":
                 case "date_delay":
-                    if ($searchopt[$ID]["datatype"] == 'datetime') {
+                    if ($opt["datatype"] === 'datetime') {
                         // Specific search for datetime
                         if (in_array($searchtype, ['equals', 'notequals'])) {
                             $val = preg_replace("/:00$/", '', $val);
                             $val = '^' . $val;
-                            if ($searchtype == 'notequals') {
+                            if ($searchtype === 'notequals') {
                                 $nott = !$nott;
                             }
-                            return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+                            return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
                         }
                     }
-                    if ($searchtype == 'lessthan') {
+                    if ($searchtype === 'lessthan') {
                         $val = '<' . $val;
                     }
-                    if ($searchtype == 'morethan') {
+                    if ($searchtype === 'morethan') {
                         $val = '>' . $val;
                     }
                     if ($searchtype) {
@@ -1349,32 +1512,32 @@ final class SQLProvider implements SearchProviderInterface
                         $default_charset = \DBConnection::getDefaultCharset();
                         $date_computation = "CONVERT($date_computation USING {$default_charset})";
                     }
-                    $search_unit = ' MONTH ';
-                    if (isset($searchopt[$ID]['searchunit'])) {
-                        $search_unit = $searchopt[$ID]['searchunit'];
-                    }
-                    if ($searchopt[$ID]["datatype"] == "date_delay") {
-                        $delay_unit = ' MONTH ';
-                        if (isset($searchopt[$ID]['delayunit'])) {
-                            $delay_unit = $searchopt[$ID]['delayunit'];
-                        }
+                    $search_unit = $opt['searchunit'] ?? 'MONTH';
+                    if ($opt["datatype"] === "date_delay") {
+                        $delay_unit = $opt['delayunit'] ?? 'MONTH';
                         $add_minus = '';
-                        if (isset($searchopt[$ID]["datafields"][3])) {
-                            $add_minus = "-`$table`.`" . $searchopt[$ID]["datafields"][3] . "`";
+                        if (isset($opt["datafields"][3])) {
+                            $add_minus = '-' . $DB::quoteName($table . '.' . $opt["datafields"][3]);
                         }
-                        $date_computation = "ADDDATE(`$table`." . $searchopt[$ID]["datafields"][1] . ",
-                                               INTERVAL (`$table`." . $searchopt[$ID]["datafields"][2] . "
-                                                         $add_minus)
-                                               $delay_unit)";
+                        $date_computation = QueryFunction::addDate(
+                            date: $DB::quoteName("$table." . $opt["datafields"][1]),
+                            interval: $DB::quoteName("$table." . $opt["datafields"][2]) . $add_minus,
+                            interval_unit: $delay_unit
+                        );
                     }
                     if (in_array($searchtype, ['equals', 'notequals', 'empty'])) {
-                        return " $link ($date_computation " . $SEARCH . ') ';
+                        $criteria = [];
+                        if (!empty($date_computation)) {
+                            $append_criterion_with_search($criteria, $date_computation);
+                        }
+                        return $criteria;
                     }
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                         if (is_numeric($regs[2])) {
-                            return $link . " $date_computation " . $regs[1] . "
-                            ADDDATE(NOW(), INTERVAL " . $regs[2] . " $search_unit) ";
+                            return [
+                                new QueryExpression("$date_computation " . $regs[1] . "ADDDATE(NOW(), INTERVAL " . $regs[2] . " $search_unit)")
+                            ];
                         }
                         // ELSE Reformat date if needed
                         $regs[2] = preg_replace(
@@ -1383,7 +1546,7 @@ final class SQLProvider implements SearchProviderInterface
                             $regs[2]
                         );
                         if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[2])) {
-                            $ret = $link;
+                            $ret = '';
                             if ($nott) {
                                 $ret .= " NOT(";
                             }
@@ -1391,23 +1554,28 @@ final class SQLProvider implements SearchProviderInterface
                             if ($nott) {
                                 $ret .= ")";
                             }
-                            return $ret;
+                            return [
+                                new QueryExpression($ret)
+                            ];
                         }
-                        return "";
+                        return [];
                     }
                     // ELSE standard search
                     // Date format modification if needed
                     $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
                     if ($date_computation) {
-                        return self::makeTextCriteria($date_computation, $val, $nott, $link);
+                        return [
+                            new QueryExpression(self::makeTextCriteria($date_computation, $val, $nott, ''))
+                        ];
                     }
-                    return '';
+                    return [];
 
                 case "right":
                     if ($searchtype == 'notequals') {
                         $nott = !$nott;
                     }
-                    return $link . ($nott ? ' NOT' : '') . " ($tocompute & '$val') ";
+                    $criteria = [$tocompute => ['&', $val]];
+                    return $nott ? ['NOT' => $criteria] : $criteria;
 
                 case "bool":
                     if (!is_numeric($val)) {
@@ -1440,7 +1608,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return $link . " ($tocompute " . $regs[1] . " " . $regs[3] . ") ";
+                        return [new QueryExpression("$tocompute {$regs[1]} {$regs[3]}")];
                     }
 
                     if (is_numeric($val) && !$decimal_contains) {
@@ -1450,43 +1618,63 @@ final class SQLProvider implements SearchProviderInterface
                             $nott = !$nott;
                         }
 
-                        if (isset($searchopt[$ID]["width"])) {
-                            $ADD = "";
+                        if (isset($opt["width"])) {
+                            $ADD = [];
                             if (
                                 $nott
                                 && ($val != 'NULL') && ($val != 'null')
                             ) {
-                                $ADD = " OR $tocompute IS NULL";
+                                $ADD = [$tocompute => null];
                             }
+                            $val1 = $numeric_val - $searchopt[$ID]["width"];
+                            $val2 = $numeric_val + $searchopt[$ID]["width"];
                             if ($nott) {
-                                return $link . " ($tocompute < " . ($numeric_val - $searchopt[$ID]["width"]) . "
-                                        OR $tocompute > " . ($numeric_val + $searchopt[$ID]["width"]) . "
-                                        $ADD) ";
+                                return [
+                                    'OR' => [
+                                        new QueryExpression("$tocompute < $val1"),
+                                        new QueryExpression("$tocompute > $val2"),
+                                    ] + $ADD
+                                ];
                             }
-                            return $link . " (($tocompute >= " . ($numeric_val - $searchopt[$ID]["width"]) . "
-                                      AND $tocompute <= " . ($numeric_val + $searchopt[$ID]["width"]) . ")
-                                     $ADD) ";
+                            return [
+                                'OR' => [
+                                    new QueryExpression("$tocompute >= $val1"),
+                                    new QueryExpression("$tocompute <= $val2"),
+                                ] + $ADD
+                            ];
                         }
                         if (!$nott) {
-                            return " $link ($tocompute = $numeric_val) ";
+                            return [new QueryExpression($tocompute . ' = ' . $DB::quoteValue($numeric_val))];
                         }
-                        return " $link ($tocompute <> $numeric_val) ";
+                        return [new QueryExpression($tocompute . ' <> ' . $DB::quoteValue($numeric_val))];
                     }
 
                     if ($searchtype === 'empty') {
-                        if ($nott) {
-                            return $link . " ($tocompute " . $SEARCH . " AND $tocompute <> 0) ";
-                        }
-                        return $link . " ($tocompute " . $SEARCH . " OR $tocompute = 0) ";
+                        $l = $nott ? 'AND' : 'OR';
+                        $operator = $nott ? '<>' : '=';
+                        $criteria = [
+                            $l => [
+                                [
+                                    new QueryExpression("$tocompute $operator 0"),
+                                ]
+                            ]
+                        ];
+                        $append_criterion_with_search($criteria[$l], $tocompute);
+                        return $criteria;
                     }
                     break;
 
                 case 'text':
                     if ($searchtype === 'empty') {
-                        if ($nott) {
-                            return $link . " ($tocompute " . $SEARCH . " AND $tocompute <> '') ";
-                        }
-                        return $link . " ($tocompute " . $SEARCH . " OR $tocompute = '') ";
+                        $l = $nott ? 'AND' : 'OR';
+                        $criteria = [
+                            $l => [
+                                [
+                                    $tocompute => [$nott ? '<>' : '=', '']
+                                ]
+                            ]
+                        ];
+                        $append_criterion_with_search($criteria[$l], $tocompute);
                     }
                     break;
             }
@@ -1494,15 +1682,16 @@ final class SQLProvider implements SearchProviderInterface
 
         // Default case
         if (in_array($searchtype, ['equals', 'notequals','under', 'notunder'])) {
+            $criteria = ['OR' => []];
             if (
-                (!isset($searchopt[$ID]['searchequalsonfield'])
-                    || !$searchopt[$ID]['searchequalsonfield'])
+                (!isset($opt['searchequalsonfield'])
+                    || !$opt['searchequalsonfield'])
                 && ($itemtype == \AllAssets::getType()
                     || $table != $itemtype::getTable())
             ) {
-                $out = " $link (`$table`.`id`" . $SEARCH;
+                $append_criterion_with_search($criteria['OR'], "$table.id");
             } else {
-                $out = " $link (`$table`.`$field`" . $SEARCH;
+                $append_criterion_with_search($criteria['OR'], "$table.$field");
             }
             if ($searchtype == 'notequals') {
                 $nott = !$nott;
@@ -1513,38 +1702,39 @@ final class SQLProvider implements SearchProviderInterface
                 (!$nott && ($val == 0))
                 || ($nott && ($val != 0))
             ) {
-                $out .= " OR `$table`.`id` IS NULL";
+                $criteria['OR'][] = ["$table.id" => null];
             }
-            $out .= ')';
-            return $out;
+            return $criteria;
         }
         $transitemtype = getItemTypeForTable($inittable);
         if (Session::haveTranslations($transitemtype, $field)) {
-            return " $link (" . self::makeTextCriteria($tocompute, $val, $nott, '') . "
-                          OR " . self::makeTextCriteria($tocomputetrans, $val, $nott, '') . ")";
+            return [
+                'OR' => [
+                    new QueryExpression(self::makeTextCriteria($tocompute, $val, $nott, '')),
+                    new QueryExpression(self::makeTextCriteria($tocomputetrans, $val, $nott, ''))
+                ]
+            ];
         }
 
-        return self::makeTextCriteria($tocompute, $val, $nott, $link);
+        return [new QueryExpression(self::makeTextCriteria($tocompute, $val, $nott, ''))];
     }
-
 
     /**
      * Generic Function to add Default left join to a request
      *
-     * @param string $itemtype             Reference item type
-     * @param string $ref_table            Reference table
+     * @param class-string<CommonDBTM> $itemtype   Reference item type
+     * @param class-string<CommonDBTM> $ref_table  Reference table
      * @param array &$already_link_tables  Array of tables already joined
      *
-     * @return string Left join string
+     * @return array Left join criteria array
      **/
-    public static function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables)
+    public static function getDefaultJoinCriteria(string $itemtype, string $ref_table, array &$already_link_tables): array
     {
-        $out = '';
-
+        $out = [];
         switch ($itemtype) {
             // No link
             case 'User':
-                $out = self::addLeftJoin(
+                $out = self::getLeftJoinCriteria(
                     $itemtype,
                     $ref_table,
                     $already_link_tables,
@@ -1557,7 +1747,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case 'Reservation':
-                $out .= self::addLeftJoin(
+                $out = self::getLeftJoinCriteria(
                     $itemtype,
                     $ref_table,
                     $already_link_tables,
@@ -1567,23 +1757,23 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case 'Reminder':
-                $out = \Reminder::addVisibilityJoins();
+                $out = ['LEFT JOIN' => \Reminder::getVisibilityCriteria()['LEFT JOIN']];
                 break;
 
             case 'RSSFeed':
-                $out = \RSSFeed::addVisibilityJoins();
+                $out = ['LEFT JOIN' => \RSSFeed::getVisibilityCriteria()['LEFT JOIN']];
                 break;
 
             case 'ProjectTask':
                 // Same structure in addDefaultWhere
-                $out .= self::addLeftJoin(
+                $out = self::getLeftJoinCriteria(
                     $itemtype,
                     $ref_table,
                     $already_link_tables,
                     "glpi_projects",
                     "projects_id"
                 );
-                $out .= self::addLeftJoin(
+                $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                     $itemtype,
                     $ref_table,
                     $already_link_tables,
@@ -1592,13 +1782,13 @@ final class SQLProvider implements SearchProviderInterface
                     0,
                     0,
                     ['jointype' => 'child']
-                );
+                ));
                 break;
 
             case 'Project':
                 // Same structure in addDefaultWhere
                 if (!Session::haveRight("project", \Project::READALL)) {
-                    $out .= self::addLeftJoin(
+                    $out = self::getLeftJoinCriteria(
                         $itemtype,
                         $ref_table,
                         $already_link_tables,
@@ -1617,7 +1807,7 @@ final class SQLProvider implements SearchProviderInterface
                     $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
                     // show mine : requester
-                    $out .= self::addLeftJoin(
+                    $out = self::getLeftJoinCriteria(
                         $itemtype,
                         $ref_table,
                         $already_link_tables,
@@ -1630,7 +1820,7 @@ final class SQLProvider implements SearchProviderInterface
 
                     if (Session::haveRight("ticket", \Ticket::READGROUP)) {
                         if (count($_SESSION['glpigroups'])) {
-                            $out .= self::addLeftJoin(
+                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                                 $itemtype,
                                 $ref_table,
                                 $already_link_tables,
@@ -1640,12 +1830,12 @@ final class SQLProvider implements SearchProviderInterface
                                 0,
                                 $searchopt[71]['joinparams']['beforejoin']
                                 ['joinparams']
-                            );
+                            ));
                         }
                     }
 
                     // show mine : observer
-                    $out .= self::addLeftJoin(
+                    $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                         $itemtype,
                         $ref_table,
                         $already_link_tables,
@@ -1654,10 +1844,10 @@ final class SQLProvider implements SearchProviderInterface
                         0,
                         0,
                         $searchopt[66]['joinparams']['beforejoin']['joinparams']
-                    );
+                    ));
 
                     if (count($_SESSION['glpigroups'])) {
-                        $out .= self::addLeftJoin(
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
                             $already_link_tables,
@@ -1666,11 +1856,11 @@ final class SQLProvider implements SearchProviderInterface
                             0,
                             0,
                             $searchopt[65]['joinparams']['beforejoin']['joinparams']
-                        );
+                        ));
                     }
 
                     if (Session::haveRight("ticket", \Ticket::OWN)) { // Can own ticket : show assign to me
-                        $out .= self::addLeftJoin(
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
                             $already_link_tables,
@@ -1679,11 +1869,11 @@ final class SQLProvider implements SearchProviderInterface
                             0,
                             0,
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        );
+                        ));
                     }
 
                     if (Session::haveRightsOr("ticket", [\Ticket::READMY, \Ticket::READASSIGN])) { // show mine + assign to me
-                        $out .= self::addLeftJoin(
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
                             $already_link_tables,
@@ -1692,10 +1882,10 @@ final class SQLProvider implements SearchProviderInterface
                             0,
                             0,
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        );
+                        ));
 
                         if (count($_SESSION['glpigroups'])) {
-                            $out .= self::addLeftJoin(
+                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                                 $itemtype,
                                 $ref_table,
                                 $already_link_tables,
@@ -1705,7 +1895,7 @@ final class SQLProvider implements SearchProviderInterface
                                 0,
                                 $searchopt[8]['joinparams']['beforejoin']
                                 ['joinparams']
-                            );
+                            ));
                         }
                     }
 
@@ -1717,7 +1907,7 @@ final class SQLProvider implements SearchProviderInterface
                             ]
                         )
                     ) {
-                        $out .= self::addLeftJoin(
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
                             $already_link_tables,
@@ -1726,19 +1916,19 @@ final class SQLProvider implements SearchProviderInterface
                             0,
                             0,
                             $searchopt[58]['joinparams']['beforejoin']['joinparams']
-                        );
+                        ));
                     }
                 }
                 break;
 
             case 'Change':
             case 'Problem':
-                if ($itemtype == 'Change') {
+                if ($itemtype === Change::class) {
                     $right       = 'change';
                     $table       = 'changes';
                     $groupetable = "glpi_changes_groups";
                     $linkfield   = "changes_groups_id";
-                } else if ($itemtype == 'Problem') {
+                } else if ($itemtype === Problem::class) {
                     $right       = 'problem';
                     $table       = 'problems';
                     $groupetable = "glpi_groups_problems";
@@ -1746,13 +1936,13 @@ final class SQLProvider implements SearchProviderInterface
                 }
 
                 // Same structure in addDefaultWhere
-                $out = '';
+                $out = [];
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
                     if (Session::haveRight("$right", $itemtype::READMY)) {
                         // show mine : requester
-                        $out .= self::addLeftJoin(
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
                             $already_link_tables,
@@ -1761,9 +1951,9 @@ final class SQLProvider implements SearchProviderInterface
                             0,
                             0,
                             $searchopt[4]['joinparams']['beforejoin']['joinparams']
-                        );
+                        ));
                         if (count($_SESSION['glpigroups'])) {
-                            $out .= self::addLeftJoin(
+                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                                 $itemtype,
                                 $ref_table,
                                 $already_link_tables,
@@ -1772,11 +1962,11 @@ final class SQLProvider implements SearchProviderInterface
                                 0,
                                 0,
                                 $searchopt[71]['joinparams']['beforejoin']['joinparams']
-                            );
+                            ));
                         }
 
                         // show mine : observer
-                        $out .= self::addLeftJoin(
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
                             $already_link_tables,
@@ -1785,9 +1975,9 @@ final class SQLProvider implements SearchProviderInterface
                             0,
                             0,
                             $searchopt[66]['joinparams']['beforejoin']['joinparams']
-                        );
+                        ));
                         if (count($_SESSION['glpigroups'])) {
-                            $out .= self::addLeftJoin(
+                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                                 $itemtype,
                                 $ref_table,
                                 $already_link_tables,
@@ -1796,11 +1986,11 @@ final class SQLProvider implements SearchProviderInterface
                                 0,
                                 0,
                                 $searchopt[65]['joinparams']['beforejoin']['joinparams']
-                            );
+                            ));
                         }
 
                         // show mine : assign
-                        $out .= self::addLeftJoin(
+                        $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
                             $already_link_tables,
@@ -1809,9 +1999,9 @@ final class SQLProvider implements SearchProviderInterface
                             0,
                             0,
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
-                        );
+                        ));
                         if (count($_SESSION['glpigroups'])) {
-                            $out .= self::addLeftJoin(
+                            $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                                 $itemtype,
                                 $ref_table,
                                 $already_link_tables,
@@ -1820,7 +2010,7 @@ final class SQLProvider implements SearchProviderInterface
                                 0,
                                 0,
                                 $searchopt[8]['joinparams']['beforejoin']['joinparams']
-                            );
+                            ));
                         }
                     }
                 }
@@ -1836,42 +2026,102 @@ final class SQLProvider implements SearchProviderInterface
                             return $hook_function($itemtype, $ref_table, $already_link_tables);
                         }
                     };
-                    $out = \Plugin::doOneHook($plugin_name, $hook_closure);
+                    $out = self::parseJoinString(\Plugin::doOneHook($plugin_name, $hook_closure));
                 }
                 break;
         }
 
         [$itemtype, $out] = \Plugin::doHookFunction('add_default_join', [$itemtype, $out]);
+        if (is_string($out)) {
+            $out = self::parseJoinString($out);
+        }
         return $out;
     }
 
+    /**
+     * Convert a SQL JOIN string (may contain multiple JOINs) to the iterator/array format
+     * @param string $raw_joins
+     * @return array
+     */
+    private static function parseJoinString(string $raw_joins): array
+    {
+        $joins = [];
+        $raw_joins = trim($raw_joins);
+        if (empty($raw_joins)) {
+            return $joins;
+        }
+
+        $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN', 'JOIN'];
+        // split the raw string into an array of individual join clauses
+        $join_clauses = preg_split('/(' . implode('|', $join_types) . ')/', $raw_joins, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        foreach ($join_clauses as $join_clause) {
+            // Get the join type, table, ON condition, and AND conditions
+            $matches = [];
+            preg_match('/(' . implode('|', $join_types) . ')\s+`?([a-zA-Z0-9_]+)`?\s+ON\s+(.+?)(\s+AND\s+(.+))?/i', $join_clause, $matches);
+            if (count($matches) < 4) {
+                // Invalid join clause
+                continue;
+            }
+            $type = trim($matches[1]);
+            $table = trim($matches[2]);
+            $on = $matches[3];
+            $and = trim($matches[5] ?? '');
+
+            if (!array_key_exists($type, $joins)) {
+                $joins[$type] = [];
+            }
+            // Split the ON condition into its parts
+            $on_sides = preg_split('/\s*=\s*/', $on);
+            if (count($on_sides) < 2) {
+                // Invalid ON condition
+                continue;
+            }
+            // Get table and field for each side
+            $on_left = preg_split('/\./', $on_sides[0]);
+            $on_right = preg_split('/\./', $on_sides[1]);
+
+            $joins[$type][] = [
+                $table => [
+                    'ON' => [
+                        trim($on_left[0]) => trim($on_left[1]),
+                        trim($on_right[0]) => trim($on_right[1]),
+                    ],
+                ]
+            ];
+
+            if (!empty($and)) {
+                $joins[$type][$table]['ON'][] = ['AND' => [new QueryExpression($and)]];
+            }
+        }
+        return $joins;
+    }
 
     /**
-     * Generic Function to add left join to a request
+     * Generic Function to get left join criteria
      *
-     * @param string  $itemtype             Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param string  $ref_table            Reference table
      * @param array   $already_link_tables  Array of tables already joined
      * @param string  $new_table            New table to join
      * @param string  $linkfield            Linkfield for LeftJoin
      * @param boolean $meta                 Is it a meta item ? (default 0)
-     * @param integer $meta_type            Meta type table (default 0)
+     * @param class-string<CommonDBTM> $meta_type Meta type table (default 0)
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
      *
-     * @return string Left join string
+     * @return array Left join string
      **/
-    public static function addLeftJoin(
-        $itemtype,
-        $ref_table,
+    public static function getLeftJoinCriteria(
+        string $itemtype,
+        string $ref_table,
         array &$already_link_tables,
-        $new_table,
-        $linkfield,
-        $meta = 0,
-        $meta_type = 0,
-        $joinparams = [],
-        $field = ''
-    ) {
+        string $new_table,
+        string $linkfield,
+        bool $meta = false,
+        string $meta_type = '',
+        array $joinparams = [],
+        string $field = ''
+    ): array {
 
         // Rename table for meta left join
         $AS = "";
@@ -1880,35 +2130,31 @@ final class SQLProvider implements SearchProviderInterface
 
         // Virtual field no link
         if (\Search::isVirtualField($linkfield)) {
-            return '';
+            return [];
         }
 
         $complexjoin = \Search::computeComplexJoinID($joinparams);
 
-        $is_fkey_composite_on_self = getTableNameForForeignKeyField($linkfield) == $ref_table
-            && $linkfield != getForeignKeyFieldForTable($ref_table);
+        $is_fkey_composite_on_self = getTableNameForForeignKeyField($linkfield) === $ref_table
+            && $linkfield !== getForeignKeyFieldForTable($ref_table);
 
         // Auto link
-        if (
-            ($ref_table == $new_table)
-            && empty($complexjoin)
-            && !$is_fkey_composite_on_self
-        ) {
+        if ($ref_table === $new_table && empty($complexjoin) && !$is_fkey_composite_on_self) {
             $transitemtype = getItemTypeForTable($new_table);
             if (Session::haveTranslations($transitemtype, $field)) {
                 $transAS            = $nt . '_trans_' . $field;
-                return self::joinDropdownTranslations(
+                return self::getDropdownTranslationJoinCriteria(
                     $transAS,
                     $nt,
                     $transitemtype,
                     $field
                 );
             }
-            return "";
+            return [];
         }
 
         // Multiple link possibilies case
-        if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
+        if (!empty($linkfield) && ($linkfield !== getForeignKeyFieldForTable($new_table))) {
             $nt .= "_" . $linkfield;
             $AS  = " AS `$nt`";
         }
@@ -1921,7 +2167,7 @@ final class SQLProvider implements SearchProviderInterface
         $addmetanum = "";
         $rt         = $ref_table;
         $cleanrt    = $rt;
-        if ($meta && $meta_type::getTable() != $new_table) {
+        if ($meta && $meta_type::getTable() !== $new_table) {
             $addmetanum = "_" . $meta_type;
             $AS         = " AS `$nt$addmetanum`";
             $nt         = $nt . $addmetanum;
@@ -1929,47 +2175,49 @@ final class SQLProvider implements SearchProviderInterface
 
         // Do not take into account standard linkfield
         $tocheck = $nt . "." . $linkfield;
-        if ($linkfield == getForeignKeyFieldForTable($new_table)) {
+        if ($linkfield === getForeignKeyFieldForTable($new_table)) {
             $tocheck = $nt;
         }
 
-        if (in_array($tocheck, $already_link_tables)) {
-            return "";
+        if (in_array($tocheck, $already_link_tables, true)) {
+            return [];
         }
-        array_push($already_link_tables, $tocheck);
+        $already_link_tables[] = $tocheck;
 
-        $specific_leftjoin = '';
+        $specific_leftjoin_criteria = [];
 
         // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $plugin_name   = $plug['plugin'];
             $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
-            $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
+            $hook_closure  = static function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                 if (is_callable($hook_function)) {
-                    return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
+                    return self::parseJoinString($hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables) ?? '');
                 }
+                return '';
             };
-            $specific_leftjoin = \Plugin::doOneHook($plugin_name, $hook_closure);
+            $specific_leftjoin_criteria = self::parseJoinString(\Plugin::doOneHook($plugin_name, $hook_closure) ?? '');
         }
 
         // Link with plugin tables : need to know left join structure
         if (
-            empty($specific_leftjoin)
+            empty($specific_leftjoin_criteria)
             && preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)
         ) {
             if (count($matches) == 2) {
                 $plugin_name   = $matches[1];
                 $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
-                $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
+                $hook_closure  = static function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                     if (is_callable($hook_function)) {
-                        return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
+                        return self::parseJoinString($hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables) ?? '');
                     }
+                    return '';
                 };
-                $specific_leftjoin = \Plugin::doOneHook($plugin_name, $hook_closure);
+                $specific_leftjoin_criteria = self::parseJoinString(\Plugin::doOneHook($plugin_name, $hook_closure) ?? '');
             }
         }
         if (!empty($linkfield)) {
-            $before = '';
+            $before_criteria = [];
 
             if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin'])) {
                 if (isset($joinparams['beforejoin']['table'])) {
@@ -1979,39 +2227,33 @@ final class SQLProvider implements SearchProviderInterface
                 foreach ($joinparams['beforejoin'] as $tab) {
                     if (isset($tab['table'])) {
                         $intertable = $tab['table'];
-                        if (isset($tab['linkfield'])) {
-                            $interlinkfield = $tab['linkfield'];
-                        } else {
-                            $interlinkfield = getForeignKeyFieldForTable($intertable);
-                        }
+                        $interlinkfield = $tab['linkfield'] ?? getForeignKeyFieldForTable($intertable);
 
-                        $interjoinparams = [];
-                        if (isset($tab['joinparams'])) {
-                            $interjoinparams = $tab['joinparams'];
-                        }
-                        $before .= self::addLeftJoin(
+                        $interjoinparams = $tab['joinparams'] ?? [];
+                        /** @noinspection SlowArrayOperationsInLoopInspection */
+                        $before_criteria = array_merge_recursive($before_criteria, self::getLeftJoinCriteria(
                             $itemtype,
                             $rt,
                             $already_link_tables,
                             $intertable,
                             $interlinkfield,
-                            $meta,
+                            (bool) $meta,
                             $meta_type,
                             $interjoinparams
-                        );
+                        ));
                     }
 
                     // No direct link with the previous joins
                     if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
                         $cleanrt     = $intertable;
                         $complexjoin = self::computeComplexJoinID($interjoinparams);
-                        if (!empty($interlinkfield) && ($interlinkfield != getForeignKeyFieldForTable($intertable))) {
+                        if (!empty($interlinkfield) && ($interlinkfield !== getForeignKeyFieldForTable($intertable))) {
                             $intertable .= "_" . $interlinkfield;
                         }
                         if (!empty($complexjoin)) {
                             $intertable .= "_" . $complexjoin;
                         }
-                        if ($meta && $meta_type::getTable() != $cleanrt) {
+                        if ($meta && $meta_type::getTable() !== $cleanrt) {
                             $intertable .= "_" . $meta_type;
                         }
                         $rt = $intertable;
@@ -2020,84 +2262,167 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $addcondition = '';
-            if (isset($joinparams['condition'])) {
-                $condition = $joinparams['condition'];
-                if (is_array($condition)) {
-                    $it = new \DBmysqlIterator(null);
-                    $condition = ' AND ' . $it->analyseCrit($condition);
+            $add_criteria = $joinparams['condition'] ?? [];
+            if (!is_array($add_criteria)) {
+                if (empty($add_criteria)) {
+                    $add_criteria = [];
+                } else {
+                    $add_criteria = [new QueryExpression($add_criteria)];
                 }
-                $from         = ["`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE"];
-                $to           = ["`$rt`", "`$rt`", "`$nt`", "`$nt`"];
-                $addcondition = str_replace($from, $to, $condition);
-                $addcondition = $addcondition . " ";
             }
+            $append_join_criteria = static function (&$join_fkey, $additional_criteria) {
+                if (empty($additional_criteria)) {
+                    return;
+                }
+                $add_link = 'AND';
+                if (is_array($additional_criteria)) {
+                    $first_criteria = reset($additional_criteria) ?? '';
+                    if (is_string($first_criteria) || is_a($first_criteria, QueryExpression::class)) {
+                        $first_criteria = trim($first_criteria);
+                        // If the first criteria starts with AND or OR, use it as a link operator
+                        if (preg_match('/^(AND|OR)\s+/', $first_criteria, $matches)) {
+                            $add_link = $matches[1];
+                            $first_criteria = trim(substr($first_criteria, strlen($add_link)));
+                            array_shift($additional_criteria);
+                            array_unshift($additional_criteria, $first_criteria);
+                        }
+                    }
+                }
+                if (count(array_keys($join_fkey)) === 2) {
+                    $join_fkey[] = [$add_link => $additional_criteria];
+                } else {
+                    // Find last key
+                    $last_key = array_keys($join_fkey);
+                    $last_key = array_pop($last_key);
+                    // Append new criteria to the last key
+                    $join_fkey[$last_key][] = [$add_link => $additional_criteria];
+                }
+            };
+            $placeholders = [
+                '`REFTABLE`' => "`$rt`",
+                'REFTABLE'  => "`$rt`",
+                '`NEWTABLE`' => "`$nt`",
+                'NEWTABLE'  => "`$nt`",
+            ];
+            // Recursively walk through add_criteria array and make the placeholder replacements in the keys and values
+            $replace_placeholders = static function ($add_criteria) use (&$replace_placeholders, $placeholders) {
+                $new_criteria = [];
+                foreach ($add_criteria as $key => $value) {
+                    $new_key = strtr($key, $placeholders);
+                    $replaced_key = (string) $new_key !== (string) $key;
+                    if (is_array($value)) {
+                        $new_criteria[$new_key] = $replace_placeholders($value);
+                    } else if (is_a($value, QueryExpression::class)) {
+                        $value_string = $value->getValue();
+                        $new_value = strtr($value_string, $placeholders);
+                        $new_criteria[$new_key] = new QueryExpression($new_value);
+                    } else if ($value !== null) {
+                        $new_criteria[$new_key] = strtr($value, $placeholders);
+                    } else {
+                        $new_criteria[$new_key] = $value;
+                    }
+                    if ($replaced_key) {
+                        unset($new_criteria[$key]);
+                    }
+                }
+                return $new_criteria;
+            };
+            $add_criteria = $replace_placeholders($add_criteria);
 
             if (!isset($joinparams['jointype'])) {
                 $joinparams['jointype'] = 'standard';
             }
 
-            if (empty($specific_leftjoin)) {
+            if (empty($specific_leftjoin_criteria)) {
                 switch ($new_table) {
                     // No link
                     case "glpi_auth_tables":
                         $user_searchopt     = SearchOption::getOptionsForItemtype('User');
 
-                        $specific_leftjoin  = self::addLeftJoin(
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getLeftJoinCriteria(
                             $itemtype,
                             $rt,
                             $already_link_tables,
                             "glpi_authldaps",
                             'auths_id',
-                            0,
-                            0,
+                            false,
+                            '',
                             $user_searchopt[30]['joinparams']
-                        );
-                        $specific_leftjoin .= self::addLeftJoin(
+                        ));
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getLeftJoinCriteria(
                             $itemtype,
                             $rt,
                             $already_link_tables,
                             "glpi_authmails",
                             'auths_id',
-                            0,
-                            0,
+                            false,
+                            '',
                             $user_searchopt[31]['joinparams']
-                        );
+                        ));
                         break;
                 }
             }
 
-            if (empty($specific_leftjoin)) {
+            if (empty($specific_leftjoin_criteria)) {
                 switch ($joinparams['jointype']) {
                     case 'child':
-                        $linkfield = getForeignKeyFieldForTable($cleanrt);
-                        if (isset($joinparams['linkfield'])) {
-                            $linkfield = $joinparams['linkfield'];
-                        }
+                        $linkfield = $joinparams['linkfield'] ?? getForeignKeyFieldForTable($cleanrt);
 
                         // Child join
-                        $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                             ON (`$rt`.`id` = `$nt`.`$linkfield`
-                                                 $addcondition)";
+                        $child_join = [
+                            'LEFT JOIN' => [
+                                "$new_table$AS" => [
+                                    'ON' => [
+                                        $rt => 'id',
+                                        $nt => $linkfield
+                                    ]
+                                ]
+                            ]
+                        ];
+                        $append_join_criteria($child_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $child_join);
                         break;
 
                     case 'item_item':
                         // Item_Item join
-                        $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                          ON ((`$rt`.`id`
-                                                = `$nt`.`" . getForeignKeyFieldForTable($cleanrt) . "_1`
-                                               OR `$rt`.`id`
-                                                 = `$nt`.`" . getForeignKeyFieldForTable($cleanrt) . "_2`)
-                                              $addcondition)";
+                        $item_item_join = [
+                            'LEFT JOIN' => [
+                                "$new_table$AS" => [
+                                    'ON' => [
+                                        $nt => 'id',
+                                        $rt => getForeignKeyFieldForTable($cleanrt) . '_1',
+                                        [
+                                            'OR' => [
+                                                "$nt.id" => $rt . '.' . getForeignKeyFieldForTable($cleanrt) . '_2'
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ];
+                        $append_join_criteria($item_item_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $item_item_join);
                         break;
 
                     case 'item_item_revert':
                         // Item_Item join reverting previous item_item
-                        $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                          ON ((`$nt`.`id`
-                                                = `$rt`.`" . getForeignKeyFieldForTable($cleannt) . "_1`
-                                               OR `$nt`.`id`
-                                                 = `$rt`.`" . getForeignKeyFieldForTable($cleannt) . "_2`)
-                                              $addcondition)";
+                        $item_item_join = [
+                            'LEFT JOIN' => [
+                                "$new_table$AS" => [
+                                    'ON' => [
+                                        $nt => 'id',
+                                        $rt => getForeignKeyFieldForTable($cleannt) . '_1',
+                                        [
+                                            'OR' => [
+                                                "$nt.id" => $rt . '.' . getForeignKeyFieldForTable($cleannt) . '_2'
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ];
+                        $append_join_criteria($item_item_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $item_item_join);
                         break;
 
                     case "mainitemtype_mainitem":
@@ -2116,10 +2441,23 @@ final class SQLProvider implements SearchProviderInterface
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
                         // Itemtype join
-                        $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                          ON (`$rt`.`id` = `$nt`.`" . $addmain . "items_id`
-                                              AND `$nt`.`" . $addmain . "itemtype` = '$used_itemtype'
-                                              $addcondition) ";
+                        $itemtype_join = [
+                            'LEFT JOIN' => [
+                                "$new_table$AS" => [
+                                    'ON' => [
+                                        $rt => 'id',
+                                        $nt => "{$addmain}items_id",
+                                        [
+                                            'AND' => [
+                                                "$nt.{$addmain}itemtype" => $used_itemtype
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ];
+                        $append_join_criteria($itemtype_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $itemtype_join);
                         break;
 
                     case "itemtype_item_revert":
@@ -2134,10 +2472,23 @@ final class SQLProvider implements SearchProviderInterface
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
                         // Itemtype join
-                        $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                          ON (`$nt`.`id` = `$rt`.`" . $addmain . "items_id`
-                                              AND `$rt`.`" . $addmain . "itemtype` = '$used_itemtype'
-                                              $addcondition) ";
+                        $itemtype_join = [
+                            'LEFT JOIN' => [
+                                "$new_table$AS" => [
+                                    'ON' => [
+                                        $nt => 'id',
+                                        $rt => "{$addmain}items_id",
+                                        [
+                                            'AND' => [
+                                                "$rt.{$addmain}itemtype" => $used_itemtype
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ];
+                        $append_join_criteria($itemtype_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $itemtype_join);
                         break;
 
                     case "itemtypeonly":
@@ -2149,56 +2500,68 @@ final class SQLProvider implements SearchProviderInterface
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
                         // Itemtype join
-                        $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                          ON (`$nt`.`itemtype` = '$used_itemtype'
-                                              $addcondition) ";
+                        $itemtype_join = [
+                            'LEFT JOIN' => [
+                                "$new_table$AS" => [
+                                    'ON' => [
+                                        $nt => 'itemtype',
+                                        new \QueryExpression("'$used_itemtype'"),
+                                    ]
+                                ]
+                            ]
+                        ];
+                        $append_join_criteria($itemtype_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $itemtype_join);
                         break;
 
                     default:
                         // Standard join
-                        $specific_leftjoin = "LEFT JOIN `$new_table` $AS
-                                          ON (`$rt`.`$linkfield` = `$nt`.`id`
-                                              $addcondition)";
+                        $standard_join = [
+                            'LEFT JOIN' => [
+                                "$new_table$AS" => [
+                                    'ON' => [
+                                        $rt => $linkfield,
+                                        $nt => 'id'
+                                    ]
+                                ]
+                            ]
+                        ];
+                        $append_join_criteria($standard_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
+                        $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $standard_join);
                         $transitemtype = getItemTypeForTable($new_table);
                         if (Session::haveTranslations($transitemtype, $field)) {
                             $transAS            = $nt . '_trans_' . $field;
-                            $specific_leftjoin .= self::joinDropdownTranslations(
+                            $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getDropdownTranslationJoinCriteria(
                                 $transAS,
                                 $nt,
                                 $transitemtype,
                                 $field
-                            );
+                            ));
                         }
                         break;
                 }
             }
-            return $before . $specific_leftjoin;
+            return array_merge_recursive($before_criteria, $specific_leftjoin_criteria);
         }
 
-        return '';
+        return [];
     }
 
 
     /**
      * Generic Function to add left join for meta items
      *
-     * @param string $from_type             Reference item type ID
-     * @param string $to_type               Item type to add
-     * @param array  $already_link_tables2  Array of tables already joined
-     *showGenericSearch
-     * @return string Meta Left join string
+     * @param class-string<CommonDBTM> $from_type  Reference item type ID
+     * @param class-string<CommonDBTM> $to_type    Item type to add
+     * @param array  $already_link_tables2         Array of tables already joined
+     *
+     * @return array Meta Left join criteria
      **/
-    public static function addMetaLeftJoin(
-        $from_type,
-        $to_type,
-        array &$already_link_tables2,
-        $joinparams = []
-    ) {
+    public static function getMetaLeftJoinCriteria(string $from_type, string $to_type, array &$already_link_tables2, array $joinparams = []): array
+    {
         global $CFG_GLPI;
 
         $from_referencetype = SearchEngine::getMetaReferenceItemtype($from_type);
-
-        $LINK = " LEFT JOIN ";
 
         $from_table = $from_type::getTable();
         $from_fk    = getForeignKeyFieldForTable($from_table);
@@ -2206,141 +2569,234 @@ final class SQLProvider implements SearchProviderInterface
         $to_fk      = getForeignKeyFieldForTable($to_table);
 
         $to_obj        = getItemForItemtype($to_type);
-        $to_entity_restrict = $to_obj->isField('entities_id') ? getEntitiesRestrictRequest('AND', $to_table) : '';
+        $to_entity_restrict_criteria = $to_obj->isField('entities_id') ? getEntitiesRestrictCriteria($to_table) : [];
 
         $complexjoin = \Search::computeComplexJoinID($joinparams);
-        $alias_suffix = ($complexjoin != '' ? '_' . $complexjoin : '') . '_' . $to_type;
+        $alias_suffix = ($complexjoin !== '' ? '_' . $complexjoin : '') . '_' . $to_type;
 
-        $JOIN = "";
+        $joins = [
+            'LEFT JOIN' => []
+        ];
 
         // Specific JOIN
-        if ($from_referencetype === 'Software' && in_array($to_type, $CFG_GLPI['software_types'])) {
+        if ($from_referencetype === 'Software' && in_array($to_type, $CFG_GLPI['software_types'], true)) {
             // From Software to software_types
             $softwareversions_table = "glpi_softwareversions{$alias_suffix}";
-            if (!in_array($softwareversions_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $softwareversions_table);
-                $JOIN .= "$LINK `glpi_softwareversions` AS `$softwareversions_table`
-                         ON (`$softwareversions_table`.`softwares_id` = `$from_table`.`id`) ";
+            if (!in_array($softwareversions_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $softwareversions_table;
+                $joins['LEFT JOIN']["`glpi_softwareversions` AS `$softwareversions_table`"] = [
+                    'ON' => [
+                        $softwareversions_table => 'softwares_id',
+                        $from_table => 'id'
+                    ]
+                ];
             }
             $items_softwareversions_table = "glpi_items_softwareversions_{$alias_suffix}";
-            if (!in_array($items_softwareversions_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $items_softwareversions_table);
-                $JOIN .= "$LINK `glpi_items_softwareversions` AS `$items_softwareversions_table`
-                         ON (`$items_softwareversions_table`.`softwareversions_id` = `$softwareversions_table`.`id`
-                             AND `$items_softwareversions_table`.`itemtype` = '$to_type'
-                             AND `$items_softwareversions_table`.`is_deleted` = 0) ";
+            if (!in_array($items_softwareversions_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $items_softwareversions_table;
+                $joins['LEFT JOIN']["`glpi_items_softwareversions` AS `$items_softwareversions_table`"] = [
+                    'ON' => [
+                        $items_softwareversions_table => 'softwareversions_id',
+                        $softwareversions_table => 'id',
+                        [
+                            'AND' => [
+                                "$items_softwareversions_table.itemtype" => $to_type,
+                                "$items_softwareversions_table.is_deleted" => 0
+                            ]
+                        ]
+                    ]
+                ];
             }
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$items_softwareversions_table`.`items_id` = `$to_table`.`id`
-                             AND `$items_softwareversions_table`.`itemtype` = '$to_type'
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $items_softwareversions_table => 'items_id',
+                        $to_table => 'id',
+                        [
+                            'AND' => [
+                                "$items_softwareversions_table.itemtype" => $to_type,
+                            ] + $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
-            return $JOIN;
+            return $joins;
         }
 
-        if ($to_type === 'Software' && in_array($from_referencetype, $CFG_GLPI['software_types'])) {
+        if ($to_type === 'Software' && in_array($from_referencetype, $CFG_GLPI['software_types'], true)) {
             // From software_types to Software
             $items_softwareversions_table = "glpi_items_softwareversions{$alias_suffix}";
-            if (!in_array($items_softwareversions_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $items_softwareversions_table);
-                $JOIN .= "$LINK `glpi_items_softwareversions` AS `$items_softwareversions_table`
-                         ON (`$items_softwareversions_table`.`items_id` = `$from_table`.`id`
-                             AND `$items_softwareversions_table`.`itemtype` = '$from_type'
-                             AND `$items_softwareversions_table`.`is_deleted` = 0) ";
+            if (!in_array($items_softwareversions_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $items_softwareversions_table;
+                $joins['LEFT JOIN']["`glpi_items_softwareversions` AS `$items_softwareversions_table`"] = [
+                    'ON' => [
+                        $items_softwareversions_table => 'items_id',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                "$items_softwareversions_table.itemtype" => $from_type,
+                                "$items_softwareversions_table.is_deleted" => 0
+                            ]
+                        ]
+                    ]
+                ];
             }
             $softwareversions_table = "glpi_softwareversions{$alias_suffix}";
-            if (!in_array($softwareversions_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $softwareversions_table);
-                $JOIN .= "$LINK `glpi_softwareversions` AS `$softwareversions_table`
-                         ON (`$items_softwareversions_table`.`softwareversions_id` = `$softwareversions_table`.`id`) ";
+            if (!in_array($softwareversions_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $softwareversions_table;
+                $joins['LEFT JOIN']["`glpi_softwareversions` AS `$softwareversions_table`"] = [
+                    'ON' => [
+                        $items_softwareversions_table => 'softwareversions_id',
+                        $softwareversions_table => 'id'
+                    ]
+                ];
             }
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$softwareversions_table`.`softwares_id` = `$to_table`.`id`) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $softwareversions_table => 'softwares_id',
+                        $to_table => 'id',
+                    ]
+                ];
             }
             $softwarelicenses_table = "glpi_softwarelicenses{$alias_suffix}";
-            if (!in_array($softwarelicenses_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $softwarelicenses_table);
-                $JOIN .= "$LINK `glpi_softwarelicenses` AS `$softwarelicenses_table`
-                        ON ($to_table.`id` = `$softwarelicenses_table`.`softwares_id`"
-                    . getEntitiesRestrictRequest(' AND', $softwarelicenses_table, '', '', true) . ") ";
+            if (!in_array($softwarelicenses_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $softwarelicenses_table;
+                $joins['LEFT JOIN']["`glpi_softwarelicenses` AS `$softwarelicenses_table`"] = [
+                    'ON' => [
+                        $to_table => 'id',
+                        $softwarelicenses_table => 'softwares_id',
+                        [
+                            'AND' => getEntitiesRestrictCriteria($softwarelicenses_table, '', '', true)
+                        ]
+                    ]
+                ];
             }
-            return $JOIN;
+            return $joins;
         }
 
-        if ($from_referencetype === 'Budget' && in_array($to_type, $CFG_GLPI['infocom_types'])) {
+        if ($from_referencetype === 'Budget' && in_array($to_type, $CFG_GLPI['infocom_types'], true)) {
             // From Budget to infocom_types
             $infocom_alias = "glpi_infocoms{$alias_suffix}";
-            if (!in_array($infocom_alias, $already_link_tables2)) {
-                array_push($already_link_tables2, $infocom_alias);
-                $JOIN .= "$LINK `glpi_infocoms` AS `$infocom_alias`
-                         ON (`$from_table`.`id` = `$infocom_alias`.`budgets_id`) ";
+            if (!in_array($infocom_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $infocom_alias;
+                $joins['LEFT JOIN']["`glpi_infocoms` AS `$infocom_alias`"] = [
+                    'ON' => [
+                        $from_table => 'id',
+                        $infocom_alias => 'budgets_id'
+                    ]
+                ];
             }
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$to_table`.`id` = `$infocom_alias`.`items_id`
-                             AND `$infocom_alias`.`itemtype` = '$to_type'
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $infocom_alias => 'items_id',
+                        $to_table => 'id',
+                        [
+                            'AND' => [
+                                "$infocom_alias.itemtype" => $to_type,
+                            ] + $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
-            return $JOIN;
+            return $joins;
         }
 
-        if ($to_type === 'Budget' && in_array($from_referencetype, $CFG_GLPI['infocom_types'])) {
+        if ($to_type === 'Budget' && in_array($from_referencetype, $CFG_GLPI['infocom_types'], true)) {
             // From infocom_types to Budget
             $infocom_alias = "glpi_infocoms{$alias_suffix}";
-            if (!in_array($infocom_alias, $already_link_tables2)) {
-                array_push($already_link_tables2, $infocom_alias);
-                $JOIN .= "$LINK `glpi_infocoms` AS `$infocom_alias`
-                         ON (`$from_table`.`id` = `$infocom_alias`.`items_id`
-                             AND `$infocom_alias`.`itemtype` = '$from_type') ";
+            if (!in_array($infocom_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $infocom_alias;
+                $joins['LEFT JOIN']["`glpi_infocoms` AS `$infocom_alias`"] = [
+                    'ON' => [
+                        $from_table => 'id',
+                        $infocom_alias => 'items_id',
+                        [
+                            'AND' => [
+                                "$infocom_alias.itemtype" => $from_type,
+                            ]
+                        ]
+                    ]
+                ];
             }
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$infocom_alias`.`$to_fk` = `$to_table`.`id`
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $infocom_alias => $to_fk,
+                        $to_table => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
-            return $JOIN;
+            return $joins;
         }
 
-        if ($from_referencetype === 'Reservation' && in_array($to_type, $CFG_GLPI['reservation_types'])) {
+        if ($from_referencetype === 'Reservation' && in_array($to_type, $CFG_GLPI['reservation_types'], true)) {
             // From Reservation to reservation_types
             $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
-            if (!in_array($reservationitems_alias, $already_link_tables2)) {
-                array_push($already_link_tables2, $reservationitems_alias);
-                $JOIN .= "$LINK `glpi_reservationitems` AS `$reservationitems_alias`
-                         ON (`$from_table`.`reservationitems_id` = `$reservationitems_alias`.`id`) ";
+            if (!in_array($reservationitems_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $reservationitems_alias;
+                $joins['LEFT JOIN']["`glpi_reservationitems` AS `$reservationitems_alias`"] = [
+                    'ON' => [
+                        $from_table => 'reservationitems_id',
+                        $reservationitems_alias => 'id'
+                    ]
+                ];
             }
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$to_table`.`id` = `$reservationitems_alias`.`items_id`
-                             AND `$reservationitems_alias`.`itemtype` = '$to_type'
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $reservationitems_alias => 'items_id',
+                        $to_table => 'id',
+                        [
+                            'AND' => [
+                                "$reservationitems_alias.itemtype" => $to_type,
+                            ] + $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
-            return $JOIN;
+            return $joins;
         }
 
-        if ($to_type === 'Reservation' && in_array($from_referencetype, $CFG_GLPI['reservation_types'])) {
+        if ($to_type === 'Reservation' && in_array($from_referencetype, $CFG_GLPI['reservation_types'], true)) {
             // From reservation_types to Reservation
             $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
-            if (!in_array($reservationitems_alias, $already_link_tables2)) {
-                array_push($already_link_tables2, $reservationitems_alias);
-                $JOIN .= "$LINK `glpi_reservationitems` AS `$reservationitems_alias`
-                         ON (`$from_table`.`id` = `$reservationitems_alias`.`items_id`
-                             AND `$reservationitems_alias`.`itemtype` = '$from_type') ";
+            if (!in_array($reservationitems_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $reservationitems_alias;
+                $joins['LEFT JOIN']["`glpi_reservationitems` AS `$reservationitems_alias`"] = [
+                    'ON' => [
+                        $from_table => 'id',
+                        $reservationitems_alias => 'items_id',
+                        [
+                            'AND' => [
+                                "$reservationitems_alias.itemtype" => $from_type,
+                            ]
+                        ]
+                    ]
+                ];
             }
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$reservationitems_alias`.`id` = `$to_table`.`reservationitems_id`
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $reservationitems_alias => 'id',
+                        $to_table => 'reservationitems_id',
+                        [
+                            'AND' => $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
-            return $JOIN;
+            return $joins;
         }
 
         // Generic JOIN
@@ -2363,77 +2819,129 @@ final class SQLProvider implements SearchProviderInterface
 
         if ($from_obj && $from_obj->isField($to_fk)) {
             // $from_table has a foreign key corresponding to $to_table
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$from_table`.`$to_fk` = `$to_table`.`id`
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $from_table => $to_fk,
+                        $to_table => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
         } else if ($to_obj && $to_obj->isField($from_fk)) {
             // $to_table has a foreign key corresponding to $from_table
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$from_table`.`id` = `$to_table`.`$from_fk`
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $from_table => 'id',
+                        $to_table => $from_fk,
+                        [
+                            'AND' => $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
         } else if ($from_obj && $from_obj->isField('itemtype') && $from_obj->isField('items_id')) {
             // $from_table has items_id/itemtype fields
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$from_table`.`items_id` = `$to_table`.`id`
-                             AND `$from_table`.`itemtype` = '$to_type'
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $from_table => 'items_id',
+                        $to_table => 'id',
+                        [
+                            'AND' => [
+                                "$from_table.itemtype" => $to_type,
+                            ] + $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
         } else if ($to_obj && $to_obj->isField('itemtype') && $to_obj->isField('items_id')) {
             // $to_table has items_id/itemtype fields
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$from_table`.`id` = `$to_table`.`items_id`
-                             AND `$to_table`.`itemtype` = '$from_type'
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $from_table => 'id',
+                        $to_table => 'items_id',
+                        [
+                            'AND' => [
+                                "$to_table.itemtype" => $from_type,
+                            ] + $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
         } else if ($from_item_obj && $from_item_obj->isField($from_fk)) {
             // glpi_$from_items table exists and has a foreign key corresponding to $to_table
             $items_table = $from_item_obj::getTable();
             $items_table_alias = $items_table . $alias_suffix;
-            if (!in_array($items_table_alias, $already_link_tables2)) {
-                array_push($already_link_tables2, $items_table_alias);
-                $deleted = $from_item_obj->isField('is_deleted') ? "AND `$items_table_alias`.`is_deleted` = 0" : "";
-                $JOIN .= "$LINK `$items_table` AS `$items_table_alias`
-                         ON (`$items_table_alias`.`$from_fk` = `$from_table`.`id`
-                             AND `$items_table_alias`.`itemtype` = '$to_type'
-                             $deleted)";
+            if (!in_array($items_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $items_table_alias;
+                $deleted_criteria = $from_item_obj->isField('is_deleted') ? ["`$items_table_alias`.`is_deleted`" => 0] : [];
+                $joins['LEFT JOIN']["`$items_table` AS `$items_table_alias`"] = [
+                    'ON' => [
+                        $items_table_alias => $from_fk,
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                "$items_table_alias.itemtype" => $to_type,
+                            ] + $deleted_criteria
+                        ]
+                    ]
+                ];
             }
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$items_table_alias`.`items_id` = `$to_table`.`id`
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $items_table_alias => 'items_id',
+                        $to_table => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
         } else if ($to_item_obj && $to_item_obj->isField($to_fk)) {
             // glpi_$to_items table exists and has a foreign key corresponding to $from_table
             $items_table = $to_item_obj::getTable();
             $items_table_alias = $items_table . $alias_suffix;
-            if (!in_array($items_table_alias, $already_link_tables2)) {
-                array_push($already_link_tables2, $items_table_alias);
-                $deleted = $to_item_obj->isField('is_deleted') ? "AND `$items_table_alias`.`is_deleted` = 0" : "";
-                $JOIN .= "$LINK `$items_table` AS `$items_table_alias`
-                         ON (`$items_table_alias`.`items_id` = `$from_table`.`id`
-                             AND `$items_table_alias`.`itemtype` = '$from_type'
-                             $deleted)";
+            if (!in_array($items_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $items_table_alias;
+                $deleted_criteria = $to_item_obj->isField('is_deleted') ? ["`$items_table_alias`.`is_deleted`" => 0] : [];
+                $joins['LEFT JOIN']["`$items_table` AS `$items_table_alias`"] = [
+                    'ON' => [
+                        $items_table_alias => 'items_id',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                "$items_table_alias.itemtype" => $from_type,
+                            ] + $deleted_criteria
+                        ]
+                    ]
+                ];
             }
-            if (!in_array($to_table, $already_link_tables2)) {
-                array_push($already_link_tables2, $to_table);
-                $JOIN .= "$LINK `$to_table`
-                         ON (`$items_table_alias`.`$to_fk` = `$to_table`.`id`
-                             $to_entity_restrict) ";
+            if (!in_array($to_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table;
+                $joins['LEFT JOIN'][$to_table] = [
+                    'ON' => [
+                        $items_table_alias => $to_fk,
+                        $to_table => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria
+                        ]
+                    ]
+                ];
             }
         }
 
-        return $JOIN;
+        return $joins;
     }
 
     /**
@@ -2491,6 +2999,37 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
+     * Get join criteria for dropdown translations
+     *
+     * @param string $alias    Alias for translation table
+     * @param string $table    Table to join on
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param string $field    Field name
+     *
+     * @return array
+     */
+    public static function getDropdownTranslationJoinCriteria($alias, $table, $itemtype, $field): array
+    {
+        return [
+            'LEFT JOIN' => [
+                "glpi_dropdowntranslations AS $alias" => [
+                    'ON' => [
+                        $alias => 'itemtype',
+                        new \QueryExpression("'$itemtype'"),
+                        [
+                            'AND' => [
+                                "$alias.items_id" => "$table.id",
+                                "$alias.language" => $_SESSION['glpilanguage'],
+                                "$alias.field"    => $field
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
      * Add join for dropdown translations
      *
      * @param string $alias    Alias for translation table
@@ -2515,16 +3054,15 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @param string  $LINK           link to use
      * @param string  $NOT            is is a negative search ?
-     * @param string  $itemtype       item type
+     * @param class-string<CommonDBTM>  $itemtype       item type
      * @param integer $ID             ID of the item to search
      * @param string  $searchtype     search type ('contains' or 'equals')
      * @param string  $val            value search
      *
      * @return string HAVING string
      **/
-    public static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val)
+    public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
     {
-
         global $DB;
 
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
@@ -2547,14 +3085,16 @@ final class SQLProvider implements SearchProviderInterface
                 "{$itemtype}_{$ID}"
             );
             if (!empty($out)) {
-                return $out;
+                return [
+                    new QueryExpression($out)
+                ];
             }
         }
 
         //// Default cases
         // Link with plugin tables
         if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
-            if (count($matches) == 2) {
+            if (count($matches) === 2) {
                 $plug     = $matches[1];
                 $out = \Plugin::doOneHook(
                     $plug,
@@ -2567,7 +3107,9 @@ final class SQLProvider implements SearchProviderInterface
                     "{$itemtype}_{$ID}"
                 );
                 if (!empty($out)) {
-                    return $out;
+                    return [
+                        new QueryExpression($out)
+                    ];
                 }
             }
         }
@@ -2578,9 +3120,9 @@ final class SQLProvider implements SearchProviderInterface
 
         // Preformat items
         if (isset($searchopt[$ID]["datatype"])) {
-            if ($searchopt[$ID]["datatype"] == "mio") {
+            if ($searchopt[$ID]["datatype"] === "mio") {
                 // Parse value as it may contain a few different formats
-                $val = \Toolbox::getMioSizeFromString($val);
+                $val = (string) \Toolbox::getMioSizeFromString($val);
             }
 
             switch ($searchopt[$ID]["datatype"]) {
@@ -2612,7 +3154,9 @@ final class SQLProvider implements SearchProviderInterface
                             break;
                     }
 
-                    return " {$LINK} ({$DB->quoteName($NAME)} $operator {$DB->quoteValue($val)}) ";
+                    return [
+                        $NAME => [$operator, $val]
+                    ];
                     break;
                 case "count":
                 case "mio":
@@ -2622,38 +3166,47 @@ final class SQLProvider implements SearchProviderInterface
                     $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if ($NOT) {
-                            if ($regs[1] == '<') {
+                            if ($regs[1] === '<') {
                                 $regs[1] = '>';
                             } else {
                                 $regs[1] = '<';
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return " $LINK (`$NAME` " . $regs[1] . " " . $regs[3] . " ) ";
+                        return [
+                            $NAME => [$regs[1], $regs[3]]
+                        ];
                     }
 
                     if (is_numeric($val)) {
+                        $num_val = (int) $val;
                         if (isset($searchopt[$ID]["width"])) {
                             if (!$NOT) {
-                                return " $LINK (`$NAME` < " . (intval($val) + $searchopt[$ID]["width"]) . "
-                                        AND `$NAME` > " .
-                                    (intval($val) - $searchopt[$ID]["width"]) . ") ";
+                                return [
+                                    [$NAME => ['<', $num_val + $searchopt[$ID]["width"]]],
+                                    [$NAME => ['>', $num_val - $searchopt[$ID]["width"]]]
+                                ];
                             }
-                            return " $LINK (`$NAME` > " . (intval($val) + $searchopt[$ID]["width"]) . "
-                                     OR `$NAME` < " .
-                                (intval($val) - $searchopt[$ID]["width"]) . " ) ";
+                            return [
+                                [$NAME => ['>', $num_val + $searchopt[$ID]["width"]]],
+                                [$NAME => ['<', $num_val - $searchopt[$ID]["width"]]]
+                            ];
                         }
                         // Exact search
                         if (!$NOT) {
-                            return " $LINK (`$NAME` = " . (intval($val)) . ") ";
+                            return [
+                                $NAME => $num_val
+                            ];
                         }
-                        return " $LINK (`$NAME` <> " . (intval($val)) . ") ";
+                        return [
+                            $NAME => ['<>', $num_val]
+                        ];
                     }
                     break;
             }
         }
 
-        return self::makeTextCriteria("`$NAME`", $val, $NOT, $LINK);
+        return [new QueryExpression(self::makeTextCriteria("`$NAME`", $val, $NOT, ''))];
     }
 
 
@@ -2665,30 +3218,17 @@ final class SQLProvider implements SearchProviderInterface
      *    Old functionality maintained by checking the type of the first parameter.
      *    This backwards compatibility will be removed in a later version.
      *
-     * @param string $itemtype The itemtype
+     * @param class-string<CommonDBTM> $itemtype The itemtype
      * @param array  $sort_fields The search options to order on. This array should contain one or more associative arrays containing:
      *    - id: The search option ID
      *    - order: The sort direction (Default: ASC). Invalid sort directions will be replaced with the default option
-     * @param ?integer $_id    field to add (Deprecated)
      *
-     * @return string ORDER BY query string
+     * @return array ORDER BY criteria
      *
      **/
-    public static function addOrderBy($itemtype, $sort_fields, $_id = 'ASC')
+    public static function getOrderByCriteria(string $itemtype, array $sort_fields): array
     {
         global $CFG_GLPI;
-
-        // BC parameter conversion
-        if (!is_array($sort_fields)) {
-            // < 10.0.0 parameters
-            \Toolbox::deprecated('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.');
-            $sort_fields = [
-                [
-                    'searchopt_id' => $sort_fields,
-                    'order'        => $_id
-                ]
-            ];
-        }
 
         $orderby_criteria = [];
         $searchopt = SearchOption::getOptionsForItemtype($itemtype);
@@ -2830,13 +3370,10 @@ final class SQLProvider implements SearchProviderInterface
                 }
             }
 
-            $orderby_criteria[] = $criterion ?? "`ITEM_{$itemtype}_{$ID}` $order";
+            $orderby_criteria[] = new QueryExpression($criterion ?? "`ITEM_{$itemtype}_{$ID}` $order");
         }
 
-        if (count($orderby_criteria) === 0) {
-            return '';
-        }
-        return ' ORDER BY ' . implode(', ', $orderby_criteria) . ' ';
+        return $orderby_criteria;
     }
 
     /**
@@ -2895,13 +3432,13 @@ final class SQLProvider implements SearchProviderInterface
         $already_link_tables = [$itemtable];
 
         // Add default join
-        $COMMONLEFTJOIN = self::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
+        $COMMONLEFTJOIN = \Search::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
         $FROM          .= $COMMONLEFTJOIN;
 
         // Add all table for toview items
         foreach ($data['tocompute'] as $val) {
             if (!in_array($searchopt[$val]["table"], $blacklist_tables)) {
-                $FROM .= self::addLeftJoin(
+                $FROM .= \Search::addLeftJoin(
                     $data['itemtype'],
                     $itemtable,
                     $already_link_tables,
@@ -2921,7 +3458,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Do not search on Group Name
                 if (is_array($val) && isset($val['table'])) {
                     if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
-                        $FROM .= self::addLeftJoin(
+                        $FROM .= \Search::addLeftJoin(
                             $data['itemtype'],
                             $itemtable,
                             $already_link_tables,
@@ -2940,7 +3477,7 @@ final class SQLProvider implements SearchProviderInterface
         //// 3 - WHERE
 
         // default string
-        $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
+        $COMMONWHERE = \Search::addDefaultWhere($data['itemtype']);
         $first       = empty($COMMONWHERE);
 
         // Add deleted if item have it
@@ -3014,7 +3551,7 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
         if (count($sort_fields)) {
-            $ORDER = self::addOrderBy($data['itemtype'], $sort_fields);
+            $ORDER = \Search::addOrderBy($data['itemtype'], $sort_fields);
         }
 
         $SELECT = rtrim(trim($SELECT), ',');
@@ -3376,7 +3913,7 @@ final class SQLProvider implements SearchProviderInterface
                         continue;
                     }
 
-                    $new_having = self::addHaving(
+                    $new_having = \Search::addHaving(
                         $LINK,
                         $NOT,
                         $itemtype,
@@ -3393,7 +3930,7 @@ final class SQLProvider implements SearchProviderInterface
                         continue;
                     }
 
-                    $new_where = self::addWhere(
+                    $new_where = \Search::addWhere(
                         $LINK,
                         $NOT,
                         $itemtype,
@@ -3463,7 +4000,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $tmplink = " ";
                             }
 
-                            $new_where = self::addWhere(
+                            $new_where = \Search::addWhere(
                                 $tmplink,
                                 $NOT,
                                 $itemtype,
@@ -3538,21 +4075,21 @@ final class SQLProvider implements SearchProviderInterface
             //add toview for meta criterion
             $data['meta_toview'][$m_itemtype][] = $criterion['field'];
 
-            $SELECT .= self::addSelect(
+            $SELECT .= \Search::addSelect(
                 $m_itemtype,
                 $criterion['field'],
                 true, // meta-criterion
                 $m_itemtype
             );
 
-            $FROM .= self::addMetaLeftJoin(
+            $FROM .= \Search::addMetaLeftJoin(
                 $data['itemtype'],
                 $m_itemtype,
                 $already_link_tables,
                 $sopt["joinparams"]
             );
 
-            $FROM .= self::addLeftJoin(
+            $FROM .= \Search::addLeftJoin(
                 $m_itemtype,
                 $m_itemtype::getTable(),
                 $already_link_tables,
@@ -4593,9 +5130,9 @@ final class SQLProvider implements SearchProviderInterface
                     return $tmp->getDescription($data[$ID][0]['name']);
 
                 case 'glpi_changes.status':
-                    $status = \Change::getStatus($data[$ID][0]['name']);
+                    $status = Change::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>" .
-                        \Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
+                        Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
                         "</span>";
 
                 case 'glpi_problems.status':
