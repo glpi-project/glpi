@@ -1422,4 +1422,38 @@ class DBmysqlIterator extends DbTestCase
 
         return new \QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
     }
+
+    public function testInCriteria()
+    {
+        global $DB;
+        $iterator = new \DBmysqlIterator($DB);
+        $to_sql_array = static function ($values) use ($DB) {
+            $str = '(';
+            foreach ($values as $value) {
+                $str .= $DB->quoteValue($value) . ', ';
+            }
+            return rtrim($str, ', ') . ')';
+        };
+
+        // Reguar IN
+        $criteria = [
+            'id' => [1, 2, 3]
+        ];
+        $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id']);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+
+        // Explicit IN (array form)
+        $criteria = [
+            'id' => ['IN', [1, 2, 3]]
+        ];
+        $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id'][1]);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+
+        // Explicit NOT IN (array form)
+        $criteria = [
+            'id' => ['NOT IN', [1, 2, 3]]
+        ];
+        $expected = $DB::quoteName('id') . " NOT IN " . $to_sql_array($criteria['id'][1]);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+    }
 }

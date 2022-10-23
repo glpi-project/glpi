@@ -102,6 +102,16 @@ final class SearchOption implements \ArrayAccess
         return strpos($this['field'], '_virtual') === 0;
     }
 
+    public function isForceGroupBy(): bool
+    {
+        return $this['forcegroupby'] ?? false;
+    }
+
+    public function isComputationGroupBy(): bool
+    {
+        return $this['computationgroupby'] ?? false;
+    }
+
     /**
      * Get the SEARCH_OPTION array
      *

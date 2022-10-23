@@ -118,7 +118,7 @@ class Search extends DbTestCase
          . "LEFT\s*JOIN\s*`glpi_items_operatingsystems`\s*AS\s*`glpi_items_operatingsystems_OperatingSystem`\s*"
          . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`items_id`\s*=\s*`glpi_computers`\.`id`\s*"
          . "AND `glpi_items_operatingsystems_OperatingSystem`\.`itemtype`\s*=\s*'Computer'\s*"
-         . "AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*0\s*\)\s*"
+         . "AND `glpi_items_operatingsystems_OperatingSystem`\.`is_deleted`\s*=\s*'0'\s*\)\s*"
          . "LEFT\s*JOIN\s*`glpi_operatingsystems`\s*"
          . "ON\s*\(`glpi_items_operatingsystems_OperatingSystem`\.`operatingsystems_id`\s*=\s*`glpi_operatingsystems`\.`id`\s*\)"
          . "/im");
@@ -160,7 +160,7 @@ class Search extends DbTestCase
             . 'LEFT JOIN\s*`glpi_items_softwareversions`\s*AS\s*`glpi_items_softwareversions_[^`]+_Software`\s*ON\s*\('
             . '`glpi_items_softwareversions_[^`]+_Software`\.`items_id`\s*=\s*`glpi_computers`.`id`'
             . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`itemtype`\s*=\s*\'Computer\''
-            . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`is_deleted`\s*=\s*0'
+            . '\s*AND\s*`glpi_items_softwareversions_[^`]+_Software`\.`is_deleted`\s*=\s*\'0\''
             . '\)/im');
     }
 
@@ -334,9 +334,9 @@ class Search extends DbTestCase
         $data = $this->doSearch('Computer', $search_params);
 
         $this->string($data['sql']['search'])
-         ->contains("LEFT JOIN  `glpi_users`")
-         ->contains("LEFT JOIN `glpi_profiles`  AS `glpi_profiles_")
-         ->contains("LEFT JOIN `glpi_entities`  AS `glpi_entities_");
+         ->contains("LEFT JOIN `glpi_users`")
+         ->contains("LEFT JOIN `glpi_profiles` AS `glpi_profiles_")
+         ->contains("LEFT JOIN `glpi_entities` AS `glpi_entities_");
     }
 
     public function testNestedAndMetaComputer()
@@ -420,7 +420,7 @@ class Search extends DbTestCase
          ->matches('/LEFT JOIN\s*`glpi_softwares`\s*ON\s*\(`glpi_softwareversions_Software`\.`softwares_id`\s*=\s*`glpi_softwares`\.`id`\)/im')
          ->matches('/LEFT JOIN\s*`glpi_infocoms`\s*AS\s*`glpi_infocoms_Budget`\s*ON\s*\(`glpi_computers`\.`id`\s*=\s*`glpi_infocoms_Budget`\.`items_id`\s*AND\s*`glpi_infocoms_Budget`.`itemtype`\s*=\s*\'Computer\'\)/im')
          ->matches('/LEFT JOIN\s*`glpi_budgets`\s*ON\s*\(`glpi_infocoms_Budget`\.`budgets_id`\s*=\s*`glpi_budgets`\.`id`/im')
-         ->matches('/LEFT JOIN\s*`glpi_computers_items`\s*AS `glpi_computers_items_Printer`\s*ON\s*\(`glpi_computers_items_Printer`\.`computers_id`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_computers_items_Printer`.`itemtype`\s*=\s*\'Printer\'\s*AND\s*`glpi_computers_items_Printer`.`is_deleted`\s*=\s*0\)/im')
+         ->matches('/LEFT JOIN\s*`glpi_computers_items`\s*AS `glpi_computers_items_Printer`\s*ON\s*\(`glpi_computers_items_Printer`\.`computers_id`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_computers_items_Printer`.`itemtype`\s*=\s*\'Printer\'\s*AND\s*`glpi_computers_items_Printer`.`is_deleted`\s*=\s*\'0\'\)/im')
          ->matches('/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_computers_items_Printer`\.`items_id`\s*=\s*`glpi_printers`\.`id`/im')
          // match where parts
          ->contains("`glpi_computers`.`is_deleted` = 0")
@@ -428,14 +428,14 @@ class Search extends DbTestCase
          ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
          ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
                     " AND `glpi_computers`.`entities_id` IN (0))")
-         ->contains("`glpi_computers`.`name`  LIKE '%test%'")
-         ->contains("AND (`glpi_softwares`.`id` = '10784')")
-         ->contains("OR (`glpi_computers`.`id`  LIKE '%test2%'")
+         ->contains("`glpi_computers`.`name` LIKE '%test%'")
+         ->contains("AND `glpi_softwares`.`id` = '10784'")
+         ->contains("OR (`glpi_computers`.`id` LIKE '%test2%'")
          ->contains("AND (`glpi_locations`.`id` = '11')")
          ->contains("(`glpi_users`.`id` = '2')")
          ->contains("OR (`glpi_users`.`id` = '3')")
          // match having
-         ->matches("/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
+         ->matches("/HAVING\s*`ITEM_Budget_2`\s+<>\s+'5'\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/");
     }
 
     public function testViewCriterion()
@@ -463,7 +463,7 @@ class Search extends DbTestCase
          ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
          ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
                     " AND `glpi_computers`.`entities_id` IN (0))")
-         ->matches("/`glpi_computers`\.`name`  LIKE '%test%'/")
+         ->matches("/`glpi_computers`\.`name` LIKE '%test%'/")
          ->matches("/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/")
          ->matches("/OR\s*\(`glpi_manufacturers`\.`name`\s*LIKE '%test%'\s*\)/")
@@ -1172,12 +1172,10 @@ class Search extends DbTestCase
                     ]
                 ],
                 'sql' => "LEFT JOIN `glpi_projectteams`
-                        ON (`glpi_projects`.`id` = `glpi_projectteams`.`projects_id`
-                            )
+                        ON (`glpi_projects`.`id` = `glpi_projectteams`.`projects_id`)
                       LEFT JOIN `glpi_contacts`  AS `glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`
                         ON (`glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `glpi_projectteams`.`items_id`
-                        AND `glpi_projectteams`.`itemtype` = 'Contact'
-                         )"
+                        AND `glpi_projectteams`.`itemtype` = 'Contact')"
             ]
             ],
             'special_fk' => [[
@@ -1188,7 +1186,7 @@ class Search extends DbTestCase
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [],
-                'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id` )"
+                'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id`)"
             ]
             ],
             'regular_fk' => [[
@@ -1199,7 +1197,7 @@ class Search extends DbTestCase
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [],
-                'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id` )"
+                'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)"
             ]
             ],
 
@@ -1232,13 +1230,13 @@ class Search extends DbTestCase
                 ],
                 // This is a real use case. Ensure the LEFT JOIN chain uses consistent table names (see glpi_users_users_id_validate)
                 'sql' => "LEFT JOIN `glpi_ticketvalidations` "
-                . "ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id` )"
+                . "ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`) "
                 . "LEFT JOIN `glpi_users` AS `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4` "
-                . "ON (`glpi_ticketvalidations`.`users_id_validate` = `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` ) "
+                . "ON (`glpi_ticketvalidations`.`users_id_validate` = `glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id`) "
                 . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632` "
-                . "ON (`glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id` )"
+                . "ON (`glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id`) "
                 . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48` "
-                . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id` )"
+                . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id`)"
             ]
             ],
         ];
@@ -1267,42 +1265,6 @@ class Search extends DbTestCase
            ->isEqualTo($this->cleanSQL($lj_provider['sql']));
     }
 
-    protected function addOrderByBCProvider(): array
-    {
-        return [
-         // Generic examples
-            [
-                'Computer', 5, 'ASC',
-                ' ORDER BY `ITEM_Computer_5` ASC '
-            ],
-            [
-                'Computer', 5, 'DESC',
-                ' ORDER BY `ITEM_Computer_5` DESC '
-            ],
-            [
-                'Computer', 5, 'INVALID',
-                ' ORDER BY `ITEM_Computer_5` DESC '
-            ],
-         // Simple Hard-coded cases
-            [
-                'IPAddress', 1, 'ASC',
-                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC '
-            ],
-            [
-                'IPAddress', 1, 'DESC',
-                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC '
-            ],
-            [
-                'User', 1, 'ASC',
-                ' ORDER BY `glpi_users`.`name` ASC '
-            ],
-            [
-                'User', 1, 'DESC',
-                ' ORDER BY `glpi_users`.`name` DESC '
-            ],
-        ];
-    }
-
     protected function addOrderByProvider(): array
     {
         return [
@@ -1314,7 +1276,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 5,
                         'order'        => 'ASC'
                     ]
-                ], ' ORDER BY `ITEM_Computer_5` ASC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC'
             ],
             [
                 'Computer',
@@ -1323,7 +1285,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 5,
                         'order'        => 'DESC'
                     ]
-                ], ' ORDER BY `ITEM_Computer_5` DESC '
+                ], ' ORDER BY `ITEM_Computer_5` DESC'
             ],
             [
                 'Computer',
@@ -1332,7 +1294,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 5,
                         'order'        => 'INVALID'
                     ]
-                ], ' ORDER BY `ITEM_Computer_5` DESC '
+                ], ' ORDER BY `ITEM_Computer_5` DESC'
             ],
             [
                 'Computer',
@@ -1340,7 +1302,7 @@ class Search extends DbTestCase
                     [
                         'searchopt_id' => 5,
                     ]
-                ], ' ORDER BY `ITEM_Computer_5` ASC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC'
             ],
          // Simple Hard-coded cases
             [
@@ -1350,7 +1312,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'ASC'
                     ]
-                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC '
+                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC'
             ],
             [
                 'IPAddress',
@@ -1359,7 +1321,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'DESC'
                     ]
-                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC '
+                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC'
             ],
             [
                 'User',
@@ -1368,7 +1330,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'ASC'
                     ]
-                ], ' ORDER BY `glpi_users`.`name` ASC '
+                ], ' ORDER BY `glpi_users`.`name` ASC'
             ],
             [
                 'User',
@@ -1377,7 +1339,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 1,
                         'order'        => 'DESC'
                     ]
-                ], ' ORDER BY `glpi_users`.`name` DESC '
+                ], ' ORDER BY `glpi_users`.`name` DESC'
             ],
          // Multiple sort cases
             [
@@ -1391,7 +1353,7 @@ class Search extends DbTestCase
                         'searchopt_id' => 6,
                         'order'        => 'ASC'
                     ],
-                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` ASC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` ASC'
             ],
             [
                 'Computer',
@@ -1404,82 +1366,9 @@ class Search extends DbTestCase
                         'searchopt_id' => 6,
                         'order'        => 'DESC'
                     ],
-                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` DESC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` DESC'
             ],
         ];
-    }
-
-    /**
-     * @dataProvider addOrderByBCProvider
-     */
-    public function testAddOrderByBC($itemtype, $id, $order, $expected)
-    {
-        $result = null;
-        $this->when(
-            function () use (&$result, $itemtype, $id, $order) {
-                $result = \Search::addOrderBy($itemtype, $id, $order);
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($result)->isEqualTo($expected);
-
-       // Complex cases
-        $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
-
-        $_SESSION['glpinames_format'] = \User::FIRSTNAME_BEFORE;
-        $user_order_1 = null;
-        $this->when(
-            function () use (&$user_order_1) {
-                $user_order_1 = \Search::addOrderBy('Ticket', 4, 'ASC');
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($user_order_1)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` ASC,
-                                 `$table_addtable`.`realname` ASC,
-                                 `$table_addtable`.`name` ASC ");
-
-        $user_order_2 = null;
-        $this->when(
-            function () use (&$user_order_2) {
-                $user_order_2 = \Search::addOrderBy('Ticket', 4, 'DESC');
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($user_order_2)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` DESC,
-                                 `$table_addtable`.`realname` DESC,
-                                 `$table_addtable`.`name` DESC ");
-
-        $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
-        $user_order_3 = null;
-        $this->when(
-            function () use (&$user_order_3) {
-                $user_order_3 = \Search::addOrderBy('Ticket', 4, 'ASC');
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($user_order_3)->isEqualTo(" ORDER BY `$table_addtable`.`realname` ASC,
-                                 `$table_addtable`.`firstname` ASC,
-                                 `$table_addtable`.`name` ASC ");
-        $user_order_4 = null;
-        $this->when(
-            function () use (&$user_order_4) {
-                $user_order_4 = \Search::addOrderBy('Ticket', 4, 'DESC');
-            }
-        )->error()
-         ->withType(E_USER_DEPRECATED)
-         ->withMessage('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.')
-            ->exists();
-        $this->string($user_order_4)->isEqualTo(" ORDER BY `$table_addtable`.`realname` DESC,
-                                 `$table_addtable`.`firstname` DESC,
-                                 `$table_addtable`.`name` DESC ");
     }
 
     /**
@@ -1502,7 +1391,7 @@ class Search extends DbTestCase
         ]);
         $this->string($user_order_1)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` ASC,
                                  `$table_addtable`.`realname` ASC,
-                                 `$table_addtable`.`name` ASC ");
+                                 `$table_addtable`.`name` ASC");
         $user_order_2 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1511,7 +1400,7 @@ class Search extends DbTestCase
         ]);
         $this->string($user_order_2)->isEqualTo(" ORDER BY `$table_addtable`.`firstname` DESC,
                                  `$table_addtable`.`realname` DESC,
-                                 `$table_addtable`.`name` DESC ");
+                                 `$table_addtable`.`name` DESC");
 
         $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
         $user_order_3 = \Search::addOrderBy('Ticket', [
@@ -1522,7 +1411,7 @@ class Search extends DbTestCase
         ]);
         $this->string($user_order_3)->isEqualTo(" ORDER BY `$table_addtable`.`realname` ASC,
                                  `$table_addtable`.`firstname` ASC,
-                                 `$table_addtable`.`name` ASC ");
+                                 `$table_addtable`.`name` ASC");
         $user_order_4 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1531,7 +1420,7 @@ class Search extends DbTestCase
         ]);
         $this->string($user_order_4)->isEqualTo(" ORDER BY `$table_addtable`.`realname` DESC,
                                  `$table_addtable`.`firstname` DESC,
-                                 `$table_addtable`.`name` DESC ");
+                                 `$table_addtable`.`name` DESC");
     }
 
     private function cleanSQL($sql)
@@ -1900,7 +1789,7 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => Sanitizer::sanitize('>100'),
                 'meta' => false,
-                'expected' => "AND (`glpi_items_disks`.`freesize` > 100)",
+                'expected' => "AND `glpi_items_disks`.`freesize` > 100",
             ],
             [
                 'link' => ' AND ',
@@ -1910,7 +1799,7 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => Sanitizer::sanitize('<10000'),
                 'meta' => false,
-                'expected' => "AND (`glpi_items_disks`.`freesize` < 10000)",
+                'expected' => "AND `glpi_items_disks`.`freesize` < 10000",
             ],
             [
                 'link' => ' AND ',
@@ -2028,8 +1917,8 @@ class Search extends DbTestCase
 
         $this->string($data['sql']['search'])
          // Check that we have two different joins
-         ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_lastupdater`")
-         ->contains("LEFT JOIN `glpi_users`  AS `glpi_users_users_id_recipient`")
+         ->contains("LEFT JOIN `glpi_users` AS `glpi_users_users_id_lastupdater`")
+         ->contains("LEFT JOIN `glpi_users` AS `glpi_users_users_id_recipient`")
 
          // Check that SELECT criteria applies on corresponding table alias
          ->contains("`glpi_users_users_id_lastupdater`.`realname` AS `ITEM_Ticket_64_realname`")
@@ -2080,7 +1969,7 @@ class Search extends DbTestCase
             ->contains("`$type`.`entities_id` IN ('1', '2', '3')")
             ->contains("OR (`$type`.`is_recursive`='1'" .
                         " AND `$type`.`entities_id` IN (0))")
-             ->matches("/`$type`\.`name`  LIKE '%test%'/");
+             ->matches("/`$type`\.`name` LIKE '%test%'/");
         }
     }
 
