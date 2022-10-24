@@ -46,10 +46,10 @@ use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
 use Glpi\System\Requirement\PhpVersion;
-use Glpi\System\Requirement\ProtectedWebAccess;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
+use Glpi\System\Requirement\VariableFilesProtectedPath;
 
 /**
  * @since 9.5.0
@@ -119,7 +119,7 @@ class RequirementsManager
         $requirements[] = new LogsWriteAccess($PHPLOGGER);
 
         $requirements[] = new DirectoriesWriteAccess(
-            __('Permissions for GLPI var directories'),
+            __('Permissions for GLPI variables files directories'),
             array_filter(
                 Variables::getDataDirectories(),
                 function ($directory) {
@@ -128,7 +128,7 @@ class RequirementsManager
             )
         );
 
-        $requirements[] = new ProtectedWebAccess(Variables::getDataDirectories());
+        $requirements[] = new VariableFilesProtectedPath(Variables::getDataDirectoriesConstants());
 
         $requirements[] = new SeLinux();
 
