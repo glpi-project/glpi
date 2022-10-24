@@ -1853,4 +1853,18 @@ class Session
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
     }
+
+     /**
+     * clean what needs to be cleaned on logout
+     *
+     * @since 10.0.4
+     *
+     * @return void
+     */
+    public static function cleanOnLogout()
+    {
+        Session::destroy();
+        //Remove cookie to allow new login
+        Auth::setRememberMeCookie('');
+    }
 }
