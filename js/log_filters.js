@@ -77,7 +77,7 @@ var bindFilterChange = function (target) {
         });
     $(target)
         .off('change', '.filter_row select[name^="filters\\["]')
-        .on('change', '.filter_row select[name^="filters\\["]', function(event) {
+        .on('change', '.filter_row select[name^="filters\\["]', function() {
             handleFilterChange(target);
         });
 
