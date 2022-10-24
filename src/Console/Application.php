@@ -239,7 +239,7 @@ class Application extends BaseApplication
         if ($command instanceof GlpiCommandInterface && $command->requiresUpToDateDb() && !Update::isDbUpToDate()) {
             $output->writeln(
                 '<error>'
-                . __('The version of the database is not compatible with the version of the installed files. An update is necessary.')
+                . __('The GLPI codebase has been updated. The update of the GLPI database is necessary.')
                 . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
