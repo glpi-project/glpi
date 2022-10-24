@@ -232,24 +232,24 @@ abstract class InventoryAsset
                 if (!isset($this->known_links[$known_key])) {
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
-                        $this->known_links[$known_key] = Dropdown::importExternal('Location', addslashes($value->$key), $entities_id);
+                        $this->known_links[$known_key] = Dropdown::importExternal('Location', $value->$key, $entities_id);
                     } else if (preg_match('/^.+models_id/', $key)) {
                         // models that need manufacturer relation for dictionary import
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $this->known_links[$known_key] = Dropdown::importExternal(
                             getItemtypeForForeignKeyField($key),
-                            addslashes($value->$key),
+                            $value->$key,
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
                     } else if (isset($foreignkey_itemtype[$key])) {
-                        $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
+                        $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
                     } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
                         $foreignkey_itemtype[$key] = $itemtype;
 
                         $this->known_links[$known_key] = Dropdown::importExternal(
                             $foreignkey_itemtype[$key],
-                            addslashes($value->$key),
+                            $value->$key,
                             $entities_id
                         );
 

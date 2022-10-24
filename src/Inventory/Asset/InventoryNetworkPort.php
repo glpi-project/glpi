@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 
 use DBmysqlIterator;
 use Glpi\Inventory\Conf;
+use Glpi\Toolbox\Sanitizer;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
@@ -45,7 +46,6 @@ use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
 use QueryParam;
-use Toolbox;
 use Unmanaged;
 
 trait InventoryNetworkPort
@@ -169,10 +169,10 @@ trait InventoryNetworkPort
                          'itemtype'        => $this->itemtype,
                          'items_id'        => $this->items_id,
                          'is_dynamic'      => 1,
-                         'name'            => addslashes($port->name)
+                         'name'            => $port->name,
                      ];
 
-                     $networkport->update($input);
+                     $networkport->update(Sanitizer::sanitize($input));
                      $unmanaged->delete(['id' => $unmanageds_id], true);
                 }
             }
@@ -238,7 +238,7 @@ trait InventoryNetworkPort
                      'gateway'      => $port->gateway,
                      'entities_id'  => $this->entities_id
                  ];
-                 $ipnetwork->add(Toolbox::addslashes_deep($input));
+                 $ipnetwork->add(Sanitizer::sanitize($input));
             }
         }
     }
@@ -260,7 +260,6 @@ trait InventoryNetworkPort
                 unset($input[$key]);
             }
         }
-        $input = Toolbox::addslashes_deep($input);
         $input = array_merge(
             $input,
             [
@@ -275,7 +274,7 @@ trait InventoryNetworkPort
             $input['trunk'] = 0;
         }
 
-        $netports_id = $networkport->add($input);
+        $netports_id = $networkport->add(Sanitizer::sanitize($input));
         return $netports_id;
     }
 
@@ -302,7 +301,7 @@ trait InventoryNetworkPort
             $input['name'] = $name;
         }
 
-        $netname_id = $networkname->add($input);
+        $netname_id = $networkname->add(Sanitizer::sanitize($input));
         return $netname_id;
     }
 
@@ -321,10 +320,10 @@ trait InventoryNetworkPort
             $input = [
                 'items_id'     => $items_id,
                 'itemtype'     => 'NetworkName',
-                'name'         => addslashes($ip),
+                'name'         => $ip,
                 'is_dynamic'   => 1
             ];
-            $ipaddress->add($input);
+            $ipaddress->add(Sanitizer::sanitize($input));
         }
     }
 
@@ -354,9 +353,6 @@ trait InventoryNetworkPort
             unset($row['id']);
             if (is_null($row['mac'])) {
                 $row['mac'] = '';
-            }
-            if (preg_match("/[^a-zA-Z0-9 \-_\(\)]+/", $row['name'])) {
-                $row['name'] = Toolbox::addslashes_deep($row['name']);
             }
             foreach (['name', 'mac'] as $field) {
                 if ($row[$field] !== null) {
@@ -398,10 +394,10 @@ trait InventoryNetworkPort
 
                 if (property_exists($data, 'logical_number') && $data->logical_number != $db_lnumber) {
                     $networkport->update(
-                        [
+                        Sanitizer::sanitize([
                             'id'              => $keydb,
                             'logical_number'  => $data->logical_number
-                        ]
+                        ])
                     );
                 }
 
@@ -588,9 +584,9 @@ trait InventoryNetworkPort
 
        //store instance
         if ($instance->isNewItem()) {
-            $instance->add(Toolbox::addslashes_deep($input));
+            $instance->add(Sanitizer::sanitize($input));
         } else {
-            $instance->update(Toolbox::addslashes_deep($input));
+            $instance->update(Sanitizer::sanitize($input));
         }
     }
 

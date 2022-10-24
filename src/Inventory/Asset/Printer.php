@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use CommonDBTM;
+use Glpi\Toolbox\Sanitizer;
 use IPAddress;
 use Printer as GPrinter;
 use PrinterLog;
@@ -44,7 +45,6 @@ use PrinterModel;
 use PrinterType;
 use RuleDictionnaryPrinterCollection;
 use RuleImportAssetCollection;
-use Toolbox;
 
 class Printer extends NetworkEquipment
 {
@@ -240,7 +240,7 @@ class Printer extends NetworkEquipment
                    // add printer
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $printer->add(Toolbox::addslashes_deep($this->handleInput($val, $printer)));
+                    $items_id = $printer->add(Sanitizer::sanitize($this->handleInput($val, $printer)));
                 } else {
                     $items_id = $data['found_inventories'][0];
                 }
@@ -352,9 +352,9 @@ class Printer extends NetworkEquipment
         $metrics = new PrinterLog();
         if ($metrics->getFromDBByCrit($unicity_input)) {
             $input['id'] = $metrics->fields['id'];
-            $metrics->update($input, false);
+            $metrics->update(Sanitizer::sanitize($input), false);
         } else {
-            $metrics->add($input, [], false);
+            $metrics->add(Sanitizer::sanitize($input), [], false);
         }
     }
 
@@ -375,7 +375,7 @@ class Printer extends NetworkEquipment
             $tmp['mainitemtype'] = $item::getType();
             $tmp['is_dynamic']   = 1;
             $tmp['name']         = $ipadress->getTextual();
-            if ($ipadress->getFromDBByCrit($tmp)) {
+            if ($ipadress->getFromDBByCrit(Sanitizer::sanitize($tmp))) {
                 return false;
             }
             return true;

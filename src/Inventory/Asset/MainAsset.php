@@ -44,7 +44,7 @@ use Dropdown;
 use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
-use Lockedfield;
+use Glpi\Toolbox\Sanitizer;
 use NetworkEquipment;
 use Printer;
 use RefusedEquipment;
@@ -53,7 +53,6 @@ use RuleImportEntityCollection;
 use RuleLocationCollection;
 use RuleMatchedLog;
 use stdClass;
-use Toolbox;
 use Transfer;
 
 abstract class MainAsset extends InventoryAsset
@@ -600,7 +599,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (!is_numeric($input['autoupdatesystems_id'])) {
-            $system_name = addslashes($input['autoupdatesystems_id']);
+            $system_name = Sanitizer::sanitize($input['autoupdatesystems_id']);
             $auto_update_system = new AutoUpdateSystem();
             if ($auto_update_system->getFromDBByCrit(['name' => $system_name])) {
                 // Load from DB
@@ -617,7 +616,7 @@ abstract class MainAsset extends InventoryAsset
         $refused_input['autoupdatesystems_id'] = $input['autoupdatesystems_id'];
 
         $refused = new \RefusedEquipment();
-        $refused->add(Toolbox::addslashes_deep($refused_input));
+        $refused->add(Sanitizer::sanitize($refused_input));
         $this->refused[] = $refused;
     }
 
@@ -684,7 +683,7 @@ abstract class MainAsset extends InventoryAsset
             $input = $this->handleInput($val, $this->item);
             unset($input['ap_port']);
             unset($input['firmware']);
-            $items_id = $this->item->add(Toolbox::addslashes_deep($input));
+            $items_id = $this->item->add(Sanitizer::sanitize($input));
             $this->setNew();
         }
 
@@ -743,12 +742,12 @@ abstract class MainAsset extends InventoryAsset
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
                 $input = $this->handleInput($val, $this->item);
-                $this->item->update(['id' => $input['id'],
+                $this->item->update(Sanitizer::sanitize(['id' => $input['id'],
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
                     'snmpcredentials_id'    => $input['snmpcredentials_id'],
                     'is_dynamic'            => true
-                ]);
+                ]));
                 return;
             }
         }
@@ -777,7 +776,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = $this->handleInput($val, $this->item);
-        $this->item->update(Toolbox::addslashes_deep($input));
+        $this->item->update(Sanitizer::sanitize($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
             $this->handleAssets();

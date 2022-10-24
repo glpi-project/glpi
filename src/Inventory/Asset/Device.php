@@ -35,7 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
+use Glpi\Toolbox\Sanitizer;
 use Item_Devices;
 
 abstract class Device extends InventoryAsset
@@ -99,7 +99,8 @@ abstract class Device extends InventoryAsset
 
                 //create device or get existing device ID
                 $raw_input = $this->handleInput($val, $device);
-                $device_id = $device->import(\Toolbox::addslashes_deep($raw_input) + ['with_history' => false]);
+                $device_input = Sanitizer::dbEscapeRecursive($raw_input); // `handleInput` may copy unescaped values
+                $device_id = $device->import($device_input + ['with_history' => false]);
 
                 $i_criteria = $itemdevice->getImportCriteria();
                 $fk_input = [
@@ -150,14 +151,14 @@ abstract class Device extends InventoryAsset
 
                     if ($equals === true) {
                         $itemdevice->getFromDB($existing_item['id']);
-                        $itemdevice_data = \Toolbox::addslashes_deep([
+                        $itemdevice_data = [
                             'id'                 => $existing_item['id'],
                             $fk                  => $device_id,
                             'itemtype'           => $this->item->getType(),
                             'items_id'           => $this->item->fields['id'],
                             'is_dynamic'         => 1
-                        ] + $this->handleInput($val, $itemdevice));
-                        $itemdevice->update($itemdevice_data, false);
+                        ] + $this->handleInput($val, $itemdevice);
+                        $itemdevice->update(Sanitizer::sanitize($itemdevice_data), false);
                         unset($existing[$device_id][$key]);
                         break;
                     }
@@ -165,13 +166,13 @@ abstract class Device extends InventoryAsset
 
                 if (($equals ?? false) !== true) {
                     $itemdevice->getEmpty();
-                    $itemdevice_data = \Toolbox::addslashes_deep([
+                    $itemdevice_data = [
                         $fk => $device_id,
                         'itemtype' => $this->item->getType(),
                         'items_id' => $this->item->fields['id'],
                         'is_dynamic' => 1
-                    ] + $this->handleInput($val, $itemdevice));
-                    $itemdevice->add($itemdevice_data, [], false);
+                    ] + $this->handleInput($val, $itemdevice);
+                    $itemdevice->add(Sanitizer::sanitize($itemdevice_data), [], false);
                     $this->itemdeviceAdded($itemdevice, $val);
                 }
 
@@ -181,7 +182,7 @@ abstract class Device extends InventoryAsset
             }
 
             //remove remaining devices instances
-            foreach ($existing as $deviceid => $data) {
+            foreach ($existing as $data) {
                 foreach ($data as $itemdevice_data) {
                     if ($itemdevice_data['is_dynamic'] == 1) {
                         $DB->delete(
