@@ -240,6 +240,10 @@ class Application extends BaseApplication
             $output->writeln(
                 '<error>'
                 . __('The GLPI codebase has been updated. The update of the GLPI database is necessary.')
+                . '</error>'
+                . PHP_EOL
+                . '<error>'
+                . sprintf(__('Run the "php bin/console %1$s" command to process to the update.'), 'glpi:database:update')
                 . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
