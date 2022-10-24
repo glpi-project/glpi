@@ -149,10 +149,12 @@
                     {% set fields_params = fields_params|merge({'used': (item.fields['id'] > 0 ? call('getSonsOf', [item.getTable(), item.fields['id']]) : [])}) %}
                     {{ fields.dropdownField(item, field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'icon' %}
-                    {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], fields_params) }}
-                    {% if item.fields[field['name']] is not empty %}
-                        <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}"/>
-                    {% endif %}
+                    {% set html_icon %}
+                        {% if item.fields[field['name']] is not empty %}
+                            <img alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}"/>
+                        {% endif %}
+                    {% endset %}
+                    {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'] ~ html_icon, fields_params) }}
                 {% elseif type == 'bool' %}
                     {{ fields.dropdownYesNo(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'color' %}
