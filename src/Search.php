@@ -3526,9 +3526,7 @@ JAVASCRIPT;
                 case "number":
                 case "decimal":
                 case "timestamp":
-                    $search  = ["/\&lt;/","/\&gt;/"];
-                    $replace = ["<",">"];
-                    $val     = preg_replace($search, $replace, $val);
+                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if ($NOT) {
                             if ($regs[1] == '<') {
@@ -4824,9 +4822,7 @@ JAVASCRIPT;
                            $SEARCH ) ";
 
             case "glpi_ipaddresses.name":
-                $search  = ["/\&lt;/","/\&gt;/"];
-                $replace = ["<",">"];
-                $val     = preg_replace($search, $replace, $val);
+                $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                 if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
                     if ($nott) {
                         if ($regs[1] == '<') {
@@ -5073,9 +5069,7 @@ JAVASCRIPT;
                     if (in_array($searchtype, ['equals', 'notequals'])) {
                         return " $link ($date_computation " . $SEARCH . ') ';
                     }
-                    $search  = ["/\&lt;/","/\&gt;/"];
-                    $replace = ["<",">"];
-                    $val     = preg_replace($search, $replace, $val);
+                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                         if (is_numeric($regs[2])) {
                             return $link . " $date_computation " . $regs[1] . "
@@ -5131,9 +5125,7 @@ JAVASCRIPT;
                 case "timestamp":
                 case "progressbar":
                     $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
-                    $search  = ["/\&lt;/", "/\&gt;/"];
-                    $replace = ["<", ">"];
-                    $val     = preg_replace($search, $replace, $val);
+                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
 
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
