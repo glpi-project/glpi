@@ -49,7 +49,8 @@ class Memory extends Device
             'type'         => 'devicememorytypes_id',
             'manufacturer' => 'manufacturers_id',
             'serialnumber' => 'serial',
-            'numslots'     => 'busID'
+            'numslots'     => 'busID',
+            'model'        => 'devicememorymodels_id'
         ];
 
         foreach ($this->data as $k => &$val) {

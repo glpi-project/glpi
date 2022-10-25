@@ -495,6 +495,9 @@ abstract class CommonDevice extends CommonDropdown
                         ];
                         break;
                 }
+            } else if (preg_match('/^.+models_id/', $field)) {
+                // an item having no associated model
+                $where[$field] = 'NULL';
             }
         }
 
