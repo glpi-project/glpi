@@ -386,7 +386,8 @@ abstract class InventoryAsset
         $citem = new \Computer_Item();
         $citem->getFromDBByCrit([
             'itemtype' => $input['itemtype'],
-            'items_id' => $input['items_id']
+            'items_id' => $input['items_id'],
+            'is_deleted' => 0 //do not take care of deleted computers_items (e.g. the monitor / Printer / Peripheral is connected to another computer)
         ]);
 
         $itemtype = $input['itemtype'];
