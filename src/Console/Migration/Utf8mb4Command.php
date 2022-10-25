@@ -38,7 +38,6 @@ namespace Glpi\Console\Migration;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Requirement\DbConfiguration;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -159,35 +158,29 @@ class Utf8mb4Command extends AbstractCommand
                 )
             );
 
+            $this->warnAboutExecutionTime();
             $this->askForConfirmation();
 
-           // Early update property to prevent warnings related to bad collation detection.
+            // Early update property to prevent warnings related to bad collation detection.
             $this->db->use_utf8mb4 = true;
 
-            $progress_bar = new ProgressBar($this->output);
+            $progress_message = function (string $table) {
+                return sprintf(__('Migrating table "%s"...'), $table);
+            };
 
-            foreach ($progress_bar->iterate($tables) as $table) {
-                $this->writelnOutputWithProgressBar(
-                    sprintf(__('Migrating table "%s"...'), $table),
-                    $progress_bar,
-                    OutputInterface::VERBOSITY_VERY_VERBOSE
-                );
-
+            foreach ($this->iterate($tables, $progress_message) as $table) {
                 $result = $this->db->query(
-                    sprintf('ALTER TABLE `%s` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci', $table)
+                    sprintf('ALTER TABLE %s CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci', $this->db->quoteName($table))
                 );
 
                 if (!$result) {
-                    $this->writelnOutputWithProgressBar(
+                    $this->outputMessage(
                         sprintf(__('<error>Error migrating table "%s".</error>'), $table),
-                        $progress_bar,
                         OutputInterface::VERBOSITY_QUIET
                     );
                     $errors = true;
                 }
             }
-
-            $this->output->write(PHP_EOL);
         }
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_UTF8MB4, true)) {
