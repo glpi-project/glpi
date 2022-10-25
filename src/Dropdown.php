@@ -884,8 +884,8 @@ class Dropdown
                 // templates for select2 dropdown
                 $js = <<<JAVASCRIPT
                 $(function() {
-                    formatFormIcon{$rand} = function(icon) {
-                        if (!icon.id) {
+                    const formatFormIcon = function(icon) {
+                        if (!icon.id || icon.id == '0') {
                             return icon.text;
                         }
                         var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
@@ -894,8 +894,8 @@ class Dropdown
                     };
                     $("#dropdown_{$myname}{$rand}").select2({
                         width: '60%',
-                        templateSelection: formatFormIcon{$rand},
-                        templateResult: formatFormIcon{$rand}
+                        templateSelection: formatFormIcon,
+                        templateResult: formatFormIcon
                     });
                 });
 JAVASCRIPT;
