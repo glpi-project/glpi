@@ -271,7 +271,7 @@ class Inventory
             if (method_exists($this, 'getSchemaExtraProps')) {
                 $properties = array_merge(
                     $properties,
-                    $this->getSchemaExtraProps()
+                    array_keys($this->getSchemaExtraProps())
                 );
             }
             $contents = $this->raw_data->content;
