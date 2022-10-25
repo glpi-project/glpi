@@ -294,7 +294,6 @@ class NotificationTemplate extends CommonDBTM
                //If no html content, then send only in text
                 if (!empty($template_datas['content_html'])) {
                     $signature_html = RichText::getSafeHtml($this->signature);
-                    $signature_text = RichText::getTextFromHtml($this->signature, false, false);
 
                     $template_datas['content_html'] = self::process(
                         $template_datas['content_html'],
@@ -324,6 +323,7 @@ class NotificationTemplate extends CommonDBTM
                      "\n</body></html>";
                 }
 
+                $signature_text = RichText::getTextFromHtml($this->signature, false, false);
                 $lang['content_text'] = (!empty($add_header) ? $add_header . "\n\n" : '')
                 . self::process($template_datas['content_text'], self::getDataForPlainText($data))
                 . "\n\n-- \n" . $signature_text
