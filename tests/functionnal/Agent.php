@@ -104,6 +104,56 @@ class Agent extends DbTestCase
         $this->integer($this->testedInstance->fields['use_module_collect_data'])->isIdenticalTo(0);
     }
 
+    public function testHandleAgentOnUpdate()
+    {
+        $metadata = [
+            'deviceid'  => 'glpixps-2018-07-09-09-07-13',
+            'version'   => 'FusionInventory-Agent_v2.5.2-1.fc31',
+            'itemtype'  => 'Computer',
+            'tag'       => '000006',
+            'port'       => '62354',
+            'enabled-tasks' => [
+                "inventory",
+                "remoteinventory",
+                "wakeonlan",
+                "collect",
+                "esx",
+            ]
+        ];
+
+        $this
+         ->given($this->newTestedInstance)
+            ->then
+               ->integer($this->testedInstance->handleAgent($metadata))
+               ->isGreaterThan(0);
+
+        // This should also work when inventory type is different than agent linked item type
+        $metadata['itemtype'] = 'Printer';
+
+        $this
+         ->given($this->newTestedInstance)
+            ->then
+               ->integer($this->testedInstance->handleAgent($metadata))
+               ->isGreaterThan(0);
+
+        // In the case the agent is used to submit another item type, we still
+        // need to have access to agent tag but no item should be linked
+        $tag = $this->testedInstance->fields['tag'];
+        $port = $this->testedInstance->fields['port'];
+        $items_id = $this->testedInstance->fields['items_id'];
+        $this->string($tag)->isIdenticalTo('000006');
+        $this->string($port)->isIdenticalTo('62354');
+
+        $this->integer($this->testedInstance->fields['use_module_computer_inventory'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_network_discovery'])->isIdenticalTo(0);
+        $this->integer($this->testedInstance->fields['use_module_network_inventory'])->isIdenticalTo(0);
+        $this->integer($this->testedInstance->fields['use_module_remote_inventory'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_wake_on_lan'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_esx_remote_inventory'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_package_deployment'])->isIdenticalTo(0);
+        $this->integer($this->testedInstance->fields['use_module_collect_data'])->isIdenticalTo(1);
+    }
+
     public function testAgentFeaturesFromItem()
     {
         //run an inventory
