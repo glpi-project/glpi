@@ -890,7 +890,7 @@ class Dropdown
                         }
                         var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
                         var label = '<span>'+icon.text+'</span>';
-                        return $(img+'&nbsp'+label);
+                        return $(img+'&nbsp;'+label);
                     };
                     $("#dropdown_{$myname}{$rand}").select2({
                         width: '60%',
