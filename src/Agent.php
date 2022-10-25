@@ -165,6 +165,70 @@ class Agent extends CommonDBTM
                 'datatype'      => 'text',
                 'massiveaction' => false,
             ],
+            [
+                'id'            => 17,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_wake_on_lan',
+                'name'          => __('Wake on LAN'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 18,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_computer_inventory',
+                'name'          => __('Computer inventory'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 19,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_esx_remote_inventory',
+                'name'          => __('ESX remote inventory'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 20,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_network_inventory',
+                'name'          => __('Network inventory (SNMP)'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 21,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_network_discovery',
+                'name'          => __('Network discovery (SNMP)'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 22,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_package_deployment',
+                'name'          => __('Package Deployment'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 23,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_collect_data',
+                'name'          => __('Collect data'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 24,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_remote_inventory',
+                'name'          => __('Remote inventory'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ]
 
         ];
 
@@ -346,6 +410,17 @@ class Agent extends CommonDBTM
 
         if (isset($metadata['port'])) {
             $input['port'] = $metadata['port'];
+        }
+
+        if (isset($metadata['enabled-tasks'])) {
+            $input['use_module_computer_inventory']   = in_array("inventory", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_network_discovery']    = in_array("netdiscovery", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_network_inventory']    = in_array("netinventory", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_remote_inventory']     = in_array("remoteinventory", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_wake_on_lan']          = in_array("wakeonlan", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_esx_remote_inventory'] = in_array("esx", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_package_deployment']   = in_array("deploy", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_collect_data']         = in_array("collect", $metadata['enabled-tasks']) ? 1 : 0;
         }
 
         $remote_ip = "";

@@ -61,7 +61,14 @@ class Agent extends DbTestCase
             'version'   => 'FusionInventory-Agent_v2.5.2-1.fc31',
             'itemtype'  => 'Computer',
             'tag'       => '000005',
-            'port'       => '62354'
+            'port'       => '62354',
+            'enabled-tasks' => [
+                "inventory",
+                "netdiscovery",
+                "netinventory",
+                "remoteinventory",
+                "wakeonlan",
+            ]
         ];
 
         $this
@@ -86,7 +93,15 @@ class Agent extends DbTestCase
         $items_id = $this->testedInstance->fields['items_id'];
         $this->string($tag)->isIdenticalTo('000005');
         $this->string($port)->isIdenticalTo('62354');
-        $this->integer($items_id)->isIdenticalTo(0);
+
+        $this->integer($this->testedInstance->fields['use_module_computer_inventory'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_network_discovery'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_network_inventory'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_remote_inventory'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_wake_on_lan'])->isIdenticalTo(1);
+        $this->integer($this->testedInstance->fields['use_module_esx_remote_inventory'])->isIdenticalTo(0);
+        $this->integer($this->testedInstance->fields['use_module_package_deployment'])->isIdenticalTo(0);
+        $this->integer($this->testedInstance->fields['use_module_collect_data'])->isIdenticalTo(0);
     }
 
     public function testAgentFeaturesFromItem()

@@ -123,6 +123,8 @@
             field_options
         ) }}
 
+        <h2 class="header">{{ __('Agent configuration') }}</h2>
+
         {% for netfield, netlabel in {
             'threads_networkdiscovery': __('Network discovery threads'),
             'timeout_networkdiscovery': __('Network discovery timeout'),
@@ -144,6 +146,26 @@
                         general
                     ]
                 })
+            ) }}
+        {% endfor %}
+
+        <h2 class="header">{{ __('Installed modules') }}</h2>
+
+        {% for modulefield, modulelabel in {
+            'use_module_wake_on_lan': __('Wake on LAN'),
+            'use_module_computer_inventory': __('Computer inventory'),
+            'use_module_esx_remote_inventory': __('ESX remote inventory'),
+            'use_module_network_inventory': __('Network inventory (SNMP)'),
+            'use_module_network_discovery': __('Network discovery (SNMP)'),
+            'use_module_package_deployment': __('Package Deployment'),
+            'use_module_collect_data': __('Collect data'),
+            'use_module_remote_inventory': __('Remote inventory'),
+        } %}
+            {{ fields.checkboxField(
+                modulefield,
+                item.fields[modulefield],
+                modulelabel,
+                field_options|merge({'disabled': 'disabled'})
             ) }}
         {% endfor %}
     {% endif %}
