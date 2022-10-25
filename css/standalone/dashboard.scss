@@ -302,15 +302,7 @@ $break_tablet: 1400px;
         i.far,
         i.fa-regular,
         i.ti {
-            font-size: 1.35em;
-            cursor: pointer;
-            padding: 5px;
             margin-left: 5px;
-            border: 2px solid transparent;
-
-            &.ti {
-                font-size: 1.75em;
-            }
 
             @media screen and (max-width: $break_phones) {
                 display: none;

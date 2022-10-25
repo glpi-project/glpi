@@ -64,7 +64,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set merged_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
                      </span>
                   {% endset %}
@@ -76,7 +76,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set promoted_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
                      </span>
                   {% endset %}

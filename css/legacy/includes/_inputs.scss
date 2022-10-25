@@ -90,7 +90,7 @@ input.submit,
    white-space: nowrap;
    background-color: $primary;
    color: color-contrast($primary);
-   border: $btn-border-width solid $border-color-dark-transparent;
+   border: $btn-border-width solid $border-color-translucent;
    border-radius: $btn-border-radius;
    font-family: $btn-font-family;
    font-weight: $btn-font-weight;

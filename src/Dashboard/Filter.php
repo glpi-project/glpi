@@ -262,7 +262,9 @@ JAVASCRIPT;
       <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
          $field
          <legend>$label</legend>
-         <i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash delete-filter'></i>
+         <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter">
+            <i class='ti ti-trash'></i>
+         </button>
          {$js}
       </fieldset>
 HTML;

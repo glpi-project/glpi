@@ -2300,7 +2300,7 @@ class User extends CommonDBTM
                      class="btn btn-icon btn-sm btn-ghost-secondary"
                      title="{$vcard_lbl}"
                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-               <i class="far fa-address-card fa-lg"></i>
+               <i class="ti ti-id fa-lg"></i>
             </a>
 HTML;
             $toolbar[] = $vcard_btn;
@@ -2318,7 +2318,7 @@ HTML;
                             class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                             title="{$impersonate_lbl}"
                             data-bs-toggle="tooltip" data-bs-placement="bottom">
-                            <i class="fas fa-user-secret fa-lg"></i>
+                            <i class="ti ti-spy fa-lg"></i>
                         </button>
                     </form>
 HTML;
@@ -2342,7 +2342,7 @@ JAVASCRIPT;
                        class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
                        title="{$error_message}"
                        data-bs-toggle="tooltip" data-bs-placement="bottom">
-                  <i class="fas fa-user-secret fa-lg"></i>
+                  <i class="ti ti-spy fa-lg"></i>
                </button>
 HTML;
                 $toolbar[] = $impersonate_btn;
