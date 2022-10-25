@@ -564,7 +564,7 @@ abstract class API
      *    - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
      *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
      *    - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optionnal.
-     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
+     *    - 'with_connections': Only for Computer and NetworkPort, retrieve the associated direct connections (like peripherals, printers and other networkport) .Optionnal.
      *    - 'with_networkports':Retrieve all network connections and advanced informations. Optionnal.
      *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
      *    - 'with_contracts':   Retrieve associated contracts. Optionnal.
@@ -738,40 +738,50 @@ abstract class API
         if (
             isset($params['with_connections'])
             && $params['with_connections']
-            && $itemtype == "Computer"
         ) {
-            $fields['_connections'] = [];
-            foreach ($CFG_GLPI["directconnect_types"] as $connect_type) {
-                $connect_item = new $connect_type();
-                if ($connect_item->canView()) {
-                    $connect_table = getTableForItemType($connect_type);
-                    $iterator = $DB->request([
-                        'SELECT'    => [
-                            'glpi_computers_items.id AS assoc_id',
-                            'glpi_computers_items.computers_id AS assoc_computers_id',
-                            'glpi_computers_items.itemtype AS assoc_itemtype',
-                            'glpi_computers_items.items_id AS assoc_items_id',
-                            'glpi_computers_items.is_dynamic AS assoc_is_dynamic',
-                            "$connect_table.*"
-                        ],
-                        'FROM'      => 'glpi_computers_items',
-                        'LEFT JOIN' => [
-                            $connect_table => [
-                                'ON' => [
-                                    'glpi_computers_items'  => 'items_id',
-                                    $connect_table          => 'id'
+            if ($itemtype == "Computer") {
+                $fields['_connections'] = [];
+                foreach ($CFG_GLPI["directconnect_types"] as $connect_type) {
+                    $connect_item = new $connect_type();
+                    if ($connect_item->canView()) {
+                        $connect_table = getTableForItemType($connect_type);
+                        $iterator = $DB->request([
+                            'SELECT'    => [
+                                'glpi_computers_items.id AS assoc_id',
+                                'glpi_computers_items.computers_id AS assoc_computers_id',
+                                'glpi_computers_items.itemtype AS assoc_itemtype',
+                                'glpi_computers_items.items_id AS assoc_items_id',
+                                'glpi_computers_items.is_dynamic AS assoc_is_dynamic',
+                                "$connect_table.*"
+                            ],
+                            'FROM'      => 'glpi_computers_items',
+                            'LEFT JOIN' => [
+                                $connect_table => [
+                                    'ON' => [
+                                        'glpi_computers_items'  => 'items_id',
+                                        $connect_table          => 'id'
+                                    ]
                                 ]
+                            ],
+                            'WHERE'     => [
+                                'computers_id'                      => $id,
+                                'itemtype'                          => $connect_type,
+                                'glpi_computers_items.is_deleted'   => 0
                             ]
-                        ],
-                        'WHERE'     => [
-                            'computers_id'                      => $id,
-                            'itemtype'                          => $connect_type,
-                            'glpi_computers_items.is_deleted'   => 0
-                        ]
-                    ]);
-                    foreach ($iterator as $data) {
-                        $fields['_connections'][$connect_type][] = $data;
+                        ]);
+                        foreach ($iterator as $data) {
+                            $fields['_connections'][$connect_type][] = $data;
+                        }
                     }
+                }
+            } else if ($itemtype == 'NetworkPort') {
+                $networkport_networkport = new \NetworkPort_NetworkPort();
+                $opposite_networkport_id = $networkport_networkport->getOppositeContact($id);
+                if ($opposite_networkport_id) {
+                    $fields['_connections']['NetworkPort'][] = [
+                        'id'       => $opposite_networkport_id,
+                        'assoc_id' => $networkport_networkport->fields['id']
+                    ];
                 }
             }
         }
@@ -1344,7 +1354,7 @@ abstract class API
      *    - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
      *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
      *    - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optionnal.
-     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
+     *    - 'with_connections':  Only for Computer and NetworkPort, retrieve the associated direct connections (like peripherals, printers and other networkport) .Optionnal.
      *    - 'with_networkports': Retrieve all network connections and advanced informations. Optionnal.
      *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
      *    - 'with_contracts':    Retrieve associated contracts. Optionnal.

@@ -507,7 +507,7 @@ $ curl -X GET \
   * *with_devices*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
   * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
-  * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+  * *with_connections*: Only for Computer and NetworkPort, retrieve the associated direct connections (like peripherals, printers and other networkport) .Optional.
   * *with_networkports*: Retrieve all network connections and advanced information. Optionnal.
   * *with_infocoms*: Retrieve financial and administrative information. Optional.
   * *with_contracts*: Retrieve associated contracts. Optional.
@@ -784,7 +784,7 @@ $ curl -X GET \
   * *with_devices*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
   * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
-  * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+  * *with_connections*: Only for Computer and NetworkPort, retrieve the associated direct connections (like peripherals, printers and other networkport) .Optional.
   * *with_networkports*: Retrieve all network connections and advanced information. Optionnal.
   * *with_infocoms*: Retrieve financial and administrative information. Optional.
   * *with_contracts*: Retrieve associated contracts. Optional.
