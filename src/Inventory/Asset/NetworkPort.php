@@ -250,8 +250,25 @@ class NetworkPort extends InventoryAsset
             $rule->getCollectionPart();
             $rule->processAllRules($input, [], ['class' => $this]);
 
-            if (count($this->connection_ports)) {
-                $connections_id = current(current($this->connection_ports));
+            if (count($this->connection_ports) != 1) {
+                continue;
+            }
+
+            $connection_ports = current($this->connection_ports);
+            if (count($connection_ports) == 1) { // single NetworkPort
+                $connections_id = current($connection_ports);
+            } else { // multiple NetworkPorts
+                $networkPort = new \NetworkPort();
+                foreach (array_keys($connection_ports) as $k) {
+                    $networkPort->getFromDB($k);
+                    if ($networkPort->fields['logical_number'] > 0) {
+                        $connections_id = $k;
+                        break;
+                    }
+                }
+            }
+
+            if ($connections_id) {
                 $this->addPortsWiring($netports_id, $connections_id);
             }
         }
@@ -299,7 +316,35 @@ class NetworkPort extends InventoryAsset
             if (isset($this->connections['NetworkEquipment'])) {
                 return;
             }
-            $this->handleHub($found_macs, $netports_id);
+
+            // see if we got a mix of different device types (other than computers)
+            if (!(isset($this->connection_ports['Computer']) && count($this->connection_ports) == 1)) {
+                $this->handleHub($found_macs, $netports_id);
+                return;
+            }
+
+            $item_ids = [];
+            $real_port_ids = [];
+            foreach (array_keys($found_macs) as $k) {
+                $networkPort = new \NetworkPort();
+                $networkPort->getFromDB($k);
+
+                $items_ids[$networkPort->fields['items_id']] = null;
+                if ($networkPort->fields['logical_number'] > 0) {
+                    $real_port_ids[$networkPort->fields['id']] = null;
+                }
+            }
+
+            // multiple computers mean a hub
+            if (count($items_ids) > 1) {
+                $this->handleHub($found_macs, $netports_id);
+            } else if (count($real_port_ids) == 1) {
+                // the only remaining option is multiple macs on the same computer,
+                $this->addPortsWiring($netports_id, array_key_first($real_port_ids));
+            } else if (count($real_port_ids) > 1) {
+                trigger_error('Multiple non-virtual NetworkPorts on the computer', E_USER_WARNING);
+                return;
+            }
         } else { // One mac on port
             if (count($this->connection_ports)) {
                 $connections_id = current(current($this->connection_ports));
@@ -547,9 +592,9 @@ class NetworkPort extends InventoryAsset
      * @param integer $items_id id of the item (0 if new)
      * @param string  $itemtype Item type
      * @param integer $rules_id Matched rule id, if any
-     * @param integer $ports_id Matched port id, if any
+     * @param array   $ports_id Matched port ids, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         $netport = new \NetworkPort();
         if (empty($itemtype)) {
@@ -585,7 +630,7 @@ class NetworkPort extends InventoryAsset
             $rulesmatched->cleanOlddata($items_id, $itemtype);
         }
 
-        if (!$ports_id) {
+        if (!count($ports_id)) {
            //create network port
             $input = [
                 'items_id'           => $items_id,
@@ -616,13 +661,15 @@ class NetworkPort extends InventoryAsset
             if (property_exists($port, 'mac') && !empty($port->mac)) {
                 $input['mac'] = $port->mac;
             }
-            $ports_id = $netport->add(Sanitizer::sanitize($input));
+            $ports_id[] = $netport->add(Sanitizer::sanitize($input));
         }
 
         if (!isset($this->connection_ports[$itemtype])) {
             $this->connection_ports[$itemtype] = [];
         }
-        $this->connection_ports[$itemtype][$ports_id] = $ports_id;
+        foreach ($ports_id as $pid) {
+            $this->connection_ports[$itemtype][$pid] = $pid;
+        }
     }
 
     /**
