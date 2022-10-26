@@ -378,7 +378,7 @@ class DatabaseInstance extends CommonDBTM
             'id'                 => '6',
             'table'              => DatabaseInstance::getTable(),
             'field'              => 'version',
-            'name'               => __('Version'),
+            'name'               => _n('Version', 'Versions', 1),
             'datatype'           => 'text'
         ];
 
