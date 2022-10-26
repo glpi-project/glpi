@@ -354,6 +354,13 @@ class Update
             );
         }
 
+        $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
+        $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
+        if (!file_exists($private_key_path) && !file_exists($public_key_path)) {
+            $this->migration->displayMessage("Generating OAuth keys");
+            \Glpi\OAuth\Server::generateKeys();
+        }
+
         // Check if schema has differences from the expected one but do not block the upgrade
         $this->checkSchemaIntegrity();
     }

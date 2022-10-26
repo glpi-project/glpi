@@ -498,6 +498,7 @@ class GLPIKey extends \DbTestCase
             [
                 'glpi_authldaps.rootdn_passwd',
                 'glpi_mailcollectors.passwd',
+                'glpi_oauthclients.secret',
                 'glpi_snmpcredentials.auth_passphrase',
                 'glpi_snmpcredentials.priv_passphrase',
                 'glpi_plugin_myplugin_remote.key',

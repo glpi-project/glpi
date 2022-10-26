@@ -9478,6 +9478,55 @@ CREATE TABLE `glpi_changesatisfactions` (
    UNIQUE KEY `changes_id` (`changes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_oauth_access_tokens`;
+CREATE TABLE `glpi_oauth_access_tokens` (
+   `identifier` varchar(255) NOT NULL,
+   `client` varchar(255) NOT NULL,
+   `date_expiration` timestamp NOT NULL,
+   `user_identifier` varchar(255) DEFAULT NULL,
+   `scopes` text DEFAULT NULL,
+   PRIMARY KEY (`identifier`),
+   KEY `client` (`client`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_oauth_refresh_tokens`;
+CREATE TABLE `glpi_oauth_refresh_tokens` (
+   `identifier` varchar(255) NOT NULL,
+   `access_token` varchar(255) NOT NULL,
+   `date_expiration` timestamp NOT NULL,
+   PRIMARY KEY (`identifier`),
+   KEY `access_token` (`access_token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_oauth_auth_codes`;
+CREATE TABLE `glpi_oauth_auth_codes` (
+   `identifier` varchar(255) NOT NULL,
+   `client` varchar(255) NOT NULL,
+   `date_expiration` timestamp NOT NULL,
+   `user_identifier` varchar(255) DEFAULT NULL,
+   `scopes` text DEFAULT NULL,
+   PRIMARY KEY (`identifier`),
+   KEY `client` (`client`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_oauthclients`;
+CREATE TABLE `glpi_oauthclients` (
+   `identifier` varchar(255) NOT NULL,
+   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Internal GLPI ID',
+   `name` varchar(255) NOT NULL DEFAULT '',
+   `comment` text DEFAULT NULL,
+   `secret` varchar(255) NOT NULL,
+   `redirect_uri` varchar(255) NOT NULL,
+   `grants` text NOT NULL,
+   `scopes` text NOT NULL,
+   `is_active` tinyint NOT NULL DEFAULT '1',
+   `is_confidential` tinyint NOT NULL DEFAULT '1',
+   PRIMARY KEY (`identifier`),
+   KEY `id` (`id`),
+   KEY `name` (`name`),
+   KEY `is_active` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_validatorsubstitutes`;
 CREATE TABLE `glpi_validatorsubstitutes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,

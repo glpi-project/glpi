@@ -726,14 +726,11 @@ class Auth extends CommonGLPI
      * If testing more than one set of credentials, it is best to use a new Auth object for each set of credentials.
      * The {@link user} property may have some updated fields set here, but they will not be saved to the database
      * (unless this function was called by {@link login()} in which case the login function will trigger the update).
-     *
      * @param string $login_name Login
      * @param string $login_password Password
      * @param bool $noauto
      * @param string $login_auth Type of auth
      * @return bool True if the user could log in, false otherwise
-     *
-     * @return boolean (success)
      */
     public function validateLogin(string $login_name, string $login_password, bool $noauto = false, string $login_auth = ''): bool
     {

@@ -386,12 +386,18 @@ class DB extends \GLPITestCase
         $this->object($list)->isInstanceOf(\DBmysqlIterator::class);
         $this->integer(count($list))->isGreaterThan(200);
 
+        // Tables that don't have an itemtype on purpose
+        $excluded_tables = [
+            'glpi_appliancerelations', 'glpi_oauth_access_tokens', 'glpi_oauth_auth_codes',
+            'glpi_oauth_refresh_tokens',
+        ];
+
        //check if each table has a corresponding itemtype
         foreach ($list as $line) {
             $this->array($line)
             ->hasSize(1);
             $table = $line['TABLE_NAME'];
-            if ($table == 'glpi_appliancerelations') {
+            if (in_array($table, $excluded_tables, true)) {
                 //FIXME temporary hack for unit tests
                 continue;
             }

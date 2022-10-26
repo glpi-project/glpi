@@ -1,0 +1,64 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Display OAuth authorization prompt #}
+
+{% extends 'layout/page_card_notlogged.html.twig' %}
+
+{% block content_block %}
+   <form method="post">
+      <div class="card">
+         <div class="card-header">
+            <h3 class="card-title">{{ __('%s wants to access your GLPI account')|format(client.name) }}</h3>
+            <h4 class="card-subtitle">
+               {{ include('components/user/picture.html.twig', {
+                  'users_id': user.fields['id'],
+                  'with_link': false,
+                  'avatar_size': '',
+               }) }}
+               <span class="ms-2">{{ get_item_name(user) }}</span>
+            </h4>
+         </div>
+         <div class="card-body">
+            {# TODO Implement scopes #}
+            <p>{{ __('This application will be able to access your account and perform actions on your behalf') }}</p>
+         </div>
+         <div class="card-footer">
+            <div class="d-flex justify-content-end">
+               <button type="submit" name="accept" class="btn btn-primary">{{ __('Accept') }}</button>
+               <button type="submit" name="deny" class="btn btn-secondary ms-2">{{ __('Deny') }}</button>
+            </div>
+         </div>
+      </div>
+   </form>
+{% endblock %}
