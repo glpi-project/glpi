@@ -4070,4 +4070,11 @@ class Entity extends CommonTreeDropdown
          implode('<i class="fas fa-caret-right mx-1"></i>', $split) .
         "</span>";
     }
+
+    public static function badgeCompletenameFromID(int $entity_id): string
+    {
+        $entity = new self();
+        $entity->getFromDB($entity_id);
+        return self::badgeCompletename($entity->fields['completename']);
+    }
 }

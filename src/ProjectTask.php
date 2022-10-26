@@ -1891,6 +1891,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
        // $val['content'] has already been sanitized and decoded by self::populatePlanning()
         $content = $val['content'];
         $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
+
+        $parent = getItemForItemtype($val['itemtype']);
+        $parent->getFromDB($val[$parent->getForeignKeyField()]);
+        $html .= $parent->getLink(['icon' => true, 'forceid' => true]) . "<br>";
+        $html .= "<span>" . Entity::badgeCompletenameFromID($parent->getEntityID()) . "</span><br>";
         return $html;
     }
 

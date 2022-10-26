@@ -1401,6 +1401,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
         $html .= $recall;
 
+        $parent->getFromDB($val[$parent->getForeignKeyField()]);
+        $html .= $parent->getLink(['icon' => true, 'forceid' => true]) . "<br>";
+        $html .= "<span>" . Entity::badgeCompletenameFromID($parent->getEntityID()) . "</span><br>";
         return $html;
     }
 
