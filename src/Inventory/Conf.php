@@ -620,7 +620,7 @@ class Conf extends CommonGLPI
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td colspan='4'>";
+        echo "<td colspan='4' style='text-align:right;'>";
         echo "<span class='red'>" . __('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!') . "</span>";
         echo "</td>";
         echo "</tr>";
