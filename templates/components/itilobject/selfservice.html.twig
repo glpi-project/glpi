@@ -129,14 +129,14 @@
                      'value': params['type'],
                      'width': '100%',
                      'display': false,
-                     'on_change': 'this.form.submit()',
+                     'on_change': 'reloadForm(this.form)',
                   }|merge(right_field_options)),
                   _n('Type', 'Types', 1),
                   right_field_options
                ) }}
 
                {% set cat_params = right_field_options|merge({
-                  'on_change': 'this.form.submit()',
+                  'on_change': 'reloadForm(this.form)',
                }) %}
                {% set condition = {
                   'is_helpdeskvisible': 1
@@ -281,4 +281,11 @@ $(function () {
 
     saveActorsToDom();
 });
+
+var reloadForm = function(form) {
+    // append an hidden input to identify the action of reloading the form
+    $(form).append('<input type="hidden" name="reload_form" value="1" /> ');
+    form.submit();
+    return true;
+};
 </script>
