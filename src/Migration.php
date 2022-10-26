@@ -1476,7 +1476,7 @@ class Migration
             foreach ($fkey_column_array as $fkey_column) {
                 $fkey_table   = $fkey_column['TABLE_NAME'];
                 $fkey_oldname = $fkey_column['COLUMN_NAME'];
-                $fkey_newname = preg_replace('/^' . preg_quote($old_fkey) . '/', $new_fkey, $fkey_oldname);
+                $fkey_newname = preg_replace('/^' . preg_quote($old_fkey, '/') . '/', $new_fkey, $fkey_oldname);
                 if ($DB->fieldExists($fkey_table, $fkey_newname)) {
                     throw new \RuntimeException(
                         sprintf(
@@ -1500,7 +1500,7 @@ class Migration
             foreach ($fkey_column_array as $fkey_column) {
                 $fkey_table   = $fkey_column['TABLE_NAME'];
                 $fkey_oldname = $fkey_column['COLUMN_NAME'];
-                $fkey_newname = preg_replace('/^' . preg_quote($old_fkey) . '/', $new_fkey, $fkey_oldname);
+                $fkey_newname = preg_replace('/^' . preg_quote($old_fkey, '/') . '/', $new_fkey, $fkey_oldname);
 
                 if ($fkey_table == $old_table) {
                   // Special case, foreign key is inside renamed table, use new name
