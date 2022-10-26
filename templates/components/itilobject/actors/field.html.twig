@@ -47,7 +47,7 @@
 
 {% set onchange = '' %}
 {% if item.isNewItem() %}
-   {% set onchange = 'this.form.submit();' %}
+   {% set onchange = 'reloadForm(this.form);' %}
 {% endif %}
 
 {% if not is_actor_hidden %}

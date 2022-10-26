@@ -70,7 +70,7 @@
                      _n('Entity', 'Entities', 1),
                      field_options|merge({
                         'entity': userentities,
-                        'on_change': 'this.form.submit()',
+                        'on_change': 'reloadForm(this.form)',
                      })
                   ) }}
                {% else %}
@@ -141,7 +141,7 @@
                   'display': false
                }|merge(field_options) %}
                {% if item.isNewItem() %}
-                  {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
+                  {% set type_params = type_params|merge({'on_change': 'reloadForm(this.form)',}) %}
                {% else %}
                   {% set type_params = type_params|merge({'on_change': 'reloadCategory()',}) %}
                {% endif %}
@@ -159,7 +159,7 @@
             }) %}
             {% if item.isNewItem() %}
                {% set cat_params = cat_params|merge({
-                  'on_change': 'this.form.submit()',
+                  'on_change': 'reloadForm(this.form)',
                }) %}
             {% endif %}
             {% if not item.isNewItem() and itiltemplate.isMandatoryField('itilcategories_id') and item.fields['itilcategories_id'] > 0 %}
@@ -469,5 +469,12 @@ var reloadCategory = function() {
             'value': {{ item.fields['itilcategories_id'] }},
         }
     );
+};
+
+var reloadForm = function(form) {
+    // append an hidden input to identify the action of reloading the form
+    $(form).append('<input type="hidden" name="reload_form" value="1" /> ');
+    form.submit();
+    return true;
 };
 </script>
