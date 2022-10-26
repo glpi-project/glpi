@@ -36,6 +36,8 @@
 namespace Glpi\Console\Database;
 
 use CommonDBTM;
+use ITILFollowup;
+use Ticket;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -77,6 +79,8 @@ class FixHtmlEncodingCommand extends AbstractCommand
      * @var integer
      */
     const ERROR_ROLLBACK_FILE_FAILED = 5;
+
+    private array $failed_items = [];
 
     protected function configure()
     {
@@ -124,42 +128,19 @@ class FixHtmlEncodingCommand extends AbstractCommand
         $this->checkArguments();
 
         $itemtype = $input->getOption('itemtype');
-        $item_ids = $input->getOption('id');
-        $fields = $input->getOption('field');
 
         if ($input->getOption('dump')) {
             $this->dumpObjects();
         }
 
-        $failed_items = [];
-        foreach ($item_ids as $item_id) {
-            $item = new $itemtype();
-            $item->getFromDB($item_id);
+        $this->fixItems();
 
-            // update the item
-            $update = [];
-            foreach ($fields as $field) {
-                $update[$field] = $this->doubleEncoding($item->fields[$field]);
-                $update[$field] = $DB->escape($update[$field]);
-            }
-
-            $success = $DB->update(
-                $itemtype::getTable(),
-                $update,
-                ['id' => $item->fields['id']],
-            );
-            if (!$success) {
-                $failed_items[] = $item_id;
-                continue;
-            }
-        }
-
-        if (count($failed_items) > 0) {
+        if (count($this->failed_items) > 0) {
             $this->output->writeln(
-                '<error>' . sprintf(__('Unable to update %s items'), count($failed_items)) . '</error>',
+                '<error>' . sprintf(__('Unable to update %s items'), count($this->failed_items)) . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
-            foreach ($failed_items as $item_id) {
+            foreach ($this->failed_items as $item_id) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Itemtype %s ID %s'), $itemtype, $item_id) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
@@ -275,6 +256,60 @@ class FixHtmlEncodingCommand extends AbstractCommand
         }
     }
 
+    private function fixItems()
+    {
+        $itemtype = $this->input->getOption('itemtype');
+        $item_ids = $this->input->getOption('id');
+
+        foreach ($item_ids as $item_id) {
+            $item = new $itemtype();
+            if (!$item->getFromDB($item_id)) {
+                $this->failed_items[] = $item_id;
+                continue;
+            }
+            $this->fixOneItem($item);
+        }
+    }
+
+    private function fixOneItem(CommonDBTM $item)
+    {
+        global $DB;
+
+        $itemtype = $this->input->getOption('itemtype');
+        $fields = $this->input->getOption('field');
+
+        // update the item
+        $update = [];
+        foreach ($fields as $field) {
+            $update[$field] = $this->fixOneField($item, $field);
+            $update[$field] = $DB->escape($update[$field]);
+        }
+
+        $success = $DB->update(
+            $itemtype::getTable(),
+            $update,
+            ['id' => $item->fields['id']],
+        );
+        if (!$success) {
+            $failed_items[] = $item->getID();
+        }
+    }
+
+    private function fixOneField(CommonDBTM $item, string $field)
+    {
+        $new_value = $item->fields[$field];
+
+        $new_value = $this->doubleEncoding($new_value);
+
+        if (in_array($item::getType(), [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
+            $new_value = $this->fixEmailHeadersEncoding($new_value);
+        }
+
+        $new_value = $this->fixQuoteEntityWithoutSemicolon($new_value);
+
+        return $new_value;
+    }
+
     /**
      * Remove double encoding of HTML tags
      * character < is encoded &#38;lt; but should be encoded &#60;
@@ -297,5 +332,60 @@ class FixHtmlEncodingCommand extends AbstractCommand
             '&#62;',
         ];
         return preg_replace($pattern, $replace, $input);
+    }
+
+    /**
+     * Fix double encoded HTML entities in old followups
+     * @see https://github.com/glpi-project/glpi/issues/8330
+     *
+     * @param string $input
+     * @return string
+     */
+    private function fixEmailHeadersEncoding(string $input): string
+    {
+        $output = $input;
+
+        // Not very strict pattern for emails, but should be enough
+        // Capturing parentheses:
+        // 1: Triple encoded < character
+        // 2: email address
+        // 3: Triple encoded > character
+        $pattern = '/(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)/';
+        $replace = '&amp;lt;${2}&amp;gt;';
+        $output = preg_replace($pattern, $replace, $output);
+        // Triple encoded should be now double encoded
+
+        // Not very strict pattern for emails, but should be enough
+        // Capturing parentheses:
+        // 1: Double encoded < character
+        // 2: email address
+        // 3: Double encoded > character
+        $pattern = '/(&amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&amp;gt;)/';
+        $replace = '&lt;${2}&gt;';
+        $output = preg_replace($pattern, $replace, $output);
+
+        return $output;
+    }
+
+    /**
+     * Fix &quot; HTML entity without its final semicolon
+     * @see https://github.com/glpi-project/glpi/pull/6084
+     *
+     * The pattern searches for &quot (without semicolon) found only between encoded < and >
+     * Therefore any ocurence found between HTML tabs are ignored
+     *
+     * @param string $input
+     * @return string
+     */
+    private function fixQuoteEntityWithoutSemicolon(string $input): string
+    {
+        $output = $input;
+
+        // Add the missing semicolon to &quot; HTML entity
+        $pattern = '/&quot(?!;)/';
+        $replace = '&quot;';
+        $output = preg_replace($pattern, $replace, $output);
+
+        return $output;
     }
 }
