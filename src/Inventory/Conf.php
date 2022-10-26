@@ -101,6 +101,7 @@ class Conf extends CommonGLPI
 {
     private $currents = [];
     public static $defaults = [
+        'enabled_inventory'              => 0,
         'import_software'                => 1,
         'import_volume'                  => 1,
         'import_antivirus'               => 1,
@@ -305,7 +306,7 @@ class Conf extends CommonGLPI
                 if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
                     $tabs[1] = __('Configuration');
                 }
-                if (Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
+                if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
                     $tabs[2] = __('Import from file');
                 }
                 return $tabs;
@@ -323,7 +324,9 @@ class Conf extends CommonGLPI
                     break;
 
                 case 2:
-                    $item->showUploadForm();
+                    if ($item->enabled_inventory) {
+                        $item->showUploadForm();
+                    }
                     break;
             }
         }
@@ -350,6 +353,22 @@ class Conf extends CommonGLPI
 
         echo "<div class='center spaced' id='tabsbody'>";
         echo "<table class='tab_cadre_fixe'>";
+
+        echo "<tr>";
+
+        echo "<th>";
+        echo "<label for='enabled_inventory'>";
+        echo __('Enable inventory');
+        echo "</label>";
+        echo "</th>";
+        echo "<td width='360'>";
+        Html::showCheckbox([
+            'name'      => 'enabled_inventory',
+            'id'        => 'enabled_inventory',
+            'checked'   => $config['enabled_inventory']
+        ]);
+        echo "</td>";
+        echo "</tr>";
 
         echo "<tr>";
         echo "<th colspan='4'>";
