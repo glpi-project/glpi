@@ -46,6 +46,7 @@ use Ramsey\Uuid\Uuid;
 use Session;
 use ShareDashboardDropdown;
 use Telemetry;
+use Ticket;
 use Toolbox;
 
 class Grid
@@ -1130,6 +1131,12 @@ HTML;
                 }
                 if ($DB->fieldExists($itemtable, "users_id_tech")) {
                     $add_filters[] = "user_tech";
+                }
+                if ($DB->fieldExists($itemtable, "states_id")) {
+                    $add_filters[] = "state";
+                }
+                if ($itemtable == Ticket::getTable()) {
+                    $add_filters[] = "tickettype";
                 }
 
                 return $add_filters;
