@@ -39,10 +39,15 @@ use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\OAuth\Server;
+use Glpi\OAuth\UserRepository;
 use Glpi\System\Status\StatusChecker;
+use GuzzleHttp\Psr7\ServerRequest;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Session;
 
 final class CoreController extends AbstractController
@@ -188,6 +193,7 @@ final class CoreController extends AbstractController
                         validatorUrl: 'none',
                         filter: true,
                         showExtensions: true,
+                        oauth2RedirectUrl: '{$CFG_GLPI['root_doc']}/api.php/swagger-oauth-redirect',
                         // Sort operations by name and then by method
                         operationsSorter: (a, b) => {
                             const method_order = ['get', 'post', 'put', 'patch', 'delete'];
@@ -419,6 +425,82 @@ HTML;
             'recursive' => $_SESSION['glpiactive_entity_recursive']
         ];
         return new JSONResponse($session);
+    }
+
+    #[Route(path: '/authorize', methods: ['GET', 'POST'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
+    #[Doc\Route(
+        description: 'Authorize the API client using the authorization code grant type.',
+    )]
+    public function authorize(Request $request): Response
+    {
+        global $CFG_GLPI;
+        try {
+            $auth_request = Server::getAuthorizationServer()->validateAuthorizationRequest($request);
+            // Try loading session from Cookie
+            session_destroy();
+            ini_set('session.use_cookies', 1);
+            session_name("glpi_" . md5(realpath(GLPI_ROOT)));
+            @session_start();
+
+            $user_id = Session::getLoginUserID();
+            if ($user_id === false) {
+                // Redirect to login page
+                $scope = implode(',', $auth_request->getScopes());
+                $client_id = $auth_request->getClient()->getIdentifier();
+                $redirect_uri = $this->getAPIPathForRouteFunction(self::class, 'authorize');
+                $redirect_uri .= '?scope=' . $scope . '&client_id=' . $client_id . '&response_type=code&redirect_uri=' . urlencode($auth_request->getRedirectUri());
+                $redirect_uri = $CFG_GLPI['url_base'] . '/api.php/v2' . $redirect_uri;
+                return new Response(302, ['Location' => $CFG_GLPI['url_base'] . '/?redirect=' . rawurlencode($redirect_uri)]);
+            }
+            $user = new \Glpi\OAuth\User();
+            $user->setIdentifier($user_id);
+            $auth_request->setUser($user);
+            if (!$request->hasParameter('accept') && !$request->hasParameter('deny')) {
+                // Display the authorization page
+                $glpi_user = new \User();
+                $glpi_user->getFromDB($user_id);
+                $authorize_form = TemplateRenderer::getInstance()->render('pages/oauth/authorize.html.twig', [
+                    'auth_request' => $auth_request,
+                    'scopes' => $auth_request->getScopes(),
+                    'client' => $auth_request->getClient(),
+                    'user' => $glpi_user,
+                ]);
+                return new Response(200, ['Content-Type' => 'text/html'], $authorize_form);
+            }
+
+            $auth_request->setAuthorizationApproved($request->hasParameter('accept'));
+            /** @var Response $response */
+            $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
+            return $response;
+        } catch (OAuthServerException $exception) {
+            return $exception->generateHttpResponse(new Response());
+        } catch (\Exception) {
+            return new JSONResponse(null, 500);
+        }
+    }
+
+    #[Route(path: '/token', methods: ['POST'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
+    #[Doc\Route(
+        description: 'Get an OAuth 2.0 token'
+    )]
+    public function token(Request $request): Response
+    {
+        try {
+            /** @var JSONResponse $response */
+            $response = Server::getAuthorizationServer()->respondToAccessTokenRequest($request, new JSONResponse());
+            return $response;
+        } catch (OAuthServerException $exception) {
+            return $exception->generateHttpResponse(new JSONResponse());
+        } catch (\Exception $exception) {
+            return new JSONResponse(null, 500);
+        }
+    }
+
+    #[Route(path: '/swagger-oauth-redirect', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
+    public function swaggerOAuthRedirect(Request $request): Response
+    {
+        $content = file_get_contents(GLPI_ROOT . '/public/lib/swagger-ui-dist/oauth2-redirect.html');
+        return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
     #[Route(path: '/status', methods: ['GET'], tags: ['Status'])]

@@ -8248,6 +8248,46 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
 
             ],
+            [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'oauth_client',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
         ];
 
 

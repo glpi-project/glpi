@@ -253,6 +253,19 @@ EOT;
     private function getSecuritySchemeComponents(): array
     {
         return [
+            'oauth' => [
+                'type' => 'oauth2',
+                'flows' => [
+                    'authorizationCode' => [
+                        'authorizationUrl' => '/api.php/authorize',
+                        'tokenUrl' => '/api.php/token',
+                        'refreshUrl' => '/api.php/token',
+                    ],
+                    'password' => [
+                        'tokenUrl' => '/api.php/token',
+                    ]
+                ]
+            ],
             'basicAuth' => [
                 'type' => 'http',
                 'scheme' => 'basic',
@@ -364,27 +377,30 @@ EOT;
      */
     private function getPathSecuritySchema(RoutePath $route_path, string $route_method): array
     {
+        $schemas = [
+            [
+                'oauth' => []
+            ]
+        ];
         // Handle special Session case
         if ($route_method === 'POST' && $route_path->getRoutePath() === '/Session') {
-            return [
+            $schemas = array_merge($schemas, [
                 [
                     'basicAuth' => []
                 ],
                 [
                     'userTokenAuth' => []
                 ]
-            ];
-        }
-
-        if ($route_path->getRouteSecurityLevel() === Route::SECURITY_AUTHENTICATED) {
-            return [
+            ]);
+        } else if ($route_path->getRouteSecurityLevel() === Route::SECURITY_AUTHENTICATED) {
+            $schemas = array_merge($schemas, [
                 [
                     'sessionTokenAuth' => []
                 ]
-            ];
+            ]);
         }
 
-        return [];
+        return $schemas;
     }
 
     private function getPathResponseSchemas(RoutePath $route_path, string $method): array

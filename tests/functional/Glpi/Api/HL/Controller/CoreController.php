@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Http\Request;
+use Glpi\OAuth\Server;
 
 class CoreController extends \HLAPITestCase
 {
@@ -254,5 +255,110 @@ class CoreController extends \HLAPITestCase
             'itemtype' => \Monitor::class,
             'items_id' => $monitors_id,
         ]) === true)->isFalse();
+    }
+
+    public function testOAuthPasswordGrant()
+    {
+        global $DB;
+
+        // Create an OAuth client
+        $client = new \OAuthClient();
+        $client_id = $client->add([
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+        ]);
+        $this->integer($client_id)->isGreaterThan(0);
+
+        // get client ID and secret
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret'],
+            'FROM' => \OAuthClient::getTable(),
+            'WHERE' => ['id' => $client_id],
+        ]);
+        $this->integer($it->count())->isEqualTo(1);
+        $client_data = $it->current();
+        $auth_data = [
+            'grant_type' => 'password',
+            'client_id' => $client_data['identifier'],
+            'client_secret' => (new \GLPIKey())->decrypt($client_data['secret']),
+            'username' => TU_USER,
+            'password' => TU_PASS,
+            'scope' => ''
+        ];
+
+        // Expect 401 error if no grant is set
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn ($status) => $this->integer($status)->isEqualTo(401));
+        });
+
+        $client->update([
+            'id' => $client_id,
+            'grants' => ['password']
+        ]);
+
+        $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['access_token', 'expires_in', 'token_type']);
+                    $this->string($content['token_type'])->isEqualTo('Bearer');
+                    $this->string($content['access_token'])->isNotEmpty();
+                    $this->integer($content['expires_in'])->isGreaterThan(0);
+                });
+        });
+    }
+
+    public function testOAuthAuthCodeGrant()
+    {
+        // Not a complete end to end test. Not sure how that could be done. Should probably be using Cypress.
+        global $DB;
+
+        // Create an OAuth client
+        $client = new \OAuthClient();
+        $client_id = $client->add([
+            'name' => __FUNCTION__,
+            'is_active' => 1,
+            'is_confidential' => 1,
+        ]);
+        $this->integer($client_id)->isGreaterThan(0);
+
+        $client->update([
+            'id' => $client_id,
+            'grants' => ['authorization_code']
+        ]);
+
+        // get client ID and secret
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret', 'redirect_uri'],
+            'FROM' => \OAuthClient::getTable(),
+            'WHERE' => ['id' => $client_id],
+        ]);
+        $this->integer($it->count())->isEqualTo(1);
+        $client_data = $it->current();
+
+        // Test authorize endpoint
+        $request = new Request('GET', '/Authorize', [], null);
+        $request = $request->withQueryParams([
+            'response_type' => 'code',
+            'client_id' => $client_data['identifier'],
+            'scope' => '',
+            'redirect_uri' => $client_data['redirect_uri'],
+        ]);
+
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn ($status) => $this->integer($status)->isEqualTo(302))
+                ->headers(function ($headers) {
+                    global $CFG_GLPI;
+                    $this->string($headers['Location'])->matches('/^' . preg_quote($CFG_GLPI['url_base'], '/') . '\/\?redirect=/');
+                });
+        });
     }
 }

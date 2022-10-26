@@ -113,6 +113,11 @@ class RequirementsManager
             false,
             __('Enable usage of ChaCha20-Poly1305 encryption required by GLPI. This is provided by libsodium 1.0.12 and newer.')
         );
+        $requirements[] = new Extension(
+            'openssl',
+            false,
+            __('Required for handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
+        );
 
         if ($db instanceof \DBmysql) {
             $requirements[] = new DbEngine($db);

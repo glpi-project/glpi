@@ -206,6 +206,10 @@ var filesToCopy = [
         from: 'src/scss/**/*.scss',
         to: scssOutputPath,
     },
+    {
+        package: 'swagger-ui-dist',
+        from: 'oauth2-redirect.html'
+    }
 ];
 
 let copyPatterns = [];

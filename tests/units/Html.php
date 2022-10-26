@@ -366,7 +366,8 @@ class Html extends \GLPITestCase
             'Auth',
             'MailCollector',
             'Link',
-            'Plugin'
+            'Plugin',
+            'OAuthClient'
         ];
         $this->string($menu['config']['title'])->isIdenticalTo('Setup');
         $this->array($menu['config']['types'])->isIdenticalTo($expected);

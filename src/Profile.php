@@ -2084,6 +2084,11 @@ class Profile extends CommonDBTM
                 'itemtype'  => 'LineOperator',
                 'label'     => _n('Line operator', 'Line operators', Session::getPluralNumber()),
                 'field'     => 'lineoperator'
+            ],
+            [
+                'itemtype' => 'OAuthClient',
+                'label' => OAuthClient::getTypeName(Session::getPluralNumber()),
+                'field' => OAuthClient::$rightname
             ]
         ];
 

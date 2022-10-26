@@ -35,32 +35,34 @@
 
 namespace Glpi\Http;
 
-class Request extends \GuzzleHttp\Psr7\Request
+use GuzzleHttp\Psr7\ServerRequest;
+
+class Request extends ServerRequest
 {
     /** @var array<string, mixed> */
-    private array $attributes = [];
+    private array $custom_attributes = [];
 
     /** @var array<string, mixed> */
     private array $parameters = [];
 
     public function hasAttribute(string $name): bool
     {
-        return array_key_exists($name, $this->attributes);
+        return array_key_exists($name, $this->getAttributes());
     }
 
-    public function getAttribute(string $name): mixed
+    public function getAttribute($attribute, $default = null): mixed
     {
-        return $this->attributes[$name];
+        return $this->getAttributes()[$attribute] ?? $default;
     }
 
     public function getAttributes(): array
     {
-        return $this->attributes;
+        return array_merge(parent::getAttributes(), $this->custom_attributes);
     }
 
     public function setAttribute(string $name, mixed $value): void
     {
-        $this->attributes[$name] = $value;
+        $this->custom_attributes[$name] = $value;
     }
 
     public function hasParameter(string $name): bool
@@ -76,6 +78,11 @@ class Request extends \GuzzleHttp\Psr7\Request
     public function getParameters(): array
     {
         return $this->parameters;
+    }
+
+    public function getParsedBody()
+    {
+        return $this->getParameters();
     }
 
     public function setParameter(string $name, mixed $value): void
