@@ -135,6 +135,7 @@ final class VariableFilesProtectedPath extends AbstractRequirement
                     $this->validation_messages[] = sprintf('‣ "%s" ("%s")', $path, $constant);
                 }
             }
+            $this->validation_messages[] = __('You can ignore this suggestion if you are certain that these directories are not accessible through your web server.');
         }
     }
 }

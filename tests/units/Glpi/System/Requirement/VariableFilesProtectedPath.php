@@ -96,6 +96,7 @@ class VariableFilesProtectedPath extends \GLPITestCase
                  sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
                  // $unsecure_dir_constant1 and $unsecure_dir_constant2 are ignored as they are nested in var root
                  sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
+                 'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
              ]
          );
     }
@@ -126,6 +127,7 @@ class VariableFilesProtectedPath extends \GLPITestCase
                  sprintf('‣ "%s/files/_cache" ("%s")', $root_path, $unsecure_dir_constant1),
                  sprintf('‣ "%s/files/_log" ("%s")', $root_path, $unsecure_dir_constant2),
                  sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
+                 'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
              ]
          );
     }
@@ -152,6 +154,7 @@ class VariableFilesProtectedPath extends \GLPITestCase
                  'Following directories are not existing and cannot be tested:',
                  sprintf('‣ "/this/dir/not/exists" ("%s")', $missing_dir_constant1),
                  sprintf('‣ "%s/not/exists" ("%s")', $tmp_dir, $missing_dir_constant2),
+                 'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
              ]
          );
     }
@@ -171,6 +174,7 @@ class VariableFilesProtectedPath extends \GLPITestCase
              [
                  sprintf('Following directories should be placed outside "%s":', $root_path),
                  sprintf('‣ "%s" ("%s")', $root_path, $unsecure_var_root_constant),
+                 'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
              ]
          );
     }
