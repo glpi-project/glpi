@@ -110,7 +110,7 @@ if ($template->fields['solutiontypes_id']) {
         $template->fields['solutiontypes_id'],
         0,
         true,
-        true,
+        false,
         //default value like "(id)" is the default behavior of GLPI when field 'name' is empty
         "(" . $template->fields['solutiontypes_id'] . ")"
     );
