@@ -4545,6 +4545,7 @@ JAVASCRIPT;
 
         global $DB;
 
+        $origin_nott = $nott;
         $searchopt = self::getOptions($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return false;
