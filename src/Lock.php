@@ -990,7 +990,7 @@ class Lock extends CommonGLPI
                 return true;
             break;
             case 'unlock_fields':
-                $related_itemtype = str_replace("massform", "", $ma->POST['container']);
+                $related_itemtype = $ma->getItemtype(false);
                 $lockedfield = new Lockedfield();
                 $fields = $lockedfield->getFieldsToLock($related_itemtype);
 
