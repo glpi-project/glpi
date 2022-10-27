@@ -107,7 +107,6 @@ if ($apply_twig) {
 
 $template->fields['solutiontypes_name'] = "";
 if ($template->fields['solutiontypes_id']) {
-
     $dbUtils = new DbUtils();
     $entityRestrict = $dbUtils->getEntitiesRestrictCriteria(getTableForItemType(SolutionType::getType()), "", $parent->fields['entities_id'], true, false);
     if (count($entityRestrict)) {
