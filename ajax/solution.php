@@ -111,8 +111,9 @@ if ($template->fields['solutiontypes_id']) {
         0,
         true,
         true,
+        //default value like "(id)" is the default behavior of GLPI when field 'name' is empty
         "(" . $template->fields['solutiontypes_id'] . ")"
-    );//default value like "(id)" is the default behavior of GLPI when fiel 'name' is empty
+    );
 }
 
 // Return json response with the template fields
