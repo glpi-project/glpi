@@ -3944,14 +3944,9 @@ JAVASCRIPT;
                     if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                         $addaltemail = "";
                         if (
-                            (($itemtype == 'Ticket') || ($itemtype == 'Problem'))
+                            in_array($itemtype, ['Ticket', 'Change', 'Problem'])
                             && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
-                            && (($searchopt[$ID]['joinparams']['beforejoin']['table']
-                            == 'glpi_tickets_users')
-                            || ($searchopt[$ID]['joinparams']['beforejoin']['table']
-                                == 'glpi_problems_users')
-                            || ($searchopt[$ID]['joinparams']['beforejoin']['table']
-                                == 'glpi_changes_users'))
+                            && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                         ) { // For tickets_users
                              $ticket_user_table
                              = $searchopt[$ID]['joinparams']['beforejoin']['table'] .
@@ -4739,12 +4734,7 @@ JAVASCRIPT;
                     if (
                         isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                         && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
-                        && (($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                         == 'glpi_tickets_users')
-                        || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                             == 'glpi_problems_users')
-                        || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                             == 'glpi_changes_users'))
+                        && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                     ) {
                         $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                         $linktable = $bj['table'] . '_' . self::computeComplexJoinID($bj['joinparams']) . $addmeta;
