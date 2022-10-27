@@ -35,6 +35,7 @@
 
 namespace Glpi\System;
 
+use Glpi\System\Requirement\DataDirectoriesProtectedPath;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoriesWriteAccess;
@@ -49,7 +50,6 @@ use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
-use Glpi\System\Requirement\VariableFilesProtectedPath;
 
 /**
  * @since 9.5.0
@@ -119,7 +119,7 @@ class RequirementsManager
         $requirements[] = new LogsWriteAccess($PHPLOGGER);
 
         $requirements[] = new DirectoriesWriteAccess(
-            __('Permissions for GLPI variables files directories'),
+            __('Permissions for GLPI data directories'),
             array_filter(
                 Variables::getDataDirectories(),
                 function ($directory) {
@@ -128,7 +128,7 @@ class RequirementsManager
             )
         );
 
-        $requirements[] = new VariableFilesProtectedPath(Variables::getDataDirectoriesConstants());
+        $requirements[] = new DataDirectoriesProtectedPath(Variables::getDataDirectoriesConstants());
 
         $requirements[] = new SeLinux();
 

@@ -35,7 +35,7 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class VariableFilesProtectedPath extends \GLPITestCase
+class DataDirectoriesProtectedPath extends \GLPITestCase
 {
     public function testCheckOnSecuredDirs()
     {
@@ -64,7 +64,7 @@ class VariableFilesProtectedPath extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())
             ->isEqualTo(
                 [
-                    'GLPI variables files directories are located in a secured path.',
+                    'GLPI data directories are located in a secured path.',
                 ]
             );
     }
@@ -172,7 +172,7 @@ class VariableFilesProtectedPath extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
              [
-                 sprintf('Following directories should be placed outside "%s":', $root_path),
+                 sprintf('The following directories should be placed outside "%s":', $root_path),
                  sprintf('‣ "%s" ("%s")', $root_path, $unsecure_var_root_constant),
                  'You can ignore this suggestion if you are certain that these directories are not accessible through your web server.',
              ]

@@ -38,7 +38,7 @@ namespace Glpi\System\Requirement;
 /**
  * @since 10.0.4
  */
-final class VariableFilesProtectedPath extends AbstractRequirement
+final class DataDirectoriesProtectedPath extends AbstractRequirement
 {
     /**
      * Constants defining directories to check.
@@ -71,8 +71,8 @@ final class VariableFilesProtectedPath extends AbstractRequirement
         string $var_root_constant = 'GLPI_VAR_DIR',
         string $web_root_directory = GLPI_ROOT
     ) {
-        $this->title = __('Safe path for variables files directories');
-        $this->description = __('GLPI variables files directories should be placed outside web root directory. It can be achieved by redefining corresponding constants. See installation documentation for more details.');
+        $this->title = __('Safe path for data directories');
+        $this->description = __('GLPI data directories should be placed outside web root directory. It can be achieved by redefining corresponding constants. See installation documentation for more details.');
         $this->optional = true;
 
         $this->directories_constants = $directories_constants;
@@ -117,11 +117,11 @@ final class VariableFilesProtectedPath extends AbstractRequirement
 
         if (count($missing_directories) === 0 && count($unsafe_directories) === 0) {
             $this->validated = true;
-            $this->validation_messages[] = __('GLPI variables files directories are located in a secured path.');
+            $this->validation_messages[] = __('GLPI data directories are located in a secured path.');
         } else {
             $this->validated = false;
             if (count($missing_directories) > 0) {
-                $this->validation_messages[] = __('Following directories are not existing and cannot be tested:');
+                $this->validation_messages[] = __('The following directories do not exist and cannot be tested:');
                 foreach ($missing_directories as $constant => $path) {
                     $this->validation_messages[] = sprintf('‣ "%s" ("%s")', $path, $constant);
                 }
