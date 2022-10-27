@@ -114,7 +114,7 @@ class InstallationNotOverriden extends \GLPITestCase
                 'files'            => [
                     $current_version => '',
                 ],
-                'previous_version' => '10.0.5',
+                'previous_version' => $previous_version,
                 'validated'        => true,
                 'messages'         => [
                     'No files from previous GLPI version detected.',
