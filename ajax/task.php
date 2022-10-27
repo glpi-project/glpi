@@ -90,11 +90,7 @@ $template->fields['content'] = $template->getRenderedContent($parent);
 //need when template is used and when GLPI preselected type if defined
 $template->fields['taskcategories_name'] = "";
 if ($template->fields['taskcategories_id']) {
-    $dbUtils = new DbUtils();
-    $entityRestrict = $dbUtils->getEntitiesRestrictCriteria(getTableForItemType(TaskCategory::getType()), "", $parent->fields['entities_id'], true, false);
-    if (count($entityRestrict)) {
-        $entityRestrict = [$entityRestrict];
-    }
+    $entityRestrict = getEntitiesRestrictCriteria(getTableForItemType(TaskCategory::getType()), "", $parent->fields['entities_id'], true);
 
     $taskcategory = new TaskCategory();
     if (
