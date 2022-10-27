@@ -53,12 +53,12 @@ class MassiveAction extends DbTestCase
             [
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
-                'allcount'     => 19,
+                'allcount'     => 20,
                 'singlecount'  => 12
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
-                'allcount'     => 17,
+                'allcount'     => 19,
                 'singlecount'  => 11
             ], [
                 'itemtype'     => 'SoftwareLicense',
@@ -78,12 +78,12 @@ class MassiveAction extends DbTestCase
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
-                'allcount'     => 17,
+                'allcount'     => 19,
                 'singlecount'  => 11
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
-                'allcount'     => 17,
+                'allcount'     => 19,
                 'singlecount'  => 11
             ], [
                 'itemtype'     => 'Ticket',
