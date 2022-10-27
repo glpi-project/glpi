@@ -829,7 +829,8 @@ class APIRest extends APIBaseClass
                     ["key" => "Contract_Item:remove",            "label" => "Remove a contract"],
                     ["key" => "MassiveAction:amend_comment",     "label" => "Amend comment"],
                     ["key" => "MassiveAction:add_note",          "label" => "Add note"],
-                    ["key" => "Lock:unlock",                     "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
                 ],
             ],
             [
@@ -839,7 +840,8 @@ class APIRest extends APIBaseClass
                     ["key" => "MassiveAction:purge_item_but_devices",  "label" => "Delete permanently but keep devices"],
                     ["key" => "MassiveAction:purge",                   "label" => "Delete permanently and remove devices"],
                     ["key" => "MassiveAction:restore",                 "label" => "Restore"],
-                    ["key" => "Lock:unlock",                           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
                 ],
             ],
             [
@@ -864,7 +866,8 @@ class APIRest extends APIBaseClass
                     ["key" => "Contract_Item:remove",            "label" => "Remove a contract"],
                     ["key" => "MassiveAction:amend_comment",     "label" => "Amend comment"],
                     ["key" => "MassiveAction:add_note",          "label" => "Add note"],
-                    ["key" => "Lock:unlock",                     "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
                 ],
             ],
             [
@@ -874,7 +877,8 @@ class APIRest extends APIBaseClass
                     ["key" => "MassiveAction:purge_item_but_devices",  "label" => "Delete permanently but keep devices"],
                     ["key" => "MassiveAction:purge",                   "label" => "Delete permanently and remove devices"],
                     ["key" => "MassiveAction:restore",                 "label" => "Restore"],
-                    ["key" => "Lock:unlock",                           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_component",                 "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",                    "label" => "Unlock fields"],
                 ],
             ],
         ];
@@ -1026,10 +1030,17 @@ class APIRest extends APIBaseClass
                 ],
             ],
             [
-                'url' => 'getMassiveActionParameters/Computer/Lock:unlock',
+                'url' => 'getMassiveActionParameters/Computer/Lock:unlock_component',
                 'status' => 200,
                 'response' => [
                     ["name" => "attached_item[]", "type" => "dropdown"],
+                ],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/Lock:unlock_fields',
+                'status' => 200,
+                'response' => [
+                    ["name" => "attached_fields[]", "type" => "dropdown"],
                 ],
             ],
         ];
