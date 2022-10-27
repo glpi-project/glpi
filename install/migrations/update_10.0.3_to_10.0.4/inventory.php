@@ -62,3 +62,13 @@ $migration->addRight('refusedequipment', READ | UPDATE | PURGE, ['config' => UPD
 
 //new right value for agent (previously based on config UPDATE)
 $migration->addRight('agent', READ | UPDATE | PURGE, ['config' => UPDATE]);
+
+//add new fields for Agent
+$migration->addField("glpi_agents", 'use_module_wake_on_lan', 'bool');
+$migration->addField("glpi_agents", 'use_module_computer_inventory', 'bool');
+$migration->addField("glpi_agents", 'use_module_esx_remote_inventory', 'bool');
+$migration->addField("glpi_agents", 'use_module_remote_inventory', 'bool');
+$migration->addField("glpi_agents", 'use_module_network_inventory', 'bool');
+$migration->addField("glpi_agents", 'use_module_network_discovery', 'bool');
+$migration->addField("glpi_agents", 'use_module_package_deployment', 'bool');
+$migration->addField("glpi_agents", 'use_module_collect_data', 'bool');
