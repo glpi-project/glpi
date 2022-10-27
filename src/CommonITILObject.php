@@ -321,6 +321,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'items_id'          => $user['users_id'],
                     'itemtype'          => 'User',
                     'text'              => $name,
+                    'type'              => $actortype, //required by CommonITILActor::post_addItem:415'
                     'title'             => $name,
                     'use_notification'  => $user['use_notification'],
                     'alternative_email' => $user['alternative_email'],
@@ -336,6 +337,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'items_id' => $group['groups_id'],
                         'itemtype' => 'Group',
                         'text'     => $group_obj->getName(),
+                        'type'     => $actortype, //required by CommonITILActor::post_addItem:415'
                         'title'    => $group_obj->getRawCompleteName(),
                     ];
                 }
@@ -350,6 +352,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'itemtype'          => 'Supplier',
                     'text'              => $name,
                     'title'             => $name,
+                    'type'              => $actortype, //required by CommonITILActor::post_addItem:415'
                     'use_notification'  => $supplier['use_notification'],
                     'alternative_email' => $supplier['alternative_email'],
                 ];
