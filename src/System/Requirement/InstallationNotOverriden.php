@@ -41,7 +41,8 @@ final class InstallationNotOverriden extends AbstractRequirement
 {
     public function __construct()
     {
-        $this->title = __('Installation overrides detection');
+        $this->title = __('Anterior versions files detection');
+        $this->description = __('The presence of source files from previous versions of GLPI can lead to security issues or bugs.');
     }
 
     protected function check()
@@ -50,25 +51,19 @@ final class InstallationNotOverriden extends AbstractRequirement
         try {
             $file_iterator = new FilesystemIterator($version_folder);
         } catch (\UnexpectedValueException $e) {
-            $this->validated = false;
-            $this->validation_messages[] = __("`.version` folder doesn't exist.");
-            $this->optional = true;
+            $this->out_of_context = true;
             return;
         }
 
         if (iterator_count($file_iterator) == 0) {
-            $this->validated = false;
-            $this->optional  = true;
-            $this->validation_messages[] = __("Cannot check as no version file found.");
+            $this->out_of_context = true;
             return;
         }
 
         if (iterator_count($file_iterator) > 1) {
             $this->validated = false;
-            $this->validation_messages[] = __("Your GLPI installation is overwrited.");
             $this->validation_messages[] = __("We detected files of previous versions of GLPI.");
-            $this->validation_messages[] = __("This can lead to security issues or bugs.");
-            $this->validation_messages[] = __("Please update your instance according to the recommanded procedure.");
+            $this->validation_messages[] = __("Please update GLPI by following the procedure described in the installation documentation.");
             return;
         }
 
@@ -86,6 +81,6 @@ final class InstallationNotOverriden extends AbstractRequirement
         }
 
         $this->validated = true;
-        $this->validation_messages[] = __s('Installation is not overriden.');
+        $this->validation_messages[] = __('No files from previous GLPI version detected.');
     }
 }
