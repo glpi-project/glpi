@@ -48,35 +48,27 @@ final class InstallationNotOverriden extends AbstractRequirement
     protected function check()
     {
         $version_folder = GLPI_ROOT . '/.version/';
-        try {
+
+        $version_files_count = 0;
+        if (is_dir($version_folder)) {
             $file_iterator = new FilesystemIterator($version_folder);
-        } catch (\UnexpectedValueException $e) {
+            $version_files_count = iterator_count($file_iterator);
+        }
+
+        if ($version_files_count == 0) {
+            // Cannot do the check.
+            // Indicating that `.version` directory is missing would be useless, as it would probably incitate administrator
+            // to restore it, and it would result in a "false positive" type validation.
             $this->out_of_context = true;
             return;
         }
 
-        if (iterator_count($file_iterator) == 0) {
-            $this->out_of_context = true;
-            return;
-        }
+        $current_version = \Glpi\Toolbox\VersionParser::getNormalizedVersion(GLPI_VERSION, false);
 
-        if (iterator_count($file_iterator) > 1) {
+        if (!file_exists($version_folder . $current_version) || iterator_count($file_iterator) > 1) {
             $this->validated = false;
             $this->validation_messages[] = __("We detected files of previous versions of GLPI.");
             $this->validation_messages[] = __("Please update GLPI by following the procedure described in the installation documentation.");
-            return;
-        }
-
-        $file_iterator->rewind();
-        $file_version = $file_iterator->current()->getFilename();
-        $current_version = \Glpi\Toolbox\VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        if (!file_exists($version_folder . $current_version)) {
-            $this->validated = false;
-            $this->validation_messages[] = sprintf(
-                __("GLPI version found base in filesystem (%s) mismatches the one defined in includes (%s)."),
-                $file_version,
-                $current_version
-            );
             return;
         }
 
