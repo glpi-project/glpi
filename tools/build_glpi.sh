@@ -67,7 +67,7 @@ echo "Remove dev files and directories"
 composer update nothing --ansi --no-interaction --ignore-platform-reqs --no-dev --no-scripts --working-dir=$WORKING_DIR
 
 # Remove user generated files (i.e. cache and log from CLI commands ran during release)
-find $WORKING_DIR/files -depth -mindepth 2 ! -iname "remove.txt" -exec rm -rf {} \;
+find $WORKING_DIR/files -depth -mindepth 2 -exec rm -rf {} \;
 
 # Remove hidden files and directory, except .htaccess files
 find $WORKING_DIR -depth \( -iname ".*" ! -iname ".htaccess" \) -exec rm -rf {} \;
@@ -81,7 +81,9 @@ dev_nodes=(
     "node_modules"
     "package.json"
     "package-lock.json"
+    "phpstan.neon"
     "PULL_REQUEST_TEMPLATE.md"
+    "stubs"
     "tests"
     "tools"
     "vendor/bin"
