@@ -1,0 +1,14 @@
+diff --git a/src/Inventory/Asset/OperatingSystem.php b/src/Inventory/Asset/OperatingSystem.php
+index b0382237a4..77fe01e577 100644
+--- a/src/Inventory/Asset/OperatingSystem.php
++++ b/src/Inventory/Asset/OperatingSystem.php
+@@ -132,6 +132,9 @@ class OperatingSystem extends InventoryAsset
+                     break;
+                 }
+             }
++            Toolbox::logError($input_os);
++            Toolbox::logError($ios->fields);
++            Toolbox::logError("Is same OS in DB -> " . $same);
+             if ($same === false) {
+                 $ios->update(['id' => $ios->getID()] + Toolbox::addslashes_deep($input_os));
+             }
