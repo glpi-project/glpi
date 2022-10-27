@@ -940,13 +940,15 @@ class Lock extends CommonGLPI
         CommonDBTM $checkitem = null
     ) {
 
-        $action_name = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock';
+        $action_unlock_component = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_component';
+        $action_unlock_fields = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_fields';
 
         if (
-            Session::haveRight('computer', UPDATE)
-            && ($itemtype == 'Computer')
+            Session::haveRight(strtolower($itemtype), UPDATE)
+            && ($itemtype == $itemtype)
         ) {
-            $actions[$action_name] = __('Unlock components');
+            $actions[$action_unlock_component] = __('Unlock components');
+            $actions[$action_unlock_fields] = __('Unlock fields');
         }
     }
 
@@ -958,9 +960,8 @@ class Lock extends CommonGLPI
      **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-
         switch ($ma->getAction()) {
-            case 'unlock':
+            case 'unlock_component':
                 $types = ['Monitor'                => _n('Monitor', 'Monitors', Session::getPluralNumber()),
                     'Peripheral'             => Peripheral::getTypeName(Session::getPluralNumber()),
                     'Printer'                => Printer::getTypeName(Session::getPluralNumber()),
@@ -987,6 +988,25 @@ class Lock extends CommonGLPI
 
                 echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
+            break;
+            case 'unlock_fields':
+                $related_itemtype = str_replace("massform", "", $ma->POST['container']);
+                $lockedfield = new Lockedfield();
+                $fields = $lockedfield->getFieldsToLock($related_itemtype);
+
+                echo __('Select fields of the item that must be unlock');
+                echo "<br><br>\n";
+                Dropdown::showFromArray(
+                    'attached_fields',
+                    $fields,
+                    [
+                        'multiple' => true,
+                        'size'     => 5
+                    ]
+                );
+                echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                return true;
+            break;
         }
         return false;
     }
@@ -1005,7 +1025,32 @@ class Lock extends CommonGLPI
         global $DB;
 
         switch ($ma->getAction()) {
-            case 'unlock':
+            case 'unlock_fields' :
+                $input = $ma->getInput();
+                if (isset($input['attached_fields'])) {
+                    $base_itemtype = $baseitem->getType();
+                    foreach ($ids as $id) {
+                        $lock_fields_name = [];
+                        foreach ($input['attached_fields'] as $fields) {
+                            list($itemtype, $field) = explode(' - ', $fields);
+                            $lock_fields_name[] = $field;
+                        }
+                        $lockfield = new Lockedfield();
+                        $res = $lockfield->deleteByCriteria([
+                            "itemtype" => $base_itemtype,
+                            "items_id" => $id,
+                            "field" => $lock_fields_name,
+                            "is_global" => 0
+                        ]);
+                    }
+                    if ($res) {
+                        $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_KO);
+                    }
+                }
+                return;
+            case 'unlock_component':
                 $input = $ma->getInput();
                 if (isset($input['attached_item'])) {
                     $attached_items = $input['attached_item'];

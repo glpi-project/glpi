@@ -299,7 +299,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    public function getFieldsToLock(): array
+    public function getFieldsToLock($specific_itemtype = null): array
     {
         global $CFG_GLPI, $DB;
 
@@ -333,6 +333,10 @@ class Lockedfield extends CommonDBTM
             'entities_id'
         ];
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
+
+        if ($specific_itemtype !== null && in_array($specific_itemtype, $itemtypes)) {
+            $itemtypes = [$specific_itemtype];
+        }
 
         foreach ($itemtypes as $itemtype) {
             $search_options = Search::getOptions($itemtype);
