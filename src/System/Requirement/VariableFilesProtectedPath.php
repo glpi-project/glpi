@@ -128,7 +128,7 @@ final class VariableFilesProtectedPath extends AbstractRequirement
             }
             if (count($unsafe_directories) > 0) {
                 $this->validation_messages[] = sprintf(
-                    __('Following directories should be placed outside "%s":'),
+                    __('The following directories should be placed outside "%s":'),
                     $web_root_directory
                 );
                 foreach ($unsafe_directories as $constant => $path) {
