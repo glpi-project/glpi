@@ -161,12 +161,11 @@
             'use_module_collect_data': __('Collect data'),
             'use_module_remote_inventory': __('Remote inventory'),
         } %}
-            {{ fields.checkboxField(
-                modulefield,
-                item.fields[modulefield],
-                modulelabel,
-                field_options|merge({'disabled': 'disabled'})
-            ) }}
+
+        {% if not item.fields[modulefield] %}
+            {% set html = '<i class="ti ti-check"></i>' %}
+        {% endif %}
+        {{ fields.htmlField('', html, modulelabel) }}
         {% endfor %}
     {% endif %}
 {% endblock %}
