@@ -855,34 +855,20 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $target         = $_SERVER['PHP_SELF'];
-        $extraparamhtml = "";
         $withtemplate   = "";
         if (is_array($options) && count($options)) {
             if (isset($options['withtemplate'])) {
                 $withtemplate = $options['withtemplate'];
             }
-            $cleaned_options = $options;
-            if (isset($cleaned_options['id'])) {
-                unset($cleaned_options['id']);
-            }
-            if (isset($cleaned_options['stock_image'])) {
-                unset($cleaned_options['stock_image']);
-            }
-            if ($this instanceof CommonITILObject && $this->isNewItem()) {
-                $this->input = $cleaned_options;
-                $this->saveInput();
-               // $extraparamhtml can be too long in case of ticket with content
-               // (passed in GET in ajax request)
-                unset($cleaned_options['content']);
-            }
-
-            // prevent double sanitize, because the includes.php sanitize all data
-            $cleaned_options = Sanitizer::unsanitize($cleaned_options);
-
-            $extraparamhtml = "&amp;" . Toolbox::append_params($cleaned_options, '&amp;');
         }
 
-        $onglets     = $this->defineAllTabs($options);
+        // if form is reloaded (example from a change on type field in a ITIL Object)
+        if (isset($options['reload_form']) && $this instanceof CommonDBTM) {
+            $this->input = $options;
+            $this->saveInput();
+        }
+
+        $onglets = $this->defineAllTabs($options);
         $display_all = true;
         if (isset($onglets['no_all_tab'])) {
             $display_all = false;
@@ -894,10 +880,15 @@ class CommonGLPI implements CommonGLPIInterface
             $tabs    = [];
 
             foreach ($onglets as $key => $val) {
-                $tabs[$key] = ['title'  => $val,
+                $tabs[$key] = [
+                    'title'  => $val,
                     'url'    => $tabpage,
-                    'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
-                                            "&amp;_glpi_tab=$key&amp;id=$ID$extraparamhtml"
+                    'params' => http_build_query([
+                        '_target'   => $target,
+                        '_itemtype' => $this->getType(),
+                        '_glpi_tab' => $key,
+                        'id'        => $ID,
+                    ])
                 ];
             }
 
@@ -907,10 +898,15 @@ class CommonGLPI implements CommonGLPIInterface
                 && empty($withtemplate)
                 && (count($tabs) > 1)
             ) {
-                $tabs[-1] = ['title'  => __('All'),
+                $tabs[-1] = [
+                    'title'  => __('All'),
                     'url'    => $tabpage,
-                    'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
-                                          "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml"
+                    'params' => http_build_query([
+                        '_target'   => $target,
+                        '_itemtype' => $this->getType(),
+                        '_glpi_tab' => -1,
+                        'id'        => $ID,
+                    ])
                 ];
             }
 
