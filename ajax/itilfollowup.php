@@ -86,5 +86,33 @@ if (!$parent->getFromDB($parents_id)) {
 // Render template content using twig
 $template->fields['content'] = $template->getRenderedContent($parent);
 
+//load requesttypes name (use to create OPTION dom)
+//need when template is used and when GLPI preselected type if defined
+$template->fields['requesttypes_name'] = "";
+if ($template->fields['requesttypes_id']) {
+    $dbUtils = new DbUtils();
+    $entityRestrict = $dbUtils->getEntitiesRestrictCriteria(getTableForItemType(RequestType::getType()), "", $parent->fields['entities_id'], true, false);
+    if (count($entityRestrict)) {
+        $entityRestrict = [$entityRestrict];
+    }
+
+    $requesttype = new RequestType();
+    if (
+        $requesttype->getFromDBByCrit([
+            "id" => $template->fields['requesttypes_id'],
+        ] + $entityRestrict)
+    ) {
+        $template->fields['requesttypes_name'] = Dropdown::getDropdownName(
+            getTableForItemType(RequestType::getType()),
+            $template->fields['requesttypes_id'],
+            0,
+            true,
+            false,
+            //default value like "(id)" is the default behavior of GLPI when field 'name' is empty
+            "(" . $template->fields['requesttypes_id'] . ")"
+        );
+    }
+}
+
 // Return json response with the template fields
 echo json_encode($template->fields);

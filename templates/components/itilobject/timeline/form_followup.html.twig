@@ -284,7 +284,11 @@
                   tasktinymce.setContent(data.content);
                }
                // set category
-               $("#dropdown_requesttypes_id{{ rand }}").trigger("setValue", requesttypes_id);
+               //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
+               //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
+               var newOption = new Option(data.requesttypes_name, requesttypes_id, true, true);
+               $("#dropdown_requesttypes_id{{ rand }}").append(newOption).trigger('change');
+
                // set is_private
                $("#is_private_{{ rand }}")
                   .prop("checked", data.is_private == "0"
