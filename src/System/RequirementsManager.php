@@ -116,7 +116,7 @@ class RequirementsManager
             $requirements[] = new DbEngine($db);
         }
 
-        $requirements[] = new InstallationNotOverriden();
+        $requirements[] = new InstallationNotOverriden($db);
 
         global $PHPLOGGER;
         $requirements[] = new LogsWriteAccess($PHPLOGGER);

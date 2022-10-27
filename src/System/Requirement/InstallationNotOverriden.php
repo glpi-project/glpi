@@ -35,11 +35,20 @@
 
 namespace Glpi\System\Requirement;
 
+use Config;
+use DBmysql;
 use FilesystemIterator;
 use Glpi\Toolbox\VersionParser;
 
 final class InstallationNotOverriden extends AbstractRequirement
 {
+    /**
+     * Database instance.
+     *
+     * @var DBmysql
+     */
+    private $db;
+
     /**
      * Version directory.
      *
@@ -47,8 +56,9 @@ final class InstallationNotOverriden extends AbstractRequirement
      */
     private $version_dir;
 
-    public function __construct(string $version_dir = GLPI_ROOT . '/.version')
+    public function __construct(?DBmysql $db, string $version_dir = GLPI_ROOT . '/.version')
     {
+        $this->db = $db;
         $this->version_dir = $version_dir;
 
         $this->title = __('Anterior versions files detection');
@@ -76,6 +86,43 @@ final class InstallationNotOverriden extends AbstractRequirement
             $this->validated = false;
             $this->validation_messages[] = __("We detected files of previous versions of GLPI.");
             $this->validation_messages[] = __("Please update GLPI by following the procedure described in the installation documentation.");
+            return;
+        }
+
+        $previous_version = null;
+        if (
+            $this->db instanceof DBmysql
+            // Ensure 'glpi_configs' tables exists and matches >= 0.85 schema
+            && $this->db->tableExists(Config::getTable())
+            && $this->db->fieldExists(Config::getTable(), 'name')
+            && $this->db->fieldExists(Config::getTable(), 'value')
+            && $this->db->fieldExists(Config::getTable(), 'context')
+        ) {
+            $previous_version_res = $this->db->request(
+                [
+                    'SELECT' => 'value',
+                    'FROM'   => Config::getTable(),
+                    'WHERE'  => [
+                        'name'    => 'version',
+                        'context' => 'core',
+                    ],
+                ]
+            );
+            $previous_version = $previous_version_res->current()['value'] ?? null;
+            if ($previous_version !== null) {
+                $previous_version = VersionParser::getNormalizedVersion($previous_version, false);
+            }
+        }
+        if ($previous_version === null || version_compare($previous_version, '10.0.4', '<')) {
+            // If previous version is unknown, validation will be mostly a "false positive" type validation.
+            // Cases corresponding to an unknown previous version:
+            // - new installation;
+            // - update from an empty directory (where DB config has not even been restored);
+            // - update from version < 0.85.
+            //
+            // If previous version is < 10.0.4, version file form previous version should not be available.
+            // In this case, we cannot detect presence of previous versions files.
+            $this->out_of_context = true;
             return;
         }
 

@@ -40,94 +40,116 @@ use org\bovigo\vfs\vfsStream;
 
 class InstallationNotOverriden extends \GLPITestCase
 {
-    public function testCheckWithRealVersionDir()
-    {
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-            ->isEqualTo(
-                [
-                    'No files from previous GLPI version detected.',
-                ]
-            );
-    }
-
-    public function testCheckWithoutVersionDir()
-    {
-        vfsStream::setup(
-            'root',
-            null,
-            []
-        );
-
-        $this->newTestedInstance(vfsStream::url('root/not-exists'));
-        $this->boolean($this->testedInstance->isOutOfContext())->isEqualTo(true);
-    }
-
     protected function versionDirectoryProvider(): iterable
     {
-        // Empty .version directory
+        // Missing .version directory
+        // -> out of context
         yield [
-            'files'          => [],
-            'validated'      => false,
-            'messages'       => [],
-            'out_of_context' => true,
+            'files'            => null,
+            'previous_version' => null,
+            'validated'        => false,
+            'messages'         => [],
+            'out_of_context'   => true,
         ];
 
-        // Unique version file that does not match current version
+        // Empty .version directory
+        // -> out of context
         yield [
-            'files'          => [
+            'files'            => [],
+            'previous_version' => null,
+            'validated'        => false,
+            'messages'         => [],
+            'out_of_context'   => true,
+        ];
+
+        // Unique version file that matches current version during update from < GLPI 10.0.4
+        // -> out of context
+        $current_version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+        foreach ([null, '9.1', '9.5.9', '10.0.0-dev', '10.0.3'] as $previous_version) {
+            yield [
+                'files'            => [
+                    $current_version => '',
+                ],
+                'previous_version' => $previous_version,
+                'validated'        => false,
+                'messages'         => [],
+                'out_of_context'   => true,
+            ];
+        }
+
+        // Unique version file that does not match current version
+        // -> invalidated
+        yield [
+            'files'            => [
                 '10.0.3' => '',
             ],
-            'validated'      => false,
-            'messages'       => [
+            'previous_version' => null,
+            'validated'        => false,
+            'messages'         => [
                 'We detected files of previous versions of GLPI.',
                 'Please update GLPI by following the procedure described in the installation documentation.',
             ],
         ];
 
         // Multiple version files
+        // -> invalidated
         yield [
-            'files'          => [
+            'files'            => [
                 '10.0.3' => '',
                 '10.0.4' => '',
             ],
-            'validated'      => false,
-            'messages'       => [
+            'previous_version' => null,
+            'validated'        => false,
+            'messages'         => [
                 'We detected files of previous versions of GLPI.',
                 'Please update GLPI by following the procedure described in the installation documentation.',
             ],
         ];
 
-        // Unique version file that does not matches current version
+        // Unique version file that matches current version during update from >= GLPI 10.0.4
+        // -> validated
         $current_version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        yield [
-            'files'          => [
-                $current_version => '',
-            ],
-            'validated'      => true,
-            'messages'       => [
-                'No files from previous GLPI version detected.',
-            ],
-        ];
+        foreach (['10.0.4', '10.0.6', '10.1.0-dev', '11.3.4'] as $previous_version) {
+            yield [
+                'files'            => [
+                    $current_version => '',
+                ],
+                'previous_version' => '10.0.5',
+                'validated'        => true,
+                'messages'         => [
+                    'No files from previous GLPI version detected.',
+                ],
+                'out_of_context'   => false,
+            ];
+        }
     }
 
     /**
      * @dataProvider versionDirectoryProvider
      */
-    public function testCheck(array $files, bool $validated, array $messages, bool $out_of_context = false)
+    public function testCheck(?array $files, ?string $previous_version, bool $validated, array $messages, bool $out_of_context = false)
     {
-        vfsStream::setup(
-            'root',
-            null,
-            [
-                '.version' => $files,
-            ]
-        );
+        vfsStream::setup('root', null, $files !== null ? ['.version' => $files] : []);
 
-        $this->newTestedInstance(vfsStream::url('root/.version'));
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DB();
+        $this->calling($db)->tableExists = true;
+        $this->calling($db)->fieldExists = true;
+        $this->calling($db)->request = function ($query) use ($previous_version) {
+            return new \ArrayIterator(
+                [
+                    [
+                        'context' => 'core',
+                        'name'    => 'version',
+                        'value'   => $previous_version,
+                    ]
+                ]
+            );
+        };
+
+        $this->newTestedInstance($db, vfsStream::url('root/.version'));
         $this->boolean($this->testedInstance->isOutOfContext())->isEqualTo($out_of_context);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated, print_r($files, true));
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
         $this->array($this->testedInstance->getValidationMessages())->isEqualTo($messages);
     }
 }
