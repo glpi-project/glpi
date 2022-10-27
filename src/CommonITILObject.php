@@ -220,6 +220,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'items_id'          => $users_id,
                             'itemtype'          => 'User',
                             'text'              => $name,
+                            'type'              => $actortype, //required by CommonITILActor::post_addItem:415
                             'title'             => $name,
                             'use_notification'  => $email === '' ? false : $default_use_notif,
                             'alternative_email' => $email,
@@ -234,6 +235,7 @@ abstract class CommonITILObject extends CommonDBTM
                         $actors[] = [
                             'items_id' => $group_obj->fields['id'],
                             'itemtype' => 'Group',
+                            'type'     => $actortype, //required by CommonITILActor::post_addItem:415
                             'text'     => $group_obj->getName(),
                             'title'    => $group_obj->getRawCompleteName(),
                         ];
@@ -248,6 +250,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'items_id'          => $supplier_obj->fields['id'],
                             'itemtype'          => 'Supplier',
                             'text'              => $supplier_obj->fields['name'],
+                            'type'              => $actortype, //required by CommonITILActor::post_addItem:415'
                             'title'             => $supplier_obj->fields['name'],
                             'use_notification'  => $supplier_obj->fields['email'] === '' ? false : $default_use_notif,
                             'alternative_email' => $supplier_obj->fields['email'],
@@ -288,6 +291,7 @@ abstract class CommonITILObject extends CommonDBTM
 
                             $actors[] = $existing_actor + [
                                 'text'  => $name,
+                                'type'  => $actortype, //required by CommonITILActor::post_addItem:415
                                 'title' => $completename,
                             ];
                         } elseif (
@@ -298,6 +302,7 @@ abstract class CommonITILObject extends CommonDBTM
                             // direct mail actor
                             $actors[] = $existing_actor + [
                                 'text'  => $existing_actor['alternative_email'],
+                                'type'  => $actortype, //required by CommonITILActor::post_addItem:415'
                                 'title' => $existing_actor['alternative_email'],
                             ];
                         }
