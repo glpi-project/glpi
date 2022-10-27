@@ -456,7 +456,11 @@
                     const taskcategories_id = isNaN(parseInt(data.taskcategories_id))
                         ? 0
                         : parseInt(data.taskcategories_id);
-                    $("#dropdown_taskcategories_id{{ rand }}").trigger("setValue", taskcategories_id);
+
+                     //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
+                     //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
+                     var newOption = new Option(data.taskcategories_name, taskcategories_id, true, true);
+                     $("#dropdown_taskcategories_id{{ rand }}").append(newOption).trigger('change');
                 }
 
                 if (data.is_private !== undefined) {
