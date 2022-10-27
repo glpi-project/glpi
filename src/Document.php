@@ -1501,7 +1501,7 @@ class Document extends CommonDBTM
             $uploaded_files = [];
             if ($handle = opendir(GLPI_UPLOAD_DIR)) {
                 while (false !== ($file = readdir($handle))) {
-                    if (($file != '.') && ($file != '..') && ($file != 'remove.txt')) {
+                    if (!in_array($file, ['.', '..', '.gitkeep', 'remove.txt'])) {
                         $dir = self::isValidDoc($file);
                         if (!empty($dir)) {
                             $uploaded_files[$file] = $file;
