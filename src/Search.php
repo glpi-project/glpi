@@ -7356,7 +7356,7 @@ JAVASCRIPT;
                     if ($obj = getItemForItemtype($data[$ID][0]['name'])) {
                         return $obj->getTypeName();
                     }
-                    return "";
+                    return $data[$ID][0]['name'];
 
                 case "language":
                     if (isset($CFG_GLPI['languages'][$data[$ID][0]['name']])) {
