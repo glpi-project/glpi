@@ -164,7 +164,8 @@ abstract class CommonITILObject extends CommonDBTM
 
         $actortypestring = self::getActorFieldNameType($actortype);
 
-        if ($this->isNewItem()) {
+        //bypass for API which does not include the form reload behavior
+        if ($this->isNewItem() || isAPI()) {
             $entities_id = $params['entities_id'] ?? $_SESSION['glpiactive_entity'];
             $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1);
 
@@ -191,6 +192,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'items_id'          => $users_id_default,
                             'itemtype'          => 'User',
                             'text'              => $name,
+                            'type'              => $actortype, //required by CommonITILActor::post_addItem:415
                             'title'             => $name,
                             'use_notification'  => $email === '' ? false : $default_use_notif,
                             'alternative_email' => $email,
@@ -8160,65 +8162,72 @@ abstract class CommonITILObject extends CommonDBTM
             $added     = [];
             $updated   = [];
 
-            foreach ($actors as $actor) {
-                if (
-                    $actor['items_id'] === 0
-                    && (
-                        ($actor['itemtype'] === User::class && empty($actor['alternative_email'] ?? ''))
-                        || $actor['itemtype'] !== User::class
-                    )
-                ) {
-                    // Empty values, probably provided by static::getDefaultValues()
-                    continue;
-                }
-
-                $found = false;
-                foreach ($existings as $existing) {
+            //in case there is no actor on the ticket
+            //directly add existings to actors need to be added
+            if (count($actors) == 0) {
+                $added = $existings;
+            } else {
+                foreach ($actors as $actor) {
                     if (
-                        $actor['itemtype'] === User::class
-                        && $actor['items_id'] == 0
-                        && $actor['itemtype'] == $existing['itemtype']
+                        $actor['items_id'] === 0
+                        && (
+                            ($actor['itemtype'] === User::class && empty($actor['alternative_email'] ?? ''))
+                            || $actor['itemtype'] !== User::class
+                        )
                     ) {
-                        // "email" actor found
-                        if ($actor['alternative_email'] == $existing['alternative_email']) {
-                            $found = true;
-                            break;
+                        // Empty values, probably provided by static::getDefaultValues()
+                        continue;
+                    }
+
+                    $found = false;
+                    foreach ($existings as $existing) {
+                        if (
+                            $actor['itemtype'] === User::class
+                            && $actor['items_id'] == 0
+                            && $actor['itemtype'] == $existing['itemtype']
+                        ) {
+                            // "email" actor found
+                            if ($actor['alternative_email'] == $existing['alternative_email']) {
+                                $found = true;
+                                break;
+                            }
+                            // Do not check for modifications on "email" actors (they should be deleted then re-added on email change)
+                            continue;
                         }
-                        // Do not check for modifications on "email" actors (they should be deleted then re-added on email change)
-                        continue;
+
+                        if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
+                            continue;
+                        }
+                        $found = true;
+
+                        if ($actor['itemtype'] === Group::class) {
+                            // Do not check for modifications on "group" actors (they do not have notification settings to update)
+                            continue;
+                        }
+
+                        // check if modifications exists
+                        if (
+                            (
+                                array_key_exists('use_notification', $actor)
+                                && $actor['use_notification'] != $existing['use_notification']
+                            )
+                            || (
+                                array_key_exists('alternative_email', $actor)
+                                && $actor['alternative_email'] != $existing['alternative_email']
+                            )
+                        ) {
+                            $updated[] = $actor + ['id' => $existing['id']];
+                        }
+
+                        break; // As actor is found, do not continue to list existings
                     }
 
-                    if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
-                        continue;
+                    if ($found === false) {
+                        $added[] = $actor;
                     }
-                    $found = true;
-
-                    if ($actor['itemtype'] === Group::class) {
-                        // Do not check for modifications on "group" actors (they do not have notification settings to update)
-                        continue;
-                    }
-
-                    // check if modifications exists
-                    if (
-                        (
-                            array_key_exists('use_notification', $actor)
-                            && $actor['use_notification'] != $existing['use_notification']
-                        )
-                        || (
-                            array_key_exists('alternative_email', $actor)
-                            && $actor['alternative_email'] != $existing['alternative_email']
-                        )
-                    ) {
-                        $updated[] = $actor + ['id' => $existing['id']];
-                    }
-
-                    break; // As actor is found, do not continue to list existings
-                }
-
-                if ($found === false) {
-                    $added[] = $actor;
                 }
             }
+
 
             // Add new actors
             foreach ($added as $actor) {
