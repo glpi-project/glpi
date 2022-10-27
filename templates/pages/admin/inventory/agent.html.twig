@@ -162,9 +162,12 @@
             'use_module_remote_inventory': __('Remote inventory'),
         } %}
 
-        {% if not item.fields[modulefield] %}
+        {% if item.fields[modulefield] %}
             {% set html = '<i class="ti ti-check"></i>' %}
+        {% else %}
+            {% set html = '' %}
         {% endif %}
+
         {{ fields.htmlField('', html, modulelabel) }}
         {% endfor %}
     {% endif %}
