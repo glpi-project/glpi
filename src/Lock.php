@@ -1025,7 +1025,7 @@ class Lock extends CommonGLPI
         global $DB;
 
         switch ($ma->getAction()) {
-            case 'unlock_fields' :
+            case 'unlock_fields':
                 $input = $ma->getInput();
                 if (isset($input['attached_fields'])) {
                     $base_itemtype = $baseitem->getType();
