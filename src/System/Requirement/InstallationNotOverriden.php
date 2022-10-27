@@ -36,22 +36,30 @@
 namespace Glpi\System\Requirement;
 
 use FilesystemIterator;
+use Glpi\Toolbox\VersionParser;
 
 final class InstallationNotOverriden extends AbstractRequirement
 {
-    public function __construct()
+    /**
+     * Version directory.
+     *
+     * @var string
+     */
+    private $version_dir;
+
+    public function __construct(string $version_dir = GLPI_ROOT . '/.version')
     {
+        $this->version_dir = $version_dir;
+
         $this->title = __('Anterior versions files detection');
         $this->description = __('The presence of source files from previous versions of GLPI can lead to security issues or bugs.');
     }
 
     protected function check()
     {
-        $version_folder = GLPI_ROOT . '/.version/';
-
         $version_files_count = 0;
-        if (is_dir($version_folder)) {
-            $file_iterator = new FilesystemIterator($version_folder);
+        if (is_dir($this->version_dir)) {
+            $file_iterator = new FilesystemIterator($this->version_dir);
             $version_files_count = iterator_count($file_iterator);
         }
 
@@ -63,9 +71,8 @@ final class InstallationNotOverriden extends AbstractRequirement
             return;
         }
 
-        $current_version = \Glpi\Toolbox\VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-
-        if (!file_exists($version_folder . $current_version) || iterator_count($file_iterator) > 1) {
+        $current_version_file = $this->version_dir . '/' . VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+        if (!file_exists($current_version_file) || iterator_count($file_iterator) > 1) {
             $this->validated = false;
             $this->validation_messages[] = __("We detected files of previous versions of GLPI.");
             $this->validation_messages[] = __("Please update GLPI by following the procedure described in the installation documentation.");
