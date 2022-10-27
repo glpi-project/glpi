@@ -939,13 +939,14 @@ class Lock extends CommonGLPI
         $is_deleted = 0,
         CommonDBTM $checkitem = null
     ) {
+        global $CFG_GLPI;
 
         $action_unlock_component = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_component';
         $action_unlock_fields = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_fields';
 
         if (
             Session::haveRight(strtolower($itemtype), UPDATE)
-            && ($itemtype == $itemtype)
+            && in_array($itemtype, $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'])
         ) {
             $actions[$action_unlock_component] = __('Unlock components');
             $actions[$action_unlock_fields] = __('Unlock fields');
