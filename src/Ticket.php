@@ -1819,6 +1819,18 @@ class Ticket extends CommonITILObject
             }
         }
 
+        // fill auto-assign when no tech defined (only for tech)
+        if (
+            !isset($input['_auto_import'])
+            && isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
+            && Session::getCurrentInterface() == 'central'
+            && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)
+            && Session::haveRight("ticket", Ticket::OWN)
+        ) {
+            $input['_users_id_assign'] = Session::getLoginUserID();
+        }
+
+
         $cat_id = $input['itilcategories_id'] ?? 0;
         if ($cat_id) {
             $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
