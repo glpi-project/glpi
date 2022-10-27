@@ -102,5 +102,18 @@ if ($apply_twig) {
     $template->fields['content'] = RichText::getSafeHtml($content);
 }
 
+//load solutiontype name (use to create OPTION dom)
+//need when template is used and when GLPI preselcted type if defined
+if ($template->fields['solutiontypes_id']) {
+    $template->fields['solutiontypes_name'] = Dropdown::getDropdownName(
+        getTableForItemType(SolutionType::getType()),
+        $template->fields['solutiontypes_id'],
+        0,
+        true,
+        true,
+        "(" . $template->fields['solutiontypes_id'] . ")"
+    );//default value like "(id)" is the default behavior of GLPI when fiel 'name' is empty
+}
+
 // Return json response with the template fields
 echo json_encode($template->fields);
