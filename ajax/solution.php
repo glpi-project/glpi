@@ -103,7 +103,7 @@ if ($apply_twig) {
 }
 
 //load solutiontype name (use to create OPTION dom)
-//need when template is used and when GLPI preselcted type if defined
+//need when template is used and when GLPI preselected type if defined
 if ($template->fields['solutiontypes_id']) {
     $template->fields['solutiontypes_name'] = Dropdown::getDropdownName(
         getTableForItemType(SolutionType::getType()),
