@@ -90,11 +90,7 @@ $template->fields['content'] = $template->getRenderedContent($parent);
 //need when template is used and when GLPI preselected type if defined
 $template->fields['requesttypes_name'] = "";
 if ($template->fields['requesttypes_id']) {
-    $dbUtils = new DbUtils();
-    $entityRestrict = $dbUtils->getEntitiesRestrictCriteria(getTableForItemType(RequestType::getType()), "", $parent->fields['entities_id'], true, false);
-    if (count($entityRestrict)) {
-        $entityRestrict = [$entityRestrict];
-    }
+    $entityRestrict = getEntitiesRestrictCriteria(getTableForItemType(RequestType::getType()), "", $parent->fields['entities_id'], true);
 
     $requesttype = new RequestType();
     if (
