@@ -299,7 +299,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    public function getFieldsToLock($specific_itemtype = null): array
+    public function getFieldsToLock(string $specific_itemtype = null): array
     {
         global $CFG_GLPI, $DB;
 
