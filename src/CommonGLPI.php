@@ -863,7 +863,8 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         // if form is reloaded (example from a change on type field in a ITIL Object)
-        if (isset($options['reload_form'])) {
+        if (isset($options['reload_form'])
+            && $this instanceof CommonDBTM) {
             $this->input = $options;
             $this->saveInput();
         }
