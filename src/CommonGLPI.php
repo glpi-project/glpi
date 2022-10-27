@@ -858,7 +858,7 @@ class CommonGLPI implements CommonGLPIInterface
         $withtemplate   = "";
         if (is_array($options) && count($options)) {
             if (isset($options['withtemplate'])) {
-               $withtemplate = $options['withtemplate'];
+                $withtemplate = $options['withtemplate'];
             }
         }
 
