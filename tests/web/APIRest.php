@@ -1030,10 +1030,17 @@ class APIRest extends APIBaseClass
                 ],
             ],
             [
-                'url' => 'getMassiveActionParameters/Computer/Lock:unlock',
+                'url' => 'getMassiveActionParameters/Computer/Lock:unlock_component',
                 'status' => 200,
                 'response' => [
                     ["name" => "attached_item[]", "type" => "dropdown"],
+                ],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/Lock:unlock_fields',
+                'status' => 200,
+                'response' => [
+                    ["name" => "attached_fields[]", "type" => "dropdown"],
                 ],
             ],
         ];
