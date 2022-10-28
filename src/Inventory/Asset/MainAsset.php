@@ -645,12 +645,12 @@ abstract class MainAsset extends InventoryAsset
         $entities_id = $this->entities_id;
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
-
-        if ($items_id != 0 && $this->states_id_default != '-1') {
-            $val->states_id = $this->states_id_default ?? 0;
+        $default_states_id = $this->states_id_default ?? 0;
+        if ($items_id != 0 && $default_states_id != '-1') {
+            $val->states_id = $default_states_id;
         } elseif ($items_id == 0) {
             //if create mode default states_id can't be '-1' put 0 if needed
-            $val->states_id = $this->states_id_default > 0 ? $this->states_id_default : 0;
+            $val->states_id = $default_states_id > 0 ? $default_states_id : 0;
         }
 
         // append data from RuleImportEntity
