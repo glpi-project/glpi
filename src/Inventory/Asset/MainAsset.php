@@ -646,7 +646,7 @@ abstract class MainAsset extends InventoryAsset
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
 
-        if ($this->states_id_default ?? 0 != '-1') {
+        if ($this->states_id_default != '-1') {
             $val->states_id = $this->states_id_default ?? 0;
         }
 
@@ -691,6 +691,8 @@ abstract class MainAsset extends InventoryAsset
             $this->agent->fields['items_id'] = $items_id;
             $this->agent->fields['entities_id'] = $entities_id;
         }
+
+
 
         //check for any old agent to remove
         $agent = new \Agent();
