@@ -32,6 +32,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `chartist` library has been replaced by `echarts`.
 - `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
 - `users_id_validate` field in `CommonITILValidation` will now have a `0` value when approval target is a group, until a group member answer to the approval request.
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
@@ -80,6 +81,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
+- `Glpi\Dashboard\Widget::getCssGradientPalette()`
 - `Search::computeTitle()`
 - `Search::csv_clean()`
 - `Search::findCriteriaInSession()`
@@ -88,7 +90,6 @@ The present file will list all changes made to the project; according to the
 - `Search::getMetaReferenceItemtype()`
 - `Search::outputData()`
 - `Search::sylk_clean()`
-- `Glpi\Dashboard\Widget::getCssGradientPalette()`
 
 ## [10.0.4] unreleased
 
