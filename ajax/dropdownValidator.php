@@ -81,9 +81,18 @@ if (isset($_POST["validatortype"])) {
 
     switch (strtolower($_POST['validatortype'])) {
         case 'user':
-            $itilObjectType = $validation_class::$itemtype;
-            $itilObject = $itilObjectType::getById($_POST['parents_id']);
-            $requester_users = $itilObject->getUsers(CommonITILActor::REQUESTER);
+            if ($_POST['parents_id'] != "") {
+                // Existing ticket
+                $itilObjectType = $validation_class::$itemtype;
+                $itilObject = $itilObjectType::getById($_POST['parents_id']);
+                $requester_users = $itilObject->getUsers(CommonITILActor::REQUESTER);
+            } else {
+                // New ticket
+                $requester_users = [];
+                foreach ($_POST['users_id_requester'] as $requester) {
+                    $requester_users[] = ['users_id' => $requester];
+                };
+            }
             $added_supervisors = [];
             foreach ($requester_users as $requester) {
                 $requester = User::getById($requester['users_id']);

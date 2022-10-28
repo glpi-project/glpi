@@ -1721,24 +1721,28 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         $params = [
-            'prefix'            => null,
-            'id'                => 0,
-            'parents_id'        => null,
-            'entity'            => $_SESSION['glpiactive_entity'],
-            'right'             => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
-            'groups_id'         => 0,
-            'itemtype_target'   => '',
-            'items_id_target'   => 0,
-            'display'           => true,
-            'disabled'          => false,
-            'width'             => '100%',
-            'required'          => false,
-            'rand'              => mt_rand(),
+            'prefix'             => null,
+            'id'                 => 0,
+            'parents_id'         => null,
+            'entity'             => $_SESSION['glpiactive_entity'],
+            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
+            'groups_id'          => 0,
+            'itemtype_target'    => '',
+            'items_id_target'    => 0,
+            'users_id_requester' => [],
+            'display'            => true,
+            'disabled'           => false,
+            'width'              => '100%',
+            'required'           => false,
+            'rand'               => mt_rand(),
         ];
         $params['applyto'] = 'show_validator_field' . $params['rand'];
 
         foreach ($options as $key => $val) {
             $params[$key] = $val;
+        }
+        if (!is_array($params['users_id_requester'])) {
+            $params['users_id_requester'] = [$params['users_id_requester']];
         }
 
         $params['validation_class'] = static::class;
