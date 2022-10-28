@@ -734,10 +734,12 @@ class MassiveAction
             $canupdate = $checkitem->canUpdate();
             $candelete = $checkitem->canDelete();
             $canpurge  = $checkitem->canPurge();
+            $cancreate = $checkitem->canCreate();
         } else {
             $canupdate = $itemtype::canUpdate();
             $candelete = $itemtype::canDelete();
             $canpurge  = $itemtype::canPurge();
+            $cancreate = $itemtype::canCreate();
         }
 
         $actions   = [];
@@ -766,7 +768,7 @@ class MassiveAction
                //TRANS: select action 'update' (before doing it)
                 $actions[$self_pref . 'update'] = _x('button', 'Update');
 
-                if (Toolbox::hasTrait($itemtype, Clonable::class)) {
+                if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
                     $actions[$self_pref . 'clone'] = "<i class='fa-fw far fa-clone'></i>" . _x('button', 'Clone');
                 }
             }
