@@ -1521,14 +1521,15 @@ class Search
 
            // manage toview column for criteria with meta flag
             foreach ($data['meta_toview'] as $m_itemtype => $toview) {
-                $searchopt = self::getOptions($m_itemtype);
+                $m_searchopt = self::getOptions($m_itemtype);
                 foreach ($toview as $opt_id) {
                     $data['data']['cols'][] = [
                         'itemtype'  => $m_itemtype,
                         'id'        => $opt_id,
-                        'name'      => $searchopt[$opt_id]["name"],
+                        'name'      => $m_searchopt[$opt_id]["name"],
                         'meta'      => 1,
-                        'searchopt' => $searchopt[$opt_id],
+                        'searchopt' => $m_searchopt[$opt_id],
+                        'groupname' => $m_itemtype,
                     ];
                 }
             }
@@ -1543,14 +1544,15 @@ class Search
                         && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)
                     ) {
                         if (!isset($already_printed[$metacriteria['itemtype'] . $metacriteria['field']])) {
-                            $searchopt = self::getOptions($metacriteria['itemtype']);
+                            $m_searchopt = self::getOptions($metacriteria['itemtype']);
 
                             $data['data']['cols'][] = [
                                 'itemtype'  => $metacriteria['itemtype'],
                                 'id'        => $metacriteria['field'],
-                                'name'      => $searchopt[$metacriteria['field']]["name"],
+                                'name'      => $m_searchopt[$metacriteria['field']]["name"],
                                 'meta'      => 1,
-                                'searchopt' => $searchopt[$metacriteria['field']]
+                                'searchopt' => $m_searchopt[$metacriteria['field']],
+                                'groupname' => $metacriteria['itemtype'],
                             ];
 
                             $already_printed[$metacriteria['itemtype'] . $metacriteria['field']] = 1;
@@ -1580,6 +1582,7 @@ class Search
                     if (
                         key($searchopt) !== null
                         && key($searchopt) !== "common"
+                        && !isset($data['data']['cols'][$num]['groupname'])
                     ) {
                         $data['data']['cols'][$num]['groupname'] = current($searchopt);
                     }
