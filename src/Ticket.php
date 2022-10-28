@@ -4261,7 +4261,7 @@ JAVASCRIPT;
             $this->check($ID, READ);
         } else {
             // Create item
-            $this->check(-1, CREATE, $options);
+            $this->check(-1, CREATE, $this->input);
         }
 
         $userentities = [];
