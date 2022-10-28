@@ -120,7 +120,7 @@ class Conf extends CommonGLPI
         'component_control'              => 1,
         'component_battery'              => 1,
         'component_simcard'              => 1,
-        'states_id_default'              => 0,
+        'states_id_default'              => -1,
         'location'                       => 0,
         'group'                          => 0,
         'vm_type'                        => 0,
@@ -456,6 +456,7 @@ class Conf extends CommonGLPI
                 'name'   => 'states_id_default',
                 'id'     => 'states_id_default',
                 'value'  => $config['states_id_default'],
+                'toadd'  => ['-1' => __('Do not change')],
                 'rand' => $rand
             ]
         );
