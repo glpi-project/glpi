@@ -1901,7 +1901,8 @@ class Stat extends CommonGLPI
                     function(value) {
                         return value > 0 ? 'circle': 'none';
                     }
-                JAVASCRIPT),
+JAVASCRIPT
+                ),
                 'symbolSize'      => 8,
                 'legendHoverLink' => true,
             ];
@@ -1915,7 +1916,8 @@ class Stat extends CommonGLPI
                     function () {
                         location.href = '$csv_link';
                     }
-                JAVASCRIPT),
+JAVASCRIPT
+                ),
             ];
         }
 
@@ -1941,7 +1943,7 @@ class Stat extends CommonGLPI
             height: $height;
         }
         </style>
-        HTML;
+HTML;
 
         $chart_options_json = Json::encode($chart_options, false, ['enableJsonExprFinder' => true]);
         $js = <<<JAVASCRIPT
@@ -1949,7 +1951,7 @@ class Stat extends CommonGLPI
             var myChart = echarts.init($('#{$slug}')[0]);
             myChart.setOption($chart_options_json);
         });
-        JAVASCRIPT;
+JAVASCRIPT;
         $js = Html::scriptBlock($js);
 
         $out = $html . $js;
@@ -2036,7 +2038,8 @@ class Stat extends CommonGLPI
                             function () {
                                 location.href = '$csv_link';
                             }
-                        JAVASCRIPT),
+JAVASCRIPT
+                        ),
                     ],
                     'saveAsImage' => [
                         'icon'  => 'path://M15,8L15.01,8 M7,4h10s3,0,3,3v10s0,3,-3,3h-10s-3,0,-3,-3v-10s0,-3,3,-3 M4,15l4,-4a3,5,0,0,1,3,0l5,5 M14,14l1,-1a3,5,0,0,1,3,0l2,2',
@@ -2088,7 +2091,7 @@ class Stat extends CommonGLPI
             height: 300px;
         }
         </style>
-        HTML;
+HTML;
 
         $chart_options_json = Json::encode($chart_options, false, ['enableJsonExprFinder' => true]);
         $js = <<<JAVASCRIPT
@@ -2096,7 +2099,7 @@ class Stat extends CommonGLPI
             var myChart = echarts.init($('#{$slug}')[0]);
             myChart.setOption($chart_options_json);
         });
-        JAVASCRIPT;
+JAVASCRIPT;
         $js = Html::scriptBlock($js);
 
         $out = $html . $js;

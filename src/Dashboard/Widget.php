@@ -634,7 +634,7 @@ HTML;
             <span class="main-label">{$p['label']}</span>
             <i class="main-icon {$p['icon']}"></i>
         </div>
-        HTML;
+HTML;
 
         if ($nodata) {
             return $html;
@@ -1072,10 +1072,11 @@ JAVASCRIPT;
 
             if ($p['distributed']) {
                 $serie['itemStyle']['color'] = new Json_Expr(<<<JAVASCRIPT
-                function(param) {
-                    return {$palette_json}[param.dataIndex];
-                }
-                JAVASCRIPT);
+                    function(param) {
+                        return {$palette_json}[param.dataIndex];
+                    }
+JAVASCRIPT
+                );
             }
 
             if ($p['stacked']) {
@@ -1090,7 +1091,8 @@ JAVASCRIPT;
                         function(param) {
                             return param.data.value == 0 ? '': param.data.value;
                         }
-                    JAVASCRIPT),
+JAVASCRIPT
+                    ),
                     'color'    => $p['stacked'] ? '#000' : 'inherit',
                     'position' => $p['horizontal']
                         ? 'right'
@@ -1140,7 +1142,7 @@ JAVASCRIPT;
                 <span class="main-label">{$p['label']}</span>
                 <i class="main-icon {$p['icon']}"></i>
             </div>
-        HTML;
+HTML;
 
         $options = [
             'animationDuration' => self::$animation_duration,
@@ -1208,7 +1210,8 @@ JAVASCRIPT;
                                 return value / 1e6 + "M";
                             }
                         }
-                    JAVASCRIPT),
+JAVASCRIPT
+                    ),
                 ]
             ]);
             $options['yAxis'] = array_merge($options['yAxis'], [
@@ -1256,7 +1259,7 @@ JAVASCRIPT;
                     myChart.setOption({'toolbox': {'show': false}});
                 });
         });
-        JAVASCRIPT;
+JAVASCRIPT;
         $js = \Html::scriptBlock($js);
 
         return $html . $js;
@@ -1446,7 +1449,8 @@ JAVASCRIPT;
                     function(value) {
                         return value > 0 ? 'circle': 'none';
                     }
-                JAVASCRIPT);
+JAVASCRIPT
+                );
                 $echart_serie['symbolSize'] = 8;
             }
 
@@ -1459,7 +1463,8 @@ JAVASCRIPT;
                         function(param) {
                             return param.data.value == 0 ? '': param.data.value;
                         }
-                    JAVASCRIPT),
+JAVASCRIPT
+                    ),
                 ];
             }
 
@@ -1494,7 +1499,7 @@ JAVASCRIPT;
                 <span class="main-label">{$p['label']}</span>
                 <i class="main-icon {$p['icon']}"></i>
             </div>
-        HTML;
+HTML;
 
         $options = [
             'animationDuration' => self::$animation_duration,
@@ -1566,7 +1571,7 @@ JAVASCRIPT;
                     myChart.setOption({'toolbox': {'show': false}});
                 });
         });
-        JAVASCRIPT;
+JAVASCRIPT;
         $js = Html::scriptBlock($js);
 
         return $html . $js;
