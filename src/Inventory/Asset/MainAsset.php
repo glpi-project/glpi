@@ -695,8 +695,6 @@ abstract class MainAsset extends InventoryAsset
             $this->agent->fields['entities_id'] = $entities_id;
         }
 
-
-
         //check for any old agent to remove
         $agent = new \Agent();
         $agent->deleteByCriteria([
