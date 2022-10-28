@@ -53,15 +53,15 @@ class RuleImportAsset extends DbTestCase
         $this->items_id = null;
         $this->itemtype = null;
         $this->rules_id = null;
-        $this->ports_id = null;
+        $this->ports_id = [];
     }
 
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         $this->items_id = (int)$items_id;
         $this->itemtype = $itemtype;
         $this->rules_id = (int)$rules_id;
-        $this->ports_id = (int)$ports_id;
+        $this->ports_id = (array)$ports_id;
     }
 
     protected function enableRule($name)
@@ -376,7 +376,8 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by mac)");
         $this->integer($this->items_id)->isIdenticalTo($computers_id);
         $this->string($this->itemtype)->isIdenticalTo('Computer');
-        $this->integer($this->ports_id)->isIdenticalTo($ports_id);
+        $this->array($this->ports_id)->hasSize(1);
+        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id);
     }
 
     /**
@@ -505,7 +506,8 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by ip)");
         $this->integer($this->items_id)->isIdenticalTo($computers_id);
         $this->string($this->itemtype)->isIdenticalTo('Computer');
-        $this->integer($this->ports_id)->isIdenticalTo($ports_id);
+        $this->array($this->ports_id)->hasSize(1);
+        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id);
     }
 
 
@@ -614,7 +616,8 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by ip)");
         $this->integer($this->items_id)->isIdenticalTo($computers_id);
         $this->string($this->itemtype)->isIdenticalTo('Computer');
-        $this->integer($this->ports_id)->isIdenticalTo($ports_id);
+        $this->array($this->ports_id)->hasSize(1);
+        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id);
     }
 
     /**
@@ -714,7 +717,7 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Global import (by mac+ifnumber)");
         $this->integer($this->items_id)->isIdenticalTo(0);
         $this->string($this->itemtype)->isIdenticalTo('Unmanaged'); //not handled yet...
-        $this->integer($this->ports_id)->isIdenticalTo(0);
+        $this->integer(count($this->ports_id))->isIdenticalTo(0);
     }
 
     /**
@@ -769,7 +772,8 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Global update (by mac+ifnumber restricted port)");
         $this->integer($this->items_id)->isIdenticalTo($networkEquipments_id);
         $this->string($this->itemtype)->isIdenticalTo('NetworkEquipment');
-        $this->integer($this->ports_id)->isIdenticalTo($ports_id);
+        $this->array($this->ports_id)->hasSize(1);
+        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id);
     }
 
    //Above commented tests are related to SNMP inventory
@@ -839,11 +843,12 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Global update (by ip+ifdescr restricted port)");
         $this->integer($this->items_id)->isIdenticalTo($networkEquipments_id);
         $this->string($this->itemtype)->isIdenticalTo('NetworkEquipment');
-        $this->integer($this->ports_id)->isIdenticalTo($ports_id_1);
+        $this->array($this->ports_id)->hasSize(1);
+        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id_1);
 
         $this->items_id = 0;
         $this->itemtype = "";
-        $this->ports_id = 0;
+        $this->ports_id = [];
         $input = [
             'ifdescr' => 'FastEthernet0/1',
             'ip'      => '192.168.0.2',
@@ -879,6 +884,7 @@ class RuleImportAsset extends DbTestCase
         ]);
         $this->integer($networkEquipments_id)->isGreaterThan(0);
 
+        $a_portids = [];
         $ports_id = $networkPort->add([
             'mac'                => '00:1a:6c:9a:fc:99',
             'name'               => 'Fa0/1',
@@ -896,9 +902,9 @@ class RuleImportAsset extends DbTestCase
             'ifdescr'         => 'FastEthernet0/1',
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
+        $a_portids[] = $ports_id;
 
-        $this->integer(
-            $networkPort->add([
+        $ports_id = $networkPort->add([
                 'mac'                => '00:1a:6c:9a:fc:98',
                 'name'               => 'Fa0/2',
                 'logical_number'     => '10102',
@@ -913,8 +919,9 @@ class RuleImportAsset extends DbTestCase
                     '-1' => '192.168.0.2'
                 ],
                 'ifdescr'         => 'FastEthernet0/2',
-            ])
-        )->isGreaterThan(0);
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+        $a_portids[] = $ports_id;
 
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
@@ -924,7 +931,8 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo('Global update (by ip+ifdescr not restricted port)');
         $this->integer($this->items_id)->isIdenticalTo($networkEquipments_id);
         $this->string($this->itemtype)->isIdenticalTo('NetworkEquipment');
-        $this->integer($this->ports_id)->isIdenticalTo($ports_id);
+        $this->array($this->ports_id)->hasSize(2);
+        $this->array(array_diff($this->ports_id, $a_portids))->hasSize(0);
     }
 
     /**
@@ -986,7 +994,8 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Update only mac address (mac on switch port)");
         $this->integer($this->items_id)->isIdenticalTo($printers_id);
         $this->string($this->itemtype)->isIdenticalTo('Printer');
-        $this->integer($this->ports_id)->isIdenticalTo($ports_id_2);
+        $this->array($this->ports_id)->hasSize(1);
+        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id_2);
     }
 
     public function testGetTitle()
