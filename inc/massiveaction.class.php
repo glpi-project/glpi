@@ -512,10 +512,12 @@ class MassiveAction {
          $canupdate = $checkitem->canUpdate();
          $candelete = $checkitem->canDelete();
          $canpurge  = $checkitem->canPurge();
+         $cancreate  = $checkitem->canCreate();
       } else {
          $canupdate = $itemtype::canUpdate();
          $candelete = $itemtype::canDelete();
          $canpurge  = $itemtype::canPurge();
+         $cancreate  = $itemtype::canCreate();
       }
 
       $actions   = [];
@@ -543,7 +545,7 @@ class MassiveAction {
             //TRANS: select action 'update' (before doing it)
             $actions[$self_pref.'update'] = _x('button', 'Update');
 
-            $actions[$self_pref.'clone'] = _x('button', 'Clone');
+            if ($cancreate) $actions[$self_pref.'clone'] = _x('button', 'Clone');
          }
 
          Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
