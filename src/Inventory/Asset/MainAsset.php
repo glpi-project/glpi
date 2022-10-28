@@ -649,7 +649,8 @@ abstract class MainAsset extends InventoryAsset
         if ($items_id != 0 && $this->states_id_default != '-1') {
             $val->states_id = $this->states_id_default ?? 0;
         } elseif ($items_id == 0) {
-            $val->states_id = $this->states_id_default ?? 0;
+            //if create mode default states_id can't be '-1' put 0 if needed
+            $val->states_id = $this->states_id_default > 0 ? $this->states_id_default : 0;
         }
 
         // append data from RuleImportEntity
