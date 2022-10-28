@@ -646,7 +646,9 @@ abstract class MainAsset extends InventoryAsset
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
 
-        if ($this->states_id_default != '-1') {
+        if ($items_id != 0 && $this->states_id_default != '-1') {
+            $val->states_id = $this->states_id_default ?? 0;
+        } elseif ($items_id == 0) {
             $val->states_id = $this->states_id_default ?? 0;
         }
 
