@@ -120,7 +120,7 @@ class Conf extends CommonGLPI
         'component_control'              => 1,
         'component_battery'              => 1,
         'component_simcard'              => 1,
-        'states_id_default'              => -1,
+        'states_id_default'              => 0,
         'location'                       => 0,
         'group'                          => 0,
         'vm_type'                        => 0,
