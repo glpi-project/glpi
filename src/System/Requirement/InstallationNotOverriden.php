@@ -61,7 +61,7 @@ final class InstallationNotOverriden extends AbstractRequirement
         $this->db = $db;
         $this->version_dir = $version_dir;
 
-        $this->title = __('Anterior versions files detection');
+        $this->title = __('Previous GLPI version files detection');
         $this->description = __('The presence of source files from previous versions of GLPI can lead to security issues or bugs.');
     }
 
