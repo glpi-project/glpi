@@ -496,7 +496,6 @@ class Computer extends AbstractInventoryAsset
         //load printer
         $computer->getFromDB($computers_id);
         $this->integer($computer->fields['states_id'])->isEqualTo($state_2_id);
-
     }
 
     public function testInventoryChangeStatusOrNotFromAutomaticInventory()
