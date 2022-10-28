@@ -451,7 +451,6 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "<td>";
 
-        var_dump($config['states_id_default']);
         \Dropdown::show(
             'State',
             [
