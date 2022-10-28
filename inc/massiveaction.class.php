@@ -512,12 +512,12 @@ class MassiveAction {
          $canupdate = $checkitem->canUpdate();
          $candelete = $checkitem->canDelete();
          $canpurge  = $checkitem->canPurge();
-         $cancreate  = $checkitem->canCreate();
+         $cancreate = $checkitem->canCreate();
       } else {
          $canupdate = $itemtype::canUpdate();
          $candelete = $itemtype::canDelete();
          $canpurge  = $itemtype::canPurge();
-         $cancreate  = $itemtype::canCreate();
+         $cancreate = $itemtype::canCreate();
       }
 
       $actions   = [];
