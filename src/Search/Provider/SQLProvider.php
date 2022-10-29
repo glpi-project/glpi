@@ -2803,6 +2803,11 @@ final class SQLProvider implements SearchProviderInterface
                     case "glpi_ipaddresses.name":
                         $criterion = "INET6_ATON(`$table$addtable`.`$field`) $order";
                         break;
+                    case "glpi_computers.name":
+                    case "glpi_networkequipments.name":
+                        $_field = "`$table$addtable`.`$field`";
+                        $criterion = "SOUNDEX($_field),LENGTH($_field),$_field $order";
+                        break;
                 }
             }
 

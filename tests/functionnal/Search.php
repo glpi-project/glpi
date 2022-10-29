@@ -2032,12 +2032,12 @@ class Search extends DbTestCase
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
-        $data = $this->doSearch('SearchTest\\Computer', $search_params);
+        $data = $this->doSearch('SearchTest\\Monitor', $search_params);
 
         $this->string($data['sql']['search'])
-         ->contains("`glpi_computers`.`name` AS `ITEM_SearchTest\Computer_1`")
-         ->contains("`glpi_computers`.`id` AS `ITEM_SearchTest\Computer_1_id`")
-         ->contains("ORDER BY `ITEM_SearchTest\Computer_1` ASC");
+         ->contains("`glpi_monitors`.`name` AS `ITEM_SearchTest\Monitor_1`")
+         ->contains("`glpi_monitors`.`id` AS `ITEM_SearchTest\Monitor_1_id`")
+         ->contains("ORDER BY `ITEM_SearchTest\Monitor_1` ASC");
     }
 
     public function testGroupParamAfterMeta()
@@ -2138,6 +2138,15 @@ class Search extends DbTestCase
 
     protected function testNamesOutputProvider(): array
     {
+        $computer = new \Computer();
+        foreach (['_test_pc1', '_test_pc101', '_test_p100', '_test_p1000'] as $name) {
+            $computer->add([
+                'name'         => $name,
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+            ]);
+        }
+
         return [
             [
                 'params' => [
@@ -2166,7 +2175,9 @@ class Search extends DbTestCase
                     'as_map'       => 0,
                 ],
                 'expected' => [
-                    '_test_pc_with_encoded_comment',
+                    '_test_p100',
+                    '_test_p1000',
+                    '_test_pc1',
                     '_test_pc01',
                     '_test_pc02',
                     '_test_pc03',
@@ -2175,6 +2186,8 @@ class Search extends DbTestCase
                     '_test_pc13',
                     '_test_pc21',
                     '_test_pc22',
+                    '_test_pc101',
+                    '_test_pc_with_encoded_comment',
                 ]
             ],
         ];
@@ -2369,11 +2382,11 @@ class DupSearchOpt extends \CommonDBTM
 namespace SearchTest;
 
 // @codingStandardsIgnoreStart
-class Computer extends \Computer
+class Monitor extends \Monitor
 {
     // @codingStandardsIgnoreEnd
     public static function getTable($classname = null)
     {
-        return 'glpi_computers';
+        return 'glpi_monitors';
     }
 }
