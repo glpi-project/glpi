@@ -54,6 +54,10 @@ if ($_REQUEST["action"] == "send_add_group_form") {
 }
 
 if ($_REQUEST["action"] == "send_add_external_form") {
+    if(isset($_REQUEST['url'])) {
+       $_REQUEST['url'] =  html_entity_decode($_REQUEST['url']); 
+    }
+
     Planning::sendAddExternalForm($_REQUEST);
 }
 
