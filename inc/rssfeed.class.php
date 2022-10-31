@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -812,14 +814,14 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
          foreach ($feed->get_items(0, $this->fields['max_items']) as $item) {
-            $link = $item->get_permalink();
+            $link = URL::sanitizeURL($item->get_permalink());
             echo "<tr class='tab_bg_1'><td>";
             echo Html::convDateTime($item->get_date('Y-m-d H:i:s'));
             echo "</td><td>";
-            if (!is_null($link)) {
-               echo "<a target='_blank' href='$link'>".$item->get_title().'</a>';
+            if (!empty($link)) {
+               echo '<a target="_blank" href="' . htmlspecialchars($link) . '">'.$item->get_title().'</a>';
             } else {
-               $item->get_title();
+               echo $item->get_title();
             }
             echo "</td><td>";
             $rand = mt_rand();
@@ -869,7 +871,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
          $newurl  = $f->url;
          $newfeed = self::getRSSFeed($newurl);
          if ($newfeed && !$newfeed->error()) {
-            $link = $newfeed->get_permalink();
+            $link = URL::sanitizeURL($newfeed->get_permalink());
             if (!empty($link)) {
                echo "<a href='$newurl'>".$newfeed->get_title()."</a>&nbsp;";
                Html::showSimpleForm($this->getFormURL(), 'update', _x('button', 'Use'),
@@ -1023,25 +1025,21 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria {
             echo "<tr class='tab_bg_1'><td>";
             echo Html::convDateTime($item->get_date('Y-m-d H:i:s'));
             echo "</td><td>";
-            $link = $item->feed->get_permalink();
-            if (empty($link)) {
+            $feed_link = URL::sanitizeURL($item->feed->get_permalink());
+            if (empty($feed_link)) {
                echo $item->feed->get_title();
             } else {
-               echo "<a target='_blank' href='$link'>".$item->feed->get_title().'</a>';
+               echo '<a target="_blank" href="' . htmlspecialchars($feed_link) . '">' . $item->feed->get_title() . '</a>';
             }
-            $link = $item->get_permalink();
-            // echo "<br>";
-            // echo $item->get_title();
-            // echo "</td><td>";
 
+            $item_link = URL::sanitizeURL($item->get_permalink());
             $rand = mt_rand();
             echo "<div id='rssitem$rand' class='pointer rss'>";
-            if (!is_null($link)) {
-               echo "<a target='_blank' href='$link'>";
+            if (!empty($item_link)) {
+               echo '<a target="_blank" href="' . htmlspecialchars($item_link) . '">';
             }
             echo $item->get_title();
-            // echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
-            if (!is_null($link)) {
+            if (!empty($item_link)) {
                echo "</a>";
             }
             echo "</div>";
