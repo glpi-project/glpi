@@ -459,6 +459,10 @@ function changeVarcharToID($table1, $table2, $chps) {
 function doUpdateDb() {
    global $GLPI_CACHE, $migration, $update;
 
+   // Init debug variable
+   // Only show errors
+   Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
+
    $currents            = $update->getCurrents();
    $current_version     = $currents['version'];
    $current_db_version  = $currents['dbversion'];

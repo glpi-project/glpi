@@ -83,15 +83,13 @@ class Update extends \GLPITestCase {
 
       $this->array($_SESSION)->hasKeys([
          'glpilanguage',
-         'glpi_currenttime',
-         'glpi_use_mode'
+         'glpi_currenttime'
       ])->notHasKeys([
+         'glpi_use_mode',
          'debug_sql',
          'debug_vars',
          'use_log_in_files'
       ]);
-      $this->variable($_SESSION['glpi_use_mode'])->isIdenticalTo(\Session::DEBUG_MODE);
-      $this->variable(error_reporting())->isIdenticalTo(E_ALL | E_STRICT);
    }
 
    public function testSetMigration() {

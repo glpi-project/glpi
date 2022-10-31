@@ -77,10 +77,6 @@ class Update extends CommonGLPI {
          $_SESSION = ['glpilanguage' => (isset($this->args['lang']) ? $this->args['lang'] : 'en_GB')];
          $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
       }
-
-      // Init debug variable
-      // Only show errors
-      Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
    }
 
    /**
