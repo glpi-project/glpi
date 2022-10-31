@@ -580,7 +580,12 @@ class DBmysql
      */
     public function insertId()
     {
-        return $this->dbh->insert_id;
+        $insert_id = $this->dbh->insert_id;
+
+        if ($insert_id === 0) {
+            $insert_id = $this->dbh->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+        }
+        return $insert_id;
     }
 
     /**
