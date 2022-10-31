@@ -51,9 +51,7 @@
                      <div class="alert alert-info" role="alert">
                         {% set entitybadge %}
                            <span class="ms-1">
-                              {{ call('Entity::badgeCompletename', [
-                                 get_item_name('Entity', item.fields['entities_id'])
-                              ])|raw }}
+                              {{ call('Entity::badgeCompletenameById', [item.fields['entities_id']])|raw }}
                            </span>
                         {% endset %}
 
