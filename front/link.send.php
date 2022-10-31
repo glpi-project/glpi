@@ -50,8 +50,8 @@ if (isset($_GET["lID"])) {
 
       if ($item = getItemForItemtype($_GET["itemtype"])) {
          if ($item->getFromDB($_GET["id"])) {
-            $content_filename = Link::generateLinkContents($link, $item);
-            $content_data     = Link::generateLinkContents($file, $item);
+            $content_filename = Link::generateLinkContents($link, $item, false);
+            $content_data     = Link::generateLinkContents($file, $item, false);
 
             if (isset($_GET['rank']) && isset($content_filename[$_GET['rank']])) {
                $filename = $content_filename[$_GET['rank']];

@@ -5233,13 +5233,14 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 9.1
     *
-    * @param string     $link original string content
-    * @param CommonDBTM $item item used to make replacements
+    * @param string     $link       original string content
+    * @param CommonDBTM $item       item used to make replacements
+    * @param bool       $safe_url   indicates whether URL should be sanitized or not
     *
     * @return array of link contents (may have several when item have several IP / MAC cases)
    **/
-   static function generateLinkContents($link, CommonDBTM $item) {
-      return Link::generateLinkContents($link, $item);
+   static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true) {
+      return Link::generateLinkContents($link, $item, $safe_url);
    }
 
 

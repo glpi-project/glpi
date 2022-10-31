@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -717,13 +719,16 @@ class Domain extends CommonDropdown {
       return $types;
    }
 
-   static function generateLinkContents($link, CommonDBTM $item) {
+   static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true) {
       if (strstr($link, "[DOMAIN]")) {
          $link = str_replace("[DOMAIN]", $item->getName(), $link);
+         if ($safe_url) {
+            $link = URL::sanitizeURL($link) ?: '#';
+         }
          return [$link];
       }
 
-      return parent::generateLinkContents($link, $item);
+      return parent::generateLinkContents($link, $item, $safe_url);
    }
 
    public static function getUsed(array $used, $domaintype) {
