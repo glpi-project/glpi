@@ -59,24 +59,23 @@
         "build": "webpack --config webpack.config.js"
     },
     "devDependencies": {
-        "acorn": "^7.0.0",
         "assert": "^2.0.0",
         "buffer": "^6.0.3",
-        "clean-webpack-plugin": "^3.0.0",
-        "copy-webpack-plugin": "^6.0.1",
-        "css-loader": "^3.4.2",
+        "clean-webpack-plugin": "^4.0.0",
+        "copy-webpack-plugin": "^11.0.0",
+        "css-loader": "^6.7.1",
         "eslint": "^7.1.0",
-        "file-loader": "^6.0.0",
-        "glob": "^7.1.6",
-        "mini-css-extract-plugin": "^0.9.0",
+        "glob": "^8.0.3",
+        "mini-css-extract-plugin": "^2.6.1",
         "os-browserify": "^0.3.0",
+        "process": "^0.11.10",
         "script-loader": "^0.7.2",
         "stream-browserify": "^3.0.0",
         "strip-sourcemap-loader": "^0.0.1",
-        "terser": "^4.7.0",
+        "terser": "^5.15.1",
         "tty-browserify": "^0.0.1",
         "util": "^0.12.5",
         "webpack": "^5.62.2",
-        "webpack-cli": "^3.3.10"
+        "webpack-cli": "^4.10.0"
     }
 }
