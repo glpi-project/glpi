@@ -148,6 +148,18 @@
                            <i class="fas fa-reply fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
                               title="{{ _n('Solution template', 'Solution templates', get_plural_number()) }}"></i>
                         {% endset %}
+                        {% set sol_search = {} %}
+                        {% if item.getType() == 'Ticket' %}
+                           {% if item.fields['type'] == constant('Ticket::INCIDENT_TYPE') %}
+                              {% set sol_search = {'is_incident': 1} %}
+                           {% elseif item.fields['type'] == constant('Ticket::DEMAND_TYPE') %}
+                              {% set sol_search = {'is_request': 1} %}
+                           {% endif %}
+                        {% elseif item.getType() == 'Problem' %}
+                           {% set sol_search = {'is_problem': 1} %}
+                        {% elseif item.getType() == 'Change' %}
+                           {% set sol_search = {'is_change': 1} %}
+                        {% endif %}
                         {{ fields.dropdownField(
                            'SolutionTemplate',
                            'solutiontemplates_id',
@@ -158,6 +170,7 @@
                               'icon_label': true,
                               'on_change': 'solutiontemplate_update' ~ rand ~ '(this.value)',
                               'rand': rand,
+                              'condition': sol_search,
                               'disabled': disabled,
                            }
                         ) }}

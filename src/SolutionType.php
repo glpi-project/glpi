@@ -45,4 +45,44 @@ class SolutionType extends CommonDropdown
     {
         return "fas fa-check";
     }
+
+    public function getAdditionalFields()
+    {
+        $tab = [
+            [
+                'name'      => 'is_incident',
+                'label'     => __('Visible for an incident'),
+                'type'      => 'bool',
+                'list'      => true,
+            ],
+            [
+                'name'      => 'is_request',
+                'label'     => __('Visible for a request'),
+                'type'      => 'bool',
+                'list'      => true,
+            ],
+            [
+                'name'  => 'is_problem',
+                'label' => __('Visible for a problem'),
+                'type'  => 'bool',
+                'list'  => true,
+            ],
+            [
+                'name'  => 'is_change',
+                'label' => __('Visible for a change'),
+                'type'  => 'bool',
+                'list'  => true,
+            ],
+        ];
+        return $tab;
+    }
+
+    public function post_getEmpty()
+    {
+
+        $this->fields['is_request']         = 1;
+        $this->fields['is_incident']        = 1;
+        $this->fields['is_problem']         = 1;
+        $this->fields['is_change']          = 1;
+    }
 }
