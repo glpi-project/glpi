@@ -70,6 +70,7 @@ var libsConfig = {
    output: {
       filename: '[name].js',
       path: path.resolve(__dirname, libOutputPath),
+      publicPath: '',
    },
    module: {
       rules: [
@@ -125,12 +126,6 @@ var libsConfig = {
          },
       ],
    },
-   node: {
-      // console is present in all browsers, no need to import "console-browserify"
-      // prevent circular dependency util -> console-browserify -> assert -> util
-      // (assert.js:164 Uncaught TypeError: util.inherits is not a function)
-      console: true,
-   },
    plugins: [
       new CleanWebpackPlugin(), // Clean lib dir content
       new MiniCssExtractPlugin({ filename: '[name].css' }), // Extract styles into CSS files
@@ -140,6 +135,14 @@ var libsConfig = {
       mainFields: [
          'main',
       ],
+      fallback: {
+         "tty": require.resolve("tty-browserify"),
+         "util": require.resolve("util/"),
+         "assert": require.resolve("assert/"),
+         "stream": require.resolve("stream-browserify"),
+         "os": require.resolve("os-browserify"),
+         "buffer": require.resolve("buffer/"),
+      },
    },
 };
 
