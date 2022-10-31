@@ -29,6 +29,7 @@
  * ---------------------------------------------------------------------
  */
 
+const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -102,46 +103,53 @@ var libsConfig = {
          {
             // Copy images and fonts
             test: /\.((gif|png|jp(e?)g)|(eot|ttf|svg|woff2?))$/,
-            use: {
-               loader: 'file-loader',
-               options: {
-                  name: function (filename) {
-                     // Keep only relative path
-                     var sanitizedPath = path.relative(__dirname, filename);
+            type: 'asset/resource',
+            generator: {
+               filename: function (pathData) {
+                  // Keep only relative path
+                  var sanitizedPath = path.relative(__dirname, pathData.filename);
 
-                     // Sanitize name
-                     sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
+                  // Sanitize name
+                  sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
 
-                     // Remove the first directory (lib, node_modules, ...) and empty parts
-                     // and replace directory separator by '/' (windows case)
-                     sanitizedPath = sanitizedPath.split(path.sep)
-                        .filter(function (part, index) {
-                           return '' != part && index != 0;
-                        }).join('/');
+                  // Remove the first directory (lib, node_modules, ...) and empty parts
+                  // and replace directory separator by '/' (windows case)
+                  sanitizedPath = sanitizedPath.split(path.sep)
+                     .filter(function (part, index) {
+                        return '' != part && index != 0;
+                     }).join('/');
 
-                     return sanitizedPath;
-                  },
+                  return sanitizedPath;
                },
             },
          },
       ],
    },
    plugins: [
-      new CleanWebpackPlugin(), // Clean lib dir content
-      new MiniCssExtractPlugin({ filename: '[name].css' }), // Extract styles into CSS files
+      new webpack.ProvidePlugin(
+         {
+            process: 'process/browser', // required in util.js (indirect dependency of file-type.js)
+            Buffer: ['buffer', 'Buffer'], // required in file-type.js
+         }
+      ),
+      new CleanWebpackPlugin(
+         {
+            cleanOnceBeforeBuildPatterns: [
+               path.join(process.cwd(), libOutputPath + '/**/*'),
+            ]
+         }
+      ), // Clean lib dir content
+      new MiniCssExtractPlugin(), // Extract styles into CSS files
    ],
    resolve: {
       // Use only main file in requirement resolution as we do not yet handle modules correctly
       mainFields: [
          'main',
       ],
-      fallback: {
-         "tty": require.resolve("tty-browserify"),
-         "util": require.resolve("util/"),
-         "assert": require.resolve("assert/"),
-         "stream": require.resolve("stream-browserify"),
-         "os": require.resolve("os-browserify"),
-         "buffer": require.resolve("buffer/"),
+      alias: {
+         'stream': 'stream-browserify',
+         'os': 'os-browserify',
+         'tty': 'tty-browserify',
       },
    },
 };
