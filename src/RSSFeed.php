@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\Toolbox\URL;
 
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
@@ -853,7 +854,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             foreach ($feed->get_items(0, $this->fields['max_items']) as $item) {
                 $rss_feed['items'][] = [
                     'title'     => $item->get_title(),
-                    'link'      => $item->get_permalink(),
+                    'link'      => URL::sanitizeURL($item->get_permalink()),
                     'timestamp' => Html::convDateTime($item->get_date('Y-m-d H:i:s')),
                     'content'   => $item->get_content()
                 ];
@@ -897,7 +898,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $newurl  = $f->url;
             $newfeed = self::getRSSFeed($newurl);
             if ($newfeed && !$newfeed->error()) {
-                $link = $newfeed->get_permalink();
+                $link = URL::sanitizeURL($newfeed->get_permalink());
                 if (!empty($link)) {
                      echo "<a href='$newurl'>" . $newfeed->get_title() . "</a>&nbsp;";
                      Html::showSimpleForm(
@@ -1071,21 +1072,21 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 $output .= "<tr class='tab_bg_1'><td>";
                 $output .= Html::convDateTime($item->get_date('Y-m-d H:i:s'));
                 $output .= "</td><td>";
-                $link = $item->feed->get_permalink();
-                if (empty($link)) {
+                $feed_link = URL::sanitizeURL($item->feed->get_permalink());
+                if (empty($feed_link)) {
                     $output .= $item->feed->get_title();
                 } else {
-                    $output .= "<a target='_blank' href='$link'>" . $item->feed->get_title() . '</a>';
+                    $output .= '<a target="_blank" href="' . htmlspecialchars($feed_link) . '">' . $item->feed->get_title() . '</a>';
                 }
-                $link = $item->get_permalink();
 
+                $item_link = URL::sanitizeURL($item->get_permalink());
                 $rand = mt_rand();
                 $output .= "<div id='rssitem$rand'>";
-                if (!is_null($link)) {
-                    $output .= "<a target='_blank' href='$link'>";
+                if (!empty($item_link)) {
+                    $output .= '<a target="_blank" href="' . htmlspecialchars($item_link) . '">';
                 }
                 $output .= $item->get_title();
-                if (!is_null($link)) {
+                if (!empty($item_link)) {
                     $output .= "</a>";
                 }
                 $output .= "</div>";
