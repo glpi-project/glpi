@@ -228,7 +228,7 @@ abstract class API extends CommonGLPI {
     * @return array with session_token
     */
    protected function initSession($params = []) {
-      global $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $this->checkAppToken();
       $this->logEndpointUsage(__FUNCTION__);
@@ -255,7 +255,7 @@ abstract class API extends CommonGLPI {
 
       $noAuto = true;
       if (isset($params['user_token']) && !empty($params['user_token'])) {
-         $_REQUEST['user_token'] = $params['user_token'];
+         $_REQUEST['user_token'] = $DB->escape($params['user_token']);
          $noAuto = false;
 
       } else if (!$CFG_GLPI['enable_api_login_credentials']) {
