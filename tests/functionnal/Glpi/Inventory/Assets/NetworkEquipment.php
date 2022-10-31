@@ -2085,7 +2085,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        //$json = json_decode($data);
+
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
@@ -2205,7 +2205,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        //$json = json_decode($data);
+
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
@@ -2321,7 +2321,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        //$json = json_decode($data);
+
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
@@ -2473,7 +2473,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        //$json = json_decode($data);
+
         $CFG_GLPI["is_contact_autoupdate"] = 0;
         $inventory = new \Glpi\Inventory\Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
