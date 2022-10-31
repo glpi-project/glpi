@@ -450,9 +450,42 @@ class Toolbox {
     * @since 9.5.4
     */
    public static function getHtmLawedSafeConfig(): array {
+      $forbidden_elements = [
+         'script',
+
+         // header elements used to link external resources
+         'link',
+         'meta',
+
+         // elements used to embed potential malicious external application
+         'applet',
+         'canvas',
+         'embed',
+         'object',
+
+         // form elements
+         'form',
+         'button',
+         'input',
+         'select',
+         'datalist',
+         'option',
+         'optgroup',
+         'textarea',
+      ];
+
       $config = [
-         'elements'         => '* -applet -canvas -embed -object -script -link',
-         'deny_attribute'   => 'on*, srcdoc',
+         'elements'         => '* '
+            . implode(
+               '',
+               array_map(
+                  function($element) {
+                     return '-' . $element;
+                  },
+                  $forbidden_elements
+               )
+            ),
+         'deny_attribute'   => 'on*, srcdoc, formaction',
          'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
          'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
          'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
