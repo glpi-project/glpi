@@ -77,6 +77,47 @@ class SolutionType extends CommonDropdown
         return $tab;
     }
 
+
+    public function rawSearchOptions()
+    {
+        $tab                       = parent::rawSearchOptions();
+
+        $tab[] = [
+            'id'                 => '74',
+            'table'              => $this->getTable(),
+            'field'              => 'is_incident',
+            'name'               => __('Visible for an incident'),
+            'datatype'           => 'bool'
+        ];
+
+        $tab[] = [
+            'id'                 => '75',
+            'table'              => $this->getTable(),
+            'field'              => 'is_request',
+            'name'               => __('Visible for a request'),
+            'datatype'           => 'bool'
+        ];
+
+        $tab[] = [
+            'id'                 => '76',
+            'table'              => $this->getTable(),
+            'field'              => 'is_problem',
+            'name'               => __('Visible for a problem'),
+            'datatype'           => 'bool'
+        ];
+
+        $tab[] = [
+            'id'                 => '85',
+            'table'              => $this->getTable(),
+            'field'              => 'is_change',
+            'name'               => __('Visible for a change'),
+            'datatype'           => 'bool'
+        ];
+
+        return $tab;
+    }
+
+
     public function post_getEmpty()
     {
 
