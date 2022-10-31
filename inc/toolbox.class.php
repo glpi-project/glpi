@@ -1764,6 +1764,10 @@ class Toolbox {
          CURLOPT_CONNECTTIMEOUT  => 5,
       ] + $eopts;
 
+      if ($check_url_safeness) {
+         $opts[CURLOPT_FOLLOWLOCATION] = false;
+      }
+
       if (!empty($CFG_GLPI["proxy_name"])) {
          // Connection using proxy
          $opts += [
@@ -1789,6 +1793,7 @@ class Toolbox {
       curl_setopt_array($ch, $opts);
       $content = curl_exec($ch);
       $curl_error = curl_error($ch) ?: null;
+      $curl_redirect = curl_getinfo($ch, CURLINFO_REDIRECT_URL) ?: null;
       curl_close($ch);
 
       if ($curl_error !== null) {
@@ -1806,6 +1811,8 @@ class Toolbox {
             );
          }
          $content = '';
+      } else if ($curl_redirect !== null) {
+         return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness);
       } else if (empty($content)) {
          $msgerr = __('No data available on the web site');
       }
