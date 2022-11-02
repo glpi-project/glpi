@@ -1825,10 +1825,10 @@ class Ticket extends CommonITILObject
             $input['itilcategories_id_code'] = ITILCategory::getById($cat_id)->fields['code'];
         }
 
-       // Set default contract if not specified
+        // Set default contract if not specified
         if (
-            !isset($input['_contracts_id']) &&
-            (!isset($input['_skip_default_contract']) || $input['_skip_default_contract'] === false)
+            (!isset($input['_contracts_id']) || (int)$input['_contracts_id'] == 0)
+            && (!isset($input['_skip_default_contract']) || $input['_skip_default_contract'] === false)
         ) {
             $input['_contracts_id'] = Entity::getDefaultContract($this->input['entities_id'] ?? 0);
         }
