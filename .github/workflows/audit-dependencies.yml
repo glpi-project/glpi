@@ -1,0 +1,61 @@
+name: "Audit dependencies"
+
+on:
+  # Runs audit every monday
+  schedule:
+    - cron:  '0 10 * * 1'
+  # Enable manual run
+  workflow_dispatch:
+
+jobs:
+  audit:
+    # Do not run scheduled audit on tier repositories
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    name: "Audit dependencies (${{ matrix.branch }})"
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {branch: "9.5/bugfixes", php-version: "7.2"}
+          - {branch: "10.0/bugfixes", php-version: "7.4"}
+    env:
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
+      APPLICATION_ROOT: "${{ github.workspace }}"
+      PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
+      UPDATE_FILES_ACL: true
+    steps:
+      - name: "Clean workspace"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
+          rm -rf "${{ env.APPLICATION_ROOT }}/*"
+          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+        with:
+          ref: ${{ matrix.branch }}
+      - name: "Restore dependencies cache"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
+          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-
+      - name: "Initialize containers"
+        run: |
+          .github/actions/init_containers-start.sh
+      - name: "Show versions"
+        run: |
+          .github/actions/init_show-versions.sh
+      - name: "Build dependencies / translations"
+        run: |
+          docker-compose exec -T app .github/actions/init_build.sh
+      - name: "Audit npm dependencies"
+        run: |
+          npm audit
+      - name: "Audit composer dependencies"
+        run: |
+          composer audit
