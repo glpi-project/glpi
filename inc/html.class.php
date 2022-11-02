@@ -3916,6 +3916,9 @@ JS;
                min_height: '150px',
                resize: true,
 
+               // disable path indicator in bottom bar
+               elementpath: false,
+
                menubar: false,
                toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
 
