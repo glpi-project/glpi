@@ -905,20 +905,20 @@ class RuleImportAsset extends DbTestCase
         $a_portids[] = $ports_id;
 
         $ports_id = $networkPort->add([
-                'mac'                => '00:1a:6c:9a:fc:98',
-                'name'               => 'Fa0/2',
-                'logical_number'     => '10102',
-                'instantiation_type' => 'NetworkPortEthernet',
-                'items_id'           => $networkEquipments_id,
-                'itemtype'           => 'NetworkEquipment',
-                'ip'                 => '192.168.0.2',
-                '_create_children'   => 1,
-                'NetworkName_name'   => '',
-                'NetworkName_fqdns_id' => 0,
-                'NetworkName__ipaddresses' => [
-                    '-1' => '192.168.0.2'
-                ],
-                'ifdescr'         => 'FastEthernet0/2',
+            'mac'                => '00:1a:6c:9a:fc:98',
+            'name'               => 'Fa0/2',
+            'logical_number'     => '10102',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ip'                 => '192.168.0.2',
+            '_create_children'   => 1,
+            'NetworkName_name'   => '',
+            'NetworkName_fqdns_id' => 0,
+            'NetworkName__ipaddresses' => [
+                '-1' => '192.168.0.2'
+            ],
+            'ifdescr'         => 'FastEthernet0/2',
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
         $a_portids[] = $ports_id;
