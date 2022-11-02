@@ -1010,7 +1010,7 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
-    if (!isNaN(text)) {
+    if (typeof(text) !== 'string') {
         return text;
     }
     if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
