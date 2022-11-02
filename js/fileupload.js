@@ -238,7 +238,7 @@ var insertImgFromFile = function(editor, fileImg, tag) {
             editor.execCommand(
                'mceInsertContent',
                false,
-               "<img width='"+imgWidth+"' height='"+imgHeight+"'' id='"+tag.replace(regex,'')+"' src='"+imageUrl+"'>"
+               "<img width='"+imgWidth+"' height='"+imgHeight+"' id='"+tag.replace(regex,'')+"' src='"+imageUrl+"'>"
             );
 
             // loading done, remove indicator

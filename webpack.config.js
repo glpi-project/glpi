@@ -132,6 +132,22 @@ var libsConfig = {
             Buffer: ['buffer', 'Buffer'], // required in file-type.js
          }
       ),
+      new webpack.NormalModuleReplacementPlugin(
+         /node:/,
+         (resource) => {
+            const mod = resource.request.replace(/^node:/, '');
+            switch (mod) {
+               case 'buffer':
+                  resource.request = 'buffer';
+                  break;
+               case 'stream':
+                  resource.request = 'readable-stream';
+                  break;
+               default:
+                  throw new Error(`Not found ${mod}`);
+            }
+         }
+      ),
       new CleanWebpackPlugin(
          {
             cleanOnceBeforeBuildPatterns: [
@@ -181,6 +197,11 @@ var libs = {
       {
          context: 'dist',
          from: 'js/i18n/*.js',
+      }
+   ],
+   'tinymce': [
+      {
+         from: 'skins/**/*',
       }
    ],
    'tinymce-i18n': [
