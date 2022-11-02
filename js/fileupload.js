@@ -443,15 +443,6 @@ if (typeof tinyMCE != 'undefined') {
             });
             $(editor.targetElm).val(fragment.html());
         });
-        editor.on('NodeChange', function(e) {
-            // Handle RTF image sources and remove the temporary "data-rtf-src" attribute.
-            if (e.element.tagName === 'IMG') {
-                if (e.element.hasAttribute('data-rtf-src')) {
-                    e.element.setAttribute('src', e.element.getAttribute('data-rtf-src'));
-                    e.element.removeAttribute('data-rtf-src');
-                }
-            }
-        });
     });
 }
 
