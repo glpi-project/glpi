@@ -76,7 +76,7 @@ jobs:
           .github/actions/init_show-versions.sh
       - name: "Install dependencies"
         run: |
-          docker-compose exec -T app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_build.sh
       - name: "PHP lint"
         run: |
           docker-compose exec -T app .github/actions/lint_php-lint.sh
@@ -158,7 +158,7 @@ jobs:
       - name: "Install dependencies"
         if: env.skip != 'true'
         run: |
-          docker-compose exec -T app .github/actions/init_install-dependencies.sh
+          docker-compose exec -T app .github/actions/init_build.sh
       - name: "Install DB tests"
         if: env.skip != 'true'
         run: |

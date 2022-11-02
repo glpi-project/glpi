@@ -144,7 +144,7 @@ $APPLICATION_ROOT/.github/actions/init_containers-start.sh
 $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 
 # Install dependencies if required
-[[ -z "$BUILD" ]] || docker-compose exec -T app .github/actions/init_install-dependencies.sh
+[[ -z "$BUILD" ]] || docker-compose exec -T app .github/actions/init_build.sh
 
 # Run tests
 for TEST_SUITE in "${TESTS_TO_RUN[@]}";
