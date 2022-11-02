@@ -1827,7 +1827,7 @@ class Ticket extends CommonITILObject
 
         // Set default contract if not specified
         if (
-            (!isset($input['_contracts_id']) || (int)$input['_contracts_id'] !== 0)
+            (!isset($input['_contracts_id']) || (int)$input['_contracts_id'] == 0)
             && (!isset($input['_skip_default_contract']) || $input['_skip_default_contract'] === false)
         ) {
             $input['_contracts_id'] = Entity::getDefaultContract($this->input['entities_id'] ?? 0);
