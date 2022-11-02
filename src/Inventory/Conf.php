@@ -469,12 +469,14 @@ class Conf extends CommonGLPI
         echo "</label>";
         echo "</td>";
         echo "<td>";
+
         \Dropdown::show(
             'State',
             [
                 'name'   => 'states_id_default',
                 'id'     => 'states_id_default',
                 'value'  => $config['states_id_default'],
+                'toadd'  => ['-1' => __('Do not change')],
                 'rand' => $rand
             ]
         );
