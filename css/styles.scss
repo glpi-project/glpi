@@ -504,7 +504,7 @@ input {
    }
 }
 
-.mce-edit-area.required {
+.tox-tinymce.required {
    border: 1px rgba(255, 0, 0, 0.6) solid !important;
    border-left-width: 3px !important;
    padding-right: 0 !important;
@@ -691,14 +691,8 @@ input {
 }
 
 #page {
-   .mce-fullscreen {
-      top: 105px;
-   }
-
-   .mce-btn-group:not(:first-child) {
-      border-left: 1px solid #d9d9d9;
-      padding-left: 0;
-      margin-left: 0;
+   .tox-tinymce.tox-fullscreen {
+      top: 105px !important;
    }
 }
 
