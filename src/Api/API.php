@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use Infocom;
@@ -1397,7 +1398,7 @@ abstract class API
             $itemtype = $this->handleDepreciation($itemtype);
         }
 
-        $soptions = Search::getOptions($itemtype);
+        $soptions = SearchOption::getOptionsForItemtype($itemtype);
 
         if (isset($params['raw'])) {
             return $soptions;

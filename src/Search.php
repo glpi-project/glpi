@@ -765,9 +765,9 @@ class Search
      * @param string  $itemtype     Item type
      * @param boolean $withplugins  Get search options from plugins (true by default)
      *
-     * @return array The reference to the array of search options for the given item type
+     * @return array The array of search options for the given item type
      **/
-    public static function &getOptions($itemtype, $withplugins = true)
+    public static function getOptions($itemtype, $withplugins = true)
     {
         return SearchOption::getOptionsForItemtype($itemtype, $withplugins);
     }

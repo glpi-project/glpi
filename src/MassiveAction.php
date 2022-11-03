@@ -34,6 +34,7 @@
  */
 
 use Glpi\Features\Clonable;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -1147,7 +1148,7 @@ class MassiveAction
                         $so_item->checkGlobal(UPDATE);
                     }
 
-                    $itemtype_search_options = Search::getOptions($so_itemtype);
+                    $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);
                     if (!isset($itemtype_search_options[$so_index])) {
                         exit();
                     }

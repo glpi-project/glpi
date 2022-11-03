@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
+
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
 // Ensure current directory when run from crontab
@@ -70,7 +72,7 @@ if (isset($_GET['lang'])) {
     Session::loadLanguage($_GET['lang']);
 }
 
-$opts = &Search::getOptions($_GET['type']);
+$opts = SearchOption::getOptionsForItemtype($_GET['type']);
 $sort = [];
 $group = 'N/A';
 

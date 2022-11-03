@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
+
 /**
  * Update from 0.90.5 to 9.1
  *
@@ -541,7 +543,7 @@ function update090xto910()
     if (!isset($CFG_GLPI["use_rich_text"])) {
         $CFG_GLPI["use_rich_text"] = false;
     }
-    $searchOption = Search::getOptions('Ticket');
+    $searchOption = SearchOption::getOptionsForItemtype('Ticket');
     $item_num     = 0;
     $itemtype_num = 0;
     foreach ($searchOption as $num => $option) {

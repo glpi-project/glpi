@@ -34,6 +34,7 @@
  */
 
 use Glpi\Plugin\Hooks;
+use Glpi\Search\SearchOption;
 
 /**
  * This class manages locks
@@ -157,7 +158,7 @@ class Lock extends CommonGLPI
             ]);
 
             //get fields labels
-            $search_options = Search::getOptions($itemtype);
+            $search_options = SearchOption::getOptionsForItemtype($itemtype);
             foreach ($search_options as $search_option) {
                 //exclude SO added by dropdown part (to get real name)
                 //ex : Manufacturer != Firmware : Manufacturer
