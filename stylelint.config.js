@@ -53,6 +53,8 @@ module.exports = {
         "declaration-block-no-redundant-longhand-properties": null, // DISABLE Expected shorthand property "flex-flow"
         "scss/at-rule-conditional-no-parentheses": null,
         "scss/no-global-function-names": null, // scssphp do not support usage of SASS modules
+        "scss/dollar-variable-empty-line-before": null, // DISABLE: Expected empty line before variable
+        "color-hex-length": null, // DISABLE: Expected "#fff" to be "#ffffff"
 
         // ALTERED/DISABLED code quality rules, may have a functionnal impact, override should be removed
         "font-family-no-missing-generic-family-keyword": [
