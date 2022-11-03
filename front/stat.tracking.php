@@ -118,6 +118,14 @@ foreach ($items as $label => $tab) {
 }
 
 Stat::title();
+Html::printPager(
+    $params['start'],
+    count($val),
+    $CFG_GLPI['root_doc'] . '/front/stat.tracking.php',
+    http_build_query($params),
+    'Stat',
+    $params
+);
 
 TemplateRenderer::getInstance()->display('pages/assistance/stats/tracking_form.html.twig', [
     'itemtype'  => $params["itemtype"],
@@ -138,15 +146,6 @@ $val = Stat::getItems(
 );
 
 if (!$params['showgraph']) {
-    Html::printPager(
-        $params['start'],
-        count($val),
-        $CFG_GLPI['root_doc'] . '/front/stat.tracking.php',
-        http_build_query($params),
-        'Stat',
-        $params
-    );
-
     Stat::showTable(
         $params["itemtype"],
         $params["type"],
