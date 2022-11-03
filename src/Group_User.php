@@ -338,7 +338,8 @@ class Group_User extends CommonDBRelation
             User::dropdown(['right'  => "all",
                 'entity' => $entityrestrict,
                 'with_no_right' => true,
-                'used'   => $used_ids
+                'used'   => $used_ids,
+                'group_id' => $group->fields['id'],
             ]);
 
             echo "</td><td>" . _n('Manager', 'Managers', 1) . "</td><td>";

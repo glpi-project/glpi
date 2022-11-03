@@ -4396,6 +4396,7 @@ HTML;
             'hide_if_no_elements' => false,
             'readonly'            => false,
             'multiple'            => false,
+            'group_id'            => 0,
         ];
 
         if (is_array($options) && count($options)) {
@@ -4477,7 +4478,6 @@ HTML;
             'placeholder'         => $p['placeholder'],
             'right'               => $p['right'],
             'on_change'           => $p['on_change'],
-            'used'                => $p['used'],
             'inactive_deleted'    => $p['inactive_deleted'],
             'with_no_right'       => $p['with_no_right'],
             'entity_restrict'     => ($entity_restrict = (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity'])),
@@ -4488,6 +4488,9 @@ HTML;
                 'right'           => $p['right'],
                 'entity_restrict' => $entity_restrict,
             ]),
+            'group_id'            => $p['group_id'],
+            'used'                => $p['used'],
+            'used_counter'        => count($p['used']),
         ];
 
         if ($p['multiple']) {
