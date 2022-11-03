@@ -98,7 +98,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "8.0.0"
+            "php": "8.0.99"
         },
         "sort-packages": true
     },
