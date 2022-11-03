@@ -3883,9 +3883,8 @@ JAVASCRIPT;
         $used = [];
 
         if (isset($post['used'])) {
-            if (isset($post['used_counter'])) {
-                $used = $post['used'];
-            } else {
+            $used = $post['used'];
+            if (!isset($post['used_counter']) && isset($post['group_id'])) {
                 $gusers = Group_User::getGroupUsers($post['group_id']);
                 $used = [];
                 foreach ($gusers as $user) {
