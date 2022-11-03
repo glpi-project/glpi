@@ -273,7 +273,7 @@ class Lock extends CommonGLPI
         echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
         echo "<i class='fas fa-info-circle fa-xl'></i>";
         echo "<span class='ms-2'>";
-        echo __("A locked items is a manually deleted items (example: a monitor).");
+        echo __("A locked item is a manually deleted item, for example a monitor.");
         echo "<br>";
         echo __("The automatic inventory will no longer handle this item, unless you unlock it.");
         echo "</span>";
@@ -574,7 +574,7 @@ class Lock extends CommonGLPI
                 echo "<th width='10'></th>";
                 echo "<th>" . $networkport->getTypeName(Session::getPluralNumber()) . "</th>";
                 echo "<th>" . NetworkPortType::getTypeName(1) . "</th>";
-                echo "<th>" . __('Mac') . "</th>";
+                echo "<th>" . __('MAC') . "</th>";
                 echo "<th>" . __('Automatic inventory') . "</th>";
                 echo "</tr>";
                 $first = false;

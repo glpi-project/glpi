@@ -454,7 +454,7 @@ class Computer extends CommonDBTM
             'id'                 => '10',
             'table'              => $this->getTable(),
             'field'              => 'last_boot',
-            'name'               => __('Last boot'),
+            'name'               => __('Last boot date'),
             'datatype'           => 'datetime',
         ];
 

@@ -250,7 +250,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
             );
         } else {
             throw new \Glpi\Console\Exception\EarlyExitException(
-                '<comment>' . sprintf(__('Failed to write rollback SQL queries file %s'), $dump_file_name) . '</comment>',
+                '<comment>' . sprintf(__('Failed to write rollback SQL queries in "%s" file.'), $dump_file_name) . '</comment>',
                 self::ERROR_ROLLBACK_FILE_FAILED
             );
         }
@@ -291,7 +291,7 @@ class FixHtmlEncodingCommand extends AbstractCommand
             ['id' => $item->fields['id']],
         );
         if (!$success) {
-            $failed_items[] = $item->getID();
+            $this->failed_items[] = $item->getID();
         }
     }
 
