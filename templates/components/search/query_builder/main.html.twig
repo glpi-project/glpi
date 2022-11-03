@@ -32,12 +32,12 @@
  #}
 
 {% set rand = random() %}
-{% set mainform = main_form|default(true) %}
+{% set mainform = mainform is not defined ? true : mainform %}
 {% set main_block_class = mainform ? '' : 'sub_criteria' %}
 {% set card_class = mainform ? 'search-form card card-sm mb-4' : 'border d-inline-block ms-1' %}
 
 {% if mainform %}
-   <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ target }}">
+   <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
 {% endif %}
 
 <div class="{{ card_class }} {{ session('glpifold_search') ? 'd-none' : '' }}">
@@ -147,21 +147,21 @@
                 $('#searchcriteria{{ rand }}').closest('.search-form').toggle(show_search);
             };
             // Init search_criteria state
-         const search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');
-         if (search_criteria_visibility !== undefined && search_criteria_visibility !== 'false') {
-             $('.fold-search').click();
-         }
-         $(document).on("click", ".remove-search-criteria", function() {
-             // force removal of tooltip
-             const tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
-             if (tooltip !== null) {
-                 tooltip.dispose();
-             }
+            const search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');
+            if (search_criteria_visibility !== undefined && search_criteria_visibility !== 'false') {
+                $('.fold-search').click();
+            }
+            $(document).on("click", ".remove-search-criteria", function() {
+                // force removal of tooltip
+                const tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
+                if (tooltip !== null) {
+                    tooltip.dispose();
+                }
 
-             const rowID = $(this).data('rowid');
-             $('#' + rowID).remove();
-             $('#searchcriteria{{ rand }} .criteria-list .list-group-item:first-child').addClass('headerRow').show();
-         });
+                const rowID = $(this).data('rowid');
+                $('#' + rowID).remove();
+                $('#searchcriteria{{ rand }} .criteria-list .list-group-item:first-child').addClass('headerRow').show();
+            });
          {% endif %}
       </script>
 

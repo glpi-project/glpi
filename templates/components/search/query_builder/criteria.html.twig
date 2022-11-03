@@ -42,89 +42,87 @@
       p: p,
       num: num,
    }]) }}
-{% endif %}
-
-{% if criteria is defined and criteria is iterable %}
+{% elseif criteria is defined and criteria is iterable %}
    {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteriaGroup", [{
       itemtype: itemtype,
       p: p,
       num: num,
    }]) }}
-{% endif %}
-
-<div class="list-group-item {{ add_padding }} border-0 normalcriteria{{ add_class }}" id="{{ rowid }}">
-   <div class="row g-1">
-      {% if not from_meta %}
-         {% if num == 0 and mainform is defined and mainform %}
-            {% set item = itemtype != 'AllAssets' ? call('getItemFromItemtype', [itemtype]) : null %}
-            {% if item is not null and item.maybeDeleted() %}
-               <input type="hidden" id="is_deleted" name="is_deleted" value="{{ p['is_deleted'] }}">
+{% else %}
+   <div class="list-group-item {{ add_padding }} border-0 normalcriteria{{ add_class }}" id="{{ rowid }}">
+      <div class="row g-1">
+         {% if not from_meta %}
+            {% if num == 0 and mainform is defined and mainform %}
+               {% set item = itemtype != 'AllAssets' ? call('getItemFromItemtype', [itemtype]) : null %}
+               {% if item is not null and item.maybeDeleted() %}
+                  <input type="hidden" id="is_deleted" name="is_deleted" value="{{ p['is_deleted'] }}">
+               {% endif %}
+               <input type="hidden" id="as_map" name="as_map" value="{{ p['as_map'] }}">
+               <input type="hidden" id="browse" name="browse" value="{{ p['browse'] }}">
+               <input type="hidden" id="unpublished" name="unpublished" value="{{ p['unpublished'] }}">
             {% endif %}
-            <input type="hidden" id="as_map" name="as_map" value="{{ p['as_map'] }}">
-            <input type="hidden" id="browse" name="browse" value="{{ p['browse'] }}">
-            <input type="hidden" id="unpublished" name="unpublished" value="{{ p['unpublished'] }}">
+            <div class="col-auto">
+               <button class="btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria" type="button" data-rowid="{{ rowid }}"
+                       data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Delete a rule') }}">
+                  <i class="ti ti-square-minus" alt="-"></i>
+               </button>
+            </div>
          {% endif %}
-         <div class="col-auto">
-            <button class="btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria" type="button" data-rowid="{{ rowid }}"
-                    data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Delete a rule') }}">
-               <i class="ti ti-square-minus" alt="-"></i>
-            </button>
-         </div>
-      {% endif %}
 
-      {% if not from_meta %}
+         {% if not from_meta %}
+            <div class="col-auto">
+               {% set value = criteria['link'] is defined ? criteria['link'] : '' %}
+               {% set operators = call('Glpi\\Search\\SearchEngine::getLogicalOperators', [num == 0]) %}
+               {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][link]", value, operators, '', {
+                  full_width: true,
+                  input_class: 'col-12',
+                  full_width_adapt_column: false,
+                  no_label: true,
+               }) }}
+            </div>
+         {% endif %}
+
          <div class="col-auto">
-            {% set value = criteria['link'] is defined ? criteria['link'] : '' %}
-            {% set operators = call('Glpi\\Search\\SearchEngine::getLogicalOperators', [num == 0]) %}
-            {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][link]", value, operators, '', {
+            {% set rand = random() %}
+            {% set value = criteria['field'] is defined ? criteria['field'] : '' %}
+            {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][field]", value, values, '', {
+               rand: rand,
                full_width: true,
                input_class: 'col-12',
                full_width_adapt_column: false,
                no_label: true,
             }) }}
          </div>
-      {% endif %}
 
-      <div class="col-auto">
-         {% set rand = random() %}
-         {% set value = criteria['field'] is defined ? criteria['field'] : '' %}
-         {{ fields.dropdownArrayField("criteria" ~ prefix ~ "[" ~ num ~ "][field]", value, values, '', {
-            rand: rand,
-            full_width: true,
-            input_class: 'col-12',
-            full_width_adapt_column: false,
-            no_label: true,
-         }) }}
-      </div>
+         {% set field_id = ("criteria" ~ prefix ~ "[" ~ num ~ "][field]" ~ rand) %}
+         {% set spanid = ("SearchSpan" ~ normalized_itemtype ~ prefix ~ num) %}
+         <div class="col-auto">
+            <div class="row g-1" id="{{ spanid }}">
+               {% set used_itemtype = itemtype == 'AllAssets' ? 'Computer' : itemtype %}
+               {% set searchtype = searchtype|default('') %}
 
-      {% set field_id = ("criteria" ~ prefix ~ "[" ~ num ~ "][field]" ~ rand) %}
-      {% set spanid = ("SearchSpan" ~ normalized_itemtype ~ prefix ~ num) %}
-      <div class="col-auto">
-         <div class="row g-1" id="{{ spanid }}">
-            {% set used_itemtype = itemtype == 'AllAssets' ? 'Computer' : itemtype %}
-            {% set searchtype = searchtype|default('') %}
+               {% set params = {
+                  itemtype: used_itemtype,
+                  _idor_token: idor_token(used_itemtype),
+                  field: value,
+                  searchtype: searchtype,
+                  value: p_value,
+                  num: num,
+                  p: p,
+               } %}
+               {{ call("Glpi\\Search\\Input\\QueryBuilder::displaySearchoption", [params]) }}
+            </div>
 
-            {% set params = {
-               itemtype: used_itemtype,
-               _idor_token: idor_token(used_itemtype),
-               field: value,
-               searchtype: searchtype,
-               value: p_value,
-               num: num,
-               p: p,
-            } %}
-            {{ call("Glpi\\Search\\Input\\QueryBuilder::displaySearchoption", [params]) }}
+            {% do call('Ajax::updateItemOnSelectEvent', [
+               field_id,
+               spanid,
+               config('root_doc') ~ "/ajax/search.php",
+               {
+                  action: 'display_searchoption',
+                  searchtype: '__VALUE__',
+               }|merge(params)
+            ]) %}
          </div>
-
-         {% do call('Ajax::updateItemOnSelectEvent', [
-            field_id,
-            spanid,
-            config('root_doc') ~ "/ajax/search.php",
-            {
-               action: 'display_searchoption',
-               searchtype: '__VALUE__',
-            }|merge(params)
-         ]) %}
       </div>
    </div>
-</div>
+{% endif %}

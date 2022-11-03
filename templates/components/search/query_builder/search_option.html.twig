@@ -66,8 +66,8 @@
    ("dropdown_" ~ searchtype_name ~ rand)|escape('html_attr'),
    dropdownname,
    config('root_doc') ~ "/ajax/search.php",
-   {
+   params|merge({
       action: 'display_searchoption_value',
       searchtype: '__VALUE__',
-   }|merge(params)
+   })
 ]) %}

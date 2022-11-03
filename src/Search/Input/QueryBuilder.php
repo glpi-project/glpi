@@ -494,6 +494,7 @@ final class QueryBuilder implements SearchInputInterface
             'prefix' => $prefix,
             'criteria' => $criteria,
             'parents_num' => $parents_num,
+            'itemtype' => $request['itemtype'],
         ]);
     }
 
