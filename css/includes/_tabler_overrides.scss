@@ -1,0 +1,17 @@
+$text-muted-opacity: .7 !default;
+$text-muted: mix($body-color, #ffffff, percentage($text-muted-opacity)) !default;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+  "muted": $text-muted
+) !default;
+
+$table-cell-padding-x: 0.5rem;
+$table-cell-padding-y: 0.5rem;

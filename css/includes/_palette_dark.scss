@@ -30,10 +30,11 @@
  *
  * ---------------------------------------------------------------------
  */
+$light: #f8fafc !default;
+$dark: #1d273b !default;
 
-$info: #80abe4;
-$enable-negative-margins: true;
-$link-hover-decoration: none;
+$enable-negative-margins: true !default;
+$link-hover-decoration: none !default;
 $table_header_bg: $dark !default;
 $input-bg: darken($dark, 2%) !default;
 $input-color: $light !default;
@@ -64,10 +65,20 @@ $gray-700: mix($light, $dark, 36%) !default;
 $gray-800: mix($light, $dark, 16%) !default;
 $gray-900: $dark !default;
 $table-striped-bg: rgba(#fff, 0.05) !default;
-$toast-header-background-color: $gray-400;
-$toast-header-color: $light;
-$btn-close-color: $light;
+$toast-header-background-color: $gray-400 -default;
+$toast-header-color: $light -default;
+$btn-close-color: $light -default;
 
+$body-bg: $light !default;
+$body-color: $dark !default;
+
+$primary: #206bc4 !default;
+$success: #2fb344 !default;
+$info: #80abe4 !default;
+$warning: #f76707 !default;
+$danger: #d63939 !default;
+
+@import "tabler_overrides";
 @import "fonts";
 @import "~@tabler/core/src/scss/tabler";
 @import "logos";

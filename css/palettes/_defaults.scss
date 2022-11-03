@@ -31,15 +31,15 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #fec95c;
-$secondary: #606f91;
-$fg-secondary: #f4f6fa;
+$primary: #fec95c !default;
+$secondary: #606f91 !default;
+$fg-secondary: #f4f6fa !default;
 $input-bg: rgb(253, 253, 253) !default;
-$input-disabled-bg: #f1f5f9;
-$link-color: #3a5693;
-$mainmenu_bg: #2f3f64;
-$mainmenu_fg: #f4f6fa;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-$badge-bg: #d0d9f0;
-$badge-fg: rgb(58, 73, 102);
+$input-disabled-bg: #f1f5f9 !default;
+$link-color: #3a5693 !default;
+$mainmenu_bg: #2f3f64 !default;
+$mainmenu_fg: #f4f6fa !default;
+$logo: "../pics/logos/logo-GLPI-100-white.png" !default;
+$logo_reduced: "../pics/logos/logo-G-100-white.png" !default;
+$badge-bg: #d0d9f0 !default;
+$badge-fg: rgb(58, 73, 102) !default;

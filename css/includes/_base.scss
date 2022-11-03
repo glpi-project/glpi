@@ -78,10 +78,23 @@ $dropdowns-list-contrast: rgba(167, 171, 175, 10%) !default;
 $entity-badge-bg: theme-color-lighter($link-color, true) !default;
 $entity-badge-fg: $link-color !default;
 
+$table-cell-padding-x: 0.5rem !default;
+$table-cell-padding-y: 0.5rem !default;
+
 // helpers
 $topbar-height: 79px;
 $contextbar-height: 56px;
 $content-margin: 20px;
+
+a {
+    color: $link-color;
+    text-decoration: $link-decoration;
+
+    &:hover {
+        color: $link-hover-color;
+        text-decoration: $link-hover-decoration;
+    }
+}
 
 body.iframed {
     background-color: transparent;

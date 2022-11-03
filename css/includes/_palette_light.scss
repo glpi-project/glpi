@@ -31,11 +31,23 @@
  * ---------------------------------------------------------------------
  */
 
-$info: #80abe4;
-$enable-negative-margins: true;
-$link-hover-decoration: none;
+$enable-negative-margins: true !default;
+$link-hover-decoration: none !default;
+
+$light: #f8fafc !default;
+$dark: #1d273b !default;
+
+$body-bg: $light !default;
+$body-color: $dark !default;
+
+$primary: #206bc4 !default;
+$success: #2fb344 !default;
+$info: #80abe4 !default;
+$warning: #f76707 !default;
+$danger: #d63939 !default;
 
 @import "fonts";
+@import "tabler_overrides";
 @import "~@tabler/core/src/scss/tabler";
 @import "logos";
 @import "includes";
