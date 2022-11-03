@@ -57,6 +57,7 @@
       _idor_token: idor_token(itemtype),
       from_meta: from_meta is defined ? from_meta : false,
       field: field,
+      prefix: prefix,
       p: p
    } %}
    {{ call('Glpi\\Search\\Input\\QueryBuilder::displaySearchoptionValue', [params]) }}

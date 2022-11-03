@@ -42,7 +42,7 @@
       p: p,
       num: num,
    }]) }}
-{% elseif criteria is defined and criteria is iterable %}
+{% elseif criteria['criteria'] is defined and criteria['criteria'] is iterable %}
    {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteriaGroup", [{
       itemtype: itemtype,
       p: p,
@@ -99,7 +99,7 @@
          <div class="col-auto">
             <div class="row g-1" id="{{ spanid }}">
                {% set used_itemtype = itemtype == 'AllAssets' ? 'Computer' : itemtype %}
-               {% set searchtype = searchtype|default('') %}
+               {% set searchtype = criteria['searchtype']|default('') %}
 
                {% set params = {
                   itemtype: used_itemtype,

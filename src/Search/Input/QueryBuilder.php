@@ -174,6 +174,8 @@ final class QueryBuilder implements SearchInputInterface
             'dropdownname' => $dropdownname,
             'num' => $num,
             'value' => $request['value'],
+            'prefix' => $prefix,
+            'p' => $p,
         ]);
     }
 
@@ -404,7 +406,9 @@ final class QueryBuilder implements SearchInputInterface
             'criteria_value' => $value,
             'itemtype'   => $request["itemtype"],
             'num'        => $num,
-            'criteria'   => $criteria['criteria'] ?? null,
+            'criteria'   => $criteria ?? null,
+            'prefix'     => $prefix,
+            'p'         => $p,
         ]);
     }
 
@@ -495,6 +499,7 @@ final class QueryBuilder implements SearchInputInterface
             'criteria' => $criteria,
             'parents_num' => $parents_num,
             'itemtype' => $request['itemtype'],
+            'p' => $p,
         ]);
     }
 
