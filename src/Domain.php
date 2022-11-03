@@ -727,8 +727,13 @@ class Domain extends CommonDBTM
         return $types;
     }
 
-    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true)
+    /**
+     * @FIXME Uncomment $safe_url parameter declaration in GLPI 10.1.
+     */
+    public static function generateLinkContents($link, CommonDBTM $item/*, bool $safe_url = true*/)
     {
+        $safe_url = func_num_args() === 3 ? func_get_arg(2) : true;
+
         if (strstr($link, "[DOMAIN]")) {
             $link = str_replace("[DOMAIN]", $item->getName(), $link);
             if ($safe_url) {

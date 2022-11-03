@@ -182,5 +182,11 @@ TEXT,
         $this->newTestedInstance();
         $this->array($this->testedInstance->generateLinkContents($link, $item, $safe_url))
             ->isEqualTo($expected);
+
+        // Validates that default values is true
+        if ($safe_url) {
+            $this->array($this->testedInstance->generateLinkContents($link, $item))
+                ->isEqualTo($expected);
+        }
     }
 }
