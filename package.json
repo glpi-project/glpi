@@ -11,7 +11,7 @@
     "dependencies": {
         "@fontsource/inter": "^4.5.4",
         "@fortawesome/fontawesome-free": "^6.0.0",
-        "@fullcalendar/bootstrap": "^4.4.0",
+        "@fullcalendar/bootstrap": "^5.11.3",
         "@fullcalendar/core": "^4.4.0",
         "@fullcalendar/daygrid": "^4.4.0",
         "@fullcalendar/interaction": "^4.4.0",
