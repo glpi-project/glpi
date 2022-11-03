@@ -77,7 +77,7 @@
         "@babel/plugin-transform-runtime": "^7.19.6",
         "@babel/preset-env": "^7.19.4",
         "@testing-library/jest-dom": "^5.16.5",
-        "babel-jest": "^27.5.1",
+        "babel-jest": "^29.2.2",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.1",
