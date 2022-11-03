@@ -905,7 +905,7 @@ JAVASCRIPT;
      *
      * @param class-string<\CommonDBTM>  $itemtype Item type to manage
      * @param array   $params          Params to parse
-     * @param boolean $usesession      Use datas save in session (true by default)
+     * @param boolean $usesession      Use data saved in the session (true by default)
      * @param boolean $forcebookmark   Force trying to load parameters from default bookmark:
      *                                  used for global search (false by default)
      *
@@ -983,7 +983,7 @@ JAVASCRIPT;
             $user_default_values = \SavedSearch_User::getDefault(\Session::getLoginUserID(), $itemtype);
             if ($user_default_values) {
                 $_SESSION['glpisearch'][$itemtype] = [];
-                // Only get datas for bookmarks
+                // Only get data for bookmarks
                 if ($forcebookmark) {
                     $params = $user_default_values;
                 } else {

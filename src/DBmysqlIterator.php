@@ -76,8 +76,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
         '>=',
         '<>',
         'LIKE',
+        'LIKE BINARY',
         'REGEXP',
         'NOT LIKE',
+        'NOT LIKE BINARY',
         'NOT REGEX',
         '&',
         '|'

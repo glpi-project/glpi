@@ -176,7 +176,7 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     public function canUpdateItem()
     {
-        $is_target = $this->isCurrentUserValidationTarget(true);
+        $is_target = static::canValidate($this->fields[static::$items_id]);
         if (
             !$is_target
             && !Session::haveRightsOr(static::$rightname, static::getCreateRights())
@@ -185,32 +185,6 @@ abstract class CommonITILValidation extends CommonDBChild
         }
         return (int) $this->fields['status'] === self::WAITING
             || (int) $this->fields['users_id_validate'] === Session::getLoginUserID();
-    }
-
-    /**
-     * Is the validation request for the current user or one or their groups (optional)?
-     * @param bool $include_groups If true, group memberships will be taken into account (true by default)
-     * @return bool
-     */
-    public function isCurrentUserValidationTarget(bool $include_groups = true): bool
-    {
-        $is_target = false;
-
-        if (
-            (!isset($this->fields['itemtype_target']) || empty($this->fields['itemtype_target']))
-            && (isset($this->fields['users_id_validate']) && !empty($this->fields['users_id_validate']))
-        ) {
-            Toolbox::deprecated('Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" fields is deprecated in "CommonITILValidation".');
-            $this->fields['itemtype_target'] = 'User';
-            $this->fields['items_id_target'] = $this->fields['users_id_validate'];
-        }
-
-        if ($this->fields['itemtype_target'] === 'User') {
-            $is_target = $this->fields['items_id_target'] == Session::getLoginUserID();
-        } else if ($include_groups && $this->fields['itemtype_target'] === 'Group') {
-            $is_target = in_array($this->fields['items_id_target'], $_SESSION['glpigroups']);
-        }
-        return $is_target;
     }
 
 
@@ -312,6 +286,7 @@ abstract class CommonITILValidation extends CommonDBChild
             Toolbox::deprecated('Defining "users_id_validate" field during creation is deprecated in "CommonITILValidation".');
             $input['itemtype_target'] = User::class;
             $input['items_id_target'] = $input['users_id_validate'];
+            unset($input['users_id_validate']);
         }
 
         if (
@@ -321,29 +296,10 @@ abstract class CommonITILValidation extends CommonDBChild
             return false;
         }
 
-        $input = $this->autosetUsersIdValidate($input);
-
         $itemtype = static::$itemtype;
         $input['timeline_position'] = $itemtype::getTimelinePosition($input[static::$items_id], $this->getType(), $input["users_id"]);
 
         return parent::prepareInputForAdd($input);
-    }
-
-    /**
-     * Automatically defines `users_id_validate` field based on `itemtype_target`/`items_id_target`.
-     * This is done to prevent BC breaks related to introduction of `itemtype_target`/`items_id_target` fields.
-     *
-     * @param array $input
-     *
-     * @return array
-     */
-    private function autosetUsersIdValidate(array $input): array
-    {
-        if (array_key_exists('itemtype_target', $input) && $input['itemtype_target'] === User::class) {
-            $input['users_id_validate'] = $input['items_id_target'];
-        }
-
-        return $input;
     }
 
 
@@ -430,8 +386,8 @@ abstract class CommonITILValidation extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
 
-        $forbid_fields = [];
-        if ($this->isCurrentUserValidationTarget(true) && isset($input["status"])) {
+        $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
+        if (isset($input["status"]) && static::canValidate($this->fields[static::$items_id])) {
             if (
                 ($input["status"] == self::REFUSED)
                 && (!isset($input["comment_validation"])
@@ -451,13 +407,16 @@ abstract class CommonITILValidation extends CommonDBChild
                 $input["validation_date"] = $_SESSION["glpi_currenttime"];
             }
 
-            $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'itemtype_target', 'items_id_target',
-                'comment_submission', 'submission_date', 'is_recursive'
-            ];
+            array_push(
+                $forbid_fields,
+                'users_id',
+                'itemtype_target',
+                'items_id_target',
+                'comment_submission',
+                'submission_date'
+            );
         } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
-            $forbid_fields = ['entities_id', static::$items_id, 'status', 'comment_validation',
-                'validation_date', 'is_recursive'
-            ];
+            array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
         }
 
         if (count($forbid_fields)) {
@@ -467,8 +426,6 @@ abstract class CommonITILValidation extends CommonDBChild
                 }
             }
         }
-
-        $input = $this->autosetUsersIdValidate($input);
 
         return parent::prepareInputForUpdate($input);
     }
@@ -762,6 +719,8 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Return criteria to apply to get only validations on which given user is targetted.
      *
+     * @see self::getNumberToValidate()
+     *
      * @param int $users_id
      * @param bool $search_in_groups
      *
@@ -769,9 +728,57 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     final public static function getTargetCriteriaForUser(int $users_id, bool $search_in_groups = true): array
     {
+        $substitute_subQuery = new QuerySubQuery([
+            'SELECT'     => 'validator_users.id',
+            'FROM'       => User::getTable() . ' as validator_users',
+            'INNER JOIN' => [
+                ValidatorSubstitute::getTable() => [
+                    'ON' => [
+                        ValidatorSubstitute::getTable() => User::getForeignKeyField(),
+                        'validator_users' => 'id',
+                        [
+                            'AND' => [
+                                [
+                                    'OR' => [
+                                        [
+                                            'validator_users.substitution_start_date' => null,
+                                        ],
+                                        [
+                                            'validator_users.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
+                                        ],
+                                    ],
+                                ],
+                                [
+                                    'OR' => [
+                                        [
+                                            'validator_users.substitution_end_date' => null,
+                                        ],
+                                        [
+                                            'validator_users.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
+                                        ],
+                                    ],
+                                ],
+                            ]
+                        ]
+                    ],
+                ],
+            ],
+            'WHERE'  => [
+                ValidatorSubstitute::getTable() . '.users_id_substitute' => $users_id,
+            ],
+        ]);
+
         $target_criteria = [
-            static::getTableField('itemtype_target') => User::class,
-            static::getTableField('items_id_target') => $users_id,
+            'OR' => [
+                [
+                    static::getTableField('itemtype_target') => User::class,
+                    static::getTableField('items_id_target') => $users_id,
+                ],
+                [
+                    static::getTableField('itemtype_target') => User::class,
+                    static::getTableField('items_id_target') => $substitute_subQuery,
+                ],
+            ],
         ];
         if ($search_in_groups) {
             $target_criteria = [
@@ -783,11 +790,18 @@ abstract class CommonITILValidation extends CommonDBChild
                             'SELECT' => Group_User::getTableField('groups_id'),
                             'FROM'   => Group_User::getTable(),
                             'WHERE'  => [
-                                Group_User::getTableField('users_id') => $users_id,
-                            ]
+                                'OR' => [
+                                    [
+                                        Group_User::getTableField('users_id') => $users_id,
+                                    ],
+                                    [
+                                        Group_User::getTableField('users_id') => $substitute_subQuery,
+                                    ],
+                                ],
+                            ],
                         ])
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 
@@ -939,6 +953,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                 Toolbox::deprecated('Usage of "users_id_validate" in input is deprecated. Use "itemtype_target"/"items_id_target" instead.');
                                 $input['itemtype_target'] = User::class;
                                 $input['items_id_target'] = $input['users_id_validate'];
+                                unset($input['users_id_validate']);
                             }
 
                             $itemtype  = $input['itemtype_target'];
@@ -998,6 +1013,7 @@ abstract class CommonITILValidation extends CommonDBChild
             return false;
         }
 
+        /** @var CommonITILObject $item */
         $tID    = $item->fields['id'];
 
         $tmp    = [static::$items_id => $tID];
@@ -1062,7 +1078,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $colonnes = ['', _x('item', 'State'), __('Request date'), __('Approval requester'),
             __('Request comments'), __('Approval status'),
             __('Requested approver type'), __('Requested approver'),
-            __('Approver'), __('Approval comments'), __('Documents')
         ];
         $nb_colonnes = count($colonnes);
 
@@ -1433,17 +1448,171 @@ abstract class CommonITILValidation extends CommonDBChild
             'id'                 => '59',
             'table'              => 'glpi_users',
             'field'              => 'name',
-            'linkfield'          => 'users_id_validate',
+            'linkfield'          => 'items_id_target',
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
             'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
+                'condition'          => [
+                    'REFTABLE.itemtype_target' => User::class,
+                ],
                 'beforejoin'         => [
                     'table'              => static::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
+                        'jointype'           => 'child',
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '195',
+            'table'              => User::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'users_id_substitute',
+            'name'               => __('Approver substitute'),
+            'datatype'           => 'itemlink',
+            'right'              => (static::$itemtype == 'Ticket' ?
+                ['validate_request', 'validate_incident'] :
+                'validate'
+            ),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams' => [
+                'beforejoin'         => [
+                    'table'          => ValidatorSubstitute::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => [
+                            // same condition on search option 197, but with swapped expression
+                            // This workarounds identical complex join ID if a search ise both search options 195 and 197
+                            [
+                                'OR' => [
+                                    [
+                                        'REFTABLE.substitution_start_date' => null,
+                                    ], [
+                                        'REFTABLE.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
+                                    ],
+                                ],
+                            ], [
+                                'OR' => [
+                                    [
+                                        'REFTABLE.substitution_end_date' => null,
+                                    ], [
+                                        'REFTABLE.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
+                                    ],
+                                ],
+                            ]
+                        ],
+                        'beforejoin'         => [
+                            'table'              => User::getTable(),
+                            'linkfield'          => 'items_id_target',
+                            'joinparams'             => [
+                                'condition'                  => [
+                                    'REFTABLE.itemtype_target' => User::class,
+                                ],
+                                'beforejoin'             => [
+                                    'table'                  => static::getTable(),
+                                    'joinparams'                 => [
+                                        'jointype'                   => 'child',
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '196',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'linkfield'          => 'items_id_target',
+            'name'               => __('Approver group'),
+            'datatype'           => 'itemlink',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'condition'          => [
+                    'REFTABLE.itemtype_target' => Group::class,
+                ],
+                'beforejoin'         => [
+                    'table'              => static::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '197',
+            'table'              => User::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'users_id_substitute',
+            'name'               => __('Substitute of a member of approver group'),
+            'datatype'           => 'itemlink',
+            'right'              => (static::$itemtype == 'Ticket' ?
+                ['validate_request', 'validate_incident'] :
+                'validate'
+            ),
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'          => ValidatorSubstitute::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'condition'          => [
+                            // same condition on search option 195, but with swapped expression
+                            // This workarounds identical complex join ID if a search ise both search options 195 and 197
+                            [
+                                'OR' => [
+                                    [
+                                        'REFTABLE.substitution_end_date' => null,
+                                    ], [
+                                        'REFTABLE.substitution_end_date' => ['>=', new QueryExpression('NOW()')],
+                                    ],
+                                ],
+                            ], [
+                                'OR' => [
+                                    [
+                                        'REFTABLE.substitution_start_date' => null,
+                                    ], [
+                                        'REFTABLE.substitution_start_date' => ['<=', new QueryExpression('NOW()')],
+                                    ],
+                                ],
+                            ]
+                        ],
+                        'beforejoin'         => [
+                            'table'          => User::getTable(),
+                            'joinparams'         => [
+                                'beforejoin'         => [
+                                    'table'          => Group_User::getTable(),
+                                    'joinparams'         => [
+                                        'jointype'           => 'child',
+                                        'beforejoin'         => [
+                                            'table'              => Group::getTable(),
+                                            'linkfield'          => 'items_id_target',
+                                            'joinparams'         => [
+                                                'condition'          => [
+                                                    'REFTABLE.itemtype_target' => Group::class,
+                                                ],
+                                                'beforejoin'         => [
+                                                    'table'              => static::getTable(),
+                                                    'joinparams'         => [
+                                                        'jointype'           => 'child',
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
                     ]
                 ]
             ]
@@ -1552,23 +1721,28 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         $params = [
-            'prefix'            => null,
-            'id'                => 0,
-            'entity'            => $_SESSION['glpiactive_entity'],
-            'right'             => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
-            'groups_id'         => 0,
-            'itemtype_target'   => '',
-            'items_id_target'   => 0,
-            'display'           => true,
-            'disabled'          => false,
-            'width'             => '100%',
-            'required'          => false,
-            'rand'              => mt_rand(),
+            'prefix'             => null,
+            'id'                 => 0,
+            'parents_id'         => null,
+            'entity'             => $_SESSION['glpiactive_entity'],
+            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
+            'groups_id'          => 0,
+            'itemtype_target'    => '',
+            'items_id_target'    => 0,
+            'users_id_requester' => [],
+            'display'            => true,
+            'disabled'           => false,
+            'width'              => '100%',
+            'required'           => false,
+            'rand'               => mt_rand(),
         ];
         $params['applyto'] = 'show_validator_field' . $params['rand'];
 
         foreach ($options as $key => $val) {
             $params[$key] = $val;
+        }
+        if (!is_array($params['users_id_requester'])) {
+            $params['users_id_requester'] = [$params['users_id_requester']];
         }
 
         $params['validation_class'] = static::class;
@@ -1580,11 +1754,15 @@ abstract class CommonITILValidation extends CommonDBChild
         $validatortype_name = array_key_exists('name', $params)
             ? 'validatortype' // legacy behaviour, remove it in GLPI 11.0
             : $params['prefix'] . '[validatortype]';
-        $out = Dropdown::showFromArray($validatortype_name, [
+
+        // Build list of available dropdown items
+        $validators = [
             'User'       => User::getTypeName(1),
             'Group_User' => __('Group user(s)'),
             'Group'      => Group::getTypeName(1),
-        ], [
+        ];
+
+        $out = Dropdown::showFromArray($validatortype_name, $validators, [
             'value'               => $validatortype,
             'display_emptychoice' => true,
             'display'             => false,

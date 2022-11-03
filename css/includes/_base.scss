@@ -186,9 +186,6 @@ body.iframed {
         }
 
         &.btn-sm {
-            // try to have same height for ti and fa icons
-            min-height: 24px;
-
             .fa-stack {
                 height: 1.65em;
                 line-height: 1.2em;

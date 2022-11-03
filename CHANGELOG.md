@@ -34,7 +34,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - `chartist` library has been replaced by `echarts`.
 - `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
-- `users_id_validate` field in `CommonITILValidation` will now have a `0` value when approval target is a group, until a group member answer to the approval request.
+- `users_id_validate` field in `CommonITILValidation` will now have a `0` value until someone approves or refuses the validation.
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
@@ -78,6 +78,7 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`
 - `Toolbox::seems_utf8()`
+- `Search::getOptions()` no longer returns a reference
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.

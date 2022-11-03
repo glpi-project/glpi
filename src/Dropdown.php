@@ -863,6 +863,7 @@ class Dropdown
                         $values[$file] = $file;
                     }
                 }
+                $rand = mt_rand();
                 self::showFromArray(
                     $myname,
                     $values,
@@ -870,11 +871,35 @@ class Dropdown
                         [
                             'value'                 => $value,
                             'display_emptychoice'   => true,
-                            'display'               => $display
+                            'display'               => $display,
+                            'noselect2'             => true, // we will instanciate it later
+                            'rand'                  => $rand,
                         ],
                         $options
                     )
                 );
+
+                global $CFG_GLPI;
+
+                // templates for select2 dropdown
+                $js = <<<JAVASCRIPT
+                $(function() {
+                    const formatFormIcon = function(icon) {
+                        if (!icon.id || icon.id == '0') {
+                            return icon.text;
+                        }
+                        var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
+                        var label = '<span>'+icon.text+'</span>';
+                        return $(img+'&nbsp;'+label);
+                    };
+                    $("#dropdown_{$myname}{$rand}").select2({
+                        width: '60%',
+                        templateSelection: formatFormIcon,
+                        templateResult: formatFormIcon
+                    });
+                });
+JAVASCRIPT;
+                echo Html::scriptBlock($js);
             } else {
                //TRANS: %s is the store path
                 printf(__('Error reading directory %s'), $store_path);
@@ -1561,6 +1586,7 @@ class Dropdown
      *    - showItemSpecificity : given an item, the AJAX file to open if there is special
      *                            treatment. For instance, select a Item_Device* for CommonDevice
      *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+     *    - display_emptychoice : display empty choice, cannot be used when "multiple" option set to true (default true)
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - display             : true : display directly, false return the html
      *
@@ -1581,6 +1607,7 @@ class Dropdown
             'checkright'                => false,
             'showItemSpecificity'       => '',
             'emptylabel'                => self::EMPTY_VALUE,
+            'display_emptychoice'       => true,
             'used'                      => [],
             'ajax_page'                 => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
             'display'                   => true,
@@ -1595,12 +1622,13 @@ class Dropdown
         }
 
         $select = self::showItemType($params['itemtypes'], [
-            'checkright'    => $params['checkright'],
-            'name'          => $params['itemtype_name'],
-            'emptylabel'    => $params['emptylabel'],
-            'display'       => $params['display'],
-            'rand'          => $params['rand'],
-            'track_changes' => $params['itemtype_track_changes'],
+            'checkright'          => $params['checkright'],
+            'name'                => $params['itemtype_name'],
+            'emptylabel'          => $params['emptylabel'],
+            'display_emptychoice' => $params['display_emptychoice'],
+            'display'             => $params['display'],
+            'rand'                => $params['rand'],
+            'track_changes'       => $params['itemtype_track_changes'],
         ]);
 
         $p_ajax = [

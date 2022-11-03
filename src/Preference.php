@@ -51,6 +51,7 @@ class Preference extends CommonGLPI
         if (Session::haveRightsOr('personalization', [READ, UPDATE])) {
             $this->addStandardTab('Config', $ong, $options);
         }
+        $this->addStandardTab('ValidatorSubstitute', $ong, $options);
         $this->addStandardTab('DisplayPreference', $ong, $options);
 
         $ong['no_all_tab'] = true;

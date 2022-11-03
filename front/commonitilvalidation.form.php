@@ -66,6 +66,7 @@ if (isset($_POST["add"])) {
         Toolbox::deprecated('Usage of "users_id_validate" parameter is deprecated in "front/commonitilvalidation.form.php". Use "items_id_target" instead.');
         $_POST['items_id_target'] = $_POST['users_id_validate'];
         $_POST['itemtype_target'] = User::class;
+        unset($_POST['users_id_validate']);
     }
 
     $validation->check(-1, CREATE, $_POST);
@@ -120,9 +121,10 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else if (isset($_POST['approval_action'])) {
-    if ($_POST['users_id_validate'] == Session::getLoginUserID()) {
+    $validation->getFromDB($_POST['id']);
+    if ($validation->canValidate($validation->fields[$validation::$items_id])) {
         $validation->update($_POST + [
-            'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED
+            'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED,
         ]);
         Html::back();
     }

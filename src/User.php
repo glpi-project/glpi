@@ -272,6 +272,7 @@ class User extends CommonDBTM
 
         switch ($item->getType()) {
             case __CLASS__:
+                /** @var User $item */
                 $item->showItems($tabnum == 2);
                 return true;
 
@@ -438,11 +439,11 @@ class User extends CommonDBTM
 
         $this->dropPictureFiles($this->fields['picture']);
 
-       // Ticket rules use various _users_id_*
+        // Ticket rules use various _users_id_*
         Rule::cleanForItemAction($this, '_users_id%');
         Rule::cleanForItemCriteria($this, '_users_id%');
 
-       // Alert does not extends CommonDBConnexity
+        // Alert does not extends CommonDBConnexity
         $alert = new Alert();
         $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
     }
@@ -2131,11 +2132,9 @@ class User extends CommonDBTM
             return true;
         }
         $this->fields['_ruleright_process'] = true;
-        foreach ($a_field as $field => $value) {
-            if (
-                !isset($_SERVER[$value])
-                || empty($_SERVER[$value])
-            ) {
+        foreach ($a_field as $field => $key) {
+            $value = $_SERVER[$key] ?? null;
+            if (empty($value)) {
                 switch ($field) {
                     case "title":
                         $this->fields['usertitles_id'] = 0;
@@ -2149,38 +2148,43 @@ class User extends CommonDBTM
                         $this->fields[$field] = "";
                 }
             } else {
+                if (!mb_check_encoding($value, 'UTF-8') && mb_check_encoding($value, 'ISO-8859-1')) {
+                    // Some applications, like Microsoft Azure Enterprise Applications (Header-based Single sign-on),
+                    // will provide ISO-8859-1 encoded values. They have to be converted into UTF-8 to prevent
+                    // encoding issues (see #12898).
+                    $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+                }
+                $value = Sanitizer::sanitize($value); // $_SERVER is not automatically sanitized
                 switch ($field) {
                     case "email1":
                     case "email2":
                     case "email3":
                     case "email4":
                         // Manage multivaluable fields
-                        if (!preg_match('/count/', $_SERVER[$value])) {
-                            $this->fields["_emails"][] = addslashes($_SERVER[$value]);
+                        if (!preg_match('/count/', $value)) {
+                            $this->fields["_emails"][] = $value;
                         }
                         // Only get them once if duplicated
                         $this->fields["_emails"] = array_unique($this->fields["_emails"]);
                         break;
 
                     case "language":
-                        $language = Config::getLanguage($_SERVER[$value]);
+                        $language = Config::getLanguage($value);
                         if ($language != '') {
                             $this->fields[$field] = $language;
                         }
                         break;
 
                     case "title":
-                        $this->fields['usertitles_id']
-                        = Dropdown::importExternal('UserTitle', addslashes($_SERVER[$value]));
+                        $this->fields['usertitles_id'] = Dropdown::importExternal('UserTitle', $value);
                         break;
 
                     case "category":
-                        $this->fields['usercategories_id']
-                        = Dropdown::importExternal('UserCategory', addslashes($_SERVER[$value]));
+                        $this->fields['usercategories_id'] = Dropdown::importExternal('UserCategory', $value);
                         break;
 
                     default:
-                        $this->fields[$field] = $_SERVER[$value];
+                        $this->fields[$field] = $value;
                         break;
                 }
             }
@@ -2299,7 +2303,7 @@ class User extends CommonDBTM
                      class="btn btn-icon btn-sm btn-ghost-secondary"
                      title="{$vcard_lbl}"
                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-               <i class="far fa-address-card fa-lg"></i>
+               <i class="ti ti-id fa-lg"></i>
             </a>
 HTML;
             $toolbar[] = $vcard_btn;
@@ -2317,7 +2321,7 @@ HTML;
                             class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                             title="{$impersonate_lbl}"
                             data-bs-toggle="tooltip" data-bs-placement="bottom">
-                            <i class="fas fa-user-secret fa-lg"></i>
+                            <i class="ti ti-spy fa-lg"></i>
                         </button>
                     </form>
 HTML;
@@ -2341,7 +2345,7 @@ JAVASCRIPT;
                        class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
                        title="{$error_message}"
                        data-bs-toggle="tooltip" data-bs-placement="bottom">
-                  <i class="fas fa-user-secret fa-lg"></i>
+                  <i class="ti ti-spy fa-lg"></i>
                </button>
 HTML;
                 $toolbar[] = $impersonate_btn;
@@ -3891,6 +3895,22 @@ JAVASCRIPT;
             'additionalfields'   => [
                 '0' => 'id'
             ]
+        ];
+
+        $tab[] = [
+            'id'                => 130,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_start_date',
+            'name'              => __('Substitution start date'),
+            'datatype'          => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'                => 131,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_end_date',
+            'name'              => __('Substitution end date'),
+            'datatype'          => 'datetime',
         ];
 
        // add objectlock search options
@@ -6666,8 +6686,7 @@ JAVASCRIPT;
 
         return $user;
     }
-
-    /**
+        /**
      * Get name of the user with ID
      *
      * @param integer $ID   ID of the user.
@@ -6701,5 +6720,108 @@ JAVASCRIPT;
         }
 
         return __('Unknown user');
+    }
+
+    /**
+     * Get all validation substitutes
+     *
+     * @return int[]
+     */
+    final public function getSubstitutes(): array
+    {
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $substitutes = [];
+        $rows = (new ValidatorSubstitute())->find([
+            'users_id' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $substitutes[] = $row['users_id_substitute'];
+        }
+
+        return $substitutes;
+    }
+
+    /**
+     * Get all delegators
+     *
+     * @return int[]
+     */
+    final public function getDelegators(): array
+    {
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $delegators = [];
+        $rows = (new ValidatorSubstitute())->find([
+            'users_id_substitute' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $delegators[] = $row['users_id'];
+        }
+
+        return $delegators;
+    }
+
+    /**
+     * Is a substitute of an other user ?
+     *
+     * @param integer $users_id_delegator
+     * @param bool    $use_date_range
+     *
+     * @return bool
+     */
+    final public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
+    {
+        global $DB;
+
+        if ($this->isNewItem()) {
+            return false;
+        }
+
+        $request = [
+            'FROM' => ValidatorSubstitute::getTable(),
+            'WHERE' => [
+                ValidatorSubstitute::getTableField('users_id')            => $users_id_delegator,
+                ValidatorSubstitute::getTableField('users_id_substitute') => $this->fields['id'],
+            ],
+        ];
+        if ($use_date_range) {
+            // add date range check
+            $request['INNER JOIN'] = [
+                self::getTable() => [
+                    'ON' => [
+                        self::getTable() => 'id',
+                        ValidatorSubstitute::getTable() => 'users_id',
+                    ],
+                    'AND' => [
+                        [
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_end_date') => null
+                                ], [
+                                    self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ], [
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_start_date') => null,
+                                ], [
+                                    self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ]
+                    ]
+                ],
+            ];
+        }
+
+        $result = $DB->request($request);
+
+        return (count($result) > 0);
     }
 }

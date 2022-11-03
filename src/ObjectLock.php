@@ -288,7 +288,7 @@ class ObjectLock extends CommonDBTM
         $msg = "<strong class='nowrap'>";
         $msg .= sprintf(__('Locked by %s'), "<a href='" . $user->getLinkURL() . "'>" . $userdata['name'] . "</a>");
         $msg .= "&nbsp;" . Html::showToolTip($userdata["comment"], ['link' => $userdata['link'], 'display' => false]);
-        $msg .= " -> " . Html::convDateTime($this->fields['date']);
+        $msg .= " -&gt; " . Html::convDateTime($this->fields['date']);
         $msg .= "</strong>";
         if ($showAskUnlock) {
             $msg .= "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:askUnlock();'>
@@ -299,7 +299,6 @@ class ObjectLock extends CommonDBTM
         $msg .= "<label for='alertMe'>" . __('Alert me when unlocked') . "</label>";
         $msg .= Html::getCheckbox(['id' => 'alertMe']);
         $msg .= $this->getForceUnlockMessage(); // will get a button to force unlock if UNLOCK rights are in the user's profile
-        $msg .= "</span>";
 
         $this->displayLockMessage($msg);
     }
@@ -546,9 +545,12 @@ class ObjectLock extends CommonDBTM
      **/
     private function displayLockMessage($msg, $title = '')
     {
+        $json_msg = json_encode($msg); // Encode in JSON to prevent issues with quotes mix
         echo Html::scriptBlock("
          $(function() {
-            $(`<div id='message_after_lock' class='objectlockmessage' style='display: inline-block;'>$msg</div>`).insertAfter('.navigationheader');
+            const container = $(`<div id='message_after_lock' class='objectlockmessage' style='display: inline-block;'></div>`);
+            container.append($json_msg);
+            container.insertAfter('.navigationheader');
          });
       ");
     }

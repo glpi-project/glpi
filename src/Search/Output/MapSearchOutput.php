@@ -43,22 +43,14 @@ use Glpi\Toolbox\Sanitizer;
  */
 final class MapSearchOutput extends HTMLSearchOutput
 {
-    /**
-     * Display result table for search engine for an item type as a map
-     *
-     * @param string $itemtype Item type to manage
-     * @param array  $params   Search params passed to prepareDatasForSearch function
-     *
-     * @return void
-     **/
-    public static function showMap($itemtype, $params): void
+    public static function prepareInputParams(string $itemtype, array $params): array
     {
-        global $CFG_GLPI;
+        $params = parent::prepareInputParams($itemtype, $params);
 
-        if ($itemtype == 'Location') {
+        if ($itemtype === 'Location') {
             $latitude = 21;
             $longitude = 20;
-        } else if ($itemtype == 'Entity') {
+        } else if ($itemtype === 'Entity') {
             $latitude = 67;
             $longitude = 68;
         } else {
@@ -79,9 +71,14 @@ final class MapSearchOutput extends HTMLSearchOutput
             'value'        => 'NULL'
         ];
 
-        $data = \Search::getDatas($itemtype, $params);
-        \Search::displayData($data);
+        return $params;
+    }
 
+    public static function displayData(array $data, array $params): void
+    {
+        global $CFG_GLPI;
+
+        $itemtype = $data['itemtype'];
         if ($data['data']['totalcount'] > 0) {
             $target = $data['search']['target'];
             $criteria = $data['search']['criteria'];
@@ -89,7 +86,7 @@ final class MapSearchOutput extends HTMLSearchOutput
             array_pop($criteria);
             $criteria[] = [
                 'link'         => 'AND',
-                'field'        => ($itemtype == 'Location' || $itemtype == 'Entity') ? 1 : (($itemtype == 'Ticket') ? 83 : 3),
+                'field'        => ($itemtype === 'Location' || $itemtype === 'Entity') ? 1 : (($itemtype === 'Ticket') ? 83 : 3),
                 'searchtype'   => 'equals',
                 'value'        => 'CURLOCATION'
             ];

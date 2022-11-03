@@ -102,6 +102,7 @@
         max-width: 820px;
         min-width: 100%;
         word-break: break-word;
+        border: 1px solid transparent;
 
         @include media-breakpoint-up(sm) {
             &::before {

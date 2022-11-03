@@ -169,6 +169,35 @@ HTML;
         $tab[] = $create_toner_percent_option(1406, 'grey', __('Grey'));
         $tab[] = $create_toner_percent_option(1407, 'darkgrey', __('Dark grey'));
 
+        $create_drum_percent_option = static function (int $ID, string $color_key, string $color_name): array {
+            return [
+                'id'                => (string) $ID,
+                'table'             => self::getTable(),
+                'field'             => "_virtual_drum_{$color_key}_percent",
+                'name'              => sprintf(__('%s drum percentage'), $color_name),
+                'datatype'          => 'specific',
+                'massiveaction'     => false,
+                'nosearch'          => true,
+                'joinparams'        => [
+                    'jointype' => 'child'
+                ],
+                'additionalfields'  => ['property', 'value'],
+                'forcegroupby'      => true,
+                'aggregate'         => true,
+                'searchtype'        => ['contains'],
+                'nosort'            => true
+            ];
+        };
+
+        $tab[] = $create_drum_percent_option(1408, 'black', __('Black'));
+        $tab[] = $create_drum_percent_option(1409, 'cyan', __('Cyan'));
+        $tab[] = $create_drum_percent_option(1410, 'cyanlight', __('Light cyan'));
+        $tab[] = $create_drum_percent_option(1411, 'magenta', __('Magenta'));
+        $tab[] = $create_drum_percent_option(1412, 'magentalight', __('Light magenta'));
+        $tab[] = $create_drum_percent_option(1413, 'yellow', __('Yellow'));
+        $tab[] = $create_drum_percent_option(1414, 'grey', __('Grey'));
+        $tab[] = $create_drum_percent_option(1415, 'darkgrey', __('Dark grey'));
+
         return $tab;
     }
 
@@ -217,46 +246,35 @@ HTML;
             'darkgrey'  => 'darkgray'
         ];
         $printer = new Printer();
-        if (str_starts_with($field, '_virtual_toner')) {
-            $color = preg_match('/_virtual_toner_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+        if (str_starts_with($field, '_virtual_')) {
+            $type = preg_match('/_virtual_(.*)_.*_percent/', $field, $matches) ? $matches[1] : '';
+            $color = preg_match('/_virtual_' . $type . '_(.*)_percent/', $field, $matches) ? $matches[1] : '';
             $search_option_id = $printer->getSearchOptionIDByField('field', $field);
             $raw_search_opt_values = $options['raw_data']['Printer_' . $search_option_id];
 
-            $get_percent_remaining = static function ($color, $field, $raw_search_opt_values) {
-                $max_field = "toner{$color}max";
-                $used_field = "toner{$color}used";
-                $remaining_field = "toner{$color}remaining";
+            $get_percent_remaining = static function ($color, $raw_search_opt_values, $type) {
+                $used_field = $type . $color;
 
                 if ($raw_search_opt_values !== null) {
                     unset($raw_search_opt_values['count']);
-                    // Get the max and used values (stored in property key and value key of elements)
-                    $max_value = null;
-                    $used_value = null;
-                    $remaining_value = null;
                     foreach ($raw_search_opt_values as $raw_search_opt_value) {
-                        if ($raw_search_opt_value['property'] === $max_field) {
-                            $max_value = $raw_search_opt_value['value'];
-                        } elseif ($raw_search_opt_value['property'] === $used_field) {
-                            $used_value = $raw_search_opt_value['value'];
-                        } elseif ($raw_search_opt_value['property'] === $remaining_field) {
-                            $remaining_value = $raw_search_opt_value['value'];
+                        if ($raw_search_opt_value['property'] === $used_field) {
+                            return $raw_search_opt_value['value'];
                         }
-                    }
-                    // If max is not set or 0, we cannot display anything
-                    if ($max_value !== null && (int)$max_value > 0) {
-                        // If remaining is not set, we can calculate it from used
-                        if ($remaining_value === null && $used_value !== null) {
-                            $remaining_value = $max_value - $used_value;
-                        }
-                        return round(($remaining_value / $max_value) * 100);
                     }
                 }
                 return null;
             };
 
-            $percent_remaining = $get_percent_remaining($color, $field, $raw_search_opt_values);
+            $percent_remaining = $get_percent_remaining($color, $raw_search_opt_values, $type);
+
+            //return value if not null and not numeric  "OK" "WARNING"
+            if ($percent_remaining !== null && ! is_numeric($percent_remaining)) {
+                return $percent_remaining;
+            }
+
             if ($percent_remaining === null && array_key_exists($color, $color_aliases)) {
-                $percent_remaining = $get_percent_remaining($color_aliases[$color], $field, $raw_search_opt_values);
+                $percent_remaining = $get_percent_remaining($color_aliases[$color], $raw_search_opt_values, $type);
             }
 
             if ($percent_remaining !== null) {

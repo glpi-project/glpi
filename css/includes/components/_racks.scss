@@ -347,12 +347,12 @@ ul.indexes {
         }
 
         th {
-            color: $table-head-color;
+            color: $table-th-color;
             background-color: steelblue;
         }
 
         td {
-            border-left: 1px solid $table-head-border-color;
+            border-left: 1px solid $table-th-border-color;
 
             div {
                 border: none !important;
@@ -408,8 +408,8 @@ ul.indexes {
 .racks_col h2 {
     font-size: 14px;
     font-weight: bold;
-    color: $table-head-color;
-    background-color: $table-head-bg;
+    color: $table-th-color;
+    background-color: $table-th-bg;
     height: 30px;
     margin: 0;
     padding: 5px 0;
@@ -596,8 +596,8 @@ ul.indexes {
 .rack_side_block {
     width: 200px;
     border: 1px solid $table-border-color;
-    background-color: $table-head-bg;
-    color: $table-head-color;
+    background-color: $table-th-bg;
+    color: $table-th-color;
     text-align: left;
     font-size: 11px;
     margin-bottom: 20px;

@@ -44,6 +44,8 @@ use Manufacturer;
 use Plugin;
 use RequestType;
 use Session;
+use State;
+use Ticket;
 use User;
 
 /**
@@ -69,6 +71,8 @@ class Filter extends \CommonDBChild
             'requesttype'  => RequestType::getTypeName(Session::getPluralNumber()),
             'location'     => Location::getTypeName(Session::getPluralNumber()),
             'manufacturer' => Manufacturer::getTypeName(Session::getPluralNumber()),
+            'state'        => State::getTypeName(Session::getPluralNumber()),
+            'tickettype'   => _n("Ticket type", "Ticket types", Session::getPluralNumber()),
             'group_tech'   => __("Technician group"),
             'user_tech'    => __("Technician"),
         ];
@@ -176,6 +180,19 @@ JAVASCRIPT;
         ]);
     }
 
+    public static function state(string $value = ""): string
+    {
+        return self::displayList($value, 'state', State::class);
+    }
+
+    public static function tickettype(string $value = ""): string
+    {
+        return self::displayList($value, 'tickettype', Ticket::class, [
+            'condition' => ['id' => -1],
+            'toadd'     => Ticket::getTypes()
+        ]);
+    }
+
     public static function displayList(
         string $value = "",
         string $fieldname = "",
@@ -262,7 +279,9 @@ JAVASCRIPT;
       <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
          $field
          <legend>$label</legend>
-         <i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash delete-filter'></i>
+         <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter">
+            <i class='ti ti-trash'></i>
+         </button>
          {$js}
       </fieldset>
 HTML;

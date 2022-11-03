@@ -109,7 +109,7 @@ function loadDataset()
    // Unit test data definition
     $data = [
       // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.9',
+        '_version' => '4.10',
 
       // Type => array of entries
         'Entity' => [
@@ -702,7 +702,14 @@ function loadDataset()
                 'version'      => '1.0.0',
                 'state'        => 1,
             ]
-        ],
+        ], 'Change' => [
+            [
+                'name'           => '_change01',
+                'content'        => 'Content for ticket _change01',
+                'users_id_recipient' => TU_USER,
+                'entities_id'    => '_test_root_entity'
+            ],
+        ]
     ];
 
    // To bypass various right checks

@@ -40,6 +40,7 @@ use DBmysqlIterator;
 use Dropdown;
 use Entity;
 use Glpi\Inventory\Conf;
+use Glpi\Toolbox\Sanitizer;
 use QueryParam;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
@@ -556,10 +557,15 @@ class Software extends InventoryAsset
                 continue;
             }
 
+            $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
+                'name'             => $val->name,
+                'manufacturers_id' => $val->manufacturers_id,
+            ]);
+
             $stmt->bind_param(
                 'ss',
-                $val->name,
-                $val->manufacturers_id
+                $input['name'],
+                $input['manufacturers_id'],
             );
             $DB->executeStatement($stmt);
             $results = $stmt->get_result();
@@ -624,14 +630,19 @@ class Software extends InventoryAsset
                 continue;
             }
 
-            $osid = $this->getOsForKey($val);
-            $arch = $val->arch ?? '';
+            $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
+                'version'      => $val->version,
+                'arch'         => $val->arch ?? '',
+                'softwares_id' => $softwares_id,
+                'osid'         => $this->getOsForKey($val),
+            ]);
+
             $stmt->bind_param(
                 'ssss',
-                $val->version,
-                $arch,
-                $softwares_id,
-                $osid
+                $input['version'],
+                $input['arch'],
+                $input['softwares_id'],
+                $input['osid']
             );
             $DB->executeStatement($stmt);
             $results = $stmt->get_result();
@@ -676,7 +687,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = array_values($stmt_columns);
+                $stmt_values = Sanitizer::encodeHtmlSpecialCharsRecursive(array_values($stmt_columns));
                 $stmt->bind_param($stmt_types, ...$stmt_values);
                 $DB->executeStatement($stmt);
                 $softwares_id = $DB->insertId();
@@ -741,7 +752,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                 $stmt_values = array_values($stmt_columns);
+                 $stmt_values = Sanitizer::encodeHtmlSpecialCharsRecursive(array_values($stmt_columns));
                  $stmt->bind_param($stmt_types, ...$stmt_values);
                  $DB->executeStatement($stmt);
                  $versions_id = $DB->insertId();
@@ -819,12 +830,12 @@ class Software extends InventoryAsset
                  $stmt = $DB->prepare($insert_query);
             }
 
-            $input = [
+            $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
                 'softwareversions_id'   => $versions_id,
                 'is_dynamic'            => 1,
                 'entities_id'           => $this->item->fields['entities_id'],
                 'date_install'          => $val->date_install ?? null
-            ];
+            ]);
 
             $stmt->bind_param(
                 'ssss',

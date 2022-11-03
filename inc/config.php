@@ -182,7 +182,7 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
         Session::loadLanguage('', false);
 
         if (isCommandLine()) {
-            echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.');
+            echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.');
             echo "\n";
             exit();
         }
@@ -224,7 +224,7 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
                         echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
                     }
                     echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
-                    echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.') . "</p>";
+                    echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') . "</p>";
                     echo Html::submit(_sx('button', 'Upgrade'), [
                         'name'  => 'from_update',
                         'class' => "btn btn-primary",

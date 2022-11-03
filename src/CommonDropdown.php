@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
+use Glpi\Toolbox\Sanitizer;
 
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM
@@ -706,6 +707,8 @@ abstract class CommonDropdown extends CommonDBTM
             return -1;
         }
 
+        $input = Sanitizer::sanitize($input);
+
        // Check twin :
         if ($ID = $this->findID($input)) {
             if ($ID > 0) {
@@ -744,7 +747,7 @@ abstract class CommonDropdown extends CommonDBTM
             return 0;
         }
 
-        $ruleinput      = ["name" => stripslashes($value)];
+        $ruleinput      = ["name" => $value];
         $rulecollection = RuleCollection::getClassByType($this->getType(), true);
 
         foreach ($this->additional_fields_for_dictionnary as $field) {
@@ -766,14 +769,14 @@ abstract class CommonDropdown extends CommonDBTM
             break;
        }*/
 
-        $input = [
+        $input = Sanitizer::sanitize([
             'name'        => $value,
             'comment'     => $comment,
             'entities_id' => $entities_id,
-        ];
+        ]);
 
         if ($rulecollection) {
-            $res_rule = $rulecollection->processAllRules(Toolbox::stripslashes_deep($ruleinput), [], []);
+            $res_rule = $rulecollection->processAllRules(Sanitizer::dbUnescapeRecursive($ruleinput), [], []);
             if (isset($res_rule["name"])) {
                 $input["name"] = $res_rule["name"];
             }

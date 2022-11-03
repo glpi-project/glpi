@@ -169,8 +169,11 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         }
 
         if (!$checker->canCheckIntegrity($installed_version, $context)) {
+            $message = $plugin_key === null
+                ? sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version)
+                : sprintf(__('Checking database integrity of plugin "%s" is not supported.'), $plugin_key);
             throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version) . '</error>',
+                '<error>' . $message . '</error>',
                 self::ERROR_UNSUPPORTED_VERSION
             );
         }

@@ -61,10 +61,24 @@ body.mce-content-body {
         max-width: 100%;
     }
 
+    table {
+        word-break: normal;
+    }
+
     a[target="_blank"]::before {
         font-family: tabler-icons;
         content: "\ea99";
         padding-right: 4px;
+    }
+
+    .long_text {
+        max-height: 350px;
+        position: relative;
+        overflow: hidden;
+
+        .read_more {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, #f1f4e3 100%);
+        }
     }
 }
 

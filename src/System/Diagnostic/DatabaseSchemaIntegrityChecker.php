@@ -717,14 +717,15 @@ class DatabaseSchemaIntegrityChecker
             $schema_path = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $schema_version_clean);
         } elseif (preg_match('/^plugin:(?<plugin_key>\w+)$/', $context) === 1) {
             $plugin_key = str_replace('plugin:', '', $context);
+            Plugin::load($plugin_key); // Load setup file, to be able to check schema even on inactive plugins
             $function_name = sprintf('plugin_%s_getSchemaPath', $plugin_key);
-            if (!Plugin::isPluginActive($plugin_key) || !function_exists($function_name)) {
+            if (!function_exists($function_name)) {
                 return null;
             }
             $schema_path = $function_name($schema_version);
         }
 
-        return !empty($schema_version) && file_exists($schema_path)
+        return !empty($schema_path) && file_exists($schema_path)
             ? $schema_path
             : null;
     }

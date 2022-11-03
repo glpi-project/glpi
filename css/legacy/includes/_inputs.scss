@@ -90,7 +90,7 @@ input.submit,
    white-space: nowrap;
    background-color: $primary;
    color: color-contrast($primary);
-   border: $btn-border-width solid $border-color-dark-transparent;
+   border: $btn-border-width solid $border-color-translucent;
    border-radius: $btn-border-radius;
    font-family: $btn-font-family;
    font-weight: $btn-font-weight;
@@ -113,5 +113,18 @@ input.submit,
 
 .form-control.warn {
    border-color: rgb(255, 0, 0) !important;
+   background-color: rgba(255, 0, 0, 0.1) !important;
+}
+
+.form-control.not_expired {
+   border-color: #a1cf66 !important;
+   background-color: rgba(6, 255, 0, 0.1) !important;
+}
+.form-control.soon_expired {
+   border-color: #de5d06 !important;
+   background-color: rgba(255, 184, 0, 0.1) !important;
+}
+.form-control.expired {
+   border-color: #d63939 !important;
    background-color: rgba(255, 0, 0, 0.1) !important;
 }

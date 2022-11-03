@@ -7710,6 +7710,8 @@ CREATE TABLE `glpi_users` (
   `default_dashboard_mini_ticket` varchar(100) DEFAULT NULL,
   `default_central_tab` tinyint DEFAULT '0',
   `nickname` varchar(255) DEFAULT NULL,
+  `substitution_end_date` timestamp NULL DEFAULT NULL,
+  `substitution_start_date` timestamp NULL DEFAULT NULL,
   `toast_location` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
@@ -7732,7 +7734,9 @@ CREATE TABLE `glpi_users` (
   KEY `groups_id` (`groups_id`),
   KEY `users_id_supervisor` (`users_id_supervisor`),
   KEY `auths_id` (`auths_id`),
-  KEY `default_requesttypes_id` (`default_requesttypes_id`)
+  KEY `default_requesttypes_id` (`default_requesttypes_id`),
+  KEY `substitution_end_date` (`substitution_end_date`),
+  KEY `substitution_start_date` (`substitution_start_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -8849,6 +8853,14 @@ CREATE TABLE `glpi_agents` (
   `threads_networkinventory` int NOT NULL DEFAULT '1' COMMENT 'Number of threads for Network inventory',
   `timeout_networkdiscovery` int NOT NULL DEFAULT '0' COMMENT 'Network Discovery task timeout (disabled by default)',
   `timeout_networkinventory` int NOT NULL DEFAULT '0' COMMENT 'Network Inventory task timeout (disabled by default)',
+  `use_module_wake_on_lan` tinyint NOT NULL DEFAULT '0',
+  `use_module_computer_inventory` tinyint NOT NULL DEFAULT '0',
+  `use_module_esx_remote_inventory` tinyint NOT NULL DEFAULT '0',
+  `use_module_remote_inventory` tinyint NOT NULL DEFAULT '0',
+  `use_module_network_inventory` tinyint NOT NULL DEFAULT '0',
+  `use_module_network_discovery` tinyint NOT NULL DEFAULT '0',
+  `use_module_package_deployment` tinyint NOT NULL DEFAULT '0',
+  `use_module_collect_data` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `deviceid` (`deviceid`),
   KEY `name` (`name`),
@@ -9357,3 +9369,13 @@ CREATE TABLE `glpi_changesatisfactions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
+
+DROP TABLE IF EXISTS `glpi_validatorsubstitutes`;
+CREATE TABLE `glpi_validatorsubstitutes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int unsigned  NOT NULL DEFAULT '0' COMMENT 'Delegator user',
+  `users_id_substitute` int unsigned  NOT NULL DEFAULT '0' COMMENT 'Substitute user',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_id_users_id_substitute` (`users_id`, `users_id_substitute`),
+  KEY `users_id_substitute` (`users_id_substitute`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

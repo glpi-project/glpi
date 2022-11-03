@@ -39,11 +39,11 @@
         "laminas/laminas-servicemanager": "~3.10.0",
         "league/csv": "^9.7",
         "mexitek/phpcolors": "^1.0",
-        "michelf/php-markdown": "^1.9",
+        "michelf/php-markdown": "^2.0",
         "monolog/monolog": "^2.8",
         "paragonie/sodium_compat": "^1.17",
         "psr/cache": "^1.0",
-        "psr/log": "^1.1",
+        "psr/log": "^2.0",
         "psr/simple-cache": "^1.0",
         "ramsey/uuid": "^4.2",
         "rlanvin/php-rrule": "^2.3",
@@ -99,7 +99,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "8.0.0"
+            "php": "8.0.99"
         },
         "sort-packages": true
     },

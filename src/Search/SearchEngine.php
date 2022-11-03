@@ -35,9 +35,17 @@
 
 namespace Glpi\Search;
 
+use CommonGLPI;
 use CommonITILObject;
+use Glpi\Agent\Communication\Headers\Common;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\TreeBrowse;
+use Glpi\Plugin\Hooks;
+use Glpi\Search\Input\QueryBuilder;
+use Glpi\Search\Input\SearchInputInterface;
 use Glpi\Search\Output\AbstractSearchOutput;
 use Glpi\Search\Output\CSVSearchOutput;
+use Glpi\Search\Output\ExportSearchOutput;
 use Glpi\Search\Output\GlobalSearchOutput;
 use Glpi\Search\Output\MapSearchOutput;
 use Glpi\Search\Output\NamesListSearchOutput;
@@ -45,6 +53,9 @@ use Glpi\Search\Output\PDFLandscapeSearchOutput;
 use Glpi\Search\Output\PDFPortraitSearchOutput;
 use Glpi\Search\Output\SYLKSearchOutput;
 use Glpi\Search\Output\TableSearchOutput;
+use Glpi\Search\Provider\SearchProviderInterface;
+use Glpi\Search\Provider\SQLProvider;
+use Plugin;
 
 /**
  * The search engine.
@@ -119,11 +130,16 @@ final class SearchEngine
                 if ($ref_itemtype === $config_itemtype::getType()) {
                     // List is related to source itemtype, all types of list are so linked
                     $linked = array_merge($linked, $values);
-                } else if (in_array($ref_itemtype, $values)) {
+                } elseif (in_array($ref_itemtype, $values)) {
                     // Source itemtype is inside list, type corresponding to list is so linked
                     $linked[] = $config_itemtype::getType();
                 }
             }
+        }
+
+        // Add entity meta if needed
+        if ($item->isField('entities_id') && !($item instanceof \Entity)) {
+            $linked[] = \Entity::getType();
         }
 
         return array_unique($linked);
@@ -245,7 +261,7 @@ final class SearchEngine
      *
      * @return array prepare to be used for a search (include criteria and others needed information)
      **/
-    public static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = []): array
+    public static function prepareDataForSearch($itemtype, array $params, array $forcedisplay = []): array
     {
         global $CFG_GLPI;
 
@@ -540,5 +556,87 @@ final class SearchEngine
     public static function getOrigTableName(string $itemtype): string
     {
         return (is_a($itemtype, \CommonDBTM::class, true)) ? $itemtype::getTable() : getTableForItemType($itemtype);
+    }
+
+    /**
+     * @param array $params
+     * @return class-string<SearchInputInterface>
+     */
+    private static function getSearchInputClass(array $params = []): string
+    {
+        // TODO Maybe have a plugin hook here for custom search input classes
+        return QueryBuilder::class;
+    }
+
+    /**
+     * @param array $params
+     * @return class-string<SearchProviderInterface>
+     */
+    private static function getSearchProviderClass(array $params = []): string
+    {
+        // TODO Maybe have a plugin hook here for custom search provider classes
+        return SQLProvider::class;
+    }
+
+    /**
+     * @param class-string<CommonGLPI> $itemtype
+     * @param array $params
+     * @return void
+     */
+    public static function show(string $itemtype, array $params = []): void
+    {
+        Plugin::doHook(Hooks::PRE_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
+
+        /** @var SearchInputInterface $search_input_class */
+        $search_input_class = self::getSearchInputClass($params);
+        $params = array_merge($params, $search_input_class::manageParams($itemtype, $_GET));
+
+        if (!isset($params['display_type'])) {
+            $params['display_type'] = \Search::HTML_OUTPUT;
+        }
+
+        echo "<div class='search_page row'>";
+        TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
+            'itemtype' => $itemtype,
+        ]);
+        echo "<div class='col search-container'>";
+
+        $output = self::getOutputForLegacyKey($params['display_type'], $params);
+        $output::showPreSearchDisplay($itemtype);
+
+        $search_input_class::showGenericSearch($itemtype, $params);
+        $params = $output::prepareInputParams($itemtype, $params);
+        if ((int) $params['browse'] === 1 && \Toolbox::hasTrait($itemtype, TreeBrowse::class)) {
+            $itemtype::showBrowseView($itemtype, $params);
+        } else {
+            self::showOutput($itemtype, $params);
+        }
+        echo "</div>";
+        echo "</div>";
+
+        Plugin::doHook(Hooks::POST_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
+    }
+
+    public static function getData(string $itemtype, array $params, array $forced_display = []): array
+    {
+        $data = self::prepareDataForSearch($itemtype, $params, $forced_display);
+        $search_provider_class = self::getSearchProviderClass($params);
+        $search_provider_class::constructSQL($data);
+        $search_provider_class::constructData($data);
+
+        return $data;
+    }
+
+    /**
+     * @param string $itemtype The itemtype being displayed
+     * @param array $params The search parameters
+     * @param array $forced_display Array of columns to display (default empty = empty use display pref and search criterias)
+     * @return void
+     */
+    public static function showOutput(string $itemtype, array $params, array $forced_display = []): void
+    {
+        $output = self::getOutputForLegacyKey($params['display_type'] ?? \Search::HTML_OUTPUT, $params);
+        $data = self::getData($itemtype, $params, $forced_display);
+        $output::displayData($data, $params);
     }
 }

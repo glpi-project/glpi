@@ -36,7 +36,9 @@
 namespace Glpi\Search\Output;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Dashboard\Grid;
 use Glpi\Toolbox\Sanitizer;
+use Ticket;
 
 /**
  *
@@ -44,14 +46,18 @@ use Glpi\Toolbox\Sanitizer;
  */
 abstract class HTMLSearchOutput extends AbstractSearchOutput
 {
-    /**
-     * Display datas extracted from DB
-     *
-     * @param array $data Array of search datas prepared to get datas
-     *
-     * @return void|false
-     **/
-    public static function displayData(array $data)
+    public static function showPreSearchDisplay(string $itemtype): void
+    {
+        if (
+            $itemtype === Ticket::class
+            && $default = Grid::getDefaultDashboardForMenu('mini_ticket', true)
+        ) {
+            $dashboard = new Grid($default, 33, 2);
+            $dashboard->show(true);
+        }
+    }
+
+    public static function displayData(array $data, array $params)
     {
         global $CFG_GLPI;
 

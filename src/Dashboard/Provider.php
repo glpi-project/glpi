@@ -44,6 +44,7 @@ use CommonTreeDropdown;
 use CommonDevice;
 use Config;
 use DBConnection;
+use Glpi\Search\SearchOption;
 use Group;
 use Group_Ticket;
 use ITILCategory;
@@ -1624,7 +1625,7 @@ class Provider
 
     private static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {
-        $data = Search::getOptions(getItemTypeForTable($table), true);
+        $data = SearchOption::getOptionsForItemtype(getItemTypeForTable($table), true);
         $sort = [];
         foreach ($data as $ref => $opt) {
             if (isset($opt['field'])) {
@@ -1786,6 +1787,32 @@ class Provider
             }
         }
 
+        if (
+            $DB->fieldExists($table, 'states_id')
+            && isset($apply_filters['state'])
+            && (int) $apply_filters['state'] > 0
+        ) {
+            $s_criteria['criteria'][] = [
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'states_id', 'glpi_states'), // state
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters['state']
+            ];
+        }
+
+        if (
+            $DB->fieldExists($table, 'type')
+            && isset($apply_filters['tickettype'])
+            && (int) $apply_filters['tickettype'] > 0
+        ) {
+            $s_criteria['criteria'][] = [
+                'link'       => 'AND',
+                'field'      => 'type',
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters['tickettype']
+            ];
+        }
+
         return $s_criteria;
     }
 
@@ -1862,6 +1889,26 @@ class Provider
         ) {
             $where += [
                 "$table.manufacturers_id" => (int) $apply_filters['manufacturer']
+            ];
+        }
+
+        if (
+            $DB->fieldExists($table, 'states_id')
+            && isset($apply_filters['state'])
+            && (int) $apply_filters['state'] > 0
+        ) {
+            $where += [
+                "$table.states_id" => (int) $apply_filters['state']
+            ];
+        }
+
+        if (
+            $DB->fieldExists($table, 'type')
+            && isset($apply_filters['tickettype'])
+            && (int) $apply_filters['tickettype'] > 0
+        ) {
+            $where += [
+                "$table.type" => (int) $apply_filters['tickettype']
             ];
         }
 

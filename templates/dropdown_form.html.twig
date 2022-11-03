@@ -151,9 +151,6 @@
                         {{ fields.dropdownField(item, field['name'], item.fields[field['name']], field['label'], fields_params) }}
                     {% elseif type == 'icon' %}
                         {{ fields.dropdownIcons(field['name'], item.fields[field['name']], field['label'], fields_params) }}
-                        {% if item.fields[field['name']] is not empty %}
-                            <img class="align-middle" alt="" src="{{ config('typedoc_icon_dir') ~ '/' ~ item.fields[field['name']] }}"/>
-                        {% endif %}
                     {% elseif type == 'bool' %}
                         {{ fields.dropdownYesNo(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                     {% elseif type == 'color' %}

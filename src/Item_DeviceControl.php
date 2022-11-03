@@ -54,4 +54,12 @@ class Item_DeviceControl extends Item_Devices
             'busID'  => parent::getSpecificities('busID')
         ];
     }
+
+    public function getImportCriteria(): array
+    {
+        return [
+            'serial' => 'equal',
+            'busID' => 'equal'
+        ];
+    }
 }

@@ -78,6 +78,15 @@ if (isset($_POST["add"])) {
         unset($input['from_logical_number']);
         unset($input['to_logical_number']);
 
+        if ($_POST["to_logical_number"] < $_POST["from_logical_number"]) {
+            Session::addMessageAfterRedirect(
+                __("'To' should not be smaller than 'From'"),
+                false,
+                ERROR
+            );
+            Html::back();
+        }
+
         for ($i = $_POST["from_logical_number"]; $i <= $_POST["to_logical_number"]; $i++) {
             $add = "";
             if ($i < 10) {
@@ -111,6 +120,22 @@ if (isset($_POST["add"])) {
         "inventory",
         //TRANS: %s is the user login
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+    );
+
+    if ($item = getItemForItemtype($np->fields['itemtype'])) {
+        Html::redirect($item->getFormURLWithID($np->fields['items_id']));
+    }
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+} else if (isset($_POST["delete"])) {
+    $np->check($_POST['id'], DELETE);
+    $np->delete($_POST, 0);
+    Event::log(
+        $_POST['id'],
+        "networkport",
+        5,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
 
     if ($item = getItemForItemtype($np->fields['itemtype'])) {

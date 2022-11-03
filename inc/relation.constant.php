@@ -177,9 +177,32 @@ $RELATION = [
     'glpi_computers' => [
         '_glpi_computerantiviruses'       => 'computers_id',
         '_glpi_computers_items'           => 'computers_id',
-        'glpi_items_softwarelicenses'     => ['items_id', 'itemtype'],
-        'glpi_items_softwareversions'     => ['items_id', 'itemtype'],
         'glpi_computervirtualmachines'    => 'computers_id',
+        '_glpi_ipaddresses'               => ['mainitems_id', 'mainitemtype'],
+        '_glpi_items_devicebatteries'     => ['items_id', 'itemtype'],
+        '_glpi_items_devicecameras'       => ['items_id', 'itemtype'],
+        '_glpi_items_devicecases'         => ['items_id', 'itemtype'],
+        '_glpi_items_devicecontrols'      => ['items_id', 'itemtype'],
+        '_glpi_items_devicedrives'        => ['items_id', 'itemtype'],
+        '_glpi_items_devicefirmwares'     => ['items_id', 'itemtype'],
+        '_glpi_items_devicegenerics'      => ['items_id', 'itemtype'],
+        '_glpi_items_devicegraphiccards'  => ['items_id', 'itemtype'],
+        '_glpi_items_deviceharddrives'    => ['items_id', 'itemtype'],
+        '_glpi_items_devicememories'      => ['items_id', 'itemtype'],
+        '_glpi_items_devicemotherboards'  => ['items_id', 'itemtype'],
+        '_glpi_items_devicenetworkcards'  => ['items_id', 'itemtype'],
+        '_glpi_items_devicepcis'          => ['items_id', 'itemtype'],
+        '_glpi_items_devicepowersupplies' => ['items_id', 'itemtype'],
+        '_glpi_items_deviceprocessors'    => ['items_id', 'itemtype'],
+        '_glpi_items_devicesensors'       => ['items_id', 'itemtype'],
+        '_glpi_items_devicesimcards'      => ['items_id', 'itemtype'],
+        '_glpi_items_devicesoundcards'    => ['items_id', 'itemtype'],
+        '_glpi_items_disks'               => ['items_id', 'itemtype'],
+        '_glpi_items_operatingsystems'    => ['items_id', 'itemtype'],
+        '_glpi_items_softwarelicenses'    => ['items_id', 'itemtype'],
+        '_glpi_items_softwareversions'    => ['items_id', 'itemtype'],
+        '_glpi_networknames'              => ['items_id', 'itemtype'],
+        '_glpi_networkports'              => ['items_id', 'itemtype'],
     ],
 
     'glpi_computertypes' => [
@@ -403,7 +426,7 @@ $RELATION = [
 
     'glpi_domains'    => [
         'glpi_domainrecords'  => 'domains_id',
-        'glpi_domains_items' => ['items_id', 'itemtype']
+        '_glpi_domains_items' => ['items_id', 'itemtype']
     ],
 
     'glpi_domaintypes' => [
@@ -1009,7 +1032,7 @@ $RELATION = [
         'glpi_projects'          => 'projects_id',
         '_glpi_projecttasks'     => 'projects_id',
         '_glpi_projectteams'     => 'projects_id',
-        'glpi_items_kanbans'     => ['items_id', 'itemtype'],
+        '_glpi_items_kanbans'    => ['items_id', 'itemtype'],
     ],
 
     'glpi_projectstates' => [
@@ -1410,6 +1433,7 @@ $RELATION = [
             'users_id_validate',
         ],
         '_glpi_useremails'              => 'users_id',
+        'glpi_users'                    => 'users_id_supervisor',
     ],
 
     'glpi_usertitles' => [

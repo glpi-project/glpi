@@ -730,7 +730,7 @@ class Stat extends CommonGLPI
                         $value[$i]["id"],
                         $value2
                     );
-                    foreach ($satisfaction as $key2 => $val2) {
+                    foreach (array_keys($satisfaction) as $key2) {
                           $satisfaction[$key2] *= $answersatisfaction[$key2];
                     }
                     if ($nb_answersatisfaction > 0) {
@@ -753,7 +753,7 @@ class Stat extends CommonGLPI
                         $value[$i]["id"],
                         $value2
                     );
-                    foreach ($data as $key2 => $val2) {
+                    foreach (array_keys($data) as $key2) {
                           $data[$key2] *= $solved[$key2];
                     }
 
@@ -785,7 +785,7 @@ class Stat extends CommonGLPI
                     $value[$i]["id"],
                     $value2
                 );
-                foreach ($data as $key2 => $val2) {
+                foreach (array_keys($data) as $key2) {
                     $data[$key2] = round($data[$key2] * $solved[$key2]);
                 }
 
@@ -815,7 +815,7 @@ class Stat extends CommonGLPI
                     $value[$i]["id"],
                     $value2
                 );
-                foreach ($data as $key2 => $val2) {
+                foreach (array_keys($data) as $key2) {
                     $data[$key2] = round($data[$key2] * $solved[$key2]);
                 }
 
@@ -857,7 +857,7 @@ class Stat extends CommonGLPI
                     $value[$i]["id"],
                     $value2
                 );
-                foreach ($data as $key2 => $val2) {
+                foreach (array_keys($data) as $key2) {
                     if (isset($solved_with_actiontime[$key2])) {
                         $data[$key2] *= $solved_with_actiontime[$key2];
                     } else {
@@ -1700,6 +1700,8 @@ class Stat extends CommonGLPI
         global $PLUGIN_HOOKS, $CFG_GLPI;
 
         $opt_list["Ticket"]                             = __('Tickets');
+
+        $stat_list = [];
 
         $stat_list["Ticket"]["Ticket_Global"]["name"]   = __('Global');
         $stat_list["Ticket"]["Ticket_Global"]["file"]   = "stat.global.php?itemtype=Ticket";

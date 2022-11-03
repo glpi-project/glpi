@@ -1012,15 +1012,15 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<div class='navigationheader justify-content-sm-between'>";
 
             // First set of header pagination actions, displayed on the left side of the page
-            echo "<div>";
+            echo "<div class='left-icons'>";
 
             if (!$glpilisttitle) {
                 $glpilisttitle = __s('List');
             }
             $list = "<a href='$glpilisturl' title=\"$glpilisttitle\"
-                  class='btn btn-sm btn-icon btn-ghost-secondary'
+                  class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                  <i class='far fa-lg fa-list-alt'></i>
+                  <i class='ti ti-list-search fa-lg'></i>
                </a>";
             $list_shown = false;
 
@@ -1030,7 +1030,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $list_shown = true;
             }
             echo "<a href='$cleantarget?id=$first$extraparamhtml'
-                 class='btn btn-sm btn-icon btn-ghost-secondary " . ($first >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('First') . "\"
+                 class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($first >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('First') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
                  <i class='fa-lg ti ti-chevrons-left'></i>
               </a>";
@@ -1042,7 +1042,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
             echo "<a href='$cleantarget?id=$prev$extraparamhtml'
                  id='previouspage'
-                 class='btn btn-sm btn-icon btn-ghost-secondary " . ($prev >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('Previous') . "\"
+                 class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($prev >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('Previous') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
                  <i class='fa-lg ti ti-chevron-left'></i>
               </a>";
@@ -1083,13 +1083,13 @@ class CommonGLPI implements CommonGLPIInterface
             }
 
             // Second set of header pagination actions, displayed on the right side of the page
-            echo "<div>";
+            echo "<div class='right-icons>";
 
-            echo "<span class='m-1 ms-3 " . ($current !== false ? '' : 'bs-invisible') . "'>" . ($current + 1) . "/" . count($glpilistitems ?? []) . "</span>";
+            echo "<span class='py-1 px-3 " . ($current !== false ? '' : 'bs-invisible') . "'>" . ($current + 1) . "/" . count($glpilistitems ?? []) . "</span>";
 
             echo "<a href='$cleantarget?id=$next$extraparamhtml'
                  id='nextpage'
-                 class='btn btn-sm btn-icon btn-ghost-secondary " . ($next >= 0 ? '' : 'bs-invisible') . "'
+                 class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($next >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Next') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
             "<i class='fa-lg ti ti-chevron-right'></i>
@@ -1106,7 +1106,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
 
             echo "<a href='$cleantarget?id=$last $extraparamhtml'
-                 class='btn btn-sm btn-icon btn-ghost-secondary " . ($last >= 0 ? '' : 'bs-invisible') . "'
+                 class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($last >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Last') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
             "<i class='fa-lg ti ti-chevrons-right'></i></a>";

@@ -38,7 +38,7 @@ namespace Glpi\System\Requirement;
 /**
  * @since 9.5.0
  *
- * @TODO Check access to each directory, not only to log file.
+ * @TODO Remove it in GLPI 10.1.
  */
 class ProtectedWebAccess extends AbstractRequirement
 {

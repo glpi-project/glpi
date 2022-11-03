@@ -51,6 +51,7 @@ module.exports = {
         // DISABLED pure coding style rules, no functionnal impact
         "color-function-notation": null, // DISABLE: Expected modern color-function notation
         "declaration-block-no-redundant-longhand-properties": null, // DISABLE Expected shorthand property "flex-flow"
+        "selector-not-notation": "simple", //DISABLE Expected complex :not() pseudo-class notation
         "scss/at-rule-conditional-no-parentheses": null,
         "scss/no-global-function-names": null, // scssphp do not support usage of SASS modules
 

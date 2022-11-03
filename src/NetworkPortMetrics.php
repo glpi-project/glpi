@@ -158,7 +158,7 @@ class NetworkPortMetrics extends CommonDBChild
             unset($errors_metrics['ifinbytes'], $errors_metrics['ifoutbytes']);
             foreach ($errors_metrics as $key => $value) {
                 $errors_series[$key]['name'] = $this->getLabelFor($key);
-                $errors_series[$key]['data'][] = round($value / 1024 / 1024, 0); //convert bytes to megabytes
+                $errors_series[$key]['data'][] = $value;
             }
         }
 

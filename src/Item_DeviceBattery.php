@@ -68,4 +68,12 @@ class Item_DeviceBattery extends Item_Devices
             ]
         ];
     }
+
+    public function getImportCriteria(): array
+    {
+        return [
+            'serial' => 'equal',
+            //'real_capacity' => 'delta:10'
+        ];
+    }
 }

@@ -33,10 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 
 if (!defined('GLPI_ROOT')) {
     include(__DIR__ . '/../inc/includes.php');
+}
+
+$conf = new Conf();
+if ($conf->enabled_inventory != 1) {
+    die("Inventory is disabled");
 }
 
 $inventory_request = new Request();
