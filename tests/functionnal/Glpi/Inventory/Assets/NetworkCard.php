@@ -837,7 +837,8 @@ class NetworkCard extends AbstractInventoryAsset
         $item_card_1_id = $item_net->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicenetworkcards_id' => $card_1_id
+            'devicenetworkcards_id' => $card_1_id,
+            'mac' => '08:00:27:16:9C:60'
         ]);
         $this->integer($item_card_1_id)->isGreaterThan(0);
 
@@ -852,7 +853,8 @@ class NetworkCard extends AbstractInventoryAsset
         $item_card_2_id = $item_net->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicenetworkcards_id' => $card_2_id
+            'devicenetworkcards_id' => $card_2_id,
+            'mac' => '18:db:f2:29:99:35'
         ]);
         $this->integer($item_card_2_id)->isGreaterThan(0);
 

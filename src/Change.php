@@ -104,7 +104,7 @@ class Change extends CommonITILObject
     public function canViewItem()
     {
 
-        if (!Session::haveAccessToEntity($this->getEntityID())) {
+        if (!$this->checkEntity(true)) {
             return false;
         }
         return (Session::haveRight(self::$rightname, self::READALL)

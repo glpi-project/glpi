@@ -130,11 +130,16 @@ final class SearchEngine
                 if ($ref_itemtype === $config_itemtype::getType()) {
                     // List is related to source itemtype, all types of list are so linked
                     $linked = array_merge($linked, $values);
-                } else if (in_array($ref_itemtype, $values)) {
+                } elseif (in_array($ref_itemtype, $values)) {
                     // Source itemtype is inside list, type corresponding to list is so linked
                     $linked[] = $config_itemtype::getType();
                 }
             }
+        }
+
+        // Add entity meta if needed
+        if ($item->isField('entities_id') && !($item instanceof \Entity)) {
+            $linked[] = \Entity::getType();
         }
 
         return array_unique($linked);

@@ -62,4 +62,13 @@ class Item_DeviceHardDrive extends Item_Devices
             'busID'    => parent::getSpecificities('busID')
         ];
     }
+
+    public function getImportCriteria(): array
+    {
+        return [
+            'serial' => 'equal',
+            'capacity' => 'delta:100',
+            'busID' => 'equal',
+        ];
+    }
 }

@@ -228,6 +228,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         return [
             -2 => -2, // validation request
             52  => 52, // global_validation
+            142  => 142, // documents
         ];
     }
 

@@ -1047,6 +1047,32 @@ class Migration extends \GLPITestCase
             "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
             "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
         ]);
+
+        // Test renaming when old class and new class have the same table name
+        $this->queries = [];
+
+        $this->output(
+            function () {
+                $this->migration->renameItemtype('PluginFooThing', 'GlpiPlugin\\Foo\\Thing');
+                $this->migration->executeMigration();
+            }
+        )->isIdenticalTo(
+            implode(
+                '',
+                [
+                    'Renaming "PluginFooThing" itemtype to "GlpiPlugin\\Foo\\Thing"...',
+                    'Renaming "PluginFooThing" itemtype to "GlpiPlugin\\Foo\\Thing" in all tables...',
+                    'Task completed.',
+                ]
+            )
+        );
+
+        $this->array($this->queries)->isIdenticalTo([
+            "UPDATE `glpi_computers` SET `itemtype` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype` = 'PluginFooThing'",
+            "UPDATE `glpi_users` SET `itemtype` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype` = 'PluginFooThing'",
+            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
+            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'GlpiPlugin\\Foo\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
+        ]);
     }
 
     public function testChangeSearchOption()

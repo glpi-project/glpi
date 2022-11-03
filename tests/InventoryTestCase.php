@@ -53,6 +53,11 @@ class InventoryTestCase extends \DbTestCase
 
         $this->nblogs = countElementsInTable(\Log::getTable());
 
+        $conf = new \Glpi\Inventory\Conf();
+        $conf->saveConf([
+            'enabled_inventory' => 1
+        ]);
+
         if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
             unlink(self::INVENTORY_ARCHIVE_PATH);
         }

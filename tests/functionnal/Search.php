@@ -39,6 +39,7 @@ use CommonDBTM;
 use CommonITILActor;
 use DBConnection;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use Ticket;
 
 /* Test for inc/search.class.php */
@@ -1535,11 +1536,12 @@ class Search extends DbTestCase
 
     private function cleanSQL($sql)
     {
-        $sql = str_replace("\r\n", ' ', $sql);
-        $sql = str_replace("\n", ' ', $sql);
-        while (strpos($sql, '  ') !== false) {
-            $sql = str_replace('  ', ' ', $sql);
-        }
+        // Clean whitespaces
+        $sql = preg_replace('/\s+/', ' ', $sql);
+
+        // Remove whitespaces around parenthesis
+        $sql = preg_replace('/\(\s+/', '(', $sql);
+        $sql = preg_replace('/\s+\)/', ')', $sql);
 
         $sql = trim($sql);
 
@@ -1828,7 +1830,7 @@ class Search extends DbTestCase
                 'searchtype' => 'equals',
                 'val' => '5',
                 'meta' => false,
-                'expected' => "   (`glpi_users_users_id_supervisor`.`id` = '5')",
+                'expected' => "(`glpi_users_users_id_supervisor`.`id` = '5')",
             ],
             [
                 'link' => ' AND ',
@@ -1838,7 +1840,7 @@ class Search extends DbTestCase
                 'searchtype' => 'equals',
                 'val' => '2',
                 'meta' => false,
-                'expected' => "  AND  (`glpi_users_users_id_tech`.`id` = '2') ",
+                'expected' => "AND (`glpi_users_users_id_tech`.`id` = '2')",
             ],
             [
                 'link' => ' AND ',
@@ -1848,7 +1850,7 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '70',
                 'meta' => false,
-                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.%'  )",
+                'expected' => "AND (`glpi_monitors`.`size` LIKE '%70.%')",
             ],
             [
                 'link' => ' AND ',
@@ -1858,7 +1860,7 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '70.5',
                 'meta' => false,
-                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.5%'  )",
+                'expected' => "AND (`glpi_monitors`.`size` LIKE '%70.5%')",
             ],
             [
                 'link' => ' AND ',
@@ -1868,8 +1870,68 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '70.5%',
                 'meta' => false,
-                'expected' => "  AND  (`glpi_monitors`.`size`  LIKE '%70.5%'  )",
-            ]
+                'expected' => "AND (`glpi_monitors`.`size` LIKE '%70.5%')",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Computer::class,
+                'ID' => 121, // Search ID 121 (date_creation field)
+                'searchtype' => 'contains',
+                'val' => Sanitizer::sanitize('>2022-10-25'),
+                'meta' => false,
+                'expected' => "AND CONVERT(`glpi_computers`.`date_creation` USING utf8mb4) > '2022-10-25'",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Computer::class,
+                'ID' => 121, // Search ID 121 (date_creation field)
+                'searchtype' => 'contains',
+                'val' => Sanitizer::sanitize('<2022-10-25'),
+                'meta' => false,
+                'expected' => "AND CONVERT(`glpi_computers`.`date_creation` USING utf8mb4) < '2022-10-25'",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Computer::class,
+                'ID' => 151, // Search ID 151 (Item_Disk freesize field)
+                'searchtype' => 'contains',
+                'val' => Sanitizer::sanitize('>100'),
+                'meta' => false,
+                'expected' => "AND (`glpi_items_disks`.`freesize` > 100)",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Computer::class,
+                'ID' => 151, // Search ID 151 (Item_Disk freesize field)
+                'searchtype' => 'contains',
+                'val' => Sanitizer::sanitize('<10000'),
+                'meta' => false,
+                'expected' => "AND (`glpi_items_disks`.`freesize` < 10000)",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \NetworkName::class,
+                'ID' => 13, // Search ID 13 (IPAddress name field)
+                'searchtype' => 'contains',
+                'val' => Sanitizer::sanitize('< 192.168.1.10'),
+                'meta' => false,
+                'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) < INET_ATON('192.168.1.10'))",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \NetworkName::class,
+                'ID' => 13, // Search ID 13 (IPAddress name field)
+                'searchtype' => 'contains',
+                'val' => Sanitizer::sanitize('> 192.168.1.10'),
+                'meta' => false,
+                'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) > INET_ATON('192.168.1.10'))",
+            ],
         ];
     }
 
@@ -1879,7 +1941,7 @@ class Search extends DbTestCase
     public function testAddWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta, $expected)
     {
         $output = \Search::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta);
-        $this->string($output)->isEqualTo($expected);
+        $this->string($this->cleanSQL($output))->isEqualTo($expected);
 
         if ($meta) {
             return; // Do not know how to run search on meta here

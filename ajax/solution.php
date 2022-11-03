@@ -102,5 +102,30 @@ if ($apply_twig) {
     $template->fields['content'] = RichText::getSafeHtml($content);
 }
 
+//load solutiontype name (use to create OPTION dom)
+//need when template is used and when GLPI preselcted type if defined
+
+$template->fields['solutiontypes_name'] = "";
+if ($template->fields['solutiontypes_id']) {
+    $entityRestrict = getEntitiesRestrictCriteria(getTableForItemType(SolutionType::getType()), "", $parent->fields['entities_id'], true);
+
+    $solutiontype = new SolutionType();
+    if (
+        $solutiontype->getFromDBByCrit([
+            "id" => $template->fields['solutiontypes_id'],
+        ] + $entityRestrict)
+    ) {
+        $template->fields['solutiontypes_name'] = Dropdown::getDropdownName(
+            getTableForItemType(SolutionType::getType()),
+            $template->fields['solutiontypes_id'],
+            0,
+            true,
+            false,
+            //default value like "(id)" is the default behavior of GLPI when field 'name' is empty
+            "(" . $template->fields['solutiontypes_id'] . ")"
+        );
+    }
+}
+
 // Return json response with the template fields
 echo json_encode($template->fields);

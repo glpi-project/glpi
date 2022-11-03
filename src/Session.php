@@ -863,6 +863,7 @@ class Session
      **/
     public static function checkValidSessionId()
     {
+        global $DB;
 
         if (
             !isset($_SESSION['valid_id'])
@@ -870,9 +871,52 @@ class Session
         ) {
             Html::redirectToLogin('error=3');
         }
+
+        $user_id    = self::getLoginUserID();
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        $entity_id  = $_SESSION['glpiactive_entity'] ?? null;
+
+        $valid_user = true;
+
+        if (!is_numeric($user_id) || $profile_id === null || $entity_id === null) {
+            $valid_user = false;
+        } else {
+            $user_table = User::getTable();
+            $pu_table   = Profile_User::getTable();
+            $result = $DB->request(
+                [
+                    'COUNT'     => 'count',
+                    'FROM'      => $user_table,
+                    'LEFT JOIN' => [
+                        $pu_table => [
+                            'FKEY'  => [
+                                Profile_User::getTable() => 'users_id',
+                                $user_table         => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'     => [
+                        $user_table . '.id'         => $user_id,
+                        $user_table . '.is_active'  => 1,
+                        $user_table . '.is_deleted' => 0,
+                        $pu_table . '.profiles_id'  => $profile_id,
+                        $pu_table . '.entities_id'  => $entity_id,
+                    ],
+                ]
+            );
+            if ($result->current()['count'] === 0) {
+                $valid_user = false;
+            }
+        }
+
+        if (!$valid_user) {
+            Session::destroy();
+            Auth::setRememberMeCookie('');
+            Html::redirectToLogin();
+        }
+
         return true;
     }
-
 
     /**
      * Check if I have access to the central interface
@@ -1904,5 +1948,19 @@ class Session
         }
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+    }
+
+     /**
+     * clean what needs to be cleaned on logout
+     *
+     * @since 10.0.4
+     *
+     * @return void
+     */
+    public static function cleanOnLogout()
+    {
+        Session::destroy();
+        //Remove cookie to allow new login
+        Auth::setRememberMeCookie('');
     }
 }

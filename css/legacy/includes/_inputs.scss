@@ -115,3 +115,16 @@ input.submit,
    border-color: rgb(255, 0, 0) !important;
    background-color: rgba(255, 0, 0, 0.1) !important;
 }
+
+.form-control.not_expired {
+   border-color: #a1cf66 !important;
+   background-color: rgba(6, 255, 0, 0.1) !important;
+}
+.form-control.soon_expired {
+   border-color: #de5d06 !important;
+   background-color: rgba(255, 184, 0, 0.1) !important;
+}
+.form-control.expired {
+   border-color: #d63939 !important;
+   background-color: rgba(255, 0, 0, 0.1) !important;
+}

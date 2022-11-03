@@ -47,4 +47,9 @@ class Item_DeviceCamera extends Item_Devices
     {
         return [];
     }
+
+    public function getImportCriteria(): array
+    {
+        return [];
+    }
 }

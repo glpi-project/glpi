@@ -73,4 +73,15 @@ class Item_DeviceProcessor extends Item_Devices
             'busID'     => parent::getSpecificities('busID')
         ];
     }
+
+    public function getImportCriteria(): array
+    {
+        return [
+            'serial' => 'equal',
+            'frequency' => 'delta:100',
+            //'nbcores' => 'equal',
+            //'nbthreads' => 'equal',
+            'busID' => 'equal',
+        ];
+    }
 }

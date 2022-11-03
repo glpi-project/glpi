@@ -228,14 +228,9 @@ final class SQLProvider implements SearchProviderInterface
                     if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                         $addaltemail = "";
                         if (
-                            (($itemtype == 'Ticket') || ($itemtype == 'Problem'))
+                            in_array($itemtype, ['Ticket', 'Change', 'Problem'])
                             && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
-                            && (($searchopt[$ID]['joinparams']['beforejoin']['table']
-                                    == 'glpi_tickets_users')
-                                || ($searchopt[$ID]['joinparams']['beforejoin']['table']
-                                    == 'glpi_problems_users')
-                                || ($searchopt[$ID]['joinparams']['beforejoin']['table']
-                                    == 'glpi_changes_users'))
+                            && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                         ) { // For tickets_users
                             $ticket_user_table
                                 = $searchopt[$ID]['joinparams']['beforejoin']['table'] .
@@ -1046,12 +1041,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (
                         isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                         && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
-                        && (($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                                == 'glpi_tickets_users')
-                            || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                                == 'glpi_problems_users')
-                            || ($searchopt[$ID]["joinparams"]["beforejoin"]["table"]
-                                == 'glpi_changes_users'))
+                        && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                     ) {
                         $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                         $linktable = $bj['table'] . '_' . \Search::computeComplexJoinID($bj['joinparams']) . $addmeta;
@@ -1132,9 +1122,7 @@ final class SQLProvider implements SearchProviderInterface
                            $SEARCH ) ";
 
             case "glpi_ipaddresses.name":
-                $search  = ["/\&lt;/","/\&gt;/"];
-                $replace = ["<",">"];
-                $val     = preg_replace($search, $replace, $val);
+                $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                 if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
                     if ($nott) {
                         if ($regs[1] == '<') {
@@ -1382,9 +1370,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (in_array($searchtype, ['equals', 'notequals', 'empty'])) {
                         return " $link ($date_computation " . $SEARCH . ') ';
                     }
-                    $search  = ["/\&lt;/","/\&gt;/"];
-                    $replace = ["<",">"];
-                    $val     = preg_replace($search, $replace, $val);
+                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                         if (is_numeric($regs[2])) {
                             return $link . " $date_computation " . $regs[1] . "
@@ -1440,9 +1426,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "timestamp":
                 case "progressbar":
                     $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
-                    $search  = ["/\&lt;/", "/\&gt;/"];
-                    $replace = ["<", ">"];
-                    $val     = preg_replace($search, $replace, $val);
+                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
 
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
@@ -2635,9 +2619,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "number":
                 case "decimal":
                 case "timestamp":
-                    $search  = ["/\&lt;/","/\&gt;/"];
-                    $replace = ["<",">"];
-                    $val     = preg_replace($search, $replace, $val);
+                    $val = Sanitizer::decodeHtmlSpecialChars($val); // Decode "<" and ">" operators
                     if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                         if ($NOT) {
                             if ($regs[1] == '<') {
@@ -3691,14 +3673,15 @@ final class SQLProvider implements SearchProviderInterface
 
             // manage toview column for criteria with meta flag
             foreach ($data['meta_toview'] as $m_itemtype => $toview) {
-                $searchopt = SearchOption::getOptionsForItemtype($m_itemtype);
+                $m_searchopt = SearchOption::getOptionsForItemtype($m_itemtype);
                 foreach ($toview as $opt_id) {
                     $data['data']['cols'][] = [
                         'itemtype'  => $m_itemtype,
                         'id'        => $opt_id,
-                        'name'      => $searchopt[$opt_id]["name"],
+                        'name'      => $m_searchopt[$opt_id]["name"],
                         'meta'      => 1,
-                        'searchopt' => $searchopt[$opt_id],
+                        'searchopt' => $m_searchopt[$opt_id],
+                        'groupname' => $m_itemtype,
                     ];
                 }
             }
@@ -3713,14 +3696,15 @@ final class SQLProvider implements SearchProviderInterface
                         && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)
                     ) {
                         if (!isset($already_printed[$metacriteria['itemtype'] . $metacriteria['field']])) {
-                            $searchopt = SearchOption::getOptionsForItemtype($metacriteria['itemtype']);
+                            $m_searchopt = SearchOption::getOptionsForItemtype($metacriteria['itemtype']);
 
                             $data['data']['cols'][] = [
                                 'itemtype'  => $metacriteria['itemtype'],
                                 'id'        => $metacriteria['field'],
-                                'name'      => $searchopt[$metacriteria['field']]["name"],
+                                'name'      => $m_searchopt[$metacriteria['field']]["name"],
                                 'meta'      => 1,
-                                'searchopt' => $searchopt[$metacriteria['field']]
+                                'searchopt' => $m_searchopt[$metacriteria['field']],
+                                'groupname' => $metacriteria['itemtype'],
                             ];
 
                             $already_printed[$metacriteria['itemtype'] . $metacriteria['field']] = 1;
@@ -3750,6 +3734,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (
                         key($searchopt) !== null
                         && key($searchopt) !== "common"
+                        && !isset($data['data']['cols'][$num]['groupname'])
                     ) {
                         $data['data']['cols'][$num]['groupname'] = current($searchopt);
                     }
@@ -5154,12 +5139,18 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if ($obj = getItemForItemtype($data[$ID][$k]['name'])) {
-                            if ($count_display) {
-                                $out .= \Search::LBBR;
-                            }
-                            $count_display++;
+                        $itemtype_name = $data[$ID][$k]['name'];
+                        if (empty($itemtype_name)) {
+                            continue;
+                        }
+                        if ($count_display) {
+                            $out .= \Search::LBBR;
+                        }
+                        $count_display++;
+                        if ($obj = getItemForItemtype($itemtype_name)) {
                             $out .= $obj->getTypeName();
+                        } else {
+                            $out .= $itemtype_name;
                         }
                     }
                     return $out;
@@ -5234,6 +5225,8 @@ HTML;
                             $out .= $field_data['trans'];
                         } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
                             $out .= \CommonTreeDropdown::sanitizeSeparatorInCompletename($field_data['trans_completename']);
+                        } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
+                            $out .= $field_data['trans_name'];
                         } else {
                             $value = $field_data['name'];
                             $out .= $so['field'] === 'completename'

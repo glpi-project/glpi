@@ -35,6 +35,7 @@
 
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Entity class
@@ -4061,14 +4062,45 @@ class Entity extends CommonTreeDropdown
 
     public static function badgeCompletename(string $entity_string = ""): string
     {
-        $split  = explode(' > ', trim($entity_string));
-        foreach ($split as &$node) {
-            $node = "<span class='text-nowrap'>$node</span>";
+        // `completename` is expected to be received as it is stored in DB,
+        // meaning that `>` separator is not encoded, but `<`, `>` and `&` from self or parent names are encoded.
+        $names  = explode(' > ', trim($entity_string));
+
+        // Convert the whole completename into decoded HTML.
+        foreach ($names as &$name) {
+            $name = Sanitizer::decodeHtmlSpecialChars($name);
         }
 
-        return "<span class='entity-badge' title='$entity_string'>" .
-         implode('<i class="fas fa-caret-right mx-1"></i>', $split) .
-        "</span>";
+        // Construct HTML with special chars encoded.
+        $title = htmlspecialchars(implode(' > ', $names));
+        $breadcrumbs = implode(
+            '<i class="fas fa-caret-right mx-1"></i>',
+            array_map(
+                function (string $name): string {
+                    return '<span class="text-nowrap">' . htmlspecialchars($name) . '</span>';
+                },
+                $names
+            )
+        );
+
+
+        return '<span class="entity-badge" title="' . $title . '">' . $breadcrumbs . "</span>";
+    }
+
+    /**
+     * Return HTML code for entity badge showing its completename.
+     *
+     * @param int $entity_id
+     *
+     * @return string|null
+     */
+    public static function badgeCompletenameById(int $entity_id): ?string
+    {
+        $entity = new self();
+        if ($entity->getFromDB($entity_id)) {
+            return self::badgeCompletename($entity->fields['completename']);
+        }
+        return null;
     }
 
     public static function badgeCompletenameFromID(int $entity_id): string

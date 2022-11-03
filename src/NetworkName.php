@@ -69,6 +69,11 @@ class NetworkName extends FQDNLabel
         return _n('Network name', 'Network names', $nb);
     }
 
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+
 
     public function defineTabs($options = [])
     {

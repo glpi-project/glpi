@@ -54,6 +54,16 @@ class Lockedfield extends CommonDBTM
         return _n('Locked field', 'Locked fields', $nb);
     }
 
+    public static function canPurge()
+    {
+        return Session::haveRight(self::$rightname, UPDATE);
+    }
+
+    public static function canCreate()
+    {
+        return Session::haveRight(self::$rightname, UPDATE);
+    }
+
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
@@ -290,7 +300,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    public function getFieldsToLock(): array
+    public function getFieldsToLock(string $specific_itemtype = null): array
     {
         global $CFG_GLPI, $DB;
 
@@ -324,6 +334,10 @@ class Lockedfield extends CommonDBTM
             'entities_id'
         ];
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
+
+        if ($specific_itemtype !== null && in_array($specific_itemtype, $itemtypes)) {
+            $itemtypes = [$specific_itemtype];
+        }
 
         foreach ($itemtypes as $itemtype) {
             $search_options = SearchOption::getOptionsForItemtype($itemtype);

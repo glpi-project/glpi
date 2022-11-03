@@ -131,7 +131,28 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                     $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
                 }
                 break;
-
+            case "glpi_certificates.date_expiration":
+                if (
+                    !in_array($ID, [151, 158, 181, 186])
+                    && !empty($data[$NAME][0]['name'])
+                ) {
+                    $out = "";
+                    if ($before = \Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity'])) {
+                        $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
+                        if ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime']) {
+                            $out = " class=\"shadow-none\" style=\"color: white; background-color: #d63939\" ";
+                        } elseif ($data[$NAME][0]['name'] < $before) {
+                            $out = " class=\"shadow-none\"  style=\"background-color: #de5d06\" ";
+                        } elseif ($data[$NAME][0]['name'] >= $before) {
+                            $out = " class=\"shadow-none\"  style=\"background-color: #a1cf66\" ";
+                        }
+                    } else {
+                        if ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime']) {
+                            $out = " class=\"shadow-none\" style=\"background-color: #cf9b9b\" ";
+                        }
+                    }
+                }
+                break;
             case "glpi_projectstates.color":
             case "glpi_cables.color":
                 $bg_color = $data[$NAME][0]['name'];
@@ -150,7 +171,6 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                 break;
 
             case "glpi_domains.date_expiration":
-            case "glpi_certificates.date_expiration":
                 if (
                     !empty($data[$NAME][0]['name'])
                     && ($data[$NAME][0]['name'] < $_SESSION['glpi_currenttime'])

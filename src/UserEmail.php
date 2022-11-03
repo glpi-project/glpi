@@ -244,9 +244,7 @@ class UserEmail extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-
-       // Check email validity
-        if (!isset($input['email']) || empty($input['email'])) {
+        if (!$this->checkInputEmailValidity($input)) {
             return false;
         }
 
@@ -256,6 +254,27 @@ class UserEmail extends CommonDBChild
         }
 
         return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        if (!$this->checkInputEmailValidity($input)) {
+            return false;
+        }
+
+        return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * Check validity of email passed in input.
+     *
+     * @param array $input
+     *
+     * @return bool
+     */
+    private function checkInputEmailValidity(array $input): bool
+    {
+        return isset($input['email']) && !empty($input['email']) && GLPIMailer::validateAddress($input['email']);
     }
 
 
