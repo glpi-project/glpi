@@ -45,7 +45,7 @@
          <tr class="tab_bg_1">
             <td>{{ rss_item.timestamp }}</td>
             <td>
-               {% if rss_item.link is defined and rss_item.link is not null %}
+               {% if rss_item.link is not empty %}
                   <a target="_blank" href="{{ rss_item.link }}">{{ rss_item.title }}</a>
                {% else %}
                   {{ rss_item.title }}

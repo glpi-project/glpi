@@ -65,4 +65,13 @@ class Item_DeviceNetworkCard extends Item_Devices
             'busID'  => parent::getSpecificities('busID')
         ];
     }
+
+    public function getImportCriteria(): array
+    {
+        return [
+            'mac' => 'equal',
+            'serial' => 'equal',
+            'busID' => 'equal',
+        ];
+    }
 }

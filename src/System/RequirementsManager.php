@@ -35,6 +35,7 @@
 
 namespace Glpi\System;
 
+use Glpi\System\Requirement\DataDirectoriesProtectedPath;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoriesWriteAccess;
@@ -42,11 +43,11 @@ use Glpi\System\Requirement\DirectoryWriteAccess;
 use Glpi\System\Requirement\Extension;
 use Glpi\System\Requirement\ExtensionConstant;
 use Glpi\System\Requirement\ExtensionGroup;
+use Glpi\System\Requirement\InstallationNotOverriden;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
 use Glpi\System\Requirement\PhpVersion;
-use Glpi\System\Requirement\ProtectedWebAccess;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -115,11 +116,13 @@ class RequirementsManager
             $requirements[] = new DbEngine($db);
         }
 
+        $requirements[] = new InstallationNotOverriden($db);
+
         global $PHPLOGGER;
         $requirements[] = new LogsWriteAccess($PHPLOGGER);
 
         $requirements[] = new DirectoriesWriteAccess(
-            __('Permissions for GLPI var directories'),
+            __('Permissions for GLPI data directories'),
             array_filter(
                 Variables::getDataDirectories(),
                 function ($directory) {
@@ -128,7 +131,7 @@ class RequirementsManager
             )
         );
 
-        $requirements[] = new ProtectedWebAccess(Variables::getDataDirectories());
+        $requirements[] = new DataDirectoriesProtectedPath(Variables::getDataDirectoriesConstants());
 
         $requirements[] = new SeLinux();
 

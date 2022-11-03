@@ -238,7 +238,7 @@
                   __('Description'),
                   right_field_options|merge({
                      'enable_richtext': true,
-                     'enable_fileupload': true,
+                     'enable_fileupload': (itiltemplate.isHiddenField('_documents_id')) ? false : true,
                   })
                ) }}
             </div>

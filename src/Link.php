@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+
 /** Link Class
  **/
 class Link extends CommonDBTM
@@ -259,14 +261,15 @@ class Link extends CommonDBTM
 
 
     /**
-     * Generate link
+     * Generate link(s).
      *
-     * @param $link    string   original string content
-     * @param $item             CommonDBTM object: item used to make replacements
+     * @param string        $link       original string content
+     * @param CommonDBTM    $item       item used to make replacements
+     * @param bool          $safe_url   indicates whether URL should be sanitized or not
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
-     **/
-    public static function generateLinkContents($link, CommonDBTM $item)
+     */
+    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true)
     {
         global $DB, $CFG_GLPI;
 
@@ -405,6 +408,9 @@ class Link extends CommonDBTM
         $replace_MAC = strstr($link, "[MAC]");
 
         if (!$replace_IP && !$replace_MAC) {
+            if ($safe_url) {
+                $link = URL::sanitizeURL($link) ?: '#';
+            }
             return [$link];
         }
        // Return several links id several IP / MAC
@@ -549,6 +555,9 @@ class Link extends CommonDBTM
                 }
 
                 if ($disp) {
+                    if ($safe_url) {
+                        $tmplink = URL::sanitizeURL($tmplink) ?: '#';
+                    }
                     $links[$key] = $tmplink;
                 }
             }
@@ -556,6 +565,9 @@ class Link extends CommonDBTM
 
         if (count($links)) {
             return $links;
+        }
+        if ($safe_url) {
+            $link = URL::sanitizeURL($link) ?: '#';
         }
         return [$link];
     }
@@ -639,12 +651,12 @@ class Link extends CommonDBTM
             $params['name'] = $params['link'];
         }
 
-        $names = $item->generateLinkContents($params['name'], $item);
+        $names = $item->generateLinkContents($params['name'], $item, false);
         $file  = trim($params['data']);
 
         if (empty($file)) {
            // Generate links
-            $links = $item->generateLinkContents($params['link'], $item);
+            $links = $item->generateLinkContents($params['link'], $item, true);
             $i     = 1;
             foreach ($links as $key => $val) {
                 $name    = (isset($names[$key]) ? $names[$key] : reset($names));
@@ -662,8 +674,8 @@ class Link extends CommonDBTM
             }
         } else {
            // Generate files
-            $files = $item->generateLinkContents($params['link'], $item);
-            $links = $item->generateLinkContents($params['data'], $item);
+            $files = $item->generateLinkContents($params['link'], $item, false);
+            $links = $item->generateLinkContents($params['data'], $item, false);
             $i     = 1;
             foreach ($links as $key => $val) {
                 $name = (isset($names[$key]) ? $names[$key] : reset($names));

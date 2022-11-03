@@ -1736,7 +1736,7 @@ class CronTask extends CommonDBTM
 
        //first step unlike only file if needed
         foreach ($files as $filename) {
-            if (basename($filename) == "remove.txt" && is_dir(GLPI_ROOT . '/.git')) {
+            if (basename($filename) == ".gitkeep") {
                 continue;
             }
 

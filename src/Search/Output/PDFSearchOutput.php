@@ -69,9 +69,9 @@ abstract class PDFSearchOutput extends ExportSearchOutput
 
             foreach ($data['search']['criteria'] as $criteria) {
                 if (isset($criteria['itemtype'])) {
-                    $searchopt = &SearchOption::getOptionsForItemtype($criteria['itemtype']);
+                    $searchopt = SearchOption::getOptionsForItemtype($criteria['itemtype']);
                 } else {
-                    $searchopt = &SearchOption::getOptionsForItemtype($data['itemtype']);
+                    $searchopt = SearchOption::getOptionsForItemtype($data['itemtype']);
                 }
                 $titlecontain = '';
 
@@ -219,7 +219,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
         ) {
             $metanames = [];
             foreach ($data['search']['metacriteria'] as $metacriteria) {
-                $searchopt = &SearchOption::getOptionsForItemtype($metacriteria['itemtype']);
+                $searchopt = SearchOption::getOptionsForItemtype($metacriteria['itemtype']);
                 if (!isset($metanames[$metacriteria['itemtype']])) {
                     if ($metaitem = getItemForItemtype($metacriteria['itemtype'])) {
                         $metanames[$metacriteria['itemtype']] = $metaitem->getTypeName();

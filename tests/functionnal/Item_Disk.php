@@ -116,6 +116,7 @@ class Item_Disk extends DbTestCase
                 'id'  => $id
             ])
         )->isTrue();
-        $this->boolean($obj->getFromDB($id))->isFalse();
+        $this->boolean($obj->getFromDB($id))->istrue(); //it's always in DB but with is_deleted = 1
+        $this->integer($obj->fields['is_deleted'])->isIdenticalTo(1);
     }
 }

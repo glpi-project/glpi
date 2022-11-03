@@ -593,7 +593,7 @@ HTML;
 
          {$palette_style}
       </style>
-      <div>
+      <div style="height: 100%">
          <div class="card g-chart {$class}"
             id="{$chart_id}">
             <div class="chart ct-chart">{$no_data_html}</div>
@@ -1094,7 +1094,7 @@ JAVASCRIPT;
       {$palette_style}
       </style>
 
-      <div>
+      <div style="height: 100%">
          <div class="card g-chart $class"
                id="{$chart_id}">
             <div class="chart ct-chart">$no_data_html</div>
@@ -1553,7 +1553,7 @@ JAVASCRIPT;
       {$palette_style}
       </style>
 
-      <div>
+      <div style="height: 100%">
           <div class="card g-chart $class"
                id="{$chart_id}">
              <div class="chart ct-chart"></div>

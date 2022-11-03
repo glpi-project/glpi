@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\SearchOption;
 
 /**
  * ITIL Template class
@@ -351,7 +352,7 @@ abstract class ITILTemplate extends CommonDropdown
     {
 
         $itiltype = static::getITILObjectClass();
-        $searchOption = Search::getOptions($itiltype);
+        $searchOption = SearchOption::getOptionsForItemtype($itiltype);
         $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);
         foreach (array_keys($tab) as $ID) {
             switch ($ID) {

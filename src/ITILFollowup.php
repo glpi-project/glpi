@@ -241,8 +241,6 @@ class ITILFollowup extends CommonDBChild
             'date' => $this->fields['date'],
         ]);
 
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
        // Check if stats should be computed after this change
         $no_stat = isset($this->input['_do_not_compute_takeintoaccount']);
 
@@ -254,6 +252,8 @@ class ITILFollowup extends CommonDBChild
         );
 
         $this->updateParentStatus($this->input['_job'], $this->input);
+
+        $donotif = !isset($this->input['_disablenotif']) && !isset($parentitem->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],

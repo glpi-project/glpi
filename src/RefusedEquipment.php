@@ -44,7 +44,7 @@ class RefusedEquipment extends CommonDBTM
 
    // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'config';
+    public static $rightname                   = 'refusedequipment';
 
     public static function getTypeName($nb = 0)
     {

@@ -402,7 +402,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $update_done = true;
 
                 if (in_array("actiontime", $this->updates)) {
-                    $item->updateActionTime($this->input[$item->getForeignKeyField()]);
+                    $item->updateActionTime($this->fields[$item->getForeignKeyField()]);
                 }
 
                // change ticket status (from splitted button)
@@ -1833,5 +1833,15 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         return $input;
+    }
+
+    final public function unplan(): bool
+    {
+        return $this->update([
+            'id'         => $this->fields['id'],
+            'begin'      => 'NULL',
+            'end'        => 'NULL',
+            'actiontime' => 0,
+        ]);
     }
 }

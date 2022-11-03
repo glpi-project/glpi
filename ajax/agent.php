@@ -51,6 +51,7 @@ if (isset($_POST['action']) && isset($_POST['id'])) {
     }
     $answer = [];
 
+    session_write_close();
     switch ($_POST['action']) {
         case Agent::ACTION_INVENTORY:
             $answer = $agent->requestInventory();

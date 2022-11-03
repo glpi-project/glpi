@@ -314,9 +314,33 @@ class Toolbox
      */
     public static function getHtmLawedSafeConfig(): array
     {
+        $forbidden_elements = [
+            'script',
+
+            // header elements used to link external resources
+            'link',
+            'meta',
+
+            // elements used to embed potential malicious external application
+            'applet',
+            'canvas',
+            'embed',
+            'object',
+
+            // form elements
+            'form',
+            'button',
+            'input',
+            'select',
+            'datalist',
+            'option',
+            'optgroup',
+            'textarea',
+        ];
+
         $config = [
-            'elements'           => '* -applet -canvas -embed -form -object -script -link -meta',
-            'deny_attribute'     => 'on*, srcdoc',
+            'elements'           => '* ' . implode('', array_map(fn($element) => '-' . $element, $forbidden_elements)),
+            'deny_attribute'     => 'on*, srcdoc, formaction',
             'comment'            => 1, // 1: remove HTML comments (and do not display their contents)
             'cdata'              => 1, // 1: remove CDATA sections (and do not display their contents)
             'direct_list_nest'   => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
@@ -715,7 +739,7 @@ class Toolbox
         }
         header(
             "Content-disposition:$attachment filename=\"" .
-            addslashes(iconv('UTF-8', 'ISO-8859-1', $filename)) .
+            addslashes(mb_convert_encoding($filename, 'ISO-8859-1', 'UTF-8')) .
             "\"; filename*=utf-8''" .
             rawurlencode($filename)
         );
@@ -1440,6 +1464,10 @@ class Toolbox
             CURLOPT_CONNECTTIMEOUT  => 5,
         ] + $eopts;
 
+        if ($check_url_safeness) {
+            $opts[CURLOPT_FOLLOWLOCATION] = false;
+        }
+
         if (!empty($CFG_GLPI["proxy_name"])) {
            // Connection using proxy
             $opts += [
@@ -1465,6 +1493,7 @@ class Toolbox
         curl_setopt_array($ch, $opts);
         $content = curl_exec($ch);
         $curl_error = curl_error($ch) ?: null;
+        $curl_redirect = curl_getinfo($ch, CURLINFO_REDIRECT_URL) ?: null;
         curl_close($ch);
 
         if ($curl_error !== null) {
@@ -1482,6 +1511,8 @@ class Toolbox
                 );
             }
             $content = '';
+        } else if ($curl_redirect !== null) {
+            return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness);
         } else if (empty($content)) {
             $msgerr = __('No data available on the web site');
         }

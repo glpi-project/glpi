@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\SearchOption;
 
 /**
  *  Locked fields for inventory
@@ -51,6 +52,16 @@ class Lockedfield extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Locked field', 'Locked fields', $nb);
+    }
+
+    public static function canPurge()
+    {
+        return Session::haveRight(self::$rightname, UPDATE);
+    }
+
+    public static function canCreate()
+    {
+        return Session::haveRight(self::$rightname, UPDATE);
     }
 
     public function rawSearchOptions()
@@ -289,7 +300,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    public function getFieldsToLock(): array
+    public function getFieldsToLock(string $specific_itemtype = null): array
     {
         global $CFG_GLPI, $DB;
 
@@ -324,8 +335,12 @@ class Lockedfield extends CommonDBTM
         ];
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
 
+        if ($specific_itemtype !== null && in_array($specific_itemtype, $itemtypes)) {
+            $itemtypes = [$specific_itemtype];
+        }
+
         foreach ($itemtypes as $itemtype) {
-            $search_options = Search::getOptions($itemtype);
+            $search_options = SearchOption::getOptionsForItemtype($itemtype);
             $fields = $std_fields;
             $fields[] = strtolower($itemtype) . 'models_id'; //model relation field
             $fields[] = strtolower($itemtype) . 'types_id'; //type relation field

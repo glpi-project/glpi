@@ -519,6 +519,11 @@ abstract class RuleCommonITILObject extends Rule
         $criterias['date_mod']['name']                        = __('Last update');
         $criterias['date_mod']['linkfield']                   = 'date_mod';
 
+        $criterias['date']['table']                           = $itil_table;
+        $criterias['date']['field']                           = 'date';
+        $criterias['date']['name']                            = __('Opening date');
+        $criterias['date']['linkfield']                       = 'date';
+
         $criterias['itilcategories_id']['table']              = 'glpi_itilcategories';
         $criterias['itilcategories_id']['field']              = 'name';
         $criterias['itilcategories_id']['name']               = _n('Category', 'Categories', 1) . " - " . __('Name');

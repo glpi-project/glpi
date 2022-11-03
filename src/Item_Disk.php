@@ -63,6 +63,12 @@ class Item_Disk extends CommonDBChild
     }
 
 
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 

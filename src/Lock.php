@@ -34,6 +34,7 @@
  */
 
 use Glpi\Plugin\Hooks;
+use Glpi\Search\SearchOption;
 
 /**
  * This class manages locks
@@ -73,27 +74,17 @@ class Lock extends CommonGLPI
             return false;
         }
 
+        echo "<div class='alert alert-primary d-flex align-items-center' role='alert'>";
+        echo "<i class='fas fa-info-circle fa-xl'></i>";
+        echo "<span class='ms-2'>";
+        echo __("A locked field is a manually modified field.");
+        echo "<br>";
+        echo __("The automatic inventory will no longer modify this field, unless you unlock it.");
+        echo "</span>";
+        echo "</div>";
+
         $lockedfield = new Lockedfield();
         if ($lockedfield->isHandled($item)) {
-            $rand = mt_rand();
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = [
-                'container'      => 'mass' . __CLASS__ . $rand,
-            ];
-            Html::showMassiveActions($massiveactionparams);
-
-            echo "<table class='tab_cadre_fixehov'>";
-
-            echo "<tr>";
-            echo "<tr><th colspan='5'  class='center'>" . __('Locked fields') . "</th></tr>";
-            echo "<th width='10'>";
-            Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $lockedfield::getType()]]);
-            echo "</th>";
-            echo "<th>" . _n('Field', 'Fields', Session::getPluralNumber())  . "</th>";
-            echo "<th>" . __('Itemtype') . "</th>";
-            echo "<th>" . _n('Link', 'Links', Session::getPluralNumber()) . "</th>";
-            echo "<th>" . __('Last inventoried value')  . "</th></tr>";
-
             $subquery = [];
 
             //get locked field for current itemtype
@@ -156,87 +147,115 @@ class Lock extends CommonGLPI
                 'FROM' => $union
             ]);
 
-            //get fields labels
-            $search_options = Search::getOptions($itemtype);
-            foreach ($search_options as $search_option) {
-                //exclude SO added by dropdown part (to get real name)
-                //ex : Manufacturer != Firmware : Manufacturer
-                if (isset($search_option['table']) && $search_option['table'] == getTableForItemType($itemtype)) {
-                    if (isset($search_option['linkfield'])) {
-                        $so_fields[$search_option['linkfield']] = $search_option['name'];
-                    } else if (isset($search_option['field'])) {
-                        $so_fields[$search_option['field']] = $search_option['name'];
+            if (count($locked_iterator)) {
+                $rand = mt_rand();
+                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                $massiveactionparams = [
+                    'container'      => 'mass' . __CLASS__ . $rand,
+                ];
+                Html::showMassiveActions($massiveactionparams);
+
+                echo "<table class='tab_cadre_fixehov'>";
+
+                echo "<tr>";
+                echo "<tr><th colspan='5'  class='center'>" . __('Locked fields') . "</th></tr>";
+                echo "<th width='10'>";
+                Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $lockedfield::getType()]]);
+                echo "</th>";
+                echo "<th>" . _n('Field', 'Fields', Session::getPluralNumber())  . "</th>";
+                echo "<th>" . __('Itemtype') . "</th>";
+                echo "<th>" . _n('Link', 'Links', Session::getPluralNumber()) . "</th>";
+                echo "<th>" . __('Last inventoried value')  . "</th></tr>";
+
+
+                //get fields labels
+                $search_options = SearchOption::getOptionsForItemtype($itemtype);
+                foreach ($search_options as $search_option) {
+                    //exclude SO added by dropdown part (to get real name)
+                    //ex : Manufacturer != Firmware : Manufacturer
+                    if (isset($search_option['table']) && $search_option['table'] == getTableForItemType($itemtype)) {
+                        if (isset($search_option['linkfield'])) {
+                            $so_fields[$search_option['linkfield']] = $search_option['name'];
+                        } else if (isset($search_option['field'])) {
+                            $so_fields[$search_option['field']] = $search_option['name'];
+                        }
                     }
                 }
-            }
 
-            foreach ($locked_iterator as $row) {
-                echo "<tr class='tab_bg_1'>";
-                echo "<td class='center' width='10'>";
-                if ($row['is_global'] == 0 && ($lockedfield->can($row['id'], UPDATE) || $lockedfield->can($row['id'], PURGE))) {
-                    $header = true;
-                    echo Html::getMassiveActionCheckBox(Lockedfield::class, $row['id'], ['massive_tags' => 'select_' . $lockedfield::getType()]);
-                }
-                echo "</td>";
-                $field_label = $row['field'];
-                if (isset($so_fields[$row['field']])) {
-                    $field_label = $so_fields[$row['field']];
-                } else if (isForeignKeyField($row['field'])) {
-                   //on fkey, we can try to retrieve the object
-                    $object = getItemtypeForForeignKeyField($row['field']);
-                    if ($object != 'UNKNOWN') {
-                        $field_label = $object::getTypeName(1);
+                foreach ($locked_iterator as $row) {
+                    echo "<tr class='tab_bg_1'>";
+                    echo "<td class='center' width='10'>";
+                    if ($row['is_global'] == 0 && ($lockedfield->can($row['id'], UPDATE) || $lockedfield->can($row['id'], PURGE))) {
+                        $header = true;
+                        echo Html::getMassiveActionCheckBox(Lockedfield::class, $row['id'], ['massive_tags' => 'select_' . $lockedfield::getType()]);
                     }
+                    echo "</td>";
+                    $field_label = $row['field'];
+                    if (isset($so_fields[$row['field']])) {
+                        $field_label = $so_fields[$row['field']];
+                    } else if (isForeignKeyField($row['field'])) {
+                    //on fkey, we can try to retrieve the object
+                        $object = getItemtypeForForeignKeyField($row['field']);
+                        if ($object != 'UNKNOWN') {
+                            $field_label = $object::getTypeName(1);
+                        }
+                    }
+
+                    if ($row['is_global']) {
+                        $field_label .= ' (' . __('Global') . ')';
+                    }
+                    echo "<td class='left'>" . $field_label . "</td>";
+
+                    //load object
+                    $object = new $row['itemtype']();
+                    $object->getFromDB($row['items_id']);
+
+                    $default_itemtype_label = $row['itemtype']::getTypeName();
+                    $default_object_link    = $object->getLink();
+                    $default_itemtype       = $row['itemtype'];
+
+                    //get real type name from Item_Devices
+                    // ex: get 'Hard drives' instead of 'Hard drive items'
+                    if (get_parent_class($row['itemtype']) == Item_Devices::class) {
+                        $default_itemtype =  $row['itemtype']::$itemtype_2;
+                        $default_items_id =  $row['itemtype']::$items_id_2;
+                        $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
+                    //get real type name from CommonDBRelation
+                    // ex: get 'Operating System' instead of 'Item operating systems'
+                    } elseif (get_parent_class($row['itemtype']) == CommonDBRelation::class) {
+                        $default_itemtype =  $row['itemtype']::$itemtype_1;
+                        $default_items_id =  $row['itemtype']::$items_id_1;
+                        $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
+                    }
+
+                    // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)
+                    // get 'real' object name inside URL name
+                    // ex: get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
+                    if (is_a($row['itemtype'], CommonDBRelation::class, true)) {
+                        $related_object = new $default_itemtype();
+                        $related_object->getFromDB($object->fields[$default_items_id]);
+                        $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $related_object->getName() . ">" . $related_object->getName() . "</a>";
+                    }
+
+                    echo "<td class='left'>" . $default_itemtype_label . "</td>";
+                    echo "<td class='left'>" . $default_object_link . "</td>";
+                    echo "<td class='left'>" . $row['value'] . "</td>";
+                    echo "</tr>\n";
                 }
 
-                if ($row['is_global']) {
-                    $field_label .= ' (' . __('Global') . ')';
-                }
-                echo "<td class='left'>" . $field_label . "</td>";
-
-                //load object
-                $object = new $row['itemtype']();
-                $object->getFromDB($row['items_id']);
-
-                $default_itemtype_label = $row['itemtype']::getTypeName();
-                $default_object_link    = $object->getLink();
-                $default_itemtype       = $row['itemtype'];
-
-                //get real type name from Item_Devices
-                // ex: get 'Hard drives' instead of 'Hard drive items'
-                if (get_parent_class($row['itemtype']) == Item_Devices::class) {
-                    $default_itemtype =  $row['itemtype']::$itemtype_2;
-                    $default_items_id =  $row['itemtype']::$items_id_2;
-                    $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
-                //get real type name from CommonDBRelation
-                // ex: get 'Operating System' instead of 'Item operating systems'
-                } elseif (get_parent_class($row['itemtype']) == CommonDBRelation::class) {
-                    $default_itemtype =  $row['itemtype']::$itemtype_1;
-                    $default_items_id =  $row['itemtype']::$items_id_1;
-                    $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
-                }
-
-                // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)
-                // get 'real' object name inside URL name
-                // ex: get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
-                if (is_a($row['itemtype'], CommonDBRelation::class, true)) {
-                    $related_object = new $default_itemtype();
-                    $related_object->getFromDB($object->fields[$default_items_id]);
-                    $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $related_object->getName() . ">" . $related_object->getName() . "</a>";
-                }
-
-                echo "<td class='left'>" . $default_itemtype_label . "</td>";
-                echo "<td class='left'>" . $default_object_link . "</td>";
-                echo "<td class='left'>" . $row['value'] . "</td>";
-                echo "</tr>\n";
+                echo "</table>";
+                $massiveactionparams['ontop'] = false;
+                Html::showMassiveActions($massiveactionparams);
+                Html::closeForm();
+            } else {
+                echo "<table class='tab_cadre_fixehov'>";
+                echo "<tbody>";
+                echo "<tr><th colspan='5' class='center'>" . _n('Locked field', 'Locked fields', Session::getPluralNumber()) . "</th></tr>";
+                echo "<tr class='tab_bg_2'><td class='center' colspan='5'>" . __('No locked fields') . "</td></tr>";
+                echo "</tbody>";
+                echo "</table>";
             }
-
-            echo "</table>";
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
         }
-
         echo "</br><div width='100%'>";
         echo "<form method='post' id='lock_form' name='lock_form' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
         echo "<input type='hidden' name='id' value='$ID'>\n";
@@ -251,6 +270,15 @@ class Lock extends CommonGLPI
             'header' => $header
         ]);
         $header |= $results['header'];
+
+        echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
+        echo "<i class='fas fa-info-circle fa-xl'></i>";
+        echo "<span class='ms-2'>";
+        echo __("A locked item is a manually deleted item, for example a monitor.");
+        echo "<br>";
+        echo __("The automatic inventory will no longer handle this item, unless you unlock it.");
+        echo "</span>";
+        echo "</div>";
 
         //Special locks for computers only
         if ($itemtype == 'Computer') {
@@ -547,7 +575,7 @@ class Lock extends CommonGLPI
                 echo "<th width='10'></th>";
                 echo "<th>" . $networkport->getTypeName(Session::getPluralNumber()) . "</th>";
                 echo "<th>" . NetworkPortType::getTypeName(1) . "</th>";
-                echo "<th>" . __('Mac') . "</th>";
+                echo "<th>" . __('MAC') . "</th>";
                 echo "<th>" . __('Automatic inventory') . "</th>";
                 echo "</tr>";
                 $first = false;
@@ -732,7 +760,7 @@ class Lock extends CommonGLPI
         if ($header) {
             echo "<tr><th>";
             //echo Html::getCheckAllAsCheckbox('lock_form');
-            echo "</th><th>&nbsp</th></tr>\n";
+            echo "</th><th colspan='4'>&nbsp</th></tr>\n";
             echo "</table>";
             Html::openArrowMassives('lock_form', true);
             Html::closeArrowMassives(['unlock' => _sx('button', 'Unlock'),
@@ -912,14 +940,17 @@ class Lock extends CommonGLPI
         $is_deleted = 0,
         CommonDBTM $checkitem = null
     ) {
+        global $CFG_GLPI;
 
-        $action_name = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock';
+        $action_unlock_component = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_component';
+        $action_unlock_fields = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_fields';
 
         if (
-            Session::haveRight('computer', UPDATE)
-            && ($itemtype == 'Computer')
+            Session::haveRight(strtolower($itemtype), UPDATE)
+            && in_array($itemtype, $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'])
         ) {
-            $actions[$action_name] = __('Unlock components');
+            $actions[$action_unlock_component] = __('Unlock components');
+            $actions[$action_unlock_fields] = __('Unlock fields');
         }
     }
 
@@ -931,9 +962,8 @@ class Lock extends CommonGLPI
      **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-
         switch ($ma->getAction()) {
-            case 'unlock':
+            case 'unlock_component':
                 $types = ['Monitor'                => _n('Monitor', 'Monitors', Session::getPluralNumber()),
                     'Peripheral'             => Peripheral::getTypeName(Session::getPluralNumber()),
                     'Printer'                => Printer::getTypeName(Session::getPluralNumber()),
@@ -960,6 +990,25 @@ class Lock extends CommonGLPI
 
                 echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
+            break;
+            case 'unlock_fields':
+                $related_itemtype = $ma->getItemtype(false);
+                $lockedfield = new Lockedfield();
+                $fields = $lockedfield->getFieldsToLock($related_itemtype);
+
+                echo __('Select fields of the item that must be unlock');
+                echo "<br><br>\n";
+                Dropdown::showFromArray(
+                    'attached_fields',
+                    $fields,
+                    [
+                        'multiple' => true,
+                        'size'     => 5
+                    ]
+                );
+                echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                return true;
+            break;
         }
         return false;
     }
@@ -978,7 +1027,32 @@ class Lock extends CommonGLPI
         global $DB;
 
         switch ($ma->getAction()) {
-            case 'unlock':
+            case 'unlock_fields':
+                $input = $ma->getInput();
+                if (isset($input['attached_fields'])) {
+                    $base_itemtype = $baseitem->getType();
+                    foreach ($ids as $id) {
+                        $lock_fields_name = [];
+                        foreach ($input['attached_fields'] as $fields) {
+                            list($itemtype, $field) = explode(' - ', $fields);
+                            $lock_fields_name[] = $field;
+                        }
+                        $lockfield = new Lockedfield();
+                        $res = $lockfield->deleteByCriteria([
+                            "itemtype" => $base_itemtype,
+                            "items_id" => $id,
+                            "field" => $lock_fields_name,
+                            "is_global" => 0
+                        ]);
+                    }
+                    if ($res) {
+                        $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_KO);
+                    }
+                }
+                return;
+            case 'unlock_component':
                 $input = $ma->getInput();
                 if (isset($input['attached_item'])) {
                     $attached_items = $input['attached_item'];
