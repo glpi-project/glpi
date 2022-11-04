@@ -7,8 +7,8 @@
 # Ali AY <alimoonict@gmail.com>, 2021
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2022
-# Kaya Zeren <kayazeren@gmail.com>, 2022
 # Cédric Anne, 2022
+# Kaya Zeren <kayazeren@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-03 08:42+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Cédric Anne, 2022\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2022\n"
 "Language-Team: Turkish (Turkey) (https://www.transifex.com/glpi/teams/1637/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1808,7 +1808,7 @@ msgstr "%s standart olmayan bir yol kullanmayı deniyor."
 #: front/commonitiltask.form.php:116
 #, php-format
 msgid "%s unplans a task"
-msgstr ""
+msgstr "%s bir görevin planlamasını kaldırdı"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:102
@@ -2209,11 +2209,12 @@ msgstr "Proje bağlantısının belirtilmesi zorunludur"
 
 #: src/Lock.php:79
 msgid "A locked field is a manually modified field."
-msgstr ""
+msgstr "Kilitlenmiş bir alan el ile deiştirilmiş bir alandır."
 
 #: src/Lock.php:276
 msgid "A locked item is a manually deleted item, for example a monitor."
 msgstr ""
+"Kilitlenmiş bir öge, örneğin bir ekran gibi el ile silinen bir ögedir."
 
 #: src/System/Requirement/MemoryLimit.php:76
 #, php-format
@@ -3189,7 +3190,7 @@ msgstr[1] "Aracılar"
 
 #: src/Entity.php:1899
 msgid "Agent base URL"
-msgstr "Uygulama temelli adres"
+msgstr "Aracı temel adresi"
 
 #: src/Inventory/Conf.php:825
 msgid "Agent cleanup"
@@ -3197,7 +3198,7 @@ msgstr "Aracı temizliği"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Agent configuration"
-msgstr ""
+msgstr "Aracı yapılandırması"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:203
@@ -4301,7 +4302,7 @@ msgstr "Otomatik"
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
 msgid "Automatic Inventory"
-msgstr ""
+msgstr "Otomatik envanter"
 
 #: src/CronTask.php:84
 msgid "Automatic action"
@@ -5564,7 +5565,7 @@ msgstr "Tümünü işaretle/kaldır"
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:174
 #, php-format
 msgid "Checking database integrity of plugin \"%s\" is not supported."
-msgstr ""
+msgstr "\"%s\" eklentisinin veritbanı bütünlüğünün denetlenmesi desteklenmiyor."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:173
 #, php-format
@@ -6109,7 +6110,7 @@ msgstr[1] "Bilgisayarlar"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:180
 msgid "Computer inventory"
-msgstr ""
+msgstr "Bilgisayar envanteri"
 
 #: src/Rule.php:306 src/ComputerModel.php:41
 msgid "Computer model"
@@ -6169,7 +6170,7 @@ msgstr "Onayla"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Confirm the deletion of planning?"
-msgstr ""
+msgstr "Planlamayı silmek istiyor musunuz?"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -8188,7 +8189,7 @@ msgstr "DisplayPort"
 
 #: templates/components/form/networkname.html.twig
 msgid "Dissociate"
-msgstr "Ayrıştırın"
+msgstr "Ayrıştır"
 
 #: src/CommonDBConnexity.php:517 src/CommonDBConnexity.php:645
 #: src/NetworkPort_Vlan.php:380 src/Domain.php:410 src/NetworkName.php:446
@@ -8231,7 +8232,7 @@ msgstr "Hesaplanmasın"
 
 #: src/Inventory/Conf.php:479
 msgid "Do not change"
-msgstr ""
+msgstr "Değiştirilmesin"
 
 #: src/Console/Database/UpdateCommand.php:105
 msgid "Do not check database schema integrity before performing the update"
@@ -8592,7 +8593,7 @@ msgstr "ESSID"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:188
 msgid "ESX remote inventory"
-msgstr ""
+msgstr "ESX uzak envanter"
 
 #: src/Dropdown.php:2320 src/Entity.php:3581 src/Alert.php:114
 #: src/Features/PlanningEvent.php:746
@@ -8905,7 +8906,7 @@ msgstr "Mağazadan ZIP paketlerinin kurulabilmesini sağlar."
 
 #: src/Inventory/Conf.php:361
 msgid "Enable inventory"
-msgstr ""
+msgstr "Envater kullanılsın"
 
 #: src/Config.php:895
 msgid "Enable login with credentials"
@@ -8978,7 +8979,7 @@ msgstr "Etkinleştirilmiş öge türleri"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Enabled tasks"
-msgstr ""
+msgstr "Etkinleştirilmiş görevler"
 
 #: src/Enclosure.php:61
 msgid "Enclosure"
@@ -9002,15 +9003,15 @@ msgstr "Şifreleme"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Algorithm"
-msgstr ""
+msgstr "Şifreleme algoritması"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Tool"
-msgstr ""
+msgstr "Şifreleme aracı"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Type"
-msgstr ""
+msgstr "Şifreleme türü"
 
 #: src/Item_Disk.php:302 src/Item_Disk.php:535
 msgid "Encryption algorithm"
@@ -9755,7 +9756,7 @@ msgstr "Dosya diske yazılamadı"
 #: src/Console/Database/FixHtmlEncodingCommand.php:253
 #, php-format
 msgid "Failed to write rollback SQL queries in \"%s\" file."
-msgstr ""
+msgstr "SQL geri alma sorguları  \"%s\" dosyasına yazılamadı."
 
 #: src/NotificationEventMailing.php:385
 #, php-format
@@ -9823,7 +9824,7 @@ msgstr[1] "Alanlar"
 #: src/Console/Database/FixHtmlEncodingCommand.php:203
 #, php-format
 msgid "Field %s not found"
-msgstr ""
+msgstr "%s alanı bulunamadı"
 
 #: src/Notification.php:696 src/Notification.php:709
 msgid "Field itemtype is mandatory"
@@ -9835,11 +9836,11 @@ msgstr "Alan adı"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:196
 msgid "Field not specified"
-msgstr ""
+msgstr "Alan belirtilmemiş"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:111
 msgid "Field of the item to fix"
-msgstr ""
+msgstr "Düzeltilecek ögenin alanı"
 
 #: src/SsoVariable.php:50
 msgid "Field storage of the login in the HTTP request"
@@ -9876,6 +9877,8 @@ msgstr "%1$s dosyası silindi"
 #, php-format
 msgid "File %s contains SQL queries that can be used to rollback command."
 msgstr ""
+"%s dosyasında geri alma (rollback) komutu ile kullanılabilecek SQL sorguları"
+" bulunuyor."
 
 #: src/Document.php:1161 src/Document.php:1261
 #, php-format
@@ -10066,7 +10069,7 @@ msgstr "Kilitleyen kullanıcının adı"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:91
 msgid "Fix HTML encoding in database."
-msgstr ""
+msgstr "Veritabanındaki HTML kodlamasını onarır."
 
 #: install/migrations/update_9.4.0_to_9.4.1.php:93
 #: install/migrations/update_9.4.1_to_9.4.2.php:73
@@ -10388,7 +10391,7 @@ msgstr "GLPI ön belleği sıfırlandı"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:120
 msgid "GLPI data directories are located in a secured path."
-msgstr ""
+msgstr "GLPI veri klasörleri güvenli bir yolda bulunur."
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:75
 msgid ""
@@ -10396,6 +10399,9 @@ msgid ""
 " achieved by redefining corresponding constants. See installation "
 "documentation for more details."
 msgstr ""
+"GLPI veri klasörleri web kök klasörünün dışına yerleştirilmelidir. Bu "
+"uygulama, ilgili sabit değerler yeniden tanımlanarak yapılabilir. Ayrıntılı "
+"bilgi almak için kurulum belgelerine bakabilirsiniz."
 
 #: src/Console/Database/UpdateCommand.php:165
 msgid "GLPI database version"
@@ -10700,7 +10706,7 @@ msgstr "HDMI"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:152
 msgid "HTML encoding has been fixed."
-msgstr ""
+msgstr "HTML kodlaması düzeltildi."
 
 #: src/NetworkPort.php:1069
 msgid "Half"
@@ -11057,7 +11063,7 @@ msgstr "Kod"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:104
 msgid "Id of the item to fix"
-msgstr ""
+msgstr "Düzeltilecek ögenin kodu"
 
 #: src/CommonITILValidation.php:376
 msgid "If approval is denied, specify a reason."
@@ -11629,8 +11635,8 @@ msgstr "Süresiz"
 #: js/glpi_dialog.js:376 js/misc.js:45
 msgid "Information"
 msgid_plural "Information"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bilgi"
+msgstr[1] "Bilgiler"
 
 #: src/Config.php:1976
 msgid "Information about system installation and configuration"
@@ -12274,11 +12280,11 @@ msgstr "Öge kodu"
 #: src/Console/Database/FixHtmlEncodingCommand.php:186
 #, php-format
 msgid "Item id %s not found"
-msgstr ""
+msgstr "%s öge kodu bulunamadı"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:178
 msgid "Item id not specified"
-msgstr ""
+msgstr "Öge kodu belirtilmemiş"
 
 #: src/CommonDBTM.php:4383
 msgid "Item in the trashbin"
@@ -12396,16 +12402,16 @@ msgstr "Öge türü"
 #: src/Console/Database/FixHtmlEncodingCommand.php:145
 #, php-format
 msgid "Itemtype %s ID %s"
-msgstr ""
+msgstr "Öge türü: %s kodu: %s"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:169
 #, php-format
 msgid "Itemtype %s not found"
-msgstr ""
+msgstr "%s öge türü bulunamadı"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:97
 msgid "Itemtype to fix"
-msgstr ""
+msgstr "Düzeltilecek öge türü"
 
 #: src/Console/Task/UnlockCommand.php:84
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
@@ -14270,8 +14276,8 @@ msgstr[1] "Ekran modelleri"
 #: src/Rule.php:390 src/MonitorType.php:41
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ekran türü"
+msgstr[1] "Ekran türleri"
 
 #: src/NotificationTargetCrontask.php:43 src/NotificationTargetCrontask.php:83
 #: src/CronTask.php:2079
@@ -14320,7 +14326,7 @@ msgstr "En yeni"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Mount Point"
-msgstr ""
+msgstr "Bağlantı noktası"
 
 #: src/Lock.php:342 src/Item_Disk.php:248 src/Item_Disk.php:357
 #: src/Item_Disk.php:463
@@ -14592,7 +14598,7 @@ msgstr[1] "Ağ aygıtları"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:204
 msgid "Network discovery (SNMP)"
-msgstr ""
+msgstr "Ağ keşfi (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery threads"
@@ -14622,7 +14628,7 @@ msgstr[1] "Ağ arayüzleri"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:196
 msgid "Network inventory (SNMP)"
-msgstr ""
+msgstr "Ağ envanteri (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network inventory threads"
@@ -15129,7 +15135,7 @@ msgstr "Herhangi bir dosya yüklenmedi"
 
 #: src/System/Requirement/InstallationNotOverriden.php:130
 msgid "No files from previous GLPI version detected."
-msgstr ""
+msgstr "Önceki GLPI sürümünden kalmış bir dosya yok."
 
 #: src/Cartridge.php:314
 msgid "No free cartridge"
@@ -15240,7 +15246,7 @@ msgstr "Bağlantılı bir öge yok"
 
 #: src/Lock.php:253
 msgid "No locked fields"
-msgstr ""
+msgstr "Kilitlenmiş bir alan yok"
 
 #: src/Lock.php:770
 msgid "No locked item"
@@ -16530,7 +16536,7 @@ msgstr "PUK2 kodu"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:212
 msgid "Package Deployment"
-msgstr ""
+msgstr "Paket dağıtımı"
 
 #: src/PrinterLog.php:57
 msgid "Page counters"
@@ -16708,7 +16714,7 @@ msgstr "Yol"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:118
 msgid "Path of file containing dump of existing values."
-msgstr ""
+msgstr "Var olan değerlerin dökümünün bulunduğu dosyanın yolu."
 
 #: src/Dashboard/Provider.php:1245 src/Dashboard/Provider.php:1586
 #: src/CommonITILObject.php:5082 src/CommonITILObject.php:6367
@@ -16782,7 +16788,7 @@ msgstr[1] "Çevre birimi türleri"
 
 #: src/System/RequirementsManager.php:125
 msgid "Permissions for GLPI data directories"
-msgstr ""
+msgstr "GLPI veri klasörlerinin izinleri"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:69
 msgid "Permissions for automatic actions files"
@@ -17097,6 +17103,8 @@ msgid ""
 "Please update GLPI by following the procedure described in the installation "
 "documentation."
 msgstr ""
+"Lütfen kurulum belgelerinde açıklanan adımları izleyerek GLPI güncellemesini"
+" yapın."
 
 #: src/Plug.php:41
 msgid "Plug"
@@ -17368,8 +17376,8 @@ msgstr "Bağlantı noktası açıklaması"
 #: src/NetworkPort.php:1357 src/NetworkPort.php:1513
 msgid "Port number"
 msgid_plural "Ports number"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bağlantı noktası"
+msgstr[1] "Bağlantı noktaları"
 
 #: templates/pages/assets/socket.html.twig
 #: templates/pages/assets/cable.html.twig src/Item_Rack.php:160
@@ -17507,7 +17515,7 @@ msgstr "Önceki (sol ok)"
 
 #: src/System/Requirement/InstallationNotOverriden.php:64
 msgid "Previous GLPI version files detection"
-msgstr ""
+msgstr "Önceki GLPI sürümünden kalan dosyaların bulunması"
 
 #: src/Console/Migration/AbstractPluginToCoreCommand.php:134
 #, php-format
@@ -17857,7 +17865,7 @@ msgstr[1] "Herkese açık RSS akışları"
 #: templates/components/form/inventory_info.html.twig src/Agent.php:164
 #: src/Agent.php:318
 msgid "Public contact address"
-msgstr ""
+msgstr "Herkese açık iletişim adresi"
 
 #: src/CommonITILTask.php:741
 msgid "Public followup"
@@ -17956,8 +17964,8 @@ msgstr "RAID"
 #: src/Central.php:71 src/RSSFeed.php:80
 msgid "RSS feed"
 msgid_plural "RSS feeds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "RSS akışı"
+msgstr[1] "RSS akışları"
 
 #: src/RSSFeed.php:796
 msgid "RSS feeds found"
@@ -18431,7 +18439,7 @@ msgstr "Uzak erişim anahtarları"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:228
 msgid "Remote inventory"
-msgstr ""
+msgstr "Uzak envanter"
 
 #: src/Item_RemoteManagement.php:52
 msgid "Remote management"
@@ -18801,8 +18809,8 @@ msgid ""
 "Required for handling of compressed communication with inventory agents, "
 "installation of gzip packages from marketplace and PDF generation."
 msgstr ""
-"Stok uygulamaları ile sıkıştırılmış iletişim, mağaza gzip paketlerinin "
-"kurulumu ve PDF oluşturma işlemleri için gereklidir."
+"Stok aracıları ile sıkıştırılmış iletişim, mağaza gzip paketlerinin kurulumu"
+" ve PDF oluşturma işlemleri için gereklidir."
 
 #: src/System/RequirementsManager.php:91
 msgid "Required for images handling."
@@ -18817,8 +18825,8 @@ msgid ""
 "Required for remote access to resources (inventory agent requests, "
 "marketplace, RSS feeds, ...)."
 msgstr ""
-"Kaynaklara uzaktan erişmek için gereklidir (stok uygulaması istekleri, "
-"mağaza, RSS akışları, ...)."
+"Kaynaklara uzaktan erişmek için gereklidir (stok aracısı istekleri, mağaza, "
+"RSS akışları, ...)."
 
 #: src/CommonDCModelDropdown.php:76 src/CommonDCModelDropdown.php:149
 msgid "Required units"
@@ -19245,7 +19253,7 @@ msgstr "Bunları aktarmak için \"php bin/console %1$s\" komutunu yürütün."
 #: src/Console/Application.php:246
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to process to the update."
-msgstr ""
+msgstr "Güncellemek için \"php bin/console %1$s\" komutunu yürütün."
 
 #: src/Console/Database/UpdateCommand.php:259
 #, php-format
@@ -19391,7 +19399,7 @@ msgstr "Tek oturum açma oturum kapatma adresi"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:74
 msgid "Safe path for data directories"
-msgstr ""
+msgstr "Veri klasörlerinin güvenli yolu"
 
 #: src/Stat.php:489 src/TicketSatisfaction.php:46
 #: src/Stat/Data/Sglobal/StatDataAverageSatisfaction.php:54
@@ -19758,7 +19766,7 @@ msgstr "Varsayılan olarak görüntülenecek ögeleri seçin"
 
 #: src/Lock.php:998
 msgid "Select fields of the item that must be unlock"
-msgstr ""
+msgstr "Ögenin kilidinin açılması gereken alanları seçin"
 
 #: src/Stat.php:1732
 msgid "Select statistics to be displayed"
@@ -20440,7 +20448,7 @@ msgstr "Çözümlenmiş destek kayıtları"
 #: src/Console/Migration/UnsignedKeysCommand.php:268
 #, php-format
 msgid "Some errors are related to following plugins: %s."
-msgstr ""
+msgstr "Şu uygulama ekleri ile ilgili bazı sorunlar var: %s."
 
 #: src/Console/Application.php:498
 msgid "Some mandatory system requirements are missing."
@@ -21391,6 +21399,7 @@ msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
 msgstr ""
+"GLPI kod tabanı güncellendi. GLPI veritabanının da güncellenmesi gerekiyor."
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
@@ -21438,13 +21447,14 @@ msgstr ""
 msgid ""
 "The automatic inventory will no longer handle this item, unless you unlock "
 "it."
-msgstr ""
+msgstr "Kilidi açmadığınız sürece otomatik envanter bu ögeyi işlemeyecek."
 
 #: src/Lock.php:81
 msgid ""
 "The automatic inventory will no longer modify this field, unless you unlock "
 "it."
 msgstr ""
+"Kilidi açmadığınız sürece otomatik envanter bu alanı değiştiremeyecek."
 
 #: src/Console/Application.php:132
 msgid "The command to execute"
@@ -21540,12 +21550,12 @@ msgstr "Aşağıdaki otomatik işlemlerde sorun çıkmış. İlgilenilmesi gerek
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:124
 msgid "The following directories do not exist and cannot be tested:"
-msgstr ""
+msgstr "Şu klasörler bulunamadığından incelenemedi:"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:131
 #, php-format
 msgid "The following directories should be placed outside \"%s\":"
-msgstr ""
+msgstr "Şu klasörler \"%s\" yolunun dışında olmalıdır:"
 
 #: templates/install/step8.html.twig
 msgid "The installation is finished"
@@ -21620,6 +21630,8 @@ msgid ""
 "The presence of source files from previous versions of GLPI can lead to "
 "security issues or bugs."
 msgstr ""
+"Önceki GLPI sürümlerinden kalan kaynak dosyalar, güvenlik sorunlarına ya da "
+"hatalara yol açabilir."
 
 #: src/GLPINetwork.php:256
 msgid "The registration key is invalid."
@@ -21987,8 +21999,8 @@ msgstr[1] "Destek kaydı kalıpları"
 #: src/Dashboard/Filter.php:75
 msgid "Ticket type"
 msgid_plural "Ticket types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Destek kaydı türü"
+msgstr[1] "Destek kaydı türleri"
 
 #: src/Stat.php:1699 src/Stat/Data/Sglobal/StatDataSatisfaction.php:67
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:64
@@ -23023,7 +23035,7 @@ msgstr "%s \"%s\" (%d) güncellenemedi."
 #: src/Console/Database/FixHtmlEncodingCommand.php:140
 #, php-format
 msgid "Unable to update %s items"
-msgstr ""
+msgstr "%s öge güncellenemedi"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:252
 #: src/Console/Migration/TimestampsCommand.php:229
@@ -23210,7 +23222,7 @@ msgstr "Bileşenlerin kilidini aç"
 
 #: src/Lock.php:952
 msgid "Unlock fields"
-msgstr ""
+msgstr "Alanların kilidini aç"
 
 #: src/ObjectLock.php:661
 msgid "Unlock forgotten locked objects"
@@ -23237,7 +23249,7 @@ msgstr "Ayrıca resmi olmayan çeviriler de bulunur"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Unplan"
-msgstr ""
+msgstr "Planlamayı kaldır"
 
 #: src/KnowbaseItem.php:1290
 msgid "Unpublished"
@@ -23332,7 +23344,7 @@ msgstr "Bir öge bağlantısı güncellendi"
 
 #: src/Inventory/Conf.php:827
 msgid "Update agents who have not contacted the server for (in days)"
-msgstr "Sunucuya şu süreyle bağlanmayan aracıları güncelle (gün)"
+msgstr "Sunucuya şu süreyle bağlanmayan aracılar güncellensin (gün)"
 
 #: src/TicketTask.php:266 src/ITILFollowup.php:761
 msgid "Update all"
@@ -24213,7 +24225,7 @@ msgstr "Bekleme zamanı"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:172
 msgid "Wake on LAN"
-msgstr ""
+msgstr "LAN üzerinden uyandır"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
@@ -24336,7 +24348,7 @@ msgstr "Mağaza klasörüne yazılamadı (%s)."
 
 #: src/System/Requirement/InstallationNotOverriden.php:87
 msgid "We detected files of previous versions of GLPI."
-msgstr ""
+msgstr "Önceki GLPI sürümlerden kalmış dosyalar bulundu."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:518
 #, php-format
@@ -24804,6 +24816,8 @@ msgid ""
 "You can ignore this suggestion if you are certain that these directories are"
 " not accessible through your web server."
 msgstr ""
+"Bu klasörlere web sunucunuz üzerinden erişilemediğinden eminseniz bu öneriyi"
+" yok sayabilirsiniz."
 
 #: src/User.php:6347
 msgid "You can set its name to your organisation's name. "
@@ -25042,6 +25056,8 @@ msgid ""
 "You should try to update these plugins to their latest version and run the "
 "command again."
 msgstr ""
+"Şu uygulama eklerini son sürümlerine güncellemeyi deneyip ve komutu yeniden "
+"yürütmelisiniz."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."

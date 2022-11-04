@@ -16,8 +16,8 @@
 # Jesus Fernandez <jesus.fernandez@dgsa.unam.mx>, 2022
 # Luis Vicente Gómez Ontiveros <lvonti51@gmail.com>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2022
-# Carlos Moreno Rodríguez <carlosm.rodriguez@prodigy.net.mx>, 2022
 # Cédric Anne, 2022
+# Carlos Moreno Rodríguez <carlosm.rodriguez@prodigy.net.mx>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -26,7 +26,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-03 08:42+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Cédric Anne, 2022\n"
+"Last-Translator: Carlos Moreno Rodríguez <carlosm.rodriguez@prodigy.net.mx>, 2022\n"
 "Language-Team: Spanish (Mexico) (https://www.transifex.com/glpi/teams/1637/es_MX/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1847,7 +1847,7 @@ msgstr "%s trató de utilizar una ruta no válida."
 #: front/commonitiltask.form.php:116
 #, php-format
 msgid "%s unplans a task"
-msgstr ""
+msgstr "%s quitó la planificación de una tarea"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:102
@@ -2264,11 +2264,13 @@ msgstr "El proyecto vinculado es obligatorio"
 
 #: src/Lock.php:79
 msgid "A locked field is a manually modified field."
-msgstr ""
+msgstr "Un campo bloqueado es un campo modificado manualmente."
 
 #: src/Lock.php:276
 msgid "A locked item is a manually deleted item, for example a monitor."
 msgstr ""
+"Un elemento bloqueado es un elemento eliminado manualmente, ejemplo: un "
+"monitor"
 
 #: src/System/Requirement/MemoryLimit.php:76
 #, php-format
@@ -3254,7 +3256,7 @@ msgstr "Limpieza de agentes"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Agent configuration"
-msgstr ""
+msgstr "Configuración del agente"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:203
@@ -4375,7 +4377,7 @@ msgstr "Automático"
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
 msgid "Automatic Inventory"
-msgstr ""
+msgstr "Inventario automático"
 
 #: src/CronTask.php:84
 msgid "Automatic action"
@@ -5670,6 +5672,8 @@ msgstr "Marcar/Desmarcar todo"
 #, php-format
 msgid "Checking database integrity of plugin \"%s\" is not supported."
 msgstr ""
+"No se admite la comprobación de la integridad de la base de datos del "
+"complemento \"%s\"."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:173
 #, php-format
@@ -6230,7 +6234,7 @@ msgstr[2] "Computadoras"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:180
 msgid "Computer inventory"
-msgstr ""
+msgstr "Inventario de computadoras"
 
 #: src/Rule.php:306 src/ComputerModel.php:41
 msgid "Computer model"
@@ -6292,7 +6296,7 @@ msgstr "Confirmar"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Confirm the deletion of planning?"
-msgstr ""
+msgstr "¿Deseas eliminar la planificación?"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -8403,7 +8407,7 @@ msgstr "No calcular"
 
 #: src/Inventory/Conf.php:479
 msgid "Do not change"
-msgstr ""
+msgstr "Sin cambios"
 
 #: src/Console/Database/UpdateCommand.php:105
 msgid "Do not check database schema integrity before performing the update"
@@ -8782,7 +8786,7 @@ msgstr "ESSID"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:188
 msgid "ESX remote inventory"
-msgstr ""
+msgstr "Inventario remoto de ESX"
 
 #: src/Dropdown.php:2320 src/Entity.php:3581 src/Alert.php:114
 #: src/Features/PlanningEvent.php:746
@@ -9096,7 +9100,7 @@ msgstr "Activar la instalación de paquetes zip desde Marketplace"
 
 #: src/Inventory/Conf.php:361
 msgid "Enable inventory"
-msgstr ""
+msgstr "Habilitar inventario"
 
 #: src/Config.php:895
 msgid "Enable login with credentials"
@@ -9168,7 +9172,7 @@ msgstr "Tipos de elementos habilitados"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Enabled tasks"
-msgstr ""
+msgstr "Tareas habilitadas"
 
 #: src/Enclosure.php:61
 msgid "Enclosure"
@@ -9194,15 +9198,15 @@ msgstr "Cifrado"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Algorithm"
-msgstr ""
+msgstr "Algoritmo de cifrado"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Tool"
-msgstr ""
+msgstr "Herramienta de cifrado"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Type"
-msgstr ""
+msgstr "Tipo de cifrado"
 
 #: src/Item_Disk.php:302 src/Item_Disk.php:535
 msgid "Encryption algorithm"
@@ -9959,7 +9963,7 @@ msgstr "Falló al escribir el archivo a disco"
 #: src/Console/Database/FixHtmlEncodingCommand.php:253
 #, php-format
 msgid "Failed to write rollback SQL queries in \"%s\" file."
-msgstr ""
+msgstr "Error al escribir el archivo de consultas SQL de reversión %s"
 
 #: src/NotificationEventMailing.php:385
 #, php-format
@@ -10029,7 +10033,7 @@ msgstr[2] "Campos"
 #: src/Console/Database/FixHtmlEncodingCommand.php:203
 #, php-format
 msgid "Field %s not found"
-msgstr ""
+msgstr "Campo %s no encontrado"
 
 #: src/Notification.php:696 src/Notification.php:709
 msgid "Field itemtype is mandatory"
@@ -10041,11 +10045,11 @@ msgstr "Nombre del campo"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:196
 msgid "Field not specified"
-msgstr ""
+msgstr "Campo no especificado"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:111
 msgid "Field of the item to fix"
-msgstr ""
+msgstr "Campo del elemento a corregir"
 
 #: src/SsoVariable.php:50
 msgid "Field storage of the login in the HTTP request"
@@ -10083,6 +10087,8 @@ msgstr "El archivo %1$s se ha eliminado"
 #, php-format
 msgid "File %s contains SQL queries that can be used to rollback command."
 msgstr ""
+"El archivo %s contiene consultas SQL que se pueden usar para revertir el "
+"comando."
 
 #: src/Document.php:1161 src/Document.php:1261
 #, php-format
@@ -10276,7 +10282,7 @@ msgstr "Nombre del usuario bloqueado"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:91
 msgid "Fix HTML encoding in database."
-msgstr ""
+msgstr "Arreglar la codificación HTML en la base de datos."
 
 #: install/migrations/update_9.4.0_to_9.4.1.php:93
 #: install/migrations/update_9.4.1_to_9.4.2.php:73
@@ -10615,7 +10621,7 @@ msgstr "Memoria caché borrada exitosamente"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:120
 msgid "GLPI data directories are located in a secured path."
-msgstr ""
+msgstr "Los directorios de datos GLPI se encuentran en una ruta segura."
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:75
 msgid ""
@@ -10623,6 +10629,9 @@ msgid ""
 " achieved by redefining corresponding constants. See installation "
 "documentation for more details."
 msgstr ""
+"Los directorios de datos GLPI deben colocarse fuera del directorio raíz web."
+" Se puede lograr redefiniendo las constantes correspondientes. Consulta la "
+"documentación de instalación para obtener más detalles."
 
 #: src/Console/Database/UpdateCommand.php:165
 msgid "GLPI database version"
@@ -10934,7 +10943,7 @@ msgstr "HDMI"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:152
 msgid "HTML encoding has been fixed."
-msgstr ""
+msgstr "Se ha corregido la codificación HTML."
 
 #: src/NetworkPort.php:1069
 msgid "Half"
@@ -11298,7 +11307,7 @@ msgstr "ID"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:104
 msgid "Id of the item to fix"
-msgstr ""
+msgstr "ID del elemento a corregir"
 
 #: src/CommonITILValidation.php:376
 msgid "If approval is denied, specify a reason."
@@ -11877,9 +11886,9 @@ msgstr "Infinito"
 #: js/glpi_dialog.js:376 js/misc.js:45
 msgid "Information"
 msgid_plural "Information"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Información"
+msgstr[1] "Información"
+msgstr[2] "Información"
 
 #: src/Config.php:1976
 msgid "Information about system installation and configuration"
@@ -12533,11 +12542,11 @@ msgstr "ID del elemento"
 #: src/Console/Database/FixHtmlEncodingCommand.php:186
 #, php-format
 msgid "Item id %s not found"
-msgstr ""
+msgstr "ID del artículo %s no encontrado"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:178
 msgid "Item id not specified"
-msgstr ""
+msgstr "ID de artículo no especificado"
 
 #: src/CommonDBTM.php:4383
 msgid "Item in the trashbin"
@@ -12658,16 +12667,16 @@ msgstr "Tipo de elemento"
 #: src/Console/Database/FixHtmlEncodingCommand.php:145
 #, php-format
 msgid "Itemtype %s ID %s"
-msgstr ""
+msgstr "Tipo de elemento %s ID %s"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:169
 #, php-format
 msgid "Itemtype %s not found"
-msgstr ""
+msgstr "Tipo de elemento %s no encontrado"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:97
 msgid "Itemtype to fix"
-msgstr ""
+msgstr "Tipo de elemento a corregir"
 
 #: src/Console/Task/UnlockCommand.php:84
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
@@ -14600,9 +14609,9 @@ msgstr[2] "Modelos de monitor"
 #: src/Rule.php:390 src/MonitorType.php:41
 msgid "Monitor type"
 msgid_plural "Monitors types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tipo de Monitor"
+msgstr[1] "Tipos de Monitor"
+msgstr[2] "Tipos de Monitor"
 
 #: src/NotificationTargetCrontask.php:43 src/NotificationTargetCrontask.php:83
 #: src/CronTask.php:2079
@@ -14652,7 +14661,7 @@ msgstr "Más reciente"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Mount Point"
-msgstr ""
+msgstr "Punto de montaje"
 
 #: src/Lock.php:342 src/Item_Disk.php:248 src/Item_Disk.php:357
 #: src/Item_Disk.php:463
@@ -14931,7 +14940,7 @@ msgstr[2] "Equipos de Red"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:204
 msgid "Network discovery (SNMP)"
-msgstr ""
+msgstr "Detección de redes (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery threads"
@@ -14962,7 +14971,7 @@ msgstr[2] "Interfaces de red"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:196
 msgid "Network inventory (SNMP)"
-msgstr ""
+msgstr "Inventario de red (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network inventory threads"
@@ -15477,7 +15486,7 @@ msgstr "Ningún archivo cargado"
 
 #: src/System/Requirement/InstallationNotOverriden.php:130
 msgid "No files from previous GLPI version detected."
-msgstr ""
+msgstr "No se detectaron archivos de la versión anterior de GLPI."
 
 #: src/Cartridge.php:314
 msgid "No free cartridge"
@@ -15588,7 +15597,7 @@ msgstr "Sin elementos vinculados a la Base de Conocimiento"
 
 #: src/Lock.php:253
 msgid "No locked fields"
-msgstr ""
+msgstr "Sin campos bloqueados"
 
 #: src/Lock.php:770
 msgid "No locked item"
@@ -16899,7 +16908,7 @@ msgstr "Código PUK2"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:212
 msgid "Package Deployment"
-msgstr ""
+msgstr "Despliegue del paquete"
 
 #: src/PrinterLog.php:57
 msgid "Page counters"
@@ -17082,7 +17091,7 @@ msgstr "Ruta"
 
 #: src/Console/Database/FixHtmlEncodingCommand.php:118
 msgid "Path of file containing dump of existing values."
-msgstr ""
+msgstr "Ruta del archivo que contiene el volcado de valores existentes."
 
 #: src/Dashboard/Provider.php:1245 src/Dashboard/Provider.php:1586
 #: src/CommonITILObject.php:5082 src/CommonITILObject.php:6367
@@ -17159,7 +17168,7 @@ msgstr[2] "Tipos de periféricos"
 
 #: src/System/RequirementsManager.php:125
 msgid "Permissions for GLPI data directories"
-msgstr ""
+msgstr "Permisos para directorios de datos GLPI"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:69
 msgid "Permissions for automatic actions files"
@@ -17481,6 +17490,8 @@ msgid ""
 "Please update GLPI by following the procedure described in the installation "
 "documentation."
 msgstr ""
+"Actualizar GLPI siguiendo el procedimiento descrito en la documentación de "
+"instalación."
 
 #: src/Plug.php:41
 msgid "Plug"
@@ -17758,9 +17769,9 @@ msgstr "Descripción"
 #: src/NetworkPort.php:1357 src/NetworkPort.php:1513
 msgid "Port number"
 msgid_plural "Ports number"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Número de puerto"
+msgstr[1] "Números de puertos"
+msgstr[2] "Números de puertos"
 
 #: templates/pages/assets/socket.html.twig
 #: templates/pages/assets/cable.html.twig src/Item_Rack.php:160
@@ -17901,7 +17912,7 @@ msgstr "Anterior (flecha izquierda)"
 
 #: src/System/Requirement/InstallationNotOverriden.php:64
 msgid "Previous GLPI version files detection"
-msgstr ""
+msgstr "Detección de archivos de versiones anteriores de GLPI"
 
 #: src/Console/Migration/AbstractPluginToCoreCommand.php:134
 #, php-format
@@ -18270,7 +18281,7 @@ msgstr[2] "Fuentes RSS Públicas"
 #: templates/components/form/inventory_info.html.twig src/Agent.php:164
 #: src/Agent.php:318
 msgid "Public contact address"
-msgstr ""
+msgstr "Dirección pública de contacto"
 
 #: src/CommonITILTask.php:741
 msgid "Public followup"
@@ -18371,9 +18382,9 @@ msgstr "RAID"
 #: src/Central.php:71 src/RSSFeed.php:80
 msgid "RSS feed"
 msgid_plural "RSS feeds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Fuente RSS"
+msgstr[1] "Fuentes RSS"
+msgstr[2] "Fuentes RSS"
 
 #: src/RSSFeed.php:796
 msgid "RSS feeds found"
@@ -18859,7 +18870,7 @@ msgstr "Claves de acceso remoto"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:228
 msgid "Remote inventory"
-msgstr ""
+msgstr "Inventario remoto"
 
 #: src/Item_RemoteManagement.php:52
 msgid "Remote management"
@@ -19690,6 +19701,7 @@ msgstr "Ejecutar el comando \"php bin/console %1$s\" para su migración."
 #, php-format
 msgid "Run the \"php bin/console %1$s\" command to process to the update."
 msgstr ""
+"Ejecuta el comando \"php bin/console %1$s\" para procesar la actualización."
 
 #: src/Console/Database/UpdateCommand.php:259
 #, php-format
@@ -19838,7 +19850,7 @@ msgstr "URL de cierre de sesión por SSO"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:74
 msgid "Safe path for data directories"
-msgstr ""
+msgstr "Ruta segura para directorios de datos"
 
 #: src/Stat.php:489 src/TicketSatisfaction.php:46
 #: src/Stat/Data/Sglobal/StatDataAverageSatisfaction.php:54
@@ -20210,7 +20222,7 @@ msgstr "Seleccionar los elementos que se mostrarán de forma predeterminada"
 
 #: src/Lock.php:998
 msgid "Select fields of the item that must be unlock"
-msgstr ""
+msgstr "Seleccionar campos del elemento que se debe desbloquear"
 
 #: src/Stat.php:1732
 msgid "Select statistics to be displayed"
@@ -20911,6 +20923,7 @@ msgstr "Tickets resueltos"
 #, php-format
 msgid "Some errors are related to following plugins: %s."
 msgstr ""
+"Algunos errores están relacionados con los siguientes complementos: %s."
 
 #: src/Console/Application.php:498
 msgid "Some mandatory system requirements are missing."
@@ -21880,6 +21893,8 @@ msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
 msgstr ""
+"El código base de GLPI se ha actualizado. Es necesaria la actualización de "
+"la base de datos GLPI."
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
@@ -21926,12 +21941,16 @@ msgid ""
 "The automatic inventory will no longer handle this item, unless you unlock "
 "it."
 msgstr ""
+"El inventario automático ya no manejará este artículo, a menos que lo "
+"desbloquees."
 
 #: src/Lock.php:81
 msgid ""
 "The automatic inventory will no longer modify this field, unless you unlock "
 "it."
 msgstr ""
+"El inventario automático ya no modificará este campo, a menos que lo "
+"desbloquees."
 
 #: src/Console/Application.php:132
 msgid "The command to execute"
@@ -22030,12 +22049,12 @@ msgstr "Error en acciones automáticas de seguimiento. Se requiere revisión."
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:124
 msgid "The following directories do not exist and cannot be tested:"
-msgstr ""
+msgstr "Los siguientes directorios no existen y no se pueden probar:"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:131
 #, php-format
 msgid "The following directories should be placed outside \"%s\":"
-msgstr ""
+msgstr "Los siguientes directorios deben colocarse fuera de \"%s\":"
 
 #: templates/install/step8.html.twig
 msgid "The installation is finished"
@@ -22109,6 +22128,8 @@ msgid ""
 "The presence of source files from previous versions of GLPI can lead to "
 "security issues or bugs."
 msgstr ""
+"La presencia de archivos fuente de versiones anteriores de GLPI puede "
+"generar problemas de seguridad o errores."
 
 #: src/GLPINetwork.php:256
 msgid "The registration key is invalid."
@@ -22486,9 +22507,9 @@ msgstr[2] "Plantillas de tickets"
 #: src/Dashboard/Filter.php:75
 msgid "Ticket type"
 msgid_plural "Ticket types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tipo de ticket"
+msgstr[1] "Tipos de tickets"
+msgstr[2] "Tipos de tickets"
 
 #: src/Stat.php:1699 src/Stat/Data/Sglobal/StatDataSatisfaction.php:67
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:64
@@ -23533,7 +23554,7 @@ msgstr "No se puede actualizar %s \"%s\" (%d)."
 #: src/Console/Database/FixHtmlEncodingCommand.php:140
 #, php-format
 msgid "Unable to update %s items"
-msgstr ""
+msgstr "No se pueden actualizar %s elementos"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:252
 #: src/Console/Migration/TimestampsCommand.php:229
@@ -23724,7 +23745,7 @@ msgstr "Desbloquear componentes"
 
 #: src/Lock.php:952
 msgid "Unlock fields"
-msgstr ""
+msgstr "Desbloquear campos"
 
 #: src/ObjectLock.php:661
 msgid "Unlock forgotten locked objects"
@@ -23752,7 +23773,7 @@ msgstr "Traducciones no oficiales también están disponibles"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Unplan"
-msgstr ""
+msgstr "Quitar de planificación"
 
 #: src/KnowbaseItem.php:1290
 msgid "Unpublished"
@@ -24751,7 +24772,7 @@ msgstr "Tiempo de espera"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:172
 msgid "Wake on LAN"
-msgstr ""
+msgstr "Activación por LAN"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
@@ -24882,7 +24903,7 @@ msgstr "Sin acceso de escritura en el directorio de Marketplace (%s)"
 
 #: src/System/Requirement/InstallationNotOverriden.php:87
 msgid "We detected files of previous versions of GLPI."
-msgstr ""
+msgstr "Detectamos archivos de versiones anteriores de GLPI."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:518
 #, php-format
@@ -25342,6 +25363,8 @@ msgid ""
 "You can ignore this suggestion if you are certain that these directories are"
 " not accessible through your web server."
 msgstr ""
+"Puede ignorar esta sugerencia si está seguro de que estos directorios no son"
+" accesibles a través de su servidor web."
 
 #: src/User.php:6347
 msgid "You can set its name to your organisation's name. "
@@ -25586,6 +25609,8 @@ msgid ""
 "You should try to update these plugins to their latest version and run the "
 "command again."
 msgstr ""
+"Intenta actualizar estos complementos a su última versión y ejecutar el "
+"comando nuevamente."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
