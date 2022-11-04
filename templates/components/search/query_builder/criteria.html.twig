@@ -94,7 +94,7 @@
             }) }}
          </div>
 
-         {% set field_id = ("criteria" ~ prefix ~ "[" ~ num ~ "][field]" ~ rand) %}
+         {% set field_id = ("dropdown_criteria" ~ prefix ~ "[" ~ num ~ "][field]" ~ rand) %}
          {% set spanid = ("SearchSpan" ~ normalized_itemtype ~ prefix ~ num) %}
          <div class="col-auto">
             <div class="row g-1" id="{{ spanid }}">
@@ -117,10 +117,10 @@
                field_id,
                spanid,
                config('root_doc') ~ "/ajax/search.php",
-               {
+               params|merge({
                   action: 'display_searchoption',
-                  searchtype: '__VALUE__',
-               }|merge(params)
+                  field: '__VALUE__',
+               })
             ]) %}
          </div>
       </div>

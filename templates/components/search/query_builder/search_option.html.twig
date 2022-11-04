@@ -63,8 +63,8 @@
    {{ call('Glpi\\Search\\Input\\QueryBuilder::displaySearchoptionValue', [params]) }}
 </div>
 
-{% do call('Ajax::getItemOnSelect', [
-   ("dropdown_" ~ searchtype_name ~ rand)|escape('html_attr'),
+{% do call('Ajax::updateItemOnSelectEvent', [
+   ("dropdown_" ~ searchtype_name ~ rand),
    dropdownname,
    config('root_doc') ~ "/ajax/search.php",
    params|merge({
