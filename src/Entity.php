@@ -2549,7 +2549,6 @@ class Entity extends CommonTreeDropdown
         }
 
        // Codemirror lib
-        echo Html::css('public/lib/codemirror.css');
         echo Html::script("public/lib/codemirror.js");
 
        // Notification right applied
