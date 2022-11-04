@@ -3897,7 +3897,7 @@ JS;
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
-               min_height: '150px',
+               min_height: 150,
                resize: true,
 
                // disable path indicator in bottom bar
