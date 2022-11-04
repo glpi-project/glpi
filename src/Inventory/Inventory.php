@@ -251,6 +251,10 @@ class Inventory
             $_SESSION['glpiinventoryuserrunning'] = 'inventory';
         }
 
+        if (!isset($_SESSION['glpiname'])) {
+            $_SESSION['glpiname'] = $_SESSION['glpiinventoryuserrunning'];
+        }
+
         try {
             //bench
             $main_start = microtime(true);
