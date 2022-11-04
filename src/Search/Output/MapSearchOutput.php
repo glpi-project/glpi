@@ -35,7 +35,6 @@
 
 namespace Glpi\Search\Output;
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 
 /**
