@@ -65,6 +65,10 @@ class Battery extends Device
                 $val->voltage = 0;
             }
 
+            if (!isset($val->capacity) || $val->capacity == '') {
+                $val->capacity = 0;
+            }
+
             $val->is_dynamic = 1;
         }
         return $this->data;
