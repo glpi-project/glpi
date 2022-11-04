@@ -156,16 +156,6 @@ if (!$params['showgraph']) {
         $params['value2']
     );
 } else {
-    Stat::getData(
-        $params["itemtype"],
-        $params["type"],
-        $params["date1"],
-        $params["date2"],
-        $params['start'],
-        $val,
-        $params['value2']
-    );
-
     $data_params = [
         'itemtype' => $params['itemtype'],
         'type'     => $params["type"],
