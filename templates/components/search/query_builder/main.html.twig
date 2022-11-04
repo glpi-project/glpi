@@ -61,17 +61,17 @@
          <input type="hidden" name="savedsearches_id" value="{{ _get['savedsearches_id'] }}">
       {% endif %}
       <div class="card-footer d-flex search_actions">
-         <button id="addsearchcriteria{{ rand }}" class="btn btn-sn btn-outline-secondary me-1" type="button">
+         <button id="addsearchcriteria{{ rand }}" class="btn btn-sm btn-outline-secondary me-1" type="button">
             <i class="ti ti-square-plus"></i>
             <span class="d-none d-sm-block">{{ __('rule') }}</span>
          </button>
          {% if linked is defined and linked|length > 0 %}
-            <button id="addmetasearchcriteria{{ rand }}" class="btn btn-sn btn-outline-secondary me-1" type="button">
+            <button id="addmetasearchcriteria{{ rand }}" class="btn btn-sm btn-outline-secondary me-1" type="button">
                <i class="ti ti-circle-plus"></i>
                <span class="d-none d-sm-block">{{ __('global rule') }}</span>
             </button>
          {% endif %}
-         <button id="addcriteriagroup{{ rand }}" class="btn btn-sn btn-outline-secondary me-1" type="button">
+         <button id="addcriteriagroup{{ rand }}" class="btn btn-sm btn-outline-secondary me-1" type="button">
             <i class="ti ti-code-plus"></i>
             <span class="d-none d-sm-block">{{ __('group') }}</span>
          </button>
