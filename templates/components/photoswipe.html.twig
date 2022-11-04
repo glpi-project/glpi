@@ -158,7 +158,7 @@
       $(".pswp-img{{ rand }}").on('click', 'figure .pswp-trigger', function(event) {
          event.preventDefault();
          const options = {
-            index: $(this).closest('figure').index(),
+            index: $(this).closest('figure').parent().index(),
             bgOpacity: 0.7,
             showHideOpacity: true,
             shareButtons: [
