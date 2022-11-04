@@ -60,7 +60,7 @@
 
       {% if data['search']['as_map'] == 0 %}
          {{ include('components/search/table.html.twig') }}
-      {% else %}
+      {% elseif count > 0 %}
          {{ include('components/search/map.html.twig') }}
       {% endif %}
       {% if count > 0 %}

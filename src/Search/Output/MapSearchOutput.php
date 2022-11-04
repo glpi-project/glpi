@@ -119,7 +119,7 @@ final class MapSearchOutput extends HTMLSearchOutput
                 'typename' => $typename,
                 'itemtype' => $itemtype,
             ];
-            parent::displayData($data, $params + ['extra_twig_params' => $twig_params]);
         }
+        parent::displayData($data, $params + ['extra_twig_params' => $twig_params ?? []]);
     }
 }
