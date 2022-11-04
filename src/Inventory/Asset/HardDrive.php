@@ -60,6 +60,10 @@ class HardDrive extends Device
                 $val->designation = $val->name;
             }
 
+            if (!isset($val->capacity) || $val->capacity == '') {
+                $val->capacity = 0;
+            }
+
             $val->is_dynamic = 1;
         }
 
