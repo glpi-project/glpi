@@ -202,6 +202,11 @@ class CommonDBTM extends CommonGLPI
      */
     public $right;
 
+    /**
+     * Computed ID of FieldUnicity which refused insert or update.
+     */
+    protected $refused_field_unicity_id = 0;
+
 
     /**
      * Return the table used to store this object
@@ -4527,6 +4532,7 @@ class CommonDBTM extends CommonGLPI
                             }
                             if ($fields['action_refuse']) {
                                 $result = false;
+                                $this->refusedFieldUnicity = $key;
                             }
                             if ($fields['action_notify']) {
                                 $params = [
@@ -5748,6 +5754,11 @@ class CommonDBTM extends CommonGLPI
         }
 
         return $data;
+    }
+
+    public function getRefusedFieldUnicityID()
+    {
+        return $this->refused_field_unicity_id;
     }
 
     public static function getIcon()

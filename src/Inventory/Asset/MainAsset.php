@@ -49,6 +49,7 @@ use NetworkEquipment;
 use Printer;
 use RefusedEquipment;
 use RuleImportAssetCollection;
+use RuleImportEntity;
 use RuleImportEntityCollection;
 use RuleLocationCollection;
 use RuleMatchedLog;
@@ -523,7 +524,8 @@ abstract class MainAsset extends InventoryAsset
                 $dataEntity = $ruleEntity->processAllRules($entity_input, []);
 
                 if (isset($dataEntity['_ignore_import'])) {
-                    $input['rules_id'] = $dataEntity['rules_id'];
+                    $input['refused_source_items_id'] = $dataEntity['rules_id'];
+                    $input['refused_source_itemtype'] = RuleImportEntity::class;
                     $this->addRefused($input);
                     return;
                 }
@@ -571,7 +573,8 @@ abstract class MainAsset extends InventoryAsset
                     //Only main item is stored as refused, not all APs
                     unset($this->data[$key]);
                 } else {
-                    $input['rules_id'] = $datarules['rules_id'];
+                    $input['refused_source_items_id'] = $datarules['rules_id'];
+                    $input['refused_source_itemtype'] = RuleImportAsset::class;
                     $this->addRefused($input);
                 }
             }
@@ -587,7 +590,8 @@ abstract class MainAsset extends InventoryAsset
             'ip'           => $input['ip'] ?? '',
             'mac'          => $input['mac'] ?? '',
             'uuid'         => $input['uuid'] ?? '',
-            'rules_id'     => $input['rules_id'],
+            'refused_source_items_id'     => $input['refused_source_items_id'],
+            'refused_source_itemtype'     => $input['refused_source_itemtype'],
             'entities_id'  => $input['entities_id'],
             'autoupdatesystems_id' => $input['autoupdatesystems_id']
         ];
@@ -681,6 +685,16 @@ abstract class MainAsset extends InventoryAsset
 
         if ($items_id == 0) {
             $input = $this->handleInput($val, $this->item);
+
+            //check unicity
+            $this->item->input = Sanitizer::sanitize($input);
+            if (!$this->item->checkUnicity(true)) {
+                $input['refused_source_items_id'] = $this->item->getRefusedFieldUnicityID();
+                $input['refused_source_itemtype'] = FieldUnicity::class;
+                $this->addRefused($input);
+                return;
+            }
+
             unset($input['ap_port']);
             unset($input['firmware']);
             $items_id = $this->item->add(Sanitizer::sanitize($input));
@@ -776,6 +790,16 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = $this->handleInput($val, $this->item);
+
+        //check unicity
+        $this->item->input = $input;
+        if (!$this->item->checkUnicity(false)) {
+            $input['refused_source_items_id'] = $this->item->getRefusedFieldUnicityID();
+            $input['refused_source_itemtype'] = FieldUnicity::class;
+            $this->addRefused($input);
+            return;
+        }
+
         $this->item->update(Sanitizer::sanitize($input));
 
         if (!($this->item instanceof RefusedEquipment)) {

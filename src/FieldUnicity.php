@@ -230,7 +230,7 @@ class FieldUnicity extends CommonDropdown
             if ($current_entity != $data['entities_id']) {
                 break;
             }
-            $return[] = $data;
+            $return[$data['id']] = $data;
         }
         return $return;
     }
