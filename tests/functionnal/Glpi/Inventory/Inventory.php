@@ -5576,7 +5576,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->boolean(
             $operating_system_version->getFromDB($item_operating->fields['operatingsystemversions_id'])
         )->isTrue();
-        
+
         //check if is original value
         $this->string($operating_system_version->fields['name'])->isEqualTo("31 (Workstation Edition)");
 
@@ -5770,7 +5770,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //No service pack from linux (normal)
         $this->integer($item_operating->fields['operatingsystemservicepacks_id'])->isEqualto(0);
 
-        //create rule dictionnary operating system 
+        //create rule dictionnary operating system
         $rule = new \Rule();
         $criteria = new \RuleCriteria();
         $action = new \RuleAction();
