@@ -1106,16 +1106,6 @@ $break_tablet: 1400px;
             stroke-width: 13px;
         }
 
-        &.pie,
-        &.line.multiple,
-        &.bar.tab10 {
-            @import "../includes/components/chartist/palette_d3_tab_10";
-        }
-
-        &.bar.tab20 {
-            @import "../includes/components/chartist/palette_d3_cat_20";
-        }
-
         .ct-legend {
             text-align: left;
             padding: 10px 0 10px 38px;
@@ -1251,19 +1241,6 @@ $break_tablet: 1400px;
                 color: inherit;
             }
         }
-    }
-}
-
-.chartist-tooltip.dashboard-tooltip {
-    $bg-color: rgba($color: #fff, $alpha: 65%);
-
-    z-index: 1080;
-    background-color: $bg-color;
-
-    @include soft-shadow;
-
-    &::before {
-        border-top-color: $bg-color;
     }
 }
 

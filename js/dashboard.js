@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
+/* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable, echarts */
 /* global glpi_ajax_dialog, glpi_close_all_dialogs */
 
 var Dashboard = {
@@ -275,8 +275,12 @@ var Dashboard = {
 
             // resize also chart if exists
             var chart = $(elem).find('.ct-chart');
-            if (chart.length > 0)  {
+            // legacy code for chartist (if any plugin still used it)
+            if (chart.length > 0 && "__chartist__" in chart[0]) {
                 chart[0].__chartist__.update();
+            } else if (chart.length > 0 && chart.attr('_echarts_instance_').length > 0) {
+                const instance = echarts.getInstanceByDom(chart[0]);
+                instance.resize();
             }
 
             // Used after "resize.fittext" event to reset our custom width "trick"
@@ -499,7 +503,9 @@ var Dashboard = {
         form_data.card_options.color        = form_data.color || null;
         form_data.card_options.widgettype   = form_data.widgettype || null;
         form_data.card_options.use_gradient = form_data.use_gradient || 0;
+        form_data.card_options.labels       = form_data.labels || 0;
         form_data.card_options.point_labels = form_data.point_labels || 0;
+        form_data.card_options.legend       = form_data.legend || 0;
         form_data.card_options.limit        = form_data.limit || 7;
 
         // specific case for markdown

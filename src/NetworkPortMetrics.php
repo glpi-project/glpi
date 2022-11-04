@@ -170,12 +170,14 @@ class NetworkPortMetrics extends CommonDBChild
             'label' => __('Input/Output megabytes'),
             'icon'  => $params['icon'],
             'color' => '#ffffff',
-            'distributed' => false
+            'distributed' => false,
+            'show_points' => false,
+            'line_width'  => 2,
         ];
 
        //display bytes graph
         echo "<div class='netports_metrics bytes'>";
-        echo Widget::multipleLines($bytes_bar_conf);
+        echo Widget::multipleAreas($bytes_bar_conf);
         echo "</div>";
 
         $errors_bar_conf = [
@@ -186,14 +188,16 @@ class NetworkPortMetrics extends CommonDBChild
             'label' => __('Input/Output errors'),
             'icon'  => $params['icon'],
             'color' => '#ffffff',
-            'distributed' => false
+            'distributed' => false,
+            'show_points' => false,
+            'line_width'  => 2,
         ];
 
         echo "</br>";
 
        //display error graph
         echo "<div class='netports_metrics'>";
-        echo Widget::multipleLines($errors_bar_conf);
+        echo Widget::multipleAreas($errors_bar_conf);
         echo "</div>";
     }
 
