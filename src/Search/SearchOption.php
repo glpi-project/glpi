@@ -411,7 +411,6 @@ final class SearchOption implements \ArrayAccess
             if (isset($actions['searchopt']['searchtype'])) {
                 // Reset search option
                 $actions = [
-                    'empty'       => __('is empty'),
                     'searchopt'   => $searchopt[$field_num]
                 ];
                 if (!is_array($actions['searchopt']['searchtype'])) {
@@ -453,6 +452,8 @@ final class SearchOption implements \ArrayAccess
                             break;
                     }
                 }
+                // Force is empty to be last
+                $actions['empty'] = __('is empty');
                 return $actions;
             }
 
