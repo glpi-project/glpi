@@ -36,33 +36,33 @@
       <small class="text-muted p-1">{{ __('Search results for localized items only') }}</small>
       <script>
           $(function() {
-              var map = initMap($('#map_container'), 'map', 'full');
+              const map = initMap($('#map_container'), 'map', 'full');
               _loadMap(map, '{{ itemtype }}');
           });
-          var _loadMap = function(map_elt, itemtype) {
+          const _loadMap = function(map_elt, itemtype) {
               L.AwesomeMarkers.Icon.prototype.options.prefix = 'far';
-              var _micon = 'circle';
-              var stdMarker = L.AwesomeMarkers.icon({
+              const _micon = 'circle';
+              const stdMarker = L.AwesomeMarkers.icon({
                   icon: _micon,
                   markerColor: 'blue'
               });
-              var aMarker = L.AwesomeMarkers.icon({
+              const aMarker = L.AwesomeMarkers.icon({
                   icon: _micon,
                   markerColor: 'cadetblue'
               });
-              var bMarker = L.AwesomeMarkers.icon({
+              const bMarker = L.AwesomeMarkers.icon({
                   icon: _micon,
                   markerColor: 'purple'
               });
-              var cMarker = L.AwesomeMarkers.icon({
+              const cMarker = L.AwesomeMarkers.icon({
                   icon: _micon,
                   markerColor: 'darkpurple'
               });
-              var dMarker = L.AwesomeMarkers.icon({
+              const dMarker = L.AwesomeMarkers.icon({
                   icon: _micon,
                   markerColor: 'red'
               });
-              var eMarker = L.AwesomeMarkers.icon({
+              const eMarker = L.AwesomeMarkers.icon({
                   icon: _micon,
                   markerColor: 'darkred'
               });
@@ -78,19 +78,17 @@
                       itemtype: itemtype,
                       params: {{ params|json_encode|raw }}
                   }
-              }).done(function(data) {
-                  var _points = data.points;
-                  var _markers = L.markerClusterGroup({
-                      iconCreateFunction: function(cluster) {
-                          var childCount = cluster.getChildCount();
-
-                          var markers = cluster.getAllChildMarkers();
-                          var n = 0;
-                          for (var i = 0; i < markers.length; i++) {
+              }).done((data) => {
+                  const _points = data.points;
+                  const _markers = L.markerClusterGroup({
+                      iconCreateFunction: (cluster) => {
+                          const markers = cluster.getAllChildMarkers();
+                          let n = 0;
+                          for (let i = 0; i < markers.length; i++) {
                               n += markers[i].count;
                           }
 
-                          var c = ' marker-cluster-';
+                          let c = ' marker-cluster-';
                           if (n < 10) {
                               c += 'small';
                           } else if (n < 100) {
@@ -103,19 +101,19 @@
                       }
                   });
 
-                  $.each(_points, function(index, point) {
+                  $.each(_points, (index, point) => {
                       const target = '{{ fulltarget }}'.replace(/CURLOCATION/, point.loc_id);
                       const count_text = "{{ __('%1$s %2$s')|format('COUNT', typename) }}".replace('COUNT', point.count);
-                      var _title = `
+                      let _title = `
                           <strong>${point.title}</strong><br/>
                           <a href='${target}'>${count_text}</a>
                       `;
                       if (point.types) {
-                          $.each(point.types, function(tindex, type) {
+                          $.each(point.types, (tindex, type) => {
                               _title += '<br/>' + "{{ __('%1$s %2$s')|format('COUNT', 'TYPE') }}".replace('COUNT', type.count).replace('TYPE', type.name);
                           });
                       }
-                      var _icon = stdMarker;
+                      let _icon = stdMarker;
                       if (point.count < 10) {
                           _icon = stdMarker;
                       } else if (point.count < 100) {
@@ -129,7 +127,7 @@
                       } else {
                           _icon = eMarker;
                       }
-                      var _marker = L.marker([point.lat, point.lng], { icon: _icon, title: point.title });
+                      const _marker = L.marker([point.lat, point.lng], { icon: _icon, title: point.title });
                       _marker.count = point.count;
                       _marker.bindPopup(_title);
                       _markers.addLayer(_marker);
@@ -142,13 +140,13 @@
                           maxZoom: 12
                       }
                   );
-              }).fail(function (response) {
-                  var _data = response.responseJSON;
-                  var _message = escapeMarkupText(__('An error occurred loading data :('));
+              }).fail((response) => {
+                  const _data = response.responseJSON;
+                  let _message = escapeMarkupText(__('An error occurred loading data :('));
                   if (_data.message) {
                       _message = _data.message;
                   }
-                  var fail_info = L.control();
+                  const fail_info = L.control();
                   fail_info.onAdd = function (map) {
                       this._div = L.DomUtil.create('div', 'fail_info');
                       const reload_message = escapeMarkupText(__('Reload'));
@@ -156,11 +154,11 @@
                       return this._div;
                   };
                   fail_info.addTo(map_elt);
-                  $('#reload_data').on('click', function() {
+                  $('#reload_data').on('click', () => {
                       $('.fail_info').remove();
                       _loadMap(map_elt);
                   });
-              }).always(function() {
+              }).always(() => {
                   //hide spinner
                   map_elt.spin(false);
               });
