@@ -105,14 +105,14 @@
 
                   $.each(_points, function(index, point) {
                       const target = '{{ fulltarget }}'.replace(/CURLOCATION/, point.loc_id);
-                      const count_text = __('%1$s %2$s').replace("%1$s", point.count).replace("%2$s", "{{ typename }}");
+                      const count_text = "{{ __('%1$s %2$s')|format('COUNT', typename) }}".replace('COUNT', point.count);
                       var _title = `
                           <strong>${point.title}</strong><br/>
                           <a href='${target}'>${count_text}</a>
                       `;
                       if (point.types) {
                           $.each(point.types, function(tindex, type) {
-                              _title += '<br/>' + __('%1$s %2$s').replace("%1$s", type.count).replace("%2$s", type.name);
+                              _title += '<br/>' + "{{ __('%1$s %2$s')|format('COUNT', 'TYPE') }}".replace('COUNT', type.count).replace('TYPE', type.name);
                           });
                       }
                       var _icon = stdMarker;
