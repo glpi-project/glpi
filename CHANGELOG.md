@@ -33,6 +33,7 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - `chartist` library has been replaced by `echarts`.
+- `codemirror` library has been upgraded to version 6.x.
 - `photoswipe` library has been upgraded to version 5.x.
 - `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
 - `Symfony` libraries have been upgraded to version 6.0.

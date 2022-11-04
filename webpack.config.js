@@ -72,7 +72,6 @@ let config = {
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'node_modules/@fullcalendar'),
-                    path.resolve(__dirname, 'node_modules/codemirror'),
                     path.resolve(__dirname, 'node_modules/cystoscape'),
                     path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
@@ -128,6 +127,9 @@ let config = {
         new MiniCssExtractPlugin(), // Extract styles into CSS files
     ],
     resolve: {
+        fallback: {
+            'process/browser': require.resolve('process/browser'), // required by @lezer/lr (codemirror dependency)
+        },
         // Use only main file in requirement resolution as we do not yet handle modules correctly
         mainFields: [
             'main',
