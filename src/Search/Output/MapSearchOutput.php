@@ -112,13 +112,14 @@ final class MapSearchOutput extends HTMLSearchOutput
             }
             $typename = class_exists($itemtype) ? $itemtype::getTypeName($data['data']['totalcount']) : $itemtype;
 
-            TemplateRenderer::getInstance()->display('components/search/map.html.twig', [
+            $twig_params = [
                 'ajax_url' => $CFG_GLPI['root_doc'] . '/ajax/map.php',
                 'params'   => $params,
                 'fulltarget' => $fulltarget,
                 'typename' => $typename,
                 'itemtype' => $itemtype,
-            ]);
+            ];
+            parent::displayData($data, $params + ['extra_twig_params' => $twig_params]);
         }
     }
 }
