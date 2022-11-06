@@ -803,7 +803,7 @@ class Socket extends CommonDBChild
             if (
                 $cable->fields['itemtype_endpoint_a'] === $item->getType() &&
                     $cable->fields['items_id_endpoint_a'] === $item->getID()
-                ) {
+            ) {
                     $itemtype = $cable->fields['itemtype_endpoint_b'];
                     $itemId = $cable->fields['items_id_endpoint_b'];
             } else {
