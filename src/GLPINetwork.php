@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,21 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\VersionParser;
 
 class GLPINetwork extends CommonGLPI
@@ -46,6 +49,7 @@ class GLPINetwork extends CommonGLPI
             $glpiNetwork = new self();
             $glpiNetwork->showForConfig();
         }
+        return true;
     }
 
     public static function showForConfig()
@@ -102,7 +106,7 @@ class GLPINetwork extends CommonGLPI
                 echo "<td>";
                 echo "<div class=' " . (($informations['is_valid'] && $informations['subscription']['is_running'] ?? false) ? 'ok' : 'red') . "'> ";
                 echo "<i class='fa fa-info-circle'></i>";
-                echo $informations['validation_message'];
+                echo Sanitizer::encodeHtmlSpecialChars($informations['validation_message']);
                 echo "</div>";
                 echo "</td>";
                 echo "</tr>";
@@ -110,12 +114,12 @@ class GLPINetwork extends CommonGLPI
 
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Subscription') . "</td>";
-            echo "<td>" . ($informations['subscription'] !== null ? $informations['subscription']['title'] : __('Unknown')) . "</td>";
+            echo "<td>" . ($informations['subscription'] !== null ? Sanitizer::encodeHtmlSpecialChars($informations['subscription']['title']) : __('Unknown')) . "</td>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Registered by') . "</td>";
-            echo "<td>" . ($informations['owner'] !== null ? $informations['owner']['name'] : __('Unknown')) . "</td>";
+            echo "<td>" . ($informations['owner'] !== null ? Sanitizer::encodeHtmlSpecialChars($informations['owner']['name']) : __('Unknown')) . "</td>";
             echo "</tr>";
         }
 
@@ -220,9 +224,17 @@ class GLPINetwork extends CommonGLPI
             ],
             $error_message
         );
-        $registration_data = $error_message === null ? json_decode($registration_response, true) : null;
+
+        $valid_json = false;
+        if ($error_message === null) {
+            if (\Toolbox::isJSON($registration_response)) {
+                $valid_json = true;
+                $registration_data = json_decode($registration_response, true);
+            }
+        }
+
         if (
-            $error_message !== null || json_last_error() !== JSON_ERROR_NONE
+            $error_message !== null || !$valid_json
             || !is_array($registration_data) || !array_key_exists('is_valid', $registration_data)
         ) {
             $informations['validation_message'] = __('Unable to fetch registration information.');
@@ -270,7 +282,7 @@ class GLPINetwork extends CommonGLPI
         return nl2br(sprintf(
             __("You need help to integrate GLPI in your IT, have a bug fixed or benefit from pre-configured rules or dictionaries?\n\n" .
             "We provide the %s space for you.\n" .
-            "GLPI-Network is a commercial product that includes a subscription for tier 3 support, ensuring the correction of bugs encountered with a commitment time.\n\n" .
+            "GLPI-Network is a commercial service that includes a subscription for tier 3 support, ensuring the correction of bugs encountered with a commitment time.\n\n" .
             "In this same space, you will be able to <b>contact an official partner</b> to help you with your GLPI integration."),
             "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>" . GLPI_NETWORK_SERVICES . "</a>"
         ));
@@ -311,8 +323,8 @@ class GLPINetwork extends CommonGLPI
         $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
         $cache_key = 'glpi_network_offers_' . $lang;
 
-        if (!$force_refresh && $GLPI_CACHE->has($cache_key)) {
-            return $GLPI_CACHE->get($cache_key);
+        if (!$force_refresh && ($offers = $GLPI_CACHE->get($cache_key)) !== null) {
+            return $offers;
         }
 
         $error_message = null;
@@ -327,9 +339,16 @@ class GLPINetwork extends CommonGLPI
             $error_message
         );
 
-        $offers = $error_message === null ? json_decode($response) : null;
+        $valid_json = false;
+        $offers = null;
+        if ($error_message === null) {
+            if (\Toolbox::isJSON($response)) {
+                $valid_json = true;
+                $offers = json_decode($response);
+            }
+        }
 
-        if ($error_message !== null || json_last_error() !== JSON_ERROR_NONE || !is_array($offers)) {
+        if ($error_message !== null || !$valid_json || !is_array($offers)) {
             trigger_error(
                 sprintf(
                     "Unable to fetch offers information.\nError message:%s\nResponse:\n%s",

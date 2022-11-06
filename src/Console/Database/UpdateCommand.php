@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -37,6 +39,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 use Migration;
 use Session;
@@ -64,6 +67,20 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
      */
     const ERROR_MISSING_SECURITY_KEY_FILE = 2;
 
+    /**
+     * Error code returned when database is not a valid GLPI database.
+     *
+     * @var integer
+     */
+    const ERROR_INVALID_DATABASE = 3;
+
+    /**
+     * Error code returned when database integrity check failed.
+     *
+     * @var integer
+     */
+    const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
+
     protected $requires_db_up_to_date = false;
 
     protected function configure()
@@ -79,6 +96,13 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             'u',
             InputOption::VALUE_NONE,
             __('Allow update to an unstable version')
+        );
+
+        $this->addOption(
+            '--skip-db-checks',
+            's',
+            InputOption::VALUE_NONE,
+            __('Do not check database schema integrity before performing the update')
         );
 
         $this->addOption(
@@ -123,10 +147,14 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         $current_version     = $currents['version'];
         $current_db_version  = $currents['dbversion'];
 
-        global $migration; // Migration scripts are using global migrations
-        $migration = new Migration(GLPI_VERSION);
-        $migration->setOutputHandler($output);
-        $update->setMigration($migration);
+        if ($current_version === null) {
+            $msg = sprintf(
+                __('Current GLPI version not found for database named "%s". Update cannot be done.'),
+                $this->db->dbdefault
+            );
+            $output->writeln('<error>' . $msg . '</error>');
+            return self::ERROR_INVALID_DATABASE;
+        }
 
         $informations = new Table($output);
         $informations->setHeaders(['', __('Current'), _n('Target', 'Targets', 1)]);
@@ -142,7 +170,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             return 0;
         }
 
-        if (!VersionParser::isStableRelease(GLPI_VERSION) && !$allow_unstable) {
+        if (VersionParser::isStableRelease($current_version) && !VersionParser::isStableRelease(GLPI_VERSION) && !$allow_unstable) {
            // Prevent unstable update unless explicitly asked
             $output->writeln(
                 sprintf(
@@ -168,8 +196,14 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             }
         }
 
+        $this->checkSchemaIntegrity($current_db_version);
+
         $this->askForConfirmation();
 
+        global $migration; // Migration scripts are using global `$migration`
+        $migration = new Migration(GLPI_VERSION);
+        $migration->setOutputHandler($output);
+        $update->setMigration($migration);
         $update->doUpdates($current_version, $force);
         $output->writeln('<info>' . __('Migration done.') . '</info>');
 
@@ -184,5 +218,61 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
     {
 
         return true;
+    }
+
+    /**
+     * Check schema integrity of installed database.
+     *
+     * @param string $installed_version
+     *
+     * @return void
+     */
+    private function checkSchemaIntegrity(string $installed_version): void
+    {
+        if ($this->input->getOption('skip-db-checks')) {
+            return;
+        }
+
+        $this->output->writeln('<comment>' . __('Checking database schema integrity...') . '</comment>');
+
+        $checker = new DatabaseSchemaIntegrityChecker($this->db, false, true, true, true, true, true);
+
+        if (!$checker->canCheckIntegrity($installed_version)) {
+            $msg = sprintf(
+                __('Database schema integrity check skipped as version "%s" is not supported by checking process.'),
+                $installed_version
+            );
+            $this->output->writeln('<comment>' . $msg . '</comment>', OutputInterface::VERBOSITY_QUIET);
+            return;
+        }
+
+        $error = null;
+        try {
+            $differences = $checker->checkCompleteSchemaForVersion($installed_version, true);
+        } catch (\Throwable $e) {
+            $error = sprintf(__('Database integrity check failed with error (%s).'), $e->getMessage());
+        }
+        if (count($differences) > 0) {
+            $install_version_nohash = preg_replace('/@.+$/', '', $installed_version);
+            $error = sprintf(__('The database schema is not consistent with the installed GLPI version (%s).'), $install_version_nohash)
+                . ' '
+                . sprintf(__('Run the "php bin/console %1$s" command to view found differences.'), 'glpi:database:check_schema_integrity');
+        }
+
+        if ($error !== null) {
+            if (!$this->input->getOption('no-interaction')) {
+                // On interactive mode, display error only.
+                // User will be asked for confirmation before update execution.
+                $this->output->writeln('<error>' . $error . '</error>', OutputInterface::VERBOSITY_QUIET);
+            } else {
+                // On non-interactive mode, exit with error.
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . $error . '</error>',
+                    self::ERROR_DATABASE_INTEGRITY_CHECK_FAILED
+                );
+            }
+        } else {
+            $this->output->writeln('<info>' . __('Database schema is OK.') . '</info>');
+        }
     }
 }

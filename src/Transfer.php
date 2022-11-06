@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,20 +37,49 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 
+/**
+ * Transfer engine.
+ * This class is used to move data between entities.
+ */
 class Transfer extends CommonDBTM
 {
    // Specific ones
-   /// Already transfer item
+
+    /**
+     * Array of items that have already been transferred
+     * @var array
+     */
     public $already_transfer      = [];
-   /// Items simulate to move - non recursive item or recursive item not visible in destination entity
+
+    /**
+     * Items simulate to move - non-recursive item or recursive item not visible in destination entity
+     * @var array
+     */
     public $needtobe_transfer     = [];
-   /// Items simulate to move - recursive item visible in destination entity
+
+    /**
+     * Items simulate to move - recursive item visible in destination entity
+     * @var array
+     */
     public $noneedtobe_transfer   = [];
-   /// Options used to transfer
+
+    /**
+     * Options used to transfer
+     * @var array
+     */
     public $options               = [];
-   /// Destination entity id
+
+    /**
+     * Destination entity id
+     * @var int
+     */
     public $to                    = -1;
-   /// type of initial item transfered
+
+    /**
+     * Type of initial item transferred
+     * @var string
+     * @fixme This should only be a string(class name). Itemtypes haven't been refereed to by integers in a long time.
+     */
     public $inittype              = 0;
 
     public static $rightname = 'transfer';
@@ -125,9 +156,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer items
      *
-     *@param $items      items to transfer
-     *@param $to         entity destination ID
-     *@param $options    options used to transfer
+     * @param array $items    Array of items to transfer in the format [itemtype => [ids]]
+     * @param int $to         entity destination ID
+     * @param array $options  options used to transfer
+     *
+     * @return void
      **/
     public function moveItems($items, $to, $options)
     {
@@ -265,8 +298,10 @@ class Transfer extends CommonDBTM
     /**
      * Add an item in the needtobe_transfer list
      *
-     * @param $itemtype  of the item
-     * @param $ID        of the item
+     * @param string $itemtype Itemtype of the item
+     * @param int $ID          ID of the item
+     *
+     * @return void
      **/
     public function addToBeTransfer($itemtype, $ID)
     {
@@ -287,8 +322,10 @@ class Transfer extends CommonDBTM
     /**
      * Add an item in the noneedtobe_transfer list
      *
-     * @param $itemtype  of the item
-     * @param $ID        of the item
+     * @param string $itemtype Itemtype of the item
+     * @param int $ID          ID of the item
+     *
+     * @return void
      **/
     public function addNotToBeTransfer($itemtype, $ID)
     {
@@ -307,7 +344,9 @@ class Transfer extends CommonDBTM
     /**
      * simulate the transfer to know which items need to be transfer
      *
-     * @param $items Array of the items to transfer
+     * @param array $items Array of items to transfer in the format [itemtype => [ids]]
+     *
+     * @return void
      **/
     public function simulateTransfer($items)
     {
@@ -1156,9 +1195,9 @@ class Transfer extends CommonDBTM
     /**
      * transfer an item to another item (may be the same) in the new entity
      *
-     * @param $itemtype     item type to transfer
-     * @param $ID           ID of the item to transfer
-     * @param $newID        new ID of the ite
+     * @param string $itemtype Itemtype of the item
+     * @param int $ID          ID of the item
+     * @param int $newID       ID of the new item
      *
      * Transfer item to a new Item if $ID==$newID : only update entities_id field :
      *                                $ID!=$new ID -> copy datas (like template system)
@@ -1205,7 +1244,7 @@ class Transfer extends CommonDBTM
                     $this->transferSoftwareLicensesAndVersions($ID);
                 }
 
-               // Connected item is transfered
+               // Connected item is transferred
                 if (in_array($itemtype, $CFG_GLPI["directconnect_types"])) {
                     $this->manageConnectionComputer($itemtype, $ID);
                 }
@@ -1311,9 +1350,11 @@ class Transfer extends CommonDBTM
     /**
      * Add an item to already transfer array
      *
-     * @param $itemtype  item type
-     * @param $ID        item original ID
-     * @param $newID     item new ID
+     * @param string $itemtype Itemtype of the item
+     * @param int $ID          ID of the item
+     * @param int $newID       ID of the new item
+     *
+     * @return void
      **/
     public function addToAlreadyTransfer($itemtype, $ID, $newID)
     {
@@ -1328,9 +1369,9 @@ class Transfer extends CommonDBTM
     /**
      * Transfer location
      *
-     * @param $locID location ID
+     * @param int $locID location ID
      *
-     * @return new location ID
+     * @return int The new location ID
      **/
     public function transferDropdownLocation($locID)
     {
@@ -1363,9 +1404,9 @@ class Transfer extends CommonDBTM
     /**
      * Transfer socket
      *
-     * @param $sockets_id socket ID
+     * @param int $sockets_id socket ID
      *
-     * @return new socket ID
+     * @return int The new socket ID
      **/
     public function transferDropdownSocket($sockets_id)
     {
@@ -1420,8 +1461,10 @@ class Transfer extends CommonDBTM
     /**
      * Transfer cartridges of a printer
      *
-     * @param $ID     original ID of the printer
-     * @param $newID  new ID of the printer
+     * @param int $ID     original ID of the printer
+     * @param int $newID  new ID of the printer
+     *
+     * @return void
      **/
     public function transferPrinterCartridges($ID, $newID)
     {
@@ -1565,9 +1608,9 @@ class Transfer extends CommonDBTM
     /**
      * Copy (if needed) One software to the destination entity
      *
-     * @param $ID of the software
+     * @param int $ID ID of the software
      *
-     * @return $ID of the new software (could be the same)
+     * @return int ID of the new software (could be the same)
      **/
     public function copySingleSoftware($ID)
     {
@@ -1629,9 +1672,9 @@ class Transfer extends CommonDBTM
     /**
      * Copy (if needed) One softwareversion to the Dest Entity
      *
-     * @param $ID of the version
+     * @param int $ID ID of the version
      *
-     * @return $ID of the new version (could be the same)
+     * @return int ID of the new version (could be the same)
      **/
     public function copySingleVersion($ID)
     {
@@ -1684,6 +1727,8 @@ class Transfer extends CommonDBTM
      *
      * @param string  $itemtype Item type
      * @param integer $ID       ID of the item
+     *
+     * @return void
      */
     public function transferItem_Disks($itemtype, $ID)
     {
@@ -1698,6 +1743,8 @@ class Transfer extends CommonDBTM
      *
      * @param string $itemtype  Type of the item
      * @param int    $ID        ID of the item
+     *
+     * @return void
      **/
     public function transferItemSoftwares($itemtype, $ID)
     {
@@ -1769,7 +1816,9 @@ class Transfer extends CommonDBTM
     /**
      * Transfer affected licenses to an item
      *
-     * @param $ID ID of the License
+     * @param int $ID ID of the License
+     *
+     * @return void
      **/
     public function transferAffectedLicense($ID)
     {
@@ -1855,7 +1904,9 @@ class Transfer extends CommonDBTM
     /**
      * Transfer License and Version of a Software
      *
-     * @param $ID ID of the Software
+     * @param int $ID ID of the Software
+     *
+     * @return void
      **/
     public function transferSoftwareLicensesAndVersions($ID)
     {
@@ -1883,7 +1934,10 @@ class Transfer extends CommonDBTM
         }
     }
 
-
+    /**
+     * Delete old software versions that had already been transferred
+     * @return void
+     */
     public function cleanSoftwareVersions()
     {
 
@@ -1907,6 +1961,10 @@ class Transfer extends CommonDBTM
     }
 
 
+    /**
+     * Delete old software that had already been transferred
+     * @return void
+     */
     public function cleanSoftwares()
     {
 
@@ -1932,9 +1990,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer certificates
      *
-     * @param $itemtype  original type of transfered item
-     * @param $ID        original ID of the certificate
-     * @param $newID     new ID of the certificate
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the certificate
+     * @param int $newID        New ID of the certificate
+     *
+     * @return void
      **/
     public function transferCertificates($itemtype, $ID, $newID)
     {
@@ -2119,9 +2179,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer contracts
      *
-     * @param $itemtype  original type of transfered item
-     * @param $ID        original ID of the contract
-     * @param $newID     new ID of the contract
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the contract
+     * @param int $newID        New ID of the contract
+     *
+     * @return void
      **/
     public function transferContracts($itemtype, $ID, $newID)
     {
@@ -2306,9 +2368,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer documents
      *
-     * @param $itemtype  original type of transfered item
-     * @param $ID        original ID of the document
-     * @param $newID     new ID of the document
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the document
+     * @param int $newID        New ID of the document
+     *
+     * @return void
      **/
     public function transferDocuments($itemtype, $ID, $newID)
     {
@@ -2360,7 +2424,7 @@ class Transfer extends CommonDBTM
                              // No items to transfer -> exists links
                              $NOT = $this->needtobe_transfer[$dtype];
 
-                             // contacts, contracts, and enterprises are linked as device.
+                             // contacts, contracts, and suppliers are linked as device.
                             if (isset($this->noneedtobe_transfer[$dtype])) {
                                 $NOT = array_merge($NOT, $this->noneedtobe_transfer[$dtype]);
                             }
@@ -2502,9 +2566,11 @@ class Transfer extends CommonDBTM
     /**
      * Delete direct connection for a linked item
      *
-     * @param $itemtype        original type of transfered item
-     * @param $ID              ID of the item
-     * @param $link_type       type of the linked items to transfer
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           ID of the item
+     * @param string $link_type Type of the linked items to transfer
+     *
+     * @return void
      **/
     public function transferDirectConnection($itemtype, $ID, $link_type)
     {
@@ -2707,9 +2773,10 @@ class Transfer extends CommonDBTM
     /**
      * Delete direct connection beetween an item and a computer when transfering the item
      *
-     * @param $itemtype        itemtype to tranfer
-     * @param $ID              ID of the item
+     * @param string $itemtype Itemtype to tranfer
+     * @param int $ID          ID of the item
      *
+     * @return void
      * @since 0.84.4
      **/
     public function manageConnectionComputer($itemtype, $ID)
@@ -2752,9 +2819,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer tickets
      *
-     * @param $itemtype  type of transfered item
-     * @param $ID        original ID of the ticket
-     * @param $newID     new ID of the ticket
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the ticket
+     * @param int $newID        New ID of the ticket
+     *
+     * @return void
      **/
     public function transferTickets($itemtype, $ID, $newID)
     {
@@ -2811,7 +2880,7 @@ class Transfer extends CommonDBTM
                 case 1:
                   // Same Item / Copy Item : keep and clean ref
                     foreach ($iterator as $data) {
-                         $rel->delete(['id'       => $data['relid']]);
+                         $rel->delete(['id'       => $data['_relid']]);
                          $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
                     }
                     break;
@@ -2831,13 +2900,15 @@ class Transfer extends CommonDBTM
     }
 
     /**
-     * Transfer suppliers for specified tickets or problems
+     * Transfer suppliers for the specified ticket, change, or problem
      *
      * @since 0.84
      *
-     * @param $itemtype  itemtype : Problem / Ticket
-     * @param $ID        original ticket ID
-     * @param $newID     new ticket ID
+     * @param string $itemtype ITIL Object Itemtype (Only Ticket, Change, and Problem supported)
+     * @param int $ID          Original ITIL Object ID
+     * @param int $newID       New ITIL Object ID
+     *
+     * @return void
      **/
     public function transferLinkedSuppliers($itemtype, $ID, $newID)
     {
@@ -2910,13 +2981,15 @@ class Transfer extends CommonDBTM
 
 
     /**
-     * Transfer task categories for specified tickets
+     * Transfer task categories for the specified ticket, change, or problem
      *
      * @since 0.83
      *
-     * @param $itemtype  itemtype : Problem / Ticket
-     * @param $ID        original ticket ID
-     * @param $newID     new ticket ID
+     * @param string $itemtype ITIL Object Itemtype (Only Ticket, Change, and Problem supported)
+     * @param int $ID          Original ITIL Object ID
+     * @param int $newID       New ITIL Object ID
+     *
+     * @return void
      **/
     public function transferTaskCategory($itemtype, $ID, $newID)
     {
@@ -2971,10 +3044,11 @@ class Transfer extends CommonDBTM
 
 
     /**
-     * Transfer ticket/problem infos
+     * Get additional/updated information for the transfer of an ITIL Object (Ticket, Change, Problem)
      *
-     * @param $data ticket data fields
+     * @param array $data ITIL Object data
      *
+     * @return array Updated ITIL Object data
      * @since 0.85 (before transferTicketAdditionalInformations)
      **/
     public function transferHelpdeskAdditionalInformations($data)
@@ -3010,9 +3084,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer history
      *
-     * @param $itemtype  original type of transfered item
-     * @param $ID        original ID of the history
-     * @param $newID     new ID of the history
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the item
+     * @param int $newID        New ID of the item
+     *
+     * @return void
      **/
     public function transferHistory($itemtype, $ID, $newID)
     {
@@ -3065,8 +3141,10 @@ class Transfer extends CommonDBTM
     /**
      * Transfer compatible printers for a cartridge type
      *
-     * @param $ID     original ID of the cartridge type
-     * @param $newID  new ID of the cartridge type
+     * @param int $ID     Original ID of the cartridge type
+     * @param int $newID  New ID of the cartridge type
+     *
+     * @return void
      **/
     public function transferCompatiblePrinters($ID, $newID)
     {
@@ -3093,9 +3171,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer infocoms of an item
      *
-     * @param $itemtype  type of the item to transfer
-     * @param $ID        original ID of the item
-     * @param $newID     new ID of the item
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the item
+     * @param int $newID        New ID of the item
+     *
+     * @return void
      **/
     public function transferInfocoms($itemtype, $ID, $newID)
     {
@@ -3121,7 +3201,7 @@ class Transfer extends CommonDBTM
 
                 // Keep
                 default:
-                   // transfer enterprise
+                   // transfer supplier
                     $suppliers_id = 0;
                     if ($ic->fields['suppliers_id'] > 0) {
                         $suppliers_id = $this->transferSingleSupplier($ic->fields['suppliers_id']);
@@ -3137,8 +3217,8 @@ class Transfer extends CommonDBTM
                         unset($ic->fields);
                         $ic->add(Toolbox::addslashes_deep($input));
                     } else {
-                     // Same Item : manage only enterprise move
-                     // Update enterprise
+                     // Same Item : manage only supplier move
+                     // Update supplier
                         if (
                             ($suppliers_id > 0)
                             && ($suppliers_id != $ic->fields['suppliers_id'])
@@ -3156,9 +3236,11 @@ class Transfer extends CommonDBTM
 
 
     /**
-     * Transfer an enterprise
+     * Transfer a supplier
      *
-     * @param $ID ID of the enterprise
+     * @param int $ID ID of the supplier to transfer
+     *
+     * @return int ID of the new supplier
      **/
     public function transferSingleSupplier($ID)
     {
@@ -3171,7 +3253,7 @@ class Transfer extends CommonDBTM
             && $ent->getFromDB($ID)
         ) {
             if (isset($this->noneedtobe_transfer['Supplier'][$ID])) {
-               // recursive enterprise
+               // recursive supplier
                 return $ID;
             }
             if (isset($this->already_transfer['Supplier'][$ID])) {
@@ -3182,7 +3264,7 @@ class Transfer extends CommonDBTM
             $newID           = -1;
            // Not already transfer
             $links_remaining = 0;
-           // All linked items need to be transfer so transfer enterprise ?
+           // All linked items need to be transfer so transfer supplier ?
            // Search for contract
             $criteria = [
                 'COUNT'  => 'cpt',
@@ -3263,10 +3345,12 @@ class Transfer extends CommonDBTM
 
 
     /**
-     * Transfer contacts of an enterprise
+     * Transfer contacts of a supplier
      *
-     * @param $ID     original ID of the enterprise
-     * @param $newID  new ID of the enterprise
+     * @param int $ID           Original ID of the supplier
+     * @param int $newID        New ID of the supplier
+     *
+     * @return void
      **/
     public function transferSupplierContacts($ID, $newID)
     {
@@ -3302,7 +3386,7 @@ class Transfer extends CommonDBTM
                     }
                 } else {
                     $canbetransfer = true;
-                   // Transfer enterprise : is the contact used for another enterprise ?
+                   // Transfer supplier : is the contact used for another supplier ?
                     if ($ID == $newID) {
                         $scriteria = [
                             'COUNT'  => 'cpt',
@@ -3386,7 +3470,7 @@ class Transfer extends CommonDBTM
                                 'suppliers_id' => $newID
                             ]
                         );
-                    } else { // transfer contact but copy enterprise : update link
+                    } else { // transfer contact but copy supplier : update link
                         $DB->update(
                             'glpi_contacts_suppliers',
                             [
@@ -3434,9 +3518,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer reservations of an item
      *
-     * @param $itemtype  original type of transfered item
-     * @param $ID        original ID of the item
-     * @param $newID     new ID of the item
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the item
+     * @param int $newID        New ID of the item
+     *
+     * @return void
      **/
     public function transferReservations($itemtype, $ID, $newID)
     {
@@ -3473,9 +3559,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer devices of an item
      *
-     * @param $itemtype        original type of transfered item
-     * @param $ID              ID of the item
-     * @param $newID           new ID of the item
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the item
+     * @param int $newID        New ID of the item
+     *
+     * @return void
      **/
     public function transferDevices($itemtype, $ID, $newID)
     {
@@ -3643,9 +3731,11 @@ class Transfer extends CommonDBTM
     /**
      * Transfer network links
      *
-     * @param $itemtype     original type of transfered item
-     * @param $ID           original ID of the item
-     * @param $newID        new ID of the item
+     * @param string $itemtype  The original type of transferred item
+     * @param int $ID           Original ID of the item
+     * @param int $newID        New ID of the item
+     *
+     * @return void
      **/
     public function transferNetworkLink($itemtype, $ID, $newID)
     {
@@ -3680,7 +3770,7 @@ class Transfer extends CommonDBTM
                     // Not a copy -> delete
                     if ($ID == $newID) {
                         foreach ($iterator as $data) {
-                            $np->delete(['id' => $data['id']]);
+                            $np->delete(['id' => $data['id']], 1);
                         }
                     }
                     // Copy -> do nothing
@@ -3742,7 +3832,7 @@ class Transfer extends CommonDBTM
                     } else {
                         foreach ($iterator as $data) {
                           // Not a copy -> only update socket
-                            if ($data['sockets_id']) {
+                            if (isset($data['sockets_id']) && $data['sockets_id']) {
                                  $socket = new Socket();
                                 if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
                                     if ($socket->getID()) {
@@ -3759,17 +3849,6 @@ class Transfer extends CommonDBTM
         }
     }
 
-
-    /**
-     * Print the transfer form
-     *
-     * @param $ID        integer : Id of the contact to print
-     * @param $options   array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     * @return boolean item found
-     **/
     public function showForm($ID, array $options = [])
     {
         $edit_form = true;
@@ -4009,10 +4088,14 @@ class Transfer extends CommonDBTM
             echo "</table></div>";
             Html::closeForm();
         }
+        return true;
     }
 
 
-   // Display items to transfers
+    /**
+     * Display items to transfer
+     * @return void
+     */
     public function showTransferList()
     {
         global $DB, $CFG_GLPI;

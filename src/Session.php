@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -216,9 +218,7 @@ class Session
     {
 
         if (session_status() === PHP_SESSION_NONE) {
-           // Force session to use cookies and prevent JS scripts to access to them
-            ini_set('session.cookie_httponly', '1');
-            ini_set('session.use_only_cookies', '1');
+            ini_set('session.use_only_cookies', '1'); // Force session to use cookies
 
             session_name("glpi_" . md5(realpath(GLPI_ROOT)));
 
@@ -304,24 +304,26 @@ class Session
      * @param string $itemtype Device type
      * @param string $title    List title (default '')
      **/
-    public static function initNavigateListItems($itemtype, $title = "")
+    public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
         global $AJAX_INCLUDE;
 
-        if (isset($AJAX_INCLUDE)) {
+        if (isset($AJAX_INCLUDE) && ($url === null)) {
             return;
         }
         if (empty($title)) {
             $title = __('List');
         }
-        $url = '';
+        if ($url === null) {
+            $url = '';
 
-        if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                $url = $_SERVER['HTTP_REFERER'];
+            if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
+                if (isset($_SERVER['HTTP_REFERER'])) {
+                    $url = $_SERVER['HTTP_REFERER'];
+                }
+            } else {
+                $url = $_SERVER['REQUEST_URI'];
             }
-        } else {
-            $url = $_SERVER['REQUEST_URI'];
         }
 
         $_SESSION['glpilisttitle'][$itemtype] = $title;
@@ -798,7 +800,12 @@ class Session
     {
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
-              && (strpos($_SERVER['PHP_SELF'], '/inventory.php') || defined('TU_USER')));
+              && (
+                  strpos($_SERVER['PHP_SELF'], '/inventory.php')
+                  || strpos($_SERVER['PHP_SELF'], '/index.php')
+                  || defined('TU_USER')
+              )
+        );
     }
 
     /**
@@ -856,6 +863,7 @@ class Session
      **/
     public static function checkValidSessionId()
     {
+        global $DB;
 
         if (
             !isset($_SESSION['valid_id'])
@@ -863,9 +871,52 @@ class Session
         ) {
             Html::redirectToLogin('error=3');
         }
+
+        $user_id    = self::getLoginUserID();
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        $entity_id  = $_SESSION['glpiactive_entity'] ?? null;
+
+        $valid_user = true;
+
+        if (!is_numeric($user_id) || $profile_id === null || $entity_id === null) {
+            $valid_user = false;
+        } else {
+            $user_table = User::getTable();
+            $pu_table   = Profile_User::getTable();
+            $result = $DB->request(
+                [
+                    'COUNT'     => 'count',
+                    'FROM'      => $user_table,
+                    'LEFT JOIN' => [
+                        $pu_table => [
+                            'FKEY'  => [
+                                Profile_User::getTable() => 'users_id',
+                                $user_table         => 'id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'     => [
+                        $user_table . '.id'         => $user_id,
+                        $user_table . '.is_active'  => 1,
+                        $user_table . '.is_deleted' => 0,
+                        $pu_table . '.profiles_id'  => $profile_id,
+                        $pu_table . '.entities_id'  => $entity_id,
+                    ],
+                ]
+            );
+            if ($result->current()['count'] === 0) {
+                $valid_user = false;
+            }
+        }
+
+        if (!$valid_user) {
+            Session::destroy();
+            Auth::setRememberMeCookie('');
+            Html::redirectToLogin();
+        }
+
         return true;
     }
-
 
     /**
      * Check if I have access to the central interface
@@ -878,7 +929,7 @@ class Session
         if (Session::getCurrentInterface() != "central") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            Html::displayRightError("The current profile does not use the standard interface");
         }
     }
 
@@ -895,7 +946,7 @@ class Session
         if (!$CFG_GLPI["use_public_faq"]) {
             self::checkValidSessionId();
             if (!self::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-                Html::displayRightError();
+                Html::displayRightError("Missing FAQ right");
             }
         }
     }
@@ -912,7 +963,7 @@ class Session
         if (Session::getCurrentInterface() != "helpdesk") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            Html::displayRightError("The current profile does not use the simplified interface");
         }
     }
 
@@ -927,10 +978,37 @@ class Session
         if (!isset($_SESSION["glpiname"])) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            Html::displayRightError("User has no valid session but seems to be logged in");
         }
     }
 
+    /**
+     * Get the name of the right.
+     *
+     * This only works for well-known rights.
+     * @param int $right The right
+     * @return string The right name
+     * @internal No backwards compatibility promise. Use in core only.
+     */
+    public static function getRightNameForError(int $right): string
+    {
+        // Well known rights
+        $rights = [
+            READ => 'READ',
+            UPDATE => 'UPDATE',
+            CREATE => 'CREATE',
+            DELETE => 'DELETE',
+            PURGE => 'PURGE',
+            ALLSTANDARDRIGHT => 'ALLSTANDARDRIGHT',
+            READNOTE => 'READNOTE',
+            UPDATENOTE => 'UPDATENOTE',
+            UNLOCK => 'UNLOCK',
+        ];
+        if (array_key_exists($right, $rights)) {
+            return $rights[$right];
+        }
+        return "unknown right name";
+    }
 
     /**
      * Check if I have the right $right to module $module (conpare to session variable)
@@ -946,7 +1024,8 @@ class Session
         if (!self::haveRight($module, $right)) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            $right_name = self::getRightNameForError($right);
+            Html::displayRightError("User is missing the $right ($right_name) right for $module");
         }
     }
 
@@ -963,7 +1042,14 @@ class Session
         self::checkValidSessionId();
         if (!self::haveRightsOr($module, $rights)) {
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            $info = "User is missing all of the following rights: ";
+            foreach ($rights as $right) {
+                $right_name = self::getRightNameForError($right);
+                $info .= $right . "($right_name), ";
+            }
+            $info = substr($info, 0, -2);
+            $info .= " for $module";
+            Html::displayRightError($info);
         }
     }
 
@@ -1000,7 +1086,13 @@ class Session
         if (!$valid) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError();
+            $info = "User is missing all of the following rights: ";
+            foreach ($modules as $mod => $right) {
+                $right_name = self::getRightNameForError($right);
+                $info .= $right . "($right_name) for module $mod, ";
+            }
+            $info = substr($info, 0, -2);
+            Html::displayRightError($info);
         }
     }
 
@@ -1117,7 +1209,11 @@ class Session
     {
         global $DB;
 
-       //If GLPI is using the slave DB -> read only mode
+        if (Session::isInventory()) {
+            return true;
+        }
+
+        //If GLPI is using the slave DB -> read only mode
         if (
             $DB->isSlave()
             && ($right & (CREATE | UPDATE | DELETE | PURGE))
@@ -1413,12 +1509,19 @@ class Session
      **/
     public static function checkCSRF($data)
     {
+        if (!GLPI_USE_CSRF_CHECK) {
+            trigger_error(
+                'Definition of "GLPI_USE_CSRF_CHECK" constant is deprecated and is ignore for security reasons.',
+                E_USER_WARNING
+            );
+        }
 
-        if (
-            GLPI_USE_CSRF_CHECK
-            && (!Session::validateCSRF($data))
-        ) {
-           // Output JSON if requested by client
+        if (!Session::validateCSRF($data)) {
+            $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
+            $user_id = self::getLoginUserID() ?? 'Anonymous';
+            Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url");
+
+            // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
                 die(json_encode(["message" => __("The action you have requested is not allowed.")]));
@@ -1559,15 +1662,12 @@ class Session
      *
      * @since  9.2.2
      *
-     * @return false or [helpdesk|central]
+     * @return string|false Returns "helpdesk" or "central" if there is a session and the interface property is set.
+     *                      Returns false if there is no session or the interface property is not set.
      */
     public static function getCurrentInterface()
     {
-        if (isset($_SESSION['glpiactiveprofile']['interface'])) {
-            return $_SESSION['glpiactiveprofile']['interface'];
-        }
-
-        return false;
+        return $_SESSION['glpiactiveprofile']['interface'] ?? false;
     }
 
     /**
@@ -1577,20 +1677,62 @@ class Session
      *
      * @return boolean
      */
-    public static function canImpersonate($user_id)
+    public static function canImpersonate($user_id, ?string &$message = null)
     {
+        global $DB;
+
+        $is_super_admin = self::haveRight(Config::$rightname, UPDATE);
+
+        // Stop here if the user can't impersonate (doesn't have the right + isn't admin)
+        if (!self::haveRight('user', User::IMPERSONATE) && !$is_super_admin) {
+            return false;
+        }
 
         if (
             $user_id <= 0 || self::getLoginUserID() == $user_id
             || (self::isImpersonateActive() && self::getImpersonatorId() == $user_id)
         ) {
+            $message = __("You can't impersonate yourself.");
             return false; // Cannot impersonate invalid user, self, or already impersonated user
         }
 
-       // For now we do not check more than config update right, but we may
-       // implement more fine checks in the future.
+        // Cannot impersonate inactive user
+        $user = new User();
+        if (!$user->getFromDB($user_id) || !$user->getField('is_active')) {
+            $message = __("The user is not active.");
+            return false;
+        }
 
-        return self::haveRight(Config::$rightname, UPDATE);
+        // Cannot impersonate user with no profile
+        $other_user_profiles = Profile_User::getUserProfiles($user_id);
+        if (count($other_user_profiles) === 0) {
+            $message = __("The user doesn't have any profile.");
+            return false;
+        }
+
+        if ($is_super_admin) {
+            return true; // User can impersonate anyone
+        }
+
+        // Check if user can impersonate lower-privileged users (or same level)
+        // Get all less-privileged (or equivalent) profiles than current one
+        $criteria = Profile::getUnderActiveProfileRestrictCriteria();
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Profile::getTable(),
+            'WHERE'  => $criteria
+        ]);
+        $profiles = [];
+        foreach ($iterator as $data) {
+            $profiles[] = $data['id'];
+        }
+        // Check if all profiles of the user are less-privileged than current one
+        if (count($other_user_profiles) !== count(array_intersect($profiles, array_keys($other_user_profiles)))) {
+            $message = __("User has more rights than you. You can't impersonate him.");
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -1622,6 +1764,16 @@ class Session
         $lang             = $_SESSION['glpilanguage'];
         $session_use_mode = $_SESSION['glpi_use_mode'];
 
+        $impersonator_info = [
+            'id'                            => $impersonator_id,
+            'glpiname'                      => $impersonator,
+            'glpilanguage'                  => $lang,
+            'glpi_use_mode'                 => $session_use_mode,
+            'glpiactive_entity'             => $_SESSION['glpiactive_entity'],
+            'glpiactive_entity_recursive'   => $_SESSION['glpiactive_entity_recursive'],
+            'profiles_id'                   => $_SESSION['glpiactiveprofile']['id'],
+        ];
+
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
@@ -1633,6 +1785,7 @@ class Session
         Session::loadLanguage();
 
         $_SESSION['impersonator_id'] = $impersonator_id;
+        $_SESSION['impersonator_info'] = $impersonator_info;
 
         Event::log(0, "system", 3, "Impersonate", sprintf(
             __('%1$s starts impersonating user %2$s'),
@@ -1662,11 +1815,22 @@ class Session
 
        //store user which was impersonated by another user
         $impersonate_user = $_SESSION['glpiname'];
+        $impersonator_info = $_SESSION['impersonator_info'] ?? [];
 
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
         Session::init($auth);
+
+        // Restore previous user values
+        if (!empty($impersonator_info)) {
+            // Basic values
+            $_SESSION['glpilanguage'] = $impersonator_info['glpilanguage'];
+            $_SESSION['glpi_use_mode'] = $impersonator_info['glpi_use_mode'];
+            // Restore profile/entity
+            self::changeProfile($impersonator_info['profiles_id']);
+            self::changeActiveEntities($impersonator_info['glpiactive_entity'], $impersonator_info['glpiactive_entity_recursive']);
+        }
 
         Event::log(0, "system", 3, "Impersonate", sprintf(
             __('%1$s stops impersonating user %2$s'),
@@ -1784,5 +1948,19 @@ class Session
         }
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+    }
+
+     /**
+     * clean what needs to be cleaned on logout
+     *
+     * @since 10.0.4
+     *
+     * @return void
+     */
+    public static function cleanOnLogout()
+    {
+        Session::destroy();
+        //Remove cookie to allow new login
+        Auth::setRememberMeCookie('');
     }
 }

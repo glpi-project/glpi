@@ -4,7 +4,8 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 9.5.x   | :heavy_check_mark: |
+| 10.0.x  | :heavy_check_mark: |
+| 9.5.x   | :heavy_check_mark: (only for critical issues) |
 | 9.4.x   | :x:                |
 | 9.3.x   | :x:                |
 | 9.2.x   | :x:                |
@@ -12,8 +13,10 @@
 
 ## Reporting a Vulnerability
 
-If you found a security issue, please contact us using the following email:
-glpi-security AT ow2.org
+If you found a security issue, please contact us by:
+
+- [our huntr page](https://huntr.dev/repos/glpi-project/glpi/)
+- a mail to \[glpi-security AT ow2.org\]
 
 Please **never** use standard issues to report security problems;
 vulnerabilities are published once a fix release is available.
@@ -24,3 +27,5 @@ You may also provide a script that can be used to check the issue exists.
 Once the report will be handled, and if the issue is not yet fixed (or in progress)
 we'll add it to the GitHub security tab, and add you as observer. Meanwhile,
 you will reserve a CVE for the issue.
+
+Thank you for improving the security of glpi.

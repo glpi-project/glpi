@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,23 +17,25 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\Dashboard;
 
+use Glpi\Plugin\Hooks;
 use Group;
 use Html;
 use ITILCategory;
@@ -41,6 +44,8 @@ use Manufacturer;
 use Plugin;
 use RequestType;
 use Session;
+use State;
+use Ticket;
 use User;
 
 /**
@@ -66,11 +71,13 @@ class Filter extends \CommonDBChild
             'requesttype'  => RequestType::getTypeName(Session::getPluralNumber()),
             'location'     => Location::getTypeName(Session::getPluralNumber()),
             'manufacturer' => Manufacturer::getTypeName(Session::getPluralNumber()),
+            'state'        => State::getTypeName(Session::getPluralNumber()),
+            'tickettype'   => _n("Ticket type", "Ticket types", Session::getPluralNumber()),
             'group_tech'   => __("Technician group"),
             'user_tech'    => __("Technician"),
         ];
 
-        $more_filters = Plugin::doHookFunction("dashboard_filters");
+        $more_filters = Plugin::doHookFunction(Hooks::DASHBOARD_FILTERS);
         if (is_array($more_filters)) {
             $filters = array_merge($filters, $more_filters);
         }
@@ -173,6 +180,19 @@ JAVASCRIPT;
         ]);
     }
 
+    public static function state(string $value = ""): string
+    {
+        return self::displayList($value, 'state', State::class);
+    }
+
+    public static function tickettype(string $value = ""): string
+    {
+        return self::displayList($value, 'tickettype', Ticket::class, [
+            'condition' => ['id' => -1],
+            'toadd'     => Ticket::getTypes()
+        ]);
+    }
+
     public static function displayList(
         string $value = "",
         string $fieldname = "",
@@ -259,7 +279,9 @@ JAVASCRIPT;
       <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
          $field
          <legend>$label</legend>
-         <i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash delete-filter'></i>
+         <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter">
+            <i class='ti ti-trash'></i>
+         </button>
          {$js}
       </fieldset>
 HTML;

@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,22 +15,24 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -37,7 +40,6 @@
          {% set name     = entry_i['name'] ?? entry_i['filename'] %}
          {% set filename = entry_i['filename'] ?? entry_i['name'] %}
          {% set fk = item.getForeignKeyField() %}
-         {% set delete_link = item.getFormURL() ~ '?delete_document&documents_id=' ~ entry_i['id'] ~ '&' ~ fk ~ '=' ~ item.fields['id'] %}
 
          {% if entry_i['filename'] %}
             {% set docpath = path('front/document.send.php?docid=' ~ entry_i['id'] ~ "&" ~ fk ~ "=" ~ item.fields["id"]) %}
@@ -58,9 +60,11 @@
             </div>
          {% endif %}
 
-         <div class="col-auto text-muted ms-2">
-            {{ entry_i['filepath']|document_size }}
-         </div>
+         {% if entry_i['filepath'] is defined and entry_i['filepath'] is not null %}
+            <div class="col-auto text-muted ms-2">
+               {{ entry_i['filepath']|document_size }}
+            </div>
+         {% endif %}
 
          <div class="col-auto">
             <div class="list-group-item-actions">
@@ -73,14 +77,77 @@
                {% endif %}
 
                {% if entry_i['_can_delete'] %}
-                  <a href="{{ delete_link }}"
-                     class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Delete permanently') }}"
-                     data-bs-toggle="tooltip" data-bs-placement="top">
-                     <i class="ti ti-trash"></i>
-                  </a>
+                  <form class="d-inline" method="post" action="{{ item.getFormURL() }}">
+                     <input type="hidden" name="{{ fk }}" value="{{ item.fields['id'] }}">
+                     <input type="hidden" name="documents_id" value="{{ entry_i['id'] }}">
+                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                     <button type="submit" class="btn btn-sm btn-ghost-secondary" name="delete_document"
+                             title="{{ _x('button', 'Delete permanently') }}"
+                             data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="ti ti-trash"></i>
+                     </button>
+                  </form>
                {% endif %}
             </div>
          </div>
       </div>
+    {% else %}
+        <div class="document_item">
+            <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
+                action="{{ "Document"|itemtype_form_path() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
+                <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}" />
+                <input type="hidden" name="is_recursive" value="{{ item.isRecursive() }}" />
+                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
+                <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+
+                {{ fields.dropdownField(
+                    'DocumentCategory',
+                    'documentcategories_id',
+                    null,
+                    __("Heading"),
+                    {
+                        'label_class': 'col-xxl-3',
+                        'field_class': 'col-xxl-11',
+                        'full_width': true,
+                        'is_horizontal': false
+                    }
+                ) }}
+
+                {% set max_size %}
+                    <div class="alert alert-info">
+                        {{ call("Document::getMaxUploadSize") }}
+                    </div>
+                {% endset %}
+
+                {{ fields.fileField(
+                    'filename',
+                    null,
+                    __("File"),
+                    {
+                        'multiple': true,
+                        'label_class': 'col-xxl-3',
+                        'field_class': 'col-xxl-11',
+                        'full_width': true,
+                        'is_horizontal': false,
+                        'add_field_html': max_size,
+                    }
+                ) }}
+
+                {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+
+                <div class="d-flex card-footer mx-n3 mb-n3">
+                    {% if subitem.fields['id'] <= 0 %}
+                        <div class="input-group">
+                            <button class="btn btn-primary" type="submit" name="add">
+                                <i class="ti ti-file-plus"></i>
+                                <span>{{ _x('button', 'Add a new file') }}</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
    {% endif %}
 {% endblock %}

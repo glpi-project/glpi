@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -840,5 +842,146 @@ PHP
                 )
             )->isNotEqualTo(false);
         }
+    }
+
+    public function testGetPluginOptionsWithExpectedResult()
+    {
+        $key = $this->test_plugin_directory;
+        $plugin_path = $this->getTestPluginPath($key);
+
+        $this->boolean(
+            mkdir($plugin_path, 0700, true)
+        )->isTrue();
+        $this->variable(
+            file_put_contents(
+                implode(DIRECTORY_SEPARATOR, [$plugin_path, 'setup.php']),
+                <<<PHP
+<?php
+function plugin_version_{$key}() {
+    return [
+        'name'    => 'Test plugin',
+        'version' => '1.0',
+    ];
+}
+function plugin_{$key}_options() {
+    return [
+        'autoinstall_disabled' => true,
+        'another_option'       => 'abc',
+    ];
+}
+PHP
+            )
+        )->isNotEqualTo(false);
+
+        $plugin = new \Plugin();
+        $plugin_id = $plugin->add(
+            [
+                'directory' => $key,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => \Plugin::ACTIVATED,
+            ]
+        );
+        $this->integer((int)$plugin_id)->isGreaterThan(0);
+
+        $this->array($plugin->getPluginOptions($key))->isEqualTo(
+            [
+                'autoinstall_disabled' => true,
+                'another_option'       => 'abc',
+            ]
+        );
+    }
+
+    public function testGetPluginOptionsWithoutDeclaredFunction()
+    {
+        $key = $this->test_plugin_directory;
+        $plugin_path = $this->getTestPluginPath($key);
+
+        $this->boolean(
+            mkdir($plugin_path, 0700, true)
+        )->isTrue();
+        $this->variable(
+            file_put_contents(
+                implode(DIRECTORY_SEPARATOR, [$plugin_path, 'setup.php']),
+                <<<PHP
+<?php
+function plugin_version_{$key}() {
+    return [
+        'name'    => 'Test plugin',
+        'version' => '1.0',
+    ];
+}
+PHP
+            )
+        )->isNotEqualTo(false);
+
+        $plugin = new \Plugin();
+        $plugin_id = $plugin->add(
+            [
+                'directory' => $key,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => \Plugin::ACTIVATED,
+            ]
+        );
+        $this->integer((int)$plugin_id)->isGreaterThan(0);
+
+        $this->array($plugin->getPluginOptions($key))->isEqualTo([]);
+    }
+
+    public function testGetPluginOptionsWithUnexpectedResult()
+    {
+        $key = $this->test_plugin_directory;
+        $plugin_path = $this->getTestPluginPath($key);
+
+        $this->boolean(
+            mkdir($plugin_path, 0700, true)
+        )->isTrue();
+        $this->variable(
+            file_put_contents(
+                implode(DIRECTORY_SEPARATOR, [$plugin_path, 'setup.php']),
+                <<<PHP
+<?php
+function plugin_version_{$key}() {
+    return [
+        'name'    => 'Test plugin',
+        'version' => '1.0',
+    ];
+}
+function plugin_{$key}_options() {
+    return 'malformed result';
+}
+PHP
+            )
+        )->isNotEqualTo(false);
+
+        $plugin = new \Plugin();
+        $plugin_id = $plugin->add(
+            [
+                'directory' => $key,
+                'name'      => 'Test plugin',
+                'version'   => '1.0',
+                'state'     => \Plugin::ACTIVATED,
+            ]
+        );
+        $this->integer((int)$plugin_id)->isGreaterThan(0);
+
+        $result = null;
+        $this->when(
+            function () use ($plugin, $key, &$result) {
+                $result = $plugin->getPluginOptions($key);
+            }
+        )->error()
+         ->withType(E_USER_WARNING)
+         ->withMessage(sprintf('Invalid "options" key provided by plugin `plugin_%s_options()` method.', $key))
+            ->exists();
+
+        $this->array($result)->isEqualTo([]);
+    }
+
+    public function testGetPluginOptionsOnUnexistingPlugin()
+    {
+        $plugin = new \Plugin();
+        $this->array($plugin->getPluginOptions('thisplugindoesnotexists'))->isEqualTo([]);
     }
 }

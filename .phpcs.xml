@@ -2,15 +2,15 @@
 <ruleset>
     <file>.</file>
     <exclude-pattern>/.git/</exclude-pattern>
-    <exclude-pattern>/config/</exclude-pattern>
-    <exclude-pattern>/files/</exclude-pattern>
-    <exclude-pattern>/lib/</exclude-pattern>
-    <exclude-pattern>/marketplace/</exclude-pattern>
-    <exclude-pattern>/node_modules/</exclude-pattern>
-    <exclude-pattern>/plugins/</exclude-pattern>
-    <exclude-pattern>/tests/config/</exclude-pattern>
-    <exclude-pattern>/tests/files/</exclude-pattern>
-    <exclude-pattern>/vendor/</exclude-pattern>
+    <exclude-pattern type="relative">^config/</exclude-pattern>
+    <exclude-pattern type="relative">^files/</exclude-pattern>
+    <exclude-pattern type="relative">^lib/</exclude-pattern>
+    <exclude-pattern type="relative">^marketplace/</exclude-pattern>
+    <exclude-pattern type="relative">^node_modules/</exclude-pattern>
+    <exclude-pattern type="relative">^plugins/</exclude-pattern>
+    <exclude-pattern type="relative">^tests/config/</exclude-pattern>
+    <exclude-pattern type="relative">^tests/files/</exclude-pattern>
+    <exclude-pattern type="relative">^vendor/</exclude-pattern>
 
     <arg name="warning-severity" value="0" />
     <arg value="p" />

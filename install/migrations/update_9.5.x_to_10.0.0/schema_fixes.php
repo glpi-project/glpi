@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -726,8 +728,6 @@ if ($DB->fieldExists('glpi_objectlocks', 'date_mod', false)) {
 $tables = [
     'glpi_knowbaseitems_revisions',
     'glpi_networkportconnectionlogs',
-    'glpi_networkportmetrics',
-    'glpi_printerlogs',
 ];
 foreach ($tables as $table) {
     if ($DB->fieldExists($table, 'date_creation', false)) {
@@ -764,6 +764,13 @@ foreach ($tables as $table) {
     );
 }
 
+// Replace -1 default values on glpi_rules.entities_id
+$DB->updateOrDie(
+    'glpi_rules',
+    ['entities_id' => 0],
+    ['entities_id' => -1]
+);
+
 // Replace unused -1 default values on entities_id foreign keys
 $tables = [
     'glpi_fieldunicities',
@@ -772,3 +779,10 @@ $tables = [
 foreach ($tables as $table) {
     $migration->changeField($table, 'entities_id', 'entities_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 }
+
+// Replace -1 default values on glpi_queuednotifications.items_id
+$DB->updateOrDie(
+    'glpi_queuednotifications',
+    ['items_id' => 0],
+    ['items_id' => -1]
+);

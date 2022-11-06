@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,27 +15,28 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
 {% set global_pinned = user_pref('savedsearches_pinned', true) %}
 {% set pinned = (global_pinned[itemtype] ?? '0') == '1' %}
-{% set itemtype_cls = itemtype|lower %}
+{% set clean_itemtype = itemtype|lower|u.replace('\\', '_') %}
 {% set rand = random() %}
 
-<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? 'pinned' : 'd-none' }} saved-searches-panel {{ itemtype_cls }}"
+<div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? 'pinned' : 'd-none' }} saved-searches-panel {{ clean_itemtype }}"
      id="saved-searches-panel-{{ rand }}">
    <div class="card-header d-flex flex-nowrap pe-0 align-items-center text-muted">
       <i class="ti ti-star"></i>&nbsp;
@@ -104,6 +106,9 @@
 $(function() {
    // init tabs
    $('#saved-searches-panel-{{ rand }} a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+      if ($(this).is(":hidden")) {
+         return;
+      }
       e.preventDefault();
 
       var tablink = $(this);
@@ -122,10 +127,12 @@ $(function() {
 
    // toggle panel
    $(document).on('click', '.show-saved-searches', function() {
-      itemtype = $(this).data('itemtype');
-      $(".saved-searches-panel."+itemtype)
+      var clean_itemtype = $(this).data('itemtype').toLowerCase().replace('\\', '_');
+      $(".saved-searches-panel." + clean_itemtype)
          .toggleClass('d-none')
          .toggleClass('responsive-toggle');
+
+      $('#saved-searches-panel-{{ rand }} a[data-bs-toggle="tab"]').trigger('shown.bs.tab');
    });
 
    // close panel
@@ -193,13 +200,11 @@ $(function() {
          var searchparts = searchtext.toLowerCase().split(/\s+/);
          var _rows = _this
             .closest('.card-footer')
-            .siblings('.card-tabs')
+            .siblings('.saved-searches-tabs')
             .find('.saved-searches-panel-content .savedsearches-item');
-         console.log(_rows)
          _rows.each(function() {
             var _row = $(this);
             var rowtext = _row.text().toLowerCase();
-            console.log(_row);
 
             var show = true;
 

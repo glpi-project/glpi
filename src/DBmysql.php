@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,23 +17,25 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 use Glpi\Application\ErrorHandler;
 use Glpi\System\Requirement\DbTimezones;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Database class for Mysql
@@ -186,6 +189,13 @@ class DBmysql
      * @see self::listFields()
      */
     private $field_cache = [];
+
+    /**
+     * Last query warnings.
+     *
+     * @var array
+     */
+    private $last_query_warnings = [];
 
     /**
      * Constructor / Connect to the MySQL Database
@@ -372,17 +382,28 @@ class DBmysql
             $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
         }
 
-        if (!empty($warnings = $this->getWarnings())) {
-           // Output warnings in SQL log
+        $this->last_query_warnings = $this->fetchQueryWarnings();
+        $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
+
+        // Output warnings in SQL log
+        if (!empty($this->last_query_warnings)) {
             $message = sprintf(
                 "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
                 $query,
-                implode("\n", $warnings)
+                implode(
+                    "\n",
+                    array_map(
+                        function ($warning) {
+                            return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                        },
+                        $this->last_query_warnings
+                    )
+                )
             );
             $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
             Toolbox::logSqlWarning($message);
 
-            ErrorHandler::getInstance()->handleSqlWarnings($warnings, $query);
+            ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
         }
 
         if ($this->execution_time === true) {
@@ -559,7 +580,15 @@ class DBmysql
      */
     public function insertId()
     {
-        return $this->dbh->insert_id;
+        $insert_id = $this->dbh->insert_id;
+
+        if ($insert_id === 0) {
+            // See https://www.php.net/manual/en/mysqli.insert-id.php
+            // `$this->dbh->insert_id` will return 0 value if `INSERT` statement did not change the `AUTO_INCREMENT` value.
+            // We have to retrieve it manually via `LAST_INSERT_ID()`.
+            $insert_id = $this->dbh->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+        }
+        return $insert_id;
     }
 
     /**
@@ -752,11 +781,13 @@ class DBmysql
     /**
      * Returns columns that uses signed integers for primary/foreign keys.
      *
+     * @param bool $exclude_plugins
+     *
      * @return DBmysqlIterator
      *
      * @since 9.5.7
      */
-    public function getSignedKeysColumns()
+    public function getSignedKeysColumns(bool $exclude_plugins = false)
     {
         $query = [
             'SELECT'       => [
@@ -799,6 +830,10 @@ class DBmysql
             ],
             'ORDER'       => ['TABLE_NAME']
         ];
+
+        if ($exclude_plugins) {
+            $query['WHERE'][] = ['NOT' => ['information_schema.tables.table_name' => ['LIKE', 'glpi\_plugin\_%']]];
+        }
 
         $iterator = $this->request($query);
 
@@ -1219,15 +1254,23 @@ class DBmysql
     public static function quoteValue($value)
     {
         if ($value instanceof QueryParam || $value instanceof QueryExpression) {
-           //no quote for query parameters nor expressions
+            //no quote for query parameters nor expressions
             $value = $value->getValue();
         } else if ($value === null || $value === 'NULL' || $value === 'null') {
             $value = 'NULL';
         } else if (is_bool($value)) {
-           // transform boolean as int (prevent `false` to be transformed to empty string)
+            // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int)$value . "'";
         } else {
-           //phone numbers may start with '+' and will be considered as numeric
+            if (Sanitizer::isNsClassOrCallableIdentifier($value)) {
+                // Values that corresponds to an existing namespaced class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
+                // However, they have to be escaped in SQL queries.
+                // Note: method is called statically, so `$DB` may be not defined yet in edge cases (install process).
+                global $DB;
+                $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
+            }
+
+           // phone numbers may start with '+' and will be considered as numeric
             $value = "'$value'";
         }
         return $value;
@@ -1556,8 +1599,9 @@ class DBmysql
      */
     public function truncate($table)
     {
-        $table_name = $this::quoteName($table);
-        return $this->query("TRUNCATE $table_name");
+        // Use delete to prevent table corruption on some MySQL operations
+        // (i.e. when using mysqldump without `--single-transaction` option)
+        return $this->delete($table, [1]);
     }
 
     /**
@@ -1651,16 +1695,24 @@ class DBmysql
     {
         if (!$savepoint) {
             $this->in_transaction = false;
-            $this->dbh->rollback();
+            return $this->dbh->rollback();
         } else {
-            $this->rollbackTo($savepoint);
+            return $this->rollbackTo($savepoint);
         }
     }
 
+    /**
+     * Rollbacks a transaction to a specified savepoint
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
     protected function rollbackTo($name)
     {
-       // No proper rollback to savepoint support in mysqli extension?
-        $this->query('ROLLBACK TO ' . self::quoteName($name));
+        // No proper rollback to savepoint support in mysqli extension?
+        $result = $this->query('ROLLBACK TO ' . self::quoteName($name));
+        return $result !== false;
     }
 
     /**
@@ -1850,11 +1902,11 @@ class DBmysql
     }
 
     /**
-     * Get MySQL warnings.
+     * Fetch warnings from last query.
      *
-     * @return string[]
+     * @return array
      */
-    private function getWarnings()
+    private function fetchQueryWarnings(): array
     {
         $warnings = [];
 
@@ -1869,8 +1921,8 @@ class DBmysql
                 $excludes[] = 3778; // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
             }
             if (!$this->log_deprecation_warnings) {
-               // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
-               // as it may require a lot of work to fix them.
+                // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
+                // as it may require a lot of work to fix them.
                 $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
             }
 
@@ -1878,11 +1930,20 @@ class DBmysql
                 if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
                     continue;
                 }
-                $warnings[] = sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                $warnings[] = $warning;
             }
         }
 
         return $warnings;
+    }
+
+    /**
+     * Get SQL warnings related to last query.
+     * @return array
+     */
+    public function getLastQueryWarnings(): array
+    {
+        return $this->last_query_warnings;
     }
 
     /**

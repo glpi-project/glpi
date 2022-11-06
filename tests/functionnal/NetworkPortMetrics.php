@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -81,7 +83,9 @@ class NetworkPortMetrics extends DbTestCase
             'ifinbytes'    => 1076823325,
             'ifoutbytes'   => 2179528910,
             'date' => $value['date'],
-            'id' => $value['id']
+            'id' => $value['id'],
+            'date_creation' => $_SESSION['glpi_currenttime'],
+            'date_mod' => $_SESSION['glpi_currenttime'],
         ];
         $this->array($value)->isEqualTo($expected);
 
@@ -94,11 +98,9 @@ class NetworkPortMetrics extends DbTestCase
 
         $this->boolean($netport->update($port + ['id' => $netports_id]))->isTrue();
         $values = $metrics->getMetrics($netport);
-        $this->array($values)->hasSize(2);
+        $this->array($values)->hasSize(1); // Still 1 row, as there should be only one row per date
 
-        $value2 = array_pop($values);
-        $value1 = array_pop($values);
-        $this->array($value1)->isIdenticalTo($value);
+        $updated_value = array_pop($values);
 
         $expected = [
             'networkports_id' => $netports_id,
@@ -107,9 +109,11 @@ class NetworkPortMetrics extends DbTestCase
             'ifinbytes'    => 1056823325,
             'ifoutbytes'   => 2159528910,
             'date' => $value['date'],
-            'id' => $value['id']
+            'id' => $value['id'],
+            'date_creation' => $_SESSION['glpi_currenttime'],
+            'date_mod' => $_SESSION['glpi_currenttime'],
         ];
-        $this->array($value1)->isIdenticalTo($value);
+        $this->array($updated_value)->isEqualTo($expected);
 
        //check logs => no bytes nor errors
         global $DB;

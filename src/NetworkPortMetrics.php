@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -140,17 +142,16 @@ class NetworkPortMetrics extends CommonDBChild
         $bytes_series = [];
         $errors_series = [];
         $labels = [];
-        $i = 0;
         foreach ($raw_metrics as $metrics) {
             $date = new \DateTime($metrics['date']);
             $labels[] = $date->format(__('Y-m-d'));
-            unset($metrics['id'], $metrics['date'], $metrics[static::$items_id]);
+            unset($metrics['id'], $metrics['date'], $metrics['date_creation'], $metrics['date_mod'], $metrics[static::$items_id]);
 
             $bytes_metrics = $metrics;
             unset($bytes_metrics['ifinerrors'], $bytes_metrics['ifouterrors']);
             foreach ($bytes_metrics as $key => $value) {
                 $bytes_series[$key]['name'] = $this->getLabelFor($key);
-                $bytes_series[$key]['data'][] = $value;
+                $bytes_series[$key]['data'][] = round($value / 1024 / 1024, 0); //convert bytes to megabytes
             }
 
             $errors_metrics = $metrics;
@@ -159,8 +160,6 @@ class NetworkPortMetrics extends CommonDBChild
                 $errors_series[$key]['name'] = $this->getLabelFor($key);
                 $errors_series[$key]['data'][] = $value;
             }
-
-            ++$i;
         }
 
         $bytes_bar_conf = [
@@ -168,15 +167,14 @@ class NetworkPortMetrics extends CommonDBChild
                 'labels' => $labels,
                 'series' => array_values($bytes_series),
             ],
-            'label' => __('Input/Output bytes'),
+            'label' => __('Input/Output megabytes'),
             'icon'  => $params['icon'],
             'color' => '#ffffff',
             'distributed' => false
         ];
 
-       //display graph
-        Html::requireJs('charts');
-        echo "<div class='dashboard netports_metrics bytes'>";
+       //display bytes graph
+        echo "<div class='netports_metrics bytes'>";
         echo Widget::multipleLines($bytes_bar_conf);
         echo "</div>";
 
@@ -191,8 +189,10 @@ class NetworkPortMetrics extends CommonDBChild
             'distributed' => false
         ];
 
-       //display graph
-        echo "<div class='dashboard netports_metrics'>";
+        echo "</br>";
+
+       //display error graph
+        echo "<div class='netports_metrics'>";
         echo Widget::multipleLines($errors_bar_conf);
         echo "</div>";
     }
@@ -201,9 +201,9 @@ class NetworkPortMetrics extends CommonDBChild
     {
         switch ($key) {
             case 'ifinbytes':
-                return __('Input bytes');
+                return __('Input megabytes');
             case 'ifoutbytes':
-                return __('Output bytes');
+                return __('Output megabytes');
             case 'ifinerrors':
                 return __('Input errors');
             case 'ifouterrors':

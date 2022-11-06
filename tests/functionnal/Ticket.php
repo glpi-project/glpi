@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -36,9 +38,16 @@ namespace tests\units;
 use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
+use Computer;
 use DbTestCase;
+use Entity;
 use Glpi\Team\Team;
 use Glpi\Toolbox\Sanitizer;
+use Group;
+use Group_Ticket;
+use ITILCategory;
+use Supplier;
+use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
 use Ticket_User;
 use TicketValidation;
@@ -48,126 +57,536 @@ use User;
 
 class Ticket extends DbTestCase
 {
-    public function ticketProvider()
+    protected function actorsProvider(): iterable
     {
-        return [
-            'single requester' => [
+        $default_use_notifications = 1;
+
+        $admin_user_id    = getItemByTypeName(User::class, 'glpi', true);
+        $tech_user_id     = getItemByTypeName(User::class, 'tech', true);
+        $normal_user_id   = getItemByTypeName(User::class, 'normal', true);
+        $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
+
+        $group_1_id = getItemByTypeName(Group::class, '_test_group_1', true);
+        $group_2_id = getItemByTypeName(Group::class, '_test_group_2', true);
+
+        $supplier_id = getItemByTypeName(Supplier::class, '_suplier01_name', true);
+
+        $actor_types = ['requester', 'assign', 'observer'];
+
+        foreach ($actor_types as $actor_type) {
+            $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
+
+            // single user
+            $expected_actors = [
                 [
-                    '_users_id_requester' => '3'
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => $tech_user_id,
+                    'use_notification'  => $default_use_notifications,
+                    'alternative_email' => '',
                 ],
-            ],
-            'single unknown requester' => [
+            ];
+            // using historical keys
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}" => "$tech_user_id",
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+            // using _actors key
+            yield [
+                'actors_input'   => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $tech_user_id,
+                                'use_notification'  => $default_use_notifications,
+                                'alternative_email' => '',
+                            ]
+                        ],
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+
+            // single email actor
+            $expected_actors = [
                 [
-                    '_users_id_requester'         => '0',
-                    '_users_id_requester_notif'   => [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => 0,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'unknownuser@localhost.local',
+                ],
+            ];
+            // using historical keys
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}"       => '0',
+                    "_users_id_{$actor_type}_notif" => [
+                        'use_notification'   => '1',
+                        'alternative_email'  => 'unknownuser@localhost.local',
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+            // using _actors key
+            yield [
+                'actors_input'   => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser@localhost.local',
+                            ]
+                        ],
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+
+            // single group
+            $expected_actors = [
+                [
+                    'type'     => $actor_type_value,
+                    'itemtype' => Group::class,
+                    'items_id' => $group_1_id,
+                ],
+            ];
+            // using historical keys
+            yield [
+                'actors_input'   => [
+                    "_groups_id_{$actor_type}" => "$group_1_id",
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+            // using _actors key
+            yield [
+                'actors_input'   => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype' => Group::class,
+                                'items_id' => $group_1_id,
+                            ]
+                        ],
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+
+            // multiple actors
+            $expected_actors = [
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => $tech_user_id,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'alt-email@localhost.local',
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => $admin_user_id,
+                    'use_notification'  => 0,
+                    'alternative_email' => '',
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => 0,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'unknownuser1@localhost.local',
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => User::class,
+                    'items_id'          => 0,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'unknownuser2@localhost.local',
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => Group::class,
+                    'items_id'          => $group_1_id,
+                ],
+                [
+                    'type'              => $actor_type_value,
+                    'itemtype'          => Group::class,
+                    'items_id'          => $group_2_id,
+                ],
+            ];
+            // using historical keys
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}"       => ["$tech_user_id", "$admin_user_id", '0', '0'],
+                    "_users_id_{$actor_type}_notif" => [
+                        'use_notification'   => ['1', '0', '1', '1'],
+                        'alternative_email'  => ['alt-email@localhost.local', '', 'unknownuser1@localhost.local', 'unknownuser2@localhost.local'],
+                    ],
+                    "_groups_id_{$actor_type}"      => ["$group_1_id", "$group_2_id"],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+            // using _actors key
+            yield [
+                'actors_input'   => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $tech_user_id,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'alt-email@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $admin_user_id,
+                                'use_notification'  => 0,
+                                'alternative_email' => '',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser1@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser2@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => Group::class,
+                                'items_id'          => $group_1_id,
+                            ],
+                            [
+                                'itemtype'          => Group::class,
+                                'items_id'          => $group_2_id,
+                            ],
+                        ],
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+            // using mix between historical keys and _actors key
+            yield [
+                'actors_input'   => [
+                    "_users_id_{$actor_type}"       => ["$tech_user_id"],
+                    "_users_id_{$actor_type}_notif" => [
                         'use_notification'   => ['1'],
-                        'alternative_email'  => ['unknownuser@localhost.local']
+                        'alternative_email'  => ['alt-email@localhost.local'],
+                    ],
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $admin_user_id,
+                                'use_notification'  => 0,
+                                'alternative_email' => '',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser1@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'unknownuser2@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => Group::class,
+                                'items_id'          => $group_1_id,
+                            ],
+                            [
+                                'itemtype'          => Group::class,
+                                'items_id'          => $group_2_id,
+                            ],
+                        ],
+                    ],
+                ],
+                'expected_actors' => $expected_actors,
+            ];
+        }
+
+        // complete mix
+        $expected_actors = [
+            [
+                'type'              => CommonITILActor::REQUESTER,
+                'itemtype'          => User::class,
+                'items_id'          => $postonly_user_id,
+                'use_notification'  => $default_use_notifications,
+                'alternative_email' => '',
+            ],
+            [
+                'type'              => CommonITILActor::REQUESTER,
+                'itemtype'          => User::class,
+                'items_id'          => $normal_user_id,
+                'use_notification'  => $default_use_notifications,
+                'alternative_email' => '',
+            ],
+            [
+                'type'              => CommonITILActor::OBSERVER,
+                'itemtype'          => User::class,
+                'items_id'          => $normal_user_id,
+                'use_notification'  => 0,
+                'alternative_email' => '',
+            ],
+            [
+                'type'              => CommonITILActor::OBSERVER,
+                'itemtype'          => User::class,
+                'items_id'          => 0,
+                'use_notification'  => 1,
+                'alternative_email' => 'obs1@localhost.local',
+            ],
+            [
+                'type'              => CommonITILActor::OBSERVER,
+                'itemtype'          => User::class,
+                'items_id'          => 0,
+                'use_notification'  => 1,
+                'alternative_email' => 'obs1@localhost.local',
+            ],
+            [
+                'type'              => CommonITILActor::OBSERVER,
+                'itemtype'          => Group::class,
+                'items_id'          => $group_1_id,
+            ],
+            [
+                'type'              => CommonITILActor::ASSIGN,
+                'itemtype'          => User::class,
+                'items_id'          => $tech_user_id,
+                'use_notification'  => 1,
+                'alternative_email' => 'alternativeemail@localhost.local',
+            ],
+            [
+                'type'              => CommonITILActor::ASSIGN,
+                'itemtype'          => Group::class,
+                'items_id'          => $group_2_id,
+            ],
+            [
+                'type'              => CommonITILActor::ASSIGN,
+                'itemtype'          => Supplier::class,
+                'items_id'          => $supplier_id,
+            ],
+        ];
+        // using historical keys
+        yield [
+            'actors_input'   => [
+                '_users_id_requester'       => ["$postonly_user_id", "$normal_user_id"],
+                '_users_id_observer'        => ["$normal_user_id", '0', '0'],
+                '_users_id_observer_notif'  => [
+                    'use_notification'   => ['0', '1', '1'],
+                    'alternative_email'  => ['', 'obs1@localhost.local', 'obs2@localhost.local'],
+                ],
+                '_groups_id_observer'       => ["$group_1_id"],
+                '_users_id_assign'          => ["$tech_user_id"],
+                '_users_id_assign_notif'    => [
+                    'use_notification'   => ['1'],
+                    'alternative_email'  => ['alternativeemail@localhost.local'],
+                ],
+                '_groups_id_assign'         => ["$group_2_id"],
+                '_suppliers_id_assign'      => ["$supplier_id"],
+            ],
+            'expected_actors' => $expected_actors,
+        ];
+        // using _actors key
+        yield [
+            'actors_input'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $postonly_user_id,
+                            'use_notification'  => $default_use_notifications,
+                            'alternative_email' => '',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $normal_user_id,
+                            'use_notification'  => $default_use_notifications,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                    'observer' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $normal_user_id,
+                            'use_notification'  => 0,
+                            'alternative_email' => '',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'obs1@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'obs2@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => Group::class,
+                            'items_id'          => $group_1_id,
+                        ],
+                    ],
+                    'assign' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $tech_user_id,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'alternativeemail@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => Group::class,
+                            'items_id'          => $group_2_id,
+                        ],
+                        [
+                            'itemtype'          => Supplier::class,
+                            'items_id'          => $supplier_id,
+                        ],
                     ],
                 ],
             ],
-            'multiple requesters' => [
-                [
-                    '_users_id_requester' => ['3', '5'],
+            'expected_actors' => $expected_actors,
+        ];
+        // using mix between historical keys and _actors key
+        yield [
+            'actors_input'   => [
+                '_users_id_requester'        => ["$postonly_user_id", "$normal_user_id"],
+                '_users_id_observer'        => ['0'],
+                '_users_id_observer_notif'  => [
+                    'use_notification'   => ['1'],
+                    'alternative_email'  => ['obs2@localhost.local'],
                 ],
-            ],
-            'multiple mixed requesters' => [
-                [
-                    '_users_id_requester'         => ['3', '5', '0'],
-                    '_users_id_requester_notif'   => [
-                        'use_notification'   => ['1', '0', '1'],
-                        'alternative_email'  => ['','', 'unknownuser@localhost.local']
+                '_actors' => [
+                    'requester' => [
+                        // Duplicates actor defined in "_users_id_requester", should not be a problem
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $postonly_user_id,
+                            'use_notification'  => $default_use_notifications,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                    'observer' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $normal_user_id,
+                            'use_notification'  => 0,
+                            'alternative_email' => '',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'obs1@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => Group::class,
+                            'items_id'          => $group_1_id,
+                        ],
+                    ],
+                    'assign' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $tech_user_id,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'alternativeemail@localhost.local',
+                        ],
+                        [
+                            'itemtype'          => Group::class,
+                            'items_id'          => $group_2_id,
+                        ],
+                        [
+                            'itemtype'          => Supplier::class,
+                            'items_id'          => $supplier_id,
+                        ],
                     ],
                 ],
             ],
-            'single observer' => [
-                [
-                    '_users_id_observer' => '3'
-                ],
-            ],
-            'multiple observers' => [
-                [
-                    '_users_id_observer' => ['3', '5'],
-                ],
-            ],
-            'single assign' => [
-                [
-                    '_users_id_assign' => '3'
-                ],
-            ],
-            'multiple assigns' => [
-                [
-                    '_users_id_assign' => ['3', '5'],
-                ],
-            ],
+            'expected_actors' => $expected_actors,
         ];
     }
 
     /**
-     * @dataProvider ticketProvider
+     * @dataProvider actorsProvider
      */
-    public function testCreateTicketWithActors($ticketActors)
+    public function testCreateTicketWithActors(array $actors_input, array $expected_actors): void
     {
+        $this->login();
+
         $ticket = new \Ticket();
-        $this->integer((int)$ticket->add([
-            'name'    => 'ticket title',
-            'content' => 'a description',
-        ] + $ticketActors))->isGreaterThan(0);
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ] + $actors_input
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
 
-        $this->boolean($ticket->isNewItem())->isFalse();
-        $ticketId = $ticket->getID();
-
-        foreach ($ticketActors as $actorType => $actorsList) {
-           // Convert single actor (scalar value) to array
-            if (!is_array($actorsList)) {
-                $actorsList = [$actorsList];
-            }
-
-           // Check all actors are assigned to the ticket
-            foreach ($actorsList as $index => $actor) {
-                $notify = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
-                      ? $actorList['_users_id_requester_notif']['use_notification'][$index]
-                      : 1;
-                $alternateEmail = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
-                              ? $actorList['_users_id_requester_notif']['alternative_email'][$index]
-                              : '';
-                switch ($actorType) {
-                    case '_users_id_requester':
-                       //$this->testTicketUser($ticket, $actor, \CommonITILActor::REQUESTER, $notify, $alternateEmail);
-                        break;
-                    case '_users_id_observer':
-                        $this->testTicketUser($ticket, $actor, \CommonITILActor::OBSERVER, $notify, $alternateEmail);
-                        break;
-                    case '_users_id_assign':
-                        $this->testTicketUser($ticket, $actor, \CommonITILActor::ASSIGN, $notify, $alternateEmail);
-                        break;
-                }
-            }
-        }
+        $this->checkActors($ticket, $expected_actors);
     }
 
-    protected function testTicketUser(\Ticket $ticket, $actor, $role, $notify, $alternateEmail)
+    /**
+     * @dataProvider actorsProvider
+     */
+    public function testUpdateTicketWithActors(array $actors_input, array $expected_actors): void
     {
-        if ($actor > 0) {
-            $user = new \User();
-            $this->boolean($user->getFromDB($actor))->isTrue();
-            $this->boolean($user->isNewItem())->isFalse();
+        $this->login();
 
-            $ticketUser = new \Ticket_User();
-            $this->boolean($ticketUser->getFromDBForItems($ticket, $user))->isTrue();
-        } else {
-            $ticketId = $ticket->getID();
-            $ticketUser = new \Ticket_User();
-            $this->boolean(
-                $ticketUser->getFromDBByCrit([
-                    'tickets_id'         => $ticketId,
-                    'users_id'           => 0,
-                    'alternative_email'  => $alternateEmail
-                ])
-            )->isTrue();
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        $this->boolean($ticket->update(['id' => $ticket_id] + $actors_input))->isTrue();
+
+        $this->checkActors($ticket, $expected_actors);
+    }
+
+    /**
+     * Check that ticket actors are matching expected actors.
+     *
+     * @param \Ticket $ticket
+     * @param array $expected_actors
+     *
+     * @return void
+     */
+    private function checkActors(\Ticket $ticket, array $expected_actors): void
+    {
+        foreach ([Ticket_User::class, Group_Ticket::class, Supplier_Ticket::class] as $link_class) {
+            $link_obj = new $link_class();
+
+            $expected_actors_for_itemtype = array_filter(
+                $expected_actors,
+                function (array $actor) use ($link_obj) {
+                    return $actor['itemtype'] === getItemtypeForForeignKeyField($link_obj->getActorForeignKey());
+                }
+            );
+
+            foreach ($expected_actors_for_itemtype as $actor) {
+                $actor[$link_obj->getActorForeignKey()] = $actor['items_id'];
+                unset($actor['itemtype'], $actor['items_id']);
+                $this->boolean($link_obj->getFromDBByCrit(['tickets_id' => $ticket->getID()] + $actor))
+                    ->isTrue(sprintf('Actor not found: %s', json_encode($actor)));
+            }
+            $this->integer($link_obj->countForItem($ticket))->isEqualTo(count($expected_actors_for_itemtype));
         }
-        $this->boolean($ticketUser->isNewItem())->isFalse();
-        $this->variable($ticketUser->getField('type'))->isEqualTo($role);
-        $this->variable($ticketUser->getField('use_notification'))->isEqualTo($notify);
     }
 
     public function testTasksFromTemplate()
@@ -252,7 +671,7 @@ class Ticket extends DbTestCase
 
        // 6.1 -> check first task
         $taskA = array_shift($found_tasks);
-        $this->string($taskA['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template A</p>', false));
+        $this->string($taskA['content'])->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars('<p>my task template A</p>'));
         $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
         $this->variable($taskA['actiontime'])->isEqualTo(60);
         $this->variable($taskA['is_private'])->isEqualTo(1);
@@ -262,7 +681,7 @@ class Ticket extends DbTestCase
 
        // 6.2 -> check second task
         $taskB = array_shift($found_tasks);
-        $this->string($taskB['content'])->isIdenticalTo(Sanitizer::sanitize('<p>my task template B</p>', false));
+        $this->string($taskB['content'])->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars('<p>my task template B</p>'));
         $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
         $this->variable($taskB['actiontime'])->isEqualTo(120);
         $this->variable($taskB['is_private'])->isEqualTo(0);
@@ -383,6 +802,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
+                '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
             ])
         )->isGreaterThan(0);
 
@@ -481,6 +901,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", 'tech', true),
             ])
         )->isGreaterThan(0);
 
@@ -596,6 +1017,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'Another ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", 'tech', true),
             ])
         )->isGreaterThan(0);
         $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
@@ -632,6 +1054,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check ACLS',
+                '_users_id_assign' => getItemByTypeName("User", TU_USER, true),
             ])
         )->isGreaterThan(0);
 
@@ -772,61 +1195,63 @@ class Ticket extends DbTestCase
         ob_end_clean();
         $crawler = new Crawler($output);
 
-       // Opening date, editable
+        $backtrace = debug_backtrace(0, 1);
+        $caller = "File: {$backtrace[0]['file']} Function: {$backtrace[0]['function']}:{$backtrace[0]['line']}";
+        // Opening date, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=date]:not([disabled])"));
-        $this->array($matches)->hasSize(($openDate === true ? 1 : 0), 'RW Opening date');
+        $this->array($matches)->hasSize(($openDate === true ? 1 : 0), "RW Opening date $caller");
 
-       // Time to own, editable
+        // Time to own, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
-        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to own editable');
+        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Time to own editable $caller");
 
-       // Internal time to own, editable
+        // Internal time to own, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
-        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to own editable');
+        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Internal time to own editable $caller");
 
-       // Time to resolve, editable
+        // Time to resolve, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
-        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Time to resolve');
+        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Time to resolve $caller");
 
        // Internal time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
-        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), 'Internal time to resolve');
+         $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
+        $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0), "Internal time to resolve $caller");
 
-       //Type
+        //Type
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
-        $this->array($matches)->hasSize(($type === true ? 1 : 0), 'Type');
+        $this->array($matches)->hasSize(($type === true ? 1 : 0), "Type $caller");
 
-       //Status
+        //Status
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=status]:not([disabled])"));
-        $this->array($matches)->hasSize(($status === true ? 1 : 0), 'Status');
+        $this->array($matches)->hasSize(($status === true ? 1 : 0), "Status $caller");
 
-       //Urgency
+        //Urgency
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=urgency]:not([disabled])"));
-        $this->array($matches)->hasSize(($urgency === true ? 1 : 0), 'Urgency');
+        $this->array($matches)->hasSize(($urgency === true ? 1 : 0), "Urgency $caller");
 
-       //Impact
+        //Impact
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=impact]:not([disabled])"));
-        $this->array($matches)->hasSize(($impact === true ? 1 : 0), 'Impact');
+        $this->array($matches)->hasSize(($impact === true ? 1 : 0), "Impact $caller");
 
-       //Category
+        //Category
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=itilcategories_id]:not([disabled])"));
-        $this->array($matches)->hasSize(($category === true ? 1 : 0), 'Category');
+        $this->array($matches)->hasSize(($category === true ? 1 : 0), "Category $caller");
 
-       //Request source file_put_contents('/tmp/out.html', $output)
+        //Request source file_put_contents('/tmp/out.html', $output)
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=requesttypes_id]:not([disabled])"));
-        $this->array($matches)->hasSize($requestSource === true ? 1 : 0, 'Request source');
+        $this->array($matches)->hasSize($requestSource === true ? 1 : 0, "Request source $caller");
 
-       //Location
+        //Location
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=locations_id]:not([disabled])"));
-        $this->array($matches)->hasSize(($location === true ? 1 : 0), 'Location');
+        $this->array($matches)->hasSize(($location === true ? 1 : 0), "Location $caller");
 
-       //Priority, editable
+        //Priority, editable
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=priority]:not([disabled])"));
-        $this->array($matches)->hasSize(($priority === true ? 1 : 0), 'RW priority');
+        $this->array($matches)->hasSize(($priority === true ? 1 : 0), "RW priority $caller");
 
-       //Save button
+        //Save button
         $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
-        $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present'));
+        $this->array($matches)->hasSize(($save === true ? 1 : 0), ($save === true ? 'Save button missing' : 'Save button present') . ' ' . $caller);
 
        //Assign to
        /*preg_match(
@@ -927,7 +1352,7 @@ class Ticket extends DbTestCase
         $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
 
        //check output with default ACLs
-        $this->changeTechRight();
+        $this->changeTechRights(['ticket' => null]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -946,8 +1371,8 @@ class Ticket extends DbTestCase
             $location = true
         );
 
-       //drop UPDATE ticket right from tech profile (still with OWN)
-        $this->changeTechRight(168965);
+//       //drop UPDATE ticket right from tech profile (still with OWN)
+        $this->changeTechRights(['ticket' => 168965]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -967,7 +1392,7 @@ class Ticket extends DbTestCase
         );
 
        //drop UPDATE ticket right from tech profile (without OWN)
-        $this->changeTechRight(136197);
+        $this->changeTechRights(['ticket' => 136197]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -987,7 +1412,7 @@ class Ticket extends DbTestCase
         );
 
        // only assign and priority right for tech (without UPDATE and OWN rights)
-        $this->changeTechRight(94209);
+        $this->changeTechRights(['ticket' => 94209]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1006,8 +1431,52 @@ class Ticket extends DbTestCase
             $location = false
         );
 
-       // no update rights, only display for tech
-        $this->changeTechRight(3077);
+        $this->changeTechRights([
+            'ticket'    => 168967,
+            'slm'       => 256,
+        ]);
+        $this->checkFormOutput(
+            $ticket,
+            $name = true,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = true,
+            $timeOwnResolve = true,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+
+        $this->changeTechRights([
+            'ticket'    => 168967,
+            'slm'       => 255,
+        ]);
+        $this->checkFormOutput(
+            $ticket,
+            $name = true,
+            $textarea = true,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = true,
+            $timeOwnResolve = false,
+            $type = true,
+            $status = true,
+            $urgency = true,
+            $impact = true,
+            $category = true,
+            $requestSource = true,
+            $location = true
+        );
+
+        // no update rights, only display for tech
+        $this->changeTechRights(['ticket' => 3077]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -1058,37 +1527,64 @@ class Ticket extends DbTestCase
         );
     }
 
-    public function changeTechRight($rights = 168967)
+    public function changeTechRights(array $rights)
     {
         global $DB;
 
-        $this->dump("changeTechRight: $rights");
+        $default_rights = [
+            'ticket'    => 168967,
+            'slm'       => 255,
+        ];
 
-       // set new rights
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => $rights],
-            [
-                'profiles_id'  => 6,
-                'name'         => 'ticket'
-            ]
-        );
+        foreach ($rights as $name => $value) {
+            if (is_array($value) && isset($value['default'])) {
+                $default_rights[$name] = $value;
+            }
+            $default_value = $default_rights[$name] ?? null;
+            if ($default_value === null) {
+                throw new \Exception("Unknown right $name with no default value specified");
+            }
+            if ($value === null) {
+                $value = $default_value;
+            }
+            $this->dump("changeTechRight $name: $value");
 
-       //ACLs have changed: login again.
-        $auth = new \Auth();
-        $this->boolean((bool) $auth->Login('tech', 'tech', true))->isTrue();
-
-        if ($rights != 168967) {
-           //reset rights. Done here so ACLs are reset even if tests fails.
+            // set new rights
             $DB->update(
                 'glpi_profilerights',
-                ['rights' => 168967],
+                ['rights' => $value],
                 [
                     'profiles_id'  => 6,
-                    'name'         => 'ticket'
+                    'name'         => $name
                 ]
             );
+
+            //ACLs have changed: login again.
+            $auth = new \Auth();
+            $this->boolean((bool) $auth->Login('tech', 'tech', true))->isTrue();
+
+            if ($rights != $default_value) {
+                //reset rights. Done here so ACLs are reset even if tests fails.
+                $DB->update(
+                    'glpi_profilerights',
+                    ['rights' => $default_value],
+                    [
+                        'profiles_id'  => 6,
+                        'name'         => $name
+                    ]
+                );
+            }
         }
+    }
+
+    /**
+     * @param $rights
+     * @return void
+     * @deprecated 10.1.0 - Use changeTechRights() instead
+     */
+    public function changeTechRight($rights = 168967)
+    {
+        $this->changeTechRights(['ticket' => $rights]);
     }
 
     public function testPriorityAcl()
@@ -1181,6 +1677,7 @@ class Ticket extends DbTestCase
             (int)$ticket->add([
                 'name'    => '',
                 'content' => 'A ticket to check assign ACLS',
+                '_users_id_assign' => getItemByTypeName("User", TU_USER, true),
             ])
         )->isGreaterThan(0);
 
@@ -1190,6 +1687,7 @@ class Ticket extends DbTestCase
 
         $this->boolean((bool)$ticket->canAssign())->isFalse();
         $this->boolean((bool)$ticket->canAssignToMe())->isFalse();
+        $this->changeTechRights(['ticket' => 168967]);
        //check output with default ACLs
         $this->checkFormOutput(
             $ticket,
@@ -1297,6 +1795,26 @@ class Ticket extends DbTestCase
             $requestSource = true,
             $location = true
         );
+
+        // Assign right without UPDATE
+        $this->changeTechRight(\Ticket::ASSIGN | \Ticket::READALL);
+        $this->checkFormOutput(
+            $ticket,
+            $name = false,
+            $textarea = false,
+            $priority = false,
+            $save = true,
+            $assign = true,
+            $openDate = false,
+            $timeOwnResolve = false,
+            $type = false,
+            $status = false,
+            $urgency = false,
+            $impact = false,
+            $category = false,
+            $requestSource = false,
+            $location = false
+        );
     }
 
     public function testUpdateFollowup()
@@ -1367,6 +1885,9 @@ class Ticket extends DbTestCase
                     $dateClone = new \DateTime($clonedTicket->getField($k));
                     $expectedDate = new \DateTime($date);
                     $this->dateTime($dateClone)->isEqualTo($expectedDate);
+                    break;
+                case 'name':
+                    $this->variable($clonedTicket->getField($k))->isEqualTo("{$ticket->getField($k)} (copy)");
                     break;
                 default:
                     $this->executeOnFailure(
@@ -1443,7 +1964,8 @@ class Ticket extends DbTestCase
                 (int)$val->add([
                     'tickets_id'   => $tickets_id,
                     'comment_submission'      => 'A simple validation',
-                    'users_id_validate' => 5, // normal
+                    'itemtype_target' => 'User',
+                    'items_id_target' => 5, // normal
                     'status' => 2
                 ])
             )->isGreaterThan(0);
@@ -1883,7 +2405,7 @@ class Ticket extends DbTestCase
 
         $this->integer((int) $input['_add_validation'])->isEqualTo(0);
 
-        $this->array($input['users_id_validate'])->size->isEqualTo(0);
+        $this->array($input['_validation_targets'])->size->isEqualTo(0);
         $this->integer((int) $input['type'])->isEqualTo(\Ticket::INCIDENT_TYPE);
         $this->array($input['_documents_id'])->size->isEqualTo(0);
         $this->array($input['_tasktemplates_id'])->size->isEqualTo(0);
@@ -2042,6 +2564,7 @@ class Ticket extends DbTestCase
         $this->boolean($ticket->getFromDB($ticketId))->isTrue();
        // Validate that "takeintoaccount_delay_stat" is not automatically defined
         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
        // Login with tested user
         $this->login($user['login'], $user['password']);
        // Apply specific rights if defined
@@ -2065,6 +2588,7 @@ class Ticket extends DbTestCase
             )
         )->isTrue();
         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
 
        // Check that computation of "takeintoaccount_delay_stat" is done if user can take into account
         $this->boolean(
@@ -2077,8 +2601,10 @@ class Ticket extends DbTestCase
         )->isTrue();
         if (!$expected) {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+            $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
         } else {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+            $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
         }
     }
 
@@ -2337,8 +2863,10 @@ class Ticket extends DbTestCase
 
         if (!$computed) {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+            $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
         } else {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+            $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
         }
     }
 
@@ -2370,6 +2898,7 @@ class Ticket extends DbTestCase
 
        // Validate that "takeintoaccount_delay_stat" is not automatically defined
         $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
 
        // Login with tech to be sure to be have rights to take into account
         $this->login('tech', 'tech');
@@ -2388,8 +2917,10 @@ class Ticket extends DbTestCase
 
         if (!$computed) {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+            $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
         } else {
             $this->integer((int)$ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+            $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
         }
     }
 
@@ -2844,7 +3375,7 @@ class Ticket extends DbTestCase
                 'TicketTask',
                 'Document'
             ],
-            'link_type'  => \Ticket_Ticket::SON_OF
+            'link_type'  => \CommonITILObject_CommonITILObject::SON_OF
         ];
 
         \Ticket::merge($ticket1, [$ticket2, $ticket3], $status, $mergeparams);
@@ -2885,8 +3416,8 @@ class Ticket extends DbTestCase
         $this->integer((int)$fup_count)->isEqualTo(4);
        // Target ticket should have the original document, one instance of the duplicate, and the new document from one of the source tickets
         $this->integer((int)$doc_count)->isEqualTo(3);
-       // Target ticket should have all users not marked as duplicates above + original requester (ID: 6)
-        $this->integer((int)$user_count)->isEqualTo(4);
+       // Target ticket should have all users not marked as duplicates above
+        $this->integer((int)$user_count)->isEqualTo(3);
        // Target ticket should have all groups not marked as duplicates above
         $this->integer((int)$group_count)->isEqualTo(2);
        // Target ticket should have all suppliers not marked as duplicates above
@@ -3026,9 +3557,6 @@ class Ticket extends DbTestCase
 
     public function testKeepScreenshotsOnFormReload()
     {
-       //FIXME: temporary commented for other tests to work; must be fixed on modernui
-        return true;
-
        //login to get session
         $auth = new \Auth();
         $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
@@ -3060,20 +3588,24 @@ class Ticket extends DbTestCase
         $instance = new \Ticket();
         $input = [
             'name'    => 'a ticket',
-            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
-         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-            '_content' => [
+            'content' => Sanitizer::sanitize(<<<HTML
+<p>Test with a ' (add)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML
+            ),
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
         copy(__DIR__ . '/../fixtures/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
         $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
 
@@ -3083,18 +3615,22 @@ class Ticket extends DbTestCase
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $instance->update([
             'id' => $instance->getID(),
-            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
-         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-            '_content' => [
+            'content' => Sanitizer::sanitize(<<<HTML
+<p>Test with a ' (update)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML
+            ),
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
         $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
     }
@@ -3151,41 +3687,6 @@ class Ticket extends DbTestCase
             'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(2);
-    }
-
-    public function testKeepScreenshotFromTemplate()
-    {
-       //FIXME: temporary commented for other tests to work; must be fixed on modernui
-        return true;
-
-       //login to get session
-        $auth = new \Auth();
-        $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
-
-       // create a template with a predeined description
-        $ticketTemplate = new \TicketTemplate();
-        $ticketTemplate->add([
-            'name' => $this->getUniqueString(),
-        ]);
-        $base64Image = base64_encode(file_get_contents(__DIR__ . '/../fixtures/uploads/foo.png'));
-        $content = '&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e57d2c8895d55.57735524"'
-        . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;';
-        $predefinedField = new \TicketTemplatePredefinedField();
-        $predefinedField->add([
-            'tickettemplates_id' => $ticketTemplate->getID(),
-            'num' => '21',
-            'value' => $content
-        ]);
-        $session_tpl_id_back = $_SESSION['glpiactiveprofile']['tickettemplates_id'];
-        $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $ticketTemplate->getID();
-
-        $this->output(
-            function () use ($session_tpl_id_back) {
-                $instance = new \Ticket();
-                $instance->showForm('0');
-                $_SESSION['glpiactiveprofile']['tickettemplates_id'] = $session_tpl_id_back;
-            }
-        )->contains('src=&quot;data:image/png;base64,' . $base64Image . '&quot;');
     }
 
 
@@ -3729,12 +4230,14 @@ HTML
        // TicketValidation items to create before tests
         $this->createItems(TicketValidation::class, [
             [
-                'tickets_id'        => $tickets_id_1,
-                'users_id_validate' => $users_id_1,
+                'tickets_id'      => $tickets_id_1,
+                'itemtype_target' => 'User',
+                'items_id_target' => $users_id_1,
             ],
             [
-                'tickets_id'        => $tickets_id_2,
-                'users_id_validate' => $users_id_2,
+                'tickets_id'      => $tickets_id_2,
+                'itemtype_target' => 'User',
+                'items_id_target' => $users_id_2,
             ],
         ]);
 
@@ -3772,7 +4275,7 @@ HTML
     ) {
         $ticket = new \Ticket();
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
-        $this->boolean($ticket->isValidator($users_id))->isEqualTo($expected);
+        $this->boolean(@$ticket->isValidator($users_id))->isEqualTo($expected);
     }
 
     public function testGetTeamRoles(): void
@@ -3990,20 +4493,11 @@ HTML
         $linked = $item->input[$field];
         $this->array($linked);
 
-        // Allow protected calls on update1NTableData and load1NTableData
-        // Needed as these methods are not used in GLPI core yet, there is
-        // no itemtype calling them in their post_update and post_load process
-        // -> we need to be able to call them directly in this test
-        $update1NTableData = new \ReflectionMethod($item, "update1NTableData");
-        $update1NTableData->setAccessible(true);
-        $load1NTableData = new \ReflectionMethod($item, "load1NTableData");
-        $load1NTableData->setAccessible(true);
-
         // Update DB
-        $update1NTableData->invoke($item, $commondb_relation, $field, $extra_input);
+        $this->callPrivateMethod($item, 'update1NTableData', $commondb_relation, $field, $extra_input);
 
         // Load values
-        $load1NTableData->invoke($item, $commondb_relation, $field, $extra_input);
+        $this->callPrivateMethod($item, 'load1NTableData', $commondb_relation, $field, $extra_input);
 
         // Compare values
         $this->array($item->fields[$field])->isEqualTo($linked);
@@ -4058,5 +4552,1105 @@ HTML
         // Check ticket status is closed
         $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
         $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
+    }
+
+    public function testSurveyCreation()
+    {
+        global $DB;
+
+        $this->login();
+        // Create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testSurveyCreation',
+            'content' => 'testSurveyCreation',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $entities_id = $ticket->fields['entities_id'];
+        // Update Entity to enable survey
+        $entity = new \Entity();
+        $result = $entity->update([
+            'id'                => $entities_id,
+            'inquest_config'    => 1,
+            'inquest_rate'      => 100,
+            'inquest_delay'     => 0,
+        ]);
+        $this->boolean($result)->isTrue();
+
+        $inquest = new \TicketSatisfaction();
+
+        // Verify no existing survey for ticket
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \TicketSatisfaction::getTable(),
+            'WHERE' => [
+                'tickets_id' => $tickets_id,
+            ],
+        ]);
+        $this->integer($it->count())->isEqualTo(0);
+
+        // Close ticket
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::CLOSED
+        ]))->isTrue();
+
+        // Verify survey created
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \TicketSatisfaction::getTable(),
+            'WHERE' => [
+                'tickets_id' => $tickets_id,
+            ],
+        ]);
+        $this->integer($it->count())->isEqualTo(1);
+    }
+
+    public function testSurveyCreationOnReopened()
+    {
+        global $DB;
+
+        $this->login();
+        // Create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testSurveyCreation',
+            'content' => 'testSurveyCreation',
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $entities_id = $ticket->fields['entities_id'];
+        // Update Entity to enable survey
+        $entity = new \Entity();
+        $result = $entity->update([
+            'id' => $entities_id,
+            'inquest_config' => 1,
+            'inquest_rate' => 100,
+            'inquest_delay' => 0,
+        ]);
+        $this->boolean($result)->isTrue();
+
+        $inquest = new \TicketSatisfaction();
+
+        // Verify no existing survey for ticket
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \TicketSatisfaction::getTable(),
+            'WHERE' => [
+                'tickets_id' => $tickets_id,
+            ],
+        ]);
+        $this->integer($it->count())->isEqualTo(0);
+
+        // Close ticket
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::CLOSED
+        ]))->isTrue();
+
+        // Reopen ticket
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::INCOMING
+        ]))->isTrue();
+
+        $result = $entity->update([
+            'id' => $entities_id,
+            'inquest_config' => 1,
+            'inquest_rate' => 100,
+            'inquest_delay' => 0,
+        ]);
+        $this->boolean($result)->isTrue();
+
+        // Re-close ticket
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::CLOSED
+        ]))->isTrue();
+
+        // Verify survey created and only one exists
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \TicketSatisfaction::getTable(),
+            'WHERE' => [
+                'tickets_id' => $tickets_id,
+            ],
+        ]);
+        $this->integer($it->count())->isEqualTo(1);
+    }
+
+    public function testAddAssignWithoutUpdateRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testAddAssignWithoutUpdateRight',
+            'content' => 'testAddAssignWithoutUpdateRight',
+            '_skip_auto_assign' => true,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $ticket->loadActors();
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(0);
+
+        $this->changeTechRight(\Ticket::ASSIGN | \Ticket::READALL);
+        $this->boolean($ticket->canUpdateItem())->isFalse();
+        $this->boolean((bool) $ticket->canAssign())->isTrue();
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'post-only', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]))->isTrue();
+        $ticket->loadActors();
+        // Verify new assignee was added
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(1);
+        // Verify new requester wasn't added
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(0);
+    }
+
+    public function testAddAssignWithoutAssignRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testAddAssignWithoutAssignRight',
+            'content' => 'testAddAssignWithoutAssignRight',
+            '_skip_auto_assign' => true,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $ticket->loadActors();
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(0);
+
+        $this->changeTechRight(\Ticket::READALL | UPDATE);
+        $this->boolean($ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool) $ticket->canAssign())->isFalse();
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'post-only', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]))->isTrue();
+        $ticket->loadActors();
+        // Verify new assignee wasn't added
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        // Verify new requester was added
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
+    }
+
+    public function testAddActorsWithAssignAndUpdateRight()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'testAddActorsWithAssignAndUpdateRight',
+            'content' => 'testAddActorsWithAssignAndUpdateRight',
+            '_skip_auto_assign' => true,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+
+        $ticket->loadActors();
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(0);
+
+        $this->changeTechRight(\Ticket::ASSIGN | UPDATE | \Ticket::READALL);
+        $this->boolean($ticket->canUpdateItem())->isTrue();
+        $this->boolean((bool) $ticket->canAssign())->isTrue();
+        $this->boolean($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'post-only', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]))->isTrue();
+        $ticket->loadActors();
+        // Verify new assignee was added
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(1);
+        // Verify new requester was added
+        $this->integer($ticket->countUsers(\CommonITILActor::REQUESTER))->isEqualTo(2);
+    }
+
+
+    public function testGetActorsForType()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $ticket->getEmpty();
+
+        $tech_id = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+
+        // ## 1st - test auto requester and assign feature
+        // ###############################################
+
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER))->hasSize(1);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN))->hasSize(1);
+
+        // disable autoactor by parameter
+        $params = ['_skip_default_actor' => true];
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER, $params))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER, $params))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN, $params))->hasSize(0);
+
+        // disable autoactor in session
+        $_SESSION['glpiset_default_requester'] = false;
+        $_SESSION['glpiset_default_tech']      = false;
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER))->hasSize(0);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN))->hasSize(0);
+
+        // ## 2nd - test load actors from templates (simulated)
+        // ####################################################
+        //reset session
+        $_SESSION['glpiset_default_requester'] = true;
+        $_SESSION['glpiset_default_tech']      = true;
+        //prepare params
+        $params = [
+            '_template_changed'  => true,
+            '_predefined_fields' => [
+                '_users_id_requester' => $postonly_id,
+                '_users_id_observer'  => $postonly_id,
+                '_users_id_assign'    => $tech_id,
+            ]
+        ];
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER, $params))->hasSize(2);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER, $params))->hasSize(1);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN, $params))->hasSize(2);
+
+        $_SESSION['glpiset_default_requester'] = false;
+        $_SESSION['glpiset_default_tech']      = false;
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER, $params))->hasSize(1)
+            ->integer[0]
+            ->integer['items_id']->isEqualTo($postonly_id);
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER, $params))->hasSize(1)
+            ->integer[0]
+            ->integer['items_id']->isEqualTo($postonly_id);
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN, $params))->hasSize(1)
+            ->integer[0]
+            ->integer['items_id']->isEqualTo($tech_id);
+
+        // apend groups
+        $params['_predefined_fields']['_groups_id_requester'] = [1];
+        $params['_predefined_fields']['_groups_id_observer'] = [1];
+        $params['_predefined_fields']['_groups_id_assign'] = [1];
+
+        $this->array($ticket->getActorsForType(\CommonITILActor::REQUESTER, $params))->hasSize(2)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+        $this->array($ticket->getActorsForType(\CommonITILActor::OBSERVER, $params))->hasSize(2)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+        $this->array($ticket->getActorsForType(\CommonITILActor::ASSIGN, $params))->hasSize(2)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+
+        // ## 2nd - test load actors from _actors key (reload simulated)
+        // #############################################################
+        //reset session
+        $_SESSION['glpiset_default_requester'] = true;
+        $_SESSION['glpiset_default_tech']      = true;
+        //prepare params
+        $params = [
+            '_skip_default_actor' => true,
+            '_actors'             => [
+                'requester' => [
+                    ['itemtype' => 'User',  'items_id' => $postonly_id],
+                    ['itemtype' => 'Group', 'items_id' => 1]
+                ],
+                'observer'  => [
+                    ['itemtype' => 'User',  'items_id' => $postonly_id],
+                    ['itemtype' => 'Group', 'items_id' => 1]
+                ],
+                'assign'    => [
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1]
+                ],
+            ]
+        ];
+        $requesters = $ticket->getActorsForType(\CommonITILActor::REQUESTER, $params);
+        $this->array($requesters)->hasSize(2)
+            ->integer[0]
+            ->string['text']->isEqualTo("post-only");
+        $this->array($requesters)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+        $observers = $ticket->getActorsForType(\CommonITILActor::OBSERVER, $params);
+        $this->array($observers)->hasSize(2)
+            ->integer[0]
+            ->string['text']->isEqualTo("post-only");
+        $this->array($observers)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+        $assignees = $ticket->getActorsForType(\CommonITILActor::ASSIGN, $params);
+        $this->array($assignees)->hasSize(2)
+            ->integer[0]
+            ->string['text']->isEqualTo("tech");
+        $this->array($assignees)
+            ->integer[1]
+            ->string['text']->isEqualTo("_test_group_1");
+    }
+
+
+    public function testNeedReopen()
+    {
+        $this->login();
+
+        $tech_id     = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+        $normal_id   = getItemByTypeName('User', 'normal', true);
+
+        $requester_group = $this->createItem("Group", [
+            'name' => "testNeedReopen"
+        ]);
+        $this->createItem("Group_User", [
+            'users_id' => $normal_id,
+            'groups_id' => $requester_group->getID(),
+        ]);
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'                => 'testNeedReopen',
+            'content'             => 'testNeedReopen',
+            '_users_id_requester' => $postonly_id,
+            '_users_id_assign'    => $tech_id,
+        ]);
+        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+        $ticket->update([
+            'id' => $tickets_id,
+            'status' => \Ticket::WAITING,
+        ]);
+
+        // tech user cant reopen
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::WAITING);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+        // requester can reopen
+        $this->login('post-only', 'postonly');
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::WAITING);
+        $this->boolean((bool)$ticket->needReopen())->isTrue();
+
+        // force a reopen
+        $followup = new \ITILFollowup();
+        $followup->add([
+            'itemtype'   => 'Ticket',
+            'items_id'   => $tickets_id,
+            'content'    => 'testNeedReopen',
+            'add_reopen' => 1,
+        ]);
+
+        // requester cant reopen anymore (ticket is already in an open state)
+        $this->boolean((bool)$ticket->getFromDB($ticket->getID()))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+        $this->boolean((bool)$ticket->needReopen())->isFalse();
+
+        // Test reopen as a member of a requester group
+        $ticket = $this->createItem('Ticket', [
+            'name'                 => 'testNeedReopen requester group',
+            'content'              => 'testNeedReopen requester group',
+            '_users_id_requester'  => $postonly_id,
+            '_groups_id_requester' => $requester_group->getID(),
+            '_users_id_assign'     => $tech_id,
+        ]);
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'status' => \Ticket::WAITING,
+        ]);
+        $ticket->getFromDB($ticket->getID());
+
+        $this->login('normal', 'normal');
+        $this->boolean((bool)$ticket->needReopen())->isTrue();
+    }
+
+    protected function assignFromCategoryOrItemProvider(): iterable
+    {
+        $tech_id    = getItemByTypeName('User', 'tech', true);
+        $glpi_id    = getItemByTypeName('User', 'glpi', true);
+        $normal_id  = getItemByTypeName('User', 'normal', true);
+
+        $group_1_id = getItemByTypeName('Group', '_test_group_1', true);
+        $group_2_id = getItemByTypeName('Group', '_test_group_2', true);
+
+        $group = new Group();
+        $group_3_id = $group->add(
+            [
+                'name'        => 'Group 3',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'is_assign'   => 1,
+            ]
+        );
+        $this->integer($group_3_id)->isGreaterThan(0);
+
+        // _skip_auto_assign in input should prevent auto assign
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+                '_skip_auto_assign' => 1,
+            ],
+            'expected_actors'  => [
+            ],
+        ];
+
+        // Entity::CONFIG_NEVER case
+        yield [
+            'auto_assign_mode' => Entity::CONFIG_NEVER,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_HARDWARE_CATEGORY case
+        // - with no assignee from input
+        // - with hardware having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $glpi_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_2_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_HARDWARE_CATEGORY case
+        // - with no assignee from input
+        // - with hardware having only user defined
+        // - with category having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => 0,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $tech_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_2_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_HARDWARE_CATEGORY case
+        // - with no assignee from input
+        // - with hardware having only group defined
+        // - with category having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => 0,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $glpi_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_1_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_HARDWARE_CATEGORY case
+        // - with no assignee from input
+        // - with hardware having neither user or group defined
+        // - with category having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => 0,
+                'groups_id_tech' => 0,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $tech_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_1_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_HARDWARE_CATEGORY case
+        // - with assignee from input (user)
+        // - with hardware having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+                '_users_id_assign' => [$normal_id],
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $normal_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_2_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_HARDWARE_CATEGORY case
+        // - with assignee from input ("email" actor)
+        // - with hardware having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+                '_users_id_assign' => [0],
+                '_users_id_assign_notif' => [
+                    'use_notification'  => [1],
+                    'alternative_email' => ['test@glpi-project.org'],
+                ],
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => 0,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'test@glpi-project.org',
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_2_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_HARDWARE_CATEGORY case
+        // - with assignee from input (group)
+        // - with hardware having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+                '_groups_id_assign' => [$group_3_id],
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $glpi_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_3_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_CATEGORY_HARDWARE case
+        // - with no assignee from input
+        // - with category having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $tech_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_1_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_CATEGORY_HARDWARE case
+        // - with no assignee from input
+        // - with category having only user defined
+        // - with hardware having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => 0,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $tech_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_2_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_CATEGORY_HARDWARE case
+        // - with no assignee from input
+        // - with category having only group defined
+        // - with hardware having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+            'category_input'   => [
+                'users_id'  => 0,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $glpi_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_1_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_CATEGORY_HARDWARE case
+        // - with no assignee from input
+        // - with category having neither user or group defined
+        // - with hardware having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+            'category_input'   => [
+                'users_id'  => 0,
+                'groups_id' => 0,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $glpi_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_2_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_CATEGORY_HARDWARE case
+        // - with assignee from input (user)
+        // - with hardware having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+                '_users_id_assign' => [$normal_id],
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $normal_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_1_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_CATEGORY_HARDWARE case
+        // - with assignee from input ("email" actor)
+        // - with category having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+                '_users_id_assign' => [0],
+                '_users_id_assign_notif' => [
+                    'use_notification'  => [1],
+                    'alternative_email' => ['test@glpi-project.org'],
+                ],
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => 0,
+                    'use_notification'  => 1,
+                    'alternative_email' => 'test@glpi-project.org',
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_1_id,
+                ],
+            ],
+        ];
+
+        // Entity::AUTO_ASSIGN_CATEGORY_HARDWARE case
+        // - with assignee from input (group)
+        // - with category having both user and group defined
+        yield [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+            'category_input'   => [
+                'users_id'  => $tech_id,
+                'groups_id' => $group_1_id,
+            ],
+            'computer_input'   => [
+                'users_id_tech'  => $glpi_id,
+                'groups_id_tech' => $group_2_id,
+            ],
+            'ticket_input'     => [
+                '_groups_id_assign' => [$group_3_id],
+            ],
+            'expected_actors'  => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $tech_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $group_3_id,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider assignFromCategoryOrItemProvider
+     */
+    public function testAssignFromCategoryOrItem(
+        int $auto_assign_mode,
+        ?array $category_input,
+        ?array $computer_input,
+        array $ticket_input,
+        array $expected_actors
+    ): void {
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $this->login();
+
+        $entity = new Entity();
+        $this->boolean($entity->update(['id' => $entity_id, 'auto_assign_mode' => $auto_assign_mode]))->isTrue();
+
+        $itilcategory_id = 0;
+        if ($category_input !== null) {
+            $itilcategory = new ITILCategory();
+            $itilcategory_id = $itilcategory->add(
+                $category_input + [
+                    'name'        => __METHOD__,
+                    'entities_id' => $entity_id,
+                ]
+            );
+            $this->integer($itilcategory_id)->isGreaterThan(0);
+        }
+
+        $items_id = [];
+        if ($computer_input !== null) {
+            $computer = new Computer();
+            $computer_id = $computer->add(
+                $computer_input + [
+                    'name'        => __METHOD__,
+                    'entities_id' => $entity_id,
+                ]
+            );
+            $this->integer($computer_id)->isGreaterThan(0);
+            $items_id[Computer::class] = [$computer_id];
+        }
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            $ticket_input + [
+                'name'              => __METHOD__,
+                'content'           => __METHOD__,
+                'entities_id'       => $entity_id,
+                'itilcategories_id' => $itilcategory_id,
+                'items_id'          => $items_id,
+            ]
+        );
+        $this->integer($ticket_id)->isGreaterThan(0);
+
+        $ticket->getFromDB($ticket->getID());
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->array($actors)->hasSize(count($expected_actors));
+
+        foreach ($expected_actors as $expected_actor) {
+            $found = false;
+            foreach ($actors as $actor) {
+                if (array_intersect_assoc($expected_actor, $actor) === $expected_actor) {
+                    // Found an actor that has same properties as those defined in expected actor
+                    $found = true;
+                    break;
+                }
+            }
+            $this->boolean($found)->isTrue(json_encode($expected_actor));
+        }
+    }
+
+    public function providerGetPrimaryRequesterUser()
+    {
+        $this->login();
+        $entity_id = 0;
+
+        $ticket = new \Ticket();
+        yield [
+            'ticket' => $ticket,
+            'expected' => null,
+        ];
+
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_skip_auto_assign' => true,
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => null,
+        ];
+
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_actors'           => [
+                'requester'       => [
+                    [
+                        'itemtype'          => \User::class,
+                        'items_id'          => $_SESSION['glpiID'],
+                        'use_notification'  => 0,
+                        'alternative_email' => '',
+                    ]
+                ],
+            ],
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => $_SESSION['glpiID'],
+        ];
+
+        $glpi_user = new \User();
+        $glpi_user->getFromDBbyName('glpi');
+        $normal_user = new \User();
+        $normal_user->getFromDBbyName('normal');
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => $entity_id,
+            '_actors'           => [
+                'requester'       => [
+                    [
+                        'itemtype'          => \User::class,
+                        'items_id'          => $normal_user->getID(),
+                        'use_notification'  => 0,
+                        'alternative_email' => '',
+                    ], [
+                        'itemtype'          => \User::class,
+                        'items_id'          => $glpi_user->getID(),
+                        'use_notification'  => 0,
+                        'alternative_email' => '',
+                    ],
+                ],
+            ],
+        ]);
+        yield [
+            'ticket' => $ticket,
+            'expected' => $normal_user->getID(),
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetPrimaryRequesterUser
+     */
+    public function testGetPrimaryRequesterUser($ticket, $expected)
+    {
+        $output = $ticket->getPrimaryRequesterUser();
+        if ($expected === null) {
+            $this->variable($output)->isNull();
+        } else {
+            $this->integer($output->getID())->isEqualTo($expected);
+        }
     }
 }

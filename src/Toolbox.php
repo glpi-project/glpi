@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,6 +37,7 @@ use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\Toolbox\VersionParser;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
@@ -203,9 +206,12 @@ class Toolbox
      * @param $str string   string to analyse
      *
      * @return boolean
+     *
+     * @deprecated 10.1.0
      **/
     public static function seems_utf8($str)
     {
+        Toolbox::deprecated();
         return mb_check_encoding($str, "UTF-8");
     }
 
@@ -276,8 +282,8 @@ class Toolbox
      **/
     public static function clean_cross_side_scripting_deep($value)
     {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::sanitize()"');
-        return Sanitizer::sanitize($value, false);
+        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()"');
+        return Sanitizer::encodeHtmlSpecialCharsRecursive($value);
     }
 
 
@@ -294,9 +300,9 @@ class Toolbox
      **/
     public static function unclean_cross_side_scripting_deep($value)
     {
-        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::unsanitize()"');
+        Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()"');
         global $DB;
-        return $DB->escape(Sanitizer::unsanitize($value));
+        return $DB->escape(Sanitizer::decodeHtmlSpecialCharsRecursive($value));
     }
 
     /**
@@ -308,13 +314,38 @@ class Toolbox
      */
     public static function getHtmLawedSafeConfig(): array
     {
+        $forbidden_elements = [
+            'script',
+
+            // header elements used to link external resources
+            'link',
+            'meta',
+
+            // elements used to embed potential malicious external application
+            'applet',
+            'canvas',
+            'embed',
+            'object',
+
+            // form elements
+            'form',
+            'button',
+            'input',
+            'select',
+            'datalist',
+            'option',
+            'optgroup',
+            'textarea',
+        ];
+
         $config = [
-            'elements'         => '* -applet -canvas -embed -form -object -script',
-            'deny_attribute'   => 'on*, srcdoc',
-            'comment'          => 1, // 1: remove HTML comments (and do not display their contents)
-            'cdata'            => 1, // 1: remove CDATA sections (and do not display their contents)
-            'direct_list_nest' => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
-            'schemes'          => '*: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet, notes'
+            'elements'           => '* ' . implode('', array_map(fn($element) => '-' . $element, $forbidden_elements)),
+            'deny_attribute'     => 'on*, srcdoc, formaction',
+            'comment'            => 1, // 1: remove HTML comments (and do not display their contents)
+            'cdata'              => 1, // 1: remove CDATA sections (and do not display their contents)
+            'direct_list_nest'   => 1, // 1: Allow usage of ul/ol tags nested in other ul/ol tags
+            'schemes'            => 'href: aim, app, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, tel, telnet, notes; *: file, http, https',
+            'no_deprecated_attr' => 0, // 0: do not transform deprecated HTML attributes
         ];
         if (!GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
             $config['elements'] .= '-iframe';
@@ -373,10 +404,6 @@ class Toolbox
             } else {
                 $msg .= $arg . ' ';
             }
-        }
-
-        if (defined('TU_USER') && $level >= Logger::NOTICE) {
-            throw new \RuntimeException($msg);
         }
 
         $tps = microtime(true);
@@ -483,16 +510,7 @@ class Toolbox
     {
         global $SQLLOGGER;
         $args = func_get_args();
-        $msg = $args[0];
-        try {
-            self::log($SQLLOGGER, Logger::ERROR, $args);
-        } catch (\RuntimeException $e) {
-            $msg = $e->getMessage();
-        } finally {
-            if (class_exists('GlpitestSQLError')) { // For unit test
-                throw new \GlpitestSQLError($msg);
-            }
-        }
+        self::log($SQLLOGGER, Logger::ERROR, $args);
     }
 
 
@@ -503,7 +521,7 @@ class Toolbox
      * @param string $hide Call to hide (but display script/line)
      * @param array  $skip Calls to not display at all
      *
-     * @return string if $log is false
+     * @return string
      *
      * @since 0.85
      **/
@@ -541,9 +559,9 @@ class Toolbox
 
         if ($log) {
             self::logInFile($log, $message, true);
-        } else {
-            return $message;
         }
+
+        return $message;
     }
 
     /**
@@ -695,12 +713,22 @@ class Toolbox
         $etag = md5_file($file);
         $lastModified = filemtime($file);
 
-       // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
-       // If there is any extra data, the sent file will be corrupted.
-        while (ob_get_level() > 0) {
+        // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
+        // If there is any extra data, the sent file will be corrupted.
+        // 1. Turn off any extra buffering level. Keep one buffering level if PHP output_buffering directive is not "off".
+        $ob_config = ini_get('output_buffering');
+        $max_buffering_level = $ob_config !== false && (strtolower($ob_config) === 'on' || (is_numeric($ob_config) && (int)$ob_config > 0))
+            ? 1
+            : 0;
+        while (ob_get_level() > $max_buffering_level) {
             ob_end_clean();
         }
-       // Now send the file with header() magic
+        // 2. Clean any buffered output in remaining level (output_buffering="on" case).
+        if (ob_get_level() > 0) {
+            ob_clean();
+        }
+
+        // Now send the file with header() magic
         header("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastModified) . " GMT");
         header("Etag: $etag");
         header_remove('Pragma');
@@ -711,7 +739,7 @@ class Toolbox
         }
         header(
             "Content-disposition:$attachment filename=\"" .
-            addslashes(utf8_decode($filename)) .
+            addslashes(mb_convert_encoding($filename, 'ISO-8859-1', 'UTF-8')) .
             "\"; filename*=utf-8''" .
             rawurlencode($filename)
         );
@@ -803,6 +831,8 @@ class Toolbox
                 $params[] = (!empty($parent) ? $parent . '%5B' . rawurlencode($k) . '%5D' : rawurlencode($k)) . '=' . rawurlencode($v);
             }
         }
+        //Remove empty values
+        $params = array_filter($params);
         return implode($separator, $params);
     }
 
@@ -879,10 +909,13 @@ class Toolbox
      *
      * @param string $path  directory or file to get size
      *
-     * @return integer
+     * @return null|integer
+     *
+     * @deprecated 10.0.0
      **/
     public static function filesizeDirectory($path)
     {
+        Toolbox::deprecated();
 
         if (!is_dir($path)) {
             return filesize($path);
@@ -901,6 +934,8 @@ class Toolbox
             closedir($handle);
             return $size;
         }
+
+        return null;
     }
 
 
@@ -1096,6 +1131,10 @@ class Toolbox
        //parse github releases (get last version number)
         $error = "";
         $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error);
+        if (empty($json_gh_releases)) {
+            return $error;
+        }
+
         $all_gh_releases = json_decode($json_gh_releases, true);
         $released_tags = [];
         foreach ($all_gh_releases as $release) {
@@ -1332,6 +1371,35 @@ class Toolbox
 
 
     /**
+     * Check an url is safe.
+     * Used to mitigate SSRF exploits.
+     *
+     * @since 10.0.3
+     *
+     * @param string    $url        URL to check
+     * @param array     $allowlist  Allowlist (regex array)
+     *
+     * @return bool
+     */
+    public static function isUrlSafe(string $url, array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST): bool
+    {
+        foreach ($allowlist as $allow_regex) {
+            $result = preg_match($allow_regex, $url);
+            if ($result === false) {
+                trigger_error(
+                    sprintf('Unable to validate URL safeness. Following regex is probably invalid: "%s".', $allow_regex),
+                    E_USER_WARNING
+                );
+            } elseif ($result === 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
      * Get a web page. Use proxy if configured
      *
      * @param string  $url    URL to retrieve
@@ -1342,7 +1410,8 @@ class Toolbox
      **/
     public static function getURLContent($url, &$msgerr = null, $rec = 0)
     {
-        $content = self::callCurl($url);
+        $curl_error = null;
+        $content = self::callCurl($url, [], $msgerr, $curl_error, true);
         return $content;
     }
 
@@ -1356,9 +1425,23 @@ class Toolbox
      *
      * @return string
      */
-    public static function callCurl($url, array $eopts = [], &$msgerr = null, &$curl_error = null)
-    {
+    public static function callCurl(
+        $url,
+        array $eopts = [],
+        &$msgerr = null,
+        &$curl_error = null,
+        bool $check_url_safeness = false
+    ) {
         global $CFG_GLPI;
+
+        if ($check_url_safeness && !Toolbox::isUrlSafe($url)) {
+            $msgerr = sprintf(
+                __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
+                $url
+            );
+            trigger_error(sprintf('Unsafe URL "%s" fetching has been blocked.', $url), E_USER_NOTICE);
+            return '';
+        }
 
         $content = "";
         $taburl  = parse_url($url);
@@ -1380,6 +1463,10 @@ class Toolbox
             CURLOPT_RETURNTRANSFER  => 1,
             CURLOPT_CONNECTTIMEOUT  => 5,
         ] + $eopts;
+
+        if ($check_url_safeness) {
+            $opts[CURLOPT_FOLLOWLOCATION] = false;
+        }
 
         if (!empty($CFG_GLPI["proxy_name"])) {
            // Connection using proxy
@@ -1406,6 +1493,7 @@ class Toolbox
         curl_setopt_array($ch, $opts);
         $content = curl_exec($ch);
         $curl_error = curl_error($ch) ?: null;
+        $curl_redirect = curl_getinfo($ch, CURLINFO_REDIRECT_URL) ?: null;
         curl_close($ch);
 
         if ($curl_error !== null) {
@@ -1423,6 +1511,8 @@ class Toolbox
                 );
             }
             $content = '';
+        } else if ($curl_redirect !== null) {
+            return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness);
         } else if (empty($content)) {
             $msgerr = __('No data available on the web site');
         }
@@ -2258,7 +2348,8 @@ class Toolbox
        // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
         $DB = $database;
 
-        if (!$DB->runFile(GLPI_ROOT . "/install/mysql/glpi-empty.sql")) {
+        $normalized_nersion = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $normalized_nersion))) {
             echo "Errors occurred inserting default database";
         } else {
            //dataset
@@ -2534,15 +2625,21 @@ class Toolbox
      *
      * @param string $string String to slugify
      * @param string $prefix Prefix to use (anchors cannot begin with a number)
+     * @param bool   $force_special_dash Replace all special chars by a dash
      *
      * @return string
      */
-    public static function slugify($string, $prefix = 'slug_')
+    public static function slugify(string $string = "", string $prefix = 'slug_', bool $force_special_dash = false): string
     {
         $string = transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $string);
         $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
         $string = preg_replace('~[^0-9a-z_\.]+~i', '-', $string);
         $string = trim($string, '-');
+
+        if ($force_special_dash) {
+            $string = preg_replace('~[^-\w]+~', '-', $string);
+        }
+
         if ($string == '') {
            //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
            //harcoded prefix string because html @id must begin with a letter
@@ -2602,8 +2699,14 @@ class Toolbox
 
         if (count($doc_data)) {
             $base_path = $CFG_GLPI['root_doc'];
-            if (isCommandLine()) {
-                $base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH);
+
+            $was_html_encoded = Sanitizer::isHtmlEncoded($content_text);
+            $was_escaped      = Sanitizer::isDbEscaped($content_text);
+            if ($was_html_encoded) {
+                $content_text = Sanitizer::decodeHtmlSpecialChars($content_text);
+            }
+            if ($was_escaped) {
+                $content_text = Sanitizer::dbUnescape($content_text);
             }
 
             foreach ($doc_data as $id => $image) {
@@ -2613,32 +2716,33 @@ class Toolbox
                         $document->getFromDB($id)
                         && strpos($document->fields['mime'], 'image/') !== false
                     ) {
-                        // append itil object reference in image link
-                        $itil_object = null;
-                        if ($item instanceof CommonITILObject) {
-                            $itil_object = $item;
-                        } else if (
-                            isset($item->input['_job'])
+                        // append object reference in image link
+                        $linked_object = null;
+                        if (
+                              !($item instanceof CommonITILObject)
+                              && isset($item->input['_job'])
                               && $item->input['_job'] instanceof CommonITILObject
                         ) {
-                            $itil_object = $item->input['_job'];
+                            $linked_object = $item->input['_job'];
+                        } else if ($item instanceof CommonDBTM) {
+                            $linked_object = $item;
                         }
-                        $itil_url_param = null !== $itil_object
-                        ? "&{$itil_object->getForeignKeyField()}={$itil_object->fields['id']}"
+                        $object_url_param = null !== $linked_object
+                        ? sprintf('&itemtype=%s&items_id=%s', $linked_object->getType(), $linked_object->fields['id'])
                         : "";
                         $img = "<img alt='" . $image['tag'] . "' src='" . $base_path .
-                          "/front/document.send.php?docid=" . $id . $itil_url_param . "'/>";
+                          "/front/document.send.php?docid=" . $id . $object_url_param . "'/>";
 
                       // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
                             '/' . Document::getImageTag($image['tag']) . '/',
-                            Sanitizer::sanitize($img, false),
+                            $img,
                             $content_text
                         );
 
                          // 2 - Replace img with tag in id attribute by the image
                         $regex = '/<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>/im';
-                        preg_match_all($regex, Sanitizer::unsanitize($content_text), $matches);
+                        preg_match_all($regex, $content_text, $matches);
                         foreach ($matches[0] as $match_img) {
                             //retrieve dimensions
                             $width = $height = null;
@@ -2664,7 +2768,7 @@ class Toolbox
                                 $width,
                                 $height,
                                 true,
-                                $itil_url_param
+                                $object_url_param
                             );
                             if (empty($new_image)) {
                                   $new_image = '#' . $image['tag'] . '#';
@@ -2672,9 +2776,9 @@ class Toolbox
                             $content_text = str_replace(
                                 $match_img,
                                 $new_image,
-                                Sanitizer::unsanitize($content_text)
+                                $content_text
                             );
-                            $content_text = Sanitizer::sanitize($content_text, false);
+                            $content_text = $content_text;
                         }
 
                         // If the tag is from another ticket : link document to ticket
@@ -2701,6 +2805,13 @@ class Toolbox
                         );
                     }
                 }
+            }
+
+            if ($was_html_encoded) {
+                $content_text = Sanitizer::encodeHtmlSpecialChars($content_text);
+            }
+            if ($was_escaped) {
+                $content_text = Sanitizer::dbEscape($content_text);
             }
         }
 
@@ -2732,7 +2843,7 @@ class Toolbox
 
     /**
      * Decode JSON in GLPI
-     * Because json can have been modified from addslashes_deep
+     * Because json can have been modified from Sanitizer
      *
      * @param string $encoded Encoded JSON
      * @param boolean $assoc  assoc parameter of json_encode native function
@@ -2746,18 +2857,85 @@ class Toolbox
             return $encoded;
         }
 
-        $json = json_decode($encoded, $assoc);
-
-        if (json_last_error() != JSON_ERROR_NONE) {
-           //something went wrong... Try to stripslashes before decoding.
-            $json = json_decode(self::stripslashes_deep($encoded), $assoc);
-            if (json_last_error() != JSON_ERROR_NONE) {
-                self::log(null, Logger::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
-                return $encoded;
+        $json_data = null;
+        if (self::isJSON($encoded)) {
+            $json_data = $encoded;
+        } else {
+            //something went wrong... Try to unsanitize before decoding.
+            $raw_encoded = Sanitizer::unsanitize($encoded);
+            if (self::isJSON($raw_encoded)) {
+                $json_data = $raw_encoded;
             }
         }
 
+        if ($json_data === null) {
+            self::log(null, Logger::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
+            return $encoded;
+        }
+
+        $json = json_decode($json_data, $assoc);
         return $json;
+    }
+
+
+    /**
+     * **Fast** JSON detection of a given var
+     * From https://stackoverflow.com/a/45241792
+     *
+     * @param mixed the var to test
+     *
+     * @return bool
+     */
+    public static function isJSON($json): bool
+    {
+        // Numeric strings are always valid JSON.
+        if (is_numeric($json)) {
+            return true;
+        }
+
+        // A non-string value can never be a JSON string.
+        if (!is_string($json)) {
+            return false;
+        }
+
+        $json = trim($json);
+        // Any non-numeric JSON string must be longer than 2 characters.
+        if (strlen($json) < 2) {
+            return false;
+        }
+
+        // "null" is valid JSON string.
+        if ('null' === $json) {
+            return true;
+        }
+
+        // "true" and "false" are valid JSON strings.
+        if ('true' === $json) {
+            return true;
+        }
+        if ('false' === $json) {
+            return false;
+        }
+
+        // Any other JSON string has to be wrapped in {}, [] or "".
+        if ('{' != $json[0] && '[' != $json[0] && '"' != $json[0]) {
+            return false;
+        }
+
+        // Verify that the trailing character matches the first character.
+        $last_char = $json[strlen($json) - 1];
+        if ('{' == $json[0] && '}' != $last_char) {
+            return false;
+        }
+        if ('[' == $json[0] && ']' != $last_char) {
+            return false;
+        }
+        if ('"' == $json[0] && '"' != $last_char) {
+            return false;
+        }
+
+        // See if the string contents are valid JSON.
+        return null !== json_decode($json);
     }
 
     /**
@@ -2835,13 +3013,6 @@ class Toolbox
                     2 => __('MM-DD-YYYY')
                 ];
                 break;
-            case 'gantt':
-                $formats = [
-                    0 => '%Y-%m-%d',
-                    1 => '%d-%m-%Y',
-                    2 => '%m-%d-%Y'
-                ];
-                break;
             default:
                 throw new \RuntimeException("Unknown type $type to get date formats.");
         }
@@ -2853,7 +3024,7 @@ class Toolbox
      *
      * @since 9.2
      *
-     * @param string $type Type for (either 'php', 'js' or 'gantt')
+     * @param string $type Type for (either 'php', 'js')
      *
      * @return string
      */
@@ -3433,6 +3604,10 @@ HTML;
      */
     public static function isFloat($value): bool
     {
+        if ($value === null || $value === '') {
+            return false;
+        }
+
         if (!is_numeric($value)) {
             $type = gettype($value);
 
@@ -3470,5 +3645,40 @@ HTML;
         }
 
         return strlen(preg_replace('/\d*\./', '', floatval($value)));
+    }
+
+    /**
+     * Try to convert to Mio the given input
+     *
+     * @param string $size Input string
+     *
+     * @return mixed The Mio value as an integer if we were able to parse the
+     * input, else the unchanged input string
+     */
+    public static function getMioSizeFromString(string $size)
+    {
+        if (is_numeric($size)) {
+            // Already a numeric value, no work to be done
+            return $size;
+        }
+
+        if (!preg_match('/(\d+).*?(\w+)/', $size, $matches)) {
+            // Unkown format, keep the string as it is
+            return $size;
+        }
+        $supported_sizes = [
+            'mo'  => 0,
+            'mio' => 0,
+            'go'  => 1,
+            'gio' => 1,
+            'to'  => 2,
+            'tio' => 2,
+        ];
+        $exp = $supported_sizes[strtolower($matches[2]) ?? null];
+        if ($exp === null) {
+            // Unkown format, keep the string as it is
+            return $size;
+        }
+        return $matches[1] * pow(1024, $exp);
     }
 }

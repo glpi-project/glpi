@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,23 +17,24 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
+    define('GLPI_ROOT', dirname(__FILE__, 2));
 }
 
 // Notice problem  for date function :
@@ -80,6 +82,11 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_USE_IDOR_CHECK'            => '1',
         'GLPI_IDOR_EXPIRES'              => '7200',
         'GLPI_ALLOW_IFRAME_IN_RICH_TEXT' => false,
+        'GLPI_SERVERSIDE_URL_ALLOWLIST'  => [
+            // allowlist (regex format) of URL that can be fetched from server side (used for RSS feeds and external calendars, among others)
+            // URL will be considered as safe as long as it matches at least one entry of the allowlist
+            '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // only accept http/https/feed protocols, and reject presence of @ (username) and : (protocol) in host part of URL
+        ],
 
       // Constants related to GLPI Project / GLPI Network external services
         'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
@@ -87,6 +94,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_NETWORK_MAIL'                 => 'glpi@teclib.com',
         'GLPI_NETWORK_SERVICES'             => 'https://services.glpi-network.com', // GLPI Network services project URL
         'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_SERVICES}/api/registration/',
+        'GLPI_MARKETPLACE_ENABLE'           => 3, // 0 = Completely disabled, 1 = CLI only, 2 = Web only, 3 = CLI and Web
         'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_SERVICES}/api/glpi-plugins/',
         'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
         'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download link of plugins which cannot be installed/updated by marketplace
@@ -96,7 +104,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
 
       // Other constants
-        'GLPI_AJAX_DASHBOARD'         => '1',
+        'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
         'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
         'GLPI_DEMO_MODE'              => '0',
         'GLPI_CENTRAL_WARNINGS'       => '1', // display (1), or not (0), warnings on GLPI Central page
@@ -125,7 +133,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
    // This logic is quiet simple and is not made to handle chain inheritance.
     $inherit_pattern = '/\{(?<name>GLPI_[\w]+)\}/';
     foreach ($constants as $key => $value) {
-        if (!defined($key) && !preg_match($inherit_pattern, $value)) {
+        if (!defined($key) && (!is_string($value) || !preg_match($inherit_pattern, $value))) {
             define($key, $value);
         }
     }

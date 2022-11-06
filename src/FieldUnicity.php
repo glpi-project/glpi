@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -39,7 +41,8 @@ class FieldUnicity extends CommonDropdown
    // From CommonDBTM
     public $dohistory          = true;
 
-    public $second_level_menu  = "control";
+    public $first_level_menu   = "config";
+    public $second_level_menu  = "fieldunicity";
     public $can_be_translated  = false;
 
     public static $rightname          = 'config';
@@ -63,12 +66,6 @@ class FieldUnicity extends CommonDropdown
     public static function canPurge()
     {
         return static::canUpdate();
-    }
-
-
-    public function displayHeader()
-    {
-        Html::header(FieldUnicity::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "fieldunicity");
     }
 
     public function getAdditionalFields()
@@ -572,9 +569,9 @@ class FieldUnicity extends CommonDropdown
             $where_fields[] = $field;
         }
 
+        echo "<table class='tab_cadre_fixe'>";
         if (!empty($fields)) {
             $colspan = count($fields) + 1;
-            echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='" . $colspan . "'>" . __('Duplicates') . "</th></tr>";
 
             $entities = [$unicity->fields['entities_id']];
@@ -644,7 +641,7 @@ class FieldUnicity extends CommonDropdown
             }
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='$colspan'>" . __('No item to display') . "</td></tr>";
+            echo "<td class='center'>" . __('No item to display') . "</td></tr>";
         }
         echo "</table>";
     }

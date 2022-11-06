@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -46,10 +48,6 @@ class Item_SoftwareVersion extends CommonDBRelation
     public static $log_history_2_add    = Log::HISTORY_INSTALL_SOFTWARE;
     public static $log_history_2_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
 
-    public function useDeletedToLockIfDynamic()
-    {
-        return false;
-    }
 
     public static function getTypeName($nb = 0)
     {
@@ -464,8 +462,9 @@ class Item_SoftwareVersion extends CommonDBRelation
         $canshowitems  = [];
         $item_version_table = self::getTable(__CLASS__);
 
-        $refcolumns = ['vername'           => _n('Version', 'Versions', Session::getPluralNumber()),
-            'item_type'          => __('Item type'),
+        $refcolumns = [
+            'version'           => _n('Version', 'Versions', Session::getPluralNumber()),
+            'item_type'         => __('Item type'),
             'itemname'          => __('Name'),
             'entity'            => Entity::getTypeName(1),
             'serial'            => __('Serial number'),
@@ -478,7 +477,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             'date_install'      => __('Installation date')
         ];
         if ($crit != "softwares_id") {
-            unset($refcolumns['vername']);
+            unset($refcolumns['version']);
         }
 
         if (isset($_GET["start"])) {
@@ -537,7 +536,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                     'glpi_softwareversions.id AS vID',
                     "{$itemtable}.name AS itemname",
                     "{$itemtable}.id AS iID",
-                    new QueryExpression($DB->quoteValue($itemtype) . " AS " . $DB::quoteName('item_type')),
+                    new QueryExpression($DB->quoteValue($itemtype) . " AS " . $DB->quoteName('item_type')),
                 ],
                 'FROM'   => $item_version_table,
                 'INNER JOIN' => [
@@ -747,9 +746,11 @@ class Item_SoftwareVersion extends CommonDBRelation
                 if ($key[0] == '_') {
                     $header_end .= "<th>$val</th>";
                 } else {
-                    $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">" .
-                     "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
-                        (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
+                    $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">";
+                    $header_end .= $key !== 'lname'
+                        ? "<a href='javascript:reloadTab(\"sort=$key&amp;order=" . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a>"
+                        : $val;
+                    $header_end .= "</th>";
                 }
             }
 
@@ -1130,7 +1131,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end .= "<th>" . SoftwareCategory::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Valid license') . "</th>";
             $header_end .= "<th>
-                <button class='btn btn-sm show_log_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
+                <button class='btn btn-sm show_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
                     <i class='fas fa-filter'></i>
                     <span class='d-none d-xl-block'>" . __('Filter') . "</span>
                 </button></th>";
@@ -1138,7 +1139,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo $header_begin . $header_top . $header_end;
 
             if ($is_filtered) {
-                echo "<tr class='log_history_filter_row'>
+                echo "<tr class='filter_row'>
                     <td>
                         <input type='hidden' name='filters[active]' value='1'>
                     </td>
@@ -1219,6 +1220,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</tfoot>";
             echo "</table>";
             echo "</div>";
+            Html::printAjaxPager('', $start, $number);
             if ($canedit) {
                 $massiveactionparams['ontop'] = false;
                 Html::showMassiveActions($massiveactionparams);
@@ -1398,7 +1400,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 Html::showMassiveActionCheckBox(__CLASS__, $ID);
                 echo "</td>";
             }
-            echo "<td class='b'>";
+            echo "<td>";
             echo "<a href='" . Software::getFormURLWithID($data['softwares_id']) . "'>";
             echo ($_SESSION["glpiis_ids_visible"] ? sprintf(
                 __('%1$s (%2$s)'),
@@ -1526,7 +1528,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</td>";
         }
 
-        echo "<td class='center b'>";
+        echo "<td>";
         echo "<a href='" . Software::getFormURLWithID($data['softwares_id']) . "'>";
         echo ($_SESSION["glpiis_ids_visible"] ? sprintf(
             __('%1$s (%2$s)'),
@@ -1551,7 +1553,10 @@ class Item_SoftwareVersion extends CommonDBRelation
                 )
             );
         }
-        echo "</td><td class='b'>" . $data["name"] . " - " . $serial;
+        echo "</td><td>" . $data["name"];
+        if (!empty($serial)) {
+            echo " - " . $serial;
+        }
 
         $comment = "<table><tr><td>" . __('Name') . "</td>" . "<td>" . $data['name'] . "</td></tr>" .
                  "<tr><td>" . __('Serial number') . "</td><td>" . $data['serial'] . "</td></tr>" .

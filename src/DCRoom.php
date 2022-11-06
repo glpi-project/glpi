@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -151,6 +153,33 @@ class DCRoom extends CommonDBTM
                 'value'  => $this->fields["vis_rows"],
                 'min'    => 1,
                 'max'    => 100,
+                'step'   => 1,
+                'rand'   => $rand
+            ]
+        );
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td><label for='dropdown_vis_cell_width$rand'>" . __('Cell width') . "</label></td><td>";
+        Dropdown::showNumber(
+            "vis_cell_width",
+            [
+                'value'  => $this->fields["vis_cell_width"] ?: 40,
+                'min'    => 10,
+                'max'    => 200,
+                'step'   => 1,
+                'rand'   => $rand
+            ]
+        );
+        echo "</td>";
+        echo "<td><label for='dropdown_vis_cell_height$rand'>" . __('Cell height') . "</label></td><td>";
+        Dropdown::showNumber(
+            "vis_cell_height",
+            [
+                'value'  => $this->fields["vis_cell_height"] ?: 40,
+                'min'    => 10,
+                'max'    => 200,
                 'step'   => 1,
                 'rand'   => $rand
             ]
@@ -344,11 +373,14 @@ class DCRoom extends CommonDBTM
                 );
              break;
         }
+
+        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForDatacenter($item);
+        return true;
     }
 
     /**

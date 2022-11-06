@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -263,34 +265,24 @@ final class DbUtils
             }
 
             $base_itemtype = $this->fixItemtypeCase($prefix . $table);
-            $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
-
-           // Both potential itemtype (with or without namespace) are pointing to the same file, so it will trigger a
-           // "Cannot declare class XXX, because the name is already in use" error if the "wrong" version is
-           // required by the autoloader when the good version is already loaded.
-           // i.e. `class_exists('Glpi\Computer')` will load `src/Computer.php` which may redeclare the `Computer class`
-           //
-           // To prevent this, we check existence of both without allowing the autoloader to be used.
-           // If none exists yet, we trigger the autoloader to ensure the class file is loaded and the class is defined.
-           //
-           // Then we check again existence of both without allowing the autoloader to be used,
-           // in order to find the good class to use.
-            if (!class_exists($base_itemtype, false) && !class_exists($namespaced_itemtype, false)) {
-                // Try to trigger loading of base itemtype
-                class_exists($base_itemtype);
-                if (!class_exists($namespaced_itemtype, false) && !class_exists($base_itemtype, false)) {
-                    // Namespace itemtype file will not be loaded by call to `class_exists($base_itemtype)`:
-                    // - if namespace has more than one level (i.e. "Glpi\Dashboard\Dashboard")
-                    // - if clanname without namespace already exists (i.e. `Socket` from `sockets` extension, `Event` from `event` extension, ...)
-                    class_exists($namespaced_itemtype); // Try to trigger loading of namespaced itemtype
-                }
-            }
 
             $itemtype = null;
-            if (class_exists($base_itemtype, false)) {
-                $itemtype = $base_itemtype;
-            } else if (class_exists($namespaced_itemtype, false)) {
-                $itemtype = $namespaced_itemtype;
+            if (class_exists($base_itemtype)) {
+                $class_file = (new ReflectionClass($base_itemtype))->getFileName();
+                $is_glpi_class = $class_file !== false && (
+                    str_starts_with(realpath($class_file), realpath(GLPI_ROOT))
+                    || str_starts_with(realpath($class_file), realpath(GLPI_MARKETPLACE_DIR))
+                    || str_starts_with(realpath($class_file), realpath(GLPI_PLUGIN_DOC_DIR))
+                );
+                if ($is_glpi_class) {
+                    $itemtype = $base_itemtype;
+                }
+            }
+            if ($itemtype === null) {
+                $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
+                if (class_exists($namespaced_itemtype)) {
+                    $itemtype = $namespaced_itemtype;
+                }
             }
 
             if ($itemtype !== null && $item = $this->getItemForItemtype($itemtype)) {
@@ -315,14 +307,16 @@ final class DbUtils
      */
     public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT)
     {
+        global $GLPI_CACHE;
 
-       // If a class exists for this itemtype, just return the declared class name.
-        $matches = preg_grep('/^' . preg_quote($itemtype) . '$/i', get_declared_classes());
+        // If a class exists for this itemtype, just return the declared class name.
+        $matches = preg_grep('/^' . preg_quote($itemtype, '/') . '$/i', get_declared_classes());
         if (count($matches) === 1) {
             return current($matches);
         }
 
-        static $files = [];
+        static $mapping = []; // Mappings already retrieved in current request
+        static $already_scanned = []; // Directories already scanned directories in current request
 
         $context = 'glpi-core';
         $plugin_matches = [];
@@ -331,19 +325,54 @@ final class DbUtils
            // indeed, we must be able to separate plugin name (directory) from class name (file)
            // so pattern must be the one provided by getItemTypeForTable: PluginDirectorynameClassname
             $context = strtolower($plugin_matches['plugin']);
-        } else if (preg_match('/^' . preg_quote(NS_PLUG) . '(?<plugin>[a-z]+)\\\/i', $itemtype, $plugin_matches)) {
+        } else if (preg_match('/^' . preg_quote(NS_PLUG, '/') . '(?<plugin>[a-z]+)\\\/i', $itemtype, $plugin_matches)) {
             $context = strtolower($plugin_matches['plugin']);
         }
 
-        if (!array_key_exists($context, $files)) {
-           // Fetch filenames from "src" directory of context (GLPI core or given plugin).
-            $files[$context] = [];
+        $namespace      = $context === 'glpi-core' ? NS_GLPI : NS_PLUG . ucfirst($context) . '\\';
+        $uses_namespace = preg_match('/^(' . preg_quote($namespace, '/') . ')/i', $itemtype);
 
-            $srcdir = $root_dir . ($context === 'glpi-core' ? '' : '/plugins/' . $context) . '/src';
-            if (!is_dir($srcdir)) {
-               // Cannot search in files if dir not exists (can correspond to a deleted plugin)
-                return $itemtype;
-            }
+        $expected_lc_path = str_ireplace(
+            [$namespace, '\\'],
+            [''        , DIRECTORY_SEPARATOR],
+            strtolower($itemtype) . '.php'
+        );
+
+        $cache_key = sprintf('itemtype-case-mapping-%s', $context);
+
+        if (!array_key_exists($context, $mapping)) {
+            // Initialize mapping from persistent cache if it has not been done yet in current request
+            $mapping[$context] = $GLPI_CACHE->get($cache_key);
+        }
+
+        if ($mapping[$context] !== null && array_key_exists($expected_lc_path, $mapping[$context])) {
+            // Return known value, if any
+            return ($uses_namespace ? $namespace : '') . $mapping[$context][$expected_lc_path];
+        }
+
+        if (
+            (
+                $mapping[$context] !== null
+                && ($_SESSION['glpi_use_mode'] ?? null) !== Session::DEBUG_MODE
+                && !defined('TU_USER')
+            )
+            || in_array($context, $already_scanned)
+        ) {
+            // Do not scan class files if mapping was already cached, unless debug mode is used.
+            //
+            // It will prevent a scan on all files when method is used on an unexisting itemtype
+            // which would never be present in cached mapping as it would have no matching file.
+            // This case can happen when database contains obsolete data, or when a plugin calls
+            // `getItemForItemtype()` for an invalid itemtype.
+            //
+            // Skip also files scan if it has already been done in current request.
+            return $itemtype;
+        }
+
+        // Fetch filenames from "src" directory of context (GLPI core or given plugin).
+        $mapping[$context] = [];
+        $srcdir = $root_dir . ($context === 'glpi-core' ? '' : '/plugins/' . $context) . '/src';
+        if (is_dir($srcdir)) {
             $files_iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($srcdir),
                 RecursiveIteratorIterator::SELF_FIRST
@@ -355,10 +384,10 @@ final class DbUtils
                 }
                 $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
 
-                // Sore into files list:
-                // - key is the lowercased filename;
+                // Store entry into mapping:
+                // - key is the lowercased filepath;
                 // - value is the classname with correct case.
-                $files[$context][strtolower($relative_path)] = str_replace(
+                $mapping[$context][strtolower($relative_path)] = str_replace(
                     [DIRECTORY_SEPARATOR, '.php'],
                     ['\\',                ''],
                     $relative_path
@@ -366,20 +395,13 @@ final class DbUtils
             }
         }
 
-        $namespace      = $context === 'glpi-core' ? NS_GLPI : NS_PLUG . ucfirst($context) . '\\';
-        $uses_namespace = preg_match('/^(' . preg_quote($namespace) . ')/i', $itemtype);
+        $already_scanned[] = $context;
 
-        $expected_lc_path = str_ireplace(
-            [$namespace, '\\'],
-            [''        , DIRECTORY_SEPARATOR],
-            strtolower($itemtype) . '.php'
-        );
+        $GLPI_CACHE->set($cache_key, $mapping[$context]);
 
-        if (array_key_exists($expected_lc_path, $files[$context])) {
-            $itemtype = ($uses_namespace ? $namespace : '') . $files[$context][$expected_lc_path];
-        }
-
-        return $itemtype;
+        return array_key_exists($expected_lc_path, $mapping[$context])
+            ? ($uses_namespace ? $namespace : '') . $mapping[$context][$expected_lc_path]
+            : $itemtype;
     }
 
 
@@ -396,11 +418,6 @@ final class DbUtils
             return false;
         }
 
-        if ($itemtype === 'Event') {
-           //to avoid issues when pecl-event is installed...
-            $itemtype = 'Glpi\\Event';
-        }
-
        // If itemtype starts with "Glpi\" or "GlpiPlugin\" followed by a "\",
        // then it is a namespaced itemtype that has been "sanitized".
        // Strip slashes to get its actual value.
@@ -409,7 +426,15 @@ final class DbUtils
          . preg_quote('\\', '/') // followed by an additionnal \
          . '/';
         if (preg_match($sanitized_namespaced_pattern, $itemtype)) {
+            trigger_error(sprintf('Unexpected sanitized itemtype "%s" encountered.', $itemtype), E_USER_WARNING);
             $itemtype = stripslashes($itemtype);
+        }
+
+        $itemtype = $this->fixItemtypeCase($itemtype);
+
+        if ($itemtype === 'Event') {
+           //to avoid issues when pecl-event is installed...
+            $itemtype = 'Glpi\\Event';
         }
 
         if (!is_subclass_of($itemtype, CommonGLPI::class, true)) {
@@ -850,13 +875,10 @@ final class DbUtils
         global $DB, $GLPI_CACHE;
 
         $ckey = 'sons_cache_' . $table . '_' . $IDf;
-        $sons = false;
 
-        if ($GLPI_CACHE->has($ckey)) {
-            $sons = $GLPI_CACHE->get($ckey);
-            if ($sons !== null) {
-                return $sons;
-            }
+        $sons = $GLPI_CACHE->get($ckey);
+        if ($sons !== null) {
+            return $sons;
         }
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
@@ -960,20 +982,22 @@ final class DbUtils
     {
         global $DB, $GLPI_CACHE;
 
+        if ($items_id === null) {
+            return [];
+        }
         $ckey = 'ancestors_cache_';
         if (is_array($items_id)) {
             $ckey .= $table . '_' . md5(implode('|', $items_id));
         } else {
             $ckey .= $table . '_' . $items_id;
         }
-        $ancestors = [];
 
-        if ($GLPI_CACHE->has($ckey)) {
-            $ancestors = $GLPI_CACHE->get($ckey);
-            if ($ancestors !== null) {
-                return $ancestors;
-            }
+        $ancestors = $GLPI_CACHE->get($ckey);
+        if ($ancestors !== null) {
+            return $ancestors;
         }
+
+        $ancestors = [];
 
        // IDs to be present in the final array
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
@@ -1259,7 +1283,9 @@ final class DbUtils
                 [
                     "$table.address",
                     "$table.town",
-                    "$table.country"
+                    "$table.country",
+                    "$table.code",
+                    "$table.alias"
                 ]
             );
         }
@@ -1275,10 +1301,7 @@ final class DbUtils
                 $name = $result['completename'];
             }
 
-           // Separator is not encoded in DB, and it could not be changed as this is mandatory to be able to split tree
-           // correctly even if some tree elements are containing ">" char in their name (this one will be encoded).
-            $separator = ' > ';
-            $name = implode(Sanitizer::sanitize($separator), explode($separator, $name));
+            $name = CommonTreeDropdown::sanitizeSeparatorInCompletename($name);
 
             if ($tooltip) {
                 $comment  = sprintf(
@@ -1287,10 +1310,20 @@ final class DbUtils
                     $name
                 );
                 if ($table == Location::getTable()) {
-                     $acomment = '';
-                     $address = $result['address'];
-                     $town    = $result['town'];
-                     $country = $result['country'];
+                    $acomment = '';
+                    $address = $result['address'];
+                    $town    = $result['town'];
+                    $country = $result['country'];
+                    $code    = $result['code'];
+                    $alias   = $result['alias'];
+                    if (!empty($alias)) {
+                        $name = $alias;
+                        $comment .= "<span class='b'>" . __('Alias:') . "</span> " . $alias . "<br/>";
+                    }
+                    if (!empty($code)) {
+                        $name .= ' - ' . $code;
+                        $comment .= "<span class='b'>" . __('Code:') . "</span> " . $code . "<br/>";
+                    }
                     if (!empty($address)) {
                         $acomment .= $address;
                     }
@@ -1555,7 +1588,7 @@ final class DbUtils
         if ($realname !== null && strlen($realname) > 0) {
             $formatted = $realname;
 
-            if (strlen($firstname) > 0) {
+            if ($firstname !== null && strlen($firstname) > 0) {
                 if ($order == User::FIRSTNAME_BEFORE) {
                     $formatted = $firstname . " " . $formatted;
                 } else {
@@ -1584,7 +1617,7 @@ final class DbUtils
             ($link == 1)
             && ($ID > 0)
         ) {
-            $before = "<a title=\"" . Toolbox::addslashes_deep($formatted) . "\"
+            $before = "<a title=\"" . htmlspecialchars($formatted) . "\"
                        href='" . User::getFormURLWithID($ID) . "'>";
             $after  = "</a>";
         }
@@ -1600,10 +1633,11 @@ final class DbUtils
      * @param integer|string $ID   ID of the user.
      * @param integer $link 1 = Show link to user.form.php 2 = return array with comments and link
      *                      (default =0)
+     * @param $disable_anon   bool  disable anonymization of username.
      *
      * @return string username string (realname if not empty and name if realname is empty).
      */
-    public function getUserName($ID, $link = 0)
+    public function getUserName($ID, $link = 0, $disable_anon = false)
     {
         global $DB;
 
@@ -1640,7 +1674,7 @@ final class DbUtils
             if (count($iterator) == 1) {
                 $data     = $iterator->current();
 
-                $anon_name = $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
+                $anon_name = !$disable_anon && $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
                 if ($anon_name !== null) {
                     $username = $anon_name;
                 } else {
@@ -1667,6 +1701,7 @@ final class DbUtils
                         $user_params = array_merge($user_params, [
                             'email'              => UserEmail::getDefaultForUser($ID),
                             'phone'              => $data["phone"],
+                            'phone2'             => $data["phone2"],
                             'mobile'             => $data["mobile"],
                             'locations_id'       => $data['locations_id'],
                             'usertitles_id'      => $data['usertitles_id'],
@@ -1713,14 +1748,14 @@ final class DbUtils
 
         $base_name = $objectName;
 
-        $objectName = Sanitizer::unsanitize($objectName);
+        $objectName = Sanitizer::decodeHtmlSpecialChars($objectName);
         $was_sanitized = $objectName !== $base_name;
         if ($was_sanitized) {
             Toolbox::deprecated('Handling of encoded/escaped value in autoName() is deprecated.');
         }
 
         $matches = [];
-        if (mb_ereg('^<[^#]*(#{1,10})[^#]*>$', $objectName, $matches) === false) {
+        if (preg_match('/^<[^#]*(#{1,10})[^#]*>$/', $objectName, $matches) !== 1) {
             return $base_name;
         }
 
@@ -1857,7 +1892,7 @@ final class DbUtils
         );
 
         if ($was_sanitized) {
-            $objectName = Sanitizer::sanitize($objectName, false);
+            $objectName = Sanitizer::encodeHtmlSpecialChars($objectName);
         }
 
         return $objectName;
@@ -1972,6 +2007,7 @@ final class DbUtils
      */
     public function getDbRelations()
     {
+        $RELATION = []; // Redefined inside /inc/relation.constant.php
 
         include(GLPI_ROOT . "/inc/relation.constant.php");
 

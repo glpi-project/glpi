@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -134,9 +136,7 @@ class GLPIUploadHandler extends UploadHandler
         $upload_handler = new self(
             [
                 'accept_file_types'         => DocumentType::getUploadableFilePattern(),
-                'image_versions'            => [
-                    'auto_orient' => false,
-                ],
+                'image_versions'            => [],
                 'param_name'                => $pname,
                 'replace_dots_in_filenames' => false,
                 'upload_dir'                => $upload_dir,
@@ -171,23 +171,48 @@ class GLPIUploadHandler extends UploadHandler
         return $upload_handler->generate_response($response, $params['print_response']);
     }
 
+    /**
+     * Overrided method to prevent deprecation when variable does not exist.
+     * @see UploadHandler::get_upload_data()
+     */
     protected function get_upload_data($id)
     {
-        return array_key_exists($id, $_FILES) ? $_FILES[$id] : null;
+        return array_key_exists($id, $_FILES) ? $_FILES[$id] : '';
     }
 
+    /**
+     * Overrided method to prevent deprecation when variable does not exist.
+     * @see UploadHandler::get_post_param()
+     */
     protected function get_post_param($id)
     {
-        return array_key_exists($id, $_POST) ? $_POST[$id] : null;
+        return array_key_exists($id, $_POST) ? $_POST[$id] : '';
     }
 
+    /**
+     * Overrided method to prevent deprecation when variable does not exist.
+     * @see UploadHandler::get_query_param()
+     */
     protected function get_query_param($id)
     {
-        return array_key_exists($id, $_GET) ? $_GET[$id] : null;
+        return array_key_exists($id, $_GET) ? $_GET[$id] : '';
     }
 
+    /**
+     * Overrided method to prevent deprecation when variable does not exist.
+     * @see UploadHandler::get_server_var()
+     */
     protected function get_server_var($id)
     {
-        return array_key_exists($id, $_SERVER) ? $_SERVER[$id] : null;
+        return array_key_exists($id, $_SERVER) ? $_SERVER[$id] : '';
+    }
+
+    /**
+     * Overrided method to prevent deprecation when using default `$suffix` value.
+     * @see UploadHandler::basename()
+     */
+    protected function basename($filepath, $suffix = '')
+    {
+        return parent::basename($filepath, $suffix);
     }
 }

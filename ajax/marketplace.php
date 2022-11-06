@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -94,23 +96,23 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     switch ($_GET['tab']) {
         default:
         case 'discover':
-            echo MarketplaceView::discover(
+            MarketplaceView::discover(
                 $_GET['force'] ?? false,
                 true,
                 $_GET['tag'] ?? "",
                 $_GET['filter'] ?? "",
-                $_GET['page'] ?? 1,
+                (int) ($_GET['page'] ?? 1),
                 $_GET['sort'] ?? "sort-alpha-asc"
             );
             break;
         case 'installed':
-            echo MarketplaceView::installed(true, true, $_GET['filter'] ?? "");
+            MarketplaceView::installed(true, true, $_GET['filter'] ?? "");
             break;
     }
 } else if (($_GET["action"] ?? null) == "getPagination") {
     echo MarketplaceView::getPaginationHtml(
-        $_GET['page'] ?? 1,
-        $_GET['total'] ?? 1,
+        (int) $_GET['page'],
+        (int) $_GET['total'],
         true
     );
 }

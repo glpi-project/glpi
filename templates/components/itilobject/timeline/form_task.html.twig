@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,18 +15,19 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
@@ -43,7 +45,7 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content {{ entry_i['state'] is constant('Planning::DONE') ? 'done' : '' }}">
-         <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
+         <div class="rich_text_container text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
               title="{{ entry_i['content']|html_to_text }}" data-bs-toggle="tooltip">
             {{ entry_i['content']|enhanced_html({
                'user_mentions': true,
@@ -96,7 +98,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set merged_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
                      </span>
                   {% endset %}
@@ -108,7 +110,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set promoted_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
                      </span>
                   {% endset %}
@@ -157,8 +159,8 @@
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
             {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
-            <div class="row">
-               <div class="col-12 col-md-9">
+            <div class="row mx-n3 mx-xxl-auto">
+               <div class="col-12 col-xl-7 col-xxl-8">
                   {{ fields.textareaField(
                      'content',
                      subitem.fields['content'],
@@ -169,11 +171,12 @@
                         'enable_richtext': true,
                         'enable_fileupload': true,
                         'enable_mentions': true,
+                        'entities_id': item.fields['entities_id'],
                         'rand': rand,
                      }
                   ) }}
                </div>
-               <div class="col-12 col-md-3 order-first order-md-last">
+               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-o pe-xxl-auto">
                   <div class="row">
 
                      {% set task_template_lbl %}
@@ -194,6 +197,21 @@
                         }
                      ) }}
 
+                     {% set task_date_lbl %}
+                        <i class="fas fa-calendar fa-fw me-1"
+                           title="{{ _n('Date', 'Dates', 1) }}"></i>
+                     {% endset %}
+                     {{ fields.datetimeField(
+                        'date',
+                        subitem.fields['date'],
+                        task_date_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'rand': rand,
+                        }
+                     ) }}
+
                      {# Category #}
                      {% set task_category_lbl %}
                         <i class="fas fa-tag fa-fw me-1" title="{{ _n('Category', 'Categories', 1) }}"></i>
@@ -207,7 +225,9 @@
                            'full_width': true,
                            'icon_label': true,
                            'entity': item.fields['entities_id'],
-                           'is_active': 1,
+                           'condition': {
+                              'is_active': 1,
+                           },
                            'rand': rand,
                         }
                      ) }}
@@ -244,16 +264,17 @@
                      {% if can_read_kb and kb_id_toload > 0 %}
                         {% set link_kb_lbl %}
                            <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Link to knowledge base entry #%id')|format('TODO kb id') }}"></i>
+                              title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
                         {% endset %}
                         {{ fields.sliderField(
                            'kb_linked_id',
-                           kb_id_toload,
+                           1,
                            link_kb_lbl,
                            {
                               'full_width': true,
                               'icon_label': true,
                               'rand': rand,
+                              'yes_value': kb_id_toload,
                            }
                         ) }}
                      {% endif %}
@@ -286,7 +307,8 @@
                         'min': 0,
                         'max': 8 * constant('HOUR_TIMESTAMP'),
                         'addfirstminutes': true,
-                        'inhours': true
+                        'inhours': true,
+                        'toadd': range(9, 100)|map(i => i * constant('HOUR_TIMESTAMP')),
                      }) }}
 
                      {# User #}
@@ -328,6 +350,7 @@
                      <script type="text/javascript">
                         function showPlanUpdate{{ rand }}(e) {
                            $('#plan{{ rand }}').hide();
+                           $('#unplan{{ rand }}').hide();
                            $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
                               action: "add_event_classic_form",
                               form: "followups", // Was followups for tasks before. Can't find where this is used.
@@ -335,15 +358,27 @@
                               rand_user: {{ random() }},
                               rand_group: {{ random() }},
                               itemtype: "{{ subitem.type }}",
-                              items_id: {{ subitem.fields['id']|default(-1) }}
+                              items_id: {{ subitem.fields['id']|default(-1) }},
+                              parent_itemtype: "{{ item.type }}",
+                              parent_items_id: {{ item.fields['id'] }},
+                              parent_fk_field: "{{ item.getForeignKeyField() }}",
                            });
                         }
                      </script>
-                     <button id="plan{{ rand }}" class="btn btn-outline-secondary d-block mb-2 text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
-                        <i class="fas fa-calendar"></i>
-                        <span>{{ __('Plan this task') }}</span>
-                     </button>
-                     <div id="viewplan{{ rand }}"></div>
+                     <div class="col-12">
+                        <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
+                           <i class="fas fa-calendar"></i>
+                           <span>{{ __('Plan this task') }}</span>
+                        </button>
+                        {% if subitem.can(id, constant('UPDATE')) and subitem.fields['begin'] %}
+                           <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
+                                 onclick="return confirm('{{ __('Confirm the deletion of planning?') }}');">
+                              <i class="fas ti ti-calendar-off"></i>
+                              <span>{{ __('Unplan') }}</span>
+                           </button>
+                        {% endif %}
+                        <div id="viewplan{{ rand }}"></div>
+                     </div>
                   </div>
                </div>
             </div>
@@ -365,13 +400,16 @@
                               <input type="checkbox" name="pending" value="1" class="form-check-input"
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
+                                    {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
                                     data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
                            </label>
                         </span>
 
-                        <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
-                           {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
-                        </div>
+                        {% if item.fields['status'] != constant('CommonITILObject::WAITING') %}
+                           <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
+                              {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
+                           </div>
+                        {% endif %}
                      </span>
                   </div>
                {% else %}
@@ -406,21 +444,52 @@
                   itemtype: '{{ item.getType() }}'
                }
             }).done(function (data) {
-               var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
-                  ? 0
-                  : parseInt(data.requesttypes_id);
+                if (data.content !== undefined) {
+                    // set textarea content
+                    if (tasktinymce = tinymce.get("content_{{ rand }}")) {
+                        tasktinymce.setContent(data.content);
+                    }
+                }
 
-               // set textarea content
-               if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                  tasktinymce.setContent(data.content);
+                if (data.taskcategories_id !== undefined) {
+                    // set category
+                    const taskcategories_id = isNaN(parseInt(data.taskcategories_id))
+                        ? 0
+                        : parseInt(data.taskcategories_id);
+
+                     //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
+                     //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
+                     var newOption = new Option(data.taskcategories_name, taskcategories_id, true, true);
+                     $("#dropdown_taskcategories_id{{ rand }}").append(newOption).trigger('change');
+                }
+
+                if (data.is_private !== undefined) {
+                    // set is_private
+                    $("#is_private_{{ rand }}")
+                        .prop("checked", data.is_private == "0"
+                            ? false
+                            : true);
+                }
+
+                if (data.state !== undefined) {
+                    // Set state
+                    $("#dropdown_state{{ rand }}").trigger('setValue', data.state);
+                }
+
+                if (data.actiontime !== undefined) {
+                    // Set duration
+                    $("#dropdown_actiontime{{ rand }}").trigger('setValue', data.actiontime);
+                }
+
+                if (data.users_id_tech !== undefined) {
+                    // Set user
+                    $("#dropdown_users_id_tech{{ rand }}").trigger('setValue', data.users_id_tech);
+                }
+
+               if (data.groups_id_tech !== undefined) {
+                   // Set group
+                   $("#dropdown_groups_id_tech{{ rand }}").trigger('setValue', data.groups_id_tech);
                }
-               // set category
-               $("#dropdown_requesttypes_id{{ rand }}").trigger("setValue", requesttypes_id);
-               // set is_private
-               $("#is_private_{{ rand }}")
-                  .prop("checked", data.is_private == "0"
-                     ? false
-                     : true);
             });
          }
       </script>

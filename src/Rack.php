@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -78,6 +80,45 @@ class Rack extends CommonDBTM
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
         return $ong;
+    }
+
+    public static function rawSearchOptionsToAdd($itemtype)
+    {
+        return [
+            [
+                'id'                 => 'rack',
+                'name'               => _n('Rack', 'Racks', Session::getPluralNumber())
+            ],
+            [
+                'id'                 => '180',
+                'table'              => Rack::getTable(),
+                'field'              => 'name',
+                'name'               => __('Name'),
+                'datatype'           => 'dropdown',
+                'massiveaction'      => false,
+                'joinparams'         => [
+                    'beforejoin'         => [
+                        'table'              => Item_Rack::getTable(),
+                        'joinparams'         => [
+                            'jointype'           => 'itemtype_item',
+                            'specific_itemtype'  => $itemtype
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'id'                 => '181',
+                'table'              => Item_Rack::getTable(),
+                'field'              => 'position',
+                'name'               => __('Position'),
+                'datatype'           => 'number',
+                'massiveaction'      => false,
+                'joinparams'         => [
+                    'jointype'           => 'itemtype_item',
+                    'specific_itemtype'  => $itemtype
+                ]
+            ],
+        ];
     }
 
 
@@ -275,6 +316,7 @@ class Rack extends CommonDBTM
                 );
              break;
         }
+        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -284,6 +326,7 @@ class Rack extends CommonDBTM
                 self::showForRoom($item);
                 break;
         }
+        return true;
     }
 
     /**
@@ -386,16 +429,16 @@ class Rack extends CommonDBTM
 
         echo "<div id='viewgraph'>";
 
-        $data = [];
-
         $rows     = (int) $room->fields['vis_rows'];
         $cols     = (int) $room->fields['vis_cols'];
         $w_prct   = 100 / $cols;
-        $grid_w   = 40 * $cols;
-        $grid_h   = (39 * $rows) + 16;
+        $cell_w   = (int) $room->fields['vis_cell_width'];
+        $cell_h   = (int) $room->fields['vis_cell_height'];
+        $grid_w   = $cell_w * $cols;
+        $grid_h   = $cell_h * $rows;
         $ajax_url = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
-       //fill rows
+        //fill rows
         $cells    = [];
         $outbound = [];
         foreach ($racks as &$item) {
@@ -434,7 +477,11 @@ class Rack extends CommonDBTM
             echo "</tbody></table>";
         }
 
-        echo "<style>";
+        echo "<style>
+            :root {
+                --dcroom-grid-cellw: {$cell_w}px;
+                --dcroom-grid-cellh: {$cell_h}px;
+            }";
         for ($i = 0; $i < $cols; $i++) {
             $left  = $i * $w_prct;
             $width = ($i + 1) * $w_prct;
@@ -460,7 +507,7 @@ class Rack extends CommonDBTM
         }
 
         echo "
-      <div class='grid-room' style='width: " . ($grid_w + 16) . "px; min-height: " . $grid_h . "px'>
+      <div class='grid-room' style='width: " . ($grid_w + 16) . "px; min-height: " . ($grid_h + 16) . "px'>
          <span class='racks_view_controls'>
             $blueprint_ctrl
             <span class='mini_toggle active'
@@ -483,7 +530,7 @@ class Rack extends CommonDBTM
             }
         }
 
-       // add a locked element to bottom to display a full grid
+        // add a locked element to bottom to display a full grid
         echo "<div class='grid-stack-item lock-bottom'
                  gs-no-resize='true'
                  gs-no-move='true'
@@ -522,10 +569,10 @@ class Rack extends CommonDBTM
                $('#viewgraph').toggleClass('clear_grid');
             })
 
-         GridStack.init({
+         window.dcroom_grid = GridStack.init({
             column: $cols,
             maxRow: ($rows + 1),
-            cellHeight: 39,
+            cellHeight: {$cell_h},
             margin: 0,
             float: true,
             disableOneColumnMode: true,
@@ -553,36 +600,34 @@ class Rack extends CommonDBTM
          var y_before_drag = 0;
          var dirty = false;
 
+         window.dcroom_grid.on('change', function(event, items) {
+           if (dirty) {
+              return;
+           }
+           var grid = $(event.target).data('gridstack');
+
+           $.each(items, function(index, item) {
+              $.post('{$ajax_url}', {
+                 id: item.id,
+                 dcrooms_id: $room_id,
+                 action: 'move_rack',
+                 x: item.x + 1,
+                 y: item.y + 1,
+              }, function(answer) {
+                 // revert to old position
+                 if (!answer.status) {
+                    dirty = true;
+                    grid.update(item.el, {
+                       'x': x_before_drag,
+                       'y': y_before_drag
+                    });
+                    dirty = false;
+                    displayAjaxMessageAfterRedirect();
+                 }
+              });
+           });
+         });
          $('.grid-stack')
-            .on('change', function(event, items) {
-               if (dirty) {
-                  return;
-               }
-               var grid = $(event.target).data('gridstack');
-
-               $.each(items, function(index, item) {
-                  $.post('{$ajax_url}', {
-                     id: item.id,
-                     dcrooms_id: $room_id,
-                     action: 'move_rack',
-                     x: $(item.el).attr('gs-x') + 1,
-                     y: $(item.el).attr('gs-y') + 1,
-                  }, function(answer) {
-                     var answer = jQuery.parseJSON(answer);
-
-                     // revert to old position
-                     if (!answer.status) {
-                        dirty = true;
-                        grid.update(item.el, {
-                           'x': x_before_drag,
-                           'y': y_before_drag
-                        });
-                        dirty = false;
-                        displayAjaxMessageAfterRedirect();
-                     }
-                  });
-               });
-            })
             .on('dragstart', function(event, ui) {
                var element = $(event.target);
                var node    = element.data('_gridstack_node');
@@ -614,6 +659,7 @@ class Rack extends CommonDBTM
                glpi_ajax_dialog({
                   url : "{$rack->getFormURL()}",
                   method: 'GET',
+                  dialogclass: 'modal-xl',
                   params: {
                      room: $room_id,
                      position: _x + ',' + _y,

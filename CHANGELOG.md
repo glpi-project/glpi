@@ -3,7 +3,162 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [10.0.0] unreleased
+## [10.1.0] unreleased
+
+### Added
+- Business Rules for Changes
+- Configurable toast notification location
+- `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
+- Group approval requests (any user from group can approve).
+- Satisfaction surveys for Changes
+
+### Changed
+- ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
+- Logs are now shown using the Search Engine
+- The approval option previously named `Group` is now called `Group user(s)` to better reflect that it shows a list of users from a specific group rather than allow sending an approval for a group.
+- The ticket business rule action `Ticket category from code` was renamed to `ITIL category from code`.
+- The ticket business rule criteria `Code representing the ticket category` was renamed to `Code representing the ITIL category`.
+- The ticket business rule criteria `Ticket location` was renamed to `Location`.
+
+### Deprecated
+- Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
+
+### Removed
+- `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
+- `Link to a problem` massive action for Tickets (Use `Link ITIL Object` instead).
+
+### API changes
+
+#### Added
+
+#### Changes
+- `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
+- `users_id_validate` field in `CommonITILValidation` will now have a `0` value until someone approves or refuses the validation.
+  Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
+- Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
+  The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
+- `GLPIMailer` mailer class does not extends anymore `PHPMailer\PHPMailer\PHPMailer`.
+  We added a compatibility layer to handle main usages found in plugins, but we cannot ensure compatibility with all properties and methods that were inherited from `PHPMailer\PHPMailer\PHPMailer`.
+
+#### Deprecated
+- Usage of `GLPI_USE_CSRF_CHECK` constant.
+- Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
+- Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
+- Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
+- Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
+- `ajax/itemTicket.php` script usage.
+- `ajax/knowbase.php` script usage.
+- `front/change_problem.form.php` script usage.
+- `front/change_ticket.form.php` script usage.
+- `front/problem_ticket.form.php` script usage.
+- `front/ticket_ticket.form.php` script usage.
+- Usage of `users_id_validate` input in `CommonITILObject`.
+- Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
+- Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
+- `CommonITILObject::isValidator()`
+- `CommonITILValidation::alreadyExists()`
+- `CommonITILValidation::getTicketStatusNumber()`
+- `Glpi\Event::showList()`
+- `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
+- `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
+- `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
+- `Glpi\Features\DCBreadcrumb::isRackPart()`
+- `Html::displayAjaxMessageAfterRedirect()`
+- `Item_Ticket::showForTicket()`
+- `HookManager::enableCSRF()`
+- `Knowbase::getTreeCategoryList()`
+- `Knowbase::showBrowseView()`
+- `Knowbase::showManageView()`
+- `KnowbaseItem::showManageForm()`
+- `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
+- `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
+- `Ticket_Ticket::checkParentSon()`
+- `Ticket_Ticket::countOpenChildren()`
+- `Ticket_Ticket::getLinkedTicketsTo()`
+- `Ticket_Ticket::manageLinkedTicketsOnSolved()`
+- `Toolbox::seems_utf8()`
+- `Search::getOptions()` no longer returns a reference
+
+#### Removed
+- Usage of `csrf_compliant` plugins hook.
+- `Search::computeTitle()`
+- `Search::csv_clean()`
+- `Search::findCriteriaInSession()`
+- `Search::getDefaultCriteria()`
+- `Search::getLogicalOperators()`
+- `Search::getMetaReferenceItemtype()`
+- `Search::outputData()`
+- `Search::sylk_clean()`
+
+## [10.0.4] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+## [10.0.3] 2022-09-14
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+- `CommonDBTM::pre_addToDB()` added.
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+## [10.0.2] 2022-06-28
+
+## [10.0.1] 2022-06-02
+
+### Changed
+- PDF export library has been changed back from `mPDF` to `TCPDF`.
+
+### Removed
+- Gantt feature has been moved into the `gantt` plugin.
+
+### API changes
+
+#### Added
+- `plugin_xxx_activate()` and `plugin_xxx_deactivate` hooks support.
+
+#### Changes
+- `Glpi\Api\Api::initEndpoint()` visibility changed to `protected`.
+
+#### Removed
+- `GlpiGantt` javascript helper and `dhtmlx-gantt` library.
+- `Glpi\Gantt` namespace and all corresponding classes.
+- `Project::getDataToDisplayOnGantt()`
+- `Project::showGantt()`
+- `ProjectTask::getDataToDisplayOnGantt()`
+- `ProjectTask::getDataToDisplayOnGanttForProject()`
+
+## [10.0.0] 2022-04-20
 
 ### Added
 - Added UUID to all other itemtypes that are related to Operating Systems (Phones, Printers, etc)
@@ -40,6 +195,7 @@ The present file will list all changes made to the project; according to the
 - `Symfony\Console` library has been upgraded to version 5.4.
 - `CommonGLPI` constructor signature has been declared in an interface (`CommonGLPIInterface`).
 - `DBmysqlIterator` class compliancy with `Iterator` has been fixed (i.e. `DBmysqlIterator::next()` does not return current row anymore).
+- `Domain` class inheritance changed from `CommonDropdown` to `CommonDBTM`.
 - `showForm()` method of all classes inheriting `CommonDBTM` have been changed to match `CommonDBTM::showForm()` signature.
 - Format of `Message-Id` header sent in Tickets notifications changed to match format used by other items.
 - Added `DB::truncate()` to replace raw SQL queries
@@ -47,10 +203,8 @@ The present file will list all changes made to the project; according to the
 - Field `date` of KnowbaseItem has been renamed to `date_creation`.
 - Field `date_creation` of KnowbaseItem_Revision has been renamed to `date`.
 - Field `date_creation` of NetworkPortConnectionLog has been renamed to `date`.
-- Field `date_creation` of NetworkPortMetrics has been renamed to `date`.
 - Field `date` of Notepad has been renamed to `date_creation`.
 - Field `date_mod` of ObjectLock has been renamed to `date`.
-- Field `date_creation` of PrinterLog has been renamed to `date`.
 - Field `date` of ProjectTask has been renamed to `date_creation`.
 - Table `glpi_netpoints` has been renamed to `glpi_sockets`.
 - `GLPI_FORCE_EMPTY_SQL_MODE` constant has been removed in favor of `GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE` usage.
@@ -72,11 +226,16 @@ The present file will list all changes made to the project; according to the
 - Usage of `datetime` field type in database, in favor of `timestamp` field type.
 - Handling of encoded/escaped value in `autoName()`
 - `Netpoint` has been deprecated and replaced by `Socket`
+- `CommonDropdown::displayHeader()`, use `CommonDropdown::displayCentralHeader()` instead and make sure to override properly `first_level_menu`, `second_level_menu` and `third_level_menu`.
+- `GLPI::getLogLevel()`
 - `Html::clean()`
+- `MailCollector::listEncodings()`
 - `RuleImportComputer` class
 - `RuleImportComputerCollection` class
+- `SLM::setTicketCalendar()`
 - `Toolbox::clean_cross_side_scripting_deep()`
 - `Toolbox::endsWith()`
+- `Toolbox::filesizeDirectory()`
 - `Toolbox::getHtmlToDisplay()`
 - `Toolbox::logError()`
 - `Toolbox::logNotice()`
@@ -99,6 +258,8 @@ The present file will list all changes made to the project; according to the
 - `$CFG_GLPI['use_ajax_autocompletion']` entry
 - `$DEBUG_AUTOLOAD` global variable
 - `$LOADED_PLUGINS` global variable
+- `$PHP_LOG_HANDLER` global variable
+- `$SQL_LOG_HANDLER` global variable
 - `CommonDBTM::notificationqueueonaction` property
 - `NotificationTarget::html_tags` property
 - `getAllDatasFromTable()`
@@ -247,7 +408,9 @@ The present file will list all changes made to the project; according to the
 - `Update::declareOldItems()`
 - `User::showPersonalInformation()`
 
-## [9.5.6] unreleased
+## [9.5.7] 2022-01-27
+
+## [9.5.6] 2021-09-15
 
 ### Changed
 

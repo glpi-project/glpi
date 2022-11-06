@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -105,6 +107,133 @@ class DeviceFirmware extends CommonDevice
             'table'              => 'glpi_devicefirmwares',
             'field'              => 'version',
             'name'               => _n('Version', 'Versions', 1),
+        ];
+
+        return $tab;
+    }
+
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    {
+        $tab = [];
+
+        //SO defined from glpi_devicefirmwares table
+        $tab[] = [
+            'id'                 => '1313',
+            'table'              => 'glpi_devicefirmwares',
+            'field'              => 'designation',
+            'name'               => self::getTypeName(1),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicefirmwares',
+                    'joinparams'         => $main_joinparams
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '1314',
+            'table'              => 'glpi_devicefirmwares',
+            'field'              => 'version',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Version', 'Versions', 1)),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_devicefirmwares',
+                    'joinparams'         => $main_joinparams
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '1315',
+            'table'              => 'glpi_devicefirmwaretypes',
+            'field'              => 'name',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Type', 'Types', 1)),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => DeviceFirmware::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Item_DeviceFirmware::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '1316',
+            'table'              => 'glpi_devicefirmwaremodels',
+            'field'              => 'name',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Model', 'Models', 1)),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => DeviceFirmware::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Item_DeviceFirmware::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '1317',
+            'table'              => 'glpi_manufacturers',
+            'field'              => 'name',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), Manufacturer::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => DeviceFirmware::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Item_DeviceFirmware::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        //SO defined from relation (glpi_items_devicefirmwares) table
+        $tab[] = [
+            'id'                 => '1318',
+            'table'              => 'glpi_items_devicefirmwares',
+            'field'              => 'serial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1319',
+            'table'              => 'glpi_items_devicefirmwares',
+            'field'              => 'otherserial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
         ];
 
         return $tab;

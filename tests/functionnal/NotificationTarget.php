@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -217,7 +219,7 @@ class NotificationTarget extends DbTestCase
      *
      * @return Generator
      */
-    public function testGetSenderProvider(): Generator
+    protected function getSenderProvider(): Generator
     {
         global $CFG_GLPI;
 
@@ -291,7 +293,7 @@ class NotificationTarget extends DbTestCase
     /**
      * Functionnals tests for the getSender method
      *
-     * @dataprovider testGetSenderProvider
+     * @dataprovider getSenderProvider
      *
      * @param bool        $allow_response Use reply to or admin email ?
      * @param string|null $email          Expected email
@@ -325,5 +327,80 @@ class NotificationTarget extends DbTestCase
                 ->withMessage($warning)
                 ->exists();
         }
+    }
+
+    protected function testGetInstanceClassProvider(): Generator
+    {
+        yield [
+            'itemtype' => 'Test',
+            'class'    => 'NotificationTargetTest',
+        ];
+
+        yield [
+            'itemtype' => 'PluginPluginameTest',
+            'class'    => 'PluginPluginameNotificationTargetTest',
+        ];
+
+        yield [
+            'itemtype' => 'GlpiPlugin\Namespace\Test',
+            'class'    => 'GlpiPlugin\Namespace\NotificationTargetTest',
+        ];
+    }
+
+    /**
+     * Tests for NotificationTarget::getInstanceClass
+     *
+     * @dataProvider testGetInstanceClassProvider
+     */
+    public function testGetInstanceClass(string $itemtype, string $class): void
+    {
+        $output = \NotificationTarget::getInstanceClass($itemtype);
+        $this->string($output)->isEqualTo($class);
+    }
+
+    protected function testFormatUrlProvider(): iterable
+    {
+        global $CFG_GLPI;
+
+        // No URL returned for anonymous user
+        yield [
+            'usertype' => \NotificationTarget::ANONYMOUS_USER,
+            'redirect' => 'Ticket_24',
+            'expected' => '',
+        ];
+
+        // GLPI user, `noAUTO=1` parameter added
+        yield [
+            'usertype' => \NotificationTarget::GLPI_USER,
+            'redirect' => 'Ticket_24',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24&noAUTO=1',
+        ];
+        yield [
+            'usertype' => \NotificationTarget::GLPI_USER,
+            'redirect' => '/front/test.php?param=test&value=foo bar',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar&noAUTO=1',
+        ];
+
+        // External user, no `noAUTO` parameter
+        yield [
+            'usertype' => \NotificationTarget::EXTERNAL_USER,
+            'redirect' => 'Ticket_24',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=Ticket_24',
+        ];
+        yield [
+            'usertype' => \NotificationTarget::EXTERNAL_USER,
+            'redirect' => '/front/test.php?param=test&value=foo bar',
+            'expected' => $CFG_GLPI['url_base'] . '/index.php?redirect=%2Ffront%2Ftest.php%3Fparam%3Dtest%26value%3Dfoo%20bar',
+        ];
+    }
+
+    /**
+     * @dataProvider testFormatUrlProvider
+     */
+    public function testFormatUrl(int $usertype, string $redirect, string $expected): void
+    {
+        $this->newTestedInstance();
+
+        $this->string($this->testedInstance->formatUrl($usertype, $redirect))->isEqualTo($expected);
     }
 }

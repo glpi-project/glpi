@@ -1,12 +1,13 @@
 /*!
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -37,6 +39,7 @@
 .topbar {
     background-color: $mainmenu-bg;
     color: $mainmenu-fg;
+    z-index: $zindex-fixed;
 
     .btn-ghost-secondary {
         color: rgba($color: $mainmenu-fg, $alpha: 80%);
@@ -49,18 +52,26 @@
         &:hover {
             background-color: rgba($color: $mainmenu-fg, $alpha: 80%);
             color: rgba($color: $mainmenu-bg, $alpha: 80%);
-            border-color: transparend;
+            border-color: transparent;
         }
     }
 }
 
 .topbar {
-    z-index: $zindex-fixed;
-
     .nav-item {
         i {
             margin-right: 0.3em;
         }
+    }
+}
+
+.navbar-vertical {
+    .trigger-fuzzy {
+        border: 0;
+        font-size: 1em;
+        font-weight: 400;
+        margin-left: 1.5rem !important;
+        padding: 3px;
     }
 }
 
@@ -77,6 +88,7 @@
     #navbar-menu {
         .nav-item {
             .nav-link {
+                padding: 0 1.5rem !important;
                 color: rgba($color: $mainmenu-fg, $alpha: 80%);
                 border-left: 3px solid transparent;
                 border-radius: unset;
@@ -100,6 +112,7 @@
 
                         .dropdown-item {
                             border-left: 3px solid rgba($color: #000, $alpha: 50%);
+                            padding-left: 3.25rem; // FIXME: tabler 1.0.0-beta13 missing var $container-padding-x
 
                             &.active {
                                 border-left-color: rgba($color: $primary, $alpha: 30%);
@@ -132,12 +145,11 @@
     }
 
     .reduce-menu::before {
-        font-family: "Font Awesome 5 Free";
+        font: var(--fa-font-solid);
         content: "\f100";
         display: inline-block;
         padding-right: 3px;
         vertical-align: middle;
-        font-weight: 900;
         font-size: 1.3333em;
         line-height: 0.75em;
     }
@@ -149,8 +161,11 @@
     }
 
     body.navbar-collapsed {
+        #navbar-menu .nav-link {
+            padding: 0.58rem 1.5rem !important;
+        }
+
         .navbar-brand {
-            padding: 0.4rem !important;
             margin: 0 calc(-1 * var(--tblr-gutter-x, 1.5rem)) 0.5rem;
             width: calc(100% + var(--tblr-gutter-x, 1.5rem) * 2);
 
@@ -185,7 +200,7 @@
                 }
 
                 .dropdown-menu {
-                    box-shadow: $card-shadow-hover;
+                    box-shadow: $shadow-card-hover;
 
                     &.show {
                         display: none;
@@ -231,7 +246,7 @@
                                 border-left: 3px solid transparent;
 
                                 &.active {
-                                    background-color: lighten($mainmenu-bg, 5%);
+                                    background-color: lighten($mainmenu-bg, 55%);
                                     border-left-color: $primary;
                                 }
                             }

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,22 +17,25 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace tests\units;
+
+use Psr\Log\LogLevel;
 
 /* Test for inc/dbmysql.class.php */
 
@@ -89,7 +93,7 @@ class DB extends \GLPITestCase
      */
     public function testQuoteName($raw, $quoted)
     {
-        $this->string(\DB::quoteName($raw))->isIdenticalTo($quoted);
+        $this->string(\DBmysql::quoteName($raw))->isIdenticalTo($quoted);
     }
 
     protected function dataValue()
@@ -106,6 +110,7 @@ class DB extends \GLPITestCase
             ['`field', "'`field'"],
             [false, "'0'"],
             [true, "'1'"],
+            ['Glpi\Socket', "'Glpi\\\Socket'"],
         ];
     }
 
@@ -114,7 +119,7 @@ class DB extends \GLPITestCase
      */
     public function testQuoteValue($raw, $expected)
     {
-        $this->string(\DB::quoteValue($raw))->isIdenticalTo($expected);
+        $this->string(\DBmysql::quoteValue($raw))->isIdenticalTo($expected);
     }
 
 
@@ -206,7 +211,7 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
             ], [
                 'table', [
-                    'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+                    'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
                     'id'  => [1, 2]
                 ],
@@ -214,7 +219,7 @@ class DB extends \GLPITestCase
                 'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
             ], [
                 'table', [
-                    'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+                    'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
                     'id'  => [1, 2]
                 ],
@@ -724,5 +729,42 @@ OTHER EXPRESSION;"
         $this->boolean($computer->getFromDB($computers_id_0))->isFalse();
 
         $DB->rollBack();
+    }
+
+    public function testGetLastQueryWarnings()
+    {
+        $db = new \mock\DB();
+
+        $db->query('SELECT 1/0');
+        $this->array($db->getLastQueryWarnings())->isEqualTo(
+            [
+                [
+                    'Level'   => 'Warning',
+                    'Code'    => 1365,
+                    'Message' => 'Division by 0',
+                ]
+            ]
+        );
+        $this->hasSqlLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
+
+        $db->query('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
+        $this->array($db->getLastQueryWarnings())->isEqualTo(
+            [
+                [
+                    'Level'   => 'Warning',
+                    'Code'    => 1292,
+                    'Message' => 'Truncated incorrect INTEGER value: \'1a\'',
+                ],
+                [
+                    'Level'   => 'Warning',
+                    'Code'    => 1292,
+                    'Message' => 'Truncated incorrect INTEGER value: \'123b\'',
+                ]
+            ]
+        );
+        $this->hasSqlLogRecordThatContains(
+            '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
+            LogLevel::WARNING
+        );
     }
 }

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,23 +17,26 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+
 /// Class Domain
-class Domain extends CommonDropdown
+class Domain extends CommonDBTM
 {
     use Glpi\Features\Clonable;
 
@@ -53,6 +57,7 @@ class Domain extends CommonDropdown
             Domain_Item::class,
             Infocom::class,
             Item_Ticket::class,
+            Item_TicketRecurrent::class,
             Item_Problem::class,
             Change_Item::class,
             Contract_Item::class,
@@ -86,48 +91,6 @@ class Domain extends CommonDropdown
             $row['_linked_purge'] = 1;//flag call when we remove a record from a domain
             $record->delete($row, true);
         }
-    }
-
-    public function getAdditionalFields()
-    {
-        $fields = parent::getAdditionalFields();
-        $fields[] = [
-            'name'  => 'is_active',
-            'label' => __('Is active'),
-            'type'  => 'bool',
-        ];
-
-        $fields[] = [
-            'name'  => 'domaintypes_id',
-            'label' => _n('Type', 'Types', 1),
-            'type'  => 'dropdownValue',
-        ];
-
-        $fields[] = [
-            'name'  => 'date_creation',
-            'label' => __('Creation date'),
-            'type'  => 'datetime',
-        ];
-
-        $fields[] = [
-            'name'  => 'date_expiration',
-            'label' => __('Expiration date'),
-            'type'  => 'datetime',
-        ];
-
-        $fields[] = [
-            'name'  => 'users_id_tech',
-            'label' => __('Technician in charge'),
-            'type'  => 'UserDropdown',
-        ];
-
-        $fields[] = [
-            'name'  => 'groups_id_tech',
-            'label' => __('Group in charge'),
-            'type'  => 'dropdownValue',
-        ];
-
-        return $fields;
     }
 
     public function rawSearchOptions()
@@ -168,8 +131,8 @@ class Domain extends CommonDropdown
         $tab[] = [
             'id'                 => '5',
             'table'              => $this->getTable(),
-            'field'              => 'date_creation',
-            'name'               => __('Creation date'),
+            'field'              => 'date_domaincreation',
+            'name'               => __('Registration date'),
             'datatype'           => 'date'
         ];
 
@@ -219,6 +182,15 @@ class Domain extends CommonDropdown
             'massiveaction'      => false,
             'name'               => __('Last update'),
             'datatype'           => 'datetime'
+        ];
+
+        $tab[] = [
+            'id'                 => '121',
+            'table'              => $this->getTable(),
+            'field'              => 'date_creation',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
         ];
 
         $tab[] = [
@@ -583,6 +555,7 @@ class Domain extends CommonDropdown
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'NOT' => ['date_expiration' => null],
+                'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
                 new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > $delay"),
                 new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > 0")
@@ -606,6 +579,7 @@ class Domain extends CommonDropdown
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'NOT' => ['date_expiration' => null],
+                'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
                 new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > -$delay"),
                 new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") < 0")
@@ -625,75 +599,103 @@ class Domain extends CommonDropdown
     {
         global $DB, $CFG_GLPI;
 
-        if (!$CFG_GLPI["notifications_mailing"]) {
-            return 0;
+        if (!$CFG_GLPI["use_notifications"]) {
+            return 0; // Nothing to do
         }
 
-        $message     = [];
-        $cron_status = 0;
+        $errors = 0;
+        $total = 0;
 
-        foreach (Entity::getEntitiesToNotify('use_domains_alert') as $entity => $value) {
-            $query_expired     = self::expiredDomainsCriteria($entity);
-            $query_whichexpire = self::closeExpiriesDomainsCriteria($entity);
-
-            $querys = [
-                Alert::NOTICE => $query_whichexpire,
-                Alert::END => $query_expired
+        foreach (array_keys(Entity::getEntitiesToNotify('use_domains_alert')) as $entity) {
+            $events = [
+                'DomainsWhichExpire' => [
+                    'query'      => self::closeExpiriesDomainsCriteria($entity),
+                    'alert_type' => Alert::NOTICE,
+                ],
+                'ExpiredDomains' => [
+                    'query' => self::expiredDomainsCriteria($entity),
+                    'alert_type' => Alert::END,
+                ]
             ];
 
-            $domain_infos    = [];
-            $domain_messages = [];
+            foreach ($events as $event => $event_specs) {
+                $query      = $event_specs['query'];
+                $alert_type = $event_specs['alert_type'];
 
-            foreach ($querys as $type => $query) {
-                $domain_infos[$type] = [];
+                $query['SELECT']    = ['glpi_domains.id'];
+                $query['LEFT JOIN'] = [
+                    'glpi_alerts' => [
+                        'FKEY'   => [
+                            'glpi_alerts'  => 'items_id',
+                            'glpi_domains' => 'id',
+                            [
+                                'AND' => [
+                                    'glpi_alerts.itemtype' => __CLASS__,
+                                    'glpi_alerts.type'     => $alert_type,
+                                ],
+                            ],
+                        ]
+                    ]
+                ];
+                $query['WHERE'][]   = ['glpi_alerts.date' => null];
+
                 $iterator = $DB->request($query);
-                foreach ($iterator as $data) {
-                    $message                        = $data["name"] . ": " .
-                                                Html::convDate($data["date_expiration"]) . "<br>\n";
-                    $domain_infos[$type][$entity][] = $data;
 
-                    if (!isset($domain_messages[$type][$entity])) {
-                        $domain_messages[$type][$entity] = __('Domains expired since more') . "<br />";
+                foreach ($iterator as $domain_data) {
+                    $domain_id = $domain_data['id'];
+                    $domain = new self();
+                    if (!$domain->getFromDB($domain_id)) {
+                        $errors++;
+                        trigger_error(sprintf('Unable to load Domain "%s".', $domain_id), E_USER_WARNING);
+                        continue;
                     }
-                    $domain_messages[$type][$entity] .= $message;
-                }
-            }
 
-            foreach (array_keys($querys) as $type) {
-                foreach ($domain_infos[$type] as $entity => $domains) {
-                    if (
-                        NotificationEvent::raiseEvent(
-                            ($type == Alert::NOTICE ? "DomainsWhichExpire" : "ExpiredDomains"),
-                            new Domain(),
-                            ['entities_id' => $entity,
-                                'domains'     => $domains
-                            ]
-                        )
-                    ) {
-                        $message     = $domain_messages[$type][$entity];
-                        $cron_status = 1;
+                    if (NotificationEvent::raiseEvent($event, $domain)) {
+                        $msg = sprintf(
+                            __('%1$s: %2$s'),
+                            Dropdown::getDropdownName('glpi_entities', $entity),
+                            sprintf(
+                                $event === 'DomainsWhichExpire' ? __('Domain %1$s expires on %2$s') : __('Domain %1$s expired on %2$s'),
+                                $domain->fields['name'],
+                                Html::convDate($domain->fields['date_expiration'])
+                            )
+                        );
                         if ($task) {
-                            $task->log(Dropdown::getDropdownName("glpi_entities", $entity) . ":  $message\n");
+                            $task->log($msg);
                             $task->addVolume(1);
                         } else {
-                            Toolbox::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity) . ":  $message");
+                            Session::addMessageAfterRedirect($msg);
                         }
+
+                        // Add alert
+                        $input = [
+                            'type'     => $alert_type,
+                            'itemtype' => __CLASS__,
+                            'items_id' => $domain_id,
+                        ];
+                        $alert = new Alert();
+                        $alert->deleteByCriteria($input, 1);
+                        $alert->add($input);
+
+                        $total++;
                     } else {
-                        $message = sprintf(
-                            __('Domains alerts not send for entity %1$s'),
+                        $errors++;
+
+                        $msg = sprintf(
+                            __('Domains alerts sending failed for entity %1$s'),
                             Dropdown::getDropdownName("glpi_entities", $entity)
                         );
                         if ($task) {
-                            $task->log($message . "\n");
+                            $task->log($msg);
                         } else {
-                            Toolbox::addMessageAfterRedirect($message, false, ERROR);
+                            Session::addMessageAfterRedirect($msg, false, ERROR);
                         }
                     }
                 }
             }
         }
 
-        return $cron_status;
+        return $errors > 0 ? -1 : ($total > 0 ? 1 : 0);
     }
 
     /**
@@ -726,14 +728,17 @@ class Domain extends CommonDropdown
         return $types;
     }
 
-    public static function generateLinkContents($link, CommonDBTM $item)
+    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true)
     {
         if (strstr($link, "[DOMAIN]")) {
             $link = str_replace("[DOMAIN]", $item->getName(), $link);
+            if ($safe_url) {
+                $link = URL::sanitizeURL($link) ?: '#';
+            }
             return [$link];
         }
 
-        return parent::generateLinkContents($link, $item);
+        return parent::generateLinkContents($link, $item, $safe_url);
     }
 
     public static function getUsed(array $used, $domaintype)
@@ -756,10 +761,15 @@ class Domain extends CommonDropdown
         return $used;
     }
 
+    public static function canManageRecords()
+    {
+        return static::canView() && count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
+    }
+
     public static function getAdditionalMenuLinks()
     {
         $links = [];
-        if (static::canView()) {
+        if (static::canManageRecords()) {
             $rooms = "<i class='fa fa-clipboard-list pointer' title=\"" . DomainRecord::getTypeName(Session::getPluralNumber()) . "\"></i>
             <span class='d-none d-xxl-block ps-1'>
                " . DomainRecord::getTypeName(Session::getPluralNumber()) . "
@@ -774,7 +784,7 @@ class Domain extends CommonDropdown
 
     public static function getAdditionalMenuOptions()
     {
-        if (static::canView()) {
+        if (static::canManageRecords()) {
             return [
                 'domainrecord' => [
                     'icon'  => DomainRecord::getIcon(),
@@ -787,6 +797,7 @@ class Domain extends CommonDropdown
                 ]
             ];
         }
+        return false;
     }
 
     public function getCanonicalName()
@@ -802,5 +813,11 @@ class Domain extends CommonDropdown
     public static function getIcon()
     {
         return "fas fa-globe-americas";
+    }
+
+    public function post_updateItem($history = 1)
+    {
+        $this->cleanAlerts([Alert::END, Alert::NOTICE]);
+        parent::post_updateItem($history);
     }
 }

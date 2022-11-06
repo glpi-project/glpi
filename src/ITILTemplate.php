@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,20 +17,24 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\SearchOption;
 
 /**
  * ITIL Template class
@@ -73,7 +78,7 @@ abstract class ITILTemplate extends CommonDropdown
     public function getFromDBWithData($ID, $withtypeandcategory = true)
     {
         if ($this->getFromDB($ID)) {
-            $itiltype = str_replace('Template', '', static::getType());
+            $itiltype = static::getITILObjectClass();
             $itil_object  = new $itiltype();
             $itemstable = $itil_object->getItemsTable();
             $tth_class = $itiltype . 'TemplateHiddenField';
@@ -144,7 +149,7 @@ abstract class ITILTemplate extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
        //TRANS %1$S is the ITIL type
         return sprintf(
             _n('%1$s template', '%1$s templates', $nb),
@@ -152,6 +157,34 @@ abstract class ITILTemplate extends CommonDropdown
         );
     }
 
+    public function getAdditionalFields()
+    {
+        $fields = parent::getAdditionalFields();
+
+        $fields[] = [
+            'name'   => 'allowed_statuses',
+            'label'  => _n('Allowed status', 'Allowed statuses', Session::getPluralNumber()),
+            'type'   => 'specific',
+            'list'   => true
+        ];
+
+        return $fields;
+    }
+
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
+        /** @var CommonITILObject $itil_itemtype */
+        $itil_itemtype = static::getITILObjectClass();
+        switch ($field['name']) {
+            case 'allowed_statuses':
+                $itil_itemtype::dropdownStatus([
+                    'name'      => $field['name'],
+                    'values'    => $this->fields[$field['name']] ?? [],
+                    'multiple'  => true,
+                ]);
+                break;
+        }
+    }
 
     /**
      * @param boolean $withtypeandcategory (default 0)
@@ -162,7 +195,7 @@ abstract class ITILTemplate extends CommonDropdown
 
         static $allowed_fields = [];
 
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
 
        // For integer value for index
         if ($withtypeandcategory) {
@@ -218,6 +251,16 @@ abstract class ITILTemplate extends CommonDropdown
                     'date',
                     $itil_object->getTable()
                 )   => 'date',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'actiontime',
+                    $itil_object->getTable()
+                )   => 'actiontime',
+                $itil_object->getSearchOptionIDByField(
+                    'field',
+                    'time_to_resolve',
+                    $itil_object->getTable()
+                )   => 'time_to_resolve',
                 4                 => '_users_id_requester',
                 71                => '_groups_id_requester',
                 5                 => '_users_id_assign',
@@ -308,8 +351,8 @@ abstract class ITILTemplate extends CommonDropdown
     public function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0)
     {
 
-        $itiltype = str_replace('Template', '', static::getType());
-        $searchOption = Search::getOptions($itiltype);
+        $itiltype = static::getITILObjectClass();
+        $searchOption = SearchOption::getOptionsForItemtype($itiltype);
         $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);
         foreach (array_keys($tab) as $ID) {
             switch ($ID) {
@@ -362,7 +405,7 @@ abstract class ITILTemplate extends CommonDropdown
     {
         $ong          = [];
         $this->addDefaultFormTab($ong);
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
         $this->addStandardTab($itiltype . 'TemplateMandatoryField', $ong, $options);
         $this->addStandardTab($itiltype . 'TemplatePredefinedField', $ong, $options);
         $this->addStandardTab($itiltype . 'TemplateHiddenField', $ong, $options);
@@ -394,8 +437,8 @@ abstract class ITILTemplate extends CommonDropdown
             switch ($item->getType()) {
                 case 'TicketTemplate':
                     return [
-                        1 => __('Standard interface'),
-                        2 => __('Simplified interface')
+                        1 => __('Preview (Standard interface)'),
+                        2 => __('Preview (Simplified interface)')
                     ];
                 case 'ChangeTemplate':
                 case 'ProblemTemplate':
@@ -499,7 +542,7 @@ abstract class ITILTemplate extends CommonDropdown
             return false;
         }
         if ($tt->getFromDBWithData($tt->getID())) {
-            $itiltype = str_replace('Template', '', static::getType());
+            $itiltype = static::getITILObjectClass();
             $itil_object = new $itiltype();
             $itil_object->showForm(0, ['template_preview' => $tt->getID()]);
         }
@@ -598,7 +641,7 @@ abstract class ITILTemplate extends CommonDropdown
 
        // Tables linked to ticket template
         $to_merge = ['predefinedfields', 'mandatoryfields', 'hiddenfields'];
-        $itiltype = str_replace('Template', '', static::getType());
+        $itiltype = static::getITILObjectClass();
 
        // Source fields
         $source = [];
@@ -779,5 +822,94 @@ abstract class ITILTemplate extends CommonDropdown
     public static function getIcon()
     {
         return "fas fa-layer-group";
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if (isset($input['allowed_statuses']) && is_array($input['allowed_statuses'])) {
+            $input['allowed_statuses'] = exportArrayToDB($input['allowed_statuses']);
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if (isset($input['allowed_statuses']) && is_array($input['allowed_statuses'])) {
+            $input['allowed_statuses'] = exportArrayToDB($input['allowed_statuses']);
+        }
+
+        return $input;
+    }
+
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+
+        if (isset($this->fields['allowed_statuses'])) {
+            $this->fields['allowed_statuses'] = importArrayFromDB($this->fields['allowed_statuses']);
+        }
+    }
+
+    public function post_getEmpty()
+    {
+        /** @var CommonITILObject $itil_itemtype */
+        $itil_itemtype = static::getITILObjectClass();
+
+        $this->fields['allowed_statuses'] = array_keys($itil_itemtype::getAllStatusArray());
+    }
+
+    /**
+     * Count the number of ITIL Objects currently using the specified template
+     * @param int $templates_id
+     * @return int
+     */
+    public static function countAffectedItems(int $templates_id): int
+    {
+        /** @var CommonITILObject $itil_itemtype */
+        $itil_itemtype = static::getITILObjectClass();
+
+        $dbu = new DbUtils();
+        return $dbu->countElementsInTable(
+            $itil_itemtype::getTable(),
+            [
+                static::getForeignKeyField() => $templates_id
+            ]
+        );
+    }
+
+    public function showForm($ID, array $options = [])
+    {
+
+        if (!$this->isNewID($ID)) {
+            $this->check($ID, READ);
+        } else {
+            // Create item
+            $this->check(-1, CREATE);
+        }
+
+        $fields = $this->getAdditionalFields();
+
+        echo TemplateRenderer::getInstance()->render('components/itilobject/itiltemplate.html.twig', [
+            'item'   => $this,
+            'params' => $options,
+            'additional_fields' => $fields,
+            'affected_item_count' => static::countAffectedItems($ID)
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Get the ITILObject class that is related to the current ITILTemplate class
+     * @return string
+     */
+    public static function getITILObjectClass(): string
+    {
+        return preg_replace("/Template$/i", "", static::getType());
     }
 }

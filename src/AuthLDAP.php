@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -93,6 +95,12 @@ class AuthLDAP extends CommonDBTM
     const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
 
     /**
+     * Deleted user strategy: disable user and withdraw groups.
+     * @var integer
+     */
+    const DELETED_USER_DISABLEANDDELETEGROUPS = 5;
+
+    /**
      * Restored user strategy: Make no change to GLPI user
      * @var integer
      * @since 10.0.0
@@ -112,6 +120,18 @@ class AuthLDAP extends CommonDBTM
      * @since 10.0.0
      */
     const RESTORED_USER_ENABLE  = 3;
+
+    /**
+     * List of TLS versions
+     * @var array
+     * @since 10.1.0
+     */
+    const TLS_VERSIONS = [
+        '1.0' => '1.0',
+        '1.1' => '1.1',
+        '1.2' => '1.2',
+        '1.3' => '1.3'
+    ];
 
    // From CommonDBTM
     public $dohistory = true;
@@ -622,9 +642,12 @@ class AuthLDAP extends CommonDBTM
         echo "</td>";
         echo "</tr>";
 
-        echo "<tr class='tab_bg_1'><td><label for='timeout'>" . __('Timeout') . "</label></td>";
-        echo "<td colspan='3'>";
-
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('TLS Version') . "</td><td>";
+        Dropdown::showFromArray('tls_version', array_merge(['' => Dropdown::EMPTY_VALUE], self::TLS_VERSIONS), ['value' => $this->fields["tls_version"]]);
+        echo "</td>";
+        echo "<td><label for='timeout'>" . __('Timeout') . "</label></td>";
+        echo "<td>";
         Dropdown::showNumber('timeout', ['value'  => $this->fields["timeout"],
             'min'    => 1,
             'max'    => 30,
@@ -891,7 +914,7 @@ class AuthLDAP extends CommonDBTM
         echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
         echo "<td><input type='text' class='form-control' name='comment_field' value='" . $this->fields["comment_field"] . "'>";
         echo "</td>";
-        echo "<td>" . __('Administrative number') . "</td>";
+        echo "<td>" . _x('user', 'Administrative number') . "</td>";
         echo "<td>";
         echo "<input type='text' class='form-control' name='registration_number_field' value='" .
              $this->fields["registration_number_field"] . "'>";
@@ -941,7 +964,7 @@ class AuthLDAP extends CommonDBTM
         echo "<td><input type='text' class='form-control' name='location_field' value='" . $this->fields["location_field"] . "'>";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('Responsible') . "</td>";
+        echo "<tr class='tab_bg_2'><td>" . __('Supervisor') . "</td>";
         echo "<td><input type='text' class='form-control' name='responsible_field' value='" .
            $this->fields["responsible_field"] . "'></td>";
         echo "<td colspan='2'></td></tr>";
@@ -1282,7 +1305,7 @@ class AuthLDAP extends CommonDBTM
             'id'                 => '29',
             'table'              => $this->getTable(),
             'field'              => 'responsible_field',
-            'name'               => __('Responsible'),
+            'name'               => __('Supervisor'),
             'massiveaction'      => false,
             'datatype'           => 'string'
         ];
@@ -1432,7 +1455,7 @@ class AuthLDAP extends CommonDBTM
         }
 
         if (!isset($_SESSION[$filter_var]) || ($_SESSION[$filter_var] == '')) {
-            $_SESSION[$filter_var] = $config_ldap->fields[$filter_name1];
+            $_SESSION[$filter_var] = Sanitizer::unsanitize($config_ldap->fields[$filter_name1]);
         }
 
         echo "<div class='card'>";
@@ -1442,21 +1465,21 @@ class AuthLDAP extends CommonDBTM
                                            : __('Filter to search in groups')) . "</td>";
 
         echo "<td>";
-        echo "<input type='text' name='ldap_filter' value='" . $_SESSION[$filter_var] . "' size='70'>";
+        echo "<input type='text' name='ldap_filter' value='" . htmlspecialchars($_SESSION[$filter_var], ENT_QUOTES) . "' size='70'>";
        //Only display when looking for groups in users AND groups
         if (
             !$users
             && ($config_ldap->fields["group_search_type"] == self::GROUP_SEARCH_BOTH)
         ) {
             if (!isset($_SESSION["ldap_group_filter2"]) || ($_SESSION["ldap_group_filter2"] == '')) {
-                $_SESSION["ldap_group_filter2"] = $config_ldap->fields[$filter_name2];
+                $_SESSION["ldap_group_filter2"] = Sanitizer::unsanitize($config_ldap->fields[$filter_name2]);
             }
             echo "</td></tr>";
 
             echo "<tr><td>" . __('Search filter for users') . "</td";
 
             echo "<td>";
-            echo "<input type='text' name='ldap_filter2' value='" . $_SESSION["ldap_group_filter2"] . "'
+            echo "<input type='text' name='ldap_filter2' value='" . htmlspecialchars($_SESSION["ldap_group_filter2"], ENT_QUOTES) . "'
                 size='70'></td></tr>";
         }
 
@@ -1608,7 +1631,8 @@ class AuthLDAP extends CommonDBTM
             $config_ldap->fields['tls_certfile'],
             $config_ldap->fields['tls_keyfile'],
             $config_ldap->fields['use_bind'],
-            $config_ldap->fields['timeout']
+            $config_ldap->fields['timeout'],
+            $config_ldap->fields['tls_version']
         );
         if ($ds) {
             return true;
@@ -2296,13 +2320,13 @@ class AuthLDAP extends CommonDBTM
                               $dn_index,
                               ['massive_tags'  => 'select_item_child_entities',
                                   'name'          => "ldap_import_recursive[$dn_index]",
-                                  'specific_tags' => ['data-glpicore-ma-tags' => 'entities_id']
+                                  'specific_tags' => ['data-glpicore-ma-tags' => 'common']
                               ]
                           );
                             echo "</td>";
                     } else {
                         echo Html::hidden("ldap_import_recursive[$dn_index]", ['value'                 => 0,
-                            'data-glpicore-ma-tags' => 'entities_id'
+                            'data-glpicore-ma-tags' => 'common'
                         ]);
                     }
                     echo "</tr>";
@@ -2434,19 +2458,12 @@ class AuthLDAP extends CommonDBTM
                 }
             }
 
-            if ($order == 'DESC') {
-                function local_cmp($b, $a)
-                {
-                    return strcasecmp($a['cn'], $b['cn']);
+            usort(
+                $groups,
+                function ($a, $b) use ($order) {
+                    return $order == 'DESC' ? strcasecmp($b['cn'], $a['cn']) : strcasecmp($a['cn'], $b['cn']);
                 }
-
-            } else {
-                function local_cmp($a, $b)
-                {
-                    return strcasecmp($a['cn'], $b['cn']);
-                }
-            }
-            usort($groups, 'local_cmp');
+            );
         }
         return $groups;
     }
@@ -2507,10 +2524,10 @@ class AuthLDAP extends CommonDBTM
         if ($filter == '') {
             if ($search_in_groups) {
                 $filter = (!empty($config_ldap->fields['group_condition'])
-                       ? $config_ldap->fields['group_condition'] : "(objectclass=*)");
+                       ? Sanitizer::unsanitize($config_ldap->fields['group_condition']) : "(objectclass=*)");
             } else {
                 $filter = (!empty($config_ldap->fields['condition'])
-                       ? $config_ldap->fields['condition'] : "(objectclass=*)");
+                       ? Sanitizer::unsanitize($config_ldap->fields['condition']) : "(objectclass=*)");
             }
         }
         $cookie = '';
@@ -2761,7 +2778,7 @@ class AuthLDAP extends CommonDBTM
                 'login_field'       => $search_parameters['fields'][$search_parameters['method']],
                 'search_parameters' => $search_parameters,
                 'user_params'       => $params,
-                'condition'         => $config_ldap->fields['condition']
+                'condition'         => Sanitizer::unsanitize($config_ldap->fields['condition'])
             ];
 
             try {
@@ -2786,7 +2803,7 @@ class AuthLDAP extends CommonDBTM
                         //Get the ID by sync field (Used to check if restoration is needed)
                         $searched_user = new User();
                         $user_found = false;
-                        if (!($user_found = $searched_user->getFromDBbySyncField($DB->escape($login)))) {
+                        if ($login === null || !($user_found = $searched_user->getFromDBbySyncField($DB->escape($login)))) {
                          //In case user id has changed : get id by dn (Used to check if restoration is needed)
                             $user_found = $searched_user->getFromDBbyDn($DB->escape($user_dn));
                         }
@@ -2850,9 +2867,8 @@ class AuthLDAP extends CommonDBTM
                 ErrorHandler::getInstance()->handleException($e);
                 return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
 
@@ -2919,7 +2935,8 @@ class AuthLDAP extends CommonDBTM
             $this->fields['tls_certfile'],
             $this->fields['tls_keyfile'],
             $this->fields['use_bind'],
-            $this->fields['timeout']
+            $this->fields['timeout'],
+            $this->fields['tls_version']
         );
     }
 
@@ -2936,6 +2953,7 @@ class AuthLDAP extends CommonDBTM
      * @param string  $tls_certfile  TLS CERT file name within config directory (default '')
      * @param string  $tls_keyfile   TLS KEY file name within config directory (default '')
      * @param boolean $use_bind      do we need to do an ldap_bind? (true by default)
+     * @param string  $tls_version   TLS VERSION (default '')
      *
      * @return resource|false|\LDAP\Connection link to the LDAP server : false if connection failed
      */
@@ -2949,7 +2967,8 @@ class AuthLDAP extends CommonDBTM
         $tls_certfile = "",
         $tls_keyfile = "",
         $use_bind = true,
-        $timeout = 0
+        $timeout = 0,
+        $tls_version = ""
     ) {
 
         $ds = @ldap_connect($host, intval($port));
@@ -2965,6 +2984,14 @@ class AuthLDAP extends CommonDBTM
 
             if (!empty($tls_keyfile) && file_exists($tls_keyfile)) {
                 @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
+            }
+
+            if (!empty($tls_version)) {
+                $cipher_suite = 'NORMAL';
+                foreach (self::TLS_VERSIONS as $tls_version_key => $tls_version_value) {
+                    $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
+                }
+                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
             }
 
             if ($use_tls) {
@@ -3016,7 +3043,8 @@ class AuthLDAP extends CommonDBTM
             $ldap_method['tls_certfile'] ?? '',
             $ldap_method['tls_keyfile'] ?? '',
             $ldap_method['use_bind'],
-            $ldap_method['timeout']
+            $ldap_method['timeout'],
+            $ldap_method['tls_version'] ?? ''
         );
 
        // Test with login and password of the user if exists
@@ -3034,7 +3062,8 @@ class AuthLDAP extends CommonDBTM
                 $ldap_method['tls_certfile'] ?? '',
                 $ldap_method['tls_keyfile'] ?? '',
                 $ldap_method['use_bind'],
-                $ldap_method['timeout']
+                $ldap_method['timeout'],
+                $ldap_method['tls_version'] ?? ''
             );
         }
 
@@ -3054,7 +3083,8 @@ class AuthLDAP extends CommonDBTM
                     $ldap_method['tls_certfile'] ?? '',
                     $ldap_method['tls_keyfile'] ?? '',
                     $ldap_method['use_bind'],
-                    $ldap_method['timeout']
+                    $ldap_method['timeout'],
+                    $ldap_method['tls_version'] ?? ''
                 );
 
                // Test with login and password of the user
@@ -3072,7 +3102,8 @@ class AuthLDAP extends CommonDBTM
                          $ldap_method['tls_certfile'] ?? '',
                          $ldap_method['tls_keyfile'] ?? '',
                          $ldap_method['use_bind'],
-                         $ldap_method['timeout']
+                         $ldap_method['timeout'],
+                         $ldap_method['tls_version'] ?? ''
                      );
                 }
                 if ($ds) {
@@ -3668,7 +3699,7 @@ class AuthLDAP extends CommonDBTM
 
                     echo "<tr><td class='text-end'><label for='ldap_filter'>" . __('Search filter for users') . "</label></td><td colspan='3'>";
                     echo "<input type='text' class='form-control' id='ldap_filter' name='ldap_filter' value=\"" .
-                      $_SESSION['ldap_import']['ldap_filter'] . "\">";
+                      htmlspecialchars($_SESSION['ldap_import']['ldap_filter'], ENT_QUOTES) . "\">";
                     echo "</td></tr>";
                 }
                 break;
@@ -3934,7 +3965,8 @@ class AuthLDAP extends CommonDBTM
                 $authldap->getField('tls_certfile'),
                 $authldap->getField('tls_keyfile'),
                 $authldap->getField('use_bind'),
-                $authldap->getField('timeout')
+                $authldap->getField('timeout'),
+                $authldap->getField('tls_version')
             )
         ) {
             self::showLdapUsers();
@@ -4018,6 +4050,7 @@ class AuthLDAP extends CommonDBTM
             self::DELETED_USER_WITHDRAWDYNINFO           => __('Withdraw dynamic authorizations and groups'),
             self::DELETED_USER_DISABLE                   => __('Disable'),
             self::DELETED_USER_DISABLEANDWITHDRAWDYNINFO => __('Disable') . ' + ' . __('Withdraw dynamic authorizations and groups'),
+            self::DELETED_USER_DISABLEANDDELETEGROUPS => __('Disable') . ' + ' . __('Withdraw groups'),
         ];
     }
 
@@ -4300,6 +4333,9 @@ class AuthLDAP extends CommonDBTM
      */
     public function isSyncFieldUsed()
     {
+        if ($this->getID() <= 0) {
+            return false;
+        }
         $count = countElementsInTable(
             'glpi_users',
             [
@@ -4321,10 +4357,12 @@ class AuthLDAP extends CommonDBTM
     public static function getFieldValue($infos, $field)
     {
         $value = null;
-        if (is_array($infos[$field])) {
-            $value = $infos[$field][0];
-        } else {
-            $value = $infos[$field];
+        if (array_key_exists($field, $infos)) {
+            if (is_array($infos[$field])) {
+                $value = $infos[$field][0];
+            } else {
+                $value = $infos[$field];
+            }
         }
         if ($field != 'objectguid') {
             return $value;

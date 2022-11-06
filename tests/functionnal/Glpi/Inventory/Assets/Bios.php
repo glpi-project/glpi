@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -63,7 +65,7 @@ class Bios extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": 1}'
+                'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": "BIOS"}'
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -79,7 +81,7 @@ class Bios extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": 1}'
+                'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": "BIOS"}'
             ]
         ];
     }
@@ -170,7 +172,7 @@ class Bios extends AbstractInventoryAsset
         ]);
         $this->integer($manufacturers_id)->isGreaterThan(0);
 
-       //create manually a computer, with a bios
+        //create manually a computer, with a bios
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
@@ -198,18 +200,18 @@ class Bios extends AbstractInventoryAsset
             $this->variable($firmware['is_dynamic'])->isEqualTo(0);
         }
 
-       //computer inventory knows bios
+        //computer inventory knows bios
         $this->doInventory($xml_source, true);
 
-       //we still have 1 bios linked to the computer
+        //we still have 1 bios linked to the computer
         $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($firmwares))->isIdenticalTo(1);
 
-       //bios present in the inventory source is now dynamic
+        //bios present in the inventory source is now dynamic
         $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($firmwares))->isIdenticalTo(1);
 
-       //Redo inventory, but with modified firmware => will create a new one
+        //Redo inventory, but with modified firmware => will create a new one
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -235,15 +237,15 @@ class Bios extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have one firmware
+        //we still have one firmware
         $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($firmwares))->isIdenticalTo(1);
 
-       //bios present in the inventory source is still dynamic
+        //bios present in the inventory source is still dynamic
         $firmwares = $item_bios->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($firmwares))->isIdenticalTo(1);
 
-       //"original" firmware has been removed
+        //"original" firmware has been removed
         $this->boolean($item_bios->getFromDB($item_bios_id))->isFalse();
     }
 }

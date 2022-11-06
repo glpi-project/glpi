@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,18 +15,19 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
@@ -46,6 +48,7 @@
 {% if item.isNewItem() %}
    {% set can_admin = true %}
 {% endif %}
+
 {# TODO can_admin is usefull for "assign to me" shortcut #}
 
 {# TODO check allow_email params #}
@@ -56,10 +59,11 @@
          'item': item,
          'actortypeint': constant('CommonITILActor::REQUESTER'),
          'actortype': 'requester',
-         'entities_id': item.fields['entities_id'],
+         'entities_id': entities_id,
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
+         'cancreateuser': cancreateuser,
          'disable_assign_to_me': disable_assign_to_me ?? false,
          'main_rand': main_rand,
       }, with_context = false) }}
@@ -84,10 +88,11 @@
          'item': item,
          'actortypeint': constant('CommonITILActor::OBSERVER'),
          'actortype': 'observer',
-         'entities_id': item.fields['entities_id'],
+         'entities_id': entities_id,
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
+         'cancreateuser': cancreateuser,
          'disable_assign_to_me': disable_assign_to_me ?? false,
          'main_rand': main_rand,
       }, with_context = false) }}
@@ -96,7 +101,7 @@
       {{ fields.field(
          'observer',
          observer_field,
-         __('Observer'),
+         _n('Observer', 'Observers', 1),
          actor_options|merge({
             required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
          })
@@ -113,10 +118,10 @@
          'actortypeint': constant('CommonITILActor::ASSIGN'),
          'actortype': 'assign',
          'users_right': 'own_ticket',
-         'entities_id': item.fields['entities_id'],
+         'entities_id': entities_id,
          'itiltemplate': itiltemplate,
          'params': params,
-         'canupdate': (canupdate or canassign),
+         'canupdate': canassign,
          'disable_assign_to_me': disable_assign_to_me ?? false,
          'main_rand': main_rand,
       }, with_context = false) }}
@@ -151,17 +156,17 @@
       <div class="modal-body">
          <div class="mb-3">
             <label class="form-label" for="actorname">{{ __('Actor') }}</label>
-            <input type="text" class="form-control" id="actorname" name="actorname" />
-            <input type="hidden" name="actortype" value="" />
-            <input type="hidden" name="actorindex" value="" />
+            <input type="text" class="form-control" id="actorname" name="_notifications_actorname" />
+            <input type="hidden" name="_notifications_actortype" value="" />
+            <input type="hidden" name="_notifications_actorindex" value="" />
          </div>
          <div class="mb-3">
             <label for="alternative_email" class="form-label">{{ __('Email address') }}</label>
             <div class="form-check form-switch">
-               <input class="form-check-input" type="checkbox" id="use_notification" name="use_notification" />
+               <input class="form-check-input" type="checkbox" id="use_notification" name="_notifications_use_notification" />
                <label class="form-check-label" for="use_notification">{{ __('Email followup') }}</label>
             </div>
-            <input type="email" class="form-control" id="alternative_email" name="alternative_email" />
+            <input type="email" class="form-control" id="alternative_email" name="_notifications_alternative_email" />
          </div>
       </div>
       <div class="modal-footer">
@@ -198,9 +203,7 @@
             {
                itemtype: "{{ actor['itemtype'] }}",
                items_id: "{{ actor['items_id'] }}",
-               {% if actor['use_notification'] is defined %}
-                  use_notification: "{{ actor['use_notification'] }}",
-               {% endif %}
+               use_notification: {{ actor['use_notification'] ? "1" : "0" }},
                {% if actor['alternative_email'] is defined %}
                   alternative_email: "{{ actor['alternative_email'] }}",
                {% endif %}
@@ -224,11 +227,11 @@
       var actor      = actors[actortype][actorIndex];
 
       var modal = $('#editActorNotifySettings');
-      modal.find("input[name=actortype]").val(actortype);
-      modal.find("input[name=actorindex]").val(actorIndex);
-      modal.find("input[name=actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
-      modal.find("input[name=use_notification]").prop('checked', parseInt(actor.use_notification));
-      modal.find("input[name=alternative_email]").val(actor.alternative_email);
+      modal.find("input[name=_notifications_actortype]").val(actortype);
+      modal.find("input[name=_notifications_actorindex]").val(actorIndex);
+      modal.find("input[name=_notifications_actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
+      modal.find("input[name=_notifications_use_notification]").prop('checked', parseInt(actor.use_notification));
+      modal.find("input[name=_notifications_alternative_email]").val(actor.alternative_email);
 
       editActorNotifySettings_modal.show();
    }
@@ -251,10 +254,10 @@
    // save settings from modal (get modal data, and serialize them into input hidden)
    function saveNotificationSettings() {
       var modal = $('#editActorNotifySettings');
-      var actortype  = modal.find("input[name=actortype]").val();
-      var actorIndex = modal.find("input[name=actorindex]").val();
-      var use_notif  = (modal.find("input[name=use_notification]").is(":checked") ? 1 : 0);
-      var alt_email  = modal.find("input[name=alternative_email]").val();
+      var actortype  = modal.find("input[name=_notifications_actortype]").val();
+      var actorIndex = modal.find("input[name=_notifications_actorindex]").val();
+      var use_notif  = (modal.find("input[name=_notifications_use_notification]").is(":checked") ? 1 : 0);
+      var alt_email  = modal.find("input[name=_notifications_alternative_email]").val();
 
       var actor = actors[actortype][actorIndex];
       actor.use_notification = use_notif;

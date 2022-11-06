@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,13 +38,14 @@ namespace Glpi\Inventory\Asset;
 
 use DBmysqlIterator;
 use Glpi\Inventory\Conf;
+use Glpi\Toolbox\Sanitizer;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
 use NetworkName;
 use NetworkPort;
+use NetworkPortAggregate;
 use QueryParam;
-use Toolbox;
 use Unmanaged;
 
 trait InventoryNetworkPort
@@ -114,6 +118,7 @@ trait InventoryNetworkPort
         $this->handleIpNetworks();
         $this->handleUpdates();
         $this->handleCreates();
+        $this->handleDeletesManagementPorts();
         if (method_exists($this, 'handleAggregations')) {
             $this->handleAggregations();
         }
@@ -148,7 +153,7 @@ trait InventoryNetworkPort
         $stmt = $DB->prepare($query);
 
         foreach ($this->ports as $port) {
-            if (property_exists($port, 'mac') && $port->mac != '') {
+            if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
                 $stmt->bind_param(
                     's',
                     $port->mac
@@ -164,10 +169,10 @@ trait InventoryNetworkPort
                          'itemtype'        => $this->itemtype,
                          'items_id'        => $this->items_id,
                          'is_dynamic'      => 1,
-                         'name'            => addslashes($port->name)
+                         'name'            => $port->name,
                      ];
 
-                     $networkport->update($input, $this->withHistory());
+                     $networkport->update(Sanitizer::sanitize($input));
                      $unmanaged->delete(['id' => $unmanageds_id], true);
                 }
             }
@@ -186,10 +191,11 @@ trait InventoryNetworkPort
         $ipnetwork = new IPNetwork();
         foreach ($this->ports as $port) {
             if (
-                !property_exists($port, 'gateway') || $port->gateway != ''
-                || property_exists($port, 'netmask') || $port->netmask != ''
-                || property_exists($port, 'subnet') ||  $port->subnet  != ''
+                !property_exists($port, 'gateway') || $port->gateway == ''
+                || !property_exists($port, 'netmask') || $port->netmask == ''
+                || !property_exists($port, 'subnet') ||  $port->subnet  == ''
             ) {
+                // Ignore ports with incomplete information
                 continue;
             }
 
@@ -232,7 +238,7 @@ trait InventoryNetworkPort
                      'gateway'      => $port->gateway,
                      'entities_id'  => $this->entities_id
                  ];
-                 $ipnetwork->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                 $ipnetwork->add(Sanitizer::sanitize($input));
             }
         }
     }
@@ -254,7 +260,6 @@ trait InventoryNetworkPort
                 unset($input[$key]);
             }
         }
-        $input = Toolbox::addslashes_deep($input);
         $input = array_merge(
             $input,
             [
@@ -269,7 +274,7 @@ trait InventoryNetworkPort
             $input['trunk'] = 0;
         }
 
-        $netports_id = $networkport->add($input, [], $this->withHistory());
+        $netports_id = $networkport->add(Sanitizer::sanitize($input));
         return $netports_id;
     }
 
@@ -277,7 +282,7 @@ trait InventoryNetworkPort
      * Add a network name into database
      *
      * @param integer $items_id Port id
-     * @param string  $name     Network name name
+     * @param string  $name     Network name
      *
      * @return integer
      */
@@ -296,7 +301,7 @@ trait InventoryNetworkPort
             $input['name'] = $name;
         }
 
-        $netname_id = $networkname->add($input, [], $this->withHistory());
+        $netname_id = $networkname->add(Sanitizer::sanitize($input));
         return $netname_id;
     }
 
@@ -315,10 +320,10 @@ trait InventoryNetworkPort
             $input = [
                 'items_id'     => $items_id,
                 'itemtype'     => 'NetworkName',
-                'name'         => addslashes($ip),
+                'name'         => $ip,
                 'is_dynamic'   => 1
             ];
-            $ipaddress->add($input, [], $this->withHistory());
+            $ipaddress->add(Sanitizer::sanitize($input));
         }
     }
 
@@ -349,10 +354,7 @@ trait InventoryNetworkPort
             if (is_null($row['mac'])) {
                 $row['mac'] = '';
             }
-            if (preg_match("/[^a-zA-Z0-9 \-_\(\)]+/", $row['name'])) {
-                $row['name'] = Toolbox::addslashes_deep($row['name']);
-            }
-            foreach (['name', 'mac', 'instantiation_type'] as $field) {
+            foreach (['name', 'mac'] as $field) {
                 if ($row[$field] !== null) {
                     $row[$field] = strtolower($row[$field]);
                 }
@@ -368,14 +370,20 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $key => $data) {
             foreach ($db_ports as $keydb => $datadb) {
-               //keep trace of logical number from db
+                //keep trace of logical number from db
                 $db_lnumber = $datadb['logical_number'];
                 unset($datadb['logical_number']);
 
+                //keep trace of instantiation_type from db
+                $db_instantiation_type = $datadb['instantiation_type'];
+                unset($datadb['instantiation_type']);
+
                 $comp_data = [];
-                foreach (['name', 'mac', 'instantiation_type'] as $field) {
+                foreach (['name', 'mac'] as $field) {
                     if (property_exists($data, $field)) {
                         $comp_data[$field] = strtolower($data->$field);
+                    } else {
+                        $comp_data[$field] = "";
                     }
                 }
 
@@ -384,15 +392,19 @@ trait InventoryNetworkPort
                     continue;
                 }
 
-               //check for logical number change
                 if (property_exists($data, 'logical_number') && $data->logical_number != $db_lnumber) {
                     $networkport->update(
-                        [
+                        Sanitizer::sanitize([
                             'id'              => $keydb,
                             'logical_number'  => $data->logical_number
-                        ],
-                        $this->withHistory()
+                        ])
                     );
+                }
+
+                //check for instantiation_type switch for NetworkPort
+                if (property_exists($data, 'instantiation_type') && $data->instantiation_type != $db_instantiation_type) {
+                    $networkport->getFromDB($keydb);
+                    $networkport->switchInstantiationType($data->instantiation_type);
                 }
 
                //handle instantiation type
@@ -403,7 +415,7 @@ trait InventoryNetworkPort
                     $this->handleInstantiation($type, $data, $keydb, true);
                 }
 
-                $ips = $data->ipaddress;
+                $ips = $data->ipaddress ?? [];
                 if (count($ips)) {
                    //handle network name
                     if ($netname_stmt == null) {
@@ -436,7 +448,7 @@ trait InventoryNetworkPort
                         $netname_id = $this->addNetworkName($keydb);
                     }
 
-                   //Handle ipaddresses
+                    //Handle ipaddresses
                     $db_addresses = [];
                     $iterator = $DB->request([
                         'SELECT' => ['id', 'name'],
@@ -464,7 +476,7 @@ trait InventoryNetworkPort
 
                     if (!$this->isMainPartial() && count($db_addresses) && count($ips)) {
                         $ipaddress = new IPAddress();
-                       //deleted IP addresses
+                        //deleted IP addresses
                         foreach (array_keys($db_addresses) as $id_ipa) {
                             $ipaddress->delete(['id' => $id_ipa], true);
                         }
@@ -478,7 +490,7 @@ trait InventoryNetworkPort
                 unset($db_ports[$keydb]);
                 unset($this->networks[$key]);
                 unset($this->ports[$key]);
-                if (method_exists($this, 'getManagementPorts')) {
+                if (method_exists($this, 'getManagementPorts') && method_exists($this, 'setManagementPorts')) {
                     $managements = $this->getManagementPorts();
                     unset($managements[$key]);
                     $this->setManagementPorts($managements);
@@ -488,7 +500,7 @@ trait InventoryNetworkPort
             }
         }
 
-       //delete remaining network ports, if any
+        //delete remaining network ports, if any
         if (!$this->isMainPartial() && count($db_ports)) {
             foreach ($db_ports as $netpid => $netpdata) {
                 if ($netpdata['name'] != 'management') { //prevent removing internal management port
@@ -572,9 +584,9 @@ trait InventoryNetworkPort
 
        //store instance
         if ($instance->isNewItem()) {
-            $instance->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+            $instance->add(Sanitizer::sanitize($input));
         } else {
-            $instance->update(Toolbox::addslashes_deep($input), $this->withHistory());
+            $instance->update(Sanitizer::sanitize($input));
         }
     }
 
@@ -591,7 +603,7 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $port) {
             $netports_id = $this->addNetworkPort($port);
-            if (count($port->ipaddress)) {
+            if (count(($port->ipaddress ?? []))) {
                 $netnames_id = $this->addNetworkName($netports_id, $port->netname ?? null);
                 $this->addIPAddresses($port->ipaddress, $netnames_id);
             }
@@ -601,6 +613,27 @@ trait InventoryNetworkPort
                 $this->handleInstantiation($type, $port, $netports_id, false);
             }
             $this->portCreated($port, $netports_id);
+        }
+    }
+
+    /**
+     * Delete Management Ports if needed
+     *
+     * @return void
+     */
+    private function handleDeletesManagementPorts()
+    {
+        if (method_exists($this, 'getManagementPorts')) {
+            if (empty($this->getManagementPorts())) {
+                //remove all port management ports
+                $networkport = new NetworkPort();
+                $networkport->deleteByCriteria([
+                    "itemtype"           => $this->itemtype,
+                    "items_id"           => $this->items_id,
+                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "name"               => "Management"
+                ], 1);
+            }
         }
     }
 

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,28 +17,32 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * @since 9.4.0
  */
 class ITILFollowup extends CommonDBChild
 {
+    use Glpi\Features\ParentStatus;
+
    // From CommonDBTM
     public $auto_message_on_action = false;
     public static $rightname              = 'followup';
@@ -230,21 +235,11 @@ class ITILFollowup extends CommonDBChild
 
         global $CFG_GLPI;
 
-       // Add screenshots if needed, without notification
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, [
-            'force_update'  => true,
-            'name'          => 'content',
-            'content_field' => 'content',
+            'force_update' => true,
             'date' => $this->fields['date'],
         ]);
-
-       // Add documents if needed, without notification
-        $this->input = $this->addFiles($this->input, [
-            'force_update'  => true,
-            'date' => $this->fields['date'],
-        ]);
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
        // Check if stats should be computed after this change
         $no_stat = isset($this->input['_do_not_compute_takeintoaccount']);
@@ -256,107 +251,9 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-       // Set pending reason data on parent and self
-        if ($this->input['pending'] ?? 0) {
-            PendingReason_Item::createForItem($parentitem, [
-                'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
-            ]);
-            PendingReason_Item::createForItem($this, [
-                'pendingreasons_id'           => $this->input['pendingreasons_id'] ?? 0,
-                'followup_frequency'          => $this->input['followup_frequency'] ?? 0,
-                'followups_before_resolution' => $this->input['followups_before_resolution'] ?? 0,
-            ]);
-        }
+        $this->updateParentStatus($this->input['_job'], $this->input);
 
-        if (
-            isset($this->input["_close"])
-            && $this->input["_close"]
-            && ($parentitem->fields["status"] == CommonITILObject::SOLVED)
-        ) {
-            $update = [
-                'id'        => $parentitem->fields['id'],
-                'status'    => CommonITILObject::CLOSED,
-                'closedate' => $_SESSION["glpi_currenttime"],
-                '_accepted' => true,
-            ];
-
-           // Use update method for history
-            $this->input["_job"]->update($update);
-            $donotif = false; // Done for ITILObject update (new status)
-        }
-
-       // Set parent status to pending
-        if ($this->input['pending'] ?? 0) {
-            $this->input['_status'] = CommonITILObject::WAITING;
-        }
-
-       //manage reopening of ITILObject
-        $reopened = false;
-        if (!isset($this->input['_status'])) {
-            $this->input['_status'] = $parentitem->fields["status"];
-        }
-       // if reopen set (from followup form or mailcollector)
-       // and status is reopenable and not changed in form
-        $is_set_pending = $this->input['pending'] ?? 0;
-        if (
-            isset($this->input["_reopen"])
-            && $this->input["_reopen"]
-            && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
-            && $this->input['_status'] == $parentitem->fields["status"]
-            && !$is_set_pending
-        ) {
-            $needupdateparent = false;
-            if (
-                ($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
-                || ($parentitem->countGroups(CommonITILActor::ASSIGN) > 0)
-                || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)
-            ) {
-               //check if lifecycle allowed new status
-                if (
-                    Session::isCron()
-                    || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
-                ) {
-                    $needupdateparent = true;
-                    $update['status'] = CommonITILObject::ASSIGNED;
-                }
-            } else {
-               //check if lifecycle allowed new status
-                if (
-                    Session::isCron()
-                    || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
-                ) {
-                    $needupdateparent = true;
-                    $update['status'] = CommonITILObject::INCOMING;
-                }
-            }
-
-            if ($needupdateparent) {
-                $update['id'] = $parentitem->fields['id'];
-
-               // Use update method for history
-                $parentitem->update($update);
-                $reopened     = true;
-            }
-        }
-
-       //change ITILObject status only if imput change
-        if (
-            !$reopened
-            && $this->input['_status'] != $parentitem->fields['status']
-        ) {
-            $update['status'] = $this->input['_status'];
-            $update['id']     = $parentitem->fields['id'];
-
-           // don't notify on ITILObject - update event
-            $update['_disablenotif'] = true;
-
-           // Use update method for history
-            $parentitem->update($update);
-        }
+        $donotif = !isset($this->input['_disablenotif']) && !isset($parentitem->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],
@@ -422,6 +319,26 @@ class ITILFollowup extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        //Handle template
+        if (isset($input['_itilfollowuptemplates_id'])) {
+            $template = new ITILFollowupTemplate();
+            $parent_item = new $input['itemtype']();
+            if (
+                !$template->getFromDB($input['_itilfollowuptemplates_id'])
+                || !$parent_item->getFromDB($input['items_id'])
+            ) {
+                return false;
+            }
+            $input = array_replace(
+                [
+                    'content'         => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'is_private'      => $template->fields['is_private'],
+                    'requesttypes_id' => $template->fields['requesttypes_id'],
+                ],
+                $input
+            );
+        }
+
         $input["_job"] = new $input['itemtype']();
 
         if (
@@ -485,7 +402,6 @@ class ITILFollowup extends CommonDBChild
         }
         unset($input["add_reopen"]);
        // }
-        unset($input["add"]);
 
         $itemtype = $input['itemtype'];
 
@@ -533,16 +449,10 @@ class ITILFollowup extends CommonDBChild
             return;
         }
 
-       // Add screenshots if needed, without notification
+        // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, [
             'force_update' => true,
-            'name'          => 'content',
-            'content_field' => 'content',
-        ]);
-
-       // Add documents if needed, without notification
-        $this->input = $this->addFiles($this->input, [
-            'force_update' => true,
+            'date' => $this->fields['date'],
         ]);
 
        //Get user_id when not logged (from mailgate)
@@ -836,6 +746,8 @@ class ITILFollowup extends CommonDBChild
             'item'      => $options['parent'],
             'subitem'   => $this
         ]);
+
+        return true;
     }
 
 
@@ -859,8 +771,8 @@ class ITILFollowup extends CommonDBChild
         $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
             'long'  => __('Add a followup to tickets (requester)')
         ];
-        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (watcher)'),
-            'long'  => __('Add a followup to tickets (watcher)')
+        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (observer)'),
+            'long'  => __('Add a followup to tickets (observer)')
         ];
         $values[self::SEEPUBLIC]   = __('See public ones');
 

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -43,16 +45,21 @@ class Hooks
     const ADD_JAVASCRIPT = 'add_javascript';
 
    // Function hooks with no parameters
-    const CHANGE_ENTITY    = 'change_entity';
-    const CHANGE_PROFILE   = 'change_profile';
-    const DISPLAY_LOGIN    = 'display_login';
-    const DISPLAY_CENTRAL  = 'display_central';
-    const INIT_SESSION     = 'init_session';
-    const POST_INIT        = 'post_init';
+    const CHANGE_ENTITY               = 'change_entity';
+    const CHANGE_PROFILE              = 'change_profile';
+    const DISPLAY_LOGIN               = 'display_login';
+    const DISPLAY_CENTRAL             = 'display_central';
+    const DISPLAY_NETPORT_LIST_BEFORE = 'display_netport_list_before';
+    const INIT_SESSION                = 'init_session';
+    const POST_INIT                   = 'post_init';
 
    // Specific function hooks with parameters
-    const RULE_MATCHED        = 'rule_matched';
-    const VCARD_DATA          = 'vcard_data';
+    const RULE_MATCHED          = 'rule_matched';
+    const VCARD_DATA            = 'vcard_data';
+    const POST_PLUGIN_DISABLE   = 'post_plugin_disable';
+    const POST_PLUGIN_CLEAN     = 'post_plugin_clean';
+    const POST_PLUGIN_UNINSTALL = 'post_plugin_uninstall';
+    const POST_PLUGIN_ENABLE    = 'post_plugin_enable' ;
 
    // Function hooks with parameters and output
     const DISPLAY_LOCKED_FIELDS         = 'display_locked_fields';
@@ -97,9 +104,11 @@ class Hooks
     const POST_ITEM_FORM          = 'post_item_form';
     const POST_SHOW_ITEM          = 'post_show_item';
     const POST_SHOW_TAB           = 'post_show_tab';
+    const POST_ITEM_LIST          = 'post_item_list';
     const PRE_ITEM_FORM           = 'pre_item_form';
     const PRE_SHOW_ITEM           = 'pre_show_item';
     const PRE_SHOW_TAB            = 'pre_show_tab';
+    const PRE_ITEM_LIST           = 'pre_item_list';
     const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
     const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
     const SHOW_IN_TIMELINE        = 'show_in_timeline';  // (keys: item)
@@ -124,12 +133,19 @@ class Hooks
     const HANDLE_WAKEONLAN_TASK    = 'handle_wakeonlan_task';
     const HANDLE_REMOTEINV_TASK    = 'handle_remoteinventory_task';
 
+    const STALE_AGENT_CONFIG = 'stale_agent_config';
+
    // Debug / Development hooks
     const DEBUG_TABS = 'debug_tabs';
 
     // Helpdesk Menu Hooks
     const HELPDESK_MENU_ENTRY = 'helpdesk_menu_entry';
     const HELPDESK_MENU_ENTRY_ICON = 'helpdesk_menu_entry_icon';
+
+    // Dashboard hooks
+    const DASHBOARD_CARDS   = 'dashboard_cards';
+    const DASHBOARD_FILTERS = 'dashboard_filters';
+    const DASHBOARD_TYPES   = 'dashboard_types';
 
     /**
      * Get file hooks

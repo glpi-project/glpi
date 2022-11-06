@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -81,6 +83,42 @@ function update956to957()
         )
     );
     /** /Replace -1 values for glpi_networkportaliases.networkports_id_alias field */
+
+    /** Fix unicity in glpi_items_operatingsystems table */
+    // Some items have linked to both '0' and '-1' `operatingsystems_id`
+    // In this case, updating '-1' to '0' will fail due to unicity key.
+    // First, find item that contains duplicated data
+    $data = $DB->request([
+        'SELECT' => [
+            'MAX' => 'id as valid_entry_id',
+            'items_id',
+            'itemtype',
+            'operatingsystemarchitectures_id',
+        ],
+        'FROM' => 'glpi_items_operatingsystems',
+        'WHERE' => [
+            'operatingsystems_id' => [-1, 0]
+        ],
+        'GROUPBY' => [
+            'items_id',
+            'itemtype',
+            'operatingsystemarchitectures_id',
+        ],
+        'HAVING' => [new QueryExpression("COUNT(*) > 1")]
+    ]);
+
+    // Keep only the latest value for each items with duplicated data
+    foreach ($data as $row) {
+        $delete = $DB->buildDelete('glpi_items_operatingsystems', [
+            'operatingsystems_id' => [-1, 0],
+            'itemtype' => $row['itemtype'],
+            'items_id' => $row['items_id'],
+            'operatingsystemarchitectures_id' => $row['operatingsystemarchitectures_id'],
+            'id' => ['!=', $row['valid_entry_id']],
+        ]);
+        $migration->addPostQuery($delete);
+    }
+    /** /Fix unicity in glpi_items_operatingsystems table */
 
     /** Replace -1 values for glpi_items_operatingsystems table foreign key fields */
     foreach (['operatingsystems_id', 'operatingsystemversions_id', 'operatingsystemservicepacks_id'] as $item_os_fkey) {

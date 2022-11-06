@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -78,12 +80,12 @@ class RichText extends \GLPITestCase
 XML;
         $content = '<h1>XML example</h1>' . "\n" . htmlentities($xml_sample);
         yield [
-            'content'                => Sanitizer::sanitize($content, false), // Without quotes escaping
+            'content'                => Sanitizer::encodeHtmlSpecialChars($content), // Without quotes escaping
             'encode_output_entities' => false,
             'expected_result'        => $content,
         ];
         yield [
-            'content'                => Sanitizer::sanitize($content, true), // With quotes escaping
+            'content'                => Sanitizer::sanitize($content), // With quotes escaping
             'encode_output_entities' => false,
             'expected_result'        => $content,
         ];
@@ -115,8 +117,8 @@ PLAINTEXT,
 1. br should be added for each "\\r?\\n"<br />
 <br />
 2. contained URL should be transformed into links:<br />
- - <a href="http://www.glpi-project.org">www.glpi-project.org</a><br />
- - <a href="mailto:test@glpi-project.org">mailto:test@glpi-project.org</a><br />
+ - <a href="http://www.glpi-project.org" target="_blank">www.glpi-project.org</a><br />
+ - <a href="mailto:test@glpi-project.org" target="_blank">mailto:test@glpi-project.org</a><br />
 </p>
 HTML,
         ];
@@ -159,7 +161,13 @@ HTML,
   <div>
     <label>e-mail:</label><input type="email" /><br />
     <label>password:</label><input type="password" />
+    <input type="hidden" name="test3" value="malicious-input" />
     <button type="submit">OK</button>
+    <select name="test1">
+        <option value="1">Opt 1</option>
+        <option value="2">Opt 2</option>
+    </select>
+    <textarea name="test2">Some textarea content</textarea>
   </div>
 </form>
 
@@ -238,9 +246,15 @@ HTML,
 <h1>Form element should be removed</h1>
 
   <div>
-    <label>e-mail:</label><input type="email" /><br />
-    <label>password:</label><input type="password" />
-    <button type="submit">OK</button>
+    <label>e-mail:</label><br />
+    <label>password:</label>
+    
+    OK
+    
+        Opt 1
+        Opt 2
+    
+    Some textarea content
   </div>
 
 
@@ -315,6 +329,14 @@ HTML,
 </div>
 HTML,
         ];
+
+        // Deprecated html attibutes should not be transformed into styles
+        // see #11580
+        yield [
+            'content'                => '<table width=0 align="left" cellspacing=10 style="width: 100%;"><tr><td>Test</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table width="0" align="left" cellspacing="10" style="width: 100%;"><tr><td>Test</td></tr></table>',
+        ];
     }
 
     /**
@@ -333,25 +355,27 @@ HTML,
 
     protected function getTextFromHtmlProvider(): iterable
     {
-       // Handling of sanitized content
+        // Handling of sanitized content
         yield [
             'content'                => Sanitizer::sanitize('<p>Some HTML text</p>'),
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => 'Some HTML text',
         ];
 
-       // Handling of encoded result (to be used in textarea for instance)
+        // Handling of encoded result (to be used in textarea for instance)
         yield [
             'content'                => '<p>Some HTML content with special chars like &gt; &amp; &lt;.</p>',
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => true,
+            'preserve_case'          => false,
             'expected_result'        => 'Some HTML content with special chars like &gt; &amp; &lt;.',
         ];
 
-       // Handling of special chars (<, > and &) through sanitizing process
+        // Handling of special chars (<, > and &) through sanitizing process
         $xml_sample = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
@@ -364,21 +388,23 @@ XML;
 XML example <?xml version="1.0" encoding="UTF-8"?> <root> <desc><![CDATA[Some CDATA content]]></desc> <url>http://www.glpi-project.org/void?test=1&amp;debug=1</url> </root>
 PLAINTEXT;
         yield [
-            'content'                => Sanitizer::sanitize($content, false), // Without quotes escaping
+            'content'                => Sanitizer::encodeHtmlSpecialChars($content), // Without quotes escaping
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => $result,
         ];
         yield [
-            'content'                => Sanitizer::sanitize($content, true), // With quotes escaping
+            'content'                => Sanitizer::sanitize($content), // With quotes escaping
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => $result,
         ];
 
-       // Simple text without presentation from complex HTML
+        // Simple text without presentation from complex HTML
         $content = <<<HTML
 <h1>A title</h1>
 <p>Text in a paragraph</p>
@@ -388,6 +414,7 @@ PLAINTEXT;
 </ul>
 <div>
   <a href="/glpi/front/computer.form.php?id=150"><img src="/path/to/img" alt="an image" /></a>
+  Should I yell <strong>for the important words</strong>?
 </div>
 HTML;
         yield [
@@ -395,16 +422,18 @@ HTML;
             'keep_presentation'      => false,
             'compact'                => false,
             'encode_output_entities' => false,
-            'expected_result'        => 'A title Text in a paragraph el 1 el 2',
+            'preserve_case'          => false,
+            'expected_result'        => 'A title Text in a paragraph el 1 el 2 Should I yell for the important words?',
         ];
 
-       // Text with presentation from complex HTML
+        // Text with presentation from complex HTML
         $base_url = GLPI_URI;
         yield [
             'content'                => $content,
             'keep_presentation'      => true,
             'compact'                => false,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => <<<PLAINTEXT
 A TITLE
 
@@ -413,17 +442,18 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] [{$base_url}/glpi/front/computer.form.php?id=150] 
+ [an image] [{$base_url}/glpi/front/computer.form.php?id=150] Should I yell FOR THE IMPORTANT WORDS? 
 PLAINTEXT,
         ];
 
-       // Text with presentation from complex HTML (compact mode)
+        // Text with presentation from complex HTML (compact mode)
         $base_url = GLPI_URI;
         yield [
             'content'                => $content,
             'keep_presentation'      => true,
             'compact'                => true,
             'encode_output_entities' => false,
+            'preserve_case'          => false,
             'expected_result'        => <<<PLAINTEXT
 A TITLE
 
@@ -432,7 +462,27 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] 
+ [an image] Should I yell FOR THE IMPORTANT WORDS? 
+PLAINTEXT,
+        ];
+
+        // Text with presentation from complex HTML (with no case transformation)
+        $base_url = GLPI_URI;
+        yield [
+            'content'                => $content,
+            'keep_presentation'      => true,
+            'compact'                => true,
+            'encode_output_entities' => false,
+            'preserve_case'          => true,
+            'expected_result'        => <<<PLAINTEXT
+A title
+
+Text in a paragraph
+
+ 	* el 1
+ 	* el 2
+
+ [an image] Should I yell for the important words? 
 PLAINTEXT,
         ];
     }
@@ -445,12 +495,13 @@ PLAINTEXT,
         bool $keep_presentation,
         bool $compact,
         bool $encode_output_entities,
+        bool $preserve_case,
         string $expected_result
     ) {
         $richtext = $this->newTestedInstance();
 
-        $this->string($richtext->getTextFromHtml($content, $keep_presentation, $compact, $encode_output_entities))
-         ->isEqualTo($expected_result);
+        $this->string($richtext->getTextFromHtml($content, $keep_presentation, $compact, $encode_output_entities, $preserve_case))
+            ->isEqualTo($expected_result);
     }
 
     protected function isRichTextHtmlContentProvider(): iterable

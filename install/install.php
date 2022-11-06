@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -115,7 +117,7 @@ function choose_language()
 function acceptLicense()
 {
     TemplateRenderer::getInstance()->display('install/accept_license.html.twig', [
-        'copying' => file_get_contents(GLPI_ROOT . "/COPYING.txt"),
+        'copying' => file_get_contents(GLPI_ROOT . "/LICENSE"),
     ]);
 }
 
@@ -153,6 +155,7 @@ function step3($host, $user, $password, $update)
 {
 
     error_reporting(16);
+    mysqli_report(MYSQLI_REPORT_OFF);
 
    //Check if the port is in url
     $hostport = explode(":", $host);
@@ -447,37 +450,45 @@ function step8()
 }
 
 
-function update1($DBname)
+function update1($dbname)
 {
 
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
     $password = $_SESSION['db_access']['password'];
 
-    if ($success = DBConnection::createMainConfig($host, $user, $password, $DBname) && !empty($DBname)) {
-        include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    $error = null;
+    if (empty($dbname)) {
+        $error = __('Please select a database.');
+    } else {
         global $DB;
-        $DB = new DB();
-
-        $success = DBConnection::updateConfigProperties($DB->getComputedConfigBooleanFlags());
+        $DB = DBConnection::getDbInstanceUsingParameters($host, $user, $password, $dbname);
+        $update = new Update($DB);
+        if ($update->getCurrents()['version'] === null) {
+            $error = sprintf(__('Current GLPI version not found for database named "%s". Update cannot be done.'), $dbname);
+        } elseif (
+            !DBConnection::createMainConfig($host, $user, $password, $dbname)
+            || !DBConnection::updateConfigProperties($DB->getComputedConfigBooleanFlags())
+        ) {
+            $error = __("Can't create the database connection file, please verify file permissions.");
+        }
     }
-    if ($success) {
+
+    if ($error !== null) {
+        header_html(__('Upgrade'));
+        TemplateRenderer::getInstance()->display(
+            'install/update.invalid_database.html.twig',
+            [
+                'message' => $error,
+                'db_host' => $host,
+                'db_user' => $user,
+                'db_pass' => rawurlencode($password),
+            ]
+        );
+        footer_html();
+    } else {
         $from_install = true;
         include_once(GLPI_ROOT . "/install/update.php");
-    } else { // can't create config_db file
-        header_html('');
-        echo __("Can't create the database connection file, please verify file permissions.");
-        echo "<h3>" . __('Do you want to continue?') . "</h3>";
-        echo "<form action='install.php' method='post'>";
-        echo "<input type='hidden' name='update' value='yes'>";
-        echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-        echo "<button type='submit' name='submit' class='btn btn-primary'>
-         " . __('Continue') . "
-         <i class='fas fa-chevron-right ms-1'></i>
-      </button>";
-        echo "</p>";
-        Html::closeForm();
-        footer_html();
     }
 }
 
@@ -568,7 +579,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
             Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
             header_html(sprintf(__('Step %d'), 1));
-            step2($_POST["update"] ?? 'no');
+            step2($_POST["update"]);
             break;
 
         case "Etape_2": // mysql settings ok, go test mysql settings and select database.

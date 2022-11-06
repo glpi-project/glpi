@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -545,6 +547,8 @@ JAVASCRIPT;
                 'complete' => true,
             ]);
 
+            $editable = $canedit_admin || ($can_reserve && $my_item);
+
             $events[] = [
                 'id'          => $data['id'],
                 'resourceId'  => $data['itemtype'] . "-" . $data['items_id'],
@@ -561,7 +565,8 @@ JAVASCRIPT;
                 'items_id'    => $data['items_id'],
                 'color'       => Toolbox::getColorForString($name),
                 'ajaxurl'     => Reservation::getFormURLWithID($data['id']),
-                'editable'    => $canedit_admin || ($can_reserve && $my_item),
+                'editable'    => $editable, // "editable" is used by fullcalendar, but is not accessible
+                '_editable'   => $editable, // "_editable" will be used by custom event handlers
             ];
         }
 
@@ -582,8 +587,7 @@ JAVASCRIPT;
             ],
             'FROM'   => $res_i_table,
             'WHERE'  => [
-                'is_active'  => 1,
-                'is_deleted' => 0
+                'is_active'  => 1
             ]
         ]);
 
@@ -627,10 +631,12 @@ JAVASCRIPT;
             return false;
         }
 
+        $event = Planning::cleanDates($event);
+
         return $reservation->update([
             'id'    => (int) $event['id'],
-            'begin' => $event['start'],
-            'end'   => $event['end']
+            'begin' => date("Y-m-d H:i:s", strtotime($event['start'])),
+            'end'   => date("Y-m-d H:i:s", strtotime($event['end'])),
         ]);
     }
 
@@ -670,6 +676,7 @@ JAVASCRIPT;
             }
         } else {
             $resa->getEmpty();
+            $options = Planning::cleanDates($options);
             $resa->fields["begin"] = date("Y-m-d H:i:s", strtotime($options['begin']));
             if (!isset($options['end'])) {
                 $resa->fields["end"] = date("Y-m-d H:00:00", strtotime($resa->fields["begin"]) + HOUR_TIMESTAMP);
@@ -701,7 +708,7 @@ JAVASCRIPT;
                 'items_id_name'   => 'items[]',
                 'itemtypes'       => $CFG_GLPI['reservation_types'],
                 'entity_restrict' => Session::getActiveEntity(),
-                'checkright'      => true,
+                'checkright'      => false,
                 'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php'
             ]);
             echo "<span id='item_dropdown'>";
@@ -745,10 +752,7 @@ JAVASCRIPT;
             || !Session::haveAccessToEntity($entities_id)
         ) {
             echo "<input type='hidden' name='users_id' value='" . $uid . "'>";
-            echo Dropdown::getDropdownName(
-                User::getTable(),
-                $uid
-            );
+            echo getUserName($uid);
         } else {
             User::dropdown([
                 'value'        => $uid,
@@ -862,6 +866,8 @@ JAVASCRIPT;
         echo "</table>";
         Html::closeForm();
         echo "</div>";
+
+        return true;
     }
 
 
@@ -1228,5 +1234,111 @@ JAVASCRIPT;
     public static function getIcon()
     {
         return "ti ti-calendar-event";
+    }
+
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
+    {
+        global $CFG_GLPI;
+
+        $action_prefix = 'Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR;
+        if (in_array($itemtype, $CFG_GLPI["reservation_types"], true)) {
+            $actions[$action_prefix . 'enable'] = __('Authorize reservations');
+            $actions[$action_prefix . 'disable'] = __('Prohibit reservations');
+            $actions[$action_prefix . 'available'] = __('Make available for reservations');
+            $actions[$action_prefix . 'unavailable'] = __('Make unavailable for reservations');
+        }
+    }
+
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        $input = $ma->getInput();
+
+        switch ($ma->getAction()) {
+            case 'enable':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Authorize reservations') . "'>";
+                return true;
+            case 'disable':
+                echo '<div class="alert alert-warning">';
+                echo __('Are you sure you want to return this non-reservable item?');
+                echo '<br>';
+                echo "<span class='fw-bold'>" . __('That will remove all the reservations in progress.') . "</span>";
+                echo '</div>';
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Prohibit reservations') . "'>";
+                return true;
+            case 'available':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Make available for reservations') . "'>";
+                return true;
+            case 'unavailable':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Make unavailable for reservations') . "'>";
+                return true;
+        }
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    {
+        if (!ReservationItem::canUpdate()) {
+            return false;
+        }
+        $reservation_item = new ReservationItem();
+
+        switch ($ma->getAction()) {
+            case 'enable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        // Treat as OK
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $result = $reservation_item->add([
+                            'itemtype' => $item->getType(),
+                            'items_id' => $id,
+                            'is_active' => 1
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    }
+                }
+                break;
+            case 'disable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->delete(['id' => $reservation_item->getID()]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+            case 'available':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->update([
+                            'id' => $reservation_item->getID(),
+                            'is_active' => 1
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+            case 'unavailable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->update([
+                            'id' => $reservation_item->getID(),
+                            'is_active' => 0
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 }

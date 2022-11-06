@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -150,6 +152,7 @@ if (!$DB->tableExists('glpi_databases')) {
          `is_onbackup` tinyint NOT NULL DEFAULT '0',
          `is_active` tinyint NOT NULL DEFAULT '0',
          `is_deleted` tinyint NOT NULL DEFAULT '0',
+         `is_dynamic` tinyint NOT NULL DEFAULT '0',
          `date_creation` timestamp NULL DEFAULT NULL,
          `date_mod` timestamp NULL DEFAULT NULL,
          `date_update` timestamp NULL DEFAULT NULL,
@@ -160,17 +163,34 @@ if (!$DB->tableExists('glpi_databases')) {
          KEY `name` (`name`),
          KEY `is_active` (`is_active`),
          KEY `is_deleted` (`is_deleted`),
+         KEY `is_dynamic` (`is_dynamic`),
          KEY `date_creation` (`date_creation`),
          KEY `date_mod` (`date_mod`),
          KEY `databaseinstances_id` (`databaseinstances_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_databases");
 }
-$migration->addField('glpi_states', 'is_visible_database', 'bool', [
-    'value' => 1,
-    'after' => 'is_visible_appliance'
-]);
-$migration->addKey('glpi_states', 'is_visible_database');
+
+if ($DB->fieldExists('glpi_states', 'is_visible_database')) {
+    // Dev migration
+    $migration->changeField('glpi_states', 'is_visible_database', 'is_visible_databaseinstance', 'bool', ['value' => 1]);
+    $migration->dropKey('glpi_states', 'is_visible_database');
+} else if (!$DB->fieldExists('glpi_states', 'is_visible_databaseinstance')) {
+    $migration->addField('glpi_states', 'is_visible_databaseinstance', 'bool', [
+        'value' => 1,
+        'after' => 'is_visible_appliance'
+    ]);
+}
+$migration->addKey('glpi_states', 'is_visible_databaseinstance');
+
+// Create glpi_databases is_dynamic if not exist (datamodel changed during v10.0 development)
+if (!$DB->fieldExists('glpi_databases', 'is_dynamic')) {
+    $migration->addField('glpi_databases', 'is_dynamic', "tinyint NOT NULL DEFAULT '0'", [
+        'after' => 'is_deleted'
+    ]);
+    $migration->addKey('glpi_databases', 'is_dynamic');
+    $migration->migrationOneTable('glpi_databases');
+}
 
 $migration->addRight('database', ALLSTANDARDRIGHT);
 $ADDTODISPLAYPREF['Database'] = [2, 3, 6, 9, 10];

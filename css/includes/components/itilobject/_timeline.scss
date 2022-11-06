@@ -1,12 +1,13 @@
 /*!
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -38,7 +40,6 @@
 
         .creator {
             .badge {
-                height: inherit;
                 background-color: $timeline-badge-bg;
                 color: $timeline-badge-fg;
 
@@ -83,21 +84,25 @@
         }
     }
 
-    .timeline-more-actions {
-        visibility: hidden;
-    }
-
-    &:hover {
+    @media (hover: hover) {
         .timeline-more-actions {
-            visibility: visible;
+            visibility: hidden;
+        }
+
+        &:hover {
+            .timeline-more-actions {
+                visibility: visible;
+            }
         }
     }
 
     .timeline-content {
         position: relative;
         border-top-left-radius: 0;
-        max-width: 100%;
+        max-width: 820px;
+        min-width: 100%;
         word-break: break-word;
+        border: 1px solid transparent;
 
         @include media-breakpoint-up(sm) {
             &::before {
@@ -109,8 +114,7 @@
                 right: auto;
                 top: -1px;
                 bottom: auto;
-                border: 7px solid;
-                border-color: transparent;
+                border: 7px solid transparent;
             }
 
             &::after {
@@ -122,8 +126,7 @@
                 right: auto;
                 top: 0;
                 bottom: auto;
-                border: 6px solid;
-                border-color: transparent;
+                border: 6px solid transparent;
             }
 
             &.t-right {
@@ -168,6 +171,7 @@
     }
 
     &.ITILFollowup,
+    &.NotepadItem,
     &.KnowbaseItemComment {
         .timeline-content {
             background-color: $timeline-fup-bg;
@@ -268,6 +272,14 @@
             border: 0;
             box-shadow: none;
         }
+
+        &#new-Document_Item-block {
+            .timeline-content {
+                border: 1px solid $timeline-doc-border;
+                box-shadow: inherit;
+                color: $timeline-doc-fg;
+            }
+        }
     }
 
     &.Log {
@@ -313,10 +325,12 @@
     }
 
     .timeline-badges {
-        margin-bottom: -0.5rem;
+        margin-bottom: -0.75rem;
 
         .badge {
             @include tabler-badge-fix;
+
+            display: inline-block;
         }
     }
 }
@@ -379,6 +393,7 @@
             &.ITILTask.info,
             &.Document_Item,
             &.Log,
+            &.NotepadItem,
             &.KnowbaseItemComment {
                 display: none;
             }
@@ -481,6 +496,7 @@
 
                 .timeline-content {
                     border-radius: 0;
+                    max-width: initial;
 
                     .card-body {
                         padding: 0.5rem;

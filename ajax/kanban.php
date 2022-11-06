@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -45,6 +47,8 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
+
+/** @global array $_UPOST */
 
 if (!isset($_REQUEST['action'])) {
     Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
@@ -74,9 +78,18 @@ if (isset($itemtype)) {
             return;
         }
     }
-    if (in_array($action, ['update', 'add_teammember', 'delete_teammember', 'load_item_panel'])) {
+    if (in_array($action, ['update', 'load_item_panel', 'delete_teammember'])) {
         $item->getFromDB($_REQUEST['items_id']);
         if (!$item->canUpdateItem()) {
+            // Missing rights
+            http_response_code(403);
+            return;
+        }
+    }
+    if (in_array($action, ['add_teammember'])) {
+        $item->getFromDB($_REQUEST['items_id']);
+        $can_assign = method_exists($item, 'canAssign') ? $item->canAssign() : $item->canUpdateItem();
+        if (!$can_assign) {
            // Missing rights
             http_response_code(403);
             return;
@@ -216,6 +229,11 @@ if (($_POST['action'] ?? null) === 'update') {
         'timestamp' => $_SESSION['glpi_currenttime']
     ];
     echo json_encode($response, JSON_FORCE_OBJECT);
+} else if ($_REQUEST['action'] === 'clear_column_state') {
+    $checkParams(['items_id']);
+    $result = Item_Kanban::clearStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id']);
+    http_response_code($result ? 200 : 500);
+    return;
 } else if ($_REQUEST['action'] === 'list_columns') {
     $checkParams(['column_field']);
     header("Content-Type: application/json; charset=UTF-8", true);

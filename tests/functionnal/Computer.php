@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -365,7 +367,7 @@ class Computer extends DbTestCase
             }
         )->error()
          ->withType(E_USER_WARNING)
-         ->withMessage('getFromDBByCrit expects to get one result, 8 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".')
+         ->withMessage('getFromDBByCrit expects to get one result, 9 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".')
          ->exists();
     }
 
@@ -474,6 +476,9 @@ class Computer extends DbTestCase
                     $expectedDate = new \DateTime($date);
                     $this->dateTime($dateClone)->isEqualTo($expectedDate);
                     break;
+                case 'name':
+                    $this->variable($clonedComputer->getField($k))->isEqualTo("{$computer->getField($k)} (copy)");
+                    break;
                 default:
                     $this->variable($clonedComputer->getField($k))->isEqualTo($computer->getField($k));
             }
@@ -490,7 +495,10 @@ class Computer extends DbTestCase
             $this->integer(
                 countElementsInTable(
                     $relation::getTable(),
-                    ['items_id' => $clonedComputer->fields['id']]
+                    [
+                        'itemtype'  => 'Computer',
+                        'items_id'  => $clonedComputer->fields['id'],
+                    ]
                 )
             )->isIdenticalTo($expected);
         }
@@ -498,6 +506,132 @@ class Computer extends DbTestCase
        //check processor has been cloned
         $this->boolean($link->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
         $this->boolean($docitem->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();
+    }
+
+    public function testCloneWithAutoCreateInfocom()
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $date = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date;
+
+        // Test item cloning
+        $computer = $this->getNewComputer();
+        $id = $computer->fields['id'];
+
+        // add infocom
+        $infocom = new \Infocom();
+        $this->integer(
+            $infocom->add([
+                'itemtype'  => 'Computer',
+                'items_id'  => $id,
+                'buy_date'  => '2021-01-01',
+                'use_date'  => '2021-01-02',
+                'value'     => '800.00'
+            ])
+        )->isGreaterThan(0);
+
+        // clone!
+        $computer = new \Computer(); //$computer->fields contents is already escaped!
+        $this->boolean($computer->getFromDB($id))->isTrue();
+        $infocom_auto_create_original = $CFG_GLPI["infocom_auto_create"] ?? 0;
+        $CFG_GLPI["infocom_auto_create"] = 1;
+        $added = $computer->clone();
+        $CFG_GLPI["infocom_auto_create"] = $infocom_auto_create_original;
+        $this->integer((int)$added)->isGreaterThan(0);
+        $this->integer($added)->isNotEqualTo($computer->fields['id']);
+
+        $clonedComputer = new \Computer();
+        $this->boolean($clonedComputer->getFromDB($added))->isTrue();
+
+        $iterator = $DB->request([
+            'SELECT' => ['buy_date', 'use_date', 'value'],
+            'FROM'   => \Infocom::getTable(),
+            'WHERE'  => [
+                'itemtype'  => 'Computer',
+                'items_id'  => $clonedComputer->fields['id']
+            ]
+        ]);
+        $this->integer($iterator->count())->isEqualTo(1);
+        $this->array($iterator->current())->isIdenticalTo([
+            'buy_date'  => '2021-01-01',
+            'use_date'  => '2021-01-02',
+            'value'     => '800.0000' //DB stores 4 decimal places
+        ]);
+    }
+
+    public function testCloneWithSpecificName()
+    {
+        /** @var \Computer $computer */
+        $computer = $this->getNewComputer();
+        $clone_id = $computer->clone([
+            'name' => 'testCloneWithSpecificName'
+        ]);
+        $this->integer($clone_id)->isGreaterThan(0);
+        $result = $computer->getFromDB($clone_id);
+        $this->boolean($result)->isTrue();
+        $this->string($computer->fields['name'])->isEqualTo('testCloneWithSpecificName');
+    }
+
+    public function testClonedRelationNamesFromTemplate()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        /** @var \Computer $computer */
+        $computer_template = new \Computer();
+        $templates_id = $computer_template->add([
+            'template_name' => __FUNCTION__ . '_template',
+            'is_template' => 1
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+
+        // Add a network port to the template
+        $networkPort = new \NetworkPort();
+        $networkports_id = $networkPort->add([
+            'name' => __FUNCTION__,
+            'itemtype' => 'Computer',
+            'items_id' => $templates_id,
+            'instantiation_type' => 'NetworkPortEthernet',
+            'logical_number' => 0,
+            'items_devicenetworkcards_id' => 0,
+            '_create_children' => true
+        ]);
+        $this->integer($networkports_id)->isGreaterThan(0);
+
+        // Create computer from template
+        $computer = new \Computer();
+        $computers_id = $computer->add([
+            'name' => __FUNCTION__,
+            'id' => $templates_id
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        // Get network port from computer
+        $this->boolean($networkPort->getFromDBByCrit([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+        ]))->isTrue();
+        // Network port name should not have a "copy" suffix
+        $this->string($networkPort->fields['name'])->isEqualTo(__FUNCTION__);
+    }
+
+    public function testCloneWithAutoName()
+    {
+        /** @var \Computer $computer */
+        $computer = $this->getNewComputer();
+        $computer->update([
+            'id' => $computer->fields['id'],
+            'name' => 'testCloneWithAutoName'
+        ]);
+        $clone_id = $computer->clone();
+        $this->integer($clone_id)->isGreaterThan(0);
+        $result = $computer->getFromDB($clone_id);
+        $this->boolean($result)->isTrue();
+        $this->string($computer->fields['name'])->isEqualTo('testCloneWithAutoName (copy)');
     }
 
     public function testTransfer()
@@ -535,12 +669,8 @@ class Computer extends DbTestCase
        //transer to another entity
         $transfer = new \Transfer();
 
-        $controller = new \atoum\atoum\mock\controller();
-        $controller->__construct = function () {
-          // void
-        };
-
-        $ma = new \mock\MassiveAction([], [], 'process', $controller);
+        $this->mockGenerator->orphanize('__construct');
+        $ma = new \mock\MassiveAction([], [], 'process');
 
         \MassiveAction::processMassiveActionsForOneItemtype(
             $ma,
@@ -565,5 +695,28 @@ class Computer extends DbTestCase
             ]
         ]);
         $this->integer(count($softwares))->isidenticalTo(1);
+    }
+
+    public function testClearSavedInputAfterUpdate()
+    {
+        $this->login();
+
+        // Check that there is no saveInput already
+        if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
+            $this->array($_SESSION['saveInput'])->notHasKey('Computer');
+        }
+        $computer = $this->getNewComputer();
+        $cid = $computer->fields['id'];
+
+        $result = $computer->update([
+            'id'    => $cid,
+            'comment'  => 'test'
+        ]);
+        $this->boolean($result)->isTrue();
+
+        // Check that there is no savedInput after update
+        if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
+            $this->array($_SESSION['saveInput'])->notHasKey('Computer');
+        }
     }
 }

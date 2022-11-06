@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,20 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Search\SearchOption;
 
 class DisplayPreference extends CommonDBTM
 {
@@ -174,7 +178,7 @@ class DisplayPreference extends CommonDBTM
             }
         } else {
            // No items in the global config
-            $searchopt = Search::getOptions($input["itemtype"]);
+            $searchopt = SearchOption::getOptionsForItemtype($input["itemtype"]);
             if (count($searchopt) > 1) {
                 $done = false;
 
@@ -263,6 +267,47 @@ class DisplayPreference extends CommonDBTM
         );
     }
 
+    /**
+     * Get the fixed columns for a given itemtype
+     * A fixed columns is :
+     * - Always displayed before the normal columns
+     * - Can't be moved
+     * - Must not be shown in the search option dropdown (can't be added to the list)
+     */
+    protected function getFixedColumns(string $itemtype): array
+    {
+        global $CFG_GLPI;
+
+        $fixed_columns = [];
+
+        // Get item for itemtype
+        $item = null;
+        if ($itemtype != AllAssets::getType()) {
+            $item = getItemForItemtype($itemtype);
+        }
+
+        // ID is fixed for CommonITILObjects
+        if ($item instanceof CommonITILObject) {
+            $fixed_columns[] = 2;
+        }
+
+        // Name is always fixed
+        $fixed_columns[] = 1;
+
+        // Entity may be fixed
+        if (
+            Session::isMultiEntitiesMode()
+            && (
+                isset($CFG_GLPI["union_search_type"][$itemtype])
+                || ($item && $item->maybeRecursive())
+                || count($_SESSION["glpiactiveentities"]) > 1
+            )
+        ) {
+            $fixed_columns[] = 80;
+        }
+
+        return $fixed_columns;
+    }
 
     /**
      * Print the search config form
@@ -274,22 +319,17 @@ class DisplayPreference extends CommonDBTM
      **/
     public function showFormPerso($target, $itemtype)
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $searchopt = Search::getCleanedOptions($itemtype);
         if (!is_array($searchopt)) {
             return false;
         }
 
-        $item = null;
-        if ($itemtype != AllAssets::getType()) {
-            $item = getItemForItemtype($itemtype);
-        }
-
         $IDuser = Session::getLoginUserID();
 
         echo "<div id='tabsbody' class='m-n2'>";
-       // Defined items
+        // Defined items
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
@@ -299,6 +339,9 @@ class DisplayPreference extends CommonDBTM
             'ORDER'  => 'rank'
         ]);
         $numrows = count($iterator);
+
+        // Get fixed columns
+        $fixed_columns = $this->getFixedColumns($itemtype);
 
         if ($numrows == 0) {
             Session::checkRight(self::$rightname, self::PERSONAL);
@@ -330,12 +373,12 @@ class DisplayPreference extends CommonDBTM
             foreach ($searchopt as $key => $val) {
                 if (!is_array($val)) {
                     $group = $val;
-                } else if (count($val) === 1) {
+                } elseif (count($val) === 1) {
                     $group = $val['name'];
-                } else if (
-                    $key != 1
-                       && !in_array($key, $already_added)
-                       && (!isset($val['nodisplay']) || !$val['nodisplay'])
+                } elseif (
+                    !in_array($key, $fixed_columns)
+                    && !in_array($key, $already_added)
+                    && (!isset($val['nodisplay']) || !$val['nodisplay'])
                 ) {
                     $values[$group][$key] = $val["name"];
                 }
@@ -347,22 +390,15 @@ class DisplayPreference extends CommonDBTM
             Html::closeForm();
             echo "</td></tr>\n";
 
-           // print first element
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . $searchopt[1]["name"] . "</td>";
-            echo "<td colspan='3'>&nbsp;</td>";
-            echo "</tr>";
+            foreach ($fixed_columns as $searchoption_index) {
+                if (!isset($searchopt[$searchoption_index])) {
+                    // Missing search option; do nothing
+                    continue;
+                }
 
-           // print entity
-            if (
-                Session::isMultiEntitiesMode()
-                && (isset($CFG_GLPI["union_search_type"][$itemtype])
-                 || ($item && $item->maybeRecursive())
-                 || (count($_SESSION["glpiactiveentities"]) > 1))
-                && isset($searchopt[80])
-            ) {
+                // Print fixed column
                 echo "<tr class='tab_bg_2'>";
-                echo "<td>" . $searchopt[80]["name"] . "</td>";
+                echo "<td>" . $searchopt[$searchoption_index]["name"] . "</td>";
                 echo "<td colspan='3'>&nbsp;</td>";
                 echo "</tr>";
             }
@@ -370,7 +406,7 @@ class DisplayPreference extends CommonDBTM
             $i = 0;
             if ($numrows) {
                 foreach ($iterator as $data) {
-                    if (($data["num"] != 1) && isset($searchopt[$data["num"]])) {
+                    if ((!in_array($data["num"], $fixed_columns)) && isset($searchopt[$data["num"]])) {
                         echo "<tr>";
                         echo "<td>";
                         echo $searchopt[$data["num"]]["name"] . "</td>";
@@ -383,7 +419,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='up'" .
                              " title=\"" . __s('Bring up') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-arrow-up'></i></button>";
+                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-up'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {
@@ -398,7 +434,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='down'" .
                             " title=\"" . __s('Bring down') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-arrow-down'></i></button>";
+                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-down'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {
@@ -413,7 +449,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='purge'" .
                              " title=\"" . _sx('button', 'Delete permanently') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-times-circle'></i></button>";
+                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-x'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {
@@ -429,7 +465,6 @@ class DisplayPreference extends CommonDBTM
         echo "</div>";
     }
 
-
     /**
      * Print the search config form
      *
@@ -440,7 +475,7 @@ class DisplayPreference extends CommonDBTM
      **/
     public function showFormGlobal($target, $itemtype)
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $searchopt = Search::getCleanedOptions($itemtype);
         if (!is_array($searchopt)) {
@@ -448,15 +483,10 @@ class DisplayPreference extends CommonDBTM
         }
         $IDuser = 0;
 
-        $item = null;
-        if ($itemtype != AllAssets::getType()) {
-            $item = getItemForItemtype($itemtype);
-        }
-
         $global_write = Session::haveRight(self::$rightname, self::GENERAL);
 
         echo "<div id='tabsbody' class='m-n2'>";
-       // Defined items
+        // Defined items
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
@@ -469,6 +499,9 @@ class DisplayPreference extends CommonDBTM
 
         echo "<table class='table table-striped card-table'>";
 
+        // Get fixed columns
+        $fixed_columns = $this->getFixedColumns($itemtype);
+
         if ($global_write) {
             $already_added = self::getForTypeUser($itemtype, $IDuser);
             echo "<tr><td colspan='4'>";
@@ -480,12 +513,12 @@ class DisplayPreference extends CommonDBTM
             foreach ($searchopt as $key => $val) {
                 if (!is_array($val)) {
                     $group = $val;
-                } else if (count($val) === 1) {
+                } elseif (count($val) === 1) {
                     $group = $val['name'];
-                } else if (
-                    $key != 1
-                       && !in_array($key, $already_added)
-                       && (!isset($val['nodisplay']) || !$val['nodisplay'])
+                } elseif (
+                    !in_array($key, $fixed_columns)
+                    && !in_array($key, $already_added)
+                    && (!isset($val['nodisplay']) || !$val['nodisplay'])
                 ) {
                     $values[$group][$key] = $val["name"];
                 }
@@ -498,26 +531,22 @@ class DisplayPreference extends CommonDBTM
             echo "</td></tr>";
         }
 
-       // print first element
-        echo "<tr>";
-        echo "<td>" . $searchopt[1]["name"];
 
-        if ($global_write) {
-            echo "</td><td colspan='3'>&nbsp;";
-        }
-        echo "</td></tr>";
+        foreach ($fixed_columns as $searchoption_index) {
+            if (!isset($searchopt[$searchoption_index])) {
+                // Missing search option; do nothing
+                continue;
+            }
 
-       // print entity
-        if (
-            Session::isMultiEntitiesMode()
-            && (isset($CFG_GLPI["union_search_type"][$itemtype])
-              || ($item && $item->maybeRecursive())
-              || (count($_SESSION["glpiactiveentities"]) > 1))
-            && isset($searchopt[80])
-        ) {
-            echo "<tr>";
-            echo "<td>" . $searchopt[80]["name"] . "</td>";
-            echo "<td colspan='3'>&nbsp;</td>";
+            // Print fixed column
+            echo "<tr class='tab_bg_2'>";
+            echo "<td>" . $searchopt[$searchoption_index]["name"] . "</td>";
+
+            // Some extra table cells are only shown if the user can edit the data
+            if ($global_write) {
+                echo "<td colspan='3'>&nbsp;</td>";
+            }
+
             echo "</tr>";
         }
 
@@ -526,7 +555,7 @@ class DisplayPreference extends CommonDBTM
         if ($numrows) {
             foreach ($iterator as $data) {
                 if (
-                    ($data["num"] != 1)
+                    (!in_array($data["num"], $fixed_columns))
                     && isset($searchopt[$data["num"]])
                 ) {
                     echo "<tr><td>";
@@ -542,7 +571,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='up'" .
                             " title=\"" . __s('Bring up') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-arrow-up'></i></button>";
+                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-up'></i></button>";
                             Html::closeForm();
                             echo "</td>";
                         } else {
@@ -557,7 +586,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='down'" .
                              " title=\"" . __s('Bring down') . "\"" .
-                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-arrow-down'></i></button>";
+                             " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-arrow-down'></i></button>";
                             Html::closeForm();
                             echo "</td>";
                         } else {
@@ -572,7 +601,7 @@ class DisplayPreference extends CommonDBTM
                             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                             echo "<button type='submit' name='purge'" .
                             " title=\"" . _sx('button', 'Delete permanently') . "\"" .
-                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='fa fa-times-circle'></i></button>";
+                            " class='btn btn-icon btn-sm btn-ghost-secondary'><i class='ti ti-x'></i></button>";
                             Html::closeForm();
                             echo "</td>\n";
                         } else {

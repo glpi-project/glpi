@@ -1,14 +1,15 @@
-#!/bin/bash -e
+#!/bin/bash
 
 #
 # ---------------------------------------------------------------------
+#
 # GLPI - Gestionnaire Libre de Parc Informatique
-# Copyright (C) 2015-2022 Teclib' and contributors.
 #
 # http://glpi-project.org
 #
-# based on GLPI - Gestionnaire Libre de Parc Informatique
-# Copyright (C) 2003-2014 by the INDEPNET Development Team.
+# @copyright 2015-2022 Teclib' and contributors.
+# @copyright 2003-2014 by the INDEPNET Development Team.
+# @licence   https://www.gnu.org/licenses/gpl-3.0.html
 #
 # ---------------------------------------------------------------------
 #
@@ -16,20 +17,23 @@
 #
 # This file is part of GLPI.
 #
-# GLPI is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# GLPI is distributed in the hope that it will be useful,
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 # ---------------------------------------------------------------------
 #
+
+set -e -u -o pipefail
 
 WORKING_DIR=$(readlink -f "$(dirname $0)")
 
@@ -48,6 +52,9 @@ TESTS_SUITES=(
 )
 
 # Extract named options
+ALL=false
+HELP=false
+BUILD=false
 while [[ $# -gt 0 ]]; do
   if [[ $1 == "--"* ]]; then
     ## Remove -- prefix, replace - by _ and uppercase all
@@ -134,6 +141,10 @@ if [[ ! -x "$(command -v docker)" || ! -x "$(command -v docker-compose)" ]]; the
 fi
 
 # Import variables from .env file this file exists
+APP_CONTAINER_HOME=""
+DB_IMAGE=""
+PHP_IMAGE=""
+UPDATE_FILES_ACL=false
 if [[ -f "$WORKING_DIR/.env" ]]; then
   source $WORKING_DIR/.env
 fi
@@ -142,7 +153,7 @@ fi
 APPLICATION_ROOT=$(readlink -f "$WORKING_DIR/..")
 [[ ! -z "$APP_CONTAINER_HOME" ]] || APP_CONTAINER_HOME=$(mktemp -d -t glpi-tests-home-XXXXXXXXXX)
 [[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mysql:8.0
-[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:7.4
+[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:8.0
 
 # Backup configuration files
 BACKUP_DIR=$(mktemp -d -t glpi-tests-backup-XXXXXXXXXX)
@@ -157,18 +168,19 @@ export APPLICATION_ROOT
 export APP_CONTAINER_HOME
 export DB_IMAGE
 export PHP_IMAGE
+export UPDATE_FILES_ACL
 cd $WORKING_DIR # Ensure docker-compose will look for .env in current directory
 $APPLICATION_ROOT/.github/actions/init_containers-start.sh
 $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 
 # Install dependencies if required
-[[ -z "$BUILD" ]] || docker-compose exec -T app .github/actions/init_build.sh
+[[ "$BUILD" = false ]] || docker-compose exec -T app .github/actions/init_build.sh
 
 # Run tests
+LAST_EXIT_CODE=0
 for TEST_SUITE in "${TESTS_TO_RUN[@]}";
 do
   echo -e "\n\e[1;30;43m Running \"$TEST_SUITE\" test suite \e[0m"
-  LAST_EXIT_CODE=0
   case $TEST_SUITE in
     "lint")
       # Misc lint (licence headers and locales) is not executed here as their output is not configurable yet
@@ -186,7 +198,7 @@ do
       ;;
     "update")
          $APPLICATION_ROOT/.github/actions/init_initialize-0.80-db.sh \
-      && $APPLICATION_ROOT/.github/actions/init_initialize-9.5.3-db.sh \
+      && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
       && docker-compose exec -T app .github/actions/test_update-from-older-version.sh \
       && docker-compose exec -T app .github/actions/test_update-from-9.5.sh \
       || LAST_EXIT_CODE=$?

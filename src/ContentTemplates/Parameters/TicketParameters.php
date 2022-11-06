@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -92,7 +94,7 @@ class TicketParameters extends CommonITILObjectParameters
     protected function defineValues(CommonDBTM $ticket): array
     {
         /** @var Ticket $ticket  */
-
+        global $CFG_GLPI;
        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($ticket->fields);
 
@@ -146,6 +148,14 @@ class TicketParameters extends CommonITILObjectParameters
         $items_ticket = Item_Ticket::getItemsAssociatedTo($ticket::getType(), $fields['id']);
         foreach ($items_ticket as $item_ticket) {
             $itemtype = $item_ticket->fields['itemtype'];
+            if (!in_array($itemtype, $CFG_GLPI["asset_types"])) {
+                continue;
+            }
+            if (!class_exists($itemtype)) {
+                trigger_error(sprintf('No class found for type %s', $itemtype), E_USER_WARNING);
+                // May happen if the itemtype belongs to a plugin and this plugin is inactive
+                continue;
+            }
             if ($item = $itemtype::getById($item_ticket->fields['items_id'])) {
                 $asset_parameters = new AssetParameters();
                 $values['assets'][] = $asset_parameters->getValues($item);

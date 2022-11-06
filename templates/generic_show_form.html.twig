@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,30 +15,32 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set no_header = no_header|default(not item.isNewItem() and not _get._in_modal|default(false)) %}
 {% set bg = '' %}
 {% if item.isDeleted() %}
    {% set bg = 'asset-deleted' %}
 {% endif %}
 
 <div class="asset {{ bg }}">
-   {{ include('components/form/header.html.twig') }}
+   {{ include('components/form/header.html.twig', {'in_twig': true}) }}
 
    {% set rand = random() %}
    {% set params  = params ?? [] %}
@@ -45,6 +48,9 @@
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
    {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
+   {% set field_options = {
+       'locked_fields': item.getLockedFields(),
+   } %}
 
    <div class="card-body d-flex flex-wrap">
       <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
@@ -57,7 +63,8 @@
                            'name',
                            item,
                            (item_type == 'Contact' ? __('Surname') : __('Name')),
-                        withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -66,7 +73,8 @@
                            'firstname',
                            item,
                            __('First name'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -80,28 +88,29 @@
                      {% endif %}
 
                      {% if item.isField('states_id') %}
+                        {% set condition = item.getType() in config('state_types') ? {('is_visible_' ~ item.getType()|lower): 1} : {} %}
                         {{ fields.dropdownField(
                            'State',
                            'states_id',
                            item.fields['states_id'],
                            __('Status'),
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
-                              'condition': {'is_visible_computer': 1},
-                           }
+                              'condition': condition
+                           })
                         ) }}
                      {% endif %}
 
                      {% set fk = item.getForeignKeyField() %}
-                     {% if item.isField(fk) %}
+                     {% if item.isField(fk) and item_type != 'Software' %}
                         {{ fields.dropdownField(
                            item_type,
                            fk,
                            item.fields[fk],
                            __('As child of'),
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -111,25 +120,23 @@
                            'is_helpdesk_visible',
                            item.fields['is_helpdesk_visible'],
                            __('Associable to a ticket'),
+                           field_options
                         ) }}
                      {% endif %}
 
-                     {% set dc_breadcrumbs = item is usingtrait('Glpi\\Features\\DCBreadcrumb') ? item.getDcBreadcrumb() : [] %}
-                     {% if dc_breadcrumbs|length > 0 %}
-                        {% set dc_breadcrumbs %}
-                           <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-                              {% for dc_item in dc_breadcrumbs|reverse %}
-                                 <li class="breadcrumb-item text-nowrap">{{ dc_item|raw }}</li>
-                              {% endfor %}
-                           </ol>
-                        {% endset %}
-
+                     {% set dc_breadcrumbs %}
+                        {% if item is usingtrait('Glpi\\Features\\DCBreadcrumb') %}
+                           {{ call(item.getType() ~ '::renderDcBreadcrumb', [
+                              item.fields['id']
+                           ])|raw }}
+                        {% endif %}
+                     {% endset %}
+                     {% if dc_breadcrumbs|trim|length > 0 %}
                         {{ fields.htmlField(
                            '',
                            dc_breadcrumbs,
                            __('Data center position'),
                         ) }}
-
                         {{ fields.nullField() }} {# set an empty space in front of dc breadcrumb #}
                      {% endif %}
 
@@ -139,20 +146,26 @@
                            'locations_id',
                            item.fields['locations_id'],
                            'Location'|itemtype_name,
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
-                           }
+                           })
                         ) }}
                      {% endif %}
 
                      {% if item_type == 'Unmanaged' and item.isField('item_type') %}
-                        {{ fields.dropdownArrayField('item_type', item.fields['itemtype'], _n('Type', 'Types', 1), [
-                           'Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone'
-                        ]) }}
+                        {{ fields.dropdownArrayField(
+                            'item_type',
+                            item.fields['itemtype'],
+                            _n('Type', 'Types', 1),
+                            [
+                                'Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone'
+                            ],
+                            field_options
+                        ) }}
                      {% endif %}
 
                      {% if item.isField('date_domaincreation') %}
-                        {{ fields.datetimeField('date_domaincreation', item.fields['date_domaincreation'], __('Creation date')) }}
+                        {{ fields.datetimeField('date_domaincreation', item.fields['date_domaincreation'], __('Registration date')) }}
                      {% endif %}
 
                      {% set type_itemtype = item.getTypeClass() %}
@@ -163,6 +176,7 @@
                            type_fk,
                            item.fields[type_fk],
                            _n('Type', 'Types', 1),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -172,9 +186,9 @@
                            'usertitles_id',
                            item.fields['usertitles_id'],
                            'UserTitle'|itemtype_name,
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -182,8 +196,9 @@
                         {{ fields.autoNameField(
                            'registration_number',
                            item,
-                           __('Administrative number'),
-                           withtemplate
+                           (item_type starts with 'User' ? _x('user', 'Administrative number') : _x('infocom', 'Administrative number')),
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -192,7 +207,8 @@
                            'phone',
                            item,
                            'Phone'|itemtype_name,
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -201,7 +217,8 @@
                            'phone2',
                            item,
                            __('Phone 2'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -210,7 +227,8 @@
                            'phonenumber',
                            item,
                            'Phone'|itemtype_name,
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -219,7 +237,8 @@
                            'mobile',
                            item,
                            __('Mobile phone'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -228,7 +247,8 @@
                            'fax',
                            item,
                            __('Fax'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -237,7 +257,8 @@
                            'website',
                            item,
                            __('Website'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -246,7 +267,8 @@
                            'email',
                            item,
                            _n('Email', 'Emails', 1),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -259,7 +281,8 @@
                            'postalcode',
                            item,
                            __('Postal code'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -268,7 +291,29 @@
                            'town',
                            item,
                            __('City'),
-                           withtemplate
+                           withtemplate,
+                           field_options
+                        ) }}
+                     {% endif %}
+
+                     {# Post code field named differently for Suppliers. Placed after town to maintain field order from 9.5)#}
+                     {% if item.isField('postcode') %}
+                        {{ fields.autoNameField(
+                           'postcode',
+                           item,
+                           __('Postal code'),
+                           withtemplate,
+                           field_options
+                        ) }}
+                     {% endif %}
+
+                     {% if item_type == 'Supplier' or item_type == 'Contact' %}
+                        {{ fields.autoNameField(
+                           'state',
+                           item,
+                           _x('location', 'State'),
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -277,14 +322,29 @@
                            'country',
                            item,
                            __('Country'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
                      {% if item.isField('date_expiration') %}
-                        {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
-                           'helper': __('Empty for infinite')
-                        }) }}
+                        {% if item_type == 'Certificate' %}
+                           {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                              'helper': __('Empty for infinite'),
+                              'checkIsExpired': false,
+                              'expiration_class' : params.expiration_class
+                           }|merge(field_options)) }}
+                        {% elseif item_type == 'ComputerAntivirus' %}
+                           {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                              'helper': __('Empty for infinite'),
+                              'checkIsExpired': true,
+                           }|merge(field_options)) }}
+                        {% else %}
+                           {{ fields.datetimeField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
+                              'helper': __('Empty for infinite'),
+                              'checkIsExpired': true
+                           }|merge(field_options)) }}
+                        {% endif %}
                      {% endif %}
 
                      {% if item.isField('ref') %}
@@ -292,6 +352,7 @@
                            'ref',
                            item.fields['ref'],
                            __('Reference'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -301,10 +362,10 @@
                            'users_id_tech',
                            item.fields['users_id_tech'],
                            __('Technician in charge of the hardware'),
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'right': 'own_ticket',
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -313,7 +374,8 @@
                            'Manufacturer',
                            'manufacturers_id',
                            item.fields['manufacturers_id'],
-                           (item_type starts with 'Software' ? __('Publisher') : 'Manufacturer'|itemtype_name)
+                           (item_type starts with 'Software' ? __('Publisher') : 'Manufacturer'|itemtype_name),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -323,10 +385,10 @@
                            'groups_id_tech',
                            item.fields['groups_id_tech'],
                            __('Group in charge of the hardware'),
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'condition': {'is_assign': 1},
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -338,6 +400,7 @@
                            model_fk,
                            item.fields[model_fk],
                            _n('Model', 'Models', 1),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -347,6 +410,7 @@
                            'contact_num',
                            item.fields['contact_num'],
                            __('Alternate username number'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -355,6 +419,7 @@
                            'serial',
                            item.fields['serial'],
                            __('Serial number'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -364,6 +429,7 @@
                            'contact',
                            item.fields['contact'],
                            __('Alternate username'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -372,12 +438,23 @@
                            'otherserial',
                            item,
                            __('Inventory number'),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
                      {% if item.isField('sysdescr') %}
                         {{ fields.textareaField('sysdescr', item.fields['sysdescr'], __('Sysdescr')) }}
+                     {% endif %}
+
+                     {% if item.isField('snmpcredentials_id') %}
+                        {{ fields.dropdownField(
+                           'SNMPCredential',
+                           'snmpcredentials_id',
+                           item.fields['snmpcredentials_id'],
+                           'SNMPCredential'|itemtype_name,
+                           field_options
+                        ) }}
                      {% endif %}
 
                      {% if item.isField('users_id') %}
@@ -386,10 +463,10 @@
                            'users_id',
                            item.fields['users_id'],
                            'User'|itemtype_name,
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'right': 'all',
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -427,10 +504,10 @@
                            'size',
                            item.fields['size'],
                            __('Size'),
-                           {
+                           field_options|merge({
                               'min': 0,
                               'step': 0.01
-                           },
+                           }),
                         ) }}
                      {% endif %}
 
@@ -439,7 +516,8 @@
                            'Network',
                            'networks_id',
                            item.fields['networks_id'],
-                           _n('Network', 'Networks', 1)
+                           _n('Network', 'Networks', 1),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -449,10 +527,10 @@
                            'groups_id',
                            item.fields['groups_id'],
                            'Group'|itemtype_name,
-                           {
+                           field_options|merge({
                               'entity': item.fields['entities_id'],
                               'condition': {'is_itemgroup': 1},
-                           }
+                           })
                         ) }}
                      {% endif %}
 
@@ -461,6 +539,7 @@
                            'uuid',
                            item.fields['uuid'],
                            __('UUID'),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -469,7 +548,8 @@
                            'version',
                            item,
                            _n('Version', 'Versions', 1),
-                           withtemplate
+                           withtemplate,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -478,6 +558,7 @@
                            'comment',
                            item.fields['comment'],
                            _n('Comment', 'Comments', get_plural_number()),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -486,6 +567,7 @@
                            'ram',
                            item.fields['ram'],
                            __('%1$s (%2$s)')|format(_n('Memory', 'Memories', 1), __('Mio')),
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -510,7 +592,9 @@
                            'alarm_threshold',
                            dd_alarm_treshold,
                            __('Alert threshold'),
-                           {add_field_html: last_alert_html}
+                           field_options|merge({
+                               add_field_html: last_alert_html
+                            })
                         ) }}
                      {% endif %}
 
@@ -519,11 +603,17 @@
                            'brand',
                            item.fields['brand'],
                            __('Brand'),
+                           field_options
                         ) }}
                      {% endif %}
 
                      {% if item.isField('begin_date') %}
-                        {{ fields.dateField('begin_date', item.fields['begin_date'], __('Start date')) }}
+                        {{ fields.dateField(
+                            'begin_date',
+                            item.fields['begin_date'],
+                            __('Start date'),
+                            field_options
+                        ) }}
                      {% endif %}
 
                      {% if item.isField('autoupdatesystems_id') %}
@@ -532,6 +622,7 @@
                            'autoupdatesystems_id',
                            item.fields['autoupdatesystems_id'],
                            'AutoUpdateSystem'|itemtype_name,
+                           field_options
                         ) }}
                      {% endif %}
 
@@ -543,7 +634,17 @@
                      {% endif %}
 
                      {% if item.isField('is_active') %}
-                        {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+                        {{ fields.dropdownYesNo(
+                            'is_active',
+                            item.fields['is_active'],
+                            __('Active'),
+                            field_options
+                        ) }}
+                     {% endif %}
+
+                     {# display last_boot data only if item is dynamic and have field #}
+                     {% if item.isField('last_boot') and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
+                        {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true), __('Last boot date')) }}
                      {% endif %}
 
                      {% block more_fields %}
@@ -566,7 +667,9 @@
       {{ include('components/form/support_hours.html.twig') }}
    {% endif %}
    {{ include('components/form/buttons.html.twig') }}
-   {{ include('components/form/inventory_info.html.twig') }}
+   {% if no_inventory_footer is not defined or no_inventory_footer == false %}
+      {{ include('components/form/inventory_info.html.twig') }}
+   {% endif %}
 
    {% if params['formfooter'] is null or params['formfooter'] == true %}
       <div class="card-footer mx-n2 mb-n2 mt-4">

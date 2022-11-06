@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -344,6 +346,21 @@ abstract class CommonITILActor extends CommonDBRelation
     public function prepareInputForAdd($input)
     {
 
+        // don't duplicate actors (search for existing before adding)
+        // actors with $fk_field=0 are "email" actors
+        $fk_field = $this->getActorForeignKey();
+        if (isset($input[$fk_field]) && $input[$fk_field] > 0) {
+            $current_type    = $input['type'] ?? 0;
+            $actor_id        = $input[$fk_field];
+            $existing_actors = $this->getActors($input[static::getItilObjectForeignKey()] ?? 0);
+            $existing_ids    = array_column($existing_actors[$current_type] ?? [], $fk_field);
+
+            // actor already exists
+            if (in_array($actor_id, $existing_ids)) {
+                return false;
+            }
+        }
+
         if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {
             $input['alternative_email'] = '';
         } else if ($input['alternative_email'] != '' && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
@@ -404,7 +421,8 @@ abstract class CommonITILActor extends CommonDBRelation
         if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
            // Check object status and update it if needed
             if (
-                !isset($this->input['_from_object'])
+                $this->input['type'] == CommonITILActor::ASSIGN
+                && !isset($this->input['_from_object'])
                 && in_array($item->fields["status"], $item->getNewStatusArray())
                 && in_array(CommonITILObject::ASSIGNED, array_keys($item->getAllStatusArray()))
             ) {

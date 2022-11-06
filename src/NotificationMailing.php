@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,22 +17,24 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 use Glpi\Toolbox\Sanitizer;
+use Symfony\Component\Mime\Address;
 
 /**
  *  NotificationMailing class implements the NotificationInterface
@@ -64,7 +67,7 @@ class NotificationMailing implements NotificationInterface
     {
        //drop sanitize...
         $address = Toolbox::stripslashes_deep($address);
-        $isValid = GLPIMailer::ValidateAddress($address);
+        $isValid = GLPIMailer::validateAddress($address);
 
         $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
         if ($checkdns) {
@@ -85,27 +88,40 @@ class NotificationMailing implements NotificationInterface
     {
         global $CFG_GLPI;
 
-        $mmail = new GLPIMailer();
+        $sender = Config::getEmailSender();
+        if ($sender['email'] === null || !self::isUserAddressValid($sender['email'])) {
+            Session::addMessageAfterRedirect(
+                __('Sender email is not a valid email address.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
 
-        $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
-       // For exchange
-        $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
-        $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"], false);
+        $mmail = new GLPIMailer();
+        $mail = $mmail->getEmail();
+
+        $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-generated');
+        // For exchange
+        $mail->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, NDR, RN, NRN');
+        $mail->from(new Address($sender['email'], $sender['name'] ?? ''));
 
         $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
-           //force recipient to configured email address
+            //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
-           //add original email addess to message body
+            //add original email address to message body
             $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
         }
 
-        $mmail->AddAddress($recipient, $CFG_GLPI["admin_email_name"]);
-        $mmail->Subject = "[GLPI] " . __('Mail test');
-        $mmail->Body    = $text;
+        $mail->to(new Address($recipient, $CFG_GLPI['admin_email_name']));
+        $mail->subject("[GLPI] " . __('Mail test'));
+        $mail->text($text);
 
-        if (!$mmail->Send()) {
+        $mmail->setDebugHeaderLine(__('Sending test email to administrator...'));
+
+        if (!$mmail->send()) {
             Session::addMessageAfterRedirect(
                 __('Failed to send test email to administrator'),
                 false,

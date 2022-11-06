@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -59,6 +61,8 @@
 /// @since 0.84
 class HTMLTableMain extends HTMLTableBase
 {
+    private $title;
+
     private $groups    = [];
     private $itemtypes = [];
 
@@ -68,6 +72,42 @@ class HTMLTableMain extends HTMLTableBase
         parent::__construct(true);
     }
 
+
+    public function __get(string $property)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'title':
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        switch ($property) {
+            case 'title':
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
 
     /**
      * We can define a global name for the table : this will print as header that colspan all columns

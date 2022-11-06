@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,20 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Features\Kanban;
 
 class Item_Kanban extends CommonDBRelation
 {
@@ -132,6 +136,33 @@ class Item_Kanban extends CommonDBRelation
         } else {
            // State is not saved
             return [];
+        }
+    }
+
+    /**
+     * Clear the state of a Kanban's columns for a specific item for the current user or globally.
+     * @since 10.1.0
+     * @param string $itemtype Type of the item.
+     * @param int $items_id ID of the item.
+     * @return bool True if successful
+     */
+    public static function clearStateForItem(string $itemtype, int $items_id)
+    {
+        global $DB;
+
+        try {
+            /** @var Kanban|CommonDBTM $item */
+            $item = new $itemtype();
+            $item->getFromDB($items_id);
+            $force_global = $item->forceGlobalState();
+
+            return (bool) $DB->delete('glpi_items_kanbans', [
+                'users_id' => $force_global ? 0 : Session::getLoginUserID(),
+                'itemtype' => $itemtype,
+                'items_id' => $items_id
+            ]);
+        } catch (\Exception $e) {
+            return false;
         }
     }
 

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -360,23 +362,30 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.83
      *
-     * @param Group           $group    Group object
-     * @param array           $members  Array filled on output of member (filtered)
-     * @param array           $ids      Array of ids (not filtered)
-     * @param string          $crit     Filter (is_manager, is_userdelegate) (default '')
-     * @param boolean|integer $tree     True to include member of sub-group (default 0)
+     * @param Group    $group            Group object
+     * @param array    $members          Array filled on output of member (filtered)
+     * @param array    $ids              Array of ids (not filtered)
+     * @param string   $crit             Filter (is_manager, is_userdelegate) (default '')
+     * @param bool|int $tree             True to include member of sub-group (default 0)
+     * @param bool     $check_entities   Apply entities restrictions ?
      *
      * @return String tab of entity for restriction
      **/
-    public static function getDataForGroup(Group $group, &$members, &$ids, $crit = '', $tree = 0)
-    {
+    public static function getDataForGroup(
+        Group $group,
+        &$members,
+        &$ids,
+        $crit = '',
+        $tree = 0,
+        bool $check_entities = true
+    ) {
         global $DB;
 
-       // Entity restriction for this group, according to user allowed entities
+        // Entity restriction for this group, according to user allowed entities
         if ($group->fields['is_recursive']) {
             $entityrestrict = getSonsOf('glpi_entities', $group->fields['entities_id']);
 
-           // active entity could be a child of object entity
+            // active entity could be a child of object entity
             if (
                 ($_SESSION['glpiactive_entity'] != $group->fields['entities_id'])
                 && in_array($_SESSION['glpiactive_entity'], $entityrestrict)
@@ -393,9 +402,9 @@ class Group_User extends CommonDBRelation
             $restrict = $group->getID();
         }
 
-       // All group members
+        // All group members
         $pu_table = Profile_User::getTable();
-        $iterator = $DB->request([
+        $query = [
             'SELECT' => [
                 'glpi_users.id',
                 'glpi_groups_users.id AS linkid',
@@ -422,23 +431,29 @@ class Group_User extends CommonDBRelation
             ],
             'WHERE' => [
                 self::getTable() . '.groups_id'  => $restrict,
-                'OR' => [
-                    "$pu_table.entities_id" => null
-                ] + getEntitiesRestrictCriteria($pu_table, '', $entityrestrict, 1)
             ],
             'ORDERBY' => [
                 User::getTable() . '.realname',
                 User::getTable() . '.firstname',
                 User::getTable() . '.name'
             ]
-        ]);
+        ];
+
+        // Add entities restrictions
+        if ($check_entities) {
+            $query['WHERE']['OR'] = [
+                "$pu_table.entities_id" => null
+            ] + getEntitiesRestrictCriteria($pu_table, '', $entityrestrict, 1);
+        }
+
+        $iterator = $DB->request($query);
 
         foreach ($iterator as $data) {
-           // Add to display list, according to criterion
+            // Add to display list, according to criterion
             if (empty($crit) || $data[$crit]) {
                 $members[] = $data;
             }
-           // Add to member list (member of sub-group are not member)
+            // Add to member list (member of sub-group are not member)
             if ($data['groups_id'] == $group->getID()) {
                 $ids[]  = $data['id'];
             }
@@ -478,7 +493,7 @@ class Group_User extends CommonDBRelation
 
        // Retrieve member list
        // TODO: migrate to use CommonDBRelation::getListForItem()
-        $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree);
+        $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree, false);
 
         if ($canedit) {
             self::showAddUserForm($group, $ids, $entityrestrict, $crit);

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -48,7 +50,7 @@ class Alert extends CommonDBTM
     {
 
         if (!isset($input['date']) || empty($input['date'])) {
-            $input['date'] = date("Y-m-d H:i:s");
+            $input['date'] = $_SESSION['glpi_currenttime'];
         }
         return $input;
     }
@@ -94,6 +96,8 @@ class Alert extends CommonDBTM
             'value'          => 0,
             'display'        => true,
             'inherit_parent' => false,
+            'show_hours'     => false,
+            'show_days'      => false,
         ];
 
         if (count($options)) {
@@ -109,7 +113,18 @@ class Alert extends CommonDBTM
         }
 
         $times[Entity::CONFIG_NEVER]  = __('Never');
+        if ($p['show_hours']) {
+            $times[HOUR_TIMESTAMP] = __('Each hour');
+            for ($i = 2; $i <= 24; $i++) {
+                $times[$i * HOUR_TIMESTAMP] = sprintf(__('Every %1$s hours'), $i);
+            }
+        }
         $times[DAY_TIMESTAMP]         = __('Each day');
+        if ($p['show_days']) {
+            for ($i = 2; $i <= 6; $i++) {
+                $times[$i * DAY_TIMESTAMP] = sprintf(__('Every %1$s days'), $i);
+            }
+        }
         $times[WEEK_TIMESTAMP]        = __('Each week');
         $times[MONTH_TIMESTAMP]       = __('Each month');
 

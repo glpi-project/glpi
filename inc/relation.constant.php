@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -175,9 +177,32 @@ $RELATION = [
     'glpi_computers' => [
         '_glpi_computerantiviruses'       => 'computers_id',
         '_glpi_computers_items'           => 'computers_id',
-        'glpi_items_softwarelicenses'     => ['items_id', 'itemtype'],
-        'glpi_items_softwareversions'     => ['items_id', 'itemtype'],
         'glpi_computervirtualmachines'    => 'computers_id',
+        '_glpi_ipaddresses'               => ['mainitems_id', 'mainitemtype'],
+        '_glpi_items_devicebatteries'     => ['items_id', 'itemtype'],
+        '_glpi_items_devicecameras'       => ['items_id', 'itemtype'],
+        '_glpi_items_devicecases'         => ['items_id', 'itemtype'],
+        '_glpi_items_devicecontrols'      => ['items_id', 'itemtype'],
+        '_glpi_items_devicedrives'        => ['items_id', 'itemtype'],
+        '_glpi_items_devicefirmwares'     => ['items_id', 'itemtype'],
+        '_glpi_items_devicegenerics'      => ['items_id', 'itemtype'],
+        '_glpi_items_devicegraphiccards'  => ['items_id', 'itemtype'],
+        '_glpi_items_deviceharddrives'    => ['items_id', 'itemtype'],
+        '_glpi_items_devicememories'      => ['items_id', 'itemtype'],
+        '_glpi_items_devicemotherboards'  => ['items_id', 'itemtype'],
+        '_glpi_items_devicenetworkcards'  => ['items_id', 'itemtype'],
+        '_glpi_items_devicepcis'          => ['items_id', 'itemtype'],
+        '_glpi_items_devicepowersupplies' => ['items_id', 'itemtype'],
+        '_glpi_items_deviceprocessors'    => ['items_id', 'itemtype'],
+        '_glpi_items_devicesensors'       => ['items_id', 'itemtype'],
+        '_glpi_items_devicesimcards'      => ['items_id', 'itemtype'],
+        '_glpi_items_devicesoundcards'    => ['items_id', 'itemtype'],
+        '_glpi_items_disks'               => ['items_id', 'itemtype'],
+        '_glpi_items_operatingsystems'    => ['items_id', 'itemtype'],
+        '_glpi_items_softwarelicenses'    => ['items_id', 'itemtype'],
+        '_glpi_items_softwareversions'    => ['items_id', 'itemtype'],
+        '_glpi_networknames'              => ['items_id', 'itemtype'],
+        '_glpi_networkports'              => ['items_id', 'itemtype'],
     ],
 
     'glpi_computertypes' => [
@@ -401,7 +426,7 @@ $RELATION = [
 
     'glpi_domains'    => [
         'glpi_domainrecords'  => 'domains_id',
-        'glpi_domains_items' => ['items_id', 'itemtype']
+        '_glpi_domains_items' => ['items_id', 'itemtype']
     ],
 
     'glpi_domaintypes' => [
@@ -708,6 +733,7 @@ $RELATION = [
 
     'glpi_lines' => [
         'glpi_items_devicesimcards' => 'lines_id',
+        '_glpi_items_lines' => 'lines_id',
     ],
 
     'glpi_linetypes' => [
@@ -1006,7 +1032,7 @@ $RELATION = [
         'glpi_projects'          => 'projects_id',
         '_glpi_projecttasks'     => 'projects_id',
         '_glpi_projectteams'     => 'projects_id',
-        'glpi_items_kanbans'     => ['items_id', 'itemtype'],
+        '_glpi_items_kanbans'    => ['items_id', 'itemtype'],
     ],
 
     'glpi_projectstates' => [
@@ -1251,6 +1277,7 @@ $RELATION = [
             'tickettemplates_id_demand',
         ],
         'glpi_profiles'                        => 'tickettemplates_id',
+        'glpi_tickets'                         => 'tickettemplates_id',
         'glpi_ticketrecurrents'                => 'tickettemplates_id',
         '_glpi_tickettemplatehiddenfields'     => 'tickettemplates_id',
         '_glpi_tickettemplatemandatoryfields'  => 'tickettemplates_id',
@@ -1261,6 +1288,7 @@ $RELATION = [
         'glpi_itilcategories'                  => [
             'changetemplates_id',
         ],
+        'glpi_changes'                         => 'changetemplates_id',
         '_glpi_changetemplatehiddenfields'     => 'changetemplates_id',
         '_glpi_changetemplatemandatoryfields'  => 'changetemplates_id',
         '_glpi_changetemplatepredefinedfields' => 'changetemplates_id',
@@ -1270,6 +1298,7 @@ $RELATION = [
         'glpi_itilcategories'                  => [
             'problemtemplates_id',
         ],
+        'glpi_problems'                         => 'problemtemplates_id',
         '_glpi_problemtemplatehiddenfields'     => 'problemtemplates_id',
         '_glpi_problemtemplatemandatoryfields'  => 'problemtemplates_id',
         '_glpi_problemtemplatepredefinedfields' => 'problemtemplates_id',
@@ -1404,6 +1433,7 @@ $RELATION = [
             'users_id_validate',
         ],
         '_glpi_useremails'              => 'users_id',
+        'glpi_users'                    => 'users_id_supervisor',
     ],
 
     'glpi_usertitles' => [

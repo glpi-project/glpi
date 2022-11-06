@@ -1,0 +1,79 @@
+diff --git a/classes/report/fields/runner/event/cli/dot.php b/classes/report/fields/runner/event/cli/dot.php
+index 7410457f8..b8a21338e 100644
+--- a/classes/report/fields/runner/event/cli/dot.php
++++ b/classes/report/fields/runner/event/cli/dot.php
+@@ -10,6 +10,7 @@
+ class dot extends report\fields\runner\event
+ {
+     protected $count = 0;
++    protected $progressBar;
+ 
+     public function __construct(progressBar\dot $progressBar = null)
+     {
+diff --git a/classes/asserters/phpArray.php b/classes/asserters/phpArray.php
+index 63e304af1..025abddb9 100644
+--- a/classes/asserters/phpArray.php
++++ b/classes/asserters/phpArray.php
+@@ -499,7 +499,7 @@ protected function getSizeAsserter()
+     protected function callAssertion($method, array $arguments)
+     {
+         if ($this->innerAsserterCanUse($method) === false) {
+-            call_user_func_array(['parent', $method], $arguments);
++            call_user_func_array([parent::class, $method], $arguments);
+         } else {
+             $this->callInnerAsserterMethod($method, $arguments);
+         }
+diff --git a/classes/mock/generator.php b/classes/mock/generator.php
+index 0ad290197..ff2c0d037 100644
+--- a/classes/mock/generator.php
++++ b/classes/mock/generator.php
+@@ -363,7 +363,7 @@ protected function generateClassMethodCode(\reflectionClass $class)
+                 $mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $constructorName . '\', $arguments);' . PHP_EOL;
+ 
+                 if ($this->canCallParent()) {
+-                    $mockedMethods .= "\t\t\t" . 'call_user_func_array(\'parent::' . $constructorName . '\', $arguments);' . PHP_EOL;
++                    $mockedMethods .= "\t\t\t" . 'call_user_func_array([parent::class, \'' . $constructorName . '\'], $arguments);' . PHP_EOL;
+                 }
+ 
+                 $mockedMethods .= "\t\t" . '}' . PHP_EOL;
+@@ -444,7 +444,7 @@ protected function generateClassMethodCode(\reflectionClass $class)
+                     $mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+ 
+                     if ($this->canCallParent()) {
+-                        $mockedMethods .= "\t\t\t" . '$return = call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
++                        $mockedMethods .= "\t\t\t" . '$return = call_user_func_array([parent::class, \'' . $methodName . '\'], $arguments);' . PHP_EOL;
+ 
+                         if ($this->isVoid($method) === false) {
+                             $mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
+diff --git a/classes/mock/generator.php b/classes/mock/generator.php
+index 0ad290197..a01da1094 100644
+--- a/classes/mock/generator.php
++++ b/classes/mock/generator.php
+@@ -667,6 +667,7 @@ protected function getReturnType(\reflectionMethod $method)
+         $isNullable = $returnTypeName !== 'mixed' && $this->isNullable($returnType);
+ 
+         switch (true) {
++            case $returnTypeName === 'static':
+             case $returnTypeName === 'self':
+                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $method->getDeclaringClass()->getName();
+                 break;
+diff --git a/classes/mock/generator.php b/classes/mock/generator.php
+index a01da1094..348488efa 100644
+--- a/classes/mock/generator.php
++++ b/classes/mock/generator.php
+@@ -667,7 +667,6 @@ protected function getReturnType(\reflectionMethod $method)
+         $isNullable = $returnTypeName !== 'mixed' && $this->isNullable($returnType);
+ 
+         switch (true) {
+-            case $returnTypeName === 'static':
+             case $returnTypeName === 'self':
+                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $method->getDeclaringClass()->getName();
+                 break;
+@@ -686,6 +685,7 @@ function (\reflectionNamedType $type) {
+                 $returnTypeCode = ': ' . implode('|', $types);
+                 break;
+ 
++            case $returnTypeName === 'static':
+             case $returnType->isBuiltin():
+                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnTypeName;
+                 break;

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,23 +17,25 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\TemplateManager;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * ITILSolution Class
@@ -59,7 +62,7 @@ class ITILSolution extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->isNewItem()) {
-            return;
+            return '';
         }
         if ($item->maySolve()) {
             $nb    = 0;
@@ -69,6 +72,7 @@ class ITILSolution extends CommonDBChild
             }
             return self::createTabEntry($title, $nb);
         }
+        return '';
     }
 
     public static function canView()
@@ -141,6 +145,8 @@ class ITILSolution extends CommonDBChild
             'subitem' => $this,
             'params'  => $options,
         ]);
+
+        return true;
     }
 
     /**
@@ -166,7 +172,7 @@ class ITILSolution extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-        if (!isset($input['users_id']) && !(Session::isCron() || strpos($_SERVER['REQUEST_URI'], 'crontask.form.php') !== false)) {
+        if (!isset($input['users_id']) && !(Session::isCron() || strpos($_SERVER['REQUEST_URI'] ?? '', 'crontask.form.php') !== false)) {
             $input['users_id'] = Session::getLoginUserID();
         }
 
@@ -176,6 +182,42 @@ class ITILSolution extends CommonDBChild
         ) {
             $this->item = new $input['itemtype']();
             $this->item->getFromDB($input['items_id']);
+        }
+
+        // Handle template
+        if (isset($input['_solutiontemplates_id'])) {
+            $template = new SolutionTemplate();
+            $parent_item = new $input['itemtype']();
+            if (
+                !$template->getFromDB($input['_solutiontemplates_id'])
+                || !$parent_item->getFromDB($input['items_id'])
+            ) {
+                return false;
+            }
+            $input = array_replace(
+                [
+                    'content'           => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'solutiontypes_id'  => $template->fields['solutiontypes_id'],
+                    'status'            => CommonITILValidation::WAITING,
+                ],
+                $input
+            );
+        }
+
+        if (isset($input['_templates_id'])) {
+            $template = new SolutionTemplate();
+            $result = $template->getFromDB($input['_templates_id']);
+            if (!$result) {
+                return false;
+            }
+            $template_fields = $template->fields;
+            unset($template_fields['id']);
+            if (isset($template_fields['content'])) {
+                $parent_item = new $input['itemtype']();
+                $parent_item->getFromDB($input['items_id']);
+                $template_fields['content'] = Sanitizer::sanitize($template->getRenderedContent($parent_item));
+            }
+            $input = array_replace($template_fields, $input);
         }
 
        // check itil object is not already solved
@@ -200,8 +242,8 @@ class ITILSolution extends CommonDBChild
                 Entity::CONFIG_NEVER
             );
 
-           // 0 = immediatly
-            if ($autoclosedelay != 0) {
+           // 0  or ticket status CLOSED = immediately
+            if ($autoclosedelay != 0 && $this->item->fields["status"] != $this->item::CLOSED) {
                 $status = CommonITILValidation::WAITING;
             }
         }
@@ -245,20 +287,15 @@ class ITILSolution extends CommonDBChild
 
         $item = $this->item;
 
-       // Replace inline pictures
+        // Handle rich-text images and uploaded documents
         $this->input["_job"] = $this->item;
-        $this->input = $this->addFiles(
-            $this->input,
-            [
-                'force_update' => true,
-                'name' => 'content',
-                'content_field' => 'content',
-            ]
-        );
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
-       // Add solution to duplicates
+        // Add solution to duplicates
         if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
-            Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
+            CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->item->getID(), [
+                '_solution' => $this,
+            ]);
         }
 
         if (!isset($this->input['_linked_ticket'])) {
@@ -273,8 +310,8 @@ class ITILSolution extends CommonDBChild
                     Entity::CONFIG_NEVER
                 );
 
-                // 0 = immediatly
-                if ($autoclosedelay == 0) {
+                // 0 = immediately or ticket status CLOSED force status
+                if ($autoclosedelay == 0 || $this->item->fields["status"] == $this->item::CLOSED) {
                      $status = $item::CLOSED;
                 }
             }
@@ -299,7 +336,7 @@ class ITILSolution extends CommonDBChild
             return false;
         }
 
-        if (isset($input['update']) && ($uid = Session::getLoginUserID())) {
+        if (isset($input['_update']) && ($uid = Session::getLoginUserID())) {
             $input["users_id_editor"] = $uid;
         }
 
@@ -308,13 +345,8 @@ class ITILSolution extends CommonDBChild
 
     public function post_updateItem($history = 1)
     {
-       // Replace inline pictures
-        $options = [
-            'force_update' => true,
-            'name' => 'content',
-            'content_field' => 'content',
-        ];
-        $this->input = $this->addFiles($this->input, $options);
+        // Handle rich-text images and uploaded documents
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
         parent::post_updateItem($history);
     }

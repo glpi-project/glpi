@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,25 +17,32 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 
 if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
+    include(__DIR__ . '/../inc/includes.php');
+}
+
+$conf = new Conf();
+if ($conf->enabled_inventory != 1) {
+    die("Inventory is disabled");
 }
 
 $inventory_request = new Request();
@@ -42,10 +50,18 @@ $inventory_request->handleHeaders();
 
 $handle = true;
 if (isset($_GET['refused'])) {
+    Session::checkRight("config", READ);
     $refused = new RefusedEquipment();
-    $refused->getFromDB($_GET['refused']);
-    $contents = file_get_contents($refused->getInventoryFileName());
-} else if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+    if ($refused->getFromDB($_GET['refused']) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
+        $contents = file_get_contents($inventory_file);
+    } else {
+        trigger_error(
+            sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $_GET['refused']),
+            E_USER_WARNING
+        );
+        $contents = '';
+    }
+} else if (!isCommandLine() && $_SERVER['REQUEST_METHOD'] != 'POST') {
     if (isset($_GET['action']) && $_GET['action'] == 'getConfig') {
         /**
          * Even if Fusion protocol is not supported for getConfig requests, they
@@ -59,7 +75,16 @@ if (isset($_GET['refused'])) {
     }
     $handle = false;
 } else {
-    $contents = file_get_contents("php://input");
+    if (isCommandLine()) {
+        $f = fopen('php://stdin', 'r');
+        $contents = '';
+        while ($line = fgets($f)) {
+            $contents .= $line;
+        }
+        fclose($f);
+    } else {
+        $contents = file_get_contents("php://input");
+    }
 }
 
 if ($handle === true) {
@@ -74,6 +99,9 @@ if (isset($_GET['refused'])) {
     $redirect_url = $refused->handleInventoryRequest($inventory_request);
     Html::redirect($redirect_url);
 } else {
+    if (isCommandLine()) {
+        exit(0);
+    }
     $headers = $inventory_request->getHeaders(true);
     http_response_code($inventory_request->getHttpResponseCode());
     foreach ($headers as $key => $value) {

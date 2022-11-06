@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,32 +17,34 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
 if (
-    version_compare(PHP_VERSION, '7.4.0', '<') ||
+    version_compare(PHP_VERSION, '8.0.0', '<') ||
     version_compare(PHP_VERSION, '8.2.0', '>=')
 ) {
-    die('PHP 7.4.0 - 8.2.0 (exclusive) required');
+    die('PHP 8.0.0 - 8.2.0 (exclusive) required');
 }
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
@@ -101,12 +104,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     if (!isset($_GET["noAUTO"])) {
         Auth::redirectIfAuthenticated();
     }
-    Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"]) ? $_GET["redirect"] : "");
+
+    $redirect = array_key_exists('redirect', $_GET) ? Sanitizer::unsanitize($_GET['redirect']) : '';
+
+    Auth::checkAlternateAuthSystems(true, $redirect);
 
     $theme = $_SESSION['glpipalette'] ?? 'auror';
 
     $errors = "";
-    if (isset($_GET['error']) && isset($_GET['redirect'])) {
+    if (isset($_GET['error']) && $redirect !== '') {
         switch ($_GET['error']) {
             case 1: // cookie error
                 $errors .= __('You must accept cookies to reach this application');
@@ -122,12 +128,17 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         }
     }
 
+    // redirect to ticket
+    if ($redirect !== '') {
+        Toolbox::manageRedirect($redirect);
+    }
+
     TemplateRenderer::getInstance()->display('pages/login.html.twig', [
         'card_bg_width'       => true,
         'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
         'title'               => __('Authentication'),
         'noAuto'              => $_GET["noAUTO"] ?? 0,
-        'redirect'            => Html::entities_deep($_GET['redirect'] ?? ""),
+        'redirect'            => $redirect,
         'text_login'          => $CFG_GLPI['text_login'],
         'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
         'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),

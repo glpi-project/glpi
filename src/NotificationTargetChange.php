@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -39,6 +41,15 @@
 class NotificationTargetChange extends NotificationTargetCommonITILObject
 {
     public $private_profiles = [];
+
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    {
+        if ($event == 'satisfaction') {
+            return true;
+        }
+
+        return parent::validateSendTo($event, $infos, $notify_me, $emitter);
+    }
 
     /**
      * Get events related to tickets
@@ -52,7 +63,9 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
             'validation'        => __('Validation request'),
             'validation_answer' => __('Validation request answer'),
             'closed'            => __('Closure of a change'),
-            'delete'            => __('Deleting a change')
+            'delete'            => __('Deleting a change'),
+            'satisfaction'      => __('Satisfaction survey'),
+            'replysatisfaction' => __('Satisfaction survey answer')
         ];
 
         $events = array_merge($events, parent::getEvents());
@@ -216,45 +229,33 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
             $data['validations'] = [];
             foreach ($validations as $validation) {
                 $tmp = [];
-                $tmp['##validation.submission.title##']
-                                 //TRANS: %s is the user name
-                     = sprintf(
-                         __('An approval request has been submitted by %s'),
-                         getUserName($validation['users_id'])
-                     );
+                $tmp['##validation.submission.title##'] = sprintf(
+                    __('An approval request has been submitted by %s'),
+                    getUserName($validation['users_id'])
+                );
+                $tmp['##validation.answer.title##'] = sprintf(
+                    __('An answer to an approval request was produced by %s'),
+                    getUserName($validation['users_id_validate'])
+                );
+                $tmp['##validation.author##'] = getUserName($validation['users_id']);
+                $tmp['##validation.status##'] = ChangeValidation::getStatus($validation['status']);
+                $tmp['##validation.storestatus##'] = $validation['status'];
+                $tmp['##validation.submissiondate##'] = Html::convDateTime($validation['submission_date']);
+                $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
 
-                 $tmp['##validation.answer.title##']
-                                 //TRANS: %s is the user name
-                         = sprintf(
-                             __('An answer to an approval request was produced by %s'),
-                             getUserName($validation['users_id_validate'])
-                         );
+                $itemtype_target = $validation['itemtype_target'];
+                $items_id_target = $validation['items_id_target'];
+                /** @var CommonDBTM $validation_target */
+                $validation_target = new $itemtype_target();
+                $validation_target->getFromDB($items_id_target);
+                $validation_target_name = ($itemtype_target === 'User') ? getUserName($items_id_target) : $validation_target->getName();
+                $tmp['##validation.validator_target_type##'] = $itemtype_target::getTypeName(1);
+                $tmp['##validation.validator_target##'] = $validation_target_name;
+                $tmp['##validation.validationdate##'] = Html::convDateTime($validation['validation_date']);
+                $tmp['##validation.validator##'] = getUserName($validation['users_id_validate']);
+                $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
 
-                 $tmp['##validation.author##']
-                         = getUserName($validation['users_id']);
-
-                 $tmp['##validation.status##']
-                         = ChangeValidation::getStatus($validation['status']);
-
-                 $tmp['##validation.storestatus##']
-                         = $validation['status'];
-
-                 $tmp['##validation.submissiondate##']
-                         = Html::convDateTime($validation['submission_date']);
-
-                 $tmp['##validation.commentsubmission##']
-                         = $validation['comment_submission'];
-
-                 $tmp['##validation.validationdate##']
-                         = Html::convDateTime($validation['validation_date']);
-
-                 $tmp['##validation.validator##']
-                         =  getUserName($validation['users_id_validate']);
-
-                 $tmp['##validation.commentvalidation##']
-                         = $validation['comment_validation'];
-
-                 $data['validations'][] = $tmp;
+                $data['validations'][] = $tmp;
             }
         }
         return $data;
@@ -315,8 +316,10 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                 _n('Validation', 'Validations', 1),
                 _n('Date', 'Dates', 1)
             ),
-            'validation.validator'         => __('Decision-maker'),
-            'validation.commentvalidation' => sprintf(
+            'validation.validator_target_type'  => __('Approval target type (User or Group)'),
+            'validation.validator_target'       => __('Approval target'),
+            'validation.validator'              => __('Approver'),
+            'validation.commentvalidation'      => sprintf(
                 __('%1$s: %2$s'),
                 _n('Validation', 'Validations', 1),
                 __('Comments')
@@ -341,7 +344,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                                         __('%1$s: %2$s'),
                                         __('Validation request'),
                                         __('URL')
-                                    )
+                                    ),
         ];
 
         foreach ($tags as $tag => $label) {

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,26 +17,31 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Profile class
  **/
 class Profile extends CommonDBTM
 {
+    use \Glpi\Features\Clonable;
+
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
@@ -69,6 +75,47 @@ class Profile extends CommonDBTM
 
     public static $rightname             = 'profile';
 
+    /**
+     * Profile rights to update after profile update.
+     * @var array
+     */
+    private $profileRight;
+
+    public function __get(string $property)
+    {
+        $value = null;
+        switch ($property) {
+            case 'profileRight':
+                Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        switch ($property) {
+            case 'profileRight':
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
 
 
     public function getForbiddenStandardMassiveAction()
@@ -76,7 +123,6 @@ class Profile extends CommonDBTM
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
-        $forbidden[] = 'clone';
         return $forbidden;
     }
 
@@ -188,7 +234,7 @@ class Profile extends CommonDBTM
 
         if (count($this->profileRight) > 0) {
             ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
-            unset($this->profileRight);
+            $this->profileRight = null;
         }
 
         if (in_array('is_default', $this->updates) && ($this->input["is_default"] == 1)) {
@@ -227,7 +273,7 @@ class Profile extends CommonDBTM
 
         $rights = ProfileRight::getAllPossibleRights();
         ProfileRight::updateProfileRights($this->fields['id'], $rights);
-        unset($this->profileRight);
+        $this->profileRight = null;
 
         if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
             $DB->update(
@@ -260,6 +306,13 @@ class Profile extends CommonDBTM
        // PROFILES and UNIQUE_PROFILE in RuleMailcollector
         Rule::cleanForItemCriteria($this, 'PROFILES');
         Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            ProfileRight::class
+        ];
     }
 
 
@@ -462,9 +515,26 @@ class Profile extends CommonDBTM
             $input["ticket_status"] = exportArrayToDB($cycle);
         }
 
+        $other_array_fields = ['ticket_status', 'problem_status', 'change_status'];
+        foreach ($other_array_fields as $array_field) {
+            if (isset($input[$array_field]) && is_array($input[$array_field])) {
+                $input[$array_field] = exportArrayToDB($input[$array_field]);
+            }
+        }
+
         return $input;
     }
 
+    public function prepareInputForClone($input)
+    {
+        $input_arrays = ['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'];
+        foreach ($input_arrays as $array_field) {
+            if (isset($input[$array_field])) {
+                $input[$array_field] = importArrayFromDB(Sanitizer::dbUnescape($input[$array_field]));
+            }
+        }
+        return $input;
+    }
 
     /**
      * Unset unused rights for helpdesk
@@ -1742,16 +1812,56 @@ class Profile extends CommonDBTM
                 'label'     => __('Notification queue'),
                 'field'     => 'queuednotification'
             ], [
-                'itemtype'  => 'Glpi\Inventory\Conf',
-                'label'     => __('Inventory'),
-                'field'     => 'inventory'
-            ], [
                 'itemtype'  => 'Log',
                 'label'     => Log::getTypeName(Session::getPluralNumber()),
                 'field'     => 'logs'
             ]
         ];
         $matrix_options['title'] = __('Administration');
+        $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
+        $rights = [
+            [
+                'itemtype'  => 'Glpi\Inventory\Conf',
+                'label'     => __('Inventory'),
+                'field'     => 'inventory'
+            ], [
+                'itemtype'  => 'LockedField',
+                'label'     => Lockedfield::getTypeName(Session::getPluralNumber()),
+                'field'     => 'locked_field',
+                'rights'  => [
+                    CREATE => __('Create'), // For READ / CREATE
+                    UPDATE => __('Update'), //for CREATE / PURGE global lock
+                ],
+            ], [
+                'itemtype'  => 'SNMPCredential',
+                'label'     => SNMPCredential::getTypeName(Session::getPluralNumber()),
+                'field'     => 'snmpcredential',
+            ], [
+                'itemtype'  => 'RefusedEquipment',
+                'label'     => RefusedEquipment::getTypeName(Session::getPluralNumber()),
+                'field'     => 'refusedequipment',
+                'rights'  => [
+                    READ  => __('Read'),
+                    UPDATE  => __('Update'),
+                    PURGE   => ['short' => __('Purge'),
+                        'long'  => _x('button', 'Delete permanently')
+                    ]
+                ],
+            ], [
+                'itemtype'  => 'Agent',
+                'label'     => Agent::getTypeName(Session::getPluralNumber()),
+                'field'     => 'agent',
+                'rights'  => [
+                    READ    => __('Read'),
+                    UPDATE  => __('Update'),
+                    PURGE   => ['short' => __('Purge'),
+                        'long'  => _x('button', 'Delete permanently')
+                    ]
+                ],
+            ]
+        ];
+        $matrix_options['title'] = __('Inventory');
         $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
         $rights = [['itemtype'  => 'Rule',
@@ -1761,6 +1871,10 @@ class Profile extends CommonDBTM
             ['itemtype'  => 'RuleImportAsset',
                 'label'     => __('Rules for assigning a computer to an entity'),
                 'field'     => 'rule_import'
+            ],
+            ['itemtype'  => 'RuleLocation',
+                'label'     => __('Rules for assigning a computer to a location'),
+                'field'     => 'rule_location'
             ],
             ['itemtype'  => 'RuleMailCollector',
                 'label'     => __('Rules for assigning a ticket created through a mails receiver'),
@@ -1773,6 +1887,11 @@ class Profile extends CommonDBTM
             ['itemtype'  => 'RuleTicket',
                 'label'     => __('Business rules for tickets (entity)'),
                 'field'     => 'rule_ticket',
+                'row_class' => 'tab_bg_2'
+            ],
+            ['itemtype'  => 'RuleChange',
+                'label'     => __('Business rules for changes (entity)'),
+                'field'     => 'rule_change',
                 'row_class' => 'tab_bg_2'
             ],
             ['itemtype'  => 'RuleAsset',
@@ -3377,7 +3496,7 @@ class Profile extends CommonDBTM
      * @param $itemtype   string   itemtype
      * @param $interface  string   (default 'central')
      *
-     * @return rights
+     * @return array
      **/
     public static function getRightsFor($itemtype, $interface = 'central')
     {
@@ -3386,6 +3505,8 @@ class Profile extends CommonDBTM
             $item = new $itemtype();
             return $item->getRights($interface);
         }
+
+        return [];
     }
 
 
@@ -3545,7 +3666,7 @@ class Profile extends CommonDBTM
      *             'display'
      *             'check_method'  method used to check the right
      *
-     * @return content if !display
+     * @return string|void Return generated content if `display` parameter is true.
      **/
     public static function getLinearRightChoice(array $elements, array $options = [])
     {

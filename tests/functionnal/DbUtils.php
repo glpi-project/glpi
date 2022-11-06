@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -198,16 +200,34 @@ class DbUtils extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider dataTableType
-     **/
-    public function testGetItemForItemtype($table, $itemtype, $is_valid_type)
+    protected function getItemForItemtypeProvider(): iterable
     {
-        if ($is_valid_type) {
+        foreach ($this->dataTableType() as $test_case) {
+            yield [
+                'itemtype'       => $test_case['1'],
+                'is_valid'       => $test_case['2'],
+                'expected_class' => $test_case['1'],
+            ];
+
+            // Should find itemtype even if wrong case is used
+            yield [
+                'itemtype'       => strtolower($test_case['1']),
+                'is_valid'       => $test_case['2'],
+                'expected_class' => $test_case['1'],
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider getItemForItemtypeProvider
+     **/
+    public function testGetItemForItemtype($itemtype, $is_valid, $expected_class)
+    {
+        if ($is_valid) {
             $this
             ->if($this->newTestedInstance)
             ->then
-               ->object($this->testedInstance->getItemForItemtype($itemtype))->isInstanceOf($itemtype);
+               ->object($this->testedInstance->getItemForItemtype($itemtype))->isInstanceOf($expected_class);
         } else {
             $this
             ->if($this->newTestedInstance)
@@ -216,9 +236,8 @@ class DbUtils extends DbTestCase
         }
 
        //keep testing old method from db.function
-        if ($is_valid_type) {
-            $this->object(getItemForItemtype($itemtype))
-            ->isInstanceOf($itemtype);
+        if ($is_valid) {
+            $this->object(getItemForItemtype($itemtype))->isInstanceOf($expected_class);
         } else {
             $this->boolean(getItemForItemtype($itemtype))->isFalse();
         }
@@ -230,9 +249,18 @@ class DbUtils extends DbTestCase
 
         $this
          ->if($this->newTestedInstance)
-         ->then
-            ->object($this->testedInstance->getItemForItemtype(addslashes('Glpi\Event')))->isInstanceOf('Glpi\Event')
-            ->object($this->testedInstance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo')))->isInstanceOf('GlpiPlugin\Bar\Foo');
+         ->when(function () {
+               $this->object($this->testedInstance->getItemForItemtype(addslashes('Glpi\Event')))->isInstanceOf('Glpi\Event');
+         })->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Unexpected sanitized itemtype "Glpi\\\\Event" encountered.')
+            ->exists()
+         ->when(function () {
+               $this->object($this->testedInstance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo')))->isInstanceOf('GlpiPlugin\Bar\Foo');
+         })->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('Unexpected sanitized itemtype "GlpiPlugin\\\\Bar\\\\Foo" encountered.')
+            ->exists();
     }
 
     public function testGetItemForItemtypeAbstract()
@@ -348,8 +376,8 @@ class DbUtils extends DbTestCase
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id'))->isGreaterThan(0)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context'))->isGreaterThan(0)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_tickets', 'entities_id'))->isIdenticalTo(2)
-            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(16)
-            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(19)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(18)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(21)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']))->isIdenticalTo(1)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
@@ -377,11 +405,11 @@ class DbUtils extends DbTestCase
     protected function dataCountMyEntities()
     {
         return [
-            ['_test_root_entity', true, 'glpi_computers', [], 8],
+            ['_test_root_entity', true, 'glpi_computers', [], 9],
             ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc11'], 1],
             ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc01'], 1],
 
-            ['_test_root_entity', false, 'glpi_computers', [], 3],
+            ['_test_root_entity', false, 'glpi_computers', [], 4],
             ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc11'], 0],
             ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc01'], 1],
 
@@ -416,7 +444,7 @@ class DbUtils extends DbTestCase
     protected function dataCountEntities()
     {
         return [
-            ['_test_root_entity', 'glpi_computers', [], 3],
+            ['_test_root_entity', 'glpi_computers', [], 4],
             ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc11'], 0],
             ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc01'], 1],
 
@@ -1168,6 +1196,22 @@ class DbUtils extends DbTestCase
                 'entities_id'  => 0,
                 'expected'     => '_test_pc01',
                 'deprecated'   => true,
+            ], [
+            // not existing on entity, with multibyte strings
+                'name'         => '<自動名稱測試_##>',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 0,
+                'expected'     => '自動名稱測試_01'
+            ], [
+            // not existing on entity, with multibyte strings
+                'name'         => '<自動名稱—####—測試>',
+                'field'       => 'name',
+                'is_template'  => true,
+                'itemtype'     => 'Computer',
+                'entities_id'  => 0,
+                'expected'     => '自動名稱—0001—測試'
             ], [
             //existing on entity
                 'name'         => '&lt;_test_pc##&gt;',

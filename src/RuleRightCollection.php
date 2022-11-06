@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -68,9 +70,6 @@ class RuleRightCollection extends RuleCollection
     }
 
 
-    /**
-     * @see RuleCollection::showTestResults()
-     */
     public function showTestResults($rule, array $output, $global_result)
     {
 
@@ -217,8 +216,8 @@ class RuleRightCollection extends RuleCollection
      *
      * @see RuleCollection::prepareInputDataForProcess()
      *
-     * @param $input  input datas
-     * @param $params extra parameters given
+     * @param array $input  input datas
+     * @param array $params extra parameters given
      *
      * @return an array of attributes
      **/
@@ -229,32 +228,35 @@ class RuleRightCollection extends RuleCollection
             $groups = $input;
         }
 
+        // Some of the rule criteria is uppercase, but most other rule criterias are lowercase only
+        $params_lower = array_change_key_case($params, CASE_LOWER);
+
        //common parameters
         $rule_parameters = [
-            'TYPE'       => $params["type"] ?? "",
-            'LOGIN'      => $params["login"] ?? "",
-            'MAIL_EMAIL' => $params["email"] ?? $params["mail_email"] ?? "",
+            'TYPE'       => $params_lower["type"] ?? "",
+            'LOGIN'      => $params_lower["login"] ?? "",
+            'MAIL_EMAIL' => $params_lower["email"] ?? $params_lower["mail_email"] ?? "",
             '_groups_id' => $groups
         ];
 
        //IMAP/POP login method
-        if ($params["type"] == Auth::MAIL) {
-            $rule_parameters["MAIL_SERVER"] = $params["mail_server"] ?? "";
+        if ($params_lower["type"] == Auth::MAIL) {
+            $rule_parameters["MAIL_SERVER"] = $params_lower["mail_server"] ?? "";
         }
 
        //LDAP type method
-        if ($params["type"] == Auth::LDAP) {
+        if ($params_lower["type"] == Auth::LDAP) {
            //Get all the field to retrieve to be able to process rule matching
             $rule_fields = $this->getFieldsToLookFor();
 
            //Get all the datas we need from ldap to process the rules
             $sz         = @ldap_read(
-                $params["connection"],
-                $params["userdn"],
+                $params_lower["connection"],
+                $params_lower["userdn"],
                 "objectClass=*",
                 $rule_fields
             );
-            $rule_input = AuthLDAP::get_entries_clean($params["connection"], $sz);
+            $rule_input = AuthLDAP::get_entries_clean($params_lower["connection"], $sz);
 
             if (count($rule_input)) {
                 $rule_input = $rule_input[0];
@@ -263,7 +265,7 @@ class RuleRightCollection extends RuleCollection
                 foreach ($fields as $field) {
                     switch (Toolbox::strtoupper($field)) {
                         case "LDAP_SERVER":
-                            $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
+                            $rule_parameters["LDAP_SERVER"] = $params_lower["ldap_server"];
                             break;
 
                         default: // ldap criteria (added by user)

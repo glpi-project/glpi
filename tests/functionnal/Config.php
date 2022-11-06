@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -36,7 +38,6 @@ namespace tests\units;
 use DbTestCase;
 use Glpi\Plugin\Hooks;
 use Log;
-use PHPMailer\PHPMailer\PHPMailer;
 use Session;
 
 /* Test for inc/config.class.php */
@@ -132,11 +133,6 @@ class Config extends DbTestCase
             ->then
                ->array($this->testedInstance->defineTabs())
                ->isIdenticalTo($expected);
-    }
-
-    public function testPrepareInputForUpdate()
-    {
-       // /!\ Config::prepareInputForUpdate() do store data! /!\
     }
 
     public function testUnsetUndisclosedFields()
@@ -272,11 +268,11 @@ class Config extends DbTestCase
         $this->boolean(\Config::getLibraryDir(''))->isFalse();
         $this->boolean(\Config::getLibraryDir('abcde'))->isFalse();
 
-        $expected = realpath(__DIR__ . '/../../vendor/phpmailer/phpmailer/src');
+        $expected = realpath(__DIR__ . '/../../vendor/symfony/console');
         if (is_dir($expected)) { // skip when system library is used
-            $this->string(\Config::getLibraryDir('PHPMailer\PHPMailer\PHPMailer'))->isIdenticalTo($expected);
+            $this->string(\Config::getLibraryDir('Symfony\Component\Console\Application'))->isIdenticalTo($expected);
 
-            $mailer = new PHPMailer();
+            $mailer = new \Symfony\Component\Console\Application();
             $this->string(\Config::getLibraryDir($mailer))->isIdenticalTo($expected);
         }
 
@@ -467,7 +463,7 @@ class Config extends DbTestCase
             ], [
                 'raw'       => '10.2.14-MariaDB',
                 'version'   => '10.2.14',
-                'compat'    => true
+                'compat'    => false
             ], [
                 'raw'       => '10.3.28-MariaDB',
                 'version'   => '10.3.28',
@@ -481,13 +477,17 @@ class Config extends DbTestCase
                 'version'   => '10.5.9',
                 'compat'    => true
             ], [
+                'raw'       => '10.6.7-MariaDB-1:10.6.7-2ubuntu1.1',
+                'version'   => '10.6.7',
+                'compat'    => true
+            ], [
                 'raw'       => '5.6.38-log',
                 'version'   => '5.6.38',
                 'compat'    => false
             ],  [
                 'raw'       => '5.7.50-log',
                 'version'   => '5.7.50',
-                'compat'    => true
+                'compat'    => false
             ], [
                 'raw'       => '8.0.23-standard',
                 'version'   => '8.0.23',

@@ -1,12 +1,13 @@
 /*!
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -84,7 +86,7 @@ $break_tablet: 1400px;
     &.mini {
         padding-top: 0;
         margin: 0 auto;
-        margin-bottom: -10px;
+        margin-bottom: -45px !important;
         z-index: 1;
         box-sizing: content-box;
 
@@ -98,7 +100,6 @@ $break_tablet: 1400px;
 
         .grid-guide {
             top: 0;
-            bottom: 0 !important;
         }
 
         .main-icon {
@@ -166,7 +167,7 @@ $break_tablet: 1400px;
             }
 
             .card {
-                border-color: currentColor;
+                border-color: currentcolor;
             }
         }
 
@@ -273,7 +274,9 @@ $break_tablet: 1400px;
             left: 5px;
 
             i.fas,
+            i.fa-solid,
             i.far,
+            i.fa-regular,
             i.ti {
                 margin-left: 0;
                 font-size: 1em;
@@ -284,7 +287,7 @@ $break_tablet: 1400px;
             padding: 5px;
             border: 2px solid var(--input-border);
             border-radius: 3px;
-            min-width: 100px;
+            min-width: 140px;
             cursor: pointer;
 
             option {
@@ -293,24 +296,18 @@ $break_tablet: 1400px;
         }
 
         i.fas,
+        i.fa-solid,
         i.far,
+        i.fa-regular,
         i.ti {
-            font-size: 1.35em;
-            cursor: pointer;
-            padding: 5px;
             margin-left: 5px;
-            border: 2px solid transparent;
-
-            &.ti {
-                font-size: 1.75em;
-            }
 
             @media screen and (max-width: $break_phones) {
                 display: none;
             }
 
             &.active {
-                border: 2px inset currentColor;
+                border: 2px inset currentcolor;
             }
 
             &.fa-moon {
@@ -449,12 +446,11 @@ $break_tablet: 1400px;
 
                         &::after {
                             position: absolute;
-                            font-family: "Font Awesome 5 Free";
                             color: #509ee3;
-                            font-weight: 900;
+                            font: var(--fa-font-solid);
+                            font-size: 11px;
                             content: "\f057";
                             opacity: 0.7;
-                            font-size: 11px;
                             left: 7px;
                         }
 
@@ -478,10 +474,10 @@ $break_tablet: 1400px;
                     }
 
                     &::after {
-                        font-family: "Font Awesome 5 Free";
+                        font: var(--fa-font-solid);
+                        font-size: 14px;
                         color: #74838f;
                         opacity: 0.7;
-                        font-size: 14px;
                         pointer-events: none;
                         position: absolute;
                         right: 0;
@@ -571,14 +567,13 @@ $break_tablet: 1400px;
             }
 
             &::after {
-                content: "\f067";
+                content: "\2b";
                 left: 40%;
                 top: 40%;
-                font-size: 1em;
                 color: grey;
-                font-family: "Font Awesome 5 Free";
+                font: var(--fa-font-solid);
+                font-size: 1em;
                 position: absolute;
-                font-weight: 900;
             }
         }
     }
@@ -615,7 +610,9 @@ $break_tablet: 1400px;
                 cursor: pointer;
 
                 i.fas,
+                i.fa-solid,
                 i.far,
+                i.fa-regular,
                 i.ti {
                     opacity: 0.6;
 
@@ -648,7 +645,9 @@ $break_tablet: 1400px;
                 border: 1px solid transparent;
 
                 .fas,
+                .fa-solid,
                 .far,
+                .fa-regular,
                 .ti {
                     position: absolute;
                     top: calc(50% - 16px);
@@ -687,8 +686,7 @@ $break_tablet: 1400px;
 
                 &::before {
                     content: "\f338";
-                    font-family: "Font Awesome 5 Free";
-                    font-weight: 900;
+                    font: var(--fa-font-solid);
                     font-size: 13px;
                     position: absolute;
                     bottom: -5px;
@@ -796,7 +794,7 @@ $break_tablet: 1400px;
         }
 
         i {
-            color: currentColor;
+            color: currentcolor;
         }
     }
 
@@ -871,7 +869,7 @@ $break_tablet: 1400px;
 
             .line {
                 display: table-row;
-                color: currentColor;
+                color: currentcolor;
 
                 * {
                     display: table-cell;
@@ -925,7 +923,7 @@ $break_tablet: 1400px;
         }
 
         .line {
-            color: currentColor;
+            color: currentcolor;
             margin: 5px;
             padding: 5px;
             font-weight: normal;
@@ -956,7 +954,7 @@ $break_tablet: 1400px;
 
             a,
             i.fa-user {
-                color: currentColor;
+                color: currentcolor;
             }
 
             i.fa-user {
@@ -1160,7 +1158,7 @@ $break_tablet: 1400px;
             padding: 5px;
             margin: $mdmargin_v 0;
             background-color: rgba(255, 255, 255, 90%);
-            border: 1px solid currentColor;
+            border: 1px solid currentcolor;
             border-radius: 1px;
             outline: none;
             font-family: monospace;
@@ -1175,11 +1173,11 @@ $break_tablet: 1400px;
         }
 
         h1 {
-            border-bottom: 2px solid currentColor;
+            border-bottom: 2px solid currentcolor;
         }
 
         h2 {
-            border-bottom: 1px solid currentColor;
+            border-bottom: 1px solid currentcolor;
         }
 
         img {
@@ -1308,11 +1306,10 @@ $break_tablet: 1400px;
                 content: "\f00c";
                 right: 5px;
                 bottom: 3px;
-                font-size: 1em;
                 color: rgb(39, 39, 39);
-                font-family: "Font Awesome 5 Free";
+                font: var(--fa-font-solid);
+                font-size: 1em;
                 position: absolute;
-                font-weight: 900;
             }
         }
     }

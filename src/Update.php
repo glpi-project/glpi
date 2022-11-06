@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,21 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
+use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 
 /**
@@ -40,6 +43,9 @@ class Update
 {
     private $args = [];
     private $DB;
+    /**
+     * @var Migration
+     */
     private $migration;
     private $version;
     private $dbversion;
@@ -78,10 +84,6 @@ class Update
             $_SESSION = ['glpilanguage' => (isset($this->args['lang']) ? $this->args['lang'] : 'en_GB')];
             $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
         }
-
-       // Init debug variable
-       // Only show errors
-        Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
     }
 
     /**
@@ -95,15 +97,25 @@ class Update
         $DB = $this->DB;
 
         if (!$DB->tableExists('glpi_config') && !$DB->tableExists('glpi_configs')) {
-           //very, very old version!
-            $currents = [
-                'version'   => '0.1',
-                'dbversion' => '0.1',
-                'language'  => 'en_GB'
-            ];
+            if ($DB->listTables()->count() > 0) {
+                // < 0.31
+                // Version was not yet stored in DB
+                $currents = [
+                    'version'   => '0.1',
+                    'dbversion' => '0.1',
+                    'language'  => 'en_GB',
+                ];
+            } else {
+                // Not a GLPI database
+                $currents = [
+                    'version'   => null,
+                    'dbversion' => null,
+                    'language'  => 'en_GB',
+                ];
+            }
         } else if (!$DB->tableExists("glpi_configs")) {
-           // < 0.78
-           // Get current version
+            // >= 0.31 and < 0.78
+            // Get current version
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
                 'FROM'   => 'glpi_config'
@@ -113,8 +125,8 @@ class Update
             $currents['dbversion']  = $currents['version'];
             $currents['language']   = trim($result['language']);
         } else if ($DB->fieldExists('glpi_configs', 'version')) {
-           // < 0.85
-           // Get current version and language
+            // < 0.85
+            // Get current version and language
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
                 'FROM'   => 'glpi_configs'
@@ -124,14 +136,15 @@ class Update
             $currents['dbversion']  = $currents['version'];
             $currents['language']   = trim($result['language']);
         } else {
-            $currents = Config::getConfigurationValues(
+            // >= 0.85
+            $values = Config::getConfigurationValues(
                 'core',
                 ['version', 'dbversion', 'language']
             );
 
-            if (!isset($currents['dbversion'])) {
-                $currents['dbversion'] = $currents['version'];
-            }
+            $currents['version']   = $values['version'] ?? null;
+            $currents['dbversion'] = $values['dbversion'] ?? $currents['version']; // `dbversion` was not existing prior to 9.2.0
+            $currents['language']  = $values['language'] ?? 'en_GB';
         }
 
         $this->version    = $currents['version'];
@@ -141,6 +154,31 @@ class Update
         return $currents;
     }
 
+    /**
+     * Verify the database schema integrity.
+     *
+     * @return void
+     */
+    private function checkSchemaIntegrity(): void
+    {
+        global $DB;
+
+        $normalized_nersion = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+
+        $checker = new DatabaseSchemaIntegrityChecker($DB, false, true, true, true, true, true);
+        $differences = $checker->checkCompleteSchema(
+            sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $normalized_nersion),
+            true
+        );
+
+        if (count($differences) > 0) {
+            $this->migration->displayError(
+                __('The database schema is not consistent with the current GLPI version.')
+                . "\n"
+                . __('It is recommended to run the "php bin/console glpi:database:check_schema_integrity" command to see the differences.')
+            );
+        }
+    }
 
     /**
      * Run updates
@@ -159,15 +197,42 @@ class Update
             $current_version = $this->version;
         }
 
-        $DB = $this->DB;
-
-       // To prevent problem of execution time
-        ini_set("max_execution_time", "0");
-
         if (version_compare($current_version, '0.80', 'lt')) {
             die('Upgrade is not supported before 0.80!');
             die(1);
         }
+
+        $DB = $this->DB;
+
+        $support_legacy_data = version_compare(VersionParser::getNormalizedVersion($current_version), '10.0.0', '>=')
+            ? (Config::getConfigurationValue('core', 'support_legacy_data') ?? true)
+            : true;
+        if ($support_legacy_data) {
+            // Remove strict flags to prevent failure on invalid legacy data.
+            // e.g. with `NO_ZERO_DATE` flag `ALTER TABLE` operations fails when a row contains a `0000-00-00 00:00:00` datetime value.
+            // Unitary removal of these flags is not pôssible as MySQL 8.0 triggers warning if
+            // `STRICT_{ALL|TRANS}_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO` are not used all together.
+            $sql_mode = $DB->query(sprintf('SELECT @@sql_mode as %s', $DB->quoteName('sql_mode')))->fetch_assoc()['sql_mode'] ?? '';
+            $sql_mode_flags = array_filter(
+                explode(',', $sql_mode),
+                function (string $flag) {
+                    return !in_array(
+                        trim($flag),
+                        [
+                            'STRICT_ALL_TABLES',
+                            'STRICT_TRANS_TABLES',
+                            'NO_ZERO_IN_DATE',
+                            'NO_ZERO_DATE',
+                            'ERROR_FOR_DIVISION_BY_ZERO',
+                        ]
+                    );
+                }
+            );
+            $DB->query(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
+        }
+
+       // To prevent problem of execution time
+        ini_set("max_execution_time", "0");
 
        // Update process desactivate all plugins
         $plugin = new Plugin();
@@ -206,24 +271,26 @@ class Update
             $this->migration->displayError($message);
         }
         /*
-         * FIXME: Remove `$DB->use_utf8mb4` condition in GLPI 10.1.
-         * This condition is here only to prevent having this message on every migration GLPI 10.0.
+         * FIXME: Remove `$DB->use_utf8mb4` and `$exclude_plugins = true` conditions in GLPI 10.1.
+         * These conditions are here only to prevent having this message on every migration to GLPI 10.0.x.
          * Indeed, as migration command was not available in previous versions, users may not understand
          * why this is considered as an error.
+         * Also, some plugins may not have yet handle the switch to utf8mb4.
          */
-        if ($DB->use_utf8mb4 && ($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+        if ($DB->use_utf8mb4 && ($non_utf8mb4_count = $DB->getNonUtf8mb4Tables(true)->count()) > 0) {
             $message = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
             $this->migration->displayError($message);
         }
         /*
-         * FIXME: Remove `!$DB->allow_signed_keys` condition in GLPI 10.1.
-         * This condition is here only to prevent having this message on every migration GLPI 10.0.
+         * FIXME: Remove `!$DB->allow_signed_keys` and `$exclude_plugins = true` conditions in GLPI 10.1.
+         * These conditions are here only to prevent having this message on every migration to GLPI 10.0.x.
          * Indeed, as migration command was not available in previous versions, users may not understand
          * why this is considered as an error.
+         * Also, some plugins may not have yet handle the switch to unsigned keys.
          */
-        if (!$DB->allow_signed_keys && ($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
+        if (!$DB->allow_signed_keys && ($signed_keys_col_count = $DB->getSignedKeysColumns(true)->count()) > 0) {
             $message = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:unsigned_keys');
@@ -264,6 +331,9 @@ class Update
         if (!$glpikey->keyExists() && !$glpikey->generate()) {
             $this->migration->displayWarning(__('Unable to create security key file! You have to run "php bin/console glpi:security:change_key" command to manually create this file.'), true);
         }
+
+        // Check if schema has differences from the expected one but do not block the upgrade
+        $this->checkSchemaIntegrity();
     }
 
     /**
@@ -315,7 +385,7 @@ class Update
      *
      * @return array
      */
-    public function getMigrationsToDo(string $current_version, bool $force_latest = false): array
+    private function getMigrationsToDo(string $current_version, bool $force_latest = false): array
     {
         $migrations = [];
 
@@ -345,7 +415,7 @@ class Update
             }
         }
 
-        ksort($migrations);
+        ksort($migrations, SORT_NATURAL);
 
         return $migrations;
     }

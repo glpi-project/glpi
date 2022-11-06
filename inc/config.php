@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -180,9 +182,12 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
         Session::loadLanguage('', false);
 
         if (isCommandLine()) {
-            echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.');
+            echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.');
             echo "\n";
-        } else {
+            exit();
+        }
+
+        if (!defined('SKIP_UPDATES')) {
             Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
             echo "<div class='container-fluid mb-4'>";
             echo "<div class='row justify-content-evenly'>";
@@ -214,21 +219,21 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
                 );
 
                 if ($outdated !== true) {
-                     echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/install/update.php'>";
+                    echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/install/update.php'>";
                     if (!VersionParser::isStableRelease(GLPI_VERSION)) {
                         echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
                     }
-                     echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
-                     echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.') . "</p>";
-                     echo Html::submit(_sx('button', 'Upgrade'), [
-                         'name'  => 'from_update',
-                         'class' => "btn btn-primary",
-                         'icon'  => "fas fa-check",
-                     ]);
-                     Html::closeForm();
+                    echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>";
+                    echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') . "</p>";
+                    echo Html::submit(_sx('button', 'Upgrade'), [
+                        'name'  => 'from_update',
+                        'class' => "btn btn-primary",
+                        'icon'  => "fas fa-check",
+                    ]);
+                    Html::closeForm();
                 } else {
                     echo "<p class='mt-2 mb-n2 alert alert-important alert-warning'>" .
-                     __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.') . "</p>";
+                        __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.') . "</p>";
                 }
             }
 
@@ -237,7 +242,14 @@ if (!isset($skip_db_check) && !file_exists(GLPI_CONFIG_DIR . "/config_db.php")) 
             echo "</div>";
             echo "</div>";
             Html::nullFooter();
+            exit();
         }
-        exit();
     }
+}
+
+// First call to `Config::detectRootDoc()` cannot compute the value
+// in CLI context, as it requires DB connection to be up.
+// Now DB is up, so value can be computed.
+if (!isset($CFG_GLPI['root_doc'])) {
+    Config::detectRootDoc();
 }

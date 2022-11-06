@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,20 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Profile class
@@ -43,6 +47,40 @@ class ProfileRight extends CommonDBChild
     public static $items_id = 'profiles_id'; // Field name
     public $dohistory       = true;
 
+    /**
+     * {@inheritDoc}
+     * @note Unlike the default implementation, this one handles the fact that some or all profile rights
+     *       are already in the DB (but set to 0) when the cloned profile is created.
+     *       Therefore, we need to use update or insert DB queries rather than `CommonDBTM::add`.
+     */
+    public function clone(array $override_input = [], bool $history = true)
+    {
+        global $DB;
+
+        if ($DB->isSlave()) {
+            return false;
+        }
+        $new_item = new static();
+        $input = Sanitizer::dbEscapeRecursive($this->fields);
+        $input['profiles_id'] = $override_input['profiles_id'];
+        unset($input['id']);
+
+        $input = $new_item->prepareInputForClone($input);
+
+        $result = $DB->updateOrInsert(static::getTable(), $input, [
+            'name' => $input['name'],
+            'profiles_id' => $input['profiles_id'],
+        ]);
+        if ($result !== false) {
+            $new_item->getFromDBByCrit([
+                'name' => $input['name'],
+                'profiles_id' => $input['profiles_id'],
+            ]);
+            $new_item->post_clone($this, $history);
+        }
+
+        return $new_item->fields['id'];
+    }
 
     /**
      * Get possible rights
@@ -53,12 +91,9 @@ class ProfileRight extends CommonDBChild
     {
         global $DB, $GLPI_CACHE;
 
-        $rights = [];
+        $rights = $GLPI_CACHE->get('all_possible_rights', []);
 
-        if (
-            !$GLPI_CACHE->has('all_possible_rights')
-            || count($GLPI_CACHE->get('all_possible_rights')) == 0
-        ) {
+        if (count($rights) == 0) {
             $iterator = $DB->request([
                 'SELECT'          => 'name',
                 'DISTINCT'        => true,
@@ -69,9 +104,8 @@ class ProfileRight extends CommonDBChild
                 $rights[$right['name']] = '';
             }
             $GLPI_CACHE->set('all_possible_rights', $rights);
-        } else {
-            $rights = $GLPI_CACHE->get('all_possible_rights');
         }
+
         return $rights;
     }
 

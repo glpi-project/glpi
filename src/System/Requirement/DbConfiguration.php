@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -55,17 +57,7 @@ class DbConfiguration extends AbstractRequirement
 
     protected function check()
     {
-        $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $this->db->getVersion());
-
-       // "innodb_large_prefix" was required for "utf8mb4" indexes of VARCHAR(255) on older DB versions.
-       // This variable has been removed in MySQL 8.0 and in MariaDB 10.3.
-        $check_large_prefix = version_compare($version, '8.0', '<') // MySQL
-         || (version_compare($version, '10.0', '>=') && version_compare($version, '10.3', '<')); // MariaDB
-
         $query = 'SELECT @@GLOBAL.' . $this->db->quoteName('innodb_page_size as innodb_page_size');
-        if ($check_large_prefix) {
-            $query .= ', @@GLOBAL.' . $this->db->quoteName('innodb_large_prefix as innodb_large_prefix');
-        }
 
         if (($db_config_res = $this->db->query($query)) === false) {
             $this->validated = false;
@@ -75,9 +67,6 @@ class DbConfiguration extends AbstractRequirement
         $db_config = $db_config_res->fetch_assoc();
 
         $incompatibilities = [];
-        if ($check_large_prefix && (int)$db_config['innodb_large_prefix'] == 0) {
-            $incompatibilities[] = __('"innodb_large_prefix" must be enabled.');
-        }
         if ((int)$db_config['innodb_page_size'] < 8192) {
             $incompatibilities[] = '"innodb_page_size" must be >= 8KB.';
         }

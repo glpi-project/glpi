@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -159,8 +161,10 @@ class NetworkPortMigration extends CommonDBChild
 
         $address = new IPAddress();
         $netmask = new IPNetmask();
+        $network = new IPNetwork();
 
         $number_real_errors = 0;
+
 
         if (
             (!$address->setAddressFromString($this->fields['ip']))
@@ -169,11 +173,10 @@ class NetworkPortMigration extends CommonDBChild
                 $address->getVersion()
             ))
         ) {
-            unset($address);
-            unset($netmask);
+            $address = null;
+            $netmask = null;
+            $network = null;
         } else {
-            $network = new IPNetwork();
-
             $params = ["address" => $address,
                 "netmask" => $netmask
             ];
@@ -189,7 +192,7 @@ class NetworkPortMigration extends CommonDBChild
             $networkports_ids = IPNetwork::searchNetworks("equals", $params, $entity, false);
 
             if (count($networkports_ids) == 0) {
-                unset($network);
+                $network = null;
             } else {
                 $network->getFromDB($networkports_ids[0]);
             }
@@ -217,10 +220,10 @@ class NetworkPortMigration extends CommonDBChild
             $network_cell = "th";
             $address_cell = "th";
             echo "<tr class='tab_bg_1'><th>" . $motives['invalid_network'] . "</th>\n<td colspan=3>";
-            if (isset($network)) {
+            if ($network !== null) {
                 printf(__('Network port information conflicting with %s'), $network->getLink());
             } else {
-                if (!isset($address) || !isset($netmask)) {
+                if ($address === null || $netmask === null) {
                     echo __('Invalid address or netmask');
                 } else {
                     echo __('No conflicting network');
@@ -235,7 +238,7 @@ class NetworkPortMigration extends CommonDBChild
             $number_real_errors++;
             $gateway_cell = "th";
             echo "<tr class='tab_bg_1'><th>" . $motives['invalid_gateway'] . "</th>\n<td colspan=3>";
-            if (isset($network)) {
+            if ($network !== null) {
                 printf(__('Append a correct gateway to the network %s'), $network->getLink());
             } else {
                 printf(
@@ -330,6 +333,8 @@ class NetworkPortMigration extends CommonDBChild
         echo "<$interface_cell></$interface_cell></tr>\n";
 
         $this->showFormButtons($options);
+
+        return true;
     }
 
 

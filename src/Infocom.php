@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -115,12 +117,14 @@ class Infocom extends CommonDBChild
     public function post_getEmpty()
     {
 
-        $this->fields["alert"] = Entity::getUsedConfig(
-            "use_infocoms_alert",
-            $this->fields["entities_id"],
-            "default_infocom_alert",
-            0
-        );
+        if (isset($_SESSION['glpiactive_entity'])) {
+            $this->fields["alert"] = Entity::getUsedConfig(
+                "use_infocoms_alert",
+                $_SESSION['glpiactive_entity'],
+                "default_infocom_alert",
+                0
+            );
+        }
     }
 
 
@@ -753,7 +757,7 @@ class Infocom extends CommonDBChild
      * @param $itemtype   integer  item type
      * @param $device_id  integer  item ID
      *
-     * @return float
+     * @return void
      **/
     public static function showDisplayLink($itemtype, $device_id)
     {
@@ -763,7 +767,7 @@ class Infocom extends CommonDBChild
             !Session::haveRight(self::$rightname, READ)
             || !($item = getItemForItemtype($itemtype))
         ) {
-            return false;
+            return;
         }
 
         $result = $DB->request([
@@ -781,7 +785,7 @@ class Infocom extends CommonDBChild
             $add  = "";
             $text = _x('button', 'Show');
         } else if (!Infocom::canUpdate()) {
-            return false;
+            return;
         }
 
         if ($item->canView()) {

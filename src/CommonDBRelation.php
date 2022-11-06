@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -76,6 +78,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
     public $no_form_page                  = true;
 
+    /**
+     * Search option number to use in parent item log.
+     * Value is defined during logging process and unset after it.
+     * @var int
+     */
+    protected $_force_log_option;
 
     /**
      * Get request cirteria to search for an item
@@ -91,6 +99,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     {
         global $DB;
 
+        $table = static::getTable();
+
         $conditions = [];
         $fields     = [
             static::getIndexName(),
@@ -100,13 +110,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
        // Check item 1 type
         $where1 = [
-            static::$items_id_1  => $items_id
+            $table . '.' . static::$items_id_1  => $items_id
         ];
 
         $request = false;
         if (preg_match('/^itemtype/', static::$itemtype_1)) {
             $fields[] = static::$itemtype_1 . ' AS itemtype_1';
-            $where1[static::$itemtype_1] = $itemtype;
+            $where1[$table . '.' . static::$itemtype_1] = $itemtype;
             $request = true;
         } else {
             $fields[] = new \QueryExpression("'" . static::$itemtype_1 . "' AS itemtype_1");
@@ -129,12 +139,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
        // Check item 2 type
         $where2 = [
-            static::$items_id_2 => $items_id
+            $table . '.' . static::$items_id_2 => $items_id
         ];
         $request = false;
         if (preg_match('/^itemtype/', static::$itemtype_2)) {
             $fields[] = static::$itemtype_2 . ' AS itemtype_2';
-            $where2[static::$itemtype_2] = $itemtype;
+            $where2[$table . '.' . static::$itemtype_2] = $itemtype;
             $request = true;
         } else {
             $fields[] = new \QueryExpression("'" . static::$itemtype_2 . "' AS itemtype_2");
@@ -158,7 +168,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if (count($conditions) != 0) {
             $criteria = [
                 'SELECT' => $fields,
-                'FROM'   => static::getTable(),
+                'FROM'   => $table,
                 'WHERE'  => ['OR' => $conditions]
             ];
             return $criteria;
@@ -2134,9 +2144,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
      */
     public static function getMemberPosition(string $class): int
     {
-        if ($class == static::$itemtype_1) {
+        if (is_a($class, static::$itemtype_1, true)) {
             return 1;
-        } elseif ($class == static::$itemtype_2) {
+        } elseif (is_a($class, static::$itemtype_2, true)) {
             return 2;
         } elseif (
             preg_match('/^itemtype/', static::$itemtype_1) === 1

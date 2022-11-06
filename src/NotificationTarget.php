@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -72,6 +74,13 @@ class NotificationTarget extends CommonDBChild
     public $events                      = [];
     public $options                     = [];
     public $raiseevent                  = '';
+
+    /**
+     * Recipient related to called "add_recipient_to_target" hook.
+     * Variable contains `itemtype` and `items_id` keys and is set only during hook execution.
+     * @var array
+     */
+    public $recipient_data;
 
     private $allow_response             = true;
     private $mode                       = null;
@@ -305,20 +314,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public static function getInstance($item, $event = '', $options = [])
     {
-
-        $itemtype = $item->getType();
-        if ($plug = isPluginItemType($itemtype)) {
-           // plugins case
-            $name = 'Plugin' . $plug['plugin'] . 'NotificationTarget' . $plug['class'];
-        } else if (strpos($itemtype, "\\") != false) {
-           // namespace case
-            $ns_parts = explode("\\", $itemtype);
-            $classname = array_pop($ns_parts);
-            $name = implode("\\", $ns_parts) . "\\NotificationTarget$classname";
-        } else {
-           // simple class (without namespace)
-            $name = "NotificationTarget$itemtype";
-        }
+        $name = self::getInstanceClass($item->getType());
 
         $entity = 0;
         if (class_exists($name)) {
@@ -335,6 +331,30 @@ class NotificationTarget extends CommonDBChild
         return false;
     }
 
+    /**
+     * Get the expected notification target class name for a given itemtype
+     *
+     * @param string $itemtype
+     *
+     * @return string
+     */
+    public static function getInstanceClass(string $itemtype): string
+    {
+        if (strpos($itemtype, "\\") != false) {
+            // namespace case
+            $ns_parts = explode("\\", $itemtype);
+            $classname = array_pop($ns_parts);
+            $name = implode("\\", $ns_parts) . "\\NotificationTarget$classname";
+        } elseif ($plug = isPluginItemType($itemtype)) {
+            // plugins case
+            $name = 'Plugin' . $plug['plugin'] . 'NotificationTarget' . $plug['class'];
+        } else {
+            // simple class (without namespace)
+            $name = "NotificationTarget$itemtype";
+        }
+
+        return $name;
+    }
 
     /**
      * Get a notificationtarget class by giving an itemtype
@@ -429,7 +449,7 @@ class NotificationTarget extends CommonDBChild
 
         $type   = "";
         $action = "";
-        $target = self::getInstanceByType(stripslashes($input['itemtype']));
+        $target = self::getInstanceByType($input['itemtype']);
 
         if (!isset($input['notifications_id'])) {
             return;
@@ -630,16 +650,24 @@ class NotificationTarget extends CommonDBChild
     {
         global $CFG_GLPI;
 
+        if (urldecode($redirect) === $redirect) {
+            // `redirect` parameter value have to be url-encoded.
+            // Prior to GLPI 10.0.3, method caller was responsible of this encoding,
+            // so we have to ensure that param is not already encoded before encoding it,
+            // to prevent BC breaks.
+            $redirect = rawurlencode($redirect);
+        }
+
         switch ($usertype) {
             case self::EXTERNAL_USER:
-                return urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=$redirect");
+                return $CFG_GLPI["url_base"] . "/index.php?redirect=$redirect";
 
             case self::ANONYMOUS_USER:
                // No URL
                 return '';
 
             case self::GLPI_USER:
-                return urldecode($CFG_GLPI["url_base"] . "/index.php?redirect=$redirect&noAUTO=1");
+                return $CFG_GLPI["url_base"] . "/index.php?redirect=$redirect&noAUTO=1";
         }
     }
 
@@ -655,7 +683,7 @@ class NotificationTarget extends CommonDBChild
         $admin_data = $eventclass::getAdminData();
 
         if ($admin_data) {
-            if (!isset($admin_data['usertype'])) {
+            if (!isset($admin_data['users_id']) && !isset($admin_data['usertype'])) {
                 $admin_data['usertype'] = $this->getDefaultUserType();
             }
             $this->addToRecipientsList($admin_data);
@@ -756,7 +784,7 @@ class NotificationTarget extends CommonDBChild
 
         if ($admins_data) {
             foreach ($admins_data as $admin_data) {
-                if (!isset($admin_data['usertype'])) {
+                if (!isset($admin_data['users_id']) && !isset($admin_data['usertype'])) {
                     $admin_data['usertype'] = $this->getDefaultUserType();
                 }
                 $this->addToRecipientsList($admin_data);
@@ -1007,11 +1035,11 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * Get item associated with the object on which the event was raised
+     * Fetch item associated with the object on which the event was raised
      *
      * @param $event  (default '')
      *
-     * @return the object associated with the itemtype
+     * @return void
      **/
     public function getObjectItem($event = '')
     {
@@ -1077,7 +1105,7 @@ class NotificationTarget extends CommonDBChild
     {
         if (!empty($this->target_object)) {
             foreach ($this->target_object as $val) {
-                if ($val->fields['groups_id_tech'] > 0) {
+                if (isset($val->fields['groups_id_tech']) && $val->fields['groups_id_tech'] > 0) {
                     $this->addForGroup(0, $val->fields['groups_id_tech']);
                 }
             }

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,6 +37,7 @@ namespace Glpi\Console\Migration;
 
 use DBConnection;
 use Glpi\Console\AbstractCommand;
+use Plugin;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,6 +50,13 @@ class UnsignedKeysCommand extends AbstractCommand
      * @var int
      */
     const ERROR_COLUMN_MIGRATION_FAILED = 1;
+
+    /**
+     * Error code returned if DB configuration file cannot be updated.
+     *
+     * @var integer
+     */
+    const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 
     protected function configure()
     {
@@ -68,6 +78,7 @@ class UnsignedKeysCommand extends AbstractCommand
         );
 
         $errors = false;
+        $errored_plugins = [];
 
         if ($columns->count() === 0) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
@@ -86,24 +97,9 @@ class UnsignedKeysCommand extends AbstractCommand
                 $default     = $column['COLUMN_DEFAULT'];
                 $extra       = $column['EXTRA'];
 
-                $min = $this->db
-                    ->request(['SELECT' => ['MIN' => sprintf('%s AS min', $column_name)], 'FROM' => $table_name])
-                    ->current()['min'];
-
-                if (($min !== null && $min < 0) || ($default !== null && $default < 0)) {
-                    $message = sprintf(
-                        __('Migration of column "%s.%s" cannot be done as it contains negative values.'),
-                        $table_name,
-                        $column_name
-                    );
-                    $this->writelnOutputWithProgressBar(
-                        '<error>' . $message . '</error>',
-                        $progress_bar,
-                        OutputInterface::VERBOSITY_QUIET
-                    );
-                    $errors = true;
-                    continue; // Do not migrate this column
-                }
+                $plugin_matches  = [];
+                $is_plugin_table = preg_match('/^glpi_plugin_(?<plugin_key>[^_]+)_/', $table_name, $plugin_matches) === 1;
+                $plugin_key      = $is_plugin_table ? $plugin_matches['plugin_key'] : null;
 
                 // Ensure that column is not referenced in a CONSTRAINT key.
                 foreach ($foreign_keys as $foreign_key) {
@@ -125,7 +121,87 @@ class UnsignedKeysCommand extends AbstractCommand
                             OutputInterface::VERBOSITY_QUIET
                         );
                         $errors = true;
+                        if ($is_plugin_table) {
+                            $errored_plugins[] = $plugin_key;
+                        }
                         continue 2; // Non blocking error, it should not prevent migration of other fields
+                    }
+                }
+
+                // Ensure that column has not a negative default value
+                if ($default !== null && $default < 0) {
+                    $message = sprintf(
+                        __('Migration of column "%s.%s" cannot be done as its default value is negative.'),
+                        $table_name,
+                        $column_name
+                    );
+                    $this->writelnOutputWithProgressBar(
+                        '<error>' . $message . '</error>',
+                        $progress_bar,
+                        OutputInterface::VERBOSITY_QUIET
+                    );
+                    $errors = true;
+                    if ($is_plugin_table) {
+                        $errored_plugins[] = $plugin_key;
+                    }
+                    continue; // Do not migrate this column
+                }
+
+                // Check for negative values in table data
+                $min = $this->db
+                    ->request(['SELECT' => ['MIN' => sprintf('%s AS min', $column_name)], 'FROM' => $table_name])
+                    ->current()['min'];
+                if ($min !== null && $min < 0) {
+                    if (!$is_plugin_table) {
+                        // Force migration of unconsistent -1 values in core tables
+                        $forced_value = $default !== null || $nullable ? $default : 0;
+                        $message = sprintf(
+                            __('Column "%s.%s" contains negative values. Updating them to "%s"...'),
+                            $table_name,
+                            $column_name,
+                            $forced_value === null ? 'NULL' : $forced_value
+                        );
+                        $this->writelnOutputWithProgressBar(
+                            '<comment>' . $message . '</comment>',
+                            $progress_bar
+                        );
+                        $result = $this->db->update(
+                            $table_name,
+                            [$column_name => $forced_value],
+                            [$column_name => ['<', 0]]
+                        );
+                        if ($result === false) {
+                            $message = sprintf(
+                                __('Updating column "%s.%s" values failed with message "(%s) %s".'),
+                                $table_name,
+                                $column_name,
+                                $this->db->errno(),
+                                $this->db->error()
+                            );
+                            $this->writelnOutputWithProgressBar(
+                                '<error>' . $message . '</error>',
+                                $progress_bar,
+                                OutputInterface::VERBOSITY_QUIET
+                            );
+                            $errors = true;
+                            continue; // Go to next column
+                        }
+                    } else {
+                        // Cannot determine whether -1 values in plugin tables are legitimate (bad foreign key design)
+                        // or inconsistent (wrong value inserted in DB)
+                        $message = sprintf(
+                            __('Migration of column "%s.%s" cannot be done as it contains negative values.'),
+                            $table_name,
+                            $column_name
+                        );
+                        $this->writelnOutputWithProgressBar(
+                            '<error>' . $message . '</error>',
+                            $progress_bar,
+                            OutputInterface::VERBOSITY_QUIET
+                        );
+                        $errors = true;
+                        $errored_plugins[] = $plugin_key;
+                        continue; // Do not migrate this column
                     }
                 }
 
@@ -161,6 +237,9 @@ class UnsignedKeysCommand extends AbstractCommand
                         OutputInterface::VERBOSITY_QUIET
                     );
                     $errors = true;
+                    if ($is_plugin_table) {
+                        $errored_plugins[] = $plugin_key;
+                    }
                     continue; // Go to next column
                 }
             }
@@ -176,8 +255,24 @@ class UnsignedKeysCommand extends AbstractCommand
         }
 
         if ($errors) {
+            $message = '<error>' . __('Errors occurred during migration.') . '</error>';
+            if (count($errored_plugins) > 0) {
+                $errored_plugins = array_unique($errored_plugins);
+                $plugin = new Plugin();
+                $plugins_names = [];
+                foreach ($errored_plugins as $errored_plugin) {
+                    $plugins_names[] = $plugin->getInformationsFromDirectory($errored_plugin)['name'] ?? $errored_plugin;
+                }
+                $message .= "\n";
+                $message .= sprintf(
+                    '<comment>' . __('Some errors are related to following plugins: %s.') . '</comment>',
+                    implode(', ', $plugins_names)
+                );
+                $message .= "\n";
+                $message .= '<comment>' . __('You should try to update these plugins to their latest version and run the command again.') . '</comment>';
+            }
             throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . __('Errors occured during migration.') . '</error>',
+                $message,
                 self::ERROR_COLUMN_MIGRATION_FAILED
             );
         }

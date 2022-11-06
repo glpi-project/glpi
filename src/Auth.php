@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -457,7 +459,7 @@ class Auth extends CommonGLPI
                 $groups_id = array_column($groups, 'id');
                 $result = $rules->processAllRules(
                     $groups_id,
-                    Toolbox::stripslashes_deep($this->user->fields),
+                    $this->user->fields,
                     [
                         'type'  => Auth::DB_GLPI,
                         'login' => $this->user->fields['name'],
@@ -647,6 +649,8 @@ class Auth extends CommonGLPI
      * Get the current identification error
      *
      * @return string current identification error
+     *
+     * @TODO Deprecate this in GLPI 10.1.
      */
     public function getErr()
     {
@@ -734,19 +738,16 @@ class Auth extends CommonGLPI
         if ($login_auth == 'local') {
             $authtype = self::DB_GLPI;
             $this->user->fields["authtype"] = self::DB_GLPI;
-        } else if (strstr($login_auth, '-')) {
-            $auths = explode('-', $login_auth);
-            $this->user->fields["auths_id"] = $auths[1];
-            if ($auths[0] == 'ldap') {
+        } else if (preg_match('/^(?<type>ldap|mail|external)-(?<id>\d+)$/', $login_auth, $auth_matches)) {
+            $this->user->fields["auths_id"] = (int)$auth_matches['id'];
+            if ($auth_matches['type'] == 'ldap') {
                 $authtype = self::LDAP;
-                $this->user->fields["authtype"] = self::LDAP;
-            } else if ($auths[0] == 'mail') {
+            } else if ($auth_matches['type'] == 'mail') {
                 $authtype = self::MAIL;
-                $this->user->fields["authtype"] = self::MAIL;
-            } else if ($auths[0] == 'external') {
+            } else if ($auth_matches['type'] == 'external') {
                 $authtype = self::EXTERNAL;
-                $this->user->fields["authtype"] = self::EXTERNAL;
             }
+            $this->user->fields['authtype'] = $authtype;
         }
         if (!$noauto && ($authtype = self::checkAlternateAuthSystems())) {
             if (
@@ -798,7 +799,8 @@ class Auth extends CommonGLPI
                             $ldap_method["tls_certfile"],
                             $ldap_method["tls_keyfile"],
                             $ldap_method["use_bind"],
-                            $ldap_method["timeout"]
+                            $ldap_method["timeout"],
+                            $ldap_method["tls_version"]
                         );
 
                         if ($ds) {
@@ -814,7 +816,7 @@ class Auth extends CommonGLPI
                                      'basedn'            => $ldap_method["basedn"],
                                      'login_field'       => $ldap_method['login_field'],
                                      'search_parameters' => $params,
-                                     'condition'         => $ldap_method["condition"],
+                                     'condition'         => Sanitizer::unsanitize($ldap_method["condition"]),
                                      'user_params'       => [
                                          'method' => AuthLDAP::IDENTIFIER_LOGIN,
                                          'value'  => $login_name
@@ -964,27 +966,19 @@ class Auth extends CommonGLPI
                 }
             } else {
                 if ($this->user_present) {
-                   // First stripslashes to avoid double slashes
-                    $input = Toolbox::stripslashes_deep($this->user->fields);
-                   // Then ensure addslashes
-                    $input = Toolbox::addslashes_deep($input);
-
                    // Add the user e-mail if present
                     if (isset($email)) {
                          $this->user->fields['_useremails'] = $email;
                     }
-                    $this->user->update($input);
+                    $this->user->update(Sanitizer::sanitize($this->user->fields));
                 } else if ($CFG_GLPI["is_users_auto_add"]) {
                    // Auto add user
-                   // First stripslashes to avoid double slashes
-                    $input = Toolbox::stripslashes_deep($this->user->fields);
-                   // Then ensure addslashes
-                    $input = Toolbox::addslashes_deep($input);
+                    $input = $this->user->fields;
                     unset($this->user->fields);
                     if ($authtype == self::EXTERNAL && !isset($input["authtype"])) {
                         $input["authtype"] = $authtype;
                     }
-                    $this->user->add($input);
+                    $this->user->add(Sanitizer::sanitize($input));
                 } else {
                    // Auto add not enable so auth failed
                     $this->addToError(__('User not authorized to connect in GLPI'));
@@ -997,7 +991,7 @@ class Auth extends CommonGLPI
         if (!$DB->isSlave()) {
            // GET THE IP OF THE CLIENT
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?
-            Sanitizer::sanitize(getenv("HTTP_X_FORWARDED_FOR"), false) :
+            Sanitizer::encodeHtmlSpecialChars(getenv("HTTP_X_FORWARDED_FOR")) :
             getenv("REMOTE_ADDR");
 
             if ($this->auth_succeded) {
@@ -1335,7 +1329,7 @@ class Auth extends CommonGLPI
         }
         $redir_string = "";
         if (!empty($redirect_string)) {
-            $redir_string = "?redirect=" . $redirect_string;
+            $redir_string = "?redirect=" . rawurlencode($redirect_string);
         }
        // Using x509 server
         if (
@@ -1416,6 +1410,7 @@ class Auth extends CommonGLPI
             } else if (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
                 $redirect = $_GET['redirect'];
             }
+            $redirect = $redirect ? Sanitizer::unsanitize($redirect) : '';
         }
 
        //Direct redirect
@@ -1584,7 +1579,7 @@ class Auth extends CommonGLPI
            //TRANS: for CAS SSO system
             echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Version') . "</td>";
             echo "<td>";
-            Auth::dropdownCasVersion($CFG_GLPI["cas_version"]);
+            Auth::dropdownCasVersion($CFG_GLPI["cas_version"] ?? null);
             echo "</td>";
             echo "</tr>";
            //TRANS: for CAS SSO system
@@ -1684,7 +1679,7 @@ class Auth extends CommonGLPI
         echo "</tr>";
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td class='center'>" . __('Administrative number') . "</td>";
+        echo "<td class='center'>" . _x('user', 'Administrative number') . "</td>";
         echo "<td><input type='text' class='form-control' name='registration_number_ssofield' value='" .
                   $CFG_GLPI['registration_number_ssofield'] . "'>";
         echo "</td>";
@@ -1850,12 +1845,25 @@ class Auth extends CommonGLPI
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');
         $cookie_secure   = (bool)ini_get('session.cookie_secure');
+        $cookie_httponly = (bool)ini_get('session.cookie_httponly');
+        $cookie_samesite = ini_get('session.cookie_samesite');
 
         if (empty($cookie_value) && !isset($_COOKIE[$cookie_name])) {
             return;
         }
 
-        setcookie($cookie_name, $cookie_value, $cookie_lifetime, $cookie_path, $cookie_domain, $cookie_secure, true);
+        setcookie(
+            $cookie_name,
+            $cookie_value,
+            [
+                'expires'  => $cookie_lifetime,
+                'path'     => $cookie_path,
+                'domain'   => $cookie_domain,
+                'secure'   => $cookie_secure,
+                'httponly' => $cookie_httponly,
+                'samesite' => $cookie_samesite,
+            ]
+        );
 
         if (empty($cookie_value)) {
             unset($_COOKIE[$cookie_name]);

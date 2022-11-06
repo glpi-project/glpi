@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,18 +15,19 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
@@ -43,17 +45,26 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content">
-         {{ entry_i['content']|enhanced_html({
-            'user_mentions': true,
-            'images_gallery': true
-         }) }}
+         <div class="rich_text_container">
+            {{ entry_i['content']|enhanced_html({
+               'user_mentions': true,
+               'images_gallery': true
+            }) }}
+         </div>
 
          <div class="timeline-badges">
+            {% if entry_i['requesttypes_id'] %}
+               <span class="badge bg-blue-lt" title="{{ __('Source of followup') }}">
+                  <i class="fas fa-inbox me-1"></i>
+                  {{ get_item_name('RequestType', entry_i['requesttypes_id']) }}
+               </span>
+            {% endif %}
+
             {% if entry_i['sourceitems_id'] %}
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set merged_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
                      </span>
                   {% endset %}
@@ -65,7 +76,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set promoted_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
                      </span>
                   {% endset %}
@@ -84,13 +95,13 @@
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
-            {% set openfollowup = _get['_openfollowup'] ?? false %}
-            {% if openfollowup %}
+            {% set add_reopen = (_get['_openfollowup'] ?? false) or item.needReopen() %}
+            {% if add_reopen %}
                <input type="hidden" name="add_reopen" value="1" />
             {% endif %}
 
-            <div class="row">
-               {% set col_md = get_current_interface() == 'central' ? 'col-md-9' : 'col-md-12' %}
+            <div class="row mx-n3 mx-xxl-auto">
+               {% set col_md = get_current_interface() == 'central' ? 'col-xl-7 col-xxl-8' : 'col-xxl-12' %}
                <div class="col-12 {{ col_md }}">
                   {{ fields.textareaField(
                      'content',
@@ -102,12 +113,14 @@
                         'enable_richtext': true,
                         'enable_fileupload': true,
                         'enable_mentions': true,
+                        'entities_id': item.fields['entities_id'],
                         'rand': rand,
+                        'required': add_reopen
                      }
                   ) }}
                </div>
                {% if get_current_interface() == 'central' %}
-                  <div class="col-12 col-md-3 order-first order-md-last">
+                  <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-o pe-xxl-auto">
                      <div class="row">
 
                         {% set fup_template_lbl %}
@@ -138,8 +151,10 @@
                            {
                               'full_width': true,
                               'icon_label': true,
-                              'is_active': 1,
-                              'is_itilfollowup': 1,
+                              'condition': {
+                                 'is_active': 1,
+                                 'is_itilfollowup': 1,
+                              },
                               'rand': rand,
                            }
                         ) }}
@@ -161,16 +176,17 @@
                         {% if can_read_kb and kb_id_toload > 0 %}
                            {% set link_kb_lbl %}
                               <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                                 title="{{ __('Link to knowledge base entry #%id')|format('TODO kb id') }}"></i>
+                                 title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
                            {% endset %}
                            {{ fields.sliderField(
                               'kb_linked_id',
-                              kb_id_toload,
+                              1,
                               link_kb_lbl,
                               {
                                  'full_width': true,
                                  'icon_label': true,
                                  'rand': rand,
+                                 'yes_value': kb_id_toload,
                               }
                            ) }}
                         {% endif %}
@@ -204,7 +220,7 @@
                         <i class="fas fa-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>
-                     {% if get_current_interface() == 'central' %}
+                     {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) %}
                         <span class="input-group-text bg-yellow-lt py-0 pe-0" id="pending-reasons-control-{{ rand }}">
                            <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
                                  data-bs-toggle="tooltip" data-bs-placement="top" role="button">
@@ -214,13 +230,16 @@
                                  <input type="checkbox" name="pending" value="1" class="form-check-input"
                                        id="enable-pending-reasons-{{ rand }}"
                                        role="button"
+                                       {{ item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen ? 'checked' : '' }}
                                        data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
                               </label>
                            </span>
 
-                           <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
-                              {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
-                           </div>
+                           {% if item.fields['status'] != constant('CommonITILObject::WAITING') %}
+                              <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
+                                 {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
+                              </div>
+                           {% endif %}
                         </span>
                      {% endif %}
                   </div>
@@ -265,7 +284,11 @@
                   tasktinymce.setContent(data.content);
                }
                // set category
-               $("#dropdown_requesttypes_id{{ rand }}").trigger("setValue", requesttypes_id);
+               //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
+               //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
+               var newOption = new Option(data.requesttypes_name, requesttypes_id, true, true);
+               $("#dropdown_requesttypes_id{{ rand }}").append(newOption).trigger('change');
+
                // set is_private
                $("#is_private_{{ rand }}")
                   .prop("checked", data.is_private == "0"

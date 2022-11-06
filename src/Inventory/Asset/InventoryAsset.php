@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -36,9 +39,11 @@ namespace Glpi\Inventory\Asset;
 use Agent;
 use Blacklist;
 use CommonDBTM;
+use CommonDropdown;
 use Dropdown;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
+use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
 
@@ -56,14 +61,28 @@ abstract class InventoryAsset
     protected $agent;
     /** @var integer */
     protected $entities_id = 0;
+    /** @var integer */
+    protected $is_recursive = 0;
+    /** @var array */
+    protected $ruleentity_data = [];
+    /** @var array */
+    protected $rulelocation_data = [];
     /** @var boolean */
     protected $links_handled = false;
     /** @var boolean */
     protected $with_history = true;
-    /** @var InventoryAsset */
+    /** @var MainAsset */
     protected $main_asset;
     /** @var string */
     protected $request_query;
+    /** @var bool */
+    private bool $is_new = false;
+    /** @var array */
+    protected array $known_links = [];
+    /** @var array */
+    protected array $raw_links = [];
+        /** @var array */
+    protected array $input_notmanaged = [];
 
     /**
      * Constructor
@@ -162,16 +181,20 @@ abstract class InventoryAsset
      */
     public function handleLinks()
     {
-        $knowns = [];
+        $foreignkey_itemtype = [];
 
-       //$blacklists = Blacklist::getBlacklists();
         $blacklist = new Blacklist();
+
+        //load locked field for current itemtype
+        $itemtype = $this->getItemtype();
+        $lockedfield = new Lockedfield();
+        $locks = $lockedfield->getLockedNames($itemtype, $this->item->fields['id'] ?? 0);
 
         $data = $this->data;
         foreach ($data as &$value) {
             $blacklist->processBlackList($value);
-           // save raw manufacture name before its replacement by id for importing model
-           // (we need manufacturers name in when importing model in dictionary)
+            // save raw manufacture name before its replacement by id for importing model
+            // (we need manufacturers name in when importing model in dictionary)
             $manufacturer_name = "";
             if (property_exists($value, 'manufacturers_id')) {
                 $manufacturer_name = $value->manufacturers_id;
@@ -182,57 +205,74 @@ abstract class InventoryAsset
                     continue;
                 }
 
-                if ($key == "manufacturers_id" || $key == 'bios_manufacturers_id') {
-                    $manufacturer = new Manufacturer();
-                    $value->$key  = $manufacturer->processName($value->$key);
-                    if ($key == 'bios_manufacturers_id') {
-                        $this->foreignkey_itemtype[$key] = getItemtypeForForeignKeyField('manufacturers_id');
+
+                $known_key = md5($key . $val);
+                //keep raw values...
+                $this->raw_links[$known_key] = $val;
+
+                //do not process field if it's locked
+                foreach ($locks as $lock) {
+                    if ($key == $lock) {
+                        continue 2;
                     }
                 }
-                if (!is_numeric($val)) {
-                    $known_key = md5($key . $val);
-                    if (isset($knowns[$known_key])) {
-                        $value->$key = $knowns[$known_key];
-                        continue;
-                    }
 
+                if ($key == "manufacturers_id" || $key == 'bios_manufacturers_id') {
+                    $manufacturer = new Manufacturer();
+                    unset($this->raw_links[$known_key]);
+                    $val  = $manufacturer->processName($val);
+                    $known_key = md5($key . $val);
+                    //keep raw values...
+                    $this->raw_links[$known_key] = $val;
+                    if ($key == 'bios_manufacturers_id') {
+                        $foreignkey_itemtype[$key] = getItemtypeForForeignKeyField('manufacturers_id');
+                    }
+                }
+
+                if (!isset($this->known_links[$known_key])) {
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
-                        $value->$key = Dropdown::importExternal('Location', addslashes($value->$key), $entities_id);
+                        $this->known_links[$known_key] = Dropdown::importExternal('Location', $value->$key, $entities_id);
                     } else if (preg_match('/^.+models_id/', $key)) {
-                       // models that need manufacturer relation for dictionary import
-                       // see CommonDCModelDropdown::$additional_fields_for_dictionnary
-                        $value->$key = Dropdown::importExternal(
+                        // models that need manufacturer relation for dictionary import
+                        // see CommonDCModelDropdown::$additional_fields_for_dictionnary
+                        $this->known_links[$known_key] = Dropdown::importExternal(
                             getItemtypeForForeignKeyField($key),
-                            addslashes($value->$key),
+                            $value->$key,
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
-                    } else if (isset($this->foreignkey_itemtype[$key])) {
-                        $value->$key = Dropdown::importExternal($this->foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
-                    } else if (isForeignKeyField($key) && $key != "users_id") {
-                        $this->foreignkey_itemtype[$key] = getItemtypeForForeignKeyField($key);
-                        $value->$key = Dropdown::importExternal($this->foreignkey_itemtype[$key], addslashes($value->$key), $entities_id);
+                    } else if (isset($foreignkey_itemtype[$key])) {
+                        $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
+                    } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                        $foreignkey_itemtype[$key] = $itemtype;
+
+                        $this->known_links[$known_key] = Dropdown::importExternal(
+                            $foreignkey_itemtype[$key],
+                            $value->$key,
+                            $entities_id
+                        );
 
                         if (
                             $key == 'operatingsystemkernelversions_id'
                             && property_exists($value, 'operatingsystemkernels_id')
-                            && (int)$value->$key > 0
+                            && (int)$this->known_links[$known_key] > 0
                         ) {
                             $kversion = new OperatingSystemKernelVersion();
-                            $kversion->getFromDB($value->$key);
-                            if ($kversion->fields['operatingsystemkernels_id'] != $value->operatingsystemkernels_id) {
+                            $kversion->getFromDB($this->known_links[$known_key]);
+                            $oskernels_id = $this->known_links[md5('operatingsystemkernels_id' . $value->operatingsystemkernels_id)];
+                            if ($kversion->fields['operatingsystemkernels_id'] != $oskernels_id) {
                                 $kversion->update([
                                     'id'                          => $kversion->getID(),
-                                    'operatingsystemkernels_id'   => $value->operatingsystemkernels_id
-                                ], $this->withHistory());
+                                    'operatingsystemkernels_id'   => $oskernels_id
+                                ]);
                             }
                         }
                     }
-                    $knowns[$known_key] = $value->$key;
                 }
             }
         }
+
         $this->links_handled = true;
         return $this->data;
     }
@@ -297,21 +337,6 @@ abstract class InventoryAsset
     }
 
     /**
-     * Is history enabled on this asset?
-     *
-     * @param boolean|null $bool To change with_history
-     *
-     * @return boolean
-     */
-    public function withHistory($bool = null): bool
-    {
-        if ($bool !== null) {
-            $this->with_history = (bool)$bool;
-        }
-        return $this->with_history;
-    }
-
-    /**
      * Set item and itemtype
      *
      * @param CommonDBTM $item Item instance
@@ -361,18 +386,60 @@ abstract class InventoryAsset
         $citem = new \Computer_Item();
         $citem->getFromDBByCrit([
             'itemtype' => $input['itemtype'],
-            'items_id' => $input['items_id']
+            'items_id' => $input['items_id'],
+            'is_deleted' => 0 //do not take care of deleted computers_items (e.g. the monitor / Printer / Peripheral is connected to another computer)
         ]);
 
         $itemtype = $input['itemtype'];
         $item = new $itemtype();
         $item->getFromDb($input['items_id']);
 
-        if (!($item->fields['is_global'] ?? false)) {
+        //check for global management type configuration
+        if (!$item->isGlobal()) {
             if (isset($citem->fields['id'])) {
-                $citem->delete(['id' => $citem->fields['id']], true, $this->withHistory());
+                $citem->delete(['id' => $citem->fields['id']], true);
             }
-            $citem->add($input, [], $this->withHistory());
         }
+        $citem->add($input, [], false);
     }
+
+    protected function setNew(): self
+    {
+        $this->is_new = true;
+        $this->with_history = false;//do not handle history on main item first import
+        return $this;
+    }
+
+    public function isNew(): bool
+    {
+        return $this->is_new;
+    }
+
+    protected function handleInput(\stdClass $value, ?CommonDBTM $item = null): array
+    {
+        $input = [];
+        $locks = [];
+
+        if ($item !== null) {
+            $lockeds = new \Lockedfield();
+            $locks = $lockeds->getLockedNames($item->getType(), $item->fields['id'] ?? 0);
+        }
+
+        foreach ($value as $key => $val) {
+            if (is_object($val) || is_array($val)) {
+                continue;
+            }
+            $known_key = md5($key . $val);
+            if (in_array($key, $locks)) {
+                $input[$key] = $this->raw_links[$known_key];
+            } elseif (isset($this->known_links[$known_key])) {
+                $input[$key] = $this->known_links[$known_key];
+            } else {
+                $input[$key] = $val;
+            }
+        }
+        return $input;
+    }
+
+    abstract public function getItemtype(): string;
 }

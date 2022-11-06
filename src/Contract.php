@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -71,12 +73,14 @@ class Contract extends CommonDBTM
     public function post_getEmpty()
     {
 
-        $this->fields["alert"] = Entity::getUsedConfig(
-            "use_contracts_alert",
-            $this->fields["entities_id"],
-            "default_contract_alert",
-            0
-        );
+        if (isset($_SESSION['glpiactive_entity'])) {
+            $this->fields["alert"] = Entity::getUsedConfig(
+                "use_contracts_alert",
+                $_SESSION['glpiactive_entity'],
+                "default_contract_alert",
+                0
+            );
+        }
         $this->fields["notice"] = 0;
     }
 
@@ -403,6 +407,8 @@ class Contract extends CommonDBTM
             $prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$prefix . 'add']    = _x('button', 'Add an item');
             $actions[$prefix . 'remove'] = _x('button', 'Remove an item');
+            $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
+               = _x('button', 'Add a supplier');
         }
 
         return $actions;
@@ -845,7 +851,7 @@ class Contract extends CommonDBTM
      *
      * @param bool $display if false, return html
      *
-     * @return void
+     * @return string|void Return generated content if `display` parameter is true.
      **/
     public static function showCentral(bool $display = true)
     {
@@ -1762,7 +1768,7 @@ class Contract extends CommonDBTM
             $start_date = Html::convDate($item->fields['begin_date']);
             echo Search::showItem($p['output_type'], $start_date, $item_num, $p['row_num'], $align);
 
-            $end_date = Html::convDate(Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true));
+            $end_date = Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true);
             echo Search::showItem($p['output_type'], $end_date, $item_num, $p['row_num'], $align);
 
             $comment = $item->fields['comment'];

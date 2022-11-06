@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -37,6 +39,7 @@ use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Application\ErrorHandler;
+use Toolbox;
 
 /**
  * Handle agent requests
@@ -144,15 +147,15 @@ abstract class AbstractRequest
     /**
      * Guess import mode
      *
-     * @return boolean
+     * @return void
      */
-    private function guessMode($contents)
+    private function guessMode($contents): void
     {
-       // In the case handleContentType() didn't set mode, just check $contents first char
+        // In the case handleContentType() didn't set mode, just check $contents first char
         if ($contents[0] === '{') {
             $this->setMode(self::JSON_MODE);
         } else {
-           //defaults to XML; whose validity is checked later.
+            //defaults to XML; whose validity is checked later.
             $this->setMode(self::XML_MODE);
         }
     }
@@ -188,6 +191,21 @@ abstract class AbstractRequest
      */
     public function handleRequest($data): bool
     {
+        // Some network inventories may request may contains lots of information.
+        // e.g. a Huawei S5720-52X-LI-AC inventory file may weigh 20MB,
+        // and GLPI will consume about 500MB of memory to handle it,
+        // and may take up to 2 minutes on server that has low performances.
+        //
+        // Setting limits to 1GB / 5 minutes should permit to handle any inventories request.
+        $memory_limit       = (int)Toolbox::getMemoryLimit();
+        $max_execution_time = ini_get('max_execution_time');
+        if ($memory_limit > 0 && $memory_limit < (1024 * 1024 * 1024)) {
+            ini_set('memory_limit', '1024M');
+        }
+        if ($max_execution_time > 0 && $max_execution_time < 300) {
+            ini_set('max_execution_time', '300');
+        }
+
         if ($this->compression !== self::COMPRESS_NONE) {
             switch ($this->compression) {
                 case self::COMPRESS_ZLIB:
@@ -197,7 +215,14 @@ abstract class AbstractRequest
                     $data = gzdecode($data);
                     break;
                 case self::COMPRESS_BR:
-                    $data = brotli_uncompress($data);
+                    if (!function_exists('brotli_uncompress')) {
+                        trigger_error(
+                            'Brotli PHP extension is required to handle Brotli compression algorithm in inventory feature.',
+                            E_USER_WARNING
+                        );
+                    } else {
+                        $data = brotli_uncompress($data);
+                    }
                     break;
                 case self::COMPRESS_DEFLATE:
                     $data = gzinflate($data);
@@ -218,6 +243,8 @@ abstract class AbstractRequest
             case self::JSON_MODE:
                 return $this->handleJSONRequest($data);
         }
+
+        return false;
     }
 
     /**
@@ -251,7 +278,7 @@ abstract class AbstractRequest
         libxml_use_internal_errors(true);
 
         if (mb_detect_encoding($data, 'UTF-8', true) === false) {
-            $data = utf8_encode($data);
+            $data = iconv('ISO-8859-1', 'UTF-8', $data);
         }
         $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
         if (!$xml) {
@@ -269,7 +296,7 @@ abstract class AbstractRequest
             return false;
         }
         $this->deviceid = (string)$xml->DEVICEID;
-       //query is not mandatory. Defaults to inventory
+        //query is not mandatory. Defaults to inventory
         $action = self::INVENT_QUERY;
         if (property_exists($xml, 'QUERY')) {
             $action = strtolower((string)$xml->QUERY);
@@ -287,14 +314,14 @@ abstract class AbstractRequest
      */
     public function handleJSONRequest($data): bool
     {
-        $jdata = json_decode($data);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (!\Toolbox::isJSON($data)) {
             $this->addError('JSON not well formed!', 400);
             return false;
         }
 
-        $this->deviceid = $jdata->deviceid;
+        $jdata = json_decode($data);
+
+        $this->deviceid = $jdata->deviceid ?? null;
         $action = self::INVENT_ACTION;
         if (property_exists($jdata, 'action')) {
             $action = $jdata->action;
@@ -302,7 +329,7 @@ abstract class AbstractRequest
             $action = $jdata->query;
         }
 
-        return $this->handleAction($action, $data);
+        return $this->handleAction($action, $jdata);
     }
 
     /**
@@ -333,11 +360,19 @@ abstract class AbstractRequest
             if ($this->mode === self::JSON_MODE) {
                 $this->addToResponse([
                     'status' => 'error',
-                    'message' => $message,
+                    'message' => \Html::resume_text($message, 250),
                     'expiration' => self::DEFAULT_FREQUENCY
                 ]);
             } else {
-                $this->addToResponse(['ERROR' => $message]);
+                $message = \Html::resume_text($message, 250);
+
+                $this->addToResponse([
+                    'ERROR' => [
+                        'content'    => $message,
+                        'attributes' => [],
+                        'type'       => XML_CDATA_SECTION_NODE,
+                    ]
+                ]);
             }
         }
     }
@@ -388,16 +423,25 @@ abstract class AbstractRequest
                 $this->addNode($node, $sname, $scontent);
             }
         } else {
+            $type = $content['type'] ?? null;
             $attributes = [];
             if (is_array($content) && isset($content['content']) && isset($content['attributes'])) {
                 $attributes = $content['attributes'];
                 $content = $content['content'];
             }
 
-            $new_node = $this->response->createElement(
-                $name,
-                $content
-            );
+            if ($type == XML_CDATA_SECTION_NODE) {
+                // Handle CDATA sections
+                $new_node = $this->response->createElement($name);
+                $cdata = $this->response->createCDATASection($content);
+                $new_node->appendChild($cdata);
+            } else {
+                // Normal sections
+                $new_node = $this->response->createElement(
+                    $name,
+                    $content
+                );
+            }
 
             if (count($attributes)) {
                 foreach ($attributes as $aname => $avalue) {
@@ -462,7 +506,7 @@ abstract class AbstractRequest
 
             switch ($this->mode) {
                 case self::XML_MODE:
-                    $data = $this->response->saveXML();
+                    $data = trim($this->response->saveXML());
                     break;
                 case self::JSON_MODE:
                     $data = json_encode($this->response);
@@ -484,7 +528,14 @@ abstract class AbstractRequest
                         $data = gzencode($data);
                         break;
                     case self::COMPRESS_BR:
-                        $data = brotli_compress($data);
+                        if (!function_exists('brotli_compress')) {
+                            trigger_error(
+                                'Brotli PHP extension is required to handle Brotli compression algorithm in inventory feature.',
+                                E_USER_WARNING
+                            );
+                        } else {
+                            $data = brotli_compress($data);
+                        }
                         break;
                     case self::COMPRESS_DEFLATE:
                         $data = gzdeflate($data);

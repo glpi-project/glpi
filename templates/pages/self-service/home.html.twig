@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,18 +15,19 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
@@ -52,30 +54,21 @@
    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
 </table>
 
+{% set optional_grid_item_keys = [
+   'survey_list', 'reminder_list', 'rss_feed', 'kb_popular', 'kb_recent', 'kb_lastupdate'
+] %}
 {% set grid_items = [
-   ticket_summary,
-   '<div class="card">' ~ survey_list ~ '</div>',
-   '<div class="card">' ~ reminder_list ~ '</div>',
-   '<div class="card">' ~ rss_feed ~ '</div>',
+   ticket_summary
 ] %}
 
-{% if kb_popular|length %}
-   {% set grid_items = grid_items|merge([
-      '<div class="card">' ~ kb_popular ~ '</div>'
-   ]) %}
-{% endif %}
-
-{% if kb_recent|length %}
-   {% set grid_items = grid_items|merge([
-      '<div class="card">' ~ kb_recent ~ '</div>'
-   ]) %}
-{% endif %}
-
-{% if kb_lastupdate|length %}
-   {% set grid_items = grid_items|merge([
-      '<div class="card">' ~ kb_lastupdate ~ '</div>'
-   ]) %}
-{% endif %}
+{% for optional_grid_item_key in optional_grid_item_keys %}
+   {% set item_content = _context[optional_grid_item_key] %}
+   {% if item_content is not empty %}
+      {% set grid_items = grid_items|merge([
+         '<div class="card">' ~ item_content ~ '</div>'
+      ]) %}
+   {% endif %}
+{% endfor %}
 
 {{ include('components/masonry_grid.html.twig', {
    'grid_items': grid_items,

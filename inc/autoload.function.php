@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -122,15 +124,23 @@ function __($str, $domain = 'glpi')
 {
     global $TRANSLATE;
 
-    if (is_null($TRANSLATE)) { // before login
-        return $str;
+    $trans = null;
+
+    if ($TRANSLATE !== null) {
+        try {
+            $trans = $TRANSLATE->translate($str, $domain);
+
+            if (is_array($trans)) {
+                // Wrong call when plural defined
+                $trans = $trans[0];
+            }
+        } catch (\Throwable $e) {
+            // Error may happen when overrided translation files does not use same plural rules as GLPI.
+            // Silently fail to not flood error log.
+        }
     }
-    $trans = $TRANSLATE->translate($str, $domain);
-   // Wrong call when plural defined
-    if (is_array($trans)) {
-        return $trans[0];
-    }
-    return  $trans;
+
+    return $trans ?? $str;
 }
 
 
@@ -183,15 +193,18 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
 {
     global $TRANSLATE;
 
-    if (is_null($TRANSLATE)) { // before login
-        if ($nb == 0 || $nb > 1) {
-            return $plural;
-        } else {
-            return $sing;
+    $trans = null;
+
+    if ($TRANSLATE !== null) {
+        try {
+            $trans = $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
+        } catch (\Throwable $e) {
+            // Error may happen when overrided translation files does not use same plural rules as GLPI.
+            // Silently fail to not flood error log.
         }
     }
 
-    return $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
+    return $trans ?? (($nb == 0 || $nb > 1) ? $plural : $sing);
 }
 
 
@@ -303,27 +316,39 @@ function glpi_autoload($classname)
 
     $plug = isPluginItemType($classname);
     if (!$plug) {
+        // PSR-4 styled autoloading for classes without namespace
+        $path = sprintf('%s/src/%s.php', GLPI_ROOT, $classname);
+        if (strpos($classname, NS_GLPI) !== 0 && file_exists($path)) {
+            include_once($path);
+        }
+        return;
+    }
+
+    $plugin_name  = strtolower($plug['plugin']);
+    $plugin_class = $plug['class'];
+
+    if (!Plugin::isPluginLoaded($plugin_name)) {
         return false;
     }
 
-    $plugname = strtolower($plug['plugin']);
-    $dir      = null;
-    $item     = str_replace('\\', '/', strtolower($plug['class']));
-
-    if (!Plugin::isPluginLoaded($plugname)) {
-        return false;
-    }
-
+    $plugin_path = null;
     foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
-        $dir_to_check = "{$plugins_dir}/$plugname/inc/";
+        $dir_to_check = sprintf('%s/%s', $plugins_dir, $plugin_name);
         if (is_dir($dir_to_check)) {
-            $dir = $dir_to_check;
+            $plugin_path = $dir_to_check;
             break;
         }
     }
 
-    if (file_exists("$dir$item.class.php")) {
-        include_once("$dir$item.class.php");
+    // Legacy class path, e.g. plugins/myplugin/foo.class.php
+    $legacy_path      = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
+    // PSR-4 styled path for class without namespace, e.g. plugins/myplugin/MyPluginFoo.php
+    $psr4_styled_path = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
+    if (file_exists($legacy_path)) {
+        include_once($legacy_path);
+    } else if (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_styled_path)) {
+        // PSR-4 styled autoloading for classes without namespace
+        include_once($psr4_styled_path);
     }
 }
 

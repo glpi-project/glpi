@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,20 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 /**
  * @since 9.1
@@ -85,6 +89,7 @@ class ComputerAntivirus extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -151,7 +156,8 @@ class ComputerAntivirus extends CommonDBChild
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'jointype'           => 'child'
-            ]
+            ],
+            'searchtype'         => ['contains'],
         ];
 
         $tab[] = [
@@ -250,58 +256,13 @@ class ComputerAntivirus extends CommonDBChild
             $comp->getFromDB($options['computers_id']);
         }
 
-        $this->showFormHeader($options);
-
-        if ($this->isNewID($ID)) {
-            echo "<input type='hidden' name='computers_id' value='" . $options['computers_id'] . "'>";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . Computer::getTypeName(1) . "</td>";
-        echo "<td>" . $comp->getLink() . "</td>";
-        $this->autoinventoryInformation();
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-        echo "<td>" . __('Active') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . Manufacturer::getTypeName(1) . "</td>";
-        echo "<td>";
-        Dropdown::show('Manufacturer', ['value' => $this->fields["manufacturers_id"]]);
-        echo "</td>";
-        echo "<td>" . __('Up to date') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_uptodate', $this->fields['is_uptodate']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Antivirus version') . "</td>";
-        echo "<td>";
-        echo Html::input('antivirus_version', ['value' => $this->fields['antivirus_version']]);
-        echo "</td>";
-        echo "<td>" . __('Signature database version') . "</td>";
-        echo "<td>";
-        echo Html::input('signature_version', ['value' => $this->fields['signature_version']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Expiration date') . "</td>";
-        echo "<td>";
-        Html::showDateField("date_expiration", ['value' => $this->fields['date_expiration']]);
-        echo "</td>";
-        echo "<td colspan='2'></td>";
-        echo "</tr>";
-
         $options['canedit'] = Session::haveRight("computer", UPDATE);
-        $this->showFormButtons($options);
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/computerantivirus.html.twig', [
+            'item'                      => $this,
+            'computer'                => $comp,
+            'params'                    => $options,
+        ]);
 
         return true;
     }
@@ -416,9 +377,19 @@ class ComputerAntivirus extends CommonDBChild
     {
         $input = parent::prepareInputForAdd($input);
 
-        // Clear date if empty to avoid SQL error
-        if (empty($input['date_expiration'])) {
-            unset($input['date_expiration']);
+        if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
+            $input['date_expiration'] = 'NULL';
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if (isset($input['date_expiration']) && empty($input['date_expiration'])) {
+            $input['date_expiration'] = 'NULL';
         }
 
         return $input;

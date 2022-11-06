@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -63,9 +65,6 @@ class Knowbase extends CommonGLPI
         if ($item->getType() == __CLASS__) {
             $tabs[1] = _x('button', 'Search');
             $tabs[2] = _x('button', 'Browse');
-            if (KnowbaseItem::canUpdate()) {
-                $tabs[3] = _x('button', 'Manage');
-            }
 
             return $tabs;
         }
@@ -83,11 +82,7 @@ class Knowbase extends CommonGLPI
                     break;
 
                 case 2:
-                    $item->showBrowseView();
-                    break;
-
-                case 3:
-                    $item->showManageView();
+                    Search::show('KnowbaseItem');
                     break;
             }
         }
@@ -141,9 +136,13 @@ class Knowbase extends CommonGLPI
 
     /**
      * Show the knowbase browse view
+     *
+     * @deprecated 10.1.0
      **/
     public static function showBrowseView()
     {
+        Toolbox::deprecated();
+
         global $CFG_GLPI;
 
         $rand        = mt_rand();
@@ -225,9 +224,12 @@ JAVASCRIPT;
      * @since 9.4
      *
      * @return array
+     *
+     * @deprecated 10.1.0
      */
     public static function getTreeCategoryList()
     {
+        Toolbox::deprecated();
 
         global $DB;
 
@@ -251,7 +253,7 @@ JAVASCRIPT;
                     ],
                     'WHERE'  => [
                         KnowbaseItem_KnowbaseItemCategory::getTableField($cat_fk) => new QueryExpression(
-                            DB::quoteName(KnowbaseItemCategory::getTableField('id'))
+                            $DB->quoteName(KnowbaseItemCategory::getTableField('id'))
                         ),
                     ]
                 ],
@@ -383,9 +385,12 @@ JAVASCRIPT;
 
     /**
      * Show the knowbase Manage view
+     *
+     * @deprecated 10.1.0
      **/
     public static function showManageView()
     {
+        Toolbox::deprecated();
 
         if (isset($_GET["unpublished"])) {
             $_SESSION['kbunpublished'] = $_GET["unpublished"];

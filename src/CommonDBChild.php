@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -64,14 +66,16 @@ abstract class CommonDBChild extends CommonDBConnexity
      **/
     public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
     {
+        $table = static::getTable();
+
         $criteria = [
             'SELECT' => [
                 static::getIndexName(),
                 static::$items_id . ' AS items_id'
             ],
-            'FROM'   => static::getTable(),
+            'FROM'   => $table,
             'WHERE'  => [
-                static::$items_id  => $items_id
+                $table . '.' . static::$items_id  => $items_id
             ]
         ];
 
@@ -79,7 +83,7 @@ abstract class CommonDBChild extends CommonDBConnexity
         $request = false;
         if (preg_match('/^itemtype/', static::$itemtype)) {
             $criteria['SELECT'][] = static::$itemtype . ' AS itemtype';
-            $criteria['WHERE'][static::$itemtype] = $itemtype;
+            $criteria['WHERE'][$table . '.' . static::$itemtype] = $itemtype;
             $request = true;
         } else {
             $criteria['SELECT'][] = new \QueryExpression("'" . static::$itemtype . "' AS itemtype");
@@ -263,8 +267,9 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @param array  $recursiveItems    items of the current elements (see recursivelyGetItems())
      * @param string $elementToDisplay  what to display : 'Type', 'Name', 'Link'
+     * @param bool $display  display html or return html
      **/
-    public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay)
+    public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, bool $display = true)
     {
 
         if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
@@ -275,7 +280,11 @@ abstract class CommonDBChild extends CommonDBConnexity
         switch ($elementToDisplay) {
             case 'Type':
                 $masterItem = $recursiveItems[count($recursiveItems) - 1];
-                echo $masterItem->getTypeName(1);
+                if ($display) {
+                    echo $masterItem->getTypeName(1);
+                } else {
+                    return $masterItem->getTypeName(1);
+                }
                 break;
 
             case 'Name':
@@ -288,7 +297,11 @@ abstract class CommonDBChild extends CommonDBConnexity
                         $items_elements[] = $item->getLink();
                     }
                 }
-                echo implode(' &lt; ', $items_elements);
+                if ($display) {
+                    echo implode(' &lt; ', $items_elements);
+                } else {
+                    return implode(' &lt; ', $items_elements);
+                }
                 break;
         }
     }
@@ -556,6 +569,9 @@ abstract class CommonDBChild extends CommonDBConnexity
                 && $item->dohistory
             ) {
                 foreach (array_keys($oldvalues) as $field) {
+                    if (in_array($field, $this->getNonLoggedFields())) {
+                        continue;
+                    }
                     $changes = $this->getHistoryChangeWhenUpdateField($field);
                     if ((!is_array($changes)) || (count($changes) != 3)) {
                         continue;
@@ -777,7 +793,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function showChildForItemForm($canedit, $field_name, $id)
+    public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
 
         if ($this->isNewID($this->getID())) {
@@ -787,9 +803,15 @@ abstract class CommonDBChild extends CommonDBConnexity
         }
         $field_name = $field_name . "[$id]";
         if ($canedit) {
-            echo "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
+            $out = "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
         } else {
-            echo "<input type='hidden' name='$field_name' value='$value'>$value";
+            $out = "<input type='hidden' name='$field_name' value='$value'>$value";
+        }
+
+        if ($display) {
+            echo $out;
+        } else {
+            return $out;
         }
     }
 
@@ -877,12 +899,12 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void|boolean (display) Returns false if there is a rights error.
      **/
-    public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null)
+    public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
     {
         global $DB;
 
         $items_id = $item->getID();
-
+        $result = '';
         if (is_null($canedit)) {
             if ($item->isNewItem()) {
                 if (!$item->canCreate()) {
@@ -929,21 +951,27 @@ abstract class CommonDBChild extends CommonDBConnexity
             $current_item->fields = $data;
 
             if ($count) {
-                echo '<br>';
+                $result .= '<br>';
             }
             $count++;
 
-            $current_item->showChildForItemForm($canedit, $field_name, $current_item->getID());
+            $result .= $current_item->showChildForItemForm($canedit, $field_name, $current_item->getID(), false);
         }
 
         if ($canedit) {
-            echo "<div id='$div_id'>";
+            $result .= "<div id='$div_id'>";
            // No Child display field
             if ($count == 0) {
                 $current_item->getEmpty();
-                $current_item->showChildForItemForm($canedit, $field_name, -1);
+                $result .= $current_item->showChildForItemForm($canedit, $field_name, -1, false);
             }
-            echo "</div>";
+            $result .= "</div>";
+        }
+
+        if ($display) {
+            echo $result;
+        } else {
+            return $result;
         }
     }
 

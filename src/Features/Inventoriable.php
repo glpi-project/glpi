@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,24 +17,26 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\Features;
 
 use Agent;
+use AutoUpdateSystem;
 use CommonDBTM;
 use Computer;
 use Computer_Item;
@@ -70,11 +73,18 @@ trait Inventoriable
      */
     public function getInventoryFileName(bool $prepend_dir_path = true): ?string
     {
-        $source = new \AutoUpdateSystem();
-        $source->getFromDBByCrit(['name' => 'GLPI Native Inventory']);
 
-        if (!$this->isDynamic() || !isset($source->fields['id']) || $this->fields['autoupdatesystems_id'] != $source->fields['id']) {
-            return null;
+        if ($this->isField('autoupdatesystems_id')) {
+            $source = new \AutoUpdateSystem();
+            $source->getFromDBByCrit(['name' => AutoUpdateSystem::NATIVE_INVENTORY]);
+
+            if (
+                !$this->isDynamic()
+                || !isset($source->fields['id'])
+                || $this->fields['autoupdatesystems_id'] != $source->fields['id']
+            ) {
+                return null;
+            }
         }
 
         $inventory_dir_path = GLPI_INVENTORY_DIR . '/';
@@ -87,7 +97,6 @@ trait Inventoriable
         if (!file_exists($inventory_dir_path . $filename)) {
             $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'json');
             if (!file_exists($inventory_dir_path . $filename)) {
-                trigger_error('Inventory file missing: ' . $filename, E_USER_WARNING);
                 return null;
             }
         }
@@ -160,7 +169,7 @@ trait Inventoriable
        // Display auto inventory information
         if (
             !empty($this->fields['id'])
-            && $this->fields["is_dynamic"]
+            && $this->maybeDynamic() && $this->fields["is_dynamic"]
         ) {
             echo "<tr class='tab_bg_1'><td colspan='4'>";
             Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);

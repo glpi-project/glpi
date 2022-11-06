@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -362,8 +364,8 @@ class Cartridge extends CommonDBRelation
 
                  return true;
             }
-            return false;
         }
+        return false;
     }
 
 
@@ -650,7 +652,7 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $it = $DB->request([
-            'COUNT'  => 'stock_target',
+            'SELECT'  => ['stock_target'],
             'FROM'   => CartridgeItem::getTable(),
             'WHERE'  => [
                 'id'  => $tID
@@ -673,14 +675,14 @@ class Cartridge extends CommonDBRelation
         global $DB;
 
         $it = $DB->request([
-            'COUNT'  => 'alarm_threshold',
+            'SELECT'  => ['alarm_threshold'],
             'FROM'   => CartridgeItem::getTable(),
             'WHERE'  => [
                 'id'  => $tID
             ]
         ]);
         if ($it->count()) {
-            return $it->current()['stock_target'];
+            return $it->current()['alarm_threshold'];
         }
         return 0;
     }
@@ -722,6 +724,12 @@ class Cartridge extends CommonDBRelation
         if (!$cartitem->can($tID, READ)) {
             return false;
         }
+        if (isset($_GET["start"])) {
+            $start = $_GET["start"];
+        } else {
+            $start = 0;
+        }
+
         $canedit = $cartitem->can($tID, UPDATE);
 
         $where = ['glpi_cartridges.cartridgeitems_id' => $tID];
@@ -747,6 +755,12 @@ class Cartridge extends CommonDBRelation
         $pages_printed    = 0;
         $nb_pages_printed = 0;
 
+        $total_number = countElementsInTable(
+            self::getTable(),
+            [
+                'WHERE'     => $where
+            ]
+        );
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_cartridges.*',
@@ -764,12 +778,16 @@ class Cartridge extends CommonDBRelation
                 ]
             ],
             'WHERE'     => $where,
-            'ORDER'     => $order
+            'ORDER'     => $order,
+            'START'     => (int) $start,
+            'LIMIT'     => (int) $_SESSION['glpilist_limit']
         ]);
 
         $number = count($iterator);
 
         echo "<div class='spaced'>";
+        // Display the pager
+        Html::printAjaxPager(Consumable::getTypeName(Session::getPluralNumber()), $start, $total_number);
         if ($canedit && $number) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
@@ -1378,14 +1396,15 @@ class Cartridge extends CommonDBRelation
                 $info->showForPrinter($item);
                 self::showForPrinter($item);
                 self::showForPrinter($item, 1);
-                return true;
+                break;
 
             case 'CartridgeItem':
                 self::showAddForm($item);
                 self::showForCartridgeItem($item);
                 self::showForCartridgeItem($item, 1);
-                return true;
+                break;
         }
+        return true;
     }
 
     public function getRights($interface = 'central')

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -642,7 +644,7 @@ JAVASCRIPT;
                     'glpi_softwarelicenses.softwares_id AS softid',
                     "{$itemtable}.name AS itemname",
                     "{$itemtable}.id AS iID",
-                    new QueryExpression($DB->quoteValue($itemtype) . " AS " . $DB::quoteName('item_type')),
+                    new QueryExpression($DB->quoteValue($itemtype) . " AS " . $DB->quoteName('item_type')),
                 ],
                 'FROM'   => $item_license_table,
                 'INNER JOIN' => [
@@ -709,12 +711,14 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".userfirstname")
                 );
             }
-            if ($DB->fieldExists($itemtable, 'entities_id')) {
-                $query['SELECT'][] = 'glpi_entities.completename AS entity';
-                $query['LEFT JOIN']['glpi_entities'] = [
+            $entity_fkey  = Entity::getForeignKeyField();
+            $entity_table = Entity::getTable();
+            if ($DB->fieldExists($itemtable, $entity_fkey)) {
+                $query['SELECT'][] = sprintf('%s.completename AS entity', $entity_table);
+                $query['LEFT JOIN'][$entity_table] = [
                     'FKEY'   => [
-                        $itemtable     => 'entities_id',
-                        'glpi_users'   => 'id'
+                        $itemtable    => $entity_fkey,
+                        $entity_table => 'id'
                     ]
                 ];
                 $query['WHERE'] += getEntitiesRestrictCriteria($itemtable, '', '', true);
@@ -723,12 +727,14 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName('entity')
                 );
             }
-            if ($DB->fieldExists($itemtable, 'locations_id')) {
-                $query['SELECT'][] = 'glpi_locations.completename AS location';
-                $query['LEFT JOIN']['glpi_locations'] = [
+            $location_fkey  = Location::getForeignKeyField();
+            $location_table = Location::getTable();
+            if ($DB->fieldExists($itemtable, $location_fkey)) {
+                $query['SELECT'][] = sprintf('%s.completename AS location', $location_table);
+                $query['LEFT JOIN'][$location_table] = [
                     'FKEY'   => [
-                        $itemtable     => 'locations_id',
-                        'glpi_users'   => 'id'
+                        $itemtable      => $location_fkey,
+                        $location_table => 'id'
                     ]
                 ];
             } else {
@@ -736,12 +742,14 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName('location')
                 );
             }
-            if ($DB->fieldExists($itemtable, 'states_id')) {
-                $query['SELECT'][] = 'glpi_states.name AS state';
-                $query['LEFT JOIN']['glpi_states'] = [
+            $state_fkey  = State::getForeignKeyField();
+            $state_table = State::getTable();
+            if ($DB->fieldExists($itemtable, $state_fkey)) {
+                $query['SELECT'][] = sprintf('%s.name AS state', $state_table);
+                $query['LEFT JOIN'][$state_table] = [
                     'FKEY'   => [
-                        $itemtable     => 'states_id',
-                        'glpi_users'   => 'id'
+                        $itemtable   => $state_fkey,
+                        $state_table => 'id'
                     ]
                 ];
             } else {
@@ -749,12 +757,14 @@ JAVASCRIPT;
                     $DB->quoteValue('') . " AS " . $DB->quoteName('state')
                 );
             }
-            if ($DB->fieldExists($itemtable, 'groups_id')) {
-                $query['SELECT'][] = 'glpi_groups.name AS groupe';
-                $query['LEFT JOIN']['glpi_groups'] = [
+            $group_fkey  = State::getForeignKeyField();
+            $group_table = State::getTable();
+            if ($DB->fieldExists($itemtable, $group_fkey)) {
+                $query['SELECT'][] = sprintf('%s.name AS groupe', $group_table);
+                $query['LEFT JOIN'][$group_table] = [
                     'FKEY'   => [
-                        $itemtable     => 'groups_id',
-                        'glpi_users'   => 'id'
+                        $itemtable    => $group_fkey,
+                        $group_table  => 'id'
                     ]
                 ];
             } else {
@@ -940,7 +950,7 @@ JAVASCRIPT;
      * @param integer $items_id         ID of the item
      * @param integer $softwareversions_id ID of the version
      *
-     * @return void
+     * @return array
      **/
     public static function getLicenseForInstallation($itemtype, $items_id, $softwareversions_id)
     {
@@ -1036,7 +1046,7 @@ JAVASCRIPT;
      *
      * @param integer $softwares_id Software ID
      *
-     * @return void
+     * @return int
      **/
     public static function countLicenses($softwares_id)
     {

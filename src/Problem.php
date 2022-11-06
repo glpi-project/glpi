@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -213,8 +215,6 @@ class Problem extends CommonITILObject
         if ($this->hasImpactTab()) {
             $this->addStandardTab('Impact', $ong, $options);
         }
-        $this->addStandardTab('Change_Problem', $ong, $options);
-        $this->addStandardTab('Problem_Ticket', $ong, $options);
         $this->addStandardTab('Notepad', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
@@ -232,13 +232,14 @@ class Problem extends CommonITILObject
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Change_Problem::class,
-            // Done by parent: Group_Problem::class,
+                // Done by parent: Group_Problem::class,
                 Item_Problem::class,
-            // Done by parent: ITILSolution::class,
-            // Done by parent: Problem_Supplier::class,
+                // Done by parent: ITILSolution::class,
+                // Done by parent: Problem_Supplier::class,
                 Problem_Ticket::class,
-            // Done by parent: Problem_User::class,
+                // Done by parent: Problem_User::class,
                 ProblemCost::class,
+                Problem_Problem::class,
             ]
         );
 
@@ -310,9 +311,17 @@ class Problem extends CommonITILObject
                     $input = $this->setTechAndGroupFromItilCategory($input);
                     break;
             }
-
-            $input = $this->assign($input);
         }
+
+        return $input;
+    }
+
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->transformActorsInput($input);
+
+        $input = parent::prepareInputForUpdate($input);
 
         return $input;
     }
@@ -320,7 +329,7 @@ class Problem extends CommonITILObject
 
     public function post_addItem()
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         parent::post_addItem();
 
@@ -360,20 +369,7 @@ class Problem extends CommonITILObject
             }
         }
 
-       // Processing Email
-        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-           // Clean reload of the problem
-            $this->getFromDB($this->fields['id']);
-
-            $type = "new";
-            if (
-                isset($this->fields["status"])
-                && in_array($this->input["status"], $this->getSolvedStatusArray())
-            ) {
-                $type = "solved";
-            }
-            NotificationEvent::raiseEvent($type, $this);
-        }
+        $this->handleNewItemNotifications();
 
         if (
             isset($this->input['_from_items_id'])
@@ -387,8 +383,6 @@ class Problem extends CommonITILObject
                 '_disablenotif' => true
             ]);
         }
-
-        $this->handleItemsIdInput();
     }
 
     /**
@@ -558,6 +552,7 @@ class Problem extends CommonITILObject
             'name'               => __('Problems')
         ];
 
+        //FIXME: Fix the search options for linked ITIL objects
         $tab[] = [
             'id'                 => '200',
             'table'              => 'glpi_problems_tickets',
@@ -647,56 +642,6 @@ class Problem extends CommonITILObject
         ];
 
         return $tab;
-    }
-
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
-    {
-
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-
-        switch ($field) {
-            case 'status':
-                return Problem::getStatus($values[$field]);
-        }
-        return parent::getSpecificValueToDisplay($field, $values, $options);
-    }
-
-
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param $options   array
-     *
-     * @return string
-     **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
-    {
-
-        if (!is_array($values)) {
-            $values = [$field => $values];
-        }
-        $options['display'] = false;
-
-        switch ($field) {
-            case 'status':
-                return Problem::dropdownStatus(['name' => $name,
-                    'value' => $values[$field],
-                    'display' => false
-                ]);
-        }
-        return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
     /**
@@ -1336,178 +1281,6 @@ class Problem extends CommonITILObject
     }
 
     /**
-     * @param $ID
-     * @param $options   array
-     **/
-    public function showForm($ID, array $options = [])
-    {
-        global $CFG_GLPI;
-
-        if (!static::canView()) {
-            return false;
-        }
-
-        $default_values = self::getDefaultValues();
-
-       // Restore saved value or override with page parameter
-        $saved = $this->restoreInput();
-
-       // Restore saved values and override $this->fields
-        $this->restoreSavedValues($saved);
-
-       // Set default options
-        if (!$ID) {
-            foreach ($default_values as $key => $val) {
-                if (!isset($options[$key])) {
-                    if (isset($saved[$key])) {
-                        $options[$key] = $saved[$key];
-                    } else {
-                        $options[$key] = $val;
-                    }
-                }
-            }
-
-            if (isset($options['tickets_id']) || isset($options['_tickets_id'])) {
-                $tickets_id = $options['tickets_id'] ?? $options['_tickets_id'];
-                $ticket = new Ticket();
-                if ($ticket->getFromDB($tickets_id)) {
-                    $options['content']             = $ticket->getField('content');
-                    $options['name']                = $ticket->getField('name');
-                    $options['impact']              = $ticket->getField('impact');
-                    $options['urgency']             = $ticket->getField('urgency');
-                    $options['priority']            = $ticket->getField('priority');
-                    if (isset($options['tickets_id'])) {
-                        //page is reloaded on category change, we only want category on the very first load
-                        $category = new ITILCategory();
-                        $category->getFromDB($ticket->getField('itilcategories_id'));
-                        $options['itilcategories_id']   = $category->fields['is_problem'] ? $ticket->getField('itilcategories_id') : 0;
-                    }
-                    $options['time_to_resolve']     = $ticket->getField('time_to_resolve');
-                    $options['entities_id']         = $ticket->getField('entities_id');
-                }
-            }
-        }
-
-        $this->initForm($ID, $options);
-
-        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
-
-        if (!$this->isNewItem()) {
-            $options['formtitle'] = sprintf(
-                __('%1$s - ID %2$d'),
-                $this->getTypeName(1),
-                $ID
-            );
-           //set ID as already defined
-            $options['noid'] = true;
-        }
-
-        if (!isset($options['template_preview'])) {
-            $options['template_preview'] = 0;
-        }
-
-       // Load template if available :
-        $tt = $this->getITILTemplateToUse(
-            $options['template_preview'],
-            $this->getType(),
-            ($ID ? $this->fields['itilcategories_id'] : $options['itilcategories_id']),
-            ($ID ? $this->fields['entities_id'] : $options['entities_id'])
-        );
-
-       // Predefined fields from template : reset them
-        if (isset($options['_predefined_fields'])) {
-            $options['_predefined_fields']
-                        = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
-        } else {
-            $options['_predefined_fields'] = [];
-        }
-
-       // Store predefined fields to be able not to take into account on change template
-       // Only manage predefined values on ticket creation
-        $predefined_fields = [];
-        $tpl_key = $this->getTemplateFormFieldName();
-        if (!$ID) {
-            if (isset($tt->predefined) && count($tt->predefined)) {
-                foreach ($tt->predefined as $predeffield => $predefvalue) {
-                    if (isset($default_values[$predeffield])) {
-                      // Is always default value : not set
-                      // Set if already predefined field
-                      // Set if ticket template change
-                        if (
-                            ((count($options['_predefined_fields']) == 0)
-                            && ($options[$predeffield] == $default_values[$predeffield]))
-                            || (isset($options['_predefined_fields'][$predeffield])
-                            && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
-                            || (isset($options[$tpl_key])
-                            && ($options[$tpl_key] != $tt->getID()))
-                            // user pref for requestype can't overwrite requestype from template
-                            // when change category
-                            || (($predeffield == 'requesttypes_id')
-                            && empty($saved))
-                            || (isset($ticket) && $options[$predeffield] == $ticket->getField($predeffield))
-                        ) {
-                             // Load template data
-                             $options[$predeffield]            = $predefvalue;
-                             $this->fields[$predeffield]      = $predefvalue;
-                             $predefined_fields[$predeffield] = $predefvalue;
-                        }
-                    }
-                }
-               // All predefined override : add option to say predifined exists
-                if (count($predefined_fields) == 0) {
-                    $predefined_fields['_all_predefined_override'] = 1;
-                }
-            } else { // No template load : reset predefined values
-                if (count($options['_predefined_fields'])) {
-                    foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
-                        if ($options[$predeffield] == $predefvalue) {
-                            $options[$predeffield] = $default_values[$predeffield];
-                        }
-                    }
-                }
-            }
-        }
-
-        foreach ($default_values as $name => $value) {
-            if (!isset($options[$name])) {
-                if (isset($saved[$name])) {
-                    $options[$name] = $saved[$name];
-                } else {
-                    $options[$name] = $value;
-                }
-            }
-        }
-
-       // Put ticket template on $options for actors
-        $options[str_replace('s_id', '', $tpl_key)] = $tt;
-
-        if ($options['template_preview']) {
-           // Add all values to fields of tickets for template preview
-            foreach ($options as $key => $val) {
-                if (!isset($this->fields[$key])) {
-                    $this->fields[$key] = $val;
-                }
-            }
-        }
-
-        TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
-            'item'               => $this,
-            'timeline_itemtypes' => $this->getTimelineItemtypes(),
-            'legacy_timeline_actions'  => $this->getLegacyTimelineActionsHTML(),
-            'params'             => $options,
-            'timeline'           => $this->getTimelineItems(),
-            'itiltemplate_key'   => $tpl_key,
-            'itiltemplate'       => $tt,
-            'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
-            'canupdate'          => $canupdate,
-            'canpriority'        => $canupdate,
-            'canassign'          => $canupdate,
-        ]);
-
-        return true;
-    }
-
-    /**
      * Display problems for an item
      *
      * Will also display problems of linked items
@@ -1761,7 +1534,7 @@ class Problem extends CommonITILObject
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
             '_add_validation'            => 0,
-            'users_id_validate'          => [],
+            '_validation_targets'        => [],
             '_tasktemplates_id'          => [],
             'items_id'                   => 0,
             '_actors'                     => [],

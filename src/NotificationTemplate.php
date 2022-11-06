@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -292,12 +294,15 @@ class NotificationTemplate extends CommonDBTM
                //If no html content, then send only in text
                 if (!empty($template_datas['content_html'])) {
                     $signature_html = RichText::getSafeHtml($this->signature);
-                    $signature_text = RichText::getTextFromHtml($this->signature, false, false);
 
                     $template_datas['content_html'] = self::process(
                         $template_datas['content_html'],
                         self::getDataForHtml($data)
                     );
+
+                    $css = !empty($this->fields['css'])
+                        ? Sanitizer::decodeHtmlSpecialChars($this->fields['css'])
+                        : '';
 
                     $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
@@ -307,7 +312,7 @@ class NotificationTemplate extends CommonDBTM
                          <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
                          <title>" . Html::entities_deep($lang['subject']) . "</title>
                          <style type='text/css'>
-                           " . $this->fields['css'] . "
+                           {$css}
                          </style>
                         </head>
                         <body>\n" . (!empty($add_header) ? $add_header . "\n<br><br>" : '') .
@@ -318,6 +323,7 @@ class NotificationTemplate extends CommonDBTM
                      "\n</body></html>";
                 }
 
+                $signature_text = RichText::getTextFromHtml($this->signature, false, false);
                 $lang['content_text'] = (!empty($add_header) ? $add_header . "\n\n" : '')
                 . self::process($template_datas['content_text'], self::getDataForPlainText($data))
                 . "\n\n-- \n" . $signature_text
@@ -628,11 +634,5 @@ class NotificationTemplate extends CommonDBTM
        // QueuedNotification does not extends CommonDBConnexity
         $queued = new QueuedNotification();
         $queued->deleteByCriteria(['notificationtemplates_id' => $this->fields['id']]);
-    }
-
-    public function prepareInputForClone($input)
-    {
-        $input['name'] = $input['name'] . ' (clone)';
-        return $input;
     }
 }

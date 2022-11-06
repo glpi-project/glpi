@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -46,24 +49,66 @@ use DevicePowerSupply;
 use DeviceProcessor;
 use DeviceSimcard;
 use DeviceSoundCard;
+use Dropdown;
+use Glpi\Agent\Communication\AbstractRequest;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 use Html;
+use Monitor;
 use NetworkPortType;
+use Printer;
 use Session;
+use State;
 use Toolbox;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 /**
  * Inventory configuration
+ * @property int $import_software
+ * @property int $import_volume
+ * @property int $import_antivirus
+ * @property int $import_registry
+ * @property int $import_process
+ * @property int $import_vm
+ * @property int $import_monitor_on_partial_sn
+ * @property int $component_processor
+ * @property int $component_memory
+ * @property int $component_harddrive
+ * @property int $component_networkcard
+ * @property int $component_graphiccard
+ * @property int $component_soundcard
+ * @property int $component_drive
+ * @property int $component_networkdrive
+ * @property int $component_networkcardvirtual
+ * @property int $component_control
+ * @property int $component_battery
+ * @property int $component_simcard
+ * @property int $states_id_default
+ * @property int $location
+ * @property int $group
+ * @property int $vm_type
+ * @property int $vm_components
+ * @property int $vm_as_computer
+ * @property int $component_removablemedia
+ * @property int $component_powersupply
+ * @property int $inventory_frequency
+ * @property int $import_monitor
+ * @property int $import_printer
+ * @property int $import_peripheral
+ * @property int $import_env
+ *
  */
 class Conf extends CommonGLPI
 {
     private $currents = [];
     public static $defaults = [
+        'enabled_inventory'              => 0,
         'import_software'                => 1,
         'import_volume'                  => 1,
         'import_antivirus'               => 1,
         'import_registry'                => 1,
-        'import_process'                 => 1,
+        'import_process'                 => 0,
         'import_vm'                      => 1,
         'import_monitor_on_partial_sn'   => 0,
         'component_processor'            => 1,
@@ -85,8 +130,33 @@ class Conf extends CommonGLPI
         'vm_components'                  => 0,
         'vm_as_computer'                 => 0,
         'component_removablemedia'       => 1,
-        'component_powersupply'          => 1
+        'component_powersupply'          => 1,
+        'inventory_frequency'            => AbstractRequest::DEFAULT_FREQUENCY,
+        'import_monitor'                 => 1,
+        'import_printer'                 => 1,
+        'import_peripheral'              => 1,
+        'stale_agents_delay'             => 0,
+        'stale_agents_clean'             => 1,
+        'stale_agents_status'            => 0,
+        'import_env'                     => 0,
     ];
+
+    /**
+     * @var int
+     * @deprecated 10.1.0 No effect
+     */
+    public const STALE_AGENT_ACTION_CLEAN = 0;
+
+    /**
+     * @var int
+     * @deprecated 10.1.0 No effect
+     */
+    public const STALE_AGENT_ACTION_STATUS = 1;
+
+    public static $rightname = 'inventory';
+
+    const IMPORTFROMFILE     = 1024;
+    const UPDATECONFIG       = 2048;
 
     /**
      * Display form for import the XML
@@ -95,34 +165,9 @@ class Conf extends CommonGLPI
      */
     public function showUploadForm()
     {
-        echo "<form action='' method='post' enctype='multipart/form-data'>";
-        echo "<table class='tab_cadre'>";
-        echo "<tr>";
-        echo "<th>";
-        echo __('Import inventory file');
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo sprintf(
-            __("You can use this menu to upload any inventory file. The file must have a known extension (%1\$s).\n"),
-            implode(', ', $this->knownInventoryExtensions())
-        );
-        echo '<br/>' . __('It is also possible to upload a compressed archive directly with a collection of inventory files.');
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td align='center'>";
-        echo "<input class='btn' type='file' name='importfile' value=''/>";
-        echo "&nbsp;<input type='submit' value='" . __('Import') . "' class='btn btn-primary'/>";
-        echo "</td>";
-        echo "</tr>";
-
-        echo "</table>";
-
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_form.html.twig', [
+            'inventory_extensions' => $this->knownInventoryExtensions()
+        ]);
     }
 
     /**
@@ -148,11 +193,8 @@ class Conf extends CommonGLPI
      */
     public function importFile($files): Request
     {
-        ini_set("memory_limit", "-1");
-        ini_set("max_execution_time", "0");
-
-        $path = $files['importfile']['tmp_name'];
-        $name = $files['importfile']['name'];
+        $path = $files['inventory_file']['tmp_name'];
+        $name = $files['inventory_file']['name'];
 
         $inventory_request = new Request();
 
@@ -169,6 +211,7 @@ class Conf extends CommonGLPI
            //nay, not an archive neither
             Session::addMessageAfterRedirect(
                 __('No file to import!'),
+                false,
                 ERROR
             );
             return $inventory_request;
@@ -219,8 +262,17 @@ class Conf extends CommonGLPI
             $inventory_request->handleContentType($mime);
             $inventory_request->handleRequest($contents);
             if ($inventory_request->inError()) {
+                $response = $inventory_request->getResponse();
+                if ($inventory_request->getMode() === Request::JSON_MODE) {
+                    $json = json_decode($inventory_request->getResponse());
+                    $response = $json->message;
+                } else {
+                    $xml = simplexml_load_string($response);
+                    $response = $xml->ERROR;
+                }
+                $response = str_replace('&nbsp;', ' ', $response);
                 Session::addMessageAfterRedirect(
-                    __('File has not been imported:') . " " . $inventory_request->getResponse(),
+                    __('File has not been imported:') . " " . Sanitizer::encodeHtmlSpecialChars($response),
                     true,
                     ERROR
                 );
@@ -236,6 +288,20 @@ class Conf extends CommonGLPI
         }
     }
 
+    /**
+     * Get possible actions for stale agents
+     *
+     * @return array
+     * @deprecated 10.1.0 No effect
+     */
+    public static function getStaleAgentActions(): array
+    {
+        return [
+            self::STALE_AGENT_ACTION_CLEAN  => __('Clean agents'),
+            self::STALE_AGENT_ACTION_STATUS => __('Change the status'),
+        ];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -248,10 +314,13 @@ class Conf extends CommonGLPI
     {
         switch ($item->getType()) {
             case __CLASS__:
-                $tabs = [
-                    1 => __('Configuration'),
-                    2 => __('Import from file')
-                ];
+                $tabs = [];
+                if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
+                    $tabs[1] = __('Configuration');
+                }
+                if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
+                    $tabs[2] = __('Import from file');
+                }
                 return $tabs;
         }
         return '';
@@ -260,13 +329,16 @@ class Conf extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
+            /** @var self $item */
             switch ($tabnum) {
                 case 1:
                     $item->showConfigForm();
                     break;
 
                 case 2:
-                    $item->showUploadForm();
+                    if ($item->enabled_inventory) {
+                        $item->showUploadForm();
+                    }
                     break;
             }
         }
@@ -276,14 +348,16 @@ class Conf extends CommonGLPI
     /**
      * Print the config form for display
      *
-     * @return void
+     * @return true (Always true)
+     * @copyright 2010-2022 by the FusionInventory Development Team. (Agent cleanup section)
      **/
     public function showConfigForm()
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
-        $config = \Config::getConfigurationValues('Inventory');
+        $config = \Config::getConfigurationValues('inventory');
         $canedit = \Config::canUpdate();
+        $rand = mt_rand();
 
         if ($canedit) {
             echo "<form name='form' action='" . $CFG_GLPI['root_doc'] . "/front/inventory.conf.php' method='post'>";
@@ -291,6 +365,22 @@ class Conf extends CommonGLPI
 
         echo "<div class='center spaced' id='tabsbody'>";
         echo "<table class='tab_cadre_fixe'>";
+
+        echo "<tr>";
+
+        echo "<th>";
+        echo "<label for='enabled_inventory'>";
+        echo __('Enable inventory');
+        echo "</label>";
+        echo "</th>";
+        echo "<td width='360'>";
+        Html::showCheckbox([
+            'name'      => 'enabled_inventory',
+            'id'        => 'enabled_inventory',
+            'checked'   => $config['enabled_inventory']
+        ]);
+        echo "</td>";
+        echo "</tr>";
 
         echo "<tr>";
         echo "<th colspan='4'>";
@@ -328,21 +418,48 @@ class Conf extends CommonGLPI
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>";
-        echo "<label for='states_id_default'>";
-        echo __('Default status');
+        echo "<label for='import_monitor'>";
+        echo Monitor::getTypeName(Session::getPluralNumber());
         echo "</label>";
         echo "</td>";
         echo "<td>";
-        \Dropdown::show(
-            'State',
-            [
-                'name'   => 'states_id_default',
-                'id'     => 'states_id_default',
-                'value'  => $config['states_id_default']
-            ]
-        );
+        Html::showCheckbox([
+            'name'      => 'import_monitor',
+            'id'        => 'import_monitor',
+            'checked'   => $config['import_monitor']
+        ]);
         echo "</td>";
 
+        echo "</td>";
+        echo "<td>";
+        echo "<label for='import_printer'>";
+        echo Printer::getTypeName(Session::getPluralNumber());
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+        Html::showCheckbox([
+            'name'      => 'import_printer',
+            'id'        => 'import_printer',
+            'checked'   => $config['import_printer']
+        ]);
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>";
+        echo "<label for='import_peripheral'>";
+        echo \Peripheral::getTypeName(Session::getPluralNumber());
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+        Html::showCheckbox([
+            'name'      => 'import_peripheral',
+            'id'        => 'import_peripheral',
+            'checked'   => $config['import_peripheral']
+        ]);
+        echo "</td>";
+
+        echo "</td>";
         echo "<td>";
         echo "<label for='import_antivirus'>";
         echo \ComputerAntivirus::getTypeName(Session::getPluralNumber());
@@ -359,6 +476,68 @@ class Conf extends CommonGLPI
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>";
+        echo "<label for='import_process'>";
+        echo \Item_Process::getTypeName(Session::getPluralNumber());
+        echo "</label>";
+        echo "</td>";
+        echo "<td width='360'>";
+        Html::showCheckbox([
+            'name'      => 'import_process',
+            'id'        => 'import_process',
+            'checked'   => $config['import_process']
+        ]);
+        echo "</td>";
+        echo "<td>";
+        echo "<label for='import_env'>";
+        echo \Item_Environment::getTypeName(Session::getPluralNumber());
+        echo "</label>";
+        echo "</td>";
+        echo "<td width='360'>";
+        Html::showCheckbox([
+            'name'      => 'import_env',
+            'id'        => 'import_env',
+            'checked'   => $config['import_env']
+        ]);
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>";
+        echo "<label for='dropdown_states_id_default$rand'>";
+        echo __('Default status');
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+
+        \Dropdown::show(
+            'State',
+            [
+                'name'   => 'states_id_default',
+                'id'     => 'states_id_default',
+                'value'  => $config['states_id_default'],
+                'toadd'  => ['-1' => __('Do not change')],
+                'rand' => $rand
+            ]
+        );
+        echo "</td>";
+
+        echo "<td><label for='dropdown_inventory_frequency$rand'>" . __('Inventory frequency (in hours)') .
+            "</label></td><td>";
+        \Dropdown::showNumber(
+            "inventory_frequency",
+            [
+                'value' => $config['inventory_frequency'],
+                'min' => 1,
+                'max' => 240,
+                'rand' => $rand
+            ]
+        );
+
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>";
         echo "<label for='import_monitor_on_partial_sn'>";
         echo __('Import monitor on serial partial match');
         echo "</label>";
@@ -369,12 +548,12 @@ class Conf extends CommonGLPI
             'id'        => 'import_monitor_on_partial_sn',
             'checked'   => $config['import_monitor_on_partial_sn']
         ]);
+
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<th colspan='4'>";
-       //echo \Rule::getTypeName(Session::getPluralNumber());
         echo __('Related configurations');
         echo "</th>";
         echo "</tr>";
@@ -387,7 +566,7 @@ class Conf extends CommonGLPI
             echo "<td colspan='2'>";
             echo sprintf(
                 "<a href='%s'>%s</a>",
-                $rules->getSearchURL(),
+                $rules::getSearchURL(),
                 $collection->getTitle()
             );
             echo "</td>";
@@ -424,7 +603,7 @@ class Conf extends CommonGLPI
         ]);
         echo "</td>";
         echo "<td>";
-        echo "<label for='vm_type'>";
+        echo "<label for='dropdown_vm_type$rand'>";
         echo \ComputerType::getTypeName(1);
         echo "</label>";
         echo "</td>";
@@ -434,7 +613,8 @@ class Conf extends CommonGLPI
             [
                 'name'   => 'vm_type',
                 'id'     => 'vm_type',
-                'value'  => $config['vm_type']
+                'value'  => $config['vm_type'],
+                'rand' => $rand
             ]
         );
         echo "</td>";
@@ -454,7 +634,7 @@ class Conf extends CommonGLPI
         ]);
         echo "</td>";
         echo "<td>";
-        echo "<label for='import_vm'>";
+        echo "<label for='vm_components'>";
         echo __('Create components for virtual machines');
         echo "</label>";
         echo "</td>";
@@ -468,7 +648,7 @@ class Conf extends CommonGLPI
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td colspan='4'>";
+        echo "<td colspan='4' style='text-align:right;'>";
         echo "<span class='red'>" . __('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!') . "</span>";
         echo "</td>";
         echo "</tr>";
@@ -680,6 +860,86 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "</tr>";
 
+        echo "<tr class='tab_bg_1'>";
+        echo "<th colspan=4 >" . __('Agent cleanup') . "</th></tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Update agents who have not contacted the server for (in days)') . "</td>";
+        echo "<td width='20%'>";
+        Dropdown::showNumber(
+            'stale_agents_delay',
+            [
+                'value' => $config['stale_agents_delay'] ?? 0,
+                'min'   => 1,
+                'max'   => 1000,
+                'toadd' => ['0' => __('Disabled')]
+            ]
+        );
+        echo "</td>";
+        echo "<td>" . __('Clean agent') . "</td>";
+        echo "<td width='20%'>";
+        //action
+        Dropdown::showYesNo('stale_agents_clean', $config['stale_agents_clean'] ?? 0);
+        echo "</td>";
+        echo "</tr>";
+        //blocaction with status
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>";
+        echo __('Change the status');
+        echo "</td>";
+        echo "<td width='20%'>";
+        State::dropdown(
+            [
+                'name'   => 'stale_agents_status',
+                'value'  => $config['stale_agents_status'] ?? -1,
+                'entity' => $_SESSION['glpiactive_entity'],
+                'toadd'  => [-1 => __('No change')]
+            ]
+        );
+        echo "</td>";
+
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
+        $odd = true;
+        $in_row = true;
+        /**
+         * @var string $plugin
+         * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+         */
+        foreach ($plugin_actions as $plugin => $actions) {
+            if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
+                foreach ($actions as $action) {
+                    if (!is_callable($action['render_callback'] ?? null)) {
+                        trigger_error(
+                            sprintf('Invalid plugin "%s" render callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                            E_USER_WARNING
+                        );
+                        continue;
+                    }
+
+                    if (!$odd) {
+                        echo "<tr class='tab_bg_1'>";
+                    }
+                    $field = $action['render_callback']($config);
+                    if (!empty($field)) {
+                        echo "<td>";
+                        echo $action['label'] ?? '';
+                        echo "</td>";
+                        echo "<td width='20%'>";
+                        echo $field;
+                        echo "</td>";
+
+                        if ($odd) {
+                            echo "</tr>";
+                            $in_row = false;
+                        }
+                        $odd = !$odd;
+                    }
+                }
+            }
+        }
+        if ($in_row) {
+            echo "</tr>";
+        }
+
         if ($canedit) {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='7' class='center'>";
@@ -708,7 +968,11 @@ class Conf extends CommonGLPI
         $defaults = self::$defaults;
         unset($values['_glpi_csrf_token']);
 
-        $unknown = array_diff_key($values, $defaults);
+        $ext_configs = array_filter($values, static function ($k, $v) {
+            return str_starts_with($v, '_');
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $unknown = array_diff_key($values, $defaults, $ext_configs);
         if (count($unknown)) {
             $msg = sprintf(
                 __('Some properties are not known: %1$s'),
@@ -725,6 +989,7 @@ class Conf extends CommonGLPI
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
         }
+        $to_process = array_merge($to_process, $ext_configs);
         \Config::setConfigurationValues('inventory', $to_process);
         $this->currents = $to_process;
         return true;
@@ -740,7 +1005,7 @@ class Conf extends CommonGLPI
     public function __get($name)
     {
         if (!count($this->currents)) {
-            $config = \Config::getConfigurationValues('Inventory');
+            $config = \Config::getConfigurationValues('inventory');
             $this->currents = $config;
         }
         if (in_array($name, array_keys(self::$defaults))) {
@@ -764,7 +1029,15 @@ class Conf extends CommonGLPI
 
     public function getRights($interface = 'central')
     {
-        return [ READ => __('Read')];
+        $values = [ READ => __('Read')];
+        $values[self::IMPORTFROMFILE] = ['short' => __('Import'),
+            'long'  => __('Import from file')
+        ];
+        $values[self::UPDATECONFIG] = ['short' => __('Configure'),
+            'long'  => __('Import configuration')
+        ];
+
+        return $values;
     }
 
     /**

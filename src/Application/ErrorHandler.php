@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -156,7 +158,7 @@ class ErrorHandler
 
         if ($instance === null) {
             global $PHPLOGGER;
-            $instance = new static($PHPLOGGER);
+            $instance = new self($PHPLOGGER);
         }
 
         return $instance;
@@ -284,7 +286,7 @@ class ErrorHandler
     /**
      * Twig error handler.
      *
-     * This handler is manually called by application when an error occured during Twig template rendering.
+     * This handler is manually called by application when an error occurred during Twig template rendering.
      *
      * @param \Twig\Error\Error $error
      *
@@ -314,7 +316,7 @@ class ErrorHandler
     /**
      * SQL error handler.
      *
-     * This handler is manually called by application when a SQL error occured.
+     * This handler is manually called by application when a SQL error occurred.
      *
      * @param integer $error_code
      * @param string  $error_message
@@ -344,11 +346,19 @@ class ErrorHandler
      */
     public function handleSqlWarnings(array $warnings, string $query)
     {
-        $this->outputDebugMessage(
-            'SQL Warnings',
-            "\n" . implode("\n", $warnings) . "\n" . sprintf('in query "%s"', $query),
-            self::ERROR_LEVEL_MAP[E_USER_WARNING]
-        );
+        $message = "\n"
+            . implode(
+                "\n",
+                array_map(
+                    function ($warning) {
+                        return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                    },
+                    $warnings
+                )
+            )
+            . "\n"
+            . sprintf('in query "%s"', $query);
+        $this->outputDebugMessage('SQL Warnings', $message, self::ERROR_LEVEL_MAP[E_USER_WARNING]);
     }
 
     /**

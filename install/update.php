@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -120,6 +122,10 @@ function doUpdateDb()
 {
     global $migration, $update;
 
+    // Init debug variable
+    // Only show errors
+    Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
+
     $currents            = $update->getCurrents();
     $current_version     = $currents['version'];
     $current_db_version  = $currents['dbversion'];
@@ -152,15 +158,17 @@ function showSecurityKeyCheckForm()
     echo '<form action="update.php" method="post">';
     echo '<input type="hidden" name="continuer" value="1" />';
     echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
-    echo '<div class="center">';
+    echo '<div class="text-center">';
     echo '<h3>' . __('Missing security key file') . '</h3>';
-    echo '<p>';
-    echo '<img src="' . $CFG_GLPI['root_doc'] . '/pics/ko_min.png" />';
+    echo '<div class="d-flex alert alert-warning">';
+    echo '<i class="fa fa-3x fa-exclamation-triangle text-warning"></i>';
+    echo '<p class="text-start">';
     echo sprintf(
         __('The key file "%s" used to encrypt/decrypt sensitive data is missing. You should retrieve it from your previous installation or encrypted data will be unreadable.'),
         $update->getExpectedSecurityKeyFilePath()
     );
     echo '</p>';
+    echo '</div>';
     echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __('Ignore warning') . '" />';
     echo '&nbsp;&nbsp;';
     echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __('Try again') . '" />';

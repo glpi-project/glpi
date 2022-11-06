@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -114,17 +116,8 @@ abstract class LevelAgreement extends CommonDBChild
     public function setTicketCalendar($calendars_id)
     {
 
-        if ($this->fields['calendars_id'] == -1) {
+        if ($this->fields['use_ticket_calendar']) {
             $this->fields['calendars_id'] = $calendars_id;
-        }
-    }
-
-    public function post_getFromDB()
-    {
-       // get calendar from slm
-        $slm = new SLM();
-        if ($slm->getFromDB($this->fields['slms_id'])) {
-            $this->fields['calendars_id'] = $slm->fields['calendars_id'];
         }
     }
 
@@ -438,10 +431,10 @@ abstract class LevelAgreement extends CommonDBChild
                     ]
                 );
                 echo "</td>";
-                if (!$slm->fields['calendars_id']) {
-                     $link =  __('24/7');
-                } else if ($slm->fields['calendars_id'] == -1) {
+                if ($slm->fields['use_ticket_calendar']) {
                     $link = __('Calendar of the ticket');
+                } else if (!$slm->fields['calendars_id']) {
+                     $link =  __('24/7');
                 } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
                     $link = $calendar->getLink();
                 }
@@ -964,6 +957,14 @@ abstract class LevelAgreement extends CommonDBChild
         ) {
             $input['end_of_working_day'] = 0;
         }
+
+        // Copy calendar settings from SLM
+        $slm = new SLM();
+        if (array_key_exists('slms_id', $input) && $slm->getFromDB($input['slms_id'])) {
+            $input['use_ticket_calendar'] = $slm->fields['use_ticket_calendar'];
+            $input['calendars_id'] = $slm->fields['calendars_id'];
+        }
+
         return $input;
     }
 
@@ -977,6 +978,18 @@ abstract class LevelAgreement extends CommonDBChild
         ) {
             $input['end_of_working_day'] = 0;
         }
+
+        // Copy calendar settings from SLM
+        $slm = new SLM();
+        if (
+            array_key_exists('slms_id', $input)
+            && $input['slms_id'] != $this->fields['slms_id']
+            && $slm->getFromDB($input['slms_id'])
+        ) {
+            $input['use_ticket_calendar'] = $slm->fields['use_ticket_calendar'];
+            $input['calendars_id'] = $slm->fields['calendars_id'];
+        }
+
         return $input;
     }
 

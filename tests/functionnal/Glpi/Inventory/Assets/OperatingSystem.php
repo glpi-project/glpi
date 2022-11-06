@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -63,13 +65,15 @@ class OperatingSystem extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '6.1.7600',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => ''
+                    'SERVICE_PACK'   => '',
+                    'INSTALL_DATE'   => '2022-01-01 10:35:07'
                 ],
                 'expected'  => [
                     'operatingsystemarchitectures_id'   => '64-bit',
                     'operatingsystemkernels_id'         => 'MSWin32',
                     'operatingsystemkernelversions_id'  => '6.1.7600',
                     'operatingsystems_id'               => 'Microsoft Windows 7 Enterprise',
+                    'install_date'                      => '2022-01-01',
                 ]
             ]
         ] + $this->fusionProvider();
@@ -767,7 +771,6 @@ class OperatingSystem extends AbstractInventoryAsset
 
     public function testInventoryUpdate()
     {
-        $this->login();
         $computer = new \Computer();
         $os = new \OperatingSystem();
         $cos = new \Item_OperatingSystem();
@@ -781,6 +784,7 @@ class OperatingSystem extends AbstractInventoryAsset
       <FQDN>test-pc002</FQDN>
       <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
       <HOSTID>a8c07701</HOSTID>
+      <INSTALL_DATE>2022-01-01 10:35:07</INSTALL_DATE>
       <KERNEL_NAME>linux</KERNEL_NAME>
       <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
       <NAME>Fedora</NAME>
@@ -833,6 +837,8 @@ class OperatingSystem extends AbstractInventoryAsset
         $theos = current($list);
         $this->integer($theos['operatingsystems_id'])->isIdenticalTo($os_id);
         $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
+        $this->string($theos['install_date'])->isIdenticalTo("2022-01-01");
+
 
        //Redo inventory, but with updated operating system
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -845,6 +851,7 @@ class OperatingSystem extends AbstractInventoryAsset
       <FQDN>test-pc002</FQDN>
       <FULL_NAME>Fedora 32 (Workstation Edition)</FULL_NAME>
       <HOSTID>a8c06c01</HOSTID>
+      <INSTALL_DATE>2022-10-14 10:35:07</INSTALL_DATE>
       <KERNEL_NAME>linux</KERNEL_NAME>
       <KERNEL_VERSION>5.9.13-100.fc32.x86_64</KERNEL_VERSION>
       <NAME>Fedora</NAME>
@@ -878,5 +885,6 @@ class OperatingSystem extends AbstractInventoryAsset
         $theos = current($list);
         $this->integer($theos['operatingsystems_id'])->isNotIdenticalTo($os_id, 'Operating system link has not been updated');
         $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
+        $this->string($theos['install_date'])->isIdenticalTo("2022-10-14");
     }
 }

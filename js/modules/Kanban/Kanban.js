@@ -1,12 +1,13 @@
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,25 +15,27 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 import SearchInput from "../SearchTokenizer/SearchInput.js";
 
+/* global escapeMarkupText */
 /* global sortable */
-/* global glpi_toast_error */
+/* global glpi_toast_error, glpi_confirm */
 
 /**
  * Kanban rights structure
@@ -226,14 +229,14 @@ class GLPIKanbanRights {
         /**
        * Name of the DB field used to specify columns and any extra fields needed to create the column (Ex: color).
        * For example, Projects organize items by the state of the sub-Projects and sub-Tasks.
-       * Therefore, the column_field id is 'projectstates_id' with any additional fields needed being specified in extra_fields..
+       * Therefore, the column_field id is 'projectstates_id' with any additional fields needed being specified in extra_fields.
        * @since 9.5.0
        * @type {{id: string, extra_fields: Object}}
        */
         this.column_field = {id: '', extra_fields: {}};
 
         /**
-       * Specifies if the Kanban's toolbar (switcher, filters, etc) should be shown.
+       * Specifies if the Kanban's toolbar (switcher, filters, etc.) should be shown.
        * This is true by default, but may be set to false if used on a fullscreen display for example.
        * @since 9.5.0
        * @type {boolean}
@@ -309,18 +312,18 @@ class GLPIKanbanRights {
 
         /**
        * The user's state object.
-       * This contains an up to date list of columns that should be shown, the order they are in, and if they are folded.
+       * This contains an up-to-date list of columns that should be shown, the order they are in, and if they are folded.
        * @since 9.5.0
        * @type {{
-       *    is_dirty: {boolean},
-       *    state: {(order_index:{column: {number}, folded:{boolean}, cards:{array}}
+       *    is_dirty: boolean,
+       *    state: {}|{order_index: {column: number, folded: boolean, cards: {Array}}}
        * }}
-       * The is_dirty flag indicates if the state was changed and needs saved.
+       * The is_dirty flag indicates if the state was changed and needs to be saved.
        */
         this.user_state = {is_dirty: false, state: {}};
 
         /**
-       * The last time the Kanban was refreshed. This is used by the server to determine if the state needs sent to the client again.
+       * The last time the Kanban was refreshed. This is used by the server to determine if the state needs to be sent to the client again.
        * The state will only be sent if there was a change since this time.
        * @type {?string}
        */
@@ -445,7 +448,9 @@ class GLPIKanbanRights {
             // Dropdown for single additions
             let add_itemtype_dropdown = "<ul id='kanban-add-dropdown' class='kanban-dropdown dropdown-menu' style='display: none'>";
             Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-                add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+                if (self.supported_itemtypes[itemtype]['allow_create'] !== false) {
+                    add_itemtype_dropdown += "<li id='kanban-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+                }
             });
             add_itemtype_dropdown += '</ul>';
             kanban_container.append(add_itemtype_dropdown);
@@ -454,7 +459,9 @@ class GLPIKanbanRights {
             let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown  dropdown-menu' style='display: none'>";
             let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='dropdown-menu' style='display: none'>";
             Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-                add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+                if (self.supported_itemtypes[itemtype]['allow_create'] !== false) {
+                    add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
+                }
             });
             add_itemtype_bulk_dropdown += '</ul>';
             const add_itemtype_bulk_link = '<a href="#">' + '<i class="fa-fw fas fa-list"></i>' + __('Bulk add') + '</a>';
@@ -516,12 +523,29 @@ class GLPIKanbanRights {
 
         const buildToolbar = function() {
             $(self.element).trigger('kanban:pre_build_toolbar');
+            const extra_toolbar_options = [];
+
             let toolbar = $("<div class='kanban-toolbar card flex-column flex-md-row'></div>").appendTo(self.element);
             $("<select name='kanban-board-switcher'></select>").appendTo(toolbar);
             let filter_input = $(`<input name='filter' class='form-control ms-1' type='text' placeholder="${__('Search or filter results')}" autocomplete="off"/>`).appendTo(toolbar);
             if (self.rights.canModifyView()) {
-                let add_column = "<buttom rome='button' class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
+                let add_column = "<button class='kanban-add-column btn btn-outline-secondary ms-1'>" + __('Add column') + "</button>";
                 toolbar.append(add_column);
+                extra_toolbar_options.push(`
+                <li class="dropdown-item cursor-pointer" data-action="clearState">
+                    <span>
+                      <i class="ti ti-trash"></i>${__('Reset view')}
+                   </span>
+                </li>
+                `);
+            }
+
+            if (extra_toolbar_options.length > 0) {
+                toolbar.append(`<button type="button" class="btn btn-outline-secondary ms-1 kanban-extra-toolbar-options"><i class="ti ti-dots-vertical"></i></button>`);
+                let extra_toolbar_dropdown = "<ul class='kanban-dropdown dropdown-menu kanban-extra-toolbar-options-menu' style='display: none'>";
+                extra_toolbar_dropdown += extra_toolbar_options.join('');
+                extra_toolbar_dropdown += '</ul>';
+                toolbar.append(extra_toolbar_dropdown);
             }
 
             self.filter_input = new SearchInput(filter_input, {
@@ -575,7 +599,9 @@ class GLPIKanbanRights {
                 if (forms.length > 0) {
                     self.temp_forms[column.id] = [];
                     $.each(forms, function(i2, form) {
-                        self.temp_forms[column.id].push($(form).clone());
+                        // Copy event handlers for element and child elements
+                        // Otherwise, the Add button will act like a normal submit button (not wanted)
+                        self.temp_forms[column.id].push($(form).clone(true, true));
                     });
                 }
             });
@@ -713,6 +739,11 @@ class GLPIKanbanRights {
                         }
                     }
                 }
+                if ($(e.target).closest(self.element + ' .kanban-extra-toolbar-options').length === 0) {
+                    $(self.element + ' .kanban-extra-toolbar-options-menu').css({
+                        display: 'none'
+                    });
+                }
             });
 
             if (Object.keys(self.supported_itemtypes).length > 0) {
@@ -818,6 +849,30 @@ class GLPIKanbanRights {
             $(self.element).on('click', '.kanban-add-column', function() {
                 refreshAddColumnForm();
             });
+            $(self.element).on('click', '.kanban-extra-toolbar-options', (e) => {
+                const toolbar = $(self.element + ' .kanban-toolbar');
+                const dropdown_element = $(e.currentTarget).siblings('.kanban-extra-toolbar-options-menu');
+                dropdown_element.css({
+                    display: 'block',
+                    position: 'fixed',
+                    left: toolbar.offset().left + toolbar.outerWidth(true) - dropdown_element.outerWidth(true),
+                    top: (toolbar.offset().top + toolbar.outerHeight(true)) - 10
+                });
+            });
+            const extra_toolbar_options_menu = $(self.element + ' .kanban-extra-toolbar-options-menu');
+            extra_toolbar_options_menu.on('click', 'li', (e) => {
+                const option = $(e.currentTarget);
+                if (option.attr('data-action') === 'clearState' && self.rights.canModifyView()) {
+                    glpi_confirm({
+                        title: __('Reset view'),
+                        message: __('Resetting the view will reset the shown columns and remove custom card ordering'),
+                        confirm_callback: () => {
+                            clearState();
+                        }
+                    });
+                }
+            });
+
             $(self.add_column_form).on('input', "input[name='column-name-filter']", function() {
                 const filter_input = $(this);
                 $(self.add_column_form + ' li').hide();
@@ -958,13 +1013,20 @@ class GLPIKanbanRights {
                     itemtype: form.prop('id').split('_')[2],
                     action: 'add_item'
                 };
+                const itemtype = form.attr('data-itemtype');
+                const column_el_id = form.closest('.kanban-column').attr('id');
 
                 $.ajax({
                     method: 'POST',
                     url: (self.ajax_root + "kanban.php"),
                     data: data
                 }).done(function() {
-                    self.refresh();
+                    // Close the form
+                    form.remove();
+                    self.refresh(undefined, undefined, () => {
+                        // Re-open form
+                        self.showAddItemForm($(`#${column_el_id}`), itemtype);
+                    });
                 });
             });
 
@@ -1036,7 +1098,7 @@ class GLPIKanbanRights {
                     display: 'block',
                     position: 'fixed',
                     left: toolbar.offset().left + toolbar.outerWidth(true) - column_dialog.outerWidth(true),
-                    top: toolbar.offset().top + toolbar.outerHeight(true)
+                    top: (toolbar.offset().top + toolbar.outerHeight(true)) - 10
                 });
             });
         };
@@ -1407,7 +1469,7 @@ class GLPIKanbanRights {
 
         /**
        * Attempt to get and cache user badges in a single AJAX request to reduce time wasted when using multiple requests.
-       * Most time spent on the request is latency so it takes about the same amount of time for 1 or 50 users.
+       * Most time spent on the request is latency, so it takes about the same amount of time for 1 or 50 users.
        * If no image is returned from the server, a badge is generated based on the user's initials.
        * @since 9.5.0
        * @param {Object} options Object of options for this function. Supports:
@@ -1540,7 +1602,7 @@ class GLPIKanbanRights {
         /**
        * Generate a user image based on the user's initials.
        * @since 9.5.0
-       * @param {string} teammember The teammember array/object that represents the user.
+       * @param {{}} teammember The teammember array/object that represents the user.
        * @return {string} HTML image of the generated user badge.
        */
         const generateUserBadge = function(teammember) {
@@ -1574,7 +1636,8 @@ class GLPIKanbanRights {
             context.textBaseline = 'middle';
             context.fillText(initials, self.team_image_size / 2, self.team_image_size / 2);
             const src = canvas.toDataURL("image/png");
-            return "<span><img src='" + src + "' title='" + teammember['name'] + "'/></span>";
+            const name = teammember['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            return "<span><img src='" + src + "' title='" + name + "'/></span>";
         };
 
         /**
@@ -1586,11 +1649,12 @@ class GLPIKanbanRights {
        */
         const generateOtherBadge = function(teammember, icon) {
             const bg_color = getBadgeColor(teammember);
+            const name = teammember['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
             return `
             <span class='fa-stack fa-lg' style='font-size: ${(self.team_image_size / 2)}px'>
                 <i class='fas fa-circle fa-stack-2x' style="color: ${bg_color}" title="${teammember['name']}"></i>
-                <i class='fas ${icon} fa-stack-1x' title="${teammember['name']}"></i>
+                <i class='fas ${icon} fa-stack-1x' title="${name}"></i>
             </span>
          `;
         };
@@ -1695,14 +1759,14 @@ class GLPIKanbanRights {
 
             const uniqueID = Math.floor(Math.random() * 999999);
             const formID = "form_add_" + itemtype + "_" + uniqueID;
-            let add_form = "<form id='" + formID + "' class='kanban-add-form card kanban-form no-track'>";
-            let form_header = "<div class='kanban-item-header'>";
+            let add_form = `<form id="${formID}" class="kanban-add-form card kanban-form no-track" data-itemtype="${itemtype}">`;
+            let form_header = "<div class='kanban-item-header d-flex justify-content-between'>";
             form_header += `
             <span class='kanban-item-title'>
                <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
                ${self.supported_itemtypes[itemtype]['name']}
             </span>`;
-            form_header += "<i class='ti ti-x' title='Close' onclick='$(this).parent().parent().remove()'></i></div>";
+            form_header += `<i class="ti ti-x cursor-pointer" title="${__('Close')}" onclick="$(this).parent().parent().remove()"></i></div>`;
             add_form += form_header;
 
             add_form += "<div class='kanban-item-content'>";
@@ -1837,7 +1901,7 @@ class GLPIKanbanRights {
             if (self.rights.canCreateColumn()) {
                 add_form += `
                <hr>${__('Or add a new status')}
-               <button role='button' class='btn btn-primary kanban-create-column d-block'>${__('Create status')}</button>
+               <button class='btn btn-primary kanban-create-column d-block'>${__('Create status')}</button>
             `;
             }
             add_form += "</form></div>";
@@ -2038,7 +2102,7 @@ class GLPIKanbanRights {
                 });
             } else {
                 $(`
-               <li class="position-relative" style="width: 250px">
+               <li class="position-relative mx-auto mt-2" style="width: 250px">
                   ${__('This column cannot support showing cards due to how many cards would be shown. You can still drag cards into this column.')}
                </li>
             `).appendTo(column_body);
@@ -2269,7 +2333,7 @@ class GLPIKanbanRights {
        * Toggle the collapsed state of the specified column.
        * After toggling the collapse state, the server is notified of the change.
        * @since 9.5.0
-       * @param {string|Element|JQuery} column_el The column element or object.
+       * @param {string|Element|jQuery} column_el The column element or object.
        */
         this.toggleCollapseColumn = function(column_el) {
             if (!(column_el instanceof jQuery)) {
@@ -2378,7 +2442,7 @@ class GLPIKanbanRights {
 
         /**
        * Update the user state object, but do not send it to the server.
-       * This should only be done if there is no state stored on the server, so one needs built.
+       * This should only be done if there is no state stored on the server, so one needs to be built.
        * Do NOT use this for changes to the state such as moving cards/columns!
        * @since 9.5.0
        */
@@ -2443,7 +2507,7 @@ class GLPIKanbanRights {
                     l.append(`
                      <div class="member-details">
                         ${member_item}
-                        ${l.attr('data-name') || `${member_itemtype} (${member_items_id})`}
+                        ${escapeMarkupText(l.attr('data-name')) || `${member_itemtype} (${member_items_id})`}
                      </div>
                      <button type="button" name="delete" class="btn btn-ghost-danger">
                         <i class="ti ti-x" title="${__('Delete')}"></i>
@@ -2478,6 +2542,10 @@ class GLPIKanbanRights {
             <button type="button" name="add" class="btn btn-primary">${_x('button', 'Add')}</button>
          `;
             const modal = $('#kanban-modal');
+            // Remove old click handlers
+            modal.off('click', 'button[name="add"]');
+            modal.off('click', 'button[name="delete"]');
+
             modal.on('click', 'button[name="add"]', () => {
                 const itemtype = modal.find('select[name="itemtype"]').val();
                 const items_id = modal.find('select[name="items_id"]').val();
@@ -2603,7 +2671,7 @@ class GLPIKanbanRights {
         /**
        * Saves the current state of the Kanban to the DB for the user.
        * This saves the visible columns and their collapsed state.
-       * This should only be done if there is no state stored on the server, so one needs built.
+       * This should only be done if there is no state stored on the server, so one needs to be built.
        * Do NOT use this for changes to the state such as moving cards/columns!
        * @since 9.5.0
        * @param {boolean} rebuild_state If true, the column state is recalculated before saving.
@@ -2656,6 +2724,23 @@ class GLPIKanbanRights {
                 if (always) {
                     always();
                 }
+            });
+        };
+
+        const clearState = () => {
+            $.ajax({
+                type: "POST",
+                url: (self.ajax_root + "kanban.php"),
+                data: {
+                    action: "clear_column_state",
+                    itemtype: self.item.itemtype,
+                    items_id: self.item.items_id
+                }
+            }).done(function() {
+                // Reload page
+                window.location.reload();
+            }).fail(function() {
+                glpi_toast_error(__('Failed to reset Kanban view'), __('Error'));
             });
         };
 

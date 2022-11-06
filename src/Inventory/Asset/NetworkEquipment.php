@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,23 +18,25 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\Inventory\Asset;
 
+use Glpi\Toolbox\Sanitizer;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
@@ -99,7 +103,7 @@ class NetworkEquipment extends MainAsset
                 if (property_exists($device, 'mac')) {
                     $port->mac = $device->mac;
                 }
-                $port->name = __('Management');
+                $port->name = 'Management';
                 $port->netname = __('internal');
                 $port->instantiation_type = 'NetworkPortAggregate';
                 $port->is_internal = true;
@@ -128,6 +132,7 @@ class NetworkEquipment extends MainAsset
                 $stack->$model_field = $switch->model;
                 $stack->description = $stack->name . ' - ' . $switch->name;
                 $stack->name = $stack->name . ' - ' . $switch->name;
+                $stack->stack_number = $switch->stack_number ?? null;
                 $this->data[] = $stack;
             }
         } else {
@@ -150,7 +155,7 @@ class NetworkEquipment extends MainAsset
                     //add internal port
                     $port = new \stdClass();
                     $port->mac = $ap->mac;
-                    $port->name = __('Management');
+                    $port->name = 'Management';
                     $port->is_internal = true;
                     $port->netname = __('internal');
                     $port->instantiation_type = 'NetworkPortAggregate';
@@ -223,12 +228,12 @@ class NetworkEquipment extends MainAsset
 
     public function handleLinks(array $data = null)
     {
-        if (property_exists($this, 'current_key')) {
+        if ($this->current_key !== null) {
             $data = [$this->data[$this->current_key]];
         } else {
             $data = $this->data;
         }
-        parent::handleLinks($data);
+        return parent::handleLinks();
     }
 
     protected function portCreated(\stdClass $port, int $netports_id)
@@ -241,17 +246,17 @@ class NetworkEquipment extends MainAsset
         $netname = new NetworkName();
         if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
             if ($netname->fields['name'] != $port->name) {
-                $netname->update([
+                $netname->update(Sanitizer::sanitize([
                     'id'     => $netname->getID(),
-                    'name'   => addslashes($port->netname ?? $port->name)
-                ], $this->withHistory());
+                    'name'   => $port->netname ?? $port->name
+                ]));
             }
         } else {
             $netname->add([
                 'itemtype'  => 'NetworkPort',
                 'items_id'  => $netports_id,
                 'name'      => addslashes($port->name)
-            ], [], $this->withHistory());
+            ]);
         }
     }
 
@@ -308,7 +313,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return array
      */
-    public function getStackedSwitches($parent_index = 0): array
+    public function getStackedSwitches(): array
     {
         $components = $this->extra_data['network_components'] ?? [];
         if (!count($components)) {
@@ -316,18 +321,15 @@ class NetworkEquipment extends MainAsset
         }
 
         $switches = [];
-
+        $stack_number = 1;
         foreach ($components as $component) {
             switch ($component->type) {
-                case 'stack':
-                    if ($parent_index == 0 && (!property_exists($component, 'parent_index') || !empty($component->parent_index))) {
-                        $switches += $this->getStackedSwitches($component->index);
-                    }
-                    break;
                 case 'chassis':
                     if (property_exists($component, 'serial')) {
+                        $component->stack_number = $stack_number;
                         $switches[$component->index] = $component;
                     }
+                    $stack_number++;
                     break;
             }
         }
@@ -394,7 +396,17 @@ class NetworkEquipment extends MainAsset
             throw new \RuntimeException('Exactly one entry in data is expected.');
         } else {
             $data = current($this->data);
-            return preg_replace('/.+ - (\d)/', '$1', $data->name);
+
+            if ($data->stack_number !== null) {
+                return $data->stack_number;
+            }
+
+            return preg_replace('/.+\s(\d+)$/', '$1', $data->name);
         }
+    }
+
+    public function getItemtype(): string
+    {
+        return \NetworkEquipment::class;
     }
 }

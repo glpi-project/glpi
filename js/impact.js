@@ -1,12 +1,13 @@
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -713,6 +715,11 @@ var GLPIImpact = {
     * @returns {Array}
     */
     getNetworkStyle: function() {
+        let body_text_color = $(document.body).css("--tblr-body-color");
+        // If body color is somehow invalid, default to black
+        if (!body_text_color || body_text_color === "") {
+            body_text_color = "#000000";
+        }
         return [
             {
                 selector: 'core',
@@ -720,6 +727,12 @@ var GLPIImpact = {
                     'selection-box-opacity'     : '0.2',
                     'selection-box-border-width': '0',
                     'selection-box-color'       : '#24acdf'
+                }
+            },
+            {
+                selector: 'node',
+                style: {
+                    color: body_text_color
                 }
             },
             {
@@ -2401,8 +2414,6 @@ var GLPIImpact = {
         $(GLPIImpact.selectors.save).removeClass('dirty');
         $(GLPIImpact.selectors.save).removeClass('clean'); // Needed for animations if the workspace is not dirty
         $(GLPIImpact.selectors.save).addClass('clean');
-        $(GLPIImpact.selectors.save).find('i').removeClass("fas fa-exclamation-triangle");
-        $(GLPIImpact.selectors.save).find('i').addClass("fas fa-check");
     },
 
     /**
@@ -2411,8 +2422,6 @@ var GLPIImpact = {
     showDirtyWorkspaceStatus: function() {
         $(GLPIImpact.selectors.save).removeClass('clean');
         $(GLPIImpact.selectors.save).addClass('dirty');
-        $(GLPIImpact.selectors.save).find('i').removeClass("fas fa-check");
-        $(GLPIImpact.selectors.save).find('i').addClass("fas fa-exclamation-triangle");
     },
 
     /**

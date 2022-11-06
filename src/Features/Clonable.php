@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -43,6 +45,14 @@ use Toolbox;
  **/
 trait Clonable
 {
+    /**
+     * Cache used to keep track of the last clone index
+     * Usefull when cloning an item multiple time to avoid iterating on the sql
+     * results multiple time while looking for an available unique name
+     * @var null|int
+     */
+    protected $last_clone_index = null;
+
     /**
      * Get relations class to clone along with current element.
      *
@@ -66,7 +76,8 @@ trait Clonable
             'date_mod',
             'date_creation',
             'template_name',
-            'is_template'
+            'is_template',
+            'is_default'
         ];
         foreach ($properties_to_clean as $property) {
             if (array_key_exists($property, $input)) {
@@ -111,7 +122,12 @@ trait Clonable
             $override_input['is_recursive'] = $this->maybeRecursive() ? $this->isRecursive() : Session::getIsActiveEntityRecursive();
 
             $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+            /** @var CommonDBTM $relation_item */
             foreach ($relation_items as $relation_item) {
+                if ($source->isTemplate() && isset($relation_item->fields['name'])) {
+                    // Force-set name to avoid adding a "(copy)" suffix to the cloned item
+                    $override_input['name'] = $relation_item->fields['name'];
+                }
                 $relation_item->clone($override_input, $history);
             }
         }
@@ -130,6 +146,42 @@ trait Clonable
     public function prepareInputForClone($input)
     {
         return $input;
+    }
+
+    /**
+     * Clone the current item multiple times
+     *
+     * @since 9.5
+     *
+     * @param int     $n              Number of clones
+     * @param array   $override_input Custom input to override
+     * @param boolean $history        Do history log ? (true by default)
+     *
+     * @return int|bool the new ID of the clone (or false if fail)
+     */
+    public function cloneMultiple(
+        int $n,
+        array $override_input = [],
+        bool $history = true
+    ): bool {
+        $failure = false;
+
+        try {
+            // Init index cache
+            $this->last_clone_index = 0;
+            for ($i = 0; $i < $n && !$failure; $i++) {
+                if ($this->clone($override_input, $history) === false) {
+                    // Increment clone index cache to use less SQL
+                    // queries looking for an available unique clone name
+                    $failure = true;
+                }
+            }
+        } finally {
+            // Make sure cache is cleaned even on exception
+            $this->last_clone_index = null;
+        }
+
+        return !$failure;
     }
 
     /**
@@ -155,6 +207,14 @@ trait Clonable
             $input[$key] = $value;
         }
         $input = $new_item->cleanCloneInput($input);
+
+        // Do not compute a clone name if a new name is specified (Like creating from template)
+        if (!isset($override_input['name'])) {
+            if (($copy_name = $this->getUniqueCloneName($input)) !== null) {
+                $input[static::getNameField()] = $copy_name;
+            }
+        }
+
         $input = $new_item->prepareInputForClone($input);
 
         $input['clone'] = true;
@@ -166,6 +226,67 @@ trait Clonable
         }
 
         return $newID;
+    }
+
+    /**
+     * Returns unique clone name.
+     *
+     * @param array $input
+     *
+     * @return null|string
+     */
+    protected function getUniqueCloneName(array $input): ?string
+    {
+        $copy_name = null;
+
+        $name_field = static::getNameField();
+
+        // Force uniqueness for the name field
+        if (isset($input[$name_field])) {
+            $copy_name = "";
+            $current_name = $input[$name_field];
+            $table = static::getTable();
+
+            $copy_index = 0;
+
+            // Use index cache if defined
+            if (!is_null($this->last_clone_index)) {
+                $copy_index = $this->last_clone_index;
+            }
+
+            // Try to find an available name
+            do {
+                $copy_name = $this->computeCloneName($current_name, ++$copy_index);
+            } while (countElementsInTable($table, [$name_field => $copy_name]) > 0);
+
+            // Update index cache
+            $this->last_clone_index = $copy_index;
+        }
+
+        return $copy_name;
+    }
+
+    /**
+     * Compute the name of a copied item
+     * The goal is to set the copy name as "{name} (copy {i})" unless it's
+     * the first copy: in this case just "{name} (copy)" is acceptable
+     *
+     * @param string $current_item The item being copied
+     * @param int    $copy_index   The index to append to the copy's name
+     *
+     * @return string The computed name of the new item to be created
+     */
+    public function computeCloneName(
+        string $current_name,
+        int $copy_index
+    ): string {
+        // First copy
+        if ($copy_index == 1) {
+            return sprintf(__("%s (copy)"), $current_name);
+        }
+
+        // Second+ copies, add index
+        return sprintf(__("%s (copy %d)"), $current_name, $copy_index);
     }
 
     /**

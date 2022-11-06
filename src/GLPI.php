@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,25 +17,25 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 use Glpi\Application\ErrorHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 
 /**
@@ -52,12 +53,10 @@ class GLPI
      */
     public function initLogger()
     {
-        global $PHPLOGGER, $PHP_LOG_HANDLER, $SQLLOGGER, $SQL_LOG_HANDLER;
+        global $PHPLOGGER, $SQLLOGGER;
 
         $this->log_level = Logger::WARNING;
-        if (defined('TU_USER')) {
-            $this->log_level = Logger::DEBUG;
-        } else if (defined('GLPI_LOG_LVL')) {
+        if (defined('GLPI_LOG_LVL')) {
             $this->log_level = GLPI_LOG_LVL;
         } else if (
             !isset($_SESSION['glpi_use_mode'])
@@ -68,25 +67,19 @@ class GLPI
 
         foreach (['php', 'sql'] as $type) {
             $logger = new Logger('glpi' . $type . 'log');
-            if (defined('TU_USER')) {
-                $handler = new TestHandler($this->log_level);
-            } else {
-                $handler = new StreamHandler(
-                    GLPI_LOG_DIR . "/{$type}-errors.log",
-                    $this->log_level
-                );
-                $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
-                $handler->setFormatter($formatter);
-            }
+            $handler = new StreamHandler(
+                GLPI_LOG_DIR . "/{$type}-errors.log",
+                $this->log_level
+            );
+            $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
+            $handler->setFormatter($formatter);
             $logger->pushHandler($handler);
             switch ($type) {
                 case 'php':
                     $PHPLOGGER = $logger;
-                    $PHP_LOG_HANDLER = $handler;
                     break;
                 case 'sql':
                     $SQLLOGGER = $logger;
-                    $SQL_LOG_HANDLER = $handler;
                     break;
             }
         }
@@ -99,6 +92,7 @@ class GLPI
      */
     public function getLogLevel()
     {
+        Toolbox::deprecated();
         return $this->log_level;
     }
 

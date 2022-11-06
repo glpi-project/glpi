@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,7 +37,6 @@ namespace Glpi\Features;
 
 use CommonITILObject;
 use CommonTreeDropdown;
-use DB;
 use DropdownTranslation;
 use Html;
 use ITILCategory;
@@ -51,104 +52,117 @@ use Search;
 trait TreeBrowse
 {
     /**
-     * Show the document browse view
+     * Show the browse view
      */
-    public static function showBrowseView(string $itemtype, array $params)
+    public static function showBrowseView(string $itemtype, array $params, $update = false)
     {
         global $CFG_GLPI;
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
         $loading_txt = addslashes(__('Loading...'));
-        $start       = isset($_REQUEST['start'])
-                            ? $_REQUEST['start']
+        $start       = isset($params['start'])
+                            ? $params['start']
                             : 0;
-        $browse      = isset($_REQUEST['browse'])
-                            ? $_REQUEST['browse']
+        $browse      = isset($params['browse'])
+                            ? $params['browse']
                             : 0;
-        $is_deleted  = isset($_REQUEST['is_deleted'])
-                            ? $_REQUEST['is_deleted']
+        $is_deleted  = isset($params['is_deleted'])
+                            ? $params['is_deleted']
                             : 0;
+        $unpublished = isset($params['unpublished'])
+                            ? $params['unpublished']
+                            : 1;
         $criteria    = json_encode($params['criteria']);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
         $no_cat_found  = __("No category found");
 
         $JS = <<<JAVASCRIPT
-        $(function() {
-            var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
-            $('#items_list').html(loadingindicator); // loadingindicator on doc ready
-            var loadNode = function(cat_id) {
-                $('#items_list').html(loadingindicator);
-                $('#items_list').load('$ajax_url', {
-                    'action': 'getItemslist',
-                    'cat_id': cat_id,
-                    'itemtype': '$itemtype',
-                    'start': $start,
-                    'browse': $browse,
-                    'is_deleted': $is_deleted,
-                    'criteria': $criteria
+        var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
+        $('#items_list').html(loadingindicator);
+        window.loadNode = function(cat_id) {
+            $('#items_list').html(loadingindicator);
+            $('#items_list').load('$ajax_url', {
+                'action': 'getItemslist',
+                'cat_id': cat_id,
+                'itemtype': '$itemtype',
+                'start': $start,
+                'browse': $browse,
+                'is_deleted': $is_deleted,
+                'unpublished': $unpublished,
+                'criteria': $criteria
+            });
+        };
+JAVASCRIPT;
+
+        if ($update) {
+            $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
+            $JS .= <<<JAVASCRIPT
+            $('#tree_category').fancytree('option', 'source', {$category_list});
+JAVASCRIPT;
+        } else {
+            $JS .= <<<JAVASCRIPT
+            $(function() {
+                $('#tree_category').fancytree({
+                    // load plugins
+                    extensions: ['filter', 'glyph', 'persist'],
+
+                    // Scroll node into visible area, when focused by keyboard
+                    autoScroll: true,
+
+                    // enable font-awesome icons
+                    glyph: {
+                        preset: "awesome5",
+                        map: {}
+                    },
+
+                    persist: {
+                        cookiePrefix: '$itemtype',
+                        expandLazy: true,
+                        overrideSource: true,
+                        store: "auto"
+                    },
+
+                    // load json data
+                    source: {$category_list},
+
+                    // filter plugin options
+                    filter: {
+                        mode: "hide", // remove unmatched nodes
+                        autoExpand: true, // if results found in children, auto-expand parent
+                        nodata: '{$no_cat_found}', // message when no data found
+                    },
+
+                    // events
+                    activate: function(event, data) {
+                        var node = data.node;
+                        var key  = node.key;
+
+                        window.loadNode(key);
+                    },
+
                 });
-            };
 
-            $('#tree_category').fancytree({
-                // load plugins
-                extensions: ['filter', 'glyph', 'persist'],
-
-                // Scroll node into visible area, when focused by keyboard
-                autoScroll: true,
-
-                // enable font-awesome icons
-                glyph: {
-                    preset: "awesome5",
-                    map: {}
-                },
-
-                persist: {
-                    cookiePrefix: '$itemtype',
-                    expandLazy: true,
-                    overrideSource: true,
-                    store: "auto"
-                },
-
-                // load json data
-                source: {$category_list},
-
-                // filter plugin options
-                filter: {
-                    mode: "hide", // remove unmatched nodes
-                    autoExpand: true, // if results found in children, auto-expand parent
-                    nodata: '{$no_cat_found}', // message when no data found
-                },
-
-                // events
-                activate: function(event, data) {
-                    var node = data.node;
-                    var key  = node.key;
-
-                    loadNode(key);
-                },
-
+                var tree = $.ui.fancytree.getTree("#tree_category")
+                if (tree.activeNode === null) {
+                    tree.activateKey(-1);
+                }
+                $(document).on('keyup', '#browser_tree_search', function() {
+                    var search_text = $(this).val();
+                    $.ui.fancytree.getTree("#tree_category").filterNodes(search_text);
+                });
             });
 
-            var tree = $.ui.fancytree.getTree("#tree_category")
-            if (tree.activeNode === null) {
-                tree.activateKey(-1);
-            }
-            $(document).on('keyup', '#browser_tree_search', function() {
-                var search_text = $(this).val();
-                $.ui.fancytree.getTree("#tree_category").filterNodes(search_text);
-            });
-        });
-
-        JAVASCRIPT;
+JAVASCRIPT;
+            echo "<div id='tree_browse'>
+            <div class='browser_tree d-flex flex-column'>
+                <input type='text' class='browser_tree_search' placeholder='" . __("Search…") . "' id='browser_tree_search'>
+                <div id='tree_category' class='browser-tree-container'></div>
+            </div>
+            <div id='items_list' class='browser_items'></div>
+            </div>";
+        }
         echo Html::scriptBlock($JS);
-        echo "<div id='tree_browse'>
-        <div class='browser_tree d-flex flex-column'>
-            <input type='text' class='browser_tree_search' placeholder='" . __("Search…") . "' id='browser_tree_search'>
-            <div id='tree_category' class='browser-tree-container'></div>
-        </div>
-        <div id='items_list' class='browser_items'></div>
-        </div>";
     }
 
     /**
@@ -167,7 +181,8 @@ trait TreeBrowse
         $cat_item     = new $cat_itemtype();
 
         $params['export_all'] = true;
-        $data = Search::prepareDatasForSearch($itemtype, $params, ['id']);
+
+        $data = Search::prepareDatasForSearch($itemtype, $params);
         Search::constructSQL($data);
         $ids = [0];
         foreach ($DB->query($data['sql']['search']) as $row) {
@@ -176,14 +191,30 @@ trait TreeBrowse
 
         $cat_table = $cat_itemtype::getTable();
         $cat_fk    = $cat_itemtype::getForeignKeyField();
+        $cat_join = $itemtype . '_' . $cat_itemtype;
+
+        if (class_exists($cat_join)) {
+            $join = [
+                $cat_join::getTable() => [
+                    'ON'  => [
+                        $cat_join::getTable() => $itemtype::getForeignKeyField(),
+                        $itemtype::getTable() => 'id'
+                    ]
+                ]
+            ];
+        } else {
+            $join = [];
+            $cat_join = $itemtype;
+        }
 
         $items_subquery = new QuerySubQuery(
             [
                 'SELECT' => ['COUNT DISTINCT' => $itemtype::getTableField('id') . ' as cpt'],
                 'FROM'   => $itemtype::getTable(),
+                'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $itemtype::getTableField($cat_fk) => new QueryExpression(
-                        DB::quoteName($cat_itemtype::getTableField('id'))
+                    $cat_join::getTableField($cat_fk) => new QueryExpression(
+                        $DB->quoteName($cat_itemtype::getTableField('id'))
                     ),
                     $itemtype::getTableField('id') => $ids,
                 ]
@@ -227,24 +258,29 @@ trait TreeBrowse
         }
 
         // Without category
+        $join[$cat_table] = [
+            'ON' => [
+                $cat_join::getTable() => $cat_itemtype::getForeignKeyField(),
+                $cat_table => 'id'
+            ]
+        ];
         $no_cat_count = $DB->request(
             [
                 'SELECT' => ['COUNT DISTINCT' => $itemtype::getTableField('id') . ' as cpt'],
                 'FROM'   => $itemtype::getTable(),
+                'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $itemtype::getTableField($cat_fk) => 0,
+                    $cat_itemtype::getTableField('id') => null,
                     $itemtype::getTableField('id') => $ids,
                 ]
             ]
         )->current();
-        if ($no_cat_count['cpt'] > 0) {
-            $categories[] = [
-                'id'          => -1,
-                'name'        => __('Without Category'),
-                'items_count' => $no_cat_count['cpt'],
-                $cat_fk       => 0,
-            ];
-        }
+        $categories[] = [
+            'id'          => -1,
+            'name'        => __('Without Category'),
+            'items_count' => $no_cat_count['cpt'],
+            $cat_fk       => 0,
+        ];
 
         // construct flat data
         $nodes   = [];

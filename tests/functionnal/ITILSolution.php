@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,36 +17,62 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace tests\units;
 
+use CommonITILObject;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use Ticket;
 
 /* Test for inc/itilsolution.class.php */
 
 class ITILSolution extends DbTestCase
 {
+    /**
+     * Create a new ITILObject and return its id or the object
+     *
+     * @param string $itemtype ITILObject parent to test followups on
+     * @param bool   $as_object
+     * @return integer|\CommonDBTM
+     */
+    private function getNewITILObject($itemtype, bool $as_object = false)
+    {
+        //create reference ITILObject
+        $itilobject = new $itemtype();
+        $this->integer((int)$itilobject->add([
+            'name'         => "$itemtype title",
+            'description'  => 'a description',
+            'content'      => '',
+            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+        $this->boolean($itilobject->isNewItem())->isFalse();
+        $this->boolean($itilobject->can($itilobject->getID(), \READ))->isTrue();
+        return $as_object ? $itilobject : (int)$itilobject->getID();
+    }
+
     public function testTicketSolution()
     {
         $this->login();
 
         $uid = getItemByTypeName('User', TU_USER, true);
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $this->integer((int)$ticket->add([
             'name'               => 'ticket title',
             'description'        => 'a description',
@@ -191,7 +218,7 @@ class ITILSolution extends DbTestCase
         ]))->isGreaterThan(0);
 
         $this->boolean($change->isNewItem())->isFalse();
-        $this->variable($change->getField('status'))->isIdenticalTo($change::ASSIGNED);
+        $this->variable($change->getField('status'))->isIdenticalTo($change::INCOMING);
 
         $solution = new \ITILSolution();
         $this->integer(
@@ -218,7 +245,7 @@ class ITILSolution extends DbTestCase
         $this->setEntity('Root entity', true);
 
         $uid = getItemByTypeName('User', TU_USER, true);
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $duplicated = (int)$ticket->add([
             'name'               => 'Duplicated ticket',
             'description'        => 'A ticket that will be duplicated',
@@ -240,7 +267,7 @@ class ITILSolution extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $duplicated,
                 'tickets_id_2' => $duplicate,
-                'link'         => \Ticket_Ticket::DUPLICATE_WITH
+                'link'         => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
             ])
         )->isGreaterThan(0);
 
@@ -267,7 +294,7 @@ class ITILSolution extends DbTestCase
         $this->login();
 
         $uid = getItemByTypeName('User', TU_USER, true);
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $this->integer((int)$ticket->add([
             'name'               => 'ticket title',
             'description'        => 'a description',
@@ -309,7 +336,7 @@ class ITILSolution extends DbTestCase
         $this->login(); // must be logged as ITILSolution uses Session::getLoginUserID()
 
        // Test uploads for item creation
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket->add([
             'name' => $this->getUniqueString(),
             'content' => 'test',
@@ -325,15 +352,18 @@ class ITILSolution extends DbTestCase
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
             'name'    => 'a solution',
-            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
-         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-            '_content' => [
+            'content' => Sanitizer::sanitize(<<<HTML
+<p>Test with a ' (add)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML
+            ),
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
@@ -341,6 +371,7 @@ class ITILSolution extends DbTestCase
 
         $instance->add($input);
         $this->boolean($instance->isNewItem())->isFalse();
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
         $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
 
@@ -350,19 +381,23 @@ class ITILSolution extends DbTestCase
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
-            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
-         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-            '_content' => [
+            'content' => Sanitizer::sanitize(<<<HTML
+<p>Test with a ' (update)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML
+            ),
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
         $this->boolean($success)->isTrue();
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
         $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
     }
@@ -402,5 +437,67 @@ class ITILSolution extends DbTestCase
             $ticket->getFromDB($ticket->fields['id']);
             $this->integer($ticket->fields['status'])->isEqualTo(Ticket::SOLVED);
         }
+    }
+
+    public function testAddFromTemplate()
+    {
+        $this->login();
+
+        $ticket = $this->getNewITILObject('Ticket', true);
+        $template = new \SolutionTemplate();
+        $templates_id = $template->add([
+            'name'               => 'test template',
+            'content'            => 'test template',
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+        $solution = new \ITILSolution();
+        $solutions_id = $solution->add([
+            '_templates_id'      => $templates_id,
+            'itemtype'           => 'Ticket',
+            'items_id'           => $ticket->fields['id'],
+        ]);
+        $this->integer($solutions_id)->isGreaterThan(0);
+
+        $this->string($solution->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+
+        //Reset ticket status
+        $ticket->update([
+            'id'    => $ticket->fields['id'],
+            'status' => \CommonITILObject::INCOMING,
+        ]);
+        $solutions_id = $solution->add([
+            '_templates_id'      => $templates_id,
+            'itemtype'           => 'Ticket',
+            'items_id'           => $ticket->fields['id'],
+            'content'            => 'test template2',
+        ]);
+        $this->integer($solutions_id)->isGreaterThan(0);
+
+        $this->string($solution->fields['content'])->isEqualTo('test template2');
+    }
+
+    public function testAddOnClosedTicket()
+    {
+        $this->login();
+        // Create new ticket
+        $ticket = $this->getNewITILObject('Ticket', true);
+        // Close ticket
+        $this->boolean($ticket->update([
+            'id'    => $ticket->fields['id'],
+            'status' => \CommonITILObject::CLOSED,
+        ]))->isTrue();
+        // Create solution
+        $solution = new \ITILSolution();
+        $solutions_id = $solution->add([
+            'itemtype'           => 'Ticket',
+            'items_id'           => $ticket->fields['id'],
+            'content'            => 'test solution',
+        ]);
+        $this->integer($solutions_id)->isGreaterThan(0);
+        // Verify solution is not waiting for approval. Should default to being approved.
+        $this->integer($solution->fields['status'])->isEqualTo(\CommonITILValidation::ACCEPTED);
+        // Verify the ticket status is still closed.
+        $this->boolean($ticket->getFromDB($ticket->fields['id']))->isTrue();
+        $this->integer($ticket->fields['status'])->isEqualTo(\CommonITILObject::CLOSED);
     }
 }

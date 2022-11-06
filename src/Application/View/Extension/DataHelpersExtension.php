@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -51,6 +53,7 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
             new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
             new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
+            new TwigFilter('formatted_size', [$this, 'getFormattedSize']),
             new TwigFilter('html_to_text', [$this, 'getTextFromHtml']),
             new TwigFilter('picture_url', [$this, 'getPictureUrl']),
             new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
@@ -58,6 +61,7 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
             new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
             new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
+            new TwigFilter('truncate_left', [$this, 'truncateLeft']),
         ];
     }
 
@@ -65,15 +69,16 @@ class DataHelpersExtension extends AbstractExtension
      * Return date formatted to user preferred format.
      *
      * @param mixed $datetime
+     * @param bool $with_seconds
      *
      * @return string|null
      */
-    public function getFormattedDatetime($datetime): ?string
+    public function getFormattedDatetime($datetime, bool $with_seconds = false): ?string
     {
         if (!is_string($datetime)) {
             return null;
         }
-        return Html::convDateTime($datetime);
+        return Html::convDateTime($datetime, null, $with_seconds);
     }
 
     /**
@@ -116,6 +121,21 @@ class DataHelpersExtension extends AbstractExtension
     public function getFormattedNumber($number): string
     {
         return Html::formatNumber($number);
+    }
+
+    /**
+     * Return size formatted in a compact way (mo, ko, etc).
+     *
+     * @param mixed $number
+     *
+     * @return string
+     */
+    public function getFormattedSize($number): string
+    {
+        if (!is_numeric($number)) {
+            return '';
+        }
+        return Toolbox::getSize($number);
     }
 
     /**
@@ -222,5 +242,24 @@ class DataHelpersExtension extends AbstractExtension
         }
 
         return Sanitizer::getVerbatimValue($string);
+    }
+
+
+    /**
+     * return the provided string truncated on the left and preprend a prefix separator if length is reached
+     *
+     * @param string  $string the string to left truncate
+     * @param int     $length number of char to preserve
+     * @param int     $separator prefix to prepend to the string
+     *
+     * @return string truncated string
+     */
+    public function truncateLeft(string $string = "", int $length = 30, string $separator = "...")
+    {
+        if (mb_strlen($string) <= $length) {
+            return $string;
+        }
+
+        return $separator . mb_substr($string, -$length);
     }
 }

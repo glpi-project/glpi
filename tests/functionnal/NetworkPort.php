@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -291,6 +293,9 @@ class NetworkPort extends DbTestCase
                     $expectedDate = new \DateTime($date);
                     $this->dateTime($dateClone)->isEqualTo($expectedDate);
                     break;
+                case 'name':
+                    $this->variable($clonedNetworkport->getField($k))->isEqualTo("{$networkport->getField($k)} (copy)");
+                    break;
                 default:
                     $this->variable($clonedNetworkport->getField($k))->isEqualTo($networkport->getField($k));
             }
@@ -319,6 +324,42 @@ class NetworkPort extends DbTestCase
                 default:
                     $this->variable($clonedInstantiation->getField($k))->isEqualTo($instantiation->getField($k));
             }
+        }
+    }
+
+    public function testClearSavedInputAfterUpdate()
+    {
+        $this->login();
+
+        // Check that there is no saveInput already
+        if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
+            $this->array($_SESSION['saveInput'])->notHasKey('NetworkPort');
+        }
+        $computer1 = getItemByTypeName('Computer', '_test_pc01');
+        $networkport = new \NetworkPort();
+
+        // Be sure added
+        $np_id = $networkport->add([
+            'items_id'           => $computer1->getID(),
+            'itemtype'           => 'Computer',
+            'entities_id'        => $computer1->fields['entities_id'],
+            'is_recursive'       => 0,
+            'logical_number'     => 5,
+            'mac'                => '00:24:81:eb:c6:d5',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'name'               => 'eth1',
+        ]);
+        $this->integer((int)$np_id)->isGreaterThan(0);
+
+        $result = $networkport->update([
+            'id'                 => $np_id,
+            'comment'            => 'test',
+        ]);
+        $this->boolean($result)->isTrue();
+
+        // Check that there is no savedInput after update
+        if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
+            $this->array($_SESSION['saveInput'])->notHasKey('NetworkPort');
         }
     }
 }

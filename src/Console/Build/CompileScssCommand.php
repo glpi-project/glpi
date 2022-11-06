@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -117,8 +119,6 @@ class CompileScssCommand extends Command
             }
         }
 
-        $licence_header = $this->getLicenceHeaderString();
-
         foreach ($files as $file) {
             $output->writeln(
                 '<comment>' . sprintf('Processing "%s".', $file) . '</comment>',
@@ -132,8 +132,6 @@ class CompileScssCommand extends Command
                     'nocache' => true,
                 ]
             );
-
-            $css = $licence_header . $css;
 
             if ($dry_run) {
                 $message = sprintf('"%s" compiled successfully.', $file);
@@ -158,30 +156,5 @@ class CompileScssCommand extends Command
         }
 
         return 0; // Success
-    }
-
-    /**
-     * Get lincence header string.
-     *
-     * @return string
-     */
-    private function getLicenceHeaderString(): string
-    {
-       // Extract header lines
-        $lines = file(GLPI_ROOT . '/tools/HEADER');
-
-       // Add * prefix on all lines
-        $lines = array_map(
-            function ($line) {
-                $line_prefix = ' * ';
-                return (preg_match('/^\s+$/', $line) ? rtrim($line_prefix) : $line_prefix) . $line;
-            },
-            $lines
-        );
-
-       // Surround by opening and closing lines
-        $lines = array_merge(["/**\n"], $lines, [" */\n\n"]);
-
-        return implode($lines);
     }
 }

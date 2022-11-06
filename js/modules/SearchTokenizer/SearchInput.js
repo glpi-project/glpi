@@ -1,12 +1,13 @@
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -38,6 +40,10 @@ import SearchTokenizer from "./SearchTokenizer.js";
  * @property {function} [on_result_change] Callback when the result changes
  * @property {TokenizerOptions} [tokenizer_options] Tokenizer options
  * @property {boolean} filter_on_type Whether to filter the suggestions on typing
+ * @property {{}} [input_options] Options for the new input element
+ * @property {[]|'copy'} [input_options.classes] Classes for the new input element. If set to "copy", the classes of the original input will be copied
+ * @property {{}|'copy'} [input_options.attributes] Attributes for the new input element. If set to "copy", the attributes of the original input will be copied
+ * @property {{}|'copy'} [input_options.data] Data for the new input element. If set to "copy", the attributes of the original input will be copied
  */
 
 export default class SearchInput {
@@ -55,18 +61,74 @@ export default class SearchInput {
             backspace_action: 'edit',
             tokenizer_options: {},
             filter_on_type: true,
+            input_options: {
+                classes: [],
+                attributes: {},
+                data: {}
+            }
         }, options || {});
-        this.tokenizer = new SearchTokenizer(options.allowed_tags || {}, options.drop_unallowed_tags || false, options.tokenizer_options);
+        this.tokenizer = new SearchTokenizer(this.options.allowed_tags || {}, this.options.drop_unallowed_tags || false, this.options.tokenizer_options);
 
         this.displayed_input = $(`
-         <div class="form-control search-input d-flex" tabindex="0"></div>
+         <div class="form-control search-input d-flex overflow-auto" tabindex="0"></div>
       `).insertBefore(input);
         this.displayed_input.append(`<span class="search-input-tag-input flex-grow-1" contenteditable="true"></span>`);
+        this.applyInputOptions();
+
         this.original_input.hide();
 
         this.last_result = null;
 
         this.registerListeners();
+    }
+
+    applyInputOptions() {
+        let new_attrs = {};
+
+        if (typeof this.options.input_options.attributes === 'object') {
+            new_attrs = this.options.input_options.attributes;
+        } else if (this.options.input_options.attributes === 'copy') {
+            const original_attr = this.original_input.get(0).attributes;
+            for (let i = 0; i < original_attr.length; i++) {
+                // Get only non-data attributes
+                if (!original_attr[i].name.startsWith('data-') && original_attr[i].name !== 'class') {
+                    new_attrs[original_attr[i].name] = original_attr[i].value;
+                }
+            }
+        }
+
+        let new_data = {};
+        let old_data_attrs = {};
+        if (typeof this.options.input_options.data === 'object') {
+            new_data = this.options.input_options.data;
+        } else if (this.options.input_options.data === 'copy') {
+            new_data = this.original_input.data();
+            const original_attr = this.original_input.get(0).attributes;
+            // Get data attributes in case they aren't in jQuery data
+            for (let i = 0; i < original_attr.length; i++) {
+                // Get only data attributes
+                if (original_attr[i].name.startsWith('data-')) {
+                    old_data_attrs[original_attr[i].name] = original_attr[i].value;
+                }
+            }
+        }
+
+        // Add data attributes. We don't use $.data() because having the DOM attribute may be needed and using $.data doesn't add them.
+        // Information from $.data will override any data attributes of the same name
+        new_attrs = Object.assign(old_data_attrs, Object.keys(new_data).reduce((obj, key) => {
+            obj['data-' + key] = new_data[key];
+            return obj;
+        }, new_attrs));
+
+        // Apply attributes including data attributes
+        this.displayed_input.attr(new_attrs);
+
+        // Apply classes
+        if (Array.isArray(this.options.input_options.classes)) {
+            this.displayed_input.addClass(this.options.input_options.classes.join(' '));
+        } else if (this.options.input_options.classes === 'copy') {
+            this.displayed_input.addClass(this.original_input.attr('class'));
+        }
     }
 
     registerListeners() {
@@ -424,9 +486,9 @@ export default class SearchInput {
             tag.removeClass('search-input-tag');
             tag.addClass('search-input-tag-input');
             tag.attr('contenteditable', 'true');
-            const v = tag.text().trim();
+            const token = tag.data('token');
             tag.empty();
-            tag.text(v);
+            tag.text(token.raw);
             tag.focus();
             // place cursor at end of the tag text
             this.placeCaretAtEndOfNode(tag.get(0));
@@ -494,7 +556,7 @@ export default class SearchInput {
         const selection = document.getSelection();
         const range = document.createRange();
 
-        if (node.lastChild.nodeType === Node.TEXT_NODE) {
+        if (node.lastChild && node.lastChild.nodeType === Node.TEXT_NODE) {
             range.setStart(node.lastChild, node.lastChild.length);
         } else {
             range.setStart(node, node.childNodes.length);
@@ -513,7 +575,14 @@ export default class SearchInput {
     }
 
     getRawInput() {
-        return this.displayed_input.get(0).textContent;
+        let raw_input = '';
+        this.displayed_input.find('.search-input-tag').each((i, node) => {
+            const n = $(node);
+            if (n.data('token') !== undefined) {
+                raw_input += n.data('token').raw + ' ';
+            }
+        });
+        return raw_input.trim();
     }
 
     refreshPopover() {

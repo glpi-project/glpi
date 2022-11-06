@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -63,15 +65,9 @@ if (
         }
     }
 
-    $user_index = 0;
-    if (isset($_POST['_user_index'])) {
-        $user_index = $_POST['_user_index'];
-    }
+    $user_index = $_POST['_user_index'] ?? 0;
 
-    $default_notif = true;
-    if (isset($_POST['use_notification'][$user_index])) {
-        $default_notif = $_POST['use_notification'][$user_index];
-    }
+    $default_notif = $_POST['use_notification'][$user_index] ?? true;
 
     if (
         isset($_POST['alternative_email'][$user_index])
@@ -130,8 +126,7 @@ if (
                         value='" . htmlentities($default_email, ENT_QUOTES, 'utf-8') . "'>";
     }
 
-    echo "$email_string
-   </div>";
+    echo "$email_string";
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

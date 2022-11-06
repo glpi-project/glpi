@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,10 +38,10 @@ namespace Glpi\Inventory\Asset;
 
 use Computer_Item;
 use Glpi\Inventory\Conf;
+use Glpi\Toolbox\Sanitizer;
 use Peripheral as GPeripheral;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
-use Toolbox;
 
 class Peripheral extends InventoryAsset
 {
@@ -159,11 +162,13 @@ class Peripheral extends InventoryAsset
                 $itemtype = 'Peripheral';
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
-                    $val->entities_id = $this->entities_id;
-                    $items_id = $peripheral->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+                    $handled_input = $this->handleInput($val, $peripheral) + ['entities_id' => $this->entities_id];
+                    $items_id = $peripheral->add(Sanitizer::sanitize($handled_input), [], false);
                 } else {
                     $items_id = $data['found_inventories'][0];
-                    $peripheral->update(Toolbox::addslashes_deep(['id' => $items_id] + (array)$val), $this->withHistory());
+                    $peripheral->getFromDB($items_id);
+                    $handled_input = $this->handleInput($val, $peripheral);
+                    $peripheral->update(Sanitizer::sanitize(['id' => $items_id] + $handled_input), false);
                 }
 
                 $peripherals[] = $items_id;
@@ -221,7 +226,7 @@ class Peripheral extends InventoryAsset
                     if ($peripherals_id == $data['id']) {
                         unset($peripherals[$key]);
                         unset($db_peripherals[$keydb]);
-                        $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1], $this->withHistory());
+                        $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1], false);
                         break;
                     }
                 }
@@ -232,7 +237,7 @@ class Peripheral extends InventoryAsset
            // Delete peripherals links in DB
             foreach ($db_peripherals as $keydb => $data) {
                 if ($data['is_dynamic']) {
-                    $computer_Item->delete(['id' => $keydb], 1);
+                    $computer_Item->delete(['id' => $keydb], true);
                 }
             }
         }
@@ -251,6 +256,11 @@ class Peripheral extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return true;
+        return $conf->import_peripheral == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Peripheral::class;
     }
 }

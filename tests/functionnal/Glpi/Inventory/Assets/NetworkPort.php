@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,22 +17,26 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace tests\units\Glpi\Inventory\Asset;
+
+use DateInterval;
+use DateTime;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
@@ -87,7 +92,7 @@ class NetworkPort extends AbstractInventoryAsset
    </DEVICE>
 </CONTENT>
 </REQUEST>",
-                'ports'        => ['{"ifdescr":"3","ifname":"3","ifnumber":3,"ifstatus":1,"iftype":6,"trunk":false,"mac":"b4:39:d6:3b:22:bd","instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"3","logical_number":3}'],
+                'ports'        => ['{"ifdescr":"3","ifname":"3","ifnumber":3,"ifstatus":1,"iftype":6,"trunk":false,"mac":"b4:39:d6:3b:22:bd","instantiation_type":"NetworkPortEthernet","name":"3","logical_number":3}'],
                 'connections'  => '{"3":["00:40:9d:3b:7f:c4"]}',
                 'vlans'        => '{"3":[{"name":"VLAN160","tag":"160"}]}',
                 'aggregates'   => '[]'
@@ -170,9 +175,9 @@ class NetworkPort extends AbstractInventoryAsset
 </CONTENT>
 </REQUEST>",
                 'ports'         => [
-                    '{"ifdescr":"Port-channel10","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"15 days, 23:20:53.24","ifmtu":1500,"ifname":"Po10","ifnumber":5010,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":56,"trunk":false,"mac":"c4:64:13:8c:7e:b5","instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"Po10","logical_number":5010,"ifinbytes":1076823325,"ifoutbytes":2179528910}',
-                    '{"ifdescr":"Agg one","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"18 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg01","ifnumber":10001,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b6","instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"Agg01","logical_number":10001,"ifinbytes":0,"ifoutbytes":0}',
-                    '{"ifdescr":"Agg two","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"17 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg02","ifnumber":10002,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b7","instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"Agg02","logical_number":10002,"ifinbytes":0,"ifoutbytes":0}'
+                    '{"ifdescr":"Port-channel10","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"15 days, 23:20:53.24","ifmtu":1500,"ifname":"Po10","ifnumber":5010,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":56,"trunk":false,"mac":"c4:64:13:8c:7e:b5","instantiation_type":"NetworkPortEthernet","name":"Po10","logical_number":5010,"ifinbytes":1076823325,"ifoutbytes":2179528910}',
+                    '{"ifdescr":"Agg one","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"18 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg01","ifnumber":10001,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b6","instantiation_type":"NetworkPortEthernet","name":"Agg01","logical_number":10001,"ifinbytes":0,"ifoutbytes":0}',
+                    '{"ifdescr":"Agg two","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"17 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg02","ifnumber":10002,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b7","instantiation_type":"NetworkPortEthernet","name":"Agg02","logical_number":10002,"ifinbytes":0,"ifoutbytes":0}'
                 ],
                 'connections'  => '',
                 'vlans'        => '',
@@ -308,9 +313,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 </CONTENT>
 </REQUEST>",
                 'ports'  => [
-                    '{"ifalias":"lag1.glpi-project.org","ifdescr":"Port-channel6","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"32.65 seconds","ifmtu":9000,"ifname":"Po6","ifnumber":5006,"ifouterrors":0,"ifspeed":2000000000,"ifstatus":1,"iftype":56,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"Po6","logical_number":5006,"ifinbytes":82823274,"ifoutbytes":657139488}',
-                    '{"ifalias":"net1.glpi-project.org","ifdescr":"GigabitEthernet4\/0\/46","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"5 minutes, 50.26","ifmtu":9000,"ifname":"Gi4\/0\/46","ifnumber":11646,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:19:2f:08:8f:2e","trunk":false,"instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"Gi4\/0\/46","logical_number":11646,"portduplex":3,"ifinbytes":38145664,"ifoutbytes":167335360}',
-                    '{"ifalias":"net2.glpi-project.org","ifdescr":"GigabitEthernet8\/0\/45","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"30.69 seconds","ifmtu":9000,"ifname":"Gi8\/0\/45","ifnumber":13645,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","ipaddress":[],"name":"Gi8\/0\/45","logical_number":13645,"portduplex":3,"ifinbytes":40326934,"ifoutbytes":454911808}'
+                    '{"ifalias":"lag1.glpi-project.org","ifdescr":"Port-channel6","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"32.65 seconds","ifmtu":9000,"ifname":"Po6","ifnumber":5006,"ifouterrors":0,"ifspeed":2000000000,"ifstatus":1,"iftype":56,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Po6","logical_number":5006,"ifinbytes":82823274,"ifoutbytes":657139488}',
+                    '{"ifalias":"net1.glpi-project.org","ifdescr":"GigabitEthernet4\/0\/46","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"5 minutes, 50.26","ifmtu":9000,"ifname":"Gi4\/0\/46","ifnumber":11646,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:19:2f:08:8f:2e","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Gi4\/0\/46","logical_number":11646,"portduplex":3,"ifinbytes":38145664,"ifoutbytes":167335360}',
+                    '{"ifalias":"net2.glpi-project.org","ifdescr":"GigabitEthernet8\/0\/45","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"30.69 seconds","ifmtu":9000,"ifname":"Gi8\/0\/45","ifnumber":13645,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Gi8\/0\/45","logical_number":13645,"portduplex":3,"ifinbytes":40326934,"ifoutbytes":454911808}'
                 ],
                 'connections'  => '{"5006":["00:14:4f:f2:b7:fd","00:14:4f:f2:b7:fe"]}',
                 'vlans'        => '{"5006":[{"name":"san-replication","tag":"206"}],"11646":[{"name":"san-replication","tag":"206"}],"13645":[{"name":"san-replication","tag":"206"}]}',
@@ -324,7 +329,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
      */
     public function testPrepare($xml, $ports, $connections, $vlans, $aggregates)
     {
-        $this->login();
         $converter = new \Glpi\Inventory\Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
@@ -350,5 +354,230 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->array($asset->getPart('connections'))->isEqualTo((array)json_decode($connections), json_encode($asset->getPart('connections')));
         $this->array($asset->getPart('vlans'))->isEqualTo((array)json_decode($vlans), json_encode($asset->getPart('vlans')));
         $this->array($asset->getPart('aggregates'))->isEqualTo(json_decode($aggregates, true), json_encode($asset->getPart('aggregates')));
+    }
+
+    public function testNetworkPortMetrics()
+    {
+        $networkport = new \NetworkPort();
+        $networkmetric = new \NetworkPortMetrics();
+        $networkequipment = new \NetworkEquipment();
+
+        $ifinbytes    = 3559673658;
+        $ifoutbytes   = 3257789612;
+        $ifouterrors  = 2316546841;
+        $ifinerrors   = 8974561231;
+
+        //First step : import NetworkEquipement with only one NetworkPort (Ethernet)
+        //check metrics data (only one)
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <COMPONENTS>
+                <COMPONENT>
+                  <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                  <DESCRIPTION>WS-C2960-24TC-L</DESCRIPTION>
+                  <FIRMWARE>12.2(58)SE1</FIRMWARE>
+                  <FRU>2</FRU>
+                  <INDEX>1001</INDEX>
+                  <MODEL>WS-C2960-24TC-L</MODEL>
+                  <NAME>1</NAME>
+                  <REVISION>V05</REVISION>
+                  <SERIAL>FOC1247X5DX</SERIAL>
+                  <TYPE>chassis</TYPE>
+                  <VERSION>12.2(58)SE1</VERSION>
+                </COMPONENT>
+                <COMPONENT>
+                  <CONTAINEDININDEX>1001</CONTAINEDININDEX>
+                  <DESCRIPTION>WS-C2960-24TC-L - Fixed Module 0</DESCRIPTION>
+                  <FRU>2</FRU>
+                  <INDEX>1002</INDEX>
+                  <NAME>WS-C2960-24TC-L - Fixed Module 0</NAME>
+                  <TYPE>module</TYPE>
+                </COMPONENT>
+              </COMPONENTS>
+              <FIRMWARES>
+                <DESCRIPTION>device firmware</DESCRIPTION>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <NAME>Catalyst 2960-24TC</NAME>
+                <TYPE>device</TYPE>
+                <VERSION>12.2(58)SE1</VERSION>
+              </FIRMWARES>
+              <INFO>
+                <COMMENTS>Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(58)SE1, RELEASE SOFTWARE (fc1)
+        Technical Support: http://www.cisco.com/techsupport
+        Copyright (c) 1986-2011 by Cisco Systems, Inc.
+        Compiled Thu 05-May-11 02:53 by prod_rel_team</COMMENTS>
+                <FIRMWARE>12.2(58)SE1</FIRMWARE>
+                <ID>0</ID>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
+                <SERIAL>FOC1247X5DX</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>38 days, 4:05:41.99</UPTIME>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFALIAS>pixin-int1-inside</IFALIAS>
+                  <IFDESCR>FastEthernet0/1</IFDESCR>
+                  <IFINERRORS>$ifinerrors</IFINERRORS>
+                  <IFINOCTETS>$ifinbytes</IFINOCTETS>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>4 days, 3:53:43.54</IFLASTCHANGE>
+                  <IFMTU>1500</IFMTU>
+                  <IFNAME>Fa0/1</IFNAME>
+                  <IFNUMBER>10001</IFNUMBER>
+                  <IFOUTERRORS>$ifouterrors</IFOUTERRORS>
+                  <IFOUTOCTETS>$ifoutbytes</IFOUTOCTETS>
+                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
+                  <IFSPEED>100000000</IFSPEED>
+                  <IFSTATUS>1</IFSTATUS>
+                  <IFTYPE>6</IFTYPE>
+                  <MAC>00:24:13:ea:a7:01</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check networkequipement
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->integer($networkquipement_id)->isGreaterThan(0);
+
+        //get networkport
+        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
+        ->isTrue();
+
+        //get networkport metric
+        $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id']]))
+        ->isTrue();
+
+        $db_input = $networkmetric->fields;
+        unset($db_input['date_creation']);
+        unset($db_input['date_mod']);
+        unset($db_input['id']);
+
+        $expected_input = [
+            "date"            => date('Y-m-d'),
+            "ifinbytes"       => $ifinbytes,
+            "ifinerrors"      => $ifinerrors,
+            "ifoutbytes"      => $ifoutbytes,
+            "ifouterrors"     => $ifouterrors,
+            "networkports_id" => $networkport->fields['id'],
+        ];
+        $this->array($db_input)->isIdenticalTo($expected_input);
+
+        //change 'date' to yesterday to get new metric after reimport (2nd step)
+        $currentDate = new DateTime(date('Y-m-d'));
+        $yesterdayTime = $currentDate->sub(new DateInterval('P1D'));
+        $yesterday = $yesterdayTime->format('Y-m-d');
+        $networkmetric->fields['date'] = $yesterday;
+
+        $this->boolean($networkmetric->update($networkmetric->fields))->isTrue();
+        $this->string($networkmetric->fields['date'])->isIdenticalTo($yesterday);
+
+        //Second step : import NetworkEquipement again but with new metrics
+        //check metrics data for today
+        $old_ifinbytes    = $ifinbytes;
+        $old_ifoutbytes   = $ifoutbytes;
+        $old_ifinerrors   = $ifinerrors;
+        $old_ifouterrors  = $ifouterrors;
+
+        $ifinbytes    = 7059673658;
+        $ifoutbytes   = 6457789612;
+        $ifinerrors   = 7894567922;
+        $ifouterrors  = 1423578578;
+
+        $xml_source = str_replace($old_ifinbytes, $ifinbytes, $xml_source);
+        $xml_source = str_replace($old_ifoutbytes, $ifoutbytes, $xml_source);
+        $xml_source = str_replace($old_ifinerrors, $ifinerrors, $xml_source);
+        $xml_source = str_replace($old_ifouterrors, $ifouterrors, $xml_source);
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //now we have two metrics, one for yesterday and one for today
+        $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
+        $this->array($metrics)
+          ->hasSize(2);
+
+        //get networkport metric for today
+        $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id'], "date" => date('Y-m-d')]))
+        ->isTrue();
+
+        $db_input = $networkmetric->fields;
+        unset($db_input['date_creation']);
+        unset($db_input['date_mod']);
+        unset($db_input['id']);
+
+        //check metrics data
+        $expected_input = [
+            "date"            => date('Y-m-d'),
+            "ifinbytes"       => $ifinbytes,
+            "ifinerrors"      => $ifinerrors,
+            "ifoutbytes"      => $ifoutbytes,
+            "ifouterrors"     => $ifouterrors,
+            "networkports_id" => $networkport->fields['id'],
+        ];
+        $this->array($db_input)->isIdenticalTo($expected_input);
+
+        //Third step : import NetworkEquipement again but with new metrics
+        //check that the previous data are updated
+
+        $old_ifinbytes    = $ifinbytes;
+        $old_ifoutbytes   = $ifoutbytes;
+        $old_ifinerrors   = $ifinerrors;
+        $old_ifouterrors  = $ifouterrors;
+
+        $ifinbytes    = 8059673658;
+        $ifoutbytes   = 7457789612;
+        $ifinerrors   = 7894561232;
+        $ifouterrors  = 4521358975;
+
+        $xml_source = str_replace($old_ifinbytes, $ifinbytes, $xml_source);
+        $xml_source = str_replace($old_ifoutbytes, $ifoutbytes, $xml_source);
+        $xml_source = str_replace($old_ifinerrors, $ifinerrors, $xml_source);
+        $xml_source = str_replace($old_ifouterrors, $ifouterrors, $xml_source);
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+
+        //we still have two metrics, but today metrics are updated
+        $metrics = $networkmetric->find(['networkports_id' => $networkport->fields['id']]);
+        $this->array($metrics)
+          ->hasSize(2);
+
+        //get networkport metric for today
+        $this->boolean($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id'], "date" => date('Y-m-d')]))
+        ->isTrue();
+
+        $db_input = $networkmetric->fields;
+        unset($db_input['date_creation']);
+        unset($db_input['date_mod']);
+        unset($db_input['id']);
+
+        //check metrics data
+        $expected_input = [
+            "date"            => date('Y-m-d'),
+            "ifinbytes"       => $ifinbytes,
+            "ifinerrors"      => $ifinerrors,
+            "ifoutbytes"      => $ifoutbytes,
+            "ifouterrors"     => $ifouterrors,
+            "networkports_id" => $networkport->fields['id'],
+        ];
+        $this->array($db_input)->isIdenticalTo($expected_input);
     }
 }

@@ -1,12 +1,13 @@
 /*!
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -211,7 +213,12 @@
 
    /* ################--------------- Layout  ---------------#################### */
    .headerRow th {
-      & > .fa, & > .far, & > .fas, & > button {
+      & > .fa,
+      & > .far,
+      & > .fa-regular,
+      & > .fas,
+      & > .fa-solid,
+      & > button {
          margin-left: 8px;
          vertical-align: middle;
       }
@@ -638,6 +645,7 @@
    .faqadd_block {
       position: relative;
       display: inline-block;
+      width: max-content;
 
       .display_faq_chkbox {
          display: none;
@@ -650,7 +658,7 @@
       box-shadow: 0px 1px 2px 1px #D2D2D2;
       position: absolute;
       padding: 5px;
-      width: 450px;
+      width: 420px;
       height: 40vh;
       right: -5px;
       z-index: 1000;
@@ -692,13 +700,17 @@
    }
 
    .faqadd_block_content {
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: auto;
       position: absolute;
       top: 40px;
       bottom: 0;
       left: 0;
       right: 0;
+   }
+
+   .faqadd_entries,
+   .faqadd_entries:hover {
+      color: initial;
    }
 
    .faqadd_entries {
@@ -800,7 +812,12 @@
          line-height: 23px;
       }
 
-      a > img, i.fa, i.far, i.fas {
+      a > img,
+      i.fa,
+      i.far,
+      i.fa-regular,
+      i.fas,
+      i.fa-solid {
          font-size: 1.7em;
          vertical-align: top;
       }
@@ -878,7 +895,10 @@
       margin-bottom: 10px;
       white-space: nowrap;
 
-      i.far, i.fas {
+      i.far,
+      i.fa-regular,
+      i.fas,
+      i.fa-solid {
          color: #a3a3a3;
          margin-right: 3px;
          vertical-align: middle;
@@ -886,7 +906,10 @@
       }
 
       .fa-stack {
-         i.far, i.fas {
+         i.far,
+         i.fa-regular,
+         i.fas,
+         i.fa-solid {
             &.fa-stack-1x {
                font-size: .8em;
                top: .4em;
@@ -1112,23 +1135,6 @@
       }
    }
 
-   /* ################--------------- Log history filters ---------------#################### */
-
-   tr.log_history_filter_row {
-      > th {
-         vertical-align: top;
-      }
-
-      .select2-container {
-         min-width: 125px;
-      }
-
-      > th > input {
-         box-sizing: border-box;
-         min-height: 28px;
-      }
-   }
-
    td.diff {
       ins {
          color: green;
@@ -1307,10 +1313,6 @@
          &[type=text] {
             width: 10em;
          }
-
-         &[type=submit] {
-            border: 1px transparent solid;
-         }
       }
    }
 
@@ -1324,11 +1326,16 @@
    /** Fixes for Font Awesome 5 icons not showing at all or
    with incorrect shading in some cases */
 
-   .fa:before, .fas:before, .fa:after, .fas:after {
+   .fa::before,
+   .fas::before,
+   .fa-solid::before,
+   .fa::after,
+   .fas::after,
+   .fa-solid::after {
       font-weight: 900;
    }
 
-   .far {
+   .far, .fa-regular {
       &:before, &:after {
          font-weight: 400;
       }
@@ -1382,7 +1389,7 @@
    }
 
    /* Styles for update page */
-   .tab_check td i.fas {
+   .tab_check td i.fa-solid {
       font-size: 12px;
       margin-right: 3px;
    }
@@ -1394,11 +1401,8 @@
    }
    /* /Styles for update page */
 
-   .lockedfield i.fa-lock {
+   .lockedfield i.ti-lock {
       float: right;
-      font-size: 1em;
-      color: grey;
-      font-weight: 900;
    }
 
    /* Flex horizontal forms */
@@ -1476,69 +1480,6 @@
       z-index: 11!important;
    }
 
-   .netport {
-      td {
-         &.green {
-         background-color: green;
-            color: white;
-         }
-
-         &.red {
-            background-color: red;
-            color: white;
-         }
-
-         &.orange {
-            background-color: orange;
-            color: white;
-         }
-      }
-
-      &.trunk {
-         background-color: MediumAquamarine;
-      }
-
-      &.hub {
-         background-color: LightSalmon;
-      }
-
-      &.cotrunk {
-         background-color: silver;
-      }
-
-      &.aggregated,
-      .aggregated {
-         background-color: teal;
-         color: white;
-         padding-left: 2em;
-
-         a {
-            color: white;
-         }
-      }
-
-      .hub {
-         border: 1px grey solid;
-         margin: 0 .5em 0 .5em;
-
-         div {
-            padding: .2em .5em;
-            border-bottom: 1px grey solid;
-            &:last-of-type {
-               border-bottom: none;
-            }
-         }
-      }
-   }
-
-   .netport-legend {
-      width: 100%;
-      td.netport {
-         text-align: center;
-         width: 25%;
-      }
-   }
-
    .dashboard.printer_barchart .g-chart .chart {
       flex:none;
       height: 500px;
@@ -1574,4 +1515,12 @@ div.banner-impersonate button {
    color: inherit;
    margin-left: 5px;
    text-decoration: underline;
+}
+
+div.banner-need-update {
+   background: #f7c626;
+   color: #fff;
+   font-weight: bold;
+   padding: 10px;
+   text-align: right;
 }

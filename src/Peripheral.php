@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -97,6 +99,7 @@ class Peripheral extends CommonDBTM
         $this->addStandardTab('Item_OperatingSystem', $ong, $options);
         $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Computer_Item', $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
         $this->addStandardTab(Socket::class, $ong, $options);
@@ -108,6 +111,7 @@ class Peripheral extends CommonDBTM
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Notepad', $ong, $options);
         $this->addStandardTab('Reservation', $ong, $options);
         $this->addStandardTab('Certificate_Item', $ong, $options);
@@ -384,7 +388,41 @@ class Peripheral extends CommonDBTM
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
+        $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
+
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
+        return $tab;
+    }
+
+   /**
+    * @param $itemtype
+    *
+    * @return array
+    */
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'peripheral',
+            'name'               => self::getTypeName(Session::getPluralNumber())
+        ];
+
+        $tab[] = [
+            'id'                 => '130',
+            'table'              => 'glpi_computers_items',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of peripherals'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.itemtype' => 'Peripheral']
+            ]
+        ];
+
         return $tab;
     }
 

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -36,7 +38,7 @@
  *
  * Relation between Changes and Tickets
  **/
-class Change_Ticket extends CommonDBRelation
+class Change_Ticket extends CommonITILObject_CommonITILObject
 {
    // From CommonDBRelation
     public static $itemtype_1   = 'Change';
@@ -44,16 +46,6 @@ class Change_Ticket extends CommonDBRelation
 
     public static $itemtype_2   = 'Ticket';
     public static $items_id_2   = 'tickets_id';
-
-
-
-    public function getForbiddenStandardMassiveAction()
-    {
-
-        $forbidden   = parent::getForbiddenStandardMassiveAction();
-        $forbidden[] = 'update';
-        return $forbidden;
-    }
 
 
     public static function getTypeName($nb = 0)
@@ -267,21 +259,26 @@ class Change_Ticket extends CommonDBRelation
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . CommonITILObject_CommonITILObject::getFormURL() . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a ticket') . "</th></tr>";
+            echo "<tr class='tab_bg_2'><th>" . __('Add a ticket') . "</th></tr>";
 
-            echo "<tr class='tab_bg_2'><td>";
-            echo "<input type='hidden' name='changes_id' value='$ID'>";
+            echo "<tr class='tab_bg_2'><td class='left'>";
+            echo "<input type='hidden' name='itemtype_1' value='Change'>";
+            echo "<input type='hidden' name='items_id_1' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_2' value='Ticket'>";
+            self::dropdownLinks('link');
+            echo "&nbsp;";
             Ticket::dropdown([
+                'name'        => 'items_id_2',
                 'used'        => $used,
                 'entity'      => $change->getEntityID(),
                 'entity_sons' => $change->isRecursive(),
                 'displaywith' => ['id'],
                 'condition'   => Ticket::getOpenCriteria()
             ]);
-            echo "</td><td class='center'>";
+            echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td></tr>";
 
@@ -402,18 +399,24 @@ class Change_Ticket extends CommonDBRelation
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-               action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . CommonITILObject_CommonITILObject::getFormURL() . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='3'>" . __('Add a change') . "</th></tr>";
             echo "<tr class='tab_bg_2'><td>";
-            echo "<input type='hidden' name='tickets_id' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_1' value='Ticket'>";
+            echo "<input type='hidden' name='items_id_1' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_2' value='Change'>";
+            self::dropdownLinks('link');
+            echo "&nbsp;";
             Change::dropdown([
+                'name'      => 'items_id_2',
                 'used'      => $used,
                 'entity'    => $ticket->getEntityID(),
+                'displaywith' => ['id'],
                 'condition' => Change::getOpenCriteria(),
             ]);
-            echo "</td><td class='center'>";
+            echo "&nbsp;";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
             echo "</td><td>";
             if (Session::haveRight('change', CREATE)) {

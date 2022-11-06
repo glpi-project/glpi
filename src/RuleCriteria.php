@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -99,7 +101,9 @@ class RuleCriteria extends CommonDBChild
     {
 
         if ($rule = getItemForItemtype(static::$itemtype)) {
-            return trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $rule->getMinimalCriteriaText($this->fields)));
+            $criteria_row = $rule->getMinimalCriteriaText($this->fields);
+            $criteria_text = trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $criteria_row));
+            return $criteria_text;
         }
         return '';
     }
@@ -297,12 +301,14 @@ class RuleCriteria extends CommonDBChild
                     && !empty($values['rules_id'])
                     && $generic_rule->getFromDB($values['rules_id'])
                 ) {
-                    if (isset($values['criteria']) && !empty($values['criteria'])) {
-                        $options['criterion'] = $values['criteria'];
+                    if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
+                        if (isset($values['criteria']) && !empty($values['criteria'])) {
+                            $options['criterion'] = $values['criteria'];
+                        }
+                        $options['value'] = $values[$field];
+                        $options['name']  = $name;
+                        return $rule->dropdownConditions($generic_rule->fields["sub_type"], $options);
                     }
-                    $options['value'] = $values[$field];
-                    $options['name']  = $name;
-                    return $rule->dropdownConditions($generic_rule->fields["sub_type"], $options);
                 }
                 break;
 
@@ -373,7 +379,6 @@ class RuleCriteria extends CommonDBChild
         $condition = $criterion->fields['condition'];
         $pattern   = $criterion->fields['pattern'];
         $criteria  = $criterion->fields['criteria'];
-
        //If pattern is wildcard, don't check the rule and return true
        //or if the condition is "already present in GLPI" : will be processed later
         if (
@@ -514,6 +519,62 @@ class RuleCriteria extends CommonDBChild
             case Rule::PATTERN_IS_EMPTY:
                // Global criteria will be evaluated later
                 return true;
+
+            case Rule::PATTERN_CIDR:
+            case Rule::PATTERN_NOT_CIDR:
+                $exploded = explode('/', $pattern);
+                $subnet   = ip2long($exploded[0]);
+                $bits     = $exploded[1] ?? null;
+                $mask     = -1 << (32 - $bits);
+                $subnet  &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
+
+                if (is_array($field)) {
+                    foreach ($field as $ip) {
+                        if (isset($ip) && $ip != '') {
+                            $ip = ip2long($ip);
+                            if (($ip & $mask) == $subnet) {
+                                return ($condition == Rule::PATTERN_CIDR) ? true : false;
+                            }
+                        }
+                    }
+                } else {
+                    if (isset($field) && $field != '') {
+                        $ip = ip2long($field);
+                        if (
+                            $condition == Rule::PATTERN_CIDR && ($ip & $mask) == $subnet
+                            || $condition == Rule::PATTERN_NOT_CIDR && ($ip & $mask) != $subnet
+                        ) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+
+            case Rule::PATTERN_DATE_IS_NOT_EQUAL:
+            case Rule::PATTERN_DATE_IS_EQUAL:
+                $target_date = Html::computeGenericDateTimeSearch($pattern);
+
+                if (
+                    $target_date != $pattern
+                    && !str_contains("MINUTE", $pattern)
+                    && !str_contains("HOUR", $pattern)
+                ) {
+                    // We are using a dynamic date with a precision of at least
+                    // one day (e.g. 2 days ago).
+                    // In this case we must compare using date instead of datetime
+                    $field = substr($field, 0, 10);
+                    $target_date = substr($target_date, 0, 10);
+                }
+
+                return $condition == Rule::PATTERN_DATE_IS_EQUAL
+                    ? $field == $target_date
+                    : $field != $target_date;
+
+            case Rule::PATTERN_DATE_IS_BEFORE:
+                return $field < Html::computeGenericDateTimeSearch($pattern);
+
+            case Rule::PATTERN_DATE_IS_AFTER:
+                return $field > Html::computeGenericDateTimeSearch($pattern);
         }
         return false;
     }
@@ -548,17 +609,29 @@ class RuleCriteria extends CommonDBChild
     public static function getConditions($itemtype, $criterion = '')
     {
 
-        $criteria =  [Rule::PATTERN_IS              => __('is'),
-            Rule::PATTERN_IS_NOT          => __('is not'),
-            Rule::PATTERN_CONTAIN         => __('contains'),
-            Rule::PATTERN_NOT_CONTAIN     => __('does not contain'),
-            Rule::PATTERN_BEGIN           => __('starting with'),
-            Rule::PATTERN_END             => __('finished by'),
-            Rule::REGEX_MATCH             => __('regular expression matches'),
-            Rule::REGEX_NOT_MATCH         => __('regular expression does not match'),
-            Rule::PATTERN_EXISTS          => __('exists'),
-            Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist')
+        $criteria =  [
+            Rule::PATTERN_IS                => __('is'),
+            Rule::PATTERN_IS_NOT            => __('is not'),
+            Rule::PATTERN_CONTAIN           => __('contains'),
+            Rule::PATTERN_NOT_CONTAIN       => __('does not contain'),
+            Rule::PATTERN_BEGIN             => __('starting with'),
+            Rule::PATTERN_END               => __('finished by'),
+            Rule::REGEX_MATCH               => __('regular expression matches'),
+            Rule::REGEX_NOT_MATCH           => __('regular expression does not match'),
+            Rule::PATTERN_EXISTS            => __('exists'),
+            Rule::PATTERN_DOES_NOT_EXISTS   => __('does not exist'),
+            Rule::PATTERN_DATE_IS_BEFORE    => __('before'),
+            Rule::PATTERN_DATE_IS_AFTER     => __('after'),
+            Rule::PATTERN_DATE_IS_EQUAL     => __('is'),
+            Rule::PATTERN_DATE_IS_NOT_EQUAL => __('is not'),
         ];
+
+        if (in_array($criterion, ['ip', 'subnet'])) {
+            $criteria = $criteria + [
+                Rule::PATTERN_CIDR     => __('is CIDR'),
+                Rule::PATTERN_NOT_CIDR => __('is not CIDR')
+            ];
+        }
 
         $extra_criteria = call_user_func([$itemtype, 'addMoreCriteria'], $criterion);
 
@@ -694,5 +767,7 @@ class RuleCriteria extends CommonDBChild
         echo "<tr><td colspan='4'><span id='criteria_span'>\n";
         echo "</span></td></tr>\n";
         $this->showFormButtons($options);
+
+        return true;
     }
 }

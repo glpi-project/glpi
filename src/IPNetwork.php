@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -46,7 +48,84 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
     public static $rightname = 'internet';
 
+    /**
+     * Data used during add/update process to handle CommonImplicitTreeDropdown ancestors/sons.
+     * @var array
+     */
+    private $data_for_implicit_update;
 
+    /**
+     * Computed address.
+     * Used for caching purpose.
+     * @var IPAddress
+     */
+    private $address;
+
+    /**
+     * Computed netmask.
+     * Used for caching purpose.
+     * @var IPNetmask
+     */
+    private $netmask;
+    /**
+     * Computed gateway.
+     * Used for caching purpose.
+     * @var IPAddress
+     */
+    private $gateway;
+
+    /**
+     * Indicates whether the IPAddress or the IPNetmask has been updated during add/update process.
+     * Variable will be set during add/update process and unset after it.
+     * @var bool
+     */
+    private $networkUpdate;
+
+    public function __get(string $property)
+    {
+        // TODO Deprecate read access to all variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'address':
+            case 'data_for_implicit_update':
+            case 'gateway':
+            case 'netmask':
+            case 'networkUpdate':
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        switch ($property) {
+            case 'address':
+            case 'data_for_implicit_update':
+            case 'gateway':
+            case 'netmask':
+                Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
+                // no break is intentionnal
+            case 'networkUpdate':
+                // TODO Deprecate write access to variable in GLPI 10.1.
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
 
     public static function getTypeName($nb = 0)
     {
@@ -109,7 +188,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getAddress()
     {
 
-        if (!isset($this->address)) {
+        if ($this->address === null) {
             $this->address = new IPAddress();
             if (!$this->address->setAddressFromArray($this->fields, "version", "address", "address")) {
                 return false;
@@ -122,7 +201,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getNetmask()
     {
 
-        if (!isset($this->netmask)) {
+        if ($this->netmask === null) {
             $this->netmask = new IPNetmask();
             if (!$this->netmask->setAddressFromArray($this->fields, "version", "netmask", "netmask")) {
                 return false;
@@ -135,7 +214,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getGateway()
     {
 
-        if (!isset($this->gateway)) {
+        if ($this->gateway === null) {
             $this->gateway = new IPAddress();
             if (!$this->gateway->setAddressFromArray($this->fields, "version", "gateway", "gateway")) {
                 return false;
@@ -152,9 +231,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
     {
 
        // Be sure to remove addresses, otherwise reusing will provide old objects for getAddress, ...
-        unset($this->address);
-        unset($this->netmask);
-        unset($this->gateway);
+        $this->address = null;
+        $this->netmask = null;
+        $this->gateway = null;
 
         if (
             isset($this->fields["address"])
@@ -203,7 +282,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getNewAncestor()
     {
 
-        if (isset($this->data_for_implicit_update)) {
+        if ($this->data_for_implicit_update !== null) {
             $params = ["address" => $this->data_for_implicit_update['address'],
                 "netmask" => $this->data_for_implicit_update['netmask']
             ];
@@ -249,7 +328,8 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $netmask = new IPNetmask();
        // Don't validate an empty network
         if (empty($input["network"])) {
-            return ['error' => __('Invalid network address'),
+            return [
+                'error' => __('Missing network property (In CIDR notation. Ex: 192.168.1.1/24)'),
                 'input' => false
             ];
         }
@@ -419,8 +499,10 @@ class IPNetwork extends CommonImplicitTreeDropdown
             IPAddress_IPNetwork::linkIPAddressFromIPNetwork($this);
         }
 
-        unset($this->networkUpdate);
         parent::post_addItem();
+
+        $this->networkUpdate = null;
+        $this->data_for_implicit_update = null;
     }
 
 
@@ -451,7 +533,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function getPotentialSons()
     {
 
-        if (isset($this->data_for_implicit_update)) {
+        if ($this->data_for_implicit_update !== null) {
             $params = ["address"     => $this->data_for_implicit_update['address'],
                 "netmask"     => $this->data_for_implicit_update['netmask'],
                 "exclude IDs" => $this->getID()
@@ -1129,11 +1211,11 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
     /**
      * Override title function to display the link to reinitialisation of the network tree
+     *
+     * @FIXME Deprecate this method in GLPI 10.1. It is not used anymore.
      **/
     public function title()
     {
-        parent::title();
-
         if (
             Session::haveRight('internet', UPDATE)
             && Session::canViewAllEntities()

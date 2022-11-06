@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -128,6 +130,48 @@ class Project extends DbTestCase
         $this->integer($project_2->fields['percent_done'])->isEqualTo(25);
     }
 
+    public function testAutocalculatePercentDoneOnTaskAddAndDelete()
+    {
+        $this->login(); // must be logged as ProjectTask uses Session::getLoginUserID()
+
+        $project = new \Project();
+        $project_id_1 = $project->add([
+            'name' => 'Project 1',
+            'auto_percent_done' => 1
+        ]);
+        $this->integer((int) $project_id_1)->isGreaterThan(0);
+
+        $projecttask = new \ProjectTask();
+        $projecttask_id_1 = $projecttask->add([
+            'name' => 'Project Task 1',
+            'projects_id' => $project_id_1,
+            'projecttasktemplates_id' => 0,
+            'percent_done'  => 0
+        ]);
+        $this->integer((int) $projecttask_id_1)->isGreaterThan(0);
+
+        // Project percent done should be 0 now
+        $project->getFromDB($project_id_1);
+        $this->integer($project->fields['percent_done'])->isEqualTo(0);
+
+        // Add a new task with 100 percent done
+        $projecttask_id_2 = $projecttask->add([
+            'name' => 'Project Task 2',
+            'projects_id' => $project_id_1,
+            'projecttasktemplates_id' => 0,
+            'percent_done'  => 100
+        ]);
+
+        // Project percent done should be 50 now
+        $project->getFromDB($project_id_1);
+        $this->integer($project->fields['percent_done'])->isEqualTo(50);
+
+        // Delete the first task and check the project percent done is 100
+        $projecttask->delete(['id' => $projecttask_id_1], true);
+        $project->getFromDB($project_id_1);
+        $this->integer($project->fields['percent_done'])->isEqualTo(100);
+    }
+
     public function testCreateFromTemplate()
     {
         $this->login();
@@ -168,6 +212,10 @@ class Project extends DbTestCase
         );
         $this->integer($task2_id)->isGreaterThan(0);
 
+        // Add 1 second to GLPI current time
+        $date2 = date('Y-m-d H:i:s', strtotime($date) + 1);
+        $_SESSION['glpi_currenttime'] = $date2;
+
        // Create from template
         $entity_id = getItemByTypeName('Entity', '_test_child_2', true);
         $project_id = $project->add(
@@ -184,6 +232,11 @@ class Project extends DbTestCase
        // Check created project
         $this->integer($project->fields['entities_id'])->isEqualTo($entity_id);
         $this->integer($project->fields['is_recursive'])->isEqualTo(0);
+
+        // Verify that the creation date was not copied from the template
+        $this->variable($project->fields['date'])->isNotEqualTo($date);
+        $this->variable($project->fields['date_creation'])->isNotEqualTo($date);
+        $this->variable($project->fields['date_mod'])->isNotEqualTo($date);
 
        // Check created tasks
         $tasks_data = getAllDataFromTable($project_task->getTable(), ['projects_id' => $project_id]);
@@ -313,6 +366,10 @@ class Project extends DbTestCase
        // Load clone
         $project_clone = new \Project();
         $this->boolean($project_clone->getFromDB($projects_id_clone))->isTrue();
+
+        // Check name
+        $this->string($project_clone->fields['name'])->isEqualTo("$project_input[name] (copy)");
+        unset($project_clone->fields['name'], $project_input['name']);
 
        // Check basics fields
         foreach (array_keys($project_input) as $field) {

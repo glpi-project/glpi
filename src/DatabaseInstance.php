@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -82,6 +84,7 @@ class DatabaseInstance extends CommonDBTM
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Certificate_Item', $ong, $options)
+         ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('Appliance_Item', $ong, $options)
@@ -189,7 +192,7 @@ class DatabaseInstance extends CommonDBTM
         State::dropdown([
             'value'     => $this->fields["states_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => ['is_visible_database' => 1],
+            'condition' => ['is_visible_databaseinstance' => 1],
             'rand'      => $rand
         ]);
         echo "</td></tr>\n";
@@ -284,6 +287,22 @@ class DatabaseInstance extends CommonDBTM
         );
         echo "</td></tr>\n";
 
+        echo "<tr class='tab_bg_1'>";
+        echo "<td><label for='port$rand'>" . _n('Port', 'Ports', 1) . "</label></td>";
+        echo "<td>";
+        echo Html::input('port', [
+            'value' => $this->fields['port'],
+            'id'    => "port$rand"
+        ]);
+        echo "</td>";
+        echo "<td><label for='path$rand'>" . __('Path') . "</label></td>";
+        echo "<td>";
+        echo Html::input('path', [
+            'value' => $this->fields['path'],
+            'id'    => "path$rand"
+        ]);
+        echo "</td></tr>\n";
+
         $this->showInventoryInfo();
 
         $this->showFormButtons($options);
@@ -342,15 +361,25 @@ class DatabaseInstance extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'            => '5',
-            'table'         =>  DatabaseInstance::getTable(),
-            'field'         => 'items_id',
-            'name'               => _n('Associated item', 'Associated items', 2),
-            'nosearch'           => true,
-            'massiveaction' => false,
-            'forcegroupby'  =>  true,
-            'additionalfields'   => ['itemtype'],
-            'joinparams'    => ['jointype' => 'child']
+            'id'               => '5',
+            'table'            => DatabaseInstance::getTable(),
+            'field'            => 'items_id',
+            'name'             => _n('Associated item', 'Associated items', 2),
+            'nosearch'         => true,
+            'massiveaction'    => false,
+            'forcegroupby'     => true,
+            'datatype'         => 'specific',
+            'searchtype'       => 'equals',
+            'additionalfields' => ['itemtype'],
+            'joinparams'       => ['jointype' => 'child']
+        ];
+
+        $tab[] = [
+            'id'                 => '6',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'version',
+            'name'               => _n('Version', 'Versions', 1),
+            'datatype'           => 'text'
         ];
 
         $tab[] = [
@@ -438,6 +467,31 @@ class DatabaseInstance extends CommonDBTM
         return $tab;
     }
 
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'items_id':
+                $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
+                if ($itemtype !== null && class_exists($itemtype)) {
+                    if ($values[$field] > 0) {
+                        $item = new $itemtype();
+                        $item->getFromDB($values[$field]);
+                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                    }
+                } else {
+                    return ' ';
+                }
+                break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+
     /**
      * Get item types that can be linked to a database
      *
@@ -490,6 +544,7 @@ class DatabaseInstance extends CommonDBTM
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
         }
+        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

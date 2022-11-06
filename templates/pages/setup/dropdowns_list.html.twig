@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,23 +15,25 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
 {% set grid_items = [] %}
 
+{% set nb_opt = optgroup|length %}
 {% for label, dropdown in optgroup %}
    {% set card_id = 'dropdowns_list_' ~ random() %}
    {% set card_html %}
@@ -38,12 +41,12 @@
          <div class="accordion accordion-flush">
             <div class="accordion-item">
                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button"
+                  <button class="accordion-button {{ nb_opt > 1 ? "collapsed" : "" }}" type="button"
                      data-bs-toggle="collapse" data-bs-target="#{{ card_id }}" aria-expanded="true" aria-controls="collapseOne">
                      {{ label }}
                   </button>
                </h2>
-               <div id="{{ card_id }}" class="accordion-collapse collapse" style="transition: none">
+               <div id="{{ card_id }}" class="accordion-collapse {{ nb_opt > 1 ? "collapse" : "" }}" style="transition: none">
                   <div class="list-group list-group-flush list-group-hoverable">
                      {% for itemtype, dropdown_label in dropdown %}
                         {% set is_entity_assign = itemtype|itemtype_class.isEntityAssign() %}
@@ -110,8 +113,6 @@ $(function () {
 
       if (input_value.length > 0) {
          timerid = setTimeout(function() {
-            console.log(input_value);
-
             $('.dropdowns-list .list-group-item:not(:icontains('+input_value+'))').hide();
             $('.dropdowns-list .list-group-item:icontains('+input_value+')')
                .closest('.accordion-collapse').addClass('show')
@@ -125,8 +126,6 @@ $(function () {
    })
 
    $('.dropdowns-list .collapse').on('shown.bs.collapse hidden.bs.collapse', function() {
-      console.log('shown.bs.collapse', $(this));
-
       $('.dropdowns-list .masonry_grid').trigger("layout:refresh");
    })
 });

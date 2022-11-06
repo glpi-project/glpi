@@ -1,9 +1,9 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 TMP_CACHE_DIR=$(mktemp -d -t glpi-cache-test-XXXXXXXXXX)
 
 for CONFIG in {"--use-default","--dsn=memcached://memcached","--dsn=redis://redis"}; do
-  echo "Test cache using following config: $CONFIG"
   php bin/console cache:configure \
     --config-dir=./tests/config --ansi --no-interaction \
     $CONFIG
@@ -13,6 +13,7 @@ for CONFIG in {"--use-default","--dsn=memcached://memcached","--dsn=redis://redi
     --force-terminal \
     --use-dot-report \
     --bootstrap-file tests/bootstrap.php \
+    --fail-if-void-methods \
     --fail-if-skipped-methods \
     --no-code-coverage \
     -d tests/units \
@@ -23,6 +24,7 @@ for CONFIG in {"--use-default","--dsn=memcached://memcached","--dsn=redis://redi
     --force-terminal \
     --use-dot-report \
     --bootstrap-file tests/bootstrap.php \
+    --fail-if-void-methods \
     --fail-if-skipped-methods \
     --no-code-coverage \
     --max-children-number 1 \

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,6 +37,7 @@ namespace Glpi\Console;
 
 use Config;
 use DB;
+use DBmysql;
 use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
@@ -84,7 +87,7 @@ class Application extends BaseApplication
     private $error_handler;
 
     /**
-     * @var DB
+     * @var DBmysql
      */
     private $db;
 
@@ -236,7 +239,11 @@ class Application extends BaseApplication
         if ($command instanceof GlpiCommandInterface && $command->requiresUpToDateDb() && !Update::isDbUpToDate()) {
             $output->writeln(
                 '<error>'
-                . __('The version of the database is not compatible with the version of the installed files. An update is necessary.')
+                . __('The GLPI codebase has been updated. The update of the GLPI database is necessary.')
+                . '</error>'
+                . PHP_EOL
+                . '<error>'
+                . sprintf(__('Run the "php bin/console %1$s" command to process to the update.'), 'glpi:database:update')
                 . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
@@ -300,14 +307,12 @@ class Application extends BaseApplication
         $GLPI = new GLPI();
         $GLPI->initLogger();
         $this->error_handler = $GLPI->initErrorHandler();
-
-        Config::detectRootDoc();
     }
 
     /**
      * Initialize database connection.
      *
-     * @global DB $DB
+     * @global DBmysql $DB
      *
      * @return void
      *
@@ -321,7 +326,7 @@ class Application extends BaseApplication
         }
 
         global $DB;
-        $DB = new DB();
+        $DB = @new DB();
         $this->db = $DB;
 
         if (!$this->db->connected) {
@@ -389,7 +394,9 @@ class Application extends BaseApplication
         global $CFG_GLPI;
         $this->config = &$CFG_GLPI;
 
-        if (!($this->db instanceof DB) || !$this->db->connected) {
+        Config::detectRootDoc();
+
+        if (!($this->db instanceof DBmysql) || !$this->db->connected) {
             return;
         }
 
@@ -454,7 +461,7 @@ class Application extends BaseApplication
      */
     private function usePlugins()
     {
-        if (!($this->db instanceof DB) || !$this->db->connected) {
+        if (!($this->db instanceof DBmysql) || !$this->db->connected) {
             return false;
         }
 
@@ -484,7 +491,7 @@ class Application extends BaseApplication
 
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
-            $db instanceof \DBmysql && $db->connected ? $db : null
+            $db instanceof DBmysql && $db->connected ? $db : null
         );
 
         if ($core_requirements->hasMissingMandatoryRequirements()) {

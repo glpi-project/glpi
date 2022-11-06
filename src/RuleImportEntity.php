@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -38,9 +41,6 @@ class RuleImportEntity extends Rule
    // From Rule
     public static $rightname = 'rule_import';
     public $can_sort  = true;
-
-    const PATTERN_CIDR     = 333;
-    const PATTERN_NOT_CIDR = 334;
 
     public function getTitle()
     {
@@ -54,7 +54,7 @@ class RuleImportEntity extends Rule
     public function maxActionsCount()
     {
        // Unlimited
-        return 4;
+        return 5;
     }
 
     public function executeActions($output, $params, array $input = [])
@@ -123,6 +123,14 @@ class RuleImportEntity extends Rule
                 'field' => 'name',
                 'name' => __('Serial number')
             ],
+            'itemtype' => [
+                'field' => 'itemtype',
+                'name' => __('Itemtype')
+            ],
+            'oscomment' => [
+                'field' => 'name',
+                'name' => sprintf('%s > %s', OperatingSystem::getTypeName(1), __('Comments'))
+            ],
             '_source' => [
                 'table' => '',
                 'field' => '_source',
@@ -140,7 +148,7 @@ class RuleImportEntity extends Rule
      **/
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        global $PLUGIN_HOOKS;
+        global $PLUGIN_HOOKS, $CFG_GLPI;
 
         if ($criteria['field'] == '_source') {
             $tab = ['GLPI' => __('GLPI')];
@@ -151,6 +159,11 @@ class RuleImportEntity extends Rule
                 $tab[$plug] = Plugin::getInfo($plug, 'name');
             }
             Dropdown::showFromArray($name, $tab);
+            return true;
+        }
+
+        if ($criteria['field'] == 'itemtype') {
+            Dropdown::showItemTypes($name, $CFG_GLPI['asset_types'], ['value' => $value]);
             return true;
         }
 
@@ -174,11 +187,6 @@ class RuleImportEntity extends Rule
     }
 
 
-    /**
-     * @since 0.84
-     *
-     * @see Rule::getAdditionalCriteriaDisplayPattern()
-     **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
 
@@ -194,116 +202,10 @@ class RuleImportEntity extends Rule
             }
             return $name;
         }
-    }
-
-    /**
-     * Add more criteria
-     *
-     * @param string $criterion
-     * @return array
-     */
-    public static function addMoreCriteria($criterion = '')
-    {
-        if ($criterion == 'ip' || $criterion == 'subnet') {
-            return [
-                self::PATTERN_CIDR => __('is CIDR'),
-                self::PATTERN_NOT_CIDR => __('is not CIDR')
-            ];
-        }
-        return [];
+        return false;
     }
 
 
-    /**
-     * Check the criteria
-     *
-     * @param object $criteria
-     * @param array $input
-     * @return boolean
-     */
-    public function checkCriteria(&$criteria, &$input)
-    {
-
-        $res = parent::checkCriteria($criteria, $input);
-
-        if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR, self::PATTERN_NOT_CIDR])) {
-            $pattern   = $criteria->fields['pattern'];
-            $exploded = explode('/', $pattern);
-            $subnet = ip2long($exploded[0]);
-            $bits = $exploded[1] ?? null;
-            $mask = -1 << (32 - $bits);
-            $subnet &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
-
-            if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR])) {
-                $value = $this->getCriteriaValue(
-                    $criteria->fields["criteria"],
-                    $criteria->fields["condition"],
-                    $input[$criteria->fields["criteria"]]
-                );
-
-                if (is_array($value)) {
-                    foreach ($value as $ip) {
-                        if (isset($ip) && $ip != '') {
-                             $ip = ip2long($ip);
-                            if (($ip & $mask) == $subnet) {
-                                $res = true;
-                                break 1;
-                            }
-                        }
-                    }
-                } else {
-                    if (isset($value) && $value != '') {
-                        $ip = ip2long($value);
-                        if (($ip & $mask) == $subnet) {
-                            $res = true;
-                        }
-                    }
-                }
-            } else if (in_array($criteria->fields["condition"], [self::PATTERN_NOT_CIDR])) {
-                $value = $this->getCriteriaValue(
-                    $criteria->fields["criteria"],
-                    $criteria->fields["condition"],
-                    $input[$criteria->fields["criteria"]]
-                );
-
-                if (is_array($value)) {
-                    $resarray = true;
-                    foreach ($value as $ip) {
-                        if (isset($ip) && $ip != '') {
-                            $ip = ip2long($ip);
-                            if (($ip & $mask) == $subnet) {
-                                $resarray = false;
-                            }
-                        }
-                    }
-                    $res = $resarray;
-                } else {
-                    if (isset($value) && $value != '') {
-                        $ip = ip2long($value);
-                        if (($ip & $mask) != $subnet) {
-                            $res = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $res;
-    }
-
-
-    /**
-     * Process the rule
-     *
-     * @param array &$input the input data used to check criterias
-     * @param array &$output the initial ouput array used to be manipulate by actions
-     * @param array &$params parameters for all internal functions
-     * @param array &options array options:
-     *                     - only_criteria : only react on specific criteria
-     *
-     * @return array the output updated by actions.
-     *         If rule matched add field _rule_process to return value
-     */
     public function process(&$input, &$output, &$params, &$options = [])
     {
 
@@ -367,6 +269,7 @@ class RuleImportEntity extends Rule
                 'type' => 'dropdown_users'
             ]
         ];
+        $actions = array_merge(parent::getActions(), $actions);
 
         return $actions;
     }

@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,30 +18,31 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
+use Glpi\Toolbox\Sanitizer;
 use Item_Disk;
-use Toolbox;
 
 class Volume extends InventoryAsset
 {
-    /** @var @var Conf */
+    /** @var Conf */
     private $conf;
 
     public function prepare(): array
@@ -143,8 +146,6 @@ class Volume extends InventoryAsset
 
     public function handle()
     {
-        global $DB;
-
         $itemDisk = new Item_Disk();
         $db_itemdisk = $this->getExisting();
 
@@ -158,10 +159,11 @@ class Volume extends InventoryAsset
             foreach ($db_itemdisk as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($db_elt == $arraydb) {
-                    $input = (array)$val + [
+                    $itemDisk->getFromDB($keydb);
+                    $input = $this->handleInput($val, $itemDisk) + [
                         'id'           => $keydb,
                     ];
-                    $itemDisk->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $itemDisk->update(Sanitizer::sanitize($input));
                     unset($value[$key]);
                     unset($db_itemdisk[$keydb]);
                     break;
@@ -174,18 +176,18 @@ class Volume extends InventoryAsset
             foreach ($db_itemdisk as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
-                    $itemDisk->delete(['id' => $dbid], 1);
+                    $itemDisk->delete(['id' => $dbid], true);
                 }
             }
         }
         if (count($value)) {
             foreach ($value as $val) {
-                $input = (array)$val + [
+                $input = $this->handleInput($val, $itemDisk) + [
                     'items_id'     => $this->item->fields['id'],
                     'itemtype'     => $this->item->getType()
                 ];
 
-                $itemDisk->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                $itemDisk->add(Sanitizer::sanitize($input));
             }
         }
     }
@@ -212,5 +214,10 @@ class Volume extends InventoryAsset
     {
         $this->conf = $conf;
         return $conf->import_volume == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_Disk::class;
     }
 }

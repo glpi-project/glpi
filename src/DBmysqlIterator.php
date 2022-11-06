@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -74,8 +76,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
         '>=',
         '<>',
         'LIKE',
+        'LIKE BINARY',
         'REGEXP',
         'NOT LIKE',
+        'NOT LIKE BINARY',
         'NOT REGEX',
         '&',
         '|'
@@ -124,7 +128,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $this->sql = null;
         $this->res = false;
-        $this->parameters = [];
 
         $is_legacy = false;
 
@@ -407,7 +410,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * @param integer|string $t Table name or function
      * @param array|string   $f Field(s) name(s)
      *
-     * @return void
+     * @return string
      */
     private function handleFields($t, $f)
     {
@@ -792,7 +795,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         return $this->count;
     }
 
-    public function seek(int $position): void
+    public function seek($position): void
     {
         if ($position < 0 || $position + 1 > $this->count) {
             throw new \OutOfBoundsException();

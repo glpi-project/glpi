@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -60,14 +62,27 @@ $itemtype = $validation->getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {
+    if (isset($_POST['users_id_validate'])) {
+        Toolbox::deprecated('Usage of "users_id_validate" parameter is deprecated in "front/commonitilvalidation.form.php". Use "items_id_target" instead.');
+        $_POST['items_id_target'] = $_POST['users_id_validate'];
+        $_POST['itemtype_target'] = User::class;
+        unset($_POST['users_id_validate']);
+    }
+
     $validation->check(-1, CREATE, $_POST);
-    if (
-        isset($_POST['users_id_validate'])
-        && (count($_POST['users_id_validate']) > 0)
-    ) {
-        $users = $_POST['users_id_validate'];
-        foreach ($users as $user) {
-            $_POST['users_id_validate'] = $user;
+
+    if (!isset($_POST['items_id_target'])) {
+        Html::back();
+        return;
+    }
+    if (!is_array($_POST['items_id_target'])) {
+        $_POST['items_id_target'] = [$_POST['items_id_target']];
+    }
+
+    if (count($_POST['items_id_target']) > 0) {
+        $targets = $_POST['items_id_target'];
+        foreach ($targets as $target) {
+            $_POST['items_id_target'] = $target;
             $validation->add($_POST);
             Event::log(
                 $validation->getField($fk),
@@ -106,9 +121,10 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else if (isset($_POST['approval_action'])) {
-    if ($_POST['users_id_validate'] == Session::getLoginUserID()) {
+    $validation->getFromDB($_POST['id']);
+    if ($validation->canValidate($validation->fields[$validation::$items_id])) {
         $validation->update($_POST + [
-            'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED
+            'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED,
         ]);
         Html::back();
     }

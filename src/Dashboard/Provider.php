@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -39,11 +41,15 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
 use CommonTreeDropdown;
+use CommonDevice;
 use Config;
 use DBConnection;
+use Glpi\Search\SearchOption;
 use Group;
 use Group_Ticket;
+use ITILCategory;
 use Problem;
+use Profile_User;
 use QueryExpression;
 use QuerySubQuery;
 use Search;
@@ -93,16 +99,34 @@ class Provider
             $where['is_template'] = 0;
         }
 
-        if ($item->isEntityAssign()) {
-            $where += getEntitiesRestrictCriteria($item::getTable());
-        }
-
-        $criteria = array_merge_recursive(
-            [
+        if ($item instanceof User) {
+            $where += getEntitiesRestrictCriteria(Profile_User::getTable());
+            $request = [
+                'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
+                'FROM'   => $i_table,
+                'INNER JOIN' => [
+                    Profile_User::getTable() => [
+                        'FKEY' => [
+                            Profile_User::getTable() => 'users_id',
+                            User::getTable() => 'id',
+                        ]
+                    ]
+                ] ,
+                'WHERE'  => $where
+            ];
+        } else {
+            if ($item->isEntityAssign()) {
+                $where += getEntitiesRestrictCriteria($item::getTable());
+            }
+            $request = [
                 'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
                 'FROM'   => $i_table,
                 'WHERE'  => $where
-            ],
+            ];
+        }
+
+        $criteria = array_merge_recursive(
+            $request,
             self::getFiltersCriteria($i_table, $params['apply_filters']),
             $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
         );
@@ -117,7 +141,8 @@ class Provider
             ]
         ];
 
-        $url = $item::getSearchURL() . "?" . Toolbox::append_params([
+        $search_url = $item::getSearchURL();
+        $url = $search_url . (str_contains($search_url, '?') ? '&' : '?') . Toolbox::append_params([
             $search_criteria,
             'reset' => 'reset',
         ]);
@@ -317,7 +342,7 @@ class Provider
                 ];
 
                 if ($params['validation_check_user']) {
-                    $where['glpi_ticketvalidations.users_id_validate'] = Session::getLoginUserID();
+                    $where[] = \TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
                 }
 
                 $query_criteria = array_merge_recursive($query_criteria, [
@@ -329,7 +354,7 @@ class Provider
                             ]
                         ]
                     ],
-                    'WHERE' => $where,
+                    'WHERE' => $where
                 ]);
                 break;
 
@@ -783,7 +808,9 @@ class Provider
         if ($fk_item instanceof CommonTreeDropdown) {
             $name = 'completename';
         }
-
+        if ($fk_item instanceof CommonDevice) {
+            $name = 'designation';
+        }
         if ($item->isEntityAssign()) {
             $where += getEntitiesRestrictCriteria($c_table, '', '', $item->maybeRecursive());
         }
@@ -1598,7 +1625,7 @@ class Provider
 
     private static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {
-        $data = Search::getOptions(getItemTypeForTable($table), true);
+        $data = SearchOption::getOptionsForItemtype(getItemTypeForTable($table), true);
         $sort = [];
         foreach ($data as $ref => $opt) {
             if (isset($opt['field'])) {
@@ -1653,7 +1680,7 @@ class Provider
             $s_criteria['criteria'][] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'), // itilcategory
-                'searchtype' => 'equals',
+                'searchtype' => 'under',
                 'value'      => (int) $apply_filters['itilcategory']
             ];
         }
@@ -1732,16 +1759,19 @@ class Provider
 
         if (
             isset($apply_filters['user_tech'])
-            && (int) $apply_filters['user_tech'] > 0
+            && (
+                (int) $apply_filters['user_tech'] > 0
+                || $apply_filters['user_tech'] == 'myself'
+            )
         ) {
             if ($DB->fieldExists($table, 'users_id_tech')) {
                 $s_criteria['criteria'][] = [
                     'link'       => 'AND',
                     'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),// tech
                     'searchtype' => 'equals',
-                    'value'      =>  (int) $apply_filters['user_tech']
+                    'value'      =>  $apply_filters['user_tech'] == 'myself' ? (int) Session::getLoginUserID() : (int) $apply_filters['user_tech']
                 ];
-            } else if (
+            } elseif (
                 in_array($table, [
                     Ticket::getTable(),
                     Change::getTable(),
@@ -1752,15 +1782,41 @@ class Provider
                     'link'       => 'AND',
                     'field'      => 5,// tech
                     'searchtype' => 'equals',
-                    'value'      =>  (int) $apply_filters['user_tech']
+                    'value'      =>  is_numeric($apply_filters['user_tech']) ? (int) $apply_filters['user_tech'] : $apply_filters['user_tech']
                 ];
             }
+        }
+
+        if (
+            $DB->fieldExists($table, 'states_id')
+            && isset($apply_filters['state'])
+            && (int) $apply_filters['state'] > 0
+        ) {
+            $s_criteria['criteria'][] = [
+                'link'       => 'AND',
+                'field'      => self::getSearchOptionID($table, 'states_id', 'glpi_states'), // state
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters['state']
+            ];
+        }
+
+        if (
+            $DB->fieldExists($table, 'type')
+            && isset($apply_filters['tickettype'])
+            && (int) $apply_filters['tickettype'] > 0
+        ) {
+            $s_criteria['criteria'][] = [
+                'link'       => 'AND',
+                'field'      => 'type',
+                'searchtype' => 'equals',
+                'value'      => (int) $apply_filters['tickettype']
+            ];
         }
 
         return $s_criteria;
     }
 
-    private static function getFiltersCriteria(string $table = "", array $apply_filters = [])
+    public static function getFiltersCriteria(string $table = "", array $apply_filters = [])
     {
         $DB = DBConnection::getReadConnection();
 
@@ -1802,7 +1858,7 @@ class Provider
             && (int) $apply_filters['itilcategory'] > 0
         ) {
             $where += [
-                "$table.itilcategories_id" => (int) $apply_filters['itilcategory']
+                "$table.itilcategories_id" => getSonsOf(ITILCategory::getTable(), (int) $apply_filters['itilcategory'])
             ];
         }
 
@@ -1833,6 +1889,26 @@ class Provider
         ) {
             $where += [
                 "$table.manufacturers_id" => (int) $apply_filters['manufacturer']
+            ];
+        }
+
+        if (
+            $DB->fieldExists($table, 'states_id')
+            && isset($apply_filters['state'])
+            && (int) $apply_filters['state'] > 0
+        ) {
+            $where += [
+                "$table.states_id" => (int) $apply_filters['state']
+            ];
+        }
+
+        if (
+            $DB->fieldExists($table, 'type')
+            && isset($apply_filters['tickettype'])
+            && (int) $apply_filters['tickettype'] > 0
+        ) {
+            $where += [
+                "$table.type" => (int) $apply_filters['tickettype']
             ];
         }
 

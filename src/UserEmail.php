@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -162,7 +164,7 @@ class UserEmail extends CommonDBChild
      * @param $field_name
      * @param $id
      **/
-    public function showChildForItemForm($canedit, $field_name, $id)
+    public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
 
         if ($this->isNewID($this->getID())) {
@@ -170,25 +172,31 @@ class UserEmail extends CommonDBChild
         } else {
             $value = Html::entities_deep($this->fields['email']);
         }
-
+        $result = "";
         $field_name = $field_name . "[$id]";
-        echo "<div class='d-flex align-items-center'>";
-        echo "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
+        $result .= "<div class='d-flex align-items-center'>";
+        $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
              value='" . $this->getID() . "'";
         if (!$canedit) {
-            echo " disabled";
+            $result .= " disabled";
         }
         if ($this->fields['is_default']) {
-            echo " checked";
+            $result .= " checked";
         }
-        echo ">&nbsp;";
+        $result .= ">&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
-            echo "<input type='hidden' name='$field_name' value='$value'>";
-            printf(__('%1$s %2$s'), $value, "<span class='b'>(" . __('D') . ")</span>");
+            $result .= "<input type='hidden' name='$field_name' value='$value'>";
+            $result .= sprintf(__('%1$s %2$s'), $value, "<span class='b'>(" . __('D') . ")</span>");
         } else {
-            echo "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
+            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
         }
-        echo "</div>";
+        $result .= "</div>";
+
+        if ($display) {
+            echo $result;
+        } else {
+            return $result;
+        }
     }
 
 
@@ -236,9 +244,7 @@ class UserEmail extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-
-       // Check email validity
-        if (!isset($input['email']) || empty($input['email'])) {
+        if (!$this->checkInputEmailValidity($input)) {
             return false;
         }
 
@@ -248,6 +254,27 @@ class UserEmail extends CommonDBChild
         }
 
         return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        if (!$this->checkInputEmailValidity($input)) {
+            return false;
+        }
+
+        return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * Check validity of email passed in input.
+     *
+     * @param array $input
+     *
+     * @return bool
+     */
+    private function checkInputEmailValidity(array $input): bool
+    {
+        return isset($input['email']) && !empty($input['email']) && GLPIMailer::validateAddress($input['email']);
     }
 
 

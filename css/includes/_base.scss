@@ -1,12 +1,13 @@
 /*!
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -63,8 +65,11 @@ $timeline-task-bg: #ffe8b9 !default;
 $timeline-task-fg: #38301f !default;
 $timeline-task-border: #e5c88c !default;
 $timeline-sol-bg: #9fd6ed !default;
-$timeline-sol-fg: #425b64 !default;
+$timeline-sol-fg: #27363b !default;
 $timeline-sol-border: #90c2d8 !default;
+$timeline-doc-bg: #80cead !default;
+$timeline-doc-fg: #21352c !default;
+$timeline-doc-border: #68b997 !default;
 $timeline-log-bg: #cacaca21 !default;
 $timeline-badge-bg: rgba(97, 97, 97, 15%) !default;
 $timeline-badge-fg: rgba(43, 43, 43, 80%) !default;
@@ -110,8 +115,11 @@ body.iframed {
 
 .dropdown-item {
     & > .fas:first-child,
+    & > .fa-solid:first-child,
     & > .far:first-child,
+    & > .fa-regular:first-child,
     & > .fab:first-child,
+    & > .fa-brands:first-child,
     & > .ti:first-child {
         margin-right: 0.5em;
     }
@@ -151,8 +159,11 @@ body.iframed {
     }
 
     i.fas,
+    i.fa-solid,
     i.far,
+    i.fa-regular,
     i.fab,
+    i.fa-brands,
     i.ti,
     .fa-stack {
         margin-inline-start: 0;
@@ -164,17 +175,17 @@ body.iframed {
 
     &.btn-icon {
         i.fas,
+        i.fa-solid,
         i.far,
+        i.fa-regular,
         i.fab,
+        i.fa-brands,
         i.ti {
             margin-right: 0;
             line-height: 1.5em;
         }
 
         &.btn-sm {
-            // try to have same height for ti and fa icons
-            min-height: 24px;
-
             .fa-stack {
                 height: 1.65em;
                 line-height: 1.2em;
@@ -188,8 +199,11 @@ body.iframed {
             }
 
             i.fas,
+            i.fa-solid,
             i.far,
+            i.fa-regular,
             i.fab,
+            i.fa-brands,
             i.ti {
                 line-height: 1.2em;
             }
@@ -200,6 +214,22 @@ body.iframed {
 .toast-container {
     z-index: 999999;
     position: fixed;
+
+    &.top-left {
+        inset: 0 auto auto 0;
+    }
+
+    &.top-right {
+        inset: 0 0 auto auto;
+    }
+
+    &.bottom-left {
+        inset: auto auto 0 0;
+    }
+
+    &.bottom-right {
+        inset: auto 0 0 auto;
+    }
 }
 
 .img-overlay-wrapper {
@@ -288,16 +318,30 @@ table {
     }
 }
 
-.qtip-bootstrap {
+.qtip-bootstrap,
+.popover .popover-body {
     background-color: $color-contrast-light;
     color: $dark;
 }
 
-.list-group .list-group-item {
-    color: inherit;
-    border-color: $table-border-color;
+.popover .popover-arrow::after {
+    border-top-color: $color-contrast-light;
+}
 
-    &:hover {
-        background-color: $hover-bg;
-    }
+kbd {
+    white-space: nowrap;
+}
+
+body,
+body input {
+    font-variant-ligatures: no-contextual;
+}
+
+/** Bootstrap visibility classes (The utility class behavior is different in _styles.scss) */
+.bs-visible {
+    visibility: visible !important;
+}
+
+.bs-invisible {
+    visibility: hidden !important;
 }

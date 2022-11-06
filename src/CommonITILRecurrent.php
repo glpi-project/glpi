@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -191,7 +193,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 'name'  => 'create_before',
                 'label' => __('Preliminary creation'),
                 'type'  => 'timestamp',
-                'max'   => 7 * DAY_TIMESTAMP,
+                'max'   => 2 * WEEK_TIMESTAMP,
                 'step'  => HOUR_TIMESTAMP
             ],
             [
@@ -542,11 +544,19 @@ abstract class CommonITILRecurrent extends CommonDropdown
     }
 
     /**
+     * Get all available types to which an ITIL object can be assigned
+     **/
+    public static function getAllTypesForHelpdesk()
+    {
+        return CommonITILObject::getAllTypesForHelpdesk();
+    }
+
+    /**
      * Create an item based on the specified template
-     *
+     * @param array $linked_items array of elements (itemtype => array(id1, id2, id3, ...))
      * @return boolean
      */
-    public function createItem()
+    public function createItem(array $linked_items = [])
     {
         $result = false;
         $concrete_class = static::getConcreteClass();
@@ -572,7 +582,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $input['entities_id'] = $this->fields['entities_id'];
             $input['_auto_import'] = true;
 
-            /** @var CommonITILObject */
+            /** @var CommonITILObject $item */
             $item = new $concrete_class();
             $input  = Toolbox::addslashes_deep($input);
 
@@ -582,6 +592,23 @@ abstract class CommonITILRecurrent extends CommonDropdown
                     $concrete_class::getTypeName(1),
                     $items_id
                 );
+                // add item if any
+                if (count($linked_items) > 0 && ($item_link_class = $concrete_class::getItemLinkClass()) !== null) {
+                    foreach ($linked_items as $linked_itemtype => $linked_items_ids) {
+                        foreach ($linked_items_ids as $linked_item_id) {
+                            /* @var CommonItilObject_Item $item_link */
+                            $item_link = new $item_link_class();
+                            $item_link->add(
+                                [
+                                    $item->getForeignKeyField() => $items_id,
+                                    'itemtype' => $linked_itemtype,
+                                    'items_id' => $linked_item_id,
+                                ]
+                            );
+                        }
+                    }
+                }
+
                 $result = true;
             } else {
                 $msg = sprintf(
@@ -623,5 +650,42 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-alarm";
+    }
+
+    /**
+     * Return classname corresponding to relations with items.
+     *
+     * @return string|null Classname, or null if relations with items is not handled.
+     */
+    public static function getItemLinkClass(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Return elements related to the recurrent object.
+     * Result keys corresponds to itemtypes, and values are arrays of ids `array(itemtype => array(id1, id2, id3, ...))`.
+     *
+     * @return array
+     */
+    public function getRelatedElements(): array
+    {
+        global $DB;
+        $items = [];
+        if (($item_class = static::getItemLinkClass()) !== null) {
+            $iterator = $DB->request([
+                'FROM'   => $item_class::getTable(),
+                'WHERE'  => [
+                    'ticketrecurrents_id' =>  $this->getId(),
+                ]
+            ]);
+            foreach ($iterator as $data) {
+                if (!array_key_exists($data['itemtype'], $items)) {
+                    $items[$data['itemtype']] = [];
+                }
+                $items[$data['itemtype']][] = $data['items_id'];
+            }
+        }
+        return $items;
     }
 }

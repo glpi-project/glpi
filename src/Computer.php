@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -64,6 +66,8 @@ class Computer extends CommonDBTM
             Item_Devices::class,
             Infocom::class,
             Item_Disk::class,
+            Item_Process::class,
+            Item_Environment::class,
             Item_SoftwareVersion::class,
             Item_SoftwareLicense::class,
             Contract_Item::class,
@@ -102,8 +106,11 @@ class Computer extends CommonDBTM
          ->addImpactTab($ong, $options)
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
+         ->addStandardTab('Item_Line', $ong, $options)
          ->addStandardTab('Item_Disk', $ong, $options)
          ->addStandardTab('Item_SoftwareVersion', $ong, $options)
+         ->addStandardTab('Item_Process', $ong, $options)
+         ->addStandardTab('Item_Environment', $ong, $options)
          ->addStandardTab('Computer_Item', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab(Socket::class, $ong, $options)
@@ -305,6 +312,8 @@ class Computer extends CommonDBTM
                 Computer_Item::class,
                 Item_SoftwareLicense::class,
                 Item_SoftwareVersion::class,
+                Item_Process::class,
+                Item_Environment::class,
                 ComputerAntivirus::class,
                 ComputerVirtualMachine::class,
                 Item_Disk::class,
@@ -441,6 +450,22 @@ class Computer extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => 'last_inventory_update',
+            'name'               => __('Last inventory date'),
+            'datatype'           => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'last_boot',
+            'name'               => __('Last boot date'),
+            'datatype'           => 'datetime',
+        ];
+
+        $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
@@ -568,9 +593,21 @@ class Computer extends CommonDBTM
 
         $tab = array_merge($tab, ComputerAntivirus::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, Monitor::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Peripheral::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Printer::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Phone::rawSearchOptionsToAdd());
+
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
+        $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
+
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
+
+        $tab = array_merge($tab, Agent::rawSearchOptionsToAdd());
 
         return $tab;
     }

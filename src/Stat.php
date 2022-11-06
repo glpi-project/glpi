@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -725,7 +727,7 @@ class Stat extends CommonGLPI
                         $value[$i]["id"],
                         $value2
                     );
-                    foreach ($satisfaction as $key2 => $val2) {
+                    foreach (array_keys($satisfaction) as $key2) {
                           $satisfaction[$key2] *= $answersatisfaction[$key2];
                     }
                     if ($nb_answersatisfaction > 0) {
@@ -748,7 +750,7 @@ class Stat extends CommonGLPI
                         $value[$i]["id"],
                         $value2
                     );
-                    foreach ($data as $key2 => $val2) {
+                    foreach (array_keys($data) as $key2) {
                           $data[$key2] *= $solved[$key2];
                     }
 
@@ -780,7 +782,7 @@ class Stat extends CommonGLPI
                     $value[$i]["id"],
                     $value2
                 );
-                foreach ($data as $key2 => $val2) {
+                foreach (array_keys($data) as $key2) {
                     $data[$key2] = round($data[$key2] * $solved[$key2]);
                 }
 
@@ -810,7 +812,7 @@ class Stat extends CommonGLPI
                     $value[$i]["id"],
                     $value2
                 );
-                foreach ($data as $key2 => $val2) {
+                foreach (array_keys($data) as $key2) {
                     $data[$key2] = round($data[$key2] * $solved[$key2]);
                 }
 
@@ -852,7 +854,7 @@ class Stat extends CommonGLPI
                     $value[$i]["id"],
                     $value2
                 );
-                foreach ($data as $key2 => $val2) {
+                foreach (array_keys($data) as $key2) {
                     if (isset($solved_with_actiontime[$key2])) {
                         $data[$key2] *= $solved_with_actiontime[$key2];
                     } else {
@@ -1113,10 +1115,10 @@ class Stat extends CommonGLPI
                 break;
 
             case "device":
-                $devtable = getTableForItemType('Computer_' . $value2);
+                $devtable = getTableForItemType('Item_' . $value2);
                 $fkname   = getForeignKeyFieldForTable(getTableForItemType($value2));
                //select computers IDs that are using this device;
-                $linkdetable = $table;
+                $linkedtable = $table;
                 if ($itemtype == 'Ticket') {
                     $linkedtable = 'glpi_items_tickets';
                     $LEFTJOIN = [
@@ -1125,7 +1127,7 @@ class Stat extends CommonGLPI
                                 'glpi_items_tickets' => 'tickets_id',
                                 'glpi_tickets'       => 'id', [
                                     'AND' => [
-                                        "$linkdetable.itemtype" => 'Computer'
+                                        "$linkedtable.itemtype" => 'Computer'
                                     ]
                                 ]
                             ]
@@ -1142,9 +1144,10 @@ class Stat extends CommonGLPI
                     $devtable         => [
                         'ON' => [
                             'glpi_computers'  => 'id',
-                            $devtable         => 'computers_id', [
+                            $devtable         => 'items_id', [
                                 'AND' => [
-                                    "$devtable.$fkname" => $value
+                                    "$devtable.itemtype" => Computer::class,
+                                    "$devtable.$fkname"  => $value
                                 ]
                             ]
                         ]
@@ -1157,7 +1160,7 @@ class Stat extends CommonGLPI
             case "comp_champ":
                 $ftable   = getTableForItemType($value2);
                 $champ    = getForeignKeyFieldForTable($ftable);
-                $linkdetable = $table;
+                $linkedtable = $table;
                 if ($itemtype == 'Ticket') {
                     $linkedtable = 'glpi_items_tickets';
                     $LEFTJOIN = [
@@ -1695,6 +1698,8 @@ class Stat extends CommonGLPI
 
         $opt_list["Ticket"]                             = __('Tickets');
 
+        $stat_list = [];
+
         $stat_list["Ticket"]["Ticket_Global"]["name"]   = __('Global');
         $stat_list["Ticket"]["Ticket_Global"]["file"]   = "stat.global.php?itemtype=Ticket";
         $stat_list["Ticket"]["Ticket_Ticket"]["name"]   = __('By ticket');
@@ -1729,17 +1734,11 @@ class Stat extends CommonGLPI
 
         $values   = [$CFG_GLPI["root_doc"] . '/front/stat.php' => Dropdown::EMPTY_VALUE];
 
-        $i        = 0;
         $selected = -1;
-        $count    = count($stat_list);
         foreach ($opt_list as $opt => $group) {
             foreach ($stat_list[$opt] as $data) {
                 $name    = $data['name'];
                 $file    = $data['file'];
-                $comment = "";
-                if (isset($data['comment'])) {
-                    $comment = $data['comment'];
-                }
                 $key                  = $CFG_GLPI["root_doc"] . "/front/" . $file;
                 $values[$group][$key] = $name;
                 if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {

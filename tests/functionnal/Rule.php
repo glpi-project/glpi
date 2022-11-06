@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -253,10 +255,10 @@ class Rule extends DbTestCase
     public function testMaxActionsCount()
     {
         $rule = new \Rule();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(0);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(1);
 
         $rule = new \RuleTicket();
-        $this->integer($rule->maxActionsCount())->isIdenticalTo(33);
+        $this->integer($rule->maxActionsCount())->isIdenticalTo(35);
 
         $rule = new \RuleDictionnarySoftware();
         $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
@@ -290,7 +292,7 @@ class Rule extends DbTestCase
     public function testGetCriteriaName()
     {
         $ruleTicket = new \RuleTicket();
-        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Ticket location');
+        $this->string($ruleTicket->getCriteriaName('locations_id'))->isIdenticalTo('Location');
         $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable'));
     }
 
@@ -306,8 +308,8 @@ class Rule extends DbTestCase
             [__('Technician')             , '_users_id_assign'],
             [__('Technician group')       , '_groups_id_assign'],
             [__('Assigned to a supplier') , '_suppliers_id_assign'],
-            [_n('Watcher', 'Watchers', 1)                , '_users_id_observer'],
-            [_n('Watcher group', 'Watcher groups', 1)          , '_groups_id_observer'],
+            [_n('Observer', 'Observers', 1)                , '_users_id_observer'],
+            [_n('Observer group', 'Observer groups', 1)          , '_groups_id_observer'],
             [__('Urgency')                , 'urgency'],
             [__('Impact')                 , 'impact'],
             [__('Priority')               , 'priority'],
@@ -339,7 +341,7 @@ class Rule extends DbTestCase
             [sprintf(
                 __('%1$s - %2$s'),
                 __('Send an approval request'),
-                \Group::getTypeName(1)
+                __('Group users')
             )           , 'groups_id_validate'
             ],
             [sprintf(
@@ -361,10 +363,6 @@ class Rule extends DbTestCase
     {
         $ruleTicket = new \RuleTicket();
         $this->string($ruleTicket->getActionName($field))->isIdenticalTo($label);
-    }
-
-    public function testProcess()
-    {
     }
 
     public function testPrepareInputDataForProcess()
@@ -596,7 +594,7 @@ class Rule extends DbTestCase
         $this->boolean($rule->getFromDB($cloned))->isTrue();
 
         $this->integer($rule->fields['is_active'])->isIdenticalTo(0);
-        $this->string($rule->fields['name'])->isIdenticalTo('Copy of One user assignation');
+        $this->string($rule->fields['name'])->isIdenticalTo('One user assignation (copy)');
 
         foreach ($relations as $relation => $expected) {
             $this->integer(

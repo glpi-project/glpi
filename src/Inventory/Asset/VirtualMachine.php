@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,27 +18,30 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\Inventory\Asset;
 
+use AutoUpdateSystem;
 use Computer;
 use ComputerVirtualMachine;
 use Glpi\Inventory\Conf;
-use Toolbox;
+use Glpi\Toolbox\Sanitizer;
+use RuleImportAssetCollection;
 
 class VirtualMachine extends InventoryAsset
 {
@@ -86,10 +91,10 @@ class VirtualMachine extends InventoryAsset
             }
 
             if (!property_exists($vm_val, 'autoupdatesystems_id')) {
-                $vm_val->autoupdatesystems_id = 'GLPI Native Inventory';
+                $vm_val->autoupdatesystems_id = AutoUpdateSystem::NATIVE_INVENTORY;
             }
 
-           // Hack for BSD jails
+            // Hack for BSD jails
             if (property_exists($val, 'virtualmachinetypes_id') && $val->virtualmachinetypes_id == 'jail') {
                 $val->uuid = "-" . $val->name;
             }
@@ -100,15 +105,15 @@ class VirtualMachine extends InventoryAsset
                 }
             }
 
-            if (property_exists($vm_val, 'memory')) {
-                if (strstr($vm_val->memory, 'MB')) {
-                    $vm_val = str_replace('MB', '', $vm_val->memory);
-                } else if (strstr($vm_val->memory, 'KB')) {
-                    $vm_val = str_replace('KB', '', $vm_val->memory) / 1000;
-                } else if (strstr($vm_val->memory, 'GB')) {
-                    $vm_val->memory = str_replace('GB', '', $vm_val->memory) * 1000;
-                } else if (strstr($vm_val->memory, 'B')) {
-                    $vm_val->memory = str_replace('B', '', $vm_val->memory) / 1000000;
+            if (property_exists($vm_val, 'ram')) {
+                if (strstr($vm_val->ram, 'MB')) {
+                    $vm_val = str_replace('MB', '', $vm_val->ram);
+                } else if (strstr($vm_val->ram, 'KB')) {
+                    $vm_val = str_replace('KB', '', $vm_val->ram) / 1000;
+                } else if (strstr($vm_val->ram, 'GB')) {
+                    $vm_val->ram = str_replace('GB', '', $vm_val->ram) * 1000;
+                } else if (strstr($vm_val->ram, 'B')) {
+                    $vm_val->ram = str_replace('B', '', $vm_val->ram) / 1000000;
                 }
             }
 
@@ -120,9 +125,9 @@ class VirtualMachine extends InventoryAsset
                 $vm_val->comment = $comments;
             }
 
-           //handle extra components
+            //handle extra components
             if ($this->conf->vm_as_computer && $this->conf->vm_components) {
-               //create processor component
+                //create processor component
                 if (!property_exists($vm_val, 'cpus') && property_exists($vm_val, 'vcpu')) {
                     $cpus = [];
                     $cpu = new \stdClass();
@@ -131,11 +136,11 @@ class VirtualMachine extends InventoryAsset
                     $vm_val->cpus = $cpus;
                 }
 
-               //create memory component
-                if (!property_exists($vm_val, 'memories') && property_exists($vm_val, 'memory')) {
+                //create memory component
+                if (!property_exists($vm_val, 'memories') && property_exists($vm_val, 'ram')) {
                     $memories = [];
                     $memory = new \stdClass();
-                    $memory->capacity = $vm_val->memory;
+                    $memory->capacity = $vm_val->ram;
                     $memories[] = $memory;
                     $vm_val->memories = $memories;
                 }
@@ -206,19 +211,19 @@ class VirtualMachine extends InventoryAsset
 
     public function handle()
     {
-        global $DB;
-
         $value = $this->data;
         $computerVirtualmachine = new ComputerVirtualMachine();
 
         $db_vms = $this->getExisting();
 
         foreach ($db_vms as $keydb => $arraydb) {
+            $computerVirtualmachine->getFromDB($keydb);
             foreach ($value as $key => $val) {
+                $handled_input = $this->handleInput($val, $computerVirtualmachine);
                 $sinput = [
-                    'name'                     => $val->name ?? '',
-                    'uuid'                     => $val->uuid ?? '',
-                    'virtualmachinesystems_id' => $val->virtualmachinesystems_id ?? 0
+                    'name'                     => $handled_input['name'] ?? '',
+                    'uuid'                     => $handled_input['uuid'] ?? '',
+                    'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
                 ];
                 if ($sinput == $arraydb) {
                     $input = [
@@ -226,12 +231,12 @@ class VirtualMachine extends InventoryAsset
                         'is_dynamic'   => 1
                     ];
 
-                    foreach (['vcpu', 'memory', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
+                    foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id'] as $prop) {
                         if (property_exists($val, $prop)) {
-                            $input[$prop] = $val->$prop;
+                            $input[$prop] = $handled_input[$prop];
                         }
                     }
-                    $computerVirtualmachine->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $computerVirtualmachine->update(Sanitizer::sanitize($input));
                     unset($value[$key]);
                     unset($db_vms[$keydb]);
                     break;
@@ -242,16 +247,16 @@ class VirtualMachine extends InventoryAsset
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
            // Delete virtual machines links in DB
             foreach ($db_vms as $idtmp => $data) {
-                $computerVirtualmachine->delete(['id' => $idtmp], 1);
+                $computerVirtualmachine->delete(['id' => $idtmp], true);
             }
         }
 
         if (count($value) != 0) {
             foreach ($value as $val) {
-                $input = (array)$val;
+                $input = $this->handleInput($val, $computerVirtualmachine);
                 $input['computers_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
-                $computerVirtualmachine->add(Toolbox::addslashes_deep($input), [], $this->withHistory());
+                $computerVirtualmachine->add(Sanitizer::sanitize($input));
             }
         }
 
@@ -261,7 +266,7 @@ class VirtualMachine extends InventoryAsset
     }
 
     /**
-     * Create computer asset from VM informaiton
+     * Create computer asset from VM information
      *
      * @return void
      */
@@ -274,7 +279,7 @@ class VirtualMachine extends InventoryAsset
             if (property_exists($vm, '_onlylink') && $vm->_onlylink) {
                 continue;
             }
-           // Define location of physical computer (host)
+            // Define location of physical computer (host)
             $vm->locations_id = $this->item->fields['locations_id'];
             $vm->is_dynamic = 1;
 
@@ -298,36 +303,52 @@ class VirtualMachine extends InventoryAsset
                      $computers_vm_id = $data['id'];
                 }
                 if ($computers_vm_id == 0) {
-                   // Add computer
-                    $vm->entities_id = $this->item->fields['entities_id'];
-                    $computers_vm_id = $computervm->add(Toolbox::addslashes_deep((array)$vm), [], $this->withHistory());
+                    //call rules on current collected data to find item
+                    //a callback on rulepassed() will be done if one is found.
+                    $rule = new RuleImportAssetCollection();
+                    $rule->getCollectionPart();
+                    $input = (array)$vm;
+                    $input['itemtype'] = \Computer::class;
+                    $input['entities_id'] = $this->main_asset->getEntityID();
+                    $input  = Sanitizer::sanitize($input);
+                    $datarules = $rule->processAllRules($input);
+
+                    if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
+                        //this is a new one
+                        $vm->entities_id = $this->item->fields['entities_id'];
+                        $computers_vm_id = $computervm->add($input);
+                    } else {
+                        //refused by rules
+                        return;
+                    }
                 } else {
-                   // Update computer
+                    // Update computer
                     $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
-                    $computervm->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $computervm->update(Sanitizer::sanitize($input));
                 }
-               //load if new, reload if not.
+
+                //load if new, reload if not.
                 $computervm->getFromDB($computers_vm_id);
-               // Manage networks
+                // Manage networks
                 if (isset($this->allports[$vm->uuid])) {
                     $this->ports = $this->allports[$vm->uuid];
                     $this->handlePorts('Computer', $computers_vm_id);
                 }
 
-               //manage extra components created form hosts information
+                //manage extra components created form hosts information
                 if ($this->conf->vm_components) {
                     foreach ($this->vmcomponents as $key => $assetitem) {
                         if (property_exists($vm, $key)) {
-                             $assettype = '\Glpi\Inventory\Asset\\' . $assetitem;
-                             $asset = new $assettype($computervm, $vm->$key);
+                            $assettype = '\Glpi\Inventory\Asset\\' . $assetitem;
+                            $asset = new $assettype($computervm, $vm->$key);
                             if ($asset->checkConf($this->conf)) {
                                 $asset->setAgent($this->getAgent());
                                 $asset->setExtraData($this->data);
                                 $asset->setEntityID($computervm->getEntityID());
                                 $asset->prepare();
-                                $value = $asset->handleLinks();
+                                $asset->handleLinks();
                                 $asset->handle();
                             }
                         }
@@ -341,5 +362,10 @@ class VirtualMachine extends InventoryAsset
     {
         $this->conf = $conf;
         return $conf->import_vm == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \ComputerVirtualMachine::class;
     }
 }

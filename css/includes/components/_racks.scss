@@ -1,12 +1,13 @@
 /*!
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -51,15 +53,11 @@
 
         /* fallback */
         cursor: grab;
-        cursor: grab;
-        cursor: grab;
 
         &:active {
             cursor: move;
 
             /* fallback */
-            cursor: grabbing;
-            cursor: grabbing;
             cursor: grabbing;
         }
     }
@@ -148,14 +146,13 @@ ul.indexes {
     position: relative;
 
     &::after {
-        content: "\f067";
+        content: "\2b";
         left: 45%;
-        font-size: 1em;
         color: grey;
         top: 1px;
-        font-family: "Font Awesome 5 Free";
+        font: var(--fa-font-solid);
+        font-size: 1em;
         position: absolute;
-        font-weight: 900;
     }
 
     &:hover {
@@ -169,6 +166,7 @@ ul.indexes {
     margin: 10px 0 10px 10px;
     float: left;
     padding: 15px 0 0 15px;
+    position: relative;
 
     *,
     ::before,
@@ -184,7 +182,7 @@ ul.indexes {
     .racks_add {
         border: 1px solid $table-border-color;
         border-width: 0 1px 1px 0;
-        background-size: 40px 39px;
+        background-size: var(--dcroom-grid-cellw) var(--dcroom-grid-cellh);
         background-image:
             linear-gradient(
                 to right,
@@ -199,13 +197,13 @@ ul.indexes {
         margin-left: 15px;
 
         .cell_add {
-            height: 39px;
-            width: 40px;
+            height: var(--dcroom-grid-cellh);
+            width: var(--dcroom-grid-cellw);
             float: left;
 
             &::after {
-                left: 15px;
-                top: 10px;
+                left: calc(50% - 4px);
+                top: calc(50% - 0.5em - 4px);
             }
         }
     }
@@ -282,7 +280,7 @@ ul.indexes {
 
             li {
                 float: left;
-                width: 40px;
+                width: var(--dcroom-grid-cellw);
             }
         }
 
@@ -290,9 +288,8 @@ ul.indexes {
             width: 15px;
 
             li {
-                width: 10px;
-                height: 39px;
-                line-height: 40px;
+                height: var(--dcroom-grid-cellh);
+                line-height: calc(var(--dcroom-grid-cellh) + 1px);
             }
         }
     }
@@ -350,12 +347,12 @@ ul.indexes {
         }
 
         th {
-            color: $table-head-color;
+            color: $table-th-color;
             background-color: steelblue;
         }
 
         td {
-            border-left: 1px solid $table-head-border-color;
+            border-left: 1px solid $table-th-border-color;
 
             div {
                 border: none !important;
@@ -411,8 +408,8 @@ ul.indexes {
 .racks_col h2 {
     font-size: 14px;
     font-weight: bold;
-    color: $table-head-color;
-    background-color: $table-head-bg;
+    color: $table-th-color;
+    background-color: $table-th-bg;
     height: 30px;
     margin: 0;
     padding: 5px 0;
@@ -599,8 +596,8 @@ ul.indexes {
 .rack_side_block {
     width: 200px;
     border: 1px solid $table-border-color;
-    background-color: $table-head-bg;
-    color: $table-head-color;
+    background-color: $table-th-bg;
+    color: $table-th-color;
     text-align: left;
     font-size: 11px;
     margin-bottom: 20px;

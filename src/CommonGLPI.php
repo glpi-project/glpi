@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -40,13 +42,30 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class CommonGLPI implements CommonGLPIInterface
 {
-   /// GLPI Item type cache : set dynamically calling getType
+    /**
+     * Show the title of the item in the navigation header ?
+     */
+    protected static $showTitleInNavigationHeader = false;
+
+   /**
+    * GLPI Item type cache : set dynamically calling getType
+    *
+    * @var integer
+    */
     protected $type                 = -1;
 
-   /// Display list on Navigation Header
+   /**
+    * Display list on Navigation Header
+    *
+    * @var boolean
+    */
     protected $displaylist          = true;
 
-   /// Show Debug
+    /**
+     * Show Debug
+     *
+     * @var boolean
+     */
     public $showdebug               = false;
 
     /**
@@ -193,6 +212,7 @@ class CommonGLPI implements CommonGLPIInterface
         if (static::$rightname) {
             return Session::haveRight(static::$rightname, UPDATE);
         }
+        return false;
     }
 
 
@@ -425,21 +445,22 @@ class CommonGLPI implements CommonGLPIInterface
         $menu       = [];
 
         $type       = static::getType();
-        $item       = new $type();
-        $forbidden  = $type::getForbiddenActionsForMenu();
+        $item       = new static();
+        $forbidden  = $item->getForbiddenActionsForMenu();
 
         if ($item instanceof CommonDBTM) {
-            if ($type::canView()) {
-                $menu['title']           = static::getMenuName();
-                $menu['shortcut']        = static::getMenuShorcut();
-                $menu['page']            = static::getSearchURL(false);
-                $menu['links']['search'] = static::getSearchURL(false);
+            if ($item->canView()) {
+                $menu['title']           = $item->getMenuName();
+                $menu['shortcut']        = $item->getMenuShorcut();
+                $menu['page']            = $item->getSearchURL(false);
+                $menu['links']['search'] = $item->getSearchURL(false);
                 $menu['links']['lists']  = "";
-                $menu['icon']            = static::getIcon();
+                $menu['lists_itemtype']  = $item->getType();
+                $menu['icon']            = $item->getIcon();
 
                 if (
                     !in_array('add', $forbidden)
-                    && $type::canCreate()
+                    && $item->canCreate()
                 ) {
                     if ($item->maybeTemplate()) {
                         $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
@@ -449,11 +470,11 @@ class CommonGLPI implements CommonGLPIInterface
                                                   '&add=0';
                         }
                     } else {
-                        $menu['links']['add'] = static::getFormURL(false);
+                        $menu['links']['add'] = $item->getFormURL(false);
                     }
                 }
 
-                $extra_links = static::getAdditionalMenuLinks();
+                $extra_links = $item->getAdditionalMenuLinks();
                 if (is_array($extra_links) && count($extra_links)) {
                     $menu['links'] += $extra_links;
                 }
@@ -463,19 +484,19 @@ class CommonGLPI implements CommonGLPIInterface
                 !method_exists($type, 'canView')
                 || $item->canView()
             ) {
-                $menu['title']           = static::getMenuName();
-                $menu['shortcut']        = static::getMenuShorcut();
-                $menu['page']            = static::getSearchURL(false);
-                $menu['links']['search'] = static::getSearchURL(false);
+                $menu['title']           = $item->getMenuName();
+                $menu['shortcut']        = $item->getMenuShorcut();
+                $menu['page']            = $item->getSearchURL(false);
+                $menu['links']['search'] = $item->getSearchURL(false);
                 if (method_exists($item, 'getIcon')) {
-                    $menu['icon'] = static::getIcon();
+                    $menu['icon'] = $item->getIcon();
                 }
             }
         }
-        if ($data = static::getAdditionalMenuOptions()) {
+        if ($data = $item->getAdditionalMenuOptions()) {
             $menu['options'] = $data;
         }
-        if ($data = static::getAdditionalMenuContent()) {
+        if ($data = $item->getAdditionalMenuContent()) {
             $newmenu = [
                 strtolower($type) => $menu,
             ];
@@ -524,7 +545,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array of additional options
+     * @return array|false array of additional options, false if no options
      **/
     public static function getAdditionalMenuOptions()
     {
@@ -642,7 +663,7 @@ class CommonGLPI implements CommonGLPIInterface
             default:
                 $data     = explode('$', $tab);
                 $itemtype = $data[0];
-               // Default set
+                // Default set
                 $tabnum   = 1;
                 if (isset($data[1])) {
                     $tabnum = $data[1];
@@ -654,25 +675,6 @@ class CommonGLPI implements CommonGLPIInterface
                     Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                     $ret = $item->showForm($item->getID(), $options);
 
-                    $lockedfield = new Lockedfield();
-                    if (!$item->isNewItem() && $lockedfield->isHandled($item)) {
-                        $locks = $lockedfield->getLocks($item->getType(), $item->fields['id']);
-                        if (count($locks)) {
-                             $js_expr = '[name=' . implode('], [name=', $locks) . ']';
-                             $lockedtitle = __s('Field will not be updated from inventory');
-
-                             $locked_js = <<<JAVASCRIPT
-                        $(function() {
-                            $("{$js_expr}").closest("td").prev()
-                            .append("<i class=\"fas fa-lock\" title=\"{$lockedtitle}\"></i>")
-                            .toggleClass("lockedfield", true)
-                            .removeClass("lockfield") //to drop duplicated fusion icon
-                            ;
-                        });
-JAVASCRIPT;
-                             echo Html::scriptBlock($locked_js);
-                        }
-                    }
                     Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                     return $ret;
                 }
@@ -685,6 +687,7 @@ JAVASCRIPT;
                     $options['itemtype'] = $itemtype;
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                     $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
+
                     Plugin::doHook(Hooks::POST_SHOW_TAB, ['item' => $item, 'options' => $options]);
                     return $ret;
                 }
@@ -868,13 +871,13 @@ JAVASCRIPT;
             if ($this instanceof CommonITILObject && $this->isNewItem()) {
                 $this->input = $cleaned_options;
                 $this->saveInput();
-               // $extraparamhtml can be tool long in case of ticket with content
+               // $extraparamhtml can be too long in case of ticket with content
                // (passed in GET in ajax request)
                 unset($cleaned_options['content']);
             }
 
-           // prevent double sanitize, because the includes.php sanitize all data
-            $cleaned_options = Toolbox::stripslashes_deep($cleaned_options);
+            // prevent double sanitize, because the includes.php sanitize all data
+            $cleaned_options = Sanitizer::unsanitize($cleaned_options);
 
             $extraparamhtml = "&amp;" . Toolbox::append_params($cleaned_options, '&amp;');
         }
@@ -898,7 +901,7 @@ JAVASCRIPT;
                 ];
             }
 
-           // Not all tab for templates and if only 1 tab
+            // Not all tab for templates and if only 1 tab
             if (
                 $display_all
                 && empty($withtemplate)
@@ -1009,23 +1012,41 @@ JAVASCRIPT;
             echo "<div class='navigationheader justify-content-sm-between'>";
 
             // First set of header pagination actions, displayed on the left side of the page
-            echo "<div>";
+            echo "<div class='left-icons'>";
 
-            if ($first >= 0) {
-                echo "<a href='$cleantarget?id=$first$extraparamhtml'
-                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"" . __s('First') . "\"
-                     data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                     <i class='fa-lg ti ti-chevrons-left'></i>
-                  </a>";
+            if (!$glpilisttitle) {
+                $glpilisttitle = __s('List');
             }
+            $list = "<a href='$glpilisturl' title=\"$glpilisttitle\"
+                  class='btn btn-sm btn-icon btn-ghost-secondary me-2'
+                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                  <i class='ti ti-list-search fa-lg'></i>
+               </a>";
+            $list_shown = false;
 
+            if ($first < 0) {
+                // Show list icon before the placeholder space for the first pagination button
+                echo $list;
+                $list_shown = true;
+            }
+            echo "<a href='$cleantarget?id=$first$extraparamhtml'
+                 class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($first >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('First') . "\"
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                 <i class='fa-lg ti ti-chevrons-left'></i>
+              </a>";
+
+            if (!$list_shown && $prev < 0) {
+                // Show list icon before the placeholder space for the "prev" pagination button
+                echo $list;
+                $list_shown = true;
+            }
+            echo "<a href='$cleantarget?id=$prev$extraparamhtml'
+                 id='previouspage'
+                 class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($prev >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('Previous') . "\"
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>
+                 <i class='fa-lg ti ti-chevron-left'></i>
+              </a>";
             if ($prev >= 0) {
-                echo "<a href='$cleantarget?id=$prev$extraparamhtml'
-                     id='previouspage'
-                     class='btn btn-sm btn-icon btn-ghost-secondary' title=\"" . __s('Previous') . "\"
-                     data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                     <i class='fa-lg ti ti-chevron-left'></i>
-                  </a>";
                 $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -1036,39 +1057,44 @@ JAVASCRIPT;
                 echo Html::scriptBlock($js);
             }
 
-            if (!$glpilisttitle) {
-                $glpilisttitle = __s('List');
+            // If both first and prev buttons shown, the list should be added now
+            if (!$list_shown) {
+                echo $list;
             }
-            echo "<a href='$glpilisturl' title=\"$glpilisttitle\"
-                  class='btn btn-sm btn-icon btn-ghost-secondary'
-                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                  <i class='far fa-lg fa-list-alt'></i>
-               </a>";
 
             echo "</div>";
 
-            if ($this instanceof CommonITILObject) {
+            if (static::$showTitleInNavigationHeader && $this instanceof CommonDBTM) {
                 echo "<h3 class='navigationheader-title strong d-flex align-items-center'>";
-                echo "<i class='" . $this->getIcon() . " me-1'></i>";
-                echo $this->getName();
+                if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
+                    echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
+                }
+                echo $this->getNameID([
+                    'forceid' => $this instanceof CommonITILObject
+                ]);
                 echo "</h3>";
+            } else {
+                echo TemplateRenderer::getInstance()->render('components/form/header_content.html.twig', [
+                    'item'          => $this,
+                    'params'        => $options,
+                    'in_navheader'  => true,
+                    'header_toolbar' => $this->getFormHeaderToolbar(),
+                ]);
             }
 
             // Second set of header pagination actions, displayed on the right side of the page
-            echo "<div>";
+            echo "<div class='right-icons>";
 
-            if ($current !== false) {
-                echo "<span class='m-1 ms-3'>" . ($current + 1) . "/" . count($glpilistitems) . "</span>";
-            }
+            echo "<span class='py-1 px-3 " . ($current !== false ? '' : 'bs-invisible') . "'>" . ($current + 1) . "/" . count($glpilistitems ?? []) . "</span>";
 
+            echo "<a href='$cleantarget?id=$next$extraparamhtml'
+                 id='nextpage'
+                 class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($next >= 0 ? '' : 'bs-invisible') . "'
+                 title=\"" . __s('Next') . "\"
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
+            "<i class='fa-lg ti ti-chevron-right'></i>
+                </a>";
             if ($next >= 0) {
-                echo "<a href='$cleantarget?id=$next$extraparamhtml'
-                     id='nextpage'
-                     class='btn btn-sm btn-icon btn-ghost-secondary'
-                     title=\"" . __s('Next') . "\"
-                     data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-                "<i class='fa-lg ti ti-chevron-right'></i>
-                    </a>";
                 $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -1079,13 +1105,11 @@ JAVASCRIPT;
                 echo Html::scriptBlock($js);
             }
 
-            if ($last >= 0) {
-                echo "<a href='$cleantarget?id=$last $extraparamhtml'
-                     class='btn btn-sm btn-icon btn-ghost-secondary'
-                     title=\"" . __s('Last') . "\"
-                     data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-                "<i class='fa-lg ti ti-chevrons-right'></i></a>";
-            }
+            echo "<a href='$cleantarget?id=$last $extraparamhtml'
+                 class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($last >= 0 ? '' : 'bs-invisible') . "'
+                 title=\"" . __s('Last') . "\"
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
+            "<i class='fa-lg ti ti-chevrons-right'></i></a>";
 
             echo "</div>";
 
@@ -1117,6 +1141,7 @@ JAVASCRIPT;
      * @since 0.85
      *
      * @param array $options Options
+     *                       show_nav_header (default true): show navigation header (link to list of items)
      *
      * @return void
      */
@@ -1124,9 +1149,11 @@ JAVASCRIPT;
     {
         // Item might already be loaded, skip load and rights checks
         $item_loaded = $options['loaded'] ?? false;
+        unset($options['loaded']);
         if (!$item_loaded) {
             if (
-                isset($options['id'])
+                $this instanceof CommonDBTM
+                && isset($options['id'])
                 && !$this->isNewID($options['id'])
             ) {
                 if (!$this->getFromDB($options['id'])) {
@@ -1164,7 +1191,9 @@ JAVASCRIPT;
             ]);
         }
         echo "<div class='col'>";
-        $this->showNavigationHeader($options);
+        if (($options['show_nav_header'] ?? true)) {
+            $this->showNavigationHeader($options);
+        }
         $this->showTabsContent($options);
         echo "</div>";
         echo "</div>";
@@ -1182,6 +1211,10 @@ JAVASCRIPT;
 
         if (method_exists($this, 'showDebug')) {
             $this->showDebug();
+        }
+
+        if (!($this instanceof CommonDBTM)) {
+            return;
         }
 
         $class = $this->getType();
@@ -1423,7 +1456,7 @@ JAVASCRIPT;
     public function getErrorMessage($error, $object = '')
     {
 
-        if (empty($object)) {
+        if (empty($object) && $this instanceof CommonDBTM) {
             $object = $this->getLink();
         }
         switch ($error) {
@@ -1442,6 +1475,8 @@ JAVASCRIPT;
             case ERROR_ALREADY_DEFINED:
                 return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
         }
+
+        return '';
     }
 
     /**
@@ -1450,6 +1485,10 @@ JAVASCRIPT;
     public function getKBLinks()
     {
         global $CFG_GLPI, $DB;
+
+        if (!($this instanceof CommonDBTM)) {
+            return '';
+        }
 
         $ret = '';
         $title = __s('FAQ');
@@ -1489,8 +1528,7 @@ JAVASCRIPT;
             $kbitem->getFromDB(reset($found_kbitem)['id']);
             $ret .= "<div class='faqadd_block'>";
             $ret .= "<label for='display_faq_chkbox$rand'>";
-            $ret .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/faqadd.png' class='middle pointer'
-                    alt=\"$title\" title=\"$title\">";
+            $ret .= "<i class='ti ti-zoom-question'></i>";
             $ret .= "</label>";
             $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
             $ret .= "<div class='faqadd_entries' style='position:relative;'>";
@@ -1529,5 +1567,14 @@ JAVASCRIPT;
             $ret .= "</div>"; // .faqadd_block
         }
         return $ret;
+    }
+
+    /**
+     * Get array of extra form header toolbar buttons
+     * @return array Array of HTML elements
+     */
+    protected function getFormHeaderToolbar(): array
+    {
+        return [];
     }
 }

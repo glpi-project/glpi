@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -56,7 +58,10 @@ if (!$DB->fieldExists("glpi_entities", "registration_number")) {
 /** /Create registration_number field */
 
 /** Replace -1 value for entities_id field */
-$DB->updateOrDie('glpi_entities', ['entities_id' => '0'], ['id' => '0']); // Replace -1 value for root entity to be able to change type to unsigned
+// Replace -1 value for root entity to be able to change type to unsigned.
+// Use max int signed value of mysql to be fairly certain not to be blocked because of the uniqueness key.
+$DB->updateOrDie('glpi_entities', ['entities_id' => pow(2, 31) - 1], ['id' => '0']);
+
 $migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int {$default_key_sign} DEFAULT '0'");
 $migration->migrationOneTable('glpi_entities'); // Ensure 'entities_id' is nullable.
 $DB->updateOrDie('glpi_entities', ['entities_id' => 'NULL'], ['id' => '0']);
@@ -138,3 +143,18 @@ $migration->addField('glpi_entities', 'from_email_name', 'string', ['update' => 
 $migration->addField('glpi_entities', 'noreply_email', 'string', ['update' => '', 'condition' => 'WHERE `id` = 0']);
 $migration->addField('glpi_entities', 'noreply_email_name', 'string', ['update' => '', 'condition' => 'WHERE `id` = 0']);
 /** /Email configuration at entity level */
+
+// Add certificates_alert_repeat_interval to entity
+if (!$DB->fieldExists("glpi_entities", "certificates_alert_repeat_interval")) {
+    $migration->addField(
+        "glpi_entities",
+        "certificates_alert_repeat_interval",
+        "integer",
+        [
+            'after'     => "send_certificates_alert_before_delay",
+            'value'     => -2,               // Inherit as default value
+            'update'    => '0',              // Disabled for root entity
+            'condition' => 'WHERE `id` = 0'
+        ]
+    );
+}

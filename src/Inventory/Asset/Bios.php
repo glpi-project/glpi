@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -39,19 +42,8 @@ use Glpi\Inventory\Conf;
 
 class Bios extends Device
 {
-    public function __construct(CommonDBTM $item, array $data = null)
-    {
-        parent::__construct($item, $data, 'Item_DeviceFirmware');
-    }
-
     public function prepare(): array
     {
-        $type = new DeviceFirmwareType();
-        $type->getFromDBByCrit([
-            'name' => 'BIOS'
-        ]);
-        $type_id = $type->getID();
-
         $mapping = [
             'bdate'           => 'date',
             'bversion'        => 'version',
@@ -70,7 +62,7 @@ class Bios extends Device
             __('%1$s BIOS'),
             property_exists($val, 'bmanufacturer') ? $val->bmanufacturer : ''
         );
-        $val->devicefirmwaretypes_id = $type_id;
+        $val->devicefirmwaretypes_id = 'BIOS';
 
         $this->data = [$val];
         return $this->data;
@@ -88,5 +80,10 @@ class Bios extends Device
     public function checkConf(Conf $conf): bool
     {
         return true;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Item_DeviceFirmware::class;
     }
 }

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -291,6 +293,28 @@ if (!$DB->fieldExists('glpi_printers', 'last_inventory_update')) {
     );
 }
 
+if (!$DB->fieldExists('glpi_computers', 'last_inventory_update')) {
+    $migration->addField(
+        'glpi_computers',
+        'last_inventory_update',
+        'timestamp',
+        [
+            'after' => 'is_recursive',
+        ]
+    );
+}
+
+if (!$DB->fieldExists('glpi_phones', 'last_inventory_update')) {
+    $migration->addField(
+        'glpi_phones',
+        'last_inventory_update',
+        'timestamp',
+        [
+            'after' => 'is_recursive',
+        ]
+    );
+}
+
 //new fields in networkports table
 $netport_fields = [
     'ifmtu' => "int NOT NULL DEFAULT '0'",
@@ -404,7 +428,7 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
     if (!$DB->tableExists('glpi_networkporttypes')) {
         $migration->migrationOneTable(NetworkPortType::getTable());
     }
-    $default_types = Sanitizer::sanitize(NetworkPortType::getDefaults(), false);
+    $default_types = Sanitizer::encodeHtmlSpecialCharsRecursive(NetworkPortType::getDefaults());
     $reference = array_replace(
         $default_types[0],
         array_fill_keys(
@@ -470,12 +494,58 @@ if (!$DB->tableExists('glpi_printerlogs')) {
          `color_copies` int NOT NULL DEFAULT '0',
          `scanned` int NOT NULL DEFAULT '0',
          `faxed` int NOT NULL DEFAULT '0',
-         `date` timestamp NULL DEFAULT NULL,
+         `date` date DEFAULT NULL,
+         `date_creation` timestamp NULL DEFAULT NULL,
+         `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
-         KEY `printers_id` (`printers_id`),
-         KEY `date` (`date`)
+         UNIQUE KEY `unicity` (`printers_id`,`date`),
+         KEY `date` (`date`),
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_printerlogs");
+} else {
+    foreach (['date_creation', 'date_mod'] as $date_field) {
+        if (!$DB->fieldExists('glpi_printerlogs', $date_field)) {
+            $migration->addField(
+                'glpi_printerlogs',
+                $date_field,
+                'timestamp',
+                [
+                    'update' => $DB->quoteName('date'),
+                ]
+            );
+            $migration->addKey('glpi_printerlogs', $date_field);
+        }
+    }
+    // In GLPI 10.0.0-rc2 or earlier, `date` had timestamp datatype.
+    $migration->changeField('glpi_printerlogs', 'date', 'date', 'date');
+
+    $migration->dropKey('glpi_printerlogs', 'printers_id');
+
+    if (!isIndex('glpi_printerlogs', 'unicity')) {
+        // Preserve only last insert for a given date.
+        $to_preserve_sql = new \QueryExpression(
+            sprintf(
+                'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
+                $DB->quoteName('id'),
+                $DB->quoteName('id'),
+                $DB->quoteName('glpi_printerlogs'),
+                $DB->quoteName('printers_id'),
+                $DB->quoteName('date')
+            )
+        );
+        $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
+            $DB->delete(
+                'glpi_printerlogs',
+                [
+                    'NOT' => ['id' => array_column($to_preserve_result, 'id')]
+                ]
+            );
+        }
+        $migration->addKey('glpi_printerlogs', ['printers_id', 'date'], 'unicity', 'UNIQUE');
+    }
 }
 
 if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
@@ -499,17 +569,63 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
 if (!$DB->tableExists('glpi_networkportmetrics')) {
     $query = "CREATE TABLE `glpi_networkportmetrics` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-         `date` timestamp NULL DEFAULT NULL,
+         `date` date DEFAULT NULL,
          `ifinbytes` bigint NOT NULL DEFAULT '0',
          `ifinerrors` bigint NOT NULL DEFAULT '0',
          `ifoutbytes` bigint NOT NULL DEFAULT '0',
          `ifouterrors` bigint NOT NULL DEFAULT '0',
          `networkports_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `date_creation` timestamp NULL DEFAULT NULL,
+         `date_mod` timestamp NULL DEFAULT NULL,
          PRIMARY KEY (`id`),
+         UNIQUE KEY `unicity` (`networkports_id`,`date`),
          KEY `date` (`date`),
-         KEY `networkports_id` (`networkports_id`)
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->queryOrDie($query, "10.0 add table glpi_networkportmetrics");
+} else {
+    foreach (['date_creation', 'date_mod'] as $date_field) {
+        if (!$DB->fieldExists('glpi_networkportmetrics', $date_field)) {
+            $migration->addField(
+                'glpi_networkportmetrics',
+                $date_field,
+                'timestamp',
+                [
+                    'update' => $DB->quoteName('date'),
+                ]
+            );
+            $migration->addKey('glpi_networkportmetrics', $date_field);
+        }
+    }
+    // In GLPI 10.0.0-rc2 or earlier, `date` had timestamp datatype.
+    $migration->changeField('glpi_networkportmetrics', 'date', 'date', 'date');
+
+    $migration->dropKey('glpi_networkportmetrics', 'networkports_id');
+
+    if (!isIndex('glpi_networkportmetrics', 'unicity')) {
+        // Preserve only last insert for a given date.
+        $to_preserve_sql = new \QueryExpression(
+            sprintf(
+                'SELECT MAX(%s) as %s FROM %s GROUP BY %s, DATE(%s)',
+                $DB->quoteName('id'),
+                $DB->quoteName('id'),
+                $DB->quoteName('glpi_networkportmetrics'),
+                $DB->quoteName('networkports_id'),
+                $DB->quoteName('date')
+            )
+        );
+        $to_preserve_result = $DB->query($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
+        if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
+            $DB->delete(
+                'glpi_networkportmetrics',
+                [
+                    'NOT' => ['id' => array_column($to_preserve_result, 'id')]
+                ]
+            );
+        }
+        $migration->addKey('glpi_networkportmetrics', ['networkports_id', 'date'], 'unicity', 'UNIQUE');
+    }
 }
 
 if (!$DB->tableExists('glpi_refusedequipments')) {
@@ -552,6 +668,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
                 'after' => 'agents_id'
             ]
         );
+        $migration->addKey('glpi_refusedequipments', 'autoupdatesystems_id');
     }
 }
 
@@ -697,6 +814,22 @@ if (!$DB->fieldExists('glpi_printers', 'autoupdatesystems_id')) {
         ]
     );
     $migration->addKey('glpi_printers', 'autoupdatesystems_id');
+}
+
+// Other autoupdatesystems_id additions
+$autoupdatesystems_tables = ['glpi_databaseinstances', 'glpi_monitors', 'glpi_peripherals', 'glpi_phones'];
+foreach ($autoupdatesystems_tables as $autoupdatesystems_table) {
+    if (!$DB->fieldExists($autoupdatesystems_table, 'autoupdatesystems_id')) {
+        $migration->addField(
+            $autoupdatesystems_table,
+            'autoupdatesystems_id',
+            "int {$default_key_sign} NOT NULL DEFAULT '0'",
+            [
+                'after' => 'is_dynamic',
+            ]
+        );
+        $migration->addKey($autoupdatesystems_table, 'autoupdatesystems_id');
+    }
 }
 
 if (countElementsInTable(Blacklist::getTable()) === 4) {

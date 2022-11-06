@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -119,8 +121,8 @@ class ReservationItem extends CommonDBChild
     /**
      * Retrieve an item from the database for a specific item
      *
-     * @param $itemtype   type of the item
-     * @param $ID         ID of the item
+     * @param class-string<CommonDBTM> $itemtype Type of the item
+     * @param int $ID ID of the item
      *
      * @return true if succeed else false
      **/
@@ -664,6 +666,7 @@ class ReservationItem extends CommonDBChild
                 echo Html::getCheckbox([
                     'name'  => "item[" . $row["id"] . "]",
                     'value' => $row["id"],
+                    'zero_on_empty' => false,
                 ]);
                 echo "</td>";
                 $typename = $item->getTypeName();
@@ -989,10 +992,12 @@ class ReservationItem extends CommonDBChild
 
         if ($post['idtable'] && class_exists($post['idtable'])) {
             $itemtype = $post['idtable'];
+            $itemtype_obj = new $itemtype();
 
             $item_table = $itemtype::getTable();
             $resi_table = ReservationItem::getTable();
-            $result = $DB->request([
+
+            $criteria = [
                 'SELECT' => [
                     "$resi_table.id",
                     "$item_table.name"
@@ -1010,9 +1015,15 @@ class ReservationItem extends CommonDBChild
                 'WHERE' => [
                     "$resi_table.is_active"   => 1,
                     "$item_table.is_deleted"  => 0,
-                    "$item_table.is_template" => 0
                 ]
-            ]);
+            ];
+
+            if ($itemtype_obj->maybeTemplate()) {
+                $criteria['WHERE']["$item_table.is_template"] = 0;
+            }
+
+            $result = $DB->request($criteria);
+
             if ($result->count() == 0) {
                  echo __('No reservable item!');
             } else {

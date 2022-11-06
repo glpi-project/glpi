@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -363,56 +365,52 @@ class Dashboard extends \CommonDBTM
      *
      * @param bool   $force don't check dashboard are already loaded and force their load
      * @param bool   $check_rights use to remove rights checking (use in embed)
-     * @param string $context only dashboard for given context
+     * @param ?string $context only dashboard for given context
      *
      * @return array dasboards
      */
-    public static function getAll(
-        bool $force = false,
-        bool $check_rights = true,
-        string $context = 'core'
-    ): array {
+    public static function getAll(bool $force = false, bool $check_rights = true, ?string $context = 'core'): array
+    {
         global $DB;
 
-        if (!$force && count(self::$all_dashboards) > 0) {
-            return self::$all_dashboards;
-        }
+        if ($force || count(self::$all_dashboards) == 0) {
+            self::$all_dashboards = [];
 
-       // empty previous data
-        self::$all_dashboards = [];
+            $dashboards = iterator_to_array($DB->request(self::getTable()));
+            $items      = iterator_to_array($DB->request(Item::getTable()));
+            $rights     = iterator_to_array($DB->request(Right::getTable()));
 
-        $dashboard_criteria = [];
-        if (strlen($context)) {
-            $dashboard_criteria['context'] = $context;
-        }
+            foreach ($dashboards as $dashboard) {
+                $key = $dashboard['key'];
+                $id  = $dashboard['id'];
 
-        $dashboards = iterator_to_array($DB->request(self::getTable(), ['WHERE' => $dashboard_criteria]));
-        $items      = iterator_to_array($DB->request(Item::getTable()));
-        $rights     = iterator_to_array($DB->request(Right::getTable()));
+                $d_rights = array_filter($rights, static function ($right_line) use ($id) {
+                    return $right_line['dashboards_dashboards_id'] == $id;
+                });
+                $dashboardItem = new self($key);
+                if ($check_rights && !$dashboardItem->canViewCurrent()) {
+                    continue;
+                }
+                $dashboard['rights'] = self::convertRights($d_rights);
 
-        foreach ($dashboards as $dashboard) {
-            $key = $dashboard['key'];
-            $id  = $dashboard['id'];
+                $d_items = array_filter($items, static function ($item) use ($id) {
+                    return $item['dashboards_dashboards_id'] == $id;
+                });
+                $d_items = array_map(static function ($item) {
+                    $item['card_options'] = importArrayFromDB($item['card_options']);
+                    return $item;
+                }, $d_items);
+                $dashboard['items'] = $d_items;
 
-            $d_rights = array_filter($rights, function ($right_line) use ($id) {
-                return $right_line['dashboards_dashboards_id'] == $id;
-            });
-            $dashboardItem = new self($key);
-            if ($check_rights && !$dashboardItem->canViewCurrent()) {
-                continue;
+                self::$all_dashboards[$key] = $dashboard;
             }
-            $dashboard['rights'] = self::convertRights($d_rights);
+        }
 
-            $d_items = array_filter($items, function ($item) use ($id) {
-                return $item['dashboards_dashboards_id'] == $id;
+        // Return dashboards filtered by context (if applicable)
+        if ($context !== null && $context !== '') {
+            return array_filter(self::$all_dashboards, static function ($dashboard) use ($context) {
+                return $dashboard['context'] === $context;
             });
-            $d_items = array_map(function ($item) {
-                $item['card_options'] = importArrayFromDB($item['card_options']);
-                return $item;
-            }, $d_items);
-            $dashboard['items'] = $d_items;
-
-            self::$all_dashboards[$key] = $dashboard;
         }
 
         return self::$all_dashboards;
@@ -478,10 +476,14 @@ class Dashboard extends \CommonDBTM
         ];
         $rights = array_merge_recursive($default_rights, $rights);
 
+        if (!Session::getLoginUserID()) {
+            return false;
+        }
+
        // check specific rights
         if (
             count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities']))
-            || count(array_intersect($rights['profiles_id'], array_keys($_SESSION['glpiprofiles'])))
+            || in_array($_SESSION["glpiactiveprofile"]['id'], $rights['profiles_id'])
             || in_array($_SESSION['glpiID'], $rights['users_id'])
             || count(array_intersect($rights['groups_id'], $_SESSION['glpigroups']))
         ) {
@@ -511,10 +513,10 @@ class Dashboard extends \CommonDBTM
     public static function importFromJson($import = null)
     {
         if (!is_array($import)) {
-            $import = json_decode($import, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
+            if (!\Toolbox::isJSON($import)) {
                 return false;
             }
+            $import = json_decode($import, true);
         }
 
         foreach ($import as $key => $dashboard) {

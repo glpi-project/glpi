@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -51,6 +53,16 @@ class Location extends CommonTreeDropdown
 
         return [
             [
+                'name'  => 'code',
+                'label' => __('Code'),
+                'type'  => 'text',
+                'list'  => true
+            ], [
+                'name'  => 'alias',
+                'label' => __('Alias'),
+                'type'  => 'text',
+                'list'  => true
+            ], [
                 'name'  => $this->getForeignKeyField(),
                 'label' => __('As child of'),
                 'type'  => 'parent',
@@ -174,6 +186,24 @@ class Location extends CommonTreeDropdown
             'table'              => 'glpi_locations',
             'field'              => 'country',
             'name'               => __('Country'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
+        $tab[] = [
+            'id'                 => '106',
+            'table'              => 'glpi_locations',
+            'field'              => 'code',
+            'name'               => __('Location code'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
+        $tab[] = [
+            'id'                 => '107',
+            'table'              => 'glpi_locations',
+            'field'              => 'alias',
+            'name'               => __('Location alias'),
             'massiveaction'      => false,
             'datatype'           => 'string'
         ];
@@ -340,6 +370,22 @@ class Location extends CommonTreeDropdown
             'datatype'           => 'string',
         ];
 
+        $tab[] = [
+            'id'                 => '106',
+            'table'              => 'glpi_locations',
+            'field'              => 'code',
+            'name'               => __('Location code'),
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '107',
+            'table'              => 'glpi_locations',
+            'field'              => 'alias',
+            'name'               => __('Location alias'),
+            'datatype'           => 'string',
+        ];
+
         return $tab;
     }
 
@@ -397,6 +443,23 @@ class Location extends CommonTreeDropdown
         return true;
     }
 
+    /**
+     * get item location
+     *
+     * @param CommonDBTM  $item
+     *
+     * @return Location|null
+     **/
+    final public static function getFromItem(CommonDBTM $item): ?Location
+    {
+        if ($item->maybeLocated()) {
+            $loc = new self();
+            if ($loc->getFromDB($item->fields['locations_id'])) {
+                return $loc;
+            }
+        }
+        return null;
+    }
 
     /**
      * Print the HTML array of items for a location
@@ -432,11 +495,16 @@ class Location extends CommonTreeDropdown
                 'FROM'   => $table,
                 'WHERE'  => [
                     "$table.locations_id"   => $locations_id,
-                ] + getEntitiesRestrictCriteria($table, 'entities_id')
+                ]
             ];
             if ($item->maybeDeleted()) {
                 $itemtype_criteria['WHERE']['is_deleted'] = 0;
             }
+
+            if ($item->isEntityAssign()) {
+                $itemtype_criteria['WHERE'] + getEntitiesRestrictCriteria($table, 'entities_id');
+            }
+
             $queries[] = $itemtype_criteria;
         }
         $criteria = count($queries) === 1 ? $queries[0] : ['FROM' => new \QueryUnion($queries)];

@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,33 +15,34 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
-{% set timeline_btns_cls = "col-md-8" %}
-{% set form_btns_cls     = "col-md" %}
+{% set timeline_btns_cls = left_regular_cls %}
+{% set form_btns_cls     = is_expanded ? right_expanded_cls : "col-lg" %}
 {% set switch_btn_cls    = "fa-caret-left" %}
 {% if is_expanded %}
-    {% set timeline_btns_cls = "col-md-4" %}
-    {% set form_btns_cls     = "col-md-8" %}
+    {% set timeline_btns_cls = left_expanded_cls %}
+    {% set form_btns_cls     = right_expanded_cls %}
     {% set switch_btn_cls    = "fa-caret-right" %}
 {% endif %}
 
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
-      <div class="{{ timeline_btns_cls }} ps-3 timeline-buttons">
+      <div class="col {{ timeline_btns_cls }} ps-3 timeline-buttons">
          {% if not item.isNewItem() %}
             {% set default_action_data = timeline_itemtypes|first %}
             {% if item.isNotSolved() and default_action_data != false %}
@@ -54,22 +56,24 @@
                      <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
                   </button>
-                  {% if timeline_itemtypes|length > 1 %}
-                     <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+
+                  {% set main_actions_itemtypes = timeline_itemtypes|filter((v, k) => v.hide_in_menu is not defined or v.hide_in_menu != true) %}
+                  {% if main_actions_itemtypes|length > 1 %}
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="visually-hidden">{{ __('View other actions') }}</span>
-                     </button>
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for action, timeline_itemtype in main_actions_itemtypes %}
+                            {% if loop.index0 > 0 %}
+                            <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
+                                data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                                <i class="{{ timeline_itemtype.icon }}"></i>
+                                <span>{{ timeline_itemtype.label }}</span>
+                            </a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                   {% endif %}
-                  <ul class="dropdown-menu">
-                     {% for action, timeline_itemtype in timeline_itemtypes %}
-                        {% if loop.index0 > 0 %}
-                           <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
-                              data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
-                              <i class="{{ timeline_itemtype.icon }}"></i>
-                              <span>{{ timeline_itemtype.label }}</span>
-                           </a></li>
-                        {% endif %}
-                     {% endfor %}
-                  </ul>
                </div>
             {% endif %}
 
@@ -80,39 +84,40 @@
          {% endif %}
      </div>
 
-      <div class="form-buttons {{ form_btns_cls }} d-flex justify-content-end ms-auto ms-md-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
-         <span class="d-none d-md-block position-absolute top-0 start-0"
+      <div class="form-buttons {{ form_btns_cls }} d-flex justify-content-between ms-auto ms-lg-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
+         <span class="d-none d-lg-block ms-n3"
                data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Toggle panels width') }}">
-            <button type="button" class="switch-panel-width btn btn-sm btn-square btn-icon btn-ghost-secondary">
+            <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary px-0">
                <i class="fas {{ switch_btn_cls }}"></i>
             </button>
-            <button type="button" class="collapse-panel btn btn-sm btn-square btn-icon btn-ghost-secondary">
+            <button type="button" class="collapse-panel btn btn-icon btn-ghost-secondary px-0 mr-1">
                <i class="fas fa-caret-right"></i>
             </button>
          </span>
 
+         <span>
          {% if item.isNewItem() %}
             <button class="btn btn-primary" type="submit" name="add" form="itil-form"
                   title="{{ _x('button', 'Add') }}">
                <i class="fas fa-plus"></i>
-               <span class="d-none d-md-block">{{ _x('button', 'Add') }}</span>
+               <span class="d-none d-lg-block">{{ _x('button', 'Add') }}</span>
             </button>
          {% else %}
 
             <div class="btn-group" role="group">
-               {% if item.canDelete() %}
+               {% if item.canDeleteItem() %}
                   {% if item.isDeleted() %}
                      <button class="btn btn-outline-secondary" type="submit" name="restore" form="itil-form"
                            title="{{ _x('button', 'Restore') }}">
                         <i class="fas fa-trash-restore-alt"></i>
-                        <span class="d-none d-md-block">{{ _x('button', 'Restore') }}</span>
+                        <span class="d-none d-lg-block">{{ _x('button', 'Restore') }}</span>
                      </button>
 
                      <button class="btn btn-outline-danger" type="submit" name="purge" form="itil-form"
                            title="{{ _x('button', 'Delete permanently') }}"
                            onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
                         <i class="ti ti-trash"></i>
-                        <span class="d-none d-md-block">{{ _x('button', 'Delete permanently') }}</span>
+                        <span class="d-none d-lg-block">{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                   {% else %}
                      <button class="btn btn-outline-danger" type="submit" name="delete" form="itil-form"
@@ -135,18 +140,19 @@
                   <button class="btn btn-primary" type="submit" name="update" form="itil-form"
                         title="{{ _x('button', 'Save') }}">
                      <i class="far fa-save"></i>
-                     <span class="d-none d-md-block">{{ _x('button', 'Save') }}</span>
+                     <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
                   </button>
                {% endif %}
             </div>
 
          {% endif %}
+         </span>
       </div>
    </div>
 </div>
 
-{% set openfollowup = (_get['_openfollowup'] ?? false) and item.isSolved(true) %}
-{% set timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+{% set openfollowup = (_get['_openfollowup'] ?? false) %}
+{% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
 <script type="text/javascript">
 $(function() {
@@ -163,20 +169,16 @@ $(function() {
    });
 
    var scrollToTimelineStart = function() {
-      // small delay to be sure all content is loaded
-      // otherwise, height of answer html may not be taken in account by document height
-      setTimeout(() => {
-         // scroll body to ensure we are at bottom (useful for responsive display)
-         $('html, body').animate({
-            scrollTop: {{ timeline_reversed ? "-" : "" }}$(document).height()
-         }, 0, function(){
+        // scroll body to ensure we are at bottom (useful for responsive display)
+        $('html, body').animate({
+        scrollTop: {{ is_timeline_reversed ? "-" : "" }}$(document).height()
+        }, 0, function(){
             // scroll timeline with animation
             var timeline = $("#itil-object-container .itil-left-side");
             timeline.animate({
-               scrollTop: {{ timeline_reversed ? "-" : "" }}timeline.prop('scrollHeight')
+                scrollTop: {{ is_timeline_reversed ? "-" : "" }}timeline.prop('scrollHeight')
             }, 'slow');
-         });
-      }, 200);
+        });
    };
 
    {% if openfollowup %}

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,24 +17,26 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace tests\units;
 
 use DbTestCase;
+use Psr\Log\LogLevel;
 
 /* Test for inc/item_operatingsystem.class.php */
 
@@ -96,14 +99,13 @@ class Item_OperatingSystem extends DbTestCase
             (int)\Item_OperatingSystem::countForItem($computer)
         )->isIdenticalTo(1);
 
-        $this->exception(
+        $expected_error = "/Duplicate entry '{$computer->getID()}-Computer-{$objects['']->getID()}-{$objects['Architecture']->getID()}' for key '(glpi_items_operatingsystems\.)?unicity'/";
+        $this->output(
             function () use ($ios, $input) {
-                $ios->add($input);
+                $this->boolean($ios->add($input))->isFalse();
             }
-        )
-         ->isInstanceOf('GlpitestSQLError')
-         ->message
-            ->matches("#Duplicate entry '.+' for key '(" . $ios->getTable() . "\.)?unicity'#");
+        )->matches($expected_error);
+        $this->hasSqlLogRecordThatMatches($expected_error, LogLevel::ERROR);
 
         $this->integer(
             (int)\Item_OperatingSystem::countForItem($computer)

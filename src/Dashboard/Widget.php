@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,29 +17,32 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\Dashboard;
 
+use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Html;
 use Mexitek\PHPColors\Color;
 use Michelf\MarkdownExtra;
 use Plugin;
 use ScssPhp\ScssPhp\Compiler;
+use Symfony\Component\DomCrawler\Crawler;
 use Search;
 use Toolbox;
 
@@ -244,7 +248,7 @@ class Widget
             ],
         ];
 
-        $more_types = Plugin::doHookFunction("dashboard_types");
+        $more_types = Plugin::doHookFunction(Hooks::DASHBOARD_TYPES);
         if (is_array($more_types)) {
             $types = array_merge($types, $more_types);
         }
@@ -589,11 +593,13 @@ HTML;
 
          {$palette_style}
       </style>
-      <div class="card g-chart {$class}"
-           id="{$chart_id}">
-         <div class="chart ct-chart">{$no_data_html}</div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}"></i>
+      <div style="height: 100%">
+         <div class="card g-chart {$class}"
+            id="{$chart_id}">
+            <div class="chart ct-chart">{$no_data_html}</div>
+            <span class="main-label">{$p['label']}</span>
+            <i class="main-icon {$p['icon']}"></i>
+         </div>
       </div>
 HTML;
 
@@ -646,7 +652,6 @@ HTML;
         }
 
         $donut  = $p['donut'] ? 'true' : 'false';
-        $height = $p['half'] ? '180%' : '100%';
         $animation_duration = self::$animation_duration;
 
         $js = <<<JAVASCRIPT
@@ -656,7 +661,6 @@ HTML;
             series: {$series},
          }, {
             width: 'calc(100% - 5px)',
-            height: 'calc({$height} - 5px)',
             chartPadding: {$chartPadding},
             donut: {$donut},
             $donut_opts
@@ -1053,10 +1057,8 @@ JAVASCRIPT;
             <span>";
         }
 
-        $height = "calc(100% - 5px)";
         $legend_options = "";
         if ($p['legend']) {
-            $height = "calc(100% - 40px)";
             $legend_options = "
             Chartist.plugins.legend(),";
         }
@@ -1089,18 +1091,16 @@ JAVASCRIPT;
          stroke: {$dark_line_color};
       }
 
-      /** fix chrome resizing height when animating svg (don't know why) **/
-      #{$chart_id} .ct-chart-bar {
-         min-height: $height;
-      }
       {$palette_style}
       </style>
 
-      <div class="card g-chart $class"
-            id="{$chart_id}">
-         <div class="chart ct-chart">$no_data_html</div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}"></i>
+      <div style="height: 100%">
+         <div class="card g-chart $class"
+               id="{$chart_id}">
+            <div class="chart ct-chart">$no_data_html</div>
+            <span class="main-label">{$p['label']}</span>
+            <i class="main-icon {$p['icon']}"></i>
+         </div>
       </div>
 HTML;
 
@@ -1152,7 +1152,6 @@ HTML;
             series: {$json_series},
          }, {
             width: '100%',
-            height: '{$height}',
             seriesBarDistance: 10,
             chartPadding: 0,
             $distributed_options
@@ -1261,11 +1260,19 @@ HTML;
 
                if (is_horizontal) {
                   var word_width = value.length * 5 + 5;
-                  labelX = data.x2 - word_width;
+                  var bar_width = 0;
+
+                  if (value > 0) {
+                     labelX = data.x2 - word_width;
+                     bar_width = data.x2 - data.x1;
+                  } else {
+                     labelX = data.x2 + word_width;
+                     bar_width = data.x1 - data.x2;
+                  }
                   labelY = data.y2;
 
                   // don't display label if width too short
-                  if (data.x2 - data.x1 < word_width) {
+                  if (bar_width < word_width) {
                      display_labels = false;
                   }
                }
@@ -1501,20 +1508,14 @@ JAVASCRIPT;
             })";
         }
 
-        $height = "calc(100% - 1px)";
         $legend_options = "";
         if ($p['legend']) {
-            $height = "calc(100% - 40px)";
             $legend_options = "
             Chartist.plugins.legend(),";
         }
 
         $html = <<<HTML
       <style>
-         /** fix chrome resizing height when animating svg (don't know why) **/
-      #{$chart_id} .ct-chart-line {
-         min-height: $height;
-      }
 
       #{$chart_id} {
          background-color: {$p['color']};
@@ -1552,11 +1553,13 @@ JAVASCRIPT;
       {$palette_style}
       </style>
 
-      <div class="card g-chart $class"
-           id="{$chart_id}">
-         <div class="chart ct-chart"></div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}"></i>
+      <div style="height: 100%">
+          <div class="card g-chart $class"
+               id="{$chart_id}">
+             <div class="chart ct-chart"></div>
+             <span class="main-label">{$p['label']}</span>
+             <i class="main-icon {$p['icon']}"></i>
+          </div>
       </div>
 HTML;
 
@@ -1573,10 +1576,23 @@ HTML;
             series: {$json_series},
          }, {
             width: '100%',
-            height: '{$height}',
             fullWidth: true,
             chartPadding: {
                right: 40
+            },
+            axisY: {
+               labelInterpolationFnc: function(value) {
+                  if (value < 1e3) {
+                     // less than 1K
+                     return value;
+                  } else if (value < 1e6) {
+                     // More than 1k, less than 1M
+                     return value / 1e3 + "K";
+                  } else {
+                     // More than 1M
+                     return value / 1e6 + "M";
+                  }
+               },
             },
             {$area_options}
             plugins: [
@@ -1776,7 +1792,9 @@ HTML;
             'list_limit'         => $p['limit']
         ]);
         Search::showList($p['itemtype'], $params);
-        $search_result = ob_get_clean();
+
+        $crawler = new Crawler(ob_get_clean());
+        $search_result = $crawler->filter('.search-results')->outerHtml();
 
         $html = <<<HTML
       <style>

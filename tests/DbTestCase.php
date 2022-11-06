@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -78,6 +80,18 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
+     * Log out current user
+     *
+     * @return void
+     */
+    protected function logOut()
+    {
+        $ctime = $_SESSION['glpi_currenttime'];
+        \Session::destroy();
+        $_SESSION['glpi_currenttime'] = $ctime;
+    }
+
+    /**
      * change current entity
      *
      * @param int|string $entityname Name of the entity (or its id)
@@ -103,7 +117,7 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $input = \Toolbox::stripslashes_deep($input); // slashes in input should not be stored in DB
+        $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
 
         $this->integer((int)$id)->isGreaterThan(0);
         $this->boolean($object->getFromDB($id))->isTrue();
@@ -140,39 +154,44 @@ class DbTestCase extends \GLPITestCase
             ]
         );
 
+        $files_iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
         $classes = [];
-        foreach (new \DirectoryIterator('inc/') as $fileInfo) {
-            if (!$fileInfo->isFile()) {
+        foreach ($files_iterator as $fileInfo) {
+            if ($fileInfo->getExtension() !== 'php') {
                 continue;
             }
 
-            $php_file = file_get_contents("inc/" . $fileInfo->getFilename());
-            $tokens = token_get_all($php_file);
-            $class_token = false;
-            foreach ($tokens as $token) {
-                if (is_array($token)) {
-                    if ($token[0] == T_CLASS) {
-                        $class_token = true;
-                    } else if ($class_token && $token[0] == T_STRING) {
-                        $classname = $token[1];
+            $classname = $fileInfo->getBasename('.php');
 
-                        foreach ($excludes as $exclude) {
-                            if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                                 break 2; // Class is excluded from results, go to next file
-                            }
-                        }
-
-                        if ($function) {
-                            if (method_exists($classname, $function)) {
-                                $classes[] = $classname;
-                            }
-                        } else {
-                            $classes[] = $classname;
-                        }
-
-                        break; // Assume there is only one class by file
-                    }
+            $is_excluded = false;
+            foreach ($excludes as $exclude) {
+                if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
+                     $is_excluded = true;
+                     break;
                 }
+            }
+            if ($is_excluded) {
+                continue;
+            }
+
+            if (!class_exists($classname)) {
+                continue;
+            }
+            $reflectionClass = new ReflectionClass($classname);
+            if ($reflectionClass->isAbstract()) {
+                continue;
+            }
+
+            if ($function) {
+                if (method_exists($classname, $function)) {
+                    $classes[] = $classname;
+                }
+            } else {
+                $classes[] = $classname;
             }
         }
         return array_unique($classes);
@@ -183,19 +202,20 @@ class DbTestCase extends \GLPITestCase
      *
      * @param string $itemtype
      * @param array $input
+     * @param array $skip_fields Fields that wont be checked after creation
      *
      * @return CommonDBTM
      */
-    protected function createItem($itemtype, $input): CommonDBTM
+    protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
         $input = Sanitizer::sanitize($input);
         $id = $item->add($input);
         $this->integer($id)->isGreaterThan(0);
 
-       // Remove special fields
-        $input = array_filter($input, function ($key) {
-            return strpos($key, '_') !== 0;
+        // Remove special fields
+        $input = array_filter($input, function ($key) use ($skip_fields) {
+            return !in_array($key, $skip_fields) && strpos($key, '_') !== 0;
         }, ARRAY_FILTER_USE_KEY);
 
         $this->checkInput($item, $id, $input);

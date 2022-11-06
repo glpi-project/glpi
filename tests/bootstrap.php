@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -50,6 +52,14 @@ define(
     [
         GLPI_ROOT . '/plugins',
         GLPI_ROOT . '/tests/fixtures/plugins',
+    ]
+);
+
+define(
+    'GLPI_SERVERSIDE_URL_ALLOWLIST',
+    [
+        '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // default allowlist entry
+        '/^file:\/\/.*\.ics$/', // calendar mockups
     ]
 );
 
@@ -85,26 +95,12 @@ include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/InventoryTestCase.php';
 include_once __DIR__ . '/functionnal/CommonITILRecurrent.php';
 include_once __DIR__ . '/functionnal/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
+include_once __DIR__ . '/units/AbstractRightsDropdown.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
     die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
 }
-
-// @codingStandardsIgnoreStart
-class GlpitestPHPerror extends \Exception
-{
-}
-class GlpitestPHPwarning extends \Exception
-{
-}
-class GlpitestPHPnotice extends \Exception
-{
-}
-class GlpitestSQLError extends \Exception
-{
-}
-// @codingStandardsIgnoreEnd
 
 function loadDataset()
 {
@@ -113,7 +109,7 @@ function loadDataset()
    // Unit test data definition
     $data = [
       // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.7',
+        '_version' => '4.10',
 
       // Type => array of entries
         'Entity' => [
@@ -158,6 +154,10 @@ function loadDataset()
             ], [
                 'name'        => '_test_pc22',
                 'entities_id' => '_test_child_2',
+            ], [
+                'name'        => '_test_pc_with_encoded_comment',
+                'entities_id' => '_test_root_entity',
+                'comment'     => '&#60;&#62;', // "&#60;" => "<", "&#62;" => ">"
             ]
         ], 'ComputerModel' => [
             [
@@ -243,6 +243,12 @@ function loadDataset()
             ], [
                 'name'           => '_test_phone_2',
                 'entities_id' => '_test_root_entity',
+            ], [
+                'name'           => 'PHONE-LNE-1',
+                'entities_id' => '_test_root_entity',
+            ], [
+                'name'           => 'PHONE-LNE-2',
+                'entities_id' => '_test_root_entity',
             ],
         ], 'User' => [
             [
@@ -251,6 +257,18 @@ function loadDataset()
                 'password2'     => TU_PASS,
                 'entities_id'   => '_test_root_entity',
                 'profiles_id'   => 4, // TODO manage test profiles
+                '_entities_id'  => 0,
+                '_profiles_id'  => 4,
+                '_is_recursive' => 1,
+            ],
+            [
+                'name'          => 'jsmith123',
+                'realname'      => 'Smith',
+                'firstname'     => 'John',
+                'password'      => TU_PASS,
+                'password2'     => TU_PASS,
+                'entities_id'   => '_test_root_entity',
+                'profiles_id'   => 4,
                 '_entities_id'  => 0,
                 '_profiles_id'  => 4,
                 '_is_recursive' => 1,
@@ -347,12 +365,29 @@ function loadDataset()
                 'comment'      => 'Comment for location _location01'
             ],
             [
-                'name'         => '_location01 > _sublocation01',
+                'name'         => '_sublocation01',
+                'locations_id' => '_location01',
                 'comment'      => 'Comment for location _sublocation01'
             ],
             [
                 'name'         => '_location02',
                 'comment'      => 'Comment for location _sublocation02'
+            ],
+            [
+                'name'         => '_location02 > _sublocation02',
+                'comment'      => 'Comment for location _sublocation02',
+                'code'         => 'code_sublocation02'
+            ],
+            [
+                'name'         => '_location02 > _sublocation03',
+                'comment'      => 'Comment for location _sublocation03',
+                'alias'        => 'alias_sublocation03'
+            ],
+            [
+                'name'         => '_location02 > _sublocation04',
+                'comment'      => 'Comment for location _sublocation04',
+                'code'         => 'code_sublocation04',
+                'alias'        => 'alias_sublocation04'
             ]
         ], Socket::class => [
             [
@@ -667,7 +702,14 @@ function loadDataset()
                 'version'      => '1.0.0',
                 'state'        => 1,
             ]
-        ],
+        ], 'Change' => [
+            [
+                'name'           => '_change01',
+                'content'        => 'Content for ticket _change01',
+                'users_id_recipient' => TU_USER,
+                'entities_id'    => '_test_root_entity'
+            ],
+        ]
     ];
 
    // To bypass various right checks

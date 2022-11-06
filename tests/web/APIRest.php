@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -69,7 +71,7 @@ class APIRest extends APIBaseClass
 
     public function afterTestMethod($method)
     {
-        // Check that no errors occured on the test server
+        // Check that no errors occurred on the test server
         $this->string(file_get_contents($this->getLogFilePath()))->isEmpty();
     }
 
@@ -237,7 +239,8 @@ class APIRest extends APIBaseClass
          ->contains('content-type')
          ->contains('accept')
          ->contains('session-token')
-         ->contains('authorization');
+         ->contains('authorization')
+         ->contains('app-token');
     }
 
     /**
@@ -810,6 +813,8 @@ class APIRest extends APIBaseClass
                 'response' => [
                     ["key" => "MassiveAction:update",            "label" => "Update"],
                     ["key" => "MassiveAction:clone",             "label" => "Clone"],
+                    ["key" => "Item_Line:add",                   "label" => "Add a line"],
+                    ["key" => "Item_Line:remove",                "label" => "Remove a line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
@@ -824,9 +829,14 @@ class APIRest extends APIBaseClass
                     ["key" => "Document_Item:remove",            "label" => "Remove a document"],
                     ["key" => "Contract_Item:add",               "label" => "Add a contract"],
                     ["key" => "Contract_Item:remove",            "label" => "Remove a contract"],
+                    ["key" => "Reservation:enable",              "label" => "Authorize reservations"],
+                    ["key" => "Reservation:disable",             "label" => "Prohibit reservations"],
+                    ["key" => "Reservation:available",           "label" => "Make available for reservations"],
+                    ["key" => "Reservation:unavailable",         "label" => "Make unavailable for reservations"],
                     ["key" => "MassiveAction:amend_comment",     "label" => "Amend comment"],
                     ["key" => "MassiveAction:add_note",          "label" => "Add note"],
-                    ["key" => "Lock:unlock",                     "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
                 ],
             ],
             [
@@ -836,7 +846,8 @@ class APIRest extends APIBaseClass
                     ["key" => "MassiveAction:purge_item_but_devices",  "label" => "Delete permanently but keep devices"],
                     ["key" => "MassiveAction:purge",                   "label" => "Delete permanently and remove devices"],
                     ["key" => "MassiveAction:restore",                 "label" => "Restore"],
-                    ["key" => "Lock:unlock",                           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
                 ],
             ],
             [
@@ -845,6 +856,8 @@ class APIRest extends APIBaseClass
                 'response' => [
                     ["key" => "MassiveAction:update",            "label" => "Update"],
                     ["key" => "MassiveAction:clone",             "label" => "Clone"],
+                    ["key" => "Item_Line:add",                   "label" => "Add a line"],
+                    ["key" => "Item_Line:remove",                "label" => "Remove a line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
@@ -859,9 +872,14 @@ class APIRest extends APIBaseClass
                     ["key" => "Document_Item:remove",            "label" => "Remove a document"],
                     ["key" => "Contract_Item:add",               "label" => "Add a contract"],
                     ["key" => "Contract_Item:remove",            "label" => "Remove a contract"],
+                    ["key" => "Reservation:enable",              "label" => "Authorize reservations"],
+                    ["key" => "Reservation:disable",             "label" => "Prohibit reservations"],
+                    ["key" => "Reservation:available",           "label" => "Make available for reservations"],
+                    ["key" => "Reservation:unavailable",         "label" => "Make unavailable for reservations"],
                     ["key" => "MassiveAction:amend_comment",     "label" => "Amend comment"],
                     ["key" => "MassiveAction:add_note",          "label" => "Add note"],
-                    ["key" => "Lock:unlock",                     "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_component",           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",              "label" => "Unlock fields"],
                 ],
             ],
             [
@@ -871,7 +889,8 @@ class APIRest extends APIBaseClass
                     ["key" => "MassiveAction:purge_item_but_devices",  "label" => "Delete permanently but keep devices"],
                     ["key" => "MassiveAction:purge",                   "label" => "Delete permanently and remove devices"],
                     ["key" => "MassiveAction:restore",                 "label" => "Restore"],
-                    ["key" => "Lock:unlock",                           "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_component",                 "label" => "Unlock components"],
+                    ["key" => "Lock:unlock_fields",                    "label" => "Unlock fields"],
                 ],
             ],
         ];
@@ -1023,10 +1042,17 @@ class APIRest extends APIBaseClass
                 ],
             ],
             [
-                'url' => 'getMassiveActionParameters/Computer/Lock:unlock',
+                'url' => 'getMassiveActionParameters/Computer/Lock:unlock_component',
                 'status' => 200,
                 'response' => [
                     ["name" => "attached_item[]", "type" => "dropdown"],
+                ],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/Lock:unlock_fields',
+                'status' => 200,
+                'response' => [
+                    ["name" => "attached_fields[]", "type" => "dropdown"],
                 ],
             ],
         ];
@@ -1099,6 +1125,7 @@ class APIRest extends APIBaseClass
                 'status' => 200,
                 'response' => [
                     'ok'       => 2,
+                    'noaction' => 0,
                     'ko'       => 0,
                     'noright'  => 0,
                     'messages' => [],
@@ -1140,6 +1167,7 @@ class APIRest extends APIBaseClass
                 'status' => 200,
                 'response' => [
                     'ok'       => 2,
+                    'noaction' => 0,
                     'ko'       => 0,
                     'noright'  => 0,
                     'messages' => [],
@@ -1222,5 +1250,149 @@ class APIRest extends APIBaseClass
         if (!is_null($after_test)) {
             $after_test();
         }
+    }
+
+    /**
+     * Data provider for testReturnSanitizedContentUnit
+     *
+     * @return array
+     */
+    protected function testReturnSanitizedContentUnitProvider(): array
+    {
+        return [
+            [null, true],
+            ["", false],
+            ["true", true],
+            ["false", false],
+            ["on", true],
+            ["off", false],
+            ["1", true],
+            ["0", false],
+            ["yes", true],
+            ["no", false],
+            ["asfbhueshf", false],
+        ];
+    }
+
+    /**
+     * Unit test for the "returnSanitizedContent" method
+     *
+     * @dataProvider testReturnSanitizedContentUnitProvider
+     *
+     * @param string $header_value    Header value to be tested
+     * @param bool   $expected_output Expected output for this header
+     *
+     * @return void
+     */
+    public function testReturnSanitizedContentUnit(
+        ?string $header_value,
+        bool $expected_output
+    ): void {
+        $api = new \Glpi\Api\APIRest();
+
+        if ($header_value === null) {
+            // Simulate missing header
+            unset($_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT']);
+        } else {
+            $_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT'] = $header_value;
+        }
+
+        // Run test
+        $this->boolean(
+            $api->returnSanitizedContent()
+        )->isEqualTo($expected_output);
+
+        // Clean header
+        unset($_SERVER['HTTP_X_GLPI_SANITIZED_CONTENT']);
+    }
+
+    /**
+     * Functional test for the "returnSanitizedContent" method
+     *
+     * @return void
+     */
+    public function testReturnSanitizedContentFunctional(): void
+    {
+        // Get computer with encoded comment
+        $computers_id = getItemByTypeName(
+            "Computer",
+            "_test_pc_with_encoded_comment",
+            true
+        );
+
+        // Request params
+        $url = "/Computer/$computers_id";
+        $method = "GET";
+        $headers = ['Session-Token' => $this->session_token];
+
+        // Execute first test (keep encoded content)
+        $data = $this->query($url, [
+            'headers' => $headers,
+            'verb'    => $method,
+        ], 200);
+        $this->string($data['comment'])->isEqualTo("&#60;&#62;");
+
+        // Add additional header
+        $headers['X-GLPI-Sanitized-Content'] = "false";
+
+        // Execute second test (expect decoded content)
+        $data = $this->query($url, [
+            'headers' => $headers,
+            'verb'    => $method,
+        ], 200);
+        $this->string($data['comment'])->isEqualTo("<>");
+    }
+
+    public function test_ActorUpdate()
+    {
+        $headers = ['Session-Token' => $this->session_token];
+        $rand = mt_rand();
+
+        // Group used for our tests
+        $groups_id = getItemByTypeName("Group", "_test_group_1", true);
+
+        // Create ticket
+        $input = [
+            'input' => [
+                'name' => "test_ActorUpdate_Ticket_$rand",
+                'content' => 'content'
+            ]
+        ];
+        $data = $this->query("/Ticket", [
+            'headers' => $headers,
+            'verb'    => "POST",
+            'json'    => $input,
+        ], 201);
+        $this->integer($data['id'])->isGreaterThan(0);
+        $tickets_id = $data['id'];
+
+        // Add group
+        $input = [
+            'input' => [
+                '_actors' => [
+                    'assign' => [
+                        [
+                            'itemtype' => "Group",
+                            'items_id' => $groups_id,
+                            'use_notification' => 1,
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->query("/Ticket/$tickets_id/", [
+            'headers' => $headers,
+            'verb'    => "PUT",
+            'json'    => $input,
+        ], 200);
+
+        // Check assigned groups
+        $data = $this->query("/Ticket/$tickets_id/Group_Ticket", [
+            'headers' => $headers,
+            'verb'    => "GET",
+        ], 200);
+
+        $this->integer($data[0]['tickets_id'])->isEqualTo($tickets_id);
+        $this->integer($data[0]['groups_id'])->isEqualTo($groups_id);
     }
 }

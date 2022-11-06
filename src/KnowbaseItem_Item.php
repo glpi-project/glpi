@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -139,6 +141,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             );
         }
 
+        $rand = mt_rand();
         if ($canedit && $ok_state) {
             echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
             echo "<div class='center'>";
@@ -247,8 +250,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
             $link = $linked_item::getFormURLWithID($linked_item->getID());
 
-            $createdate = $item::getType() == KnowbaseItem::getType() ? 'date_creation' : 'date';
-           // show line
+            // show line
             echo "<tr class='tab_bg_2'>";
 
             if ($canedit) {
@@ -264,7 +266,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
             echo "<td>" . $type . "</td>" .
                  "<td><a href=\"" . $link . "\">" . $name . "</a></td>" .
-                 "<td class='tab_date'>" . Html::convDateTime($linked_item->fields[$createdate]) . "</td>" .
+                 "<td class='tab_date'>" . Html::convDateTime($linked_item->fields['date_creation']) . "</td>" .
                  "<td class='tab_date'>" . Html::convDateTime($linked_item->fields['date_mod']) . "</td>";
             echo "</tr>";
         }
@@ -421,5 +423,46 @@ class KnowbaseItem_Item extends CommonDBRelation
     public static function getIcon()
     {
         return KnowbaseItem::getIcon();
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+        switch ($field) {
+            case 'items_id':
+                if (isset($values['itemtype']) && !empty($values['itemtype'])) {
+                    $options['name']  = $name;
+                    $options['value'] = $values[$field];
+                    return Dropdown::show($values['itemtype'], $options);
+                }
+                break;
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'items_id':
+                if (isset($values['itemtype'])) {
+                    if ($values[$field] > 0) {
+                        $item = new $values['itemtype']();
+                        $item->getFromDB($values[$field]);
+                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                    }
+                }
+                return ' ';
+            break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 }

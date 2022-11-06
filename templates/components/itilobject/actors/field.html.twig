@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,35 +15,33 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
 {% set rand = random() %}
 
 {% set actors = item.getActorsForType(actortypeint, params) %}
-{# TODO getDefaultActorRightSearch on create #}
-{# TODO LDAP import shortcut #}
-{# TODO userentity_oncreate form submit #}
 
 {% set required = false %}
-{% if itiltemplate.isMandatoryField('TODO') %}
+{% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) or itiltemplate.isMandatoryField('_groups_id_' ~ actortype) or (actortype == 'assign' and itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
    {% set required = true %}
 {% endif %}
 
 {% set is_actor_hidden = false %}
-{% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) and itiltemplate.isMandatoryField('_groups_id_' ~ actortype) and (actortype != 'assign' or itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
+{% if itiltemplate.isHiddenField('_users_id_' ~ actortype) and itiltemplate.isHiddenField('_groups_id_' ~ actortype) and (actortype != 'assign' or itiltemplate.isHiddenField('_suppliers_id_' ~ actortype)) %}
    {% set is_actor_hidden = true %}
 {% endif %}
 
@@ -52,20 +51,24 @@
 {% endif %}
 
 {% if not is_actor_hidden %}
-   <select class="form-select" multiple="true" id="actor_{{ rand }}">
+   <select class="form-select" multiple="true" id="actor_{{ rand }}" data-actor-type="{{ actortype }}"
+        {{ required ? 'required' : '' }}>
    {% for actor in actors %}
+      {% set unique_id = "user_opt_" ~ actortype ~ actor.itemtype ~ actor.items_id %}
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
             data-alternative-email="{{ actor['alternative_email'] }}"
-            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}"
-            {{ required ? 'required' : '' }}>
+            {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
+               disabled="disabled" style="display: none;"
+            {% endif %}
+            data-text="{{ actor['text']|verbatim_value }}" data-title="{{ actor['title']|verbatim_value }}" data-glpi-popover-source="content{{ unique_id }}">
          {{ actor['title']|verbatim_value }}
       </option>
    {% endfor %}
    </select>
 
-   {% if not params['template_preview'] and not disable_assign_to_me and canupdate %}
+   {% if not item.isNewItem() and not params['template_preview'] and not disable_assign_to_me and canupdate %}
       {{ include('components/itilobject/actors/assign_to_me.html.twig') }}
    {% endif %}
 
@@ -78,8 +81,8 @@
          var element   = $(option.element);
          var itemtype  = element.data('itemtype') ?? option.itemtype;
          var items_id  = element.data('items-id') ?? option.items_id;
-         var text      = element.data('text') ?? option.text;
-         var title     = element.data('title') ?? option.title;
+         var text      = escapeMarkupText(element.data('text') ?? option.text ?? '');
+         var title     = escapeMarkupText(element.data('title') ?? option.title ?? '');
          var use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
          var alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
 
@@ -93,11 +96,19 @@
                } else {
                   icon = `<i class="ti  fa-fw ti-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
                }
-               fk   = "users_id_assign";
+               if ("{{ actortype }}" == "assign") {
+                  fk = "users_id_assign";
+               } else if ("{{ actortype }}" == "requester") {
+                  fk = "users_id_requester";
+               }
                break;
             case "Group":
                icon = `<i class="ti  fa-fw ti-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
-               fk   = "groups_id_assign";
+               if ("{{ actortype }}" == "assign") {
+                  fk = "groups_id_assign";
+               } else if ("{{ actortype }}" == "requester") {
+                  fk = "groups_id_requester";
+               }
                break;
             case "Supplier":
                icon = `<i class="ti fa-fw ti-package mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
@@ -108,8 +119,7 @@
          var actions = "";
          {% if canupdate %}
          if (['User', 'Supplier', 'Email'].includes(itemtype)
-            && is_selection
-            && {{ entity_config('is_notif_enable_default', entities_id, 1) }}) {
+            && is_selection) {
             var fa_class = "far";
             if (use_notif) {
                fa_class = "fas";
@@ -135,30 +145,53 @@
          // prepare html for option element
          var text = (is_selection && itemtype == "Group") ? title : text;
          var option_text    = `<span class="actor_text">${text}</span>`;
-         var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}" data-text="${text}">${indent}${icon}${option_text}${actions}</span>`);
+         var option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}">${indent}${icon}${option_text}${actions}</span>`);
+
+          if (is_selection && itemtype == "User") {
+              const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;
+              $.ajax({
+                  url: '{{ path('/ajax/comments.php') }}',
+                  type: 'POST',
+                  data: {
+                      'itemtype': 'User',
+                      'value': items_id,
+                  }
+              }).then((result) => {
+                  if (result) {
+                      actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                      option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+                  }
+              });
+          }
 
          // manage ticket information (number of assigned ticket for an actor)
-         if (is_selection && itemtype != "Email" && "{{ actortype }}" == "assign") {
-            var already_assign_element = $(
-               `<span class="assign_infos ms-1" title="{{ __('Number of tickets already assigned') }}"
+         if (is_selection && itemtype != "Email") {
+            var label = '';
+            if ("{{ actortype }}" == "assign") {
+               label = "{{ __('Number of tickets already assigned') }}";
+            } else if ("{{ actortype }}" == "requester") {
+               label = "{{ __('Number of tickets as requester') }}";
+            }
+            var existing_element = $(
+               `<span class="assign_infos ms-1" title="${label}"
                      data-bs-toggle="tooltip" data-bs-placement="top"
                      data-id="${items_id}" data-fk="${fk}">
                   <i class="fas fa-spinner fa-spin"></i>
                </span>`
             );
-            option_element.append(already_assign_element);
+            option_element.append(existing_element);
 
-            $.get("{{ path('/ajax/ticketassigninformation.php') }}", {
+            $.get("{{ path('/ajax/actorinformation.php') }}", {
                [fk]: items_id,
                only_number: true,
-            }).done(function(number) {
+            }).done(function (number) {
                var badge = "";
                if (number.length > 0) {
                   badge = `<span class="badge bg-secondary-lt">
-                     ${number}
-                  </span>`;
+                  ${number}
+               </span>`;
                }
-               already_assign_element.html(badge);
+               existing_element.html(badge);
             });
          }
 
@@ -167,7 +200,8 @@
 
       var select2_width = "{{ not disable_assign_to_me ? 'calc(100% - 30px)' : '100%' }}";
 
-      $("#actor_{{ rand }}").select2({
+      const actor_select = $("#actor_{{ rand }}");
+      actor_select.select2({
          tags: true,
          width: select2_width,
          tokenSeparators: [',', ' '],
@@ -184,7 +218,7 @@
             }
 
             // Don't offset to create a tag if it's not an email
-            if (!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).test(term)) {
+            if (!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/).test(term)) {
                // Return null to disable tag creation
                return null;
             }
@@ -202,24 +236,59 @@
             url: '{{ path('/ajax/actors.php') }}',
             datatype: 'json',
             type: 'POST',
+            delay:250,
             data: function (params) {
+               var is_new_item = {{ item.isNewItem() ? "true" : "false" }};
                return {
                   action: 'getActors',
                   actortype: actorytype,
                   users_right: '{{ users_right ?? 'all' }}',
-                  entity_restrict: {{ entities_id }},
+                  entity_restrict: (actors.requester.length == 0 && is_new_item) ? -1 : {{ entities_id }},
                   searchText: params.term,
                   _idor_token: '{{ idor_token() }}',
                   itiltemplate_class: '{{ itiltemplate.getType() }}',
                   itiltemplates_id: {{ itiltemplate.fields['id'] ?? 0 }},
                   itemtype: '{{ item.getType() }}',
-                  items_id: {{ item.fields['id'] }},
+                  items_id: {{ item.isNewItem() ? -1 : item.fields['id'] }},
                   item: {{ item.fields|json_encode|raw }},
                   returned_itemtypes: {{ (returned_itemtypes ?? ['User', 'Group', 'Supplier'])|json_encode()|raw }},
+                  page: params.page || 1
                };
             },
          }
+      }).on('select2:open', () => {
+          // Close popovers
+          $('.popover').popover('hide');
       });
+
+       actor_select.parent().popover({
+           selector: '[data-glpi-popover-source]',
+           container: actor_select.parent(),
+           html: true,
+           sanitize: false,
+           trigger: 'hover',
+           delay: {
+               hide: 300
+           },
+           template: '<' + 'div class="popover shadow" role="tooltip"><' + 'div class="popover-arrow"><' + '/div><' + 'h3 class="popover-header"><' + '/h3><' + 'div class="popover-body"><' + '/div><' + '/div>',
+           content: function() {
+               // Close other popovers
+               $('.popover').popover('hide');
+               return $('#' + $(this).attr('data-glpi-popover-source')).html();
+           }
+       }).on('hide.bs.popover', function () {
+            // prevent closing popover when user card is hover
+            if ($('.user-info-card:hover').length > 0) {
+                return false;
+            }
+        });
+
+        // when the mouse leave the user card in the popover, close it
+        $(document).on('mouseleave', '.user-info-card', function() {
+            setTimeout(() => {
+                $('.popover').popover('hide');
+            }, 300);
+        });
 
       // manage actors change
       var updateActors{{ rand }} = function() {
@@ -277,6 +346,13 @@
             return openNotifyModal(event);
          }
       }, {capture: true})
+
+      {% if itiltemplate.isHiddenField('_users_id_' ~ actortype) %}
+         $(".actor_entry[data-itemtype=\"User\"][data-actortype=\"{{ actortype }}\"]").parent().css("display", "none");
+      {% endif %}
+      {% if itiltemplate.isHiddenField('_groups_id_' ~ actortype) %}
+         $(".actor_entry[data-itemtype=\"Group\"][data-actortype=\"{{ actortype }}\"]").parent().css("display", "none");
+      {% endif %}
    });
    </script>
 {% endif %}

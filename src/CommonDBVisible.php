@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -36,6 +38,76 @@
  */
 abstract class CommonDBVisible extends CommonDBTM
 {
+    /**
+     * Entities on which item is visible.
+     * Keys are ID, values are DB fields values.
+     * @var array
+     */
+    protected $entities = [];
+
+    /**
+     * Groups for whom item is visible.
+     * Keys are ID, values are DB fields values.
+     * @var array
+     */
+    protected $groups = [];
+
+    /**
+     * Profiles for whom item is visible.
+     * Keys are ID, values are DB fields values.
+     * @var array
+     */
+    protected $profiles = [];
+
+    /**
+     * Users for whom item is visible.
+     * Keys are ID, values are DB fields values.
+     * @var array
+     */
+    protected $users = [];
+
+    public function __get(string $property)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'entities':
+            case 'groups':
+            case 'profiles':
+            case 'users':
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        switch ($property) {
+            case 'entities':
+            case 'groups':
+            case 'profiles':
+            case 'users':
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+    }
+
     /**
      * Is the login user have access to item based on visibility configuration
      *
@@ -64,7 +136,7 @@ abstract class CommonDBVisible extends CommonDBTM
                 foreach ($data as $group) {
                     if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
                       // All the group
-                        if ($group['entities_id'] < 0) {
+                        if ($group['no_entity_restriction']) {
                              return true;
                         }
                       // Restrict to entities
@@ -99,7 +171,7 @@ abstract class CommonDBVisible extends CommonDBTM
             if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
                 foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
                     // All the profile
-                    if ($profile['entities_id'] < 0) {
+                    if ($profile['no_entity_restriction']) {
                         return true;
                     }
                     // Restrict to entities

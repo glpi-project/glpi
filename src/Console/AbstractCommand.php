@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,24 +17,25 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\Console;
 
-use DB;
+use DBmysql;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\System\RequirementsManager;
 use Symfony\Component\Console\Command\Command;
@@ -46,7 +48,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
     /**
-     * @var DB
+     * @var DBmysql
      */
     protected $db;
 
@@ -95,7 +97,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
 
         global $DB;
 
-        if ($this->requires_db && (!($DB instanceof DB) || !$DB->connected)) {
+        if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {
             throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to connect to database.'));
         }
 
@@ -192,7 +194,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
 
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
-            $db instanceof \DBmysql && $db->connected ? $db : null
+            $db instanceof DBmysql && $db->connected ? $db : null
         );
         if ($core_requirements->hasMissingOptionalRequirements()) {
             $message = __('Some optional system requirements are missing.')
@@ -220,23 +222,33 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     /**
      * Ask for user confirmation before continuing command execution.
      *
+     * @param bool $default_to_yes
+     *
      * @return void
      */
-    protected function askForConfirmation(): void
+    protected function askForConfirmation(bool $default_to_yes = true): void
     {
+        $abort = false;
         if (!$this->input->getOption('no-interaction')) {
             $question_helper = $this->getHelper('question');
             $run = $question_helper->ask(
                 $this->input,
                 $this->output,
-                new ConfirmationQuestion(__('Do you want to continue?') . ' [Yes/no]', true)
+                new ConfirmationQuestion(
+                    __('Do you want to continue?') . ($default_to_yes ? ' [Yes/no]' : ' [yes/No]'),
+                    $default_to_yes
+                )
             );
-            if (!$run) {
-                 throw new \Glpi\Console\Exception\EarlyExitException(
-                     '<comment>' . __('Aborted.') . '</comment>',
-                     0 // Success code
-                 );
-            }
+            $abort = !$run;
+        } else {
+            $abort = !$default_to_yes;
+        }
+
+        if ($abort) {
+            throw new \Glpi\Console\Exception\EarlyExitException(
+                '<comment>' . __('Aborted.') . '</comment>',
+                0 // Success code
+            );
         }
     }
 }

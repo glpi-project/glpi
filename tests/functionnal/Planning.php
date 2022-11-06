@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -181,5 +183,33 @@ class Planning extends \DbTestCase
                 }
             }
         }
+    }
+
+    protected function getPaletteColorProvider()
+    {
+        $palettes = [];
+        $properties = (new \ReflectionClass(\Planning::class))->getProperties(\ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_STATIC);
+        foreach ($properties as $property) {
+            if (str_starts_with($property->getName(), 'palette_')) {
+                // Add palette (without the 'palette_' prefix)
+                $palettes[] = substr($property->getName(), 8);
+            }
+        }
+        $result = [];
+        foreach ($palettes as $palette) {
+            for ($i = 0; $i < 20; $i++) {
+                $result[] = [$palette, $i];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @dataProvider getPaletteColorProvider
+     */
+    public function testGetPaletteColor(string $palette_name, int $index)
+    {
+        $color = \Planning::getPaletteColor($palette_name, $index);
+        $this->string($color)->matches('/#[0-9A-F]{6}/');
     }
 }

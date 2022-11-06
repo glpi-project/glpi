@@ -1,11 +1,11 @@
 name: "GLPI CI"
 
 on:
-  # Runs test suite when a new commit is pushed on "master" and "*/bugfixes" branches
+  # Runs test suite when a new commit is pushed on "main" and "*/bugfixes" branches
   # and when a new tag is created
   push:
     branches:
-      - master
+      - main
       - '*/bugfixes'
       - 'feature/*'
       - 'fix/*'
@@ -30,27 +30,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {php-version: "7.4"} # Lint on lower PHP version to detected too early usage of new syntaxes
+          - {php-version: "8.0"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "8.1"} # Lint on higher PHP version to detected deprecated elements usage
+          - {php-version: "8.2-rc"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
-      - name: "Cancel previous runs"
-        uses: "styfle/cancel-workflow-action@0.5.0"
-        with:
-          access_token: "${{ github.token }}"
       - name: "Clean workspace"
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
           rm -rf "${{ env.APPLICATION_ROOT }}/*"
           rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v3"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
@@ -60,7 +57,7 @@ jobs:
             app_home_deps-${{ matrix.php-version }}-
             app_home_deps-
       - name: "Restore lint cache"
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
@@ -107,31 +104,24 @@ jobs:
       matrix:
         include:
           # test higher PHP version with higher MariaDB and MySQL versions
-          - {php-version: "8.1", db-image: "mariadb:10.6", always: true}
+          - {php-version: "8.1", db-image: "mariadb:10.9", always: true}
           - {php-version: "8.1", db-image: "mysql:8.0", always: true}
+          - {php-version: "8.2-rc", db-image: "mariadb:10.9", always: true}
           # test other PHP versions
-          - {php-version: "8.0", db-image: "mariadb:10.6", always: false}
-          - {php-version: "7.4", db-image: "mariadb:10.6", always: false}
+          - {php-version: "8.0", db-image: "mariadb:10.9", always: false}
           # test other DB servers/versions
-          - {php-version: "8.1", db-image: "mariadb:10.2", always: false}
-          - {php-version: "8.1", db-image: "mysql:5.7", always: false}
-          - {php-version: "8.1", db-image: "percona:5.7", always: false}
+          - {php-version: "8.1", db-image: "mariadb:10.3", always: false}
           - {php-version: "8.1", db-image: "percona:8.0", always: false}
     env:
       # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
-      # No jobs will be skipped on nightly build, manual dispatch or push on main branches (master and */bugfixes) or tags.
-      skip: ${{ matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || !(github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master' || endsWith(github.ref, '/bugfixes') || startsWith(github.ref, 'refs/tags'))) }}
+      # No jobs will be skipped on nightly build, manual dispatch or push on main branches (main and */bugfixes) or tags.
+      skip: ${{ matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || !(github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || endsWith(github.ref, '/bugfixes') || startsWith(github.ref, 'refs/tags'))) }}
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
-      - name: "Cancel previous runs"
-        if: env.skip != 'true'
-        uses: "styfle/cancel-workflow-action@0.5.0"
-        with:
-          access_token: "${{ github.token }}"
       - name: "Clean workspace"
         if: env.skip != 'true'
         run: |
@@ -140,10 +130,10 @@ jobs:
           rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
         if: env.skip != 'true'
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v3"
       - name: "Restore dependencies cache"
         if: env.skip != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
@@ -173,10 +163,10 @@ jobs:
         run: |
           .github/actions/init_initialize-0.80-db.sh
           docker-compose exec -T app .github/actions/test_update-from-older-version.sh
-      - name: "Update DB tests (from 9.5.3, using utf8mb4)"
+      - name: "Update DB tests (from 9.5, using utf8mb4)"
         if: env.skip != 'true'
         run: |
-          .github/actions/init_initialize-9.5.3-db.sh
+          .github/actions/init_initialize-9.5-db.sh
           docker-compose exec -T app .github/actions/test_update-from-9.5.sh
       - name: "Unit tests"
         if: env.skip != 'true'

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,20 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Disk Class
@@ -56,6 +60,12 @@ class Item_Disk extends CommonDBChild
 
         $this->fields["totalsize"] = '0';
         $this->fields["freesize"]  = '0';
+    }
+
+
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
     }
 
 
@@ -99,11 +109,11 @@ class Item_Disk extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
     }
-
 
     /**
      * Print the version form
@@ -131,78 +141,25 @@ class Item_Disk extends CommonDBChild
             return false;
         }
 
-        $item = new $itemtype();
+        $asset_item = new $itemtype();
         if ($ID > 0) {
             $this->check($ID, READ);
-            $item->getFromDB($this->fields['items_id']);
+            $asset_item->getFromDB($this->fields['items_id']);
         } else {
             $this->check(-1, CREATE, $options);
-            $item->getFromDB($options['items_id']);
+            $asset_item->getFromDB($options['items_id']);
         }
-
-        $this->showFormHeader($options);
-
-        if ($this->isNewID($ID)) {
-            echo "<input type='hidden' name='items_id' value='" . $options['items_id'] . "'>";
-            echo "<input type='hidden' name='itemtype' value='" . $options['itemtype'] . "'>";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Item', 'Items', 1) . "</td>";
-        echo "<td>" . $item->getLink() . "</td>";
-        $this->autoinventoryInformation();
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td><td>" . __('Partition') . "</td>";
-        echo "<td>";
-        echo Html::input('device', ['value' => $this->fields['device']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Mount point') . "</td>";
-        echo "<td>";
-        echo Html::input('mountpoint', ['value' => $this->fields['mountpoint']]);
-        echo "</td><td>" . Filesystem::getTypeName(1) . "</td>";
-        echo "<td>";
-        Filesystem::dropdown(['value' => $this->fields["filesystems_id"]]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Global size') . "</td>";
-        echo "<td>";
-        echo Html::input('totalsize', ['value' => $this->fields['totalsize']]);
-        echo "&nbsp;" . __('Mio') . "</td>";
-
-        echo "<td>" . __('Free size') . "</td>";
-        echo "<td>";
-        echo Html::input('freesize', ['value' => $this->fields['freesize']]);
-        echo "&nbsp;" . __('Mio') . "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Encryption') . "</td>";
-        echo "<td>";
-        echo self::getEncryptionStatusDropdown($this->fields['encryption_status']);
-        echo "</td><td>" . __('Encryption tool') . "</td>";
-        echo "<td>";
-        echo Html::input('encryption_tool', ['value' => $this->fields['encryption_tool']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Encryption algorithm') . "</td>";
-        echo "<td>";
-        echo Html::input('encryption_algorithm', ['value' => $this->fields['encryption_algorithm']]);
-        echo "</td><td>" . __('Encryption type') . "</td>";
-        echo "<td>";
-        echo Html::input('encryption_type', ['value' => $this->fields['encryption_type']]);
-        echo "</td></tr>";
 
         $itemtype = $this->fields['itemtype'];
         $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
-        $this->showFormButtons($options);
+
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('components/form/item_disk.html.twig', [
+            'item'                      => $this,
+            'asset_item'                => $asset_item,
+            'encryption_status_list'    => self::getAllEncryptionStatus(),
+            'params'                    => $options,
+        ]);
 
         return true;
     }
@@ -709,5 +666,24 @@ class Item_Disk extends CommonDBChild
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    public function getNonLoggedFields(): array
+    {
+        // we don't want to log at all changes of available space for a drive
+        // as it's likely to change every time
+        $exclude = [
+            'freesize',
+        ];
+
+        // logging total size of zfs mount points make no sense as it's equal to the used space of the point + available space for the pool
+        // it's likely to have this key changing on each automatic inventory
+        // so we don't want to pollute logs with these frequent changes.
+        // to note, `$this->input['filesystem']` will only be present on inventory request
+        if (in_array(($this->input['filesystem'] ?? ""), ['zfs', 'fuse.zfs'])) {
+            $exclude[] = 'totalsize';
+        }
+
+        return $exclude;
     }
 }

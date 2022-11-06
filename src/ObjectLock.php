@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -286,7 +288,7 @@ class ObjectLock extends CommonDBTM
         $msg = "<strong class='nowrap'>";
         $msg .= sprintf(__('Locked by %s'), "<a href='" . $user->getLinkURL() . "'>" . $userdata['name'] . "</a>");
         $msg .= "&nbsp;" . Html::showToolTip($userdata["comment"], ['link' => $userdata['link'], 'display' => false]);
-        $msg .= " -> " . Html::convDateTime($this->fields['date']);
+        $msg .= " -&gt; " . Html::convDateTime($this->fields['date']);
         $msg .= "</strong>";
         if ($showAskUnlock) {
             $msg .= "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:askUnlock();'>
@@ -297,7 +299,6 @@ class ObjectLock extends CommonDBTM
         $msg .= "<label for='alertMe'>" . __('Alert me when unlocked') . "</label>";
         $msg .= Html::getCheckbox(['id' => 'alertMe']);
         $msg .= $this->getForceUnlockMessage(); // will get a button to force unlock if UNLOCK rights are in the user's profile
-        $msg .= "</span>";
 
         $this->displayLockMessage($msg);
     }
@@ -544,9 +545,12 @@ class ObjectLock extends CommonDBTM
      **/
     private function displayLockMessage($msg, $title = '')
     {
+        $json_msg = json_encode($msg); // Encode in JSON to prevent issues with quotes mix
         echo Html::scriptBlock("
          $(function() {
-            $(`<div id='message_after_lock' class='objectlockmessage' style='display: inline-block;'>$msg</div>`).insertAfter('.navigationheader');
+            const container = $(`<div id='message_after_lock' class='objectlockmessage' style='display: inline-block;'></div>`);
+            container.append($json_msg);
+            container.insertAfter('.navigationheader');
          });
       ");
     }

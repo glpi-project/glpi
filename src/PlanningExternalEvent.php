@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -145,6 +147,12 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         $rand_plan  = mt_rand();
         $rand_rrule = mt_rand();
 
+        if (
+            ($options['from_planning_ajax'] ?? false)
+            || ($options['from_planning_edit_ajax'] ?? false)
+        ) {
+            $options['no_header'] = true;
+        }
         $this->initForm($ID, $options);
         $this->showFormHeader($options);
 
@@ -259,10 +267,8 @@ JAVASCRIPT;
         User::dropdown([
             'name'          => 'users_id_guests[]',
             'right'         => 'all',
-            'values'        => $this->fields['users_id_guests'],
-            'specific_tags' => [
-                'multiple' => true
-            ],
+            'value'         => $this->fields['users_id_guests'],
+            'multiple'      => true,
         ]);
         echo "<div style='font-style: italic'>" .
             __("Each guest will have a read-only copy of this event") .
@@ -355,16 +361,24 @@ JAVASCRIPT;
 
         if ($is_ajax && $is_rrule) {
             $options['candel'] = false;
-            $options['addbuttons'] = [
-                'purge'          => [
+            $options['addbuttons'] = [];
+            if ($this->can(-1, CREATE)) {
+                $options['addbuttons']['save_instance'] = [
+                    'text'  => __("Detach instance"),
+                    'icon'  => 'ti ti-unlink',
+                    'title' => __("Detach this instance from the series to create an independent event"),
+                ];
+            }
+            if ($this->can($ID, PURGE)) {
+                $options['addbuttons']['purge'] = [
                     'text' => __("Delete serie"),
                     'icon' => 'fas fa-trash-alt',
-                ],
-                'purge_instance' => [
+                ];
+                $options['addbuttons']['purge_instance'] = [
                     'text' => __("Delete instance"),
                     'icon' => 'far fa-trash-alt',
-                ],
-            ];
+                ];
+            }
         }
 
         $this->showFormButtons($options);

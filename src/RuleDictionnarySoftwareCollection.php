@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -105,9 +107,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     }
 
 
-    /**
-     * @see RuleCollection::replayRulesOnExistingDB()
-     **/
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         global $DB;
@@ -245,7 +244,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
      * @param $IDs       array of software IDs to replay
      * @param $res_rule  array of rule results
      *
-     * @return Query result handler
+     * @return void
      **/
     public function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule = [])
     {
@@ -329,7 +328,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             $res_rule = $this->processAllRules($input, [], []);
         }
         $soft = new Software();
-        if (isset($res_rules['_ignore_import']) && ($res_rules['_ignore_import'] == 1)) {
+        if (isset($res_rule['_ignore_import']) && ($res_rule['_ignore_import'] == 1)) {
             $soft->putInTrash($ID, __('Software deleted by GLPI dictionary rules'));
             return;
         }

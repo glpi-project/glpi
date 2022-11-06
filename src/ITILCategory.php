@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -44,88 +46,105 @@ class ITILCategory extends CommonTreeDropdown
 
     public function getAdditionalFields()
     {
-
-        $tab = [['name'      => $this->getForeignKeyField(),
-            'label'     => __('As child of'),
-            'type'      => 'parent',
-            'list'      => false
-        ],
-            ['name'      => 'users_id',
+        $tab = [
+            [
+                'name'      => $this->getForeignKeyField(),
+                'label'     => __('As child of'),
+                'type'      => 'parent',
+                'list'      => false,
+            ],
+            [
+                'name'      => 'users_id',
                 'label'     => __('Technician in charge of the hardware'),
                 'type'      => 'UserDropdown',
                 'right'     => 'own_ticket',
-                'list'      => true
+                'list'      => true,
             ],
-            ['name'      => 'groups_id',
+            [
+                'name'      => 'groups_id',
                 'label'     => __('Group in charge of the hardware'),
                 'type'      => 'dropdownValue',
                 'condition' => ['is_assign' => 1],
-                'list'      => true
+                'list'      => true,
             ],
-            ['name'      => 'knowbaseitemcategories_id',
+            [
+                'name'      => 'knowbaseitemcategories_id',
                 'label'     => __('Knowledge base'),
                 'type'      => 'dropdownValue',
-                'list'      => true
+                'list'      => true,
             ],
-            ['name'      => 'code',
+            [
+                'name'      => 'code',
                 'label'     => __('Code representing the ticket category'),
                 'type'      => 'text',
-                'list'      => false
+                'list'      => false,
             ],
-            ['name'      => 'is_helpdeskvisible',
+            [
+                'name'      => 'is_helpdeskvisible',
                 'label'     => __('Visible in the simplified interface'),
                 'type'      => 'bool',
-                'list'      => true
+                'list'      => true,
             ],
-            ['name'      => 'is_incident',
+            [
+                'name'      => 'is_incident',
                 'label'     => __('Visible for an incident'),
                 'type'      => 'bool',
-                'list'      => true
+                'list'      => true,
             ],
-            ['name'      => 'is_request',
+            [
+                'name'      => 'is_request',
                 'label'     => __('Visible for a request'),
                 'type'      => 'bool',
-                'list'      => true
-            ],
-            ['name'      => 'is_problem',
-                'label'     => __('Visible for a problem'),
-                'type'      => 'bool',
-                'list'      => true
-            ],
-            ['name'      => 'is_change',
-                'label'     => __('Visible for a change'),
-                'type'      => 'bool',
-                'list'      => true
-            ],
-            ['name'      => 'tickettemplates_id_demand',
-                'label'     => __('Template for a request'),
-                'type'      => 'dropdownValue',
-                'list'      => true
-            ],
-            ['name'      => 'tickettemplates_id_incident',
-                'label'     => __('Template for an incident'),
-                'type'      => 'dropdownValue',
-                'list'      => true
-            ],
-            ['name'      => 'changetemplates_id',
-                'label'     => __('Template for a change'),
-                'type'      => 'dropdownValue',
-                'list'      => true
-            ],
-            ['name'      => 'problemtemplates_id',
-                'label'     => __('Template for a problem'),
-                'type'      => 'dropdownValue',
-                'list'      => true
+                'list'      => true,
             ],
         ];
 
-        if (
-            !Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE,
-                Problem::READALL, Problem::READMY
-            ])
-        ) {
-            unset($tab[7]);
+        $show_for_problem = Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE, Problem::READALL, Problem::READMY]);
+
+        if ($show_for_problem) {
+            $tab[] = [
+                'name'  => 'is_problem',
+                'label' => __('Visible for a problem'),
+                'type'  => 'bool',
+                'list'  => true,
+            ];
         }
+
+        $tab = array_merge(
+            $tab,
+            [
+                [
+                    'name'  => 'is_change',
+                    'label' => __('Visible for a change'),
+                    'type'  => 'bool',
+                    'list'  => true,
+                ],
+                [
+                    'name'  => 'tickettemplates_id_demand',
+                    'label' => __('Template for a request'),
+                    'type'  => 'dropdownValue',
+                    'list'  => true,
+                ],
+                [
+                    'name'  => 'tickettemplates_id_incident',
+                    'label' => __('Template for an incident'),
+                    'type'  => 'dropdownValue',
+                    'list'  => true,
+                ],
+                [
+                    'name'  => 'changetemplates_id',
+                    'label' => __('Template for a change'),
+                    'type'  => 'dropdownValue',
+                    'list'  => true,
+                ],
+                [
+                    'name'  => 'problemtemplates_id',
+                    'label' => __('Template for a problem'),
+                    'type'  => 'dropdownValue',
+                    'list'  => true,
+                ],
+            ]
+        );
         return $tab;
     }
 

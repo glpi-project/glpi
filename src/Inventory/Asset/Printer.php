@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,31 +18,33 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\Inventory\Asset;
 
 use CommonDBTM;
+use Glpi\Toolbox\Sanitizer;
+use IPAddress;
 use Printer as GPrinter;
 use PrinterLog;
 use PrinterModel;
 use PrinterType;
 use RuleDictionnaryPrinterCollection;
 use RuleImportAssetCollection;
-use Toolbox;
 
 class Printer extends NetworkEquipment
 {
@@ -120,6 +124,11 @@ class Printer extends NetworkEquipment
                 unset($val->ram);
             }
 
+            if (property_exists($val, 'credentials')) {
+                $val->snmpcredentials_id = $val->credentials;
+                unset($val->credentials);
+            }
+
             $res_rule = $rulecollection->processAllRules(['name' => $val->name]);
             if (
                 (!isset($res_rule['_ignore_ocs_import']) || $res_rule['_ignore_ocs_import'] != "1")
@@ -130,6 +139,8 @@ class Printer extends NetworkEquipment
                 }
                 if (isset($res_rule['manufacturer'])) {
                     $val->manufacturers_id = $res_rule['manufacturer'];
+                    $known_key = md5('manufacturers_id' . $res_rule['manufacturer']);
+                    $this->known_links[$known_key] = $res_rule['manufacturer'];
                 }
 
                 if (isset($this->extra_data['pagecounters'])) {
@@ -150,13 +161,40 @@ class Printer extends NetworkEquipment
             }
         }
 
+        //try to know if management port IP is already known as IP port
+        //if yes remove it from management port
+        $known_ports = $port_managment = $this->getManagementPorts();
+        if (isset($known_ports['management']) && property_exists($known_ports['management'], 'ipaddress')) {
+            foreach ($known_ports['management']->ipaddress as $pa_ip_key => $pa_ip_val) {
+                if (property_exists($this->raw_data->content, 'network_ports')) {
+                    foreach ($this->raw_data->content->network_ports as $port_obj) {
+                        if (property_exists($port_obj, 'ips')) {
+                            foreach ($port_obj->ips as $port_ip) {
+                                if ($pa_ip_val == $port_ip) {
+                                    unset($port_managment['management']->ipaddress[$pa_ip_key]);
+                                    if (empty($port_managment['management']->ipaddress)) {
+                                        unset($port_managment['management']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->setManagementPorts($port_managment);
+
         return $this->data;
     }
 
     public function handle()
     {
         if ($this->item->getType() != GPrinter::getType()) {
-            return $this->handleConnectedPrinter();
+            if ($this->conf->import_printer == 1) {
+                $this->handleConnectedPrinter();
+            }
+            return;
         }
 
         parent::handle();
@@ -202,7 +240,7 @@ class Printer extends NetworkEquipment
                    // add printer
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $printer->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+                    $items_id = $printer->add(Sanitizer::sanitize($this->handleInput($val, $printer)));
                 } else {
                     $items_id = $data['found_inventories'][0];
                 }
@@ -268,7 +306,7 @@ class Printer extends NetworkEquipment
 
            // Delete printers links in DB
             foreach ($db_printers as $idtmp => $data) {
-                $link_item->delete(['id' => $idtmp], 1);
+                $link_item->delete(['id' => $idtmp], true);
             }
         }
 
@@ -305,16 +343,48 @@ class Printer extends NetworkEquipment
             return;
         }
 
-        $metrics = new PrinterLog();
-        $input = (array)$this->counters;
-        $input['printers_id'] = $this->item->fields['id'];
-        $input['date'] = $_SESSION['glpi_currenttime'];
+        $unicity_input = [
+            'printers_id' => $this->item->fields['id'],
+            'date'        => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+        ];
+        $input = array_merge((array)$this->counters, $unicity_input);
 
-        if ($metrics->getFromDBByCrit(['printers_id' => $this->item->fields['id']])) {
+        $metrics = new PrinterLog();
+        if ($metrics->getFromDBByCrit($unicity_input)) {
             $input['id'] = $metrics->fields['id'];
-            $metrics->update($input, false);
+            $metrics->update(Sanitizer::sanitize($input), false);
         } else {
-            $metrics->add($input, [], false);
+            $metrics->add(Sanitizer::sanitize($input), [], false);
         }
+    }
+
+    /**
+     * Try to know if printer need to be updated from discovery
+     * Only if IP has changed
+     * @return boolean
+     */
+    public static function needToBeUpdatedFromDiscovery(CommonDBTM $item, $val)
+    {
+        if (property_exists($val, 'ips') && isset($val->ips[0])) {
+            $ip = $val->ips[0];
+            //try to find IP (get from discovery) from known IP of Printer
+            //if found refuse update
+            //if no, printer IP have changed so  we allow the update from discovery
+            $ipadress = new IPAddress($ip);
+            $tmp['mainitems_id'] = $item->fields['id'];
+            $tmp['mainitemtype'] = $item::getType();
+            $tmp['is_dynamic']   = 1;
+            $tmp['name']         = $ipadress->getTextual();
+            if ($ipadress->getFromDBByCrit(Sanitizer::sanitize($tmp))) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Printer::class;
     }
 }

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -41,17 +43,17 @@ class DbEngine extends \GLPITestCase
             [
                 'version'   => '5.5.38-0ubuntu0.14.04.1',
                 'validated' => false,
-                'messages'  => ['Database engine version (5.5.38) is not supported. Minimum required version is MySQL 5.7.'],
+                'messages'  => ['Database engine version (5.5.38) is not supported. Minimum required version is MySQL 8.0.'],
             ],
             [
                 'version'   => '5.6.46-log',
                 'validated' => false,
-                'messages'  => ['Database engine version (5.6.46) is not supported. Minimum required version is MySQL 5.7.'],
+                'messages'  => ['Database engine version (5.6.46) is not supported. Minimum required version is MySQL 8.0.'],
             ],
             [
                 'version'   => '5.7.50-log',
-                'validated' => true,
-                'messages'  => ['Database engine version (5.7.50) is supported.'],
+                'validated' => false,
+                'messages'  => ['Database engine version (5.7.50) is not supported. Minimum required version is MySQL 8.0.'],
             ],
             [
                 'version'   => '8.0.23-standard',
@@ -61,12 +63,12 @@ class DbEngine extends \GLPITestCase
             [
                 'version'   => '10.1.48-MariaDB',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.1.48) is not supported. Minimum required version is MariaDB 10.2.'],
+                'messages'  => ['Database engine version (10.1.48) is not supported. Minimum required version is MariaDB 10.3.'],
             ],
             [
                 'version'   => '10.2.36-MariaDB',
-                'validated' => true,
-                'messages'  => ['Database engine version (10.2.36) is supported.'],
+                'validated' => false,
+                'messages'  => ['Database engine version (10.2.36) is not supported. Minimum required version is MariaDB 10.3.'],
             ],
             [
                 'version'   => '10.3.28-MariaDB',

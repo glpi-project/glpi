@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -72,5 +74,110 @@ class Location extends DbTestCase
         $this->string($location3->fields['latitude'])->isEqualTo('41.3851');
         $this->string($location3->fields['longitude'])->isEqualTo('2.1734');
         $this->string($location3->fields['altitude'])->isEqualTo('39');
+    }
+
+    public function testImportExternal()
+    {
+        $locations_id = \Dropdown::importExternal('Location', 'testImportExternal_1', getItemByTypeName('Entity', '_test_root_entity', true));
+        $this->integer((int) $locations_id)->isGreaterThan(0);
+        // Verify that the location was created
+        $location = new \Location();
+        $location->getFromDB($locations_id);
+        $this->string($location->fields['name'])->isEqualTo('testImportExternal_1');
+
+        // Try importing a location as a child of the location we just created
+        $locations_id_2 = \Dropdown::importExternal('Location', 'testImportExternal_2', getItemByTypeName('Entity', '_test_root_entity', true), [
+            'locations_id' => $locations_id
+        ]);
+        $this->integer((int) $locations_id_2)->isGreaterThan(0);
+        // Verify that the location was created
+        $location = new \Location();
+        $location->getFromDB($locations_id_2);
+        $this->string($location->fields['name'])->isEqualTo('testImportExternal_2');
+        // Verify that the location is a child of the location we just created
+        $this->integer($location->fields['locations_id'])->isEqualTo($locations_id);
+    }
+
+    public function testFindIDByName()
+    {
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a location
+        $location = new \Location();
+        $location_id = $location->add([
+            'name'         => 'testFindIDByName_1',
+            'entities_id'  => $entities_id,
+        ]);
+        $this->integer((int) $location_id)->isGreaterThan(0);
+
+        // Find the location by name
+        $params = [
+            'name' => 'testFindIDByName_1',
+            'entities_id'  => $entities_id,
+        ];
+        $found_location_id = $location->findID($params);
+        $this->integer((int) $found_location_id)->isEqualTo($location_id);
+
+        // Add child location
+        $location_id_2 = $location->add([
+            'locations_id' => $location_id,
+            'name'         => 'testFindIDByName_2',
+            'entities_id'  => $entities_id,
+        ]);
+        $this->integer((int) $location_id_2)->isGreaterThan(0);
+
+        // Find the location by name (and locations_id)
+        $params = [
+            'name' => 'testFindIDByName_2',
+            'locations_id' => $location_id,
+            'entities_id'  => $entities_id,
+        ];
+        $found_location_id = $location->findID($params);
+        $this->integer((int) $found_location_id)->isEqualTo($location_id_2);
+
+        // Verify finding ID with just name won't work for child location
+        $params = [
+            'name' => 'testFindIDByName_2',
+            'entities_id'  => $entities_id,
+        ];
+        $found_location_id = $location->findID($params);
+        $this->integer((int) $found_location_id)->isEqualTo(-1);
+    }
+
+    public function testFindIDByCompleteName()
+    {
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a location
+        $location = new \Location();
+        $location_id = $location->add([
+            'name'         => 'testFindIDByCompleteName_1',
+            'entities_id'  => $entities_id,
+        ]);
+        $this->integer((int) $location_id)->isGreaterThan(0);
+
+        // Find the location by completename
+        $params = [
+            'completename' => 'testFindIDByCompleteName_1',
+            'entities_id'  => $entities_id,
+        ];
+        $found_location_id = $location->findID($params);
+        $this->integer((int) $found_location_id)->isEqualTo($location_id);
+
+        // Create a child location
+        $location_id_2 = $location->add([
+            'locations_id' => $location_id,
+            'name'         => 'testFindIDByCompleteName_2',
+            'entities_id'  => $entities_id,
+        ]);
+        $this->integer((int) $location_id_2)->isGreaterThan(0);
+
+        // Find the location by completename
+        $params = [
+            'completename' => 'testFindIDByCompleteName_1 > testFindIDByCompleteName_2',
+            'entities_id'  => $entities_id,
+        ];
+        $found_location_id = $location->findID($params);
+        $this->integer((int) $found_location_id)->isEqualTo($location_id_2);
     }
 }

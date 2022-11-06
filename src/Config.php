@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,28 +17,30 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
-use PHPMailer\PHPMailer\PHPMailer;
+use SimplePie\SimplePie;
 
 /**
  *  Config class
@@ -46,6 +49,10 @@ class Config extends CommonDBTM
 {
     const DELETE_ALL = -1;
     const KEEP_ALL = 0;
+
+    public const UNIT_MANAGEMENT = 0;
+    public const GLOBAL_MANAGEMENT = 1;
+    public const NO_MANAGEMENT = 2;
 
    // From CommonGLPI
     protected $displaylist         = false;
@@ -56,7 +63,12 @@ class Config extends CommonDBTM
 
     public static $rightname              = 'config';
 
-    public static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd', 'glpinetwork_registration_key'];
+    public static $undisclosedFields      = [
+        'proxy_passwd',
+        'smtp_passwd',
+        'glpinetwork_registration_key',
+        'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
+    ];
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     public static function getTypeName($nb = 0)
@@ -133,7 +145,7 @@ class Config extends CommonDBTM
             $config_context = $input['config_context'];
             unset($input['id']);
             unset($input['_glpi_csrf_token']);
-            unset($input['update']);
+            unset($input['_update']);
             unset($input['config_context']);
             if (
                 (!empty($input['config_class']))
@@ -171,6 +183,10 @@ class Config extends CommonDBTM
             $input['allow_search_global'] = 0;
         }
 
+        if (array_key_exists('smtp_mode', $input) && $input['smtp_mode'] === MAIL_SMTPTLS) {
+            $input['smtp_mode'] = MAIL_SMTPS;
+            Toolbox::deprecated('Usage of "MAIL_SMTPTLS" SMTP mode is deprecated. Switch to "MAIL_SMTPS" mode.');
+        }
         if (isset($input["smtp_passwd"]) && empty($input["smtp_passwd"])) {
             unset($input["smtp_passwd"]);
         }
@@ -218,7 +234,7 @@ class Config extends CommonDBTM
 
             for ($urgency = 1; $urgency <= 5; $urgency++) {
                 for ($impact = 1; $impact <= 5; $impact++) {
-                    $priority               = $input["_matrix_${urgency}_${impact}"];
+                    $priority               = $input["_matrix_{$urgency}_{$impact}"];
                     $tab[$urgency][$impact] = $priority;
                 }
             }
@@ -228,11 +244,11 @@ class Config extends CommonDBTM
             $input['impact_mask']     = 0;
 
             for ($i = 1; $i <= 5; $i++) {
-                if ($input["_urgency_${i}"]) {
+                if ($input["_urgency_{$i}"]) {
                     $input['urgency_mask'] += (1 << $i);
                 }
 
-                if ($input["_impact_${i}"]) {
+                if ($input["_impact_{$i}"]) {
                     $input['impact_mask'] += (1 << $i);
                 }
             }
@@ -261,7 +277,7 @@ class Config extends CommonDBTM
        // Beware : with new management system, we must update each value
         unset($input['id']);
         unset($input['_glpi_csrf_token']);
-        unset($input['update']);
+        unset($input['_update']);
 
        // Add skipMaintenance if maintenance mode update
         if (isset($input['maintenance_mode']) && $input['maintenance_mode']) {
@@ -275,6 +291,11 @@ class Config extends CommonDBTM
                 false,
                 WARNING
             );
+        }
+
+        // Automatically trim whitespaces around registration key.
+        if (array_key_exists('glpinetwork_registration_key', $input) && !empty($input['glpinetwork_registration_key'])) {
+            $input['glpinetwork_registration_key'] = trim($input['glpinetwork_registration_key']);
         }
 
         $this->setConfigurationValues('core', $input);
@@ -632,8 +653,7 @@ class Config extends CommonDBTM
         Dropdown::showFromArray($dd_params['name'], $item_devices_types, $dd_params);
 
         echo "<input type='hidden' name='_update_devices_in_menu' value='1'>";
-        echo "</td>";
-        echo "</tr>\n";
+        echo "</td></tr>\n";
 
         echo "</table>";
 
@@ -1043,7 +1063,7 @@ class Config extends CommonDBTM
                 echo "<input type='hidden' name='_impact_3' value='1'>";
             } else {
                 $isimpact[$impact] = (($CFG_GLPI['impact_mask'] & (1 << $impact)) > 0);
-                Dropdown::showYesNo("_impact_${impact}", $isimpact[$impact]);
+                Dropdown::showYesNo("_impact_{$impact}", $isimpact[$impact]);
             }
             echo "</td>";
         }
@@ -1068,7 +1088,7 @@ class Config extends CommonDBTM
                 echo "<input type='hidden' name='_urgency_3' value='1'>";
             } else {
                 $isurgency[$urgency] = (($CFG_GLPI['urgency_mask'] & (1 << $urgency)) > 0);
-                Dropdown::showYesNo("_urgency_${urgency}", $isurgency[$urgency]);
+                Dropdown::showYesNo("_urgency_{$urgency}", $isurgency[$urgency]);
             }
             echo "</td>";
 
@@ -1082,12 +1102,14 @@ class Config extends CommonDBTM
                 if ($isurgency[$urgency] && $isimpact[$impact]) {
                     $bgcolor = $_SESSION["glpipriority_$pri"];
                     echo "<td class='center' bgcolor='$bgcolor'>";
-                    Ticket::dropdownPriority(['value' => $pri,
-                        'name'  => "_matrix_${urgency}_${impact}"
+                    Ticket::dropdownPriority([
+                        'value' => $pri,
+                        'name'  => "_matrix_{$urgency}_{$impact}",
+                        'enable_filtering' => false,
                     ]);
                     echo "</td>";
                 } else {
-                    echo "<td><input type='hidden' name='_matrix_${urgency}_${impact}' value='$pri'>
+                    echo "<td><input type='hidden' name='_matrix_{$urgency}_{$impact}' value='$pri'>
                      </td>";
                 }
             }
@@ -1410,7 +1432,7 @@ class Config extends CommonDBTM
         echo "<td>";
         Dropdown::showFromArray('timeline_order', [
             CommonITILObject::TIMELINE_ORDER_NATURAL => __('Natural order (old items on top, recent on bottom)'),
-            CommonITILObject::TIMELINE_ORDER_REVERSE => __('Reverse order (old items on bottom, recent on top'),
+            CommonITILObject::TIMELINE_ORDER_REVERSE => __('Reverse order (old items on bottom, recent on top)'),
         ], [
             'value' => $data['timeline_order'],
             'rand' => $rand
@@ -1590,10 +1612,23 @@ class Config extends CommonDBTM
              "</td><td>";
             Grid::dropdownDashboard("default_dashboard_mini_ticket", [
                 'value' => $data['default_dashboard_mini_ticket'],
-                'display_emptychoice' => true
+                'display_emptychoice' => true,
+                'context'   => 'mini_core',
             ]);
             echo "</td></tr>";
         }
+
+        echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>" . __('Notification popups') . "</th></tr>";
+
+        echo "<tr class='tab_bg_2'>";
+        echo "<td>" . __('Notification location') . "</td><td>";
+        Dropdown::showFromArray('toast_location', [
+            'top-left'      => __('Top left'),
+            'top-right'     => __('Top right'),
+            'bottom-left'   => __('Bottom left'),
+            'bottom-right'  => __('Bottom right'),
+        ], ['value' => $data['toast_location'] ?? 'bottom-right']);
+        echo "</td></tr>";
 
         if ((!$userpref && $canedit) || ($userpref && $canedituser)) {
             echo "<tr class='tab_bg_2'>";
@@ -2018,7 +2053,7 @@ class Config extends CommonDBTM
         echo wordwrap($msg . "\n", $p['word_wrap_width'], "\n\t");
 
         if (isset($_SERVER["HTTP_USER_AGENT"])) {
-            echo "\t" . Sanitizer::sanitize($_SERVER["HTTP_USER_AGENT"], false) . "\n";
+            echo "\t" . Sanitizer::encodeHtmlSpecialChars($_SERVER["HTTP_USER_AGENT"]) . "\n";
         }
 
         foreach ($DB->getInfo() as $key => $val) {
@@ -2051,7 +2086,7 @@ class Config extends CommonDBTM
         echo "<tr class='tab_bg_1'><td><pre class='section-content'>\n&nbsp;\n";
         foreach (get_defined_constants() as $constant_name => $constant_value) {
             if (preg_match('/^GLPI_/', $constant_name)) {
-                echo $constant_name . ': ' . $constant_value . "\n";
+                echo $constant_name . ': ' . json_encode($constant_value, JSON_UNESCAPED_SLASHES) . "\n";
             }
         }
         echo "\n</pre></td></tr>";
@@ -2233,24 +2268,21 @@ HTML;
      */
     public static function getLibraries($all = false)
     {
-        $pm = new PHPMailer();
-        $sp = new SimplePie();
-
        // use same name that in composer.json
         $deps = [[ 'name'    => 'htmlawed/htmlawed',
             'version' => hl_version() ,
             'check'   => 'hl_version'
         ],
-            [ 'name'    => 'phpmailer/phpmailer',
-                'version' => $pm::VERSION,
-                'check'   => 'PHPMailer\\PHPMailer\\PHPMailer'
+            [ 'name'    => 'symfony/mailer',
+                'check'   => 'Symfony/Mailer'
             ],
             [ 'name'    => 'simplepie/simplepie',
-                'version' => SIMPLEPIE_VERSION,
-                'check'   => $sp
+                'version' => SimplePie::VERSION,
+                'check'   => SimplePie::class,
             ],
-            [ 'name'    => 'mpdf/mpdf',
-                'check'   => 'Mpdf\\Mpdf'
+            [ 'name'      => 'tecnickcom/tcpdf',
+                'version' => TCPDF_STATIC::getTCPDFVersion(),
+                'check'   => 'TCPDF'
             ],
             [ 'name'    => 'michelf/php-markdown',
                 'check'   => 'Michelf\\Markdown'
@@ -2348,6 +2380,10 @@ HTML;
             [ 'name'    => 'html2text/html2text',
                 'check'   => 'Html2Text\\Html2Text'
             ],
+            [
+                'name'    => 'symfony/css-selector',
+                'check'   => 'Symfony\\Component\\CssSelector\\CssSelectorConverter'
+            ],
             [ 'name'    => 'symfony/dom-crawler',
                 'check'   => 'Symfony\\Component\\DomCrawler\\Crawler'
             ],
@@ -2368,6 +2404,22 @@ HTML;
             ],
             [ 'name'    => 'symfony/polyfill-php80',
                 'check'   => 'str_contains'
+            ],
+            [
+                'name'  => 'symfony/polyfill-php81',
+                'check' => 'array_is_list'
+            ],
+            [
+                'name'  => 'symfony/polyfill-php82',
+                'check' => 'Symfony\\Polyfill\\Php82\\SensitiveParameterValue'
+            ],
+            [
+                'name' => 'egulias/email-validator',
+                'check' => 'Egulias\\EmailValidator\\EmailValidator'
+            ],
+            [
+                'name'    => 'symfony/mime',
+                'check'   => 'Symfony\\Mime\\Message'
             ],
         ];
         if (Toolbox::canUseCAS()) {
@@ -2420,11 +2472,10 @@ HTML;
      **/
     public static function dropdownGlobalManagement($name, $value, $rand = null)
     {
-
         $choices = [
-            __('Yes - Restrict to unit management for manual add'),
-            __('Yes - Restrict to global management for manual add'),
-            __('No'),
+            self::UNIT_MANAGEMENT => __('Yes - Restrict to unit management'),
+            self::GLOBAL_MANAGEMENT => __('Yes - Restrict to global management'),
+            self::NO_MANAGEMENT => __('No'),
         ];
         Dropdown::showFromArray($name, $choices, ['value' => $value, 'rand' => $rand]);
     }
@@ -2479,33 +2530,66 @@ HTML;
 
     public static function detectRootDoc()
     {
-        global $CFG_GLPI;
+        global $DB, $CFG_GLPI;
 
-        if (!isset($CFG_GLPI["root_doc"])) {
-            if (!isset($_SERVER['REQUEST_URI'])) {
-                $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
-            }
+        if (isset($CFG_GLPI['root_doc'])) {
+            return; // already computed
+        }
 
-            $currentdir = getcwd();
-            chdir(GLPI_ROOT);
-            $glpidir    = str_replace(
-                str_replace('\\', '/', getcwd()),
-                "",
-                str_replace('\\', '/', $currentdir)
+        if (isset($_SERVER['REQUEST_URI'])) {
+            // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
+            // In this case, `$CFG_GLPI['root_doc']` corresponds to the piece of URI
+            // that is common between `GLPI_ROOT` and $_SERVER['REQUEST_URI']
+            // e.g. GLPI_ROOT=/var/www/glpi and $_SERVER['REQUEST_URI']=/glpi/front/index.php -> $CFG_GLPI['root_doc']=/glpi
+
+            // Extract relative path of entry script directory
+            // e.g. /var/www/mydomain.org/glpi/front/index.php -> /front
+            $current_dir_relative = str_replace(
+                str_replace(DIRECTORY_SEPARATOR, '/', realpath(GLPI_ROOT)),
+                '',
+                str_replace(DIRECTORY_SEPARATOR, '/', realpath(getcwd()))
             );
-            chdir($currentdir);
-            $globaldir  = Html::cleanParametersURL($_SERVER['REQUEST_URI']);
-            $globaldir  = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/", "", $globaldir);
 
-           // api exception
-            if (strpos($globaldir, 'api/') !== false) {
-                 $globaldir = preg_replace("/(.*\/)api\/.*/", "$1", $globaldir);
+            // Extract relative path of request URI directory
+            // e.g. /glpi/front/index.php -> /glpi/front
+            $request_dir_relative = preg_replace(
+                '/\/[0-9a-zA-Z\.\-\_]+\.php/',
+                '',
+                Html::cleanParametersURL($_SERVER['REQUEST_URI'])
+            );
+            // API exception (handles `RewriteRule api/(.*)$ apirest.php/$1`)
+            if (strpos($request_dir_relative, 'api/') !== false) {
+                $request_dir_relative = preg_replace("/(.*\/)api\/.*/", "$1", $request_dir_relative);
             }
 
-            $CFG_GLPI["root_doc"] = str_replace($glpidir, "", $globaldir);
-            $CFG_GLPI["root_doc"] = preg_replace("/\/$/", "", $CFG_GLPI["root_doc"]);
-           // urldecode for space redirect to encoded URL : change entity
-            $CFG_GLPI["root_doc"] = urldecode($CFG_GLPI["root_doc"]);
+            // Remove relative path of entry script directory
+            // e.g. /glpi/front -> /glpi
+            $root_doc = str_replace($current_dir_relative, '', $request_dir_relative);
+            $root_doc = rtrim($root_doc, '/');
+
+            // urldecode for space redirect to encoded URL : change entity
+            // note: not sure this line is actually used
+            $root_doc = urldecode($root_doc);
+
+            $CFG_GLPI['root_doc'] = $root_doc;
+        } else {
+            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
+            // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`.
+
+            $url_base = $CFG_GLPI['url_base'] ?? null;
+            // $CFG_GLPI may have not been loaded yet, load value form DB if `$CFG_GLPI['url_base']` is not set.
+            if ($url_base === null && $DB instanceof DBmysql && $DB->connected) {
+                $url_base = Config::getConfigurationValue('core', 'url_base');
+            }
+
+            if ($url_base !== null) {
+                $CFG_GLPI['root_doc'] = parse_url($url_base, PHP_URL_PATH) ?? '';
+            }
+        }
+
+        // Path for icon of document type (web mode only)
+        if (isset($CFG_GLPI['root_doc'])) {
+            $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
         }
     }
 
@@ -2682,22 +2766,24 @@ HTML;
         }
         $message = $error > 0 ? $ko_message : $ok_message;
 
-        $img = "<img src='" . $CFG_GLPI['root_doc'] . "/pics/";
-        $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
-
         if (isCommandLine()) {
             echo $message . "\n";
-        } else if ($fordebug) {
-            echo $img . $message . "\n";
         } else {
-            $html = "<td";
-            if ($error > 0) {
-                $html .= " class='red'";
+            $img = "<img src='" . $CFG_GLPI['root_doc'] . "/pics/";
+            $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='$message' title='$message'/>";
+
+            if ($fordebug) {
+                echo $img . $message . "\n";
+            } else {
+                $html = "<td";
+                if ($error > 0) {
+                    $html .= " class='red'";
+                }
+                $html .= ">";
+                $html .= $img;
+                $html .= '</td>';
+                echo $html;
             }
-            $html .= ">";
-            $html .= $img;
-            $html .= '</td>';
-            echo $html;
         }
         return $error;
     }
@@ -2722,10 +2808,10 @@ HTML;
         $server  = preg_match('/-MariaDB/', $raw) ? 'MariaDB' : 'MySQL';
         $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $raw);
 
-       // MySQL >= 5.7 || MariaDB >= 10.2
+        // MySQL >= 8.0 || MariaDB >= 10.3
         $is_supported = $server === 'MariaDB'
-         ? version_compare($version, '10.2', '>=')
-         : version_compare($version, '5.7', '>=');
+            ? version_compare($version, '10.3', '>=')
+            : version_compare($version, '8.0', '>=');
 
         return [$version => $is_supported];
     }
@@ -2771,10 +2857,6 @@ HTML;
                 ],
                 'simplexml' => [
                     'required'  => true,
-                ],
-                'xml'        => [
-                    'required'  => true,
-                    'function'  => 'utf8_decode'
                 ],
             //to sync/connect from LDAP
                 'ldap'       => [
@@ -2925,10 +3007,26 @@ HTML;
         return $result;
     }
 
+
+    /**
+     * Get config value
+     *
+     * @param $context  string   context to get values (default for glpi is core)
+     * @param $name     string   config name
+     *
+     * @return mixed
+     *
+     * @since 10.0.0
+     */
+    public static function getConfigurationValue(string $context, string $name)
+    {
+        return self::getConfigurationValues($context, [$name])[$name] ?? null;
+    }
+
     /**
      * Load legacy configuration into $CFG_GLPI global variable.
      *
-     * @return boolean True for success, false if an error occured
+     * @return boolean True for success, false if an error occurred
      *
      * @since 10.0.0 Parameter $older_to_latest is not longer used.
      */
@@ -2949,8 +3047,9 @@ HTML;
         } else {
            // multiple rows = 0.85+ config
             $values = [];
+            $allowed_context = ['core', 'inventory'];
             foreach ($iterator as $row) {
-                if ('core' !== $row['context']) {
+                if (!in_array($row['context'], $allowed_context)) {
                     continue;
                 }
                 $values[$row['name']] = $row['value'];
@@ -2981,11 +3080,6 @@ HTML;
             $prof->getFromDB($CFG_GLPI['lock_lockprofile_id']);
             $prof->cleanProfile();
             $CFG_GLPI['lock_lockprofile'] = $prof->fields;
-        }
-
-       // Path for icon of document type (web mode only)
-        if (isset($CFG_GLPI['root_doc'])) {
-            $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
         }
 
         if (isset($CFG_GLPI['planning_work_days'])) {
@@ -3024,16 +3118,19 @@ HTML;
                     'name'      => $name
                 ])
             ) {
-                $input = ['id'      => $config->getID(),
-                    'context' => $context,
-                    'value'   => $value
+                $input = [
+                    'id'        => $config->getID(),
+                    'name'      => $name,
+                    'context'   => $context,
+                    'value'     => $value
                 ];
 
                 $config->update($input);
             } else {
-                $input = ['context' => $context,
-                    'name'    => $name,
-                    'value'   => $value
+                $input = [
+                    'context'   => $context,
+                    'name'      => $name,
+                    'value'     => $value
                 ];
 
                 $config->add($input);
@@ -3166,7 +3263,8 @@ HTML;
             ]
         );
         echo "</td></tr>";
-        echo "<input type='hidden' name='id' value='1'>";
+        $config_id = self::getConfigIDForContext('core');
+        echo "<input type='hidden' name='id' value='{$config_id}'>";
 
         echo "<tr class='tab_bg_1'><th colspan='4'>" . __("General") . "</th></tr>";
         echo "<tr class='tab_bg_1'><td class='center'>" . __("Add/update relation between items") .
@@ -3536,7 +3634,19 @@ HTML;
             ]
         );
         echo '</td>';
-        echo '<td colspan="2"></td>';
+        echo '<td>';
+        echo '<label for="password_init_token_delay' . $rand . '">';
+        echo __('Validity period of the password initialization token');
+        echo '</label>';
+        echo '</td>';
+        echo '<td>';
+        Dropdown::showTimeStamp('password_init_token_delay', ['value' => $CFG_GLPI["password_init_token_delay"],
+            'min'   => DAY_TIMESTAMP,
+            'max'   => MONTH_TIMESTAMP,
+            'step'  => DAY_TIMESTAMP,
+            'rand'  => $rand
+        ]);
+        echo '</td>';
         echo '</tr>';
 
         echo '<tr class="tab_bg_2">';
@@ -3667,11 +3777,26 @@ HTML;
         }
 
         if (array_key_exists('value', $this->oldvalues)) {
+            $newvalue = (string)$this->fields['value'];
+            $oldvalue = (string)$this->oldvalues['value'];
+
+            if ($newvalue === $oldvalue) {
+                return;
+            }
+
+            // avoid inserting truncated json in logs
+            if (strlen($newvalue) > 255 && Toolbox::isJSON($newvalue)) {
+                $newvalue = "{...}";
+            }
+            if (strlen($oldvalue) > 255 && Toolbox::isJSON($oldvalue)) {
+                $oldvalue = "{...}";
+            }
+
             $this->logConfigChange(
                 $this->fields['context'],
                 $this->fields['name'],
-                (string)$this->fields['value'],
-                (string)$this->oldvalues['value']
+                $newvalue,
+                $oldvalue
             );
         }
     }
@@ -3719,6 +3844,11 @@ HTML;
         if ($safer) {
             $excludedKeys = array_flip(self::$saferUndisclosedFields);
             $safe_config = array_diff_key($safe_config, $excludedKeys);
+        }
+
+        // override with session values
+        foreach ($safe_config as $key => &$value) {
+            $value = $_SESSION['glpi' . $key] ?? $value;
         }
 
         return $safe_config;
@@ -3925,5 +4055,30 @@ HTML;
     public function getBrowserTabName(): string
     {
         return self::getTypeName(1);
+    }
+
+    /**
+     * Gets the ID of a random record from the config table with the specified context.
+     *
+     * Used as a hacky workaround when we require a valid glpi_configs record for rights checks.
+     * We cannot rely on something being in ID 1 for the core context for example, because some clustering solutions may change how autoincrement works.
+     * @return ?int
+     * @internal
+     */
+    public static function getConfigIDForContext(string $context)
+    {
+        global $DB;
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'context' => $context,
+            ],
+            'LIMIT'  => 1,
+        ]);
+        if (count($iterator)) {
+            return $iterator->current()['id'];
+        }
+        return null;
     }
 }

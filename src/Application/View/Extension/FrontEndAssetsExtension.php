@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,6 +37,7 @@ namespace Glpi\Application\View\Extension;
 
 use DBmysql;
 use Entity;
+use Glpi\Toolbox\FrontEnd;
 use Html;
 use Plugin;
 use Session;
@@ -73,10 +76,11 @@ class FrontEndAssetsExtension extends AbstractExtension
      * Return domain-relative path of a CSS file.
      *
      * @param string $path
+     * @param array $options
      *
      * @return string
      */
-    public function cssPath(string $path): string
+    public function cssPath(string $path, array $options = []): string
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
@@ -97,7 +101,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         }
 
         $path = Html::getPrefixedUrl($path);
-        $path = $this->getVersionnedPath($path);
+        $path = $this->getVersionnedPath($path, $options);
 
         return $path;
     }
@@ -106,10 +110,11 @@ class FrontEndAssetsExtension extends AbstractExtension
      * Return domain-relative path of a JS file.
      *
      * @param string $path
+     * @param array $options
      *
      * @return string
      */
-    public function jsPath(string $path): string
+    public function jsPath(string $path, array $options = []): string
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
@@ -120,7 +125,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         }
 
         $path = Html::getPrefixedUrl($path);
-        $path = $this->getVersionnedPath($path);
+        $path = $this->getVersionnedPath($path, $options);
 
         return $path;
     }
@@ -132,11 +137,10 @@ class FrontEndAssetsExtension extends AbstractExtension
      *
      * @return string
      */
-    private function getVersionnedPath(string $path): string
+    private function getVersionnedPath(string $path, array $options = []): string
     {
-       // @TODO Adapt version to plugin version if path is related to a specific plugin
-        $version = GLPI_VERSION;
-        $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . $version;
+        $version = $options['version'] ?? GLPI_VERSION;
+        $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
 
         return $path;
     }
@@ -182,7 +186,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         $locales_domains = ['glpi' => GLPI_VERSION];
         $plugins = Plugin::getPlugins();
         foreach ($plugins as $plugin) {
-            $locales_domains[$plugin] = Plugin::getInfo($plugin, 'version');
+            $locales_domains[$plugin] = Plugin::getPluginFilesVersion($plugin);
         }
 
         $script = <<<JAVASCRIPT
@@ -195,7 +199,7 @@ JAVASCRIPT;
             $locales_path = Html::getPrefixedUrl(
                 '/front/locale.php'
                 . '?domain=' . $locale_domain
-                . '&version=' . $locale_version
+                . '&v=' . FrontEnd::getVersionCacheKey($locale_version)
                 . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '')
             );
             $script .= <<<JAVASCRIPT

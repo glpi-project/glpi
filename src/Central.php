@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -70,7 +72,7 @@ class Central extends CommonGLPI
             ];
 
             $grid = new Glpi\Dashboard\Grid('central');
-            if ($grid->canViewOneDashboard()) {
+            if ($grid::canViewOneDashboard()) {
                 array_unshift($tabs, __('Dashboard'));
             }
 
@@ -250,8 +252,7 @@ class Central extends CommonGLPI
         }
 
         $twig_params = [
-            'messages'  => self::getMessages(),
-            'cards'     => []
+            'cards' => []
         ];
         foreach ($lists as $list) {
             $card_params = [
@@ -319,7 +320,6 @@ class Central extends CommonGLPI
             'personal'  => 'true'
         ]);
         $twig_params = [
-            'messages'  => self::getMessages(),
             'cards'     => [
                 [
                     'itemtype'  => RSSFeed::class,
@@ -425,9 +425,9 @@ class Central extends CommonGLPI
         ];
         foreach ($lists as $list) {
             $card_params = [
-                'start'              => 0,
-                'status'             => $list['status'],
-                'showgrouptickets'   => 'true'
+                'start'             => 0,
+                'status'            => $list['status'],
+                'showgrouptickets'  => 'true'
             ];
             $idor = Session::getNewIDORToken($list['itemtype'], $card_params);
             $twig_params['cards'][] = [
@@ -494,12 +494,22 @@ class Central extends CommonGLPI
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:timestamps');
             }
-            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+            /*
+             * FIXME: Remove `$exclude_plugins = true` condition in GLPI 10.1.
+             * This condition is here only to prevent having this message displayed after installation of plugins that
+             * may not have yet handle the switch to utf8mb4.
+             */
+            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables(true)->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:utf8mb4');
             }
-            if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
+            /*
+             * FIXME: Remove `$exclude_plugins = true` condition in GLPI 10.1.
+             * This condition is here only to prevent having this message displayed after installation of plugins that
+             * may not have yet handle the switch to unsigned keys.
+             */
+            if (($signed_keys_col_count = $DB->getSignedKeysColumns(true)->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
                 . sprintf(__('Run the "php bin/console %1$s" command to migrate them.'), 'glpi:migration:unsigned_keys');

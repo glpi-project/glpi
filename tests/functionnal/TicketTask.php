@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -62,13 +64,6 @@ class TicketTask extends DbTestCase
 
         $this->boolean($ticket->isNewItem())->isFalse();
         $tid = (int)$ticket->fields['id'];
-
-        $this->hasSessionMessages(
-            INFO,
-            [
-                "Your ticket has been registered. (Ticket: <a href='" . \Ticket::getFormURLWithID($tid) . "'>$tid</a>)"
-            ]
-        );
 
         return ($as_object ? $ticket : $tid);
     }
@@ -365,5 +360,45 @@ class TicketTask extends DbTestCase
             ->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
             ]
         );
+    }
+
+    public function testAddFromTemplate()
+    {
+        $ticket = $this->getNewTicket(true);
+        $template = new \TaskTemplate();
+        $templates_id = $template->add([
+            'name'               => 'test template',
+            'content'            => 'test template',
+            'users_id_tech'      => getItemByTypeName('User', TU_USER, true),
+            'state'              => \Planning::DONE,
+            'is_private'         => 1,
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+        $task = new \TicketTask();
+        $tasks_id = $task->add([
+            '_tasktemplates_id'  => $templates_id,
+            'itemtype'           => 'Ticket',
+            'tickets_id'         => $ticket->fields['id'],
+        ]);
+        $this->integer($tasks_id)->isGreaterThan(0);
+
+        $this->string($task->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->integer($task->fields['users_id_tech'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
+        $this->integer($task->fields['state'])->isEqualTo(\Planning::DONE);
+        $this->integer($task->fields['is_private'])->isEqualTo(1);
+
+        $tasks_id = $task->add([
+            '_tasktemplates_id'  => $templates_id,
+            'itemtype'           => 'Ticket',
+            'tickets_id'         => $ticket->fields['id'],
+            'state'              => \Planning::TODO,
+            'is_private'         => 0,
+        ]);
+        $this->integer($tasks_id)->isGreaterThan(0);
+
+        $this->string($task->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->integer($task->fields['users_id_tech'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
+        $this->integer($task->fields['state'])->isEqualTo(\Planning::TODO);
+        $this->integer($task->fields['is_private'])->isEqualTo(0);
     }
 }

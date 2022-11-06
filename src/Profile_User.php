@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -501,6 +503,34 @@ class Profile_User extends CommonDBRelation
 
         $nb = count($iterator);
 
+        if ($canedit) {
+            $used_users = array_column(iterator_to_array($iterator) ?? [], 'id');
+            echo "<div class='firstbloc'>";
+            echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
+            echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'><th colspan='6'>" . __('Add an authorization to a user') . "</tr>";
+
+            echo "<tr class='tab_bg_2'><td class='center'>";
+            echo "<input type='hidden' name='profiles_id' value='$ID'>";
+            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
+            echo "</td><td class='center'>" . User::getTypeName(1) . "</td><td>";
+            User::dropdown([
+                'entity'    => $_SESSION['glpiactiveentities'],
+                'right'     => 'all',
+                'used'      => $used_users,
+            ]);
+            echo "</td><td>" . __('Recursive') . "</td><td>";
+            Dropdown::showYesNo("is_recursive", 0);
+            echo "</td><td class='center'>";
+            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+            echo "</td></tr>";
+
+            echo "</table>";
+            Html::closeForm();
+            echo "</div>";
+        }
+
         echo "<div class='spaced'>";
 
         if ($canedit && $nb) {
@@ -757,8 +787,8 @@ class Profile_User extends CommonDBRelation
      *
      * @since 9.3 can pass sqlfilter as a parameter
      *
-     * @param $user_ID            user ID
-     * @param $sqlfilter  string  additional filter (default [])
+     * @param int $user_ID      User ID
+     * @param array $sqlfilter  Additional filter (default [])
      *
      * @return array of the IDs of the profiles
      **/

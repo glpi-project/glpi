@@ -1,12 +1,13 @@
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -14,18 +15,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -54,6 +56,8 @@ var GLPIPlanning  = {
             license_key: "",
             resources: [],
             now: null,
+            can_create: false,
+            can_delete: false,
             rand: '',
             header: {
                 left:   'prev,next,today',
@@ -270,10 +274,17 @@ var GLPIPlanning  = {
                     $('.planning-context-menu').remove();
 
                     // create new one
-                    var context = $('<ul class="planning-context-menu" data-event-id=""> \
-                  <li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li> \
-                  <li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li> \
-               </ul>');
+                    var actions = '';
+                    if (options.can_create) {
+                        actions += '<li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li>';
+                    }
+                    if (options.can_delete) {
+                        actions += '<li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li>';
+                    }
+                    if (actions == '') {
+                        return;
+                    }
+                    var context = $('<ul class="planning-context-menu" data-event-id="">'+actions+'</ul>');
 
                     // add it to body and place it correctly
                     $('body').append(context);
@@ -301,7 +312,7 @@ var GLPIPlanning  = {
 
                     // context menu actions
                     // 1- clone event
-                    $('.planning-context-menu .clone-event').click(function() {
+                    $('.planning-context-menu .clone-event').on('click', function() {
                         $.ajax({
                             url:  CFG_GLPI.root_doc+"/ajax/planning.php",
                             type: 'POST',
@@ -321,7 +332,7 @@ var GLPIPlanning  = {
                         });
                     });
                     // 2- delete event (manage serie/instance specific events)
-                    $('.planning-context-menu .delete-event').click(function() {
+                    $('.planning-context-menu .delete-event').on('click', function() {
                         var ajaxDeleteEvent = function(instance) {
                             instance = instance || false;
                             $.ajax({
@@ -348,7 +359,7 @@ var GLPIPlanning  = {
                             glpi_html_dialog({
                                 title: __("Make a choice"),
                                 body: __("Delete the whole serie of the recurrent event") + "<br>" +
-                              __("or just add an exception by deleting this instance?"),
+                            __("or just add an exception by deleting this instance?"),
                                 buttons: [{
                                     label: __("Serie"),
                                     click:  function() {
@@ -422,6 +433,11 @@ var GLPIPlanning  = {
                     data: {
                         action: 'view_changed',
                         view:   view_type
+                    }
+                }).done(function() {
+                    // indicate to central page we're done rendering
+                    if (!options.full_view) {
+                        $(document).trigger('masonry_grid:layout');
                     }
                 });
 
@@ -547,6 +563,11 @@ var GLPIPlanning  = {
             // ADD EVENTS
             selectable: true,
             select: function(info) {
+                if (!options.can_create) {
+                    GLPIPlanning.calendar.unselect();
+                    return false;
+                }
+
                 var itemtype = (((((info || {})
                     .resource || {})
                     ._resource || {})
@@ -749,7 +770,7 @@ var GLPIPlanning  = {
                 sendDisplayEvent($(this), true);
             });
 
-        $('#planning_filter li.group_users > span > input[type="checkbox"]')
+        $('#planning_filter li.group_users > input[type="checkbox"]')
             .on('change', function() {
                 var parent_checkbox    = $(this);
                 var parent_li          = parent_checkbox.parents('li');

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -102,7 +104,7 @@ class Change extends CommonITILObject
     public function canViewItem()
     {
 
-        if (!Session::haveAccessToEntity($this->getEntityID())) {
+        if (!$this->checkEntity(true)) {
             return false;
         }
         return (Session::haveRight(self::$rightname, self::READALL)
@@ -162,6 +164,24 @@ class Change extends CommonITILObject
             return false;
         }
 
+        if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
+            // Process Business Rules
+            $this->fillInputForBusinessRules($input);
+
+            $rules = new RuleChangeCollection($input['entities_id']);
+
+            $input = $rules->processAllRules(
+                $input,
+                $input,
+                ['recursive' => true],
+                ['condition' => RuleCommonITILObject::ONADD]
+            );
+            $input = Toolbox::stripslashes_deep($input);
+
+            // Recompute default values based on values computed by rules
+            $input = $this->computeDefaultValuesForAdd($input);
+        }
+
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
            // Manage auto assign
             $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
@@ -177,10 +197,154 @@ class Change extends CommonITILObject
                     $input = $this->setTechAndGroupFromItilCategory($input);
                     break;
             }
-
-            $input = $this->assign($input);
         }
 
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        global $DB;
+
+        $input = $this->transformActorsInput($input);
+
+        if (!isset($input['_skip_rules']) || $input['_skip_rules'] === false) {
+            // Process Business Rules
+            $this->fillInputForBusinessRules($input);
+
+            $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+
+            // Add actors on standard input
+            $rules = new RuleChangeCollection($entid);
+            $rule = $rules->getRuleClass();
+            $changes = [];
+            $post_added = [];
+            $tocleanafterrules = [];
+            $usertypes = [
+                CommonITILActor::ASSIGN => 'assign',
+                CommonITILActor::REQUESTER => 'requester',
+                CommonITILActor::OBSERVER => 'observer'
+            ];
+            foreach ($usertypes as $k => $t) {
+                //handle new input
+                if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
+                    // FIXME Deprecate these keys in GLPI 10.1.
+                    $field = $input['_itil_' . $t]['_type'] . 's_id';
+                    if (
+                        isset($input['_itil_' . $t][$field])
+                        && !isset($input[$field . '_' . $t])
+                    ) {
+                        $input['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
+                        $tocleanafterrules['_' . $field . '_' . $t][] = $input['_itil_' . $t][$field];
+                    }
+                }
+
+                //handle existing actors: load all existing actors from ticket
+                //to make sure business rules will receive all information, and not just
+                //what have been entered in the html form.
+                //
+                //ref also this actor into $post_added to avoid the filling of $changes
+                //and triggering businness rules when not needed
+                $existing_actors = [
+                    User::class     => $this->getUsers($k),
+                    Group::class    => $this->getGroups($k),
+                    Supplier::class => $this->getSuppliers($k),
+                ];
+                foreach ($existing_actors as $actor_itemtype => $actors) {
+                    $field = getForeignKeyFieldForItemType($actor_itemtype);
+                    $input_key = '_' . $field . '_' . $t;
+                    foreach ($actors as $actor) {
+                        if (
+                            !isset($input[$input_key])
+                            || (is_array($input[$input_key]) && !in_array($actor[$field], $input[$input_key]))
+                            || (is_numeric($input[$input_key]) && $actor[$field] !== $input[$input_key])
+                        ) {
+                            if (
+                                !array_key_exists($input_key, $input)
+                                || (!is_array($input[$input_key]) && !is_numeric($input[$input_key]) && empty($input[$input_key]))
+                            ) {
+                                $input[$input_key] = [];
+                            } elseif (!is_array($input[$input_key])) {
+                                $input[$input_key] = [$input[$input_key]];
+                            }
+                            $input[$input_key][]             = $actor[$field];
+                            $tocleanafterrules[$input_key][] = $actor[$field];
+                        }
+                    }
+                }
+            }
+
+            foreach ($rule->getCriterias() as $key => $val) {
+                if (
+                    array_key_exists($key, $input)
+                    && !array_key_exists($key, $post_added)
+                ) {
+                    if (
+                        !isset($this->fields[$key])
+                        || ($DB->escape($this->fields[$key]) != $input[$key])
+                    ) {
+                        $changes[] = $key;
+                    }
+                }
+            }
+
+            // Only process rules on changes
+            if (count($changes)) {
+                $user = new User();
+                $user_id = null;
+                //try to find user from changes if exist (defined as _itil_requester)
+                if (isset($input["_itil_requester"]["users_id"])) {
+                    $user_id = $input["_itil_requester"]["users_id"];
+                } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
+                    $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
+                }
+
+                if ($user_id !== null && $user->getFromDB($user_id)) {
+                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
+                    $input['users_default_groups'] = $user->fields['groups_id'];
+                    $changes[] = '_locations_id_of_requester';
+                    $changes[] = '_groups_id_of_requester';
+                }
+
+                // Special case to make sure rule depending on category completename are also executed
+                if (in_array('itilcategories_id', $changes)) {
+                    $changes[] = 'itilcategories_id_cn';
+                }
+
+                $input = $rules->processAllRules(
+                    $input,
+                    $input,
+                    ['recursive' => true,
+                        'entities_id' => $entid
+                    ],
+                    ['condition' => RuleCommonITILObject::ONUPDATE,
+                        'only_criteria' => $changes
+                    ]
+                );
+                $input = Toolbox::stripslashes_deep($input);
+            }
+
+            // Clean actors fields added for rules
+            foreach ($tocleanafterrules as $key => $values_to_drop) {
+                if (!array_key_exists($key, $input) || !is_array($input[$key])) {
+                    // Assign rules may remove input key or replace array by a single value.
+                    // In such case, as values were completely redefined by rules, there is no need to filter them.
+                    continue;
+                }
+
+                $input[$key] = array_filter(
+                    $input[$key],
+                    function ($value) use ($values_to_drop) {
+                        return !in_array($value, $values_to_drop);
+                    }
+                );
+                if (in_array($key, $post_added) && empty($input[$key])) {
+                    unset($input[$key]);
+                }
+            }
+        }
+
+        $input = parent::prepareInputForUpdate($input);
         return $input;
     }
 
@@ -219,6 +383,13 @@ class Change extends CommonITILObject
                     if ($item->canUpdate()) {
                          $ong[1] = __('Statistics');
                     }
+                    $satisfaction = new ChangeSatisfaction();
+                    if (
+                        $satisfaction->getFromDB($item->getID())
+                        && in_array($item->fields['status'], self::getClosedStatusArray())
+                    ) {
+                        $ong[3] = __('Satisfaction');
+                    }
 
                     return $ong;
             }
@@ -235,6 +406,9 @@ class Change extends CommonITILObject
                 switch ($tabnum) {
                     case 1:
                         $item->showStats();
+                        break;
+                    case 3:
+                        self::showSatisfactionTabContent($item);
                         break;
                 }
                 break;
@@ -272,17 +446,22 @@ class Change extends CommonITILObject
         $ct = new ChangeTask();
         $ct->deleteByCriteria(['changes_id' => $this->fields['id']]);
 
+        // ChangeSatisfaction does not extends CommonDBConnexity
+        $cs = new ChangeSatisfaction();
+        $cs->deleteByCriteria(['changes_id' => $this->fields['id']]);
+
         $this->deleteChildrenAndRelationsFromDb(
             [
-            // Done by parent: Change_Group::class,
+                // Done by parent: Change_Group::class,
                 Change_Item::class,
                 Change_Problem::class,
-            // Done by parent: Change_Supplier::class,
+                // Done by parent: Change_Supplier::class,
                 Change_Ticket::class,
-            // Done by parent: Change_User::class,
+                // Done by parent: Change_User::class,
                 ChangeCost::class,
                 ChangeValidation::class,
-            // Done by parent: ITILSolution::class,
+                // Done by parent: ITILSolution::class,
+                Change_Change::class,
             ]
         );
 
@@ -329,12 +508,14 @@ class Change extends CommonITILObject
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent($mailtype, $this);
         }
+
+        $this->handleSatisfactionSurveyOnUpdate();
     }
 
 
     public function post_addItem()
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         parent::post_addItem();
 
@@ -396,20 +577,7 @@ class Change extends CommonITILObject
             }
         }
 
-       // Processing notifications
-        if ($CFG_GLPI["use_notifications"]) {
-           // Clean reload of the change
-            $this->getFromDB($this->fields['id']);
-
-            $type = "new";
-            if (
-                isset($this->fields["status"])
-                && in_array($this->input["status"], $this->getSolvedStatusArray())
-            ) {
-                $type = "solved";
-            }
-            NotificationEvent::raiseEvent($type, $this);
-        }
+        $this->handleNewItemNotifications();
 
         if (
             isset($this->input['_from_items_id'])
@@ -423,8 +591,6 @@ class Change extends CommonITILObject
                 '_disablenotif' => true
             ]);
         }
-
-        $this->handleItemsIdInput();
     }
 
 
@@ -666,198 +832,6 @@ class Change extends CommonITILObject
     }
 
 
-    public function showForm($ID, array $options = [])
-    {
-
-        if (!static::canView()) {
-            return false;
-        }
-
-        $default_values = self::getDefaultValues();
-
-       // Restore saved value or override with page parameter
-        $saved = $this->restoreInput();
-
-       // Restore saved values and override $this->fields
-        $this->restoreSavedValues($saved);
-
-       // Set default options
-        if (!$ID) {
-            foreach ($default_values as $key => $val) {
-                if (!isset($options[$key])) {
-                    if (isset($saved[$key])) {
-                        $options[$key] = $saved[$key];
-                    } else {
-                        $options[$key] = $val;
-                    }
-                }
-            }
-
-            if (isset($options['tickets_id']) || isset($options['_tickets_id'])) {
-                $tickets_id = $options['tickets_id'] ?? $options['_tickets_id'];
-                $ticket = new Ticket();
-                if ($ticket->getFromDB($tickets_id)) {
-                    $options['content']             = $ticket->getField('content');
-                    $options['name']                = $ticket->getField('name');
-                    $options['impact']              = $ticket->getField('impact');
-                    $options['urgency']             = $ticket->getField('urgency');
-                    $options['priority']            = $ticket->getField('priority');
-                    if (isset($options['tickets_id'])) {
-                        //page is reloaded on category change, we only want category on the very first load
-                        $category = new ITILCategory();
-                        $category->getFromDB($ticket->getField('itilcategories_id'));
-                        $options['itilcategories_id']   = $category->fields['is_change'] ? $ticket->getField('itilcategories_id') : 0;
-                    }
-                    $options['time_to_resolve']     = $ticket->getField('time_to_resolve');
-                    $options['entities_id']         = $ticket->getField('entities_id');
-                }
-            }
-
-            if (isset($options['problems_id']) || isset($options['_problems_id'])) {
-                $problems_id = $options['problems_id'] ?? $options['_problems_id'];
-                $problem = new Problem();
-                if ($problem->getFromDB($problems_id)) {
-                    $options['content']             = $problem->getField('content');
-                    $options['name']                = $problem->getField('name');
-                    $options['impact']              = $problem->getField('impact');
-                    $options['urgency']             = $problem->getField('urgency');
-                    $options['priority']            = $problem->getField('priority');
-                    if (isset($options['problems_id'])) {
-                        //page is reloaded on category change, we only want category on the very first load
-                        $options['itilcategories_id']   = $problem->getField('itilcategories_id');
-                    }
-                    $options['time_to_resolve']     = $problem->getField('time_to_resolve');
-                    $options['entities_id']         = $problem->getField('entities_id');
-                }
-            }
-        }
-
-        if ($ID > 0) {
-            $this->check($ID, READ);
-        } else {
-           // Create item
-            $this->check(-1, CREATE, $options);
-        }
-
-        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
-
-        if (!$this->isNewItem()) {
-            $options['formtitle'] = sprintf(
-                __('%1$s - ID %2$d'),
-                $this->getTypeName(1),
-                $ID
-            );
-           //set ID as already defined
-            $options['noid'] = true;
-        }
-
-        if (!isset($options['template_preview'])) {
-            $options['template_preview'] = 0;
-        }
-
-       // Load template if available :
-        $tt = $this->getITILTemplateToUse(
-            $options['template_preview'],
-            $this->getType(),
-            ($ID ? $this->fields['itilcategories_id'] : $options['itilcategories_id']),
-            ($ID ? $this->fields['entities_id'] : $options['entities_id'])
-        );
-
-       // Predefined fields from template : reset them
-        if (isset($options['_predefined_fields'])) {
-            $options['_predefined_fields']
-                        = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
-        } else {
-            $options['_predefined_fields'] = [];
-        }
-
-       // Store predefined fields to be able not to take into account on change template
-       // Only manage predefined values on ticket creation
-        $predefined_fields = [];
-        $tpl_key = $this->getTemplateFormFieldName();
-        if (!$ID) {
-            if (isset($tt->predefined) && count($tt->predefined)) {
-                foreach ($tt->predefined as $predeffield => $predefvalue) {
-                    if (isset($default_values[$predeffield])) {
-                      // Is always default value : not set
-                      // Set if already predefined field
-                      // Set if ticket template change
-                        if (
-                            ((count($options['_predefined_fields']) == 0)
-                            && ($options[$predeffield] == $default_values[$predeffield]))
-                            || (isset($options['_predefined_fields'][$predeffield])
-                            && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
-                            || (isset($options[$tpl_key])
-                            && ($options[$tpl_key] != $tt->getID()))
-                            // user pref for requestype can't overwrite requestype from template
-                            // when change category
-                            || (($predeffield == 'requesttypes_id')
-                            && empty($saved))
-                            || (isset($ticket) && $options[$predeffield] == $ticket->getField($predeffield))
-                            || (isset($problem) && $options[$predeffield] == $problem->getField($predeffield))
-                        ) {
-                             // Load template data
-                             $options[$predeffield]            = $predefvalue;
-                             $this->fields[$predeffield]      = $predefvalue;
-                             $predefined_fields[$predeffield] = $predefvalue;
-                        }
-                    }
-                }
-               // All predefined override : add option to say predifined exists
-                if (count($predefined_fields) == 0) {
-                    $predefined_fields['_all_predefined_override'] = 1;
-                }
-            } else { // No template load : reset predefined values
-                if (count($options['_predefined_fields'])) {
-                    foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
-                        if ($options[$predeffield] == $predefvalue) {
-                            $options[$predeffield] = $default_values[$predeffield];
-                        }
-                    }
-                }
-            }
-        }
-
-        foreach ($default_values as $name => $value) {
-            if (!isset($options[$name])) {
-                if (isset($saved[$name])) {
-                    $options[$name] = $saved[$name];
-                } else {
-                    $options[$name] = $value;
-                }
-            }
-        }
-
-       // Put ticket template on $options for actors
-        $options[str_replace('s_id', '', $tpl_key)] = $tt;
-
-        if ($options['template_preview']) {
-           // Add all values to fields of tickets for template preview
-            foreach ($options as $key => $val) {
-                if (!isset($this->fields[$key])) {
-                    $this->fields[$key] = $val;
-                }
-            }
-        }
-
-        TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
-            'item'               => $this,
-            'timeline_itemtypes' => $this->getTimelineItemtypes(),
-            'legacy_timeline_actions'  => $this->getLegacyTimelineActionsHTML(),
-            'params'             => $options,
-            'timeline'           => $this->getTimelineItems(),
-            'itiltemplate_key'   => $tpl_key,
-            'itiltemplate'       => $tt,
-            'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
-            'canupdate'          => $canupdate,
-            'canpriority'        => $canupdate,
-            'canassign'          => $canupdate,
-        ]);
-
-        return true;
-    }
-
-
     public function getRights($interface = 'central')
     {
 
@@ -866,6 +840,10 @@ class Change extends CommonITILObject
 
         $values[self::READALL] = __('See all');
         $values[self::READMY]  = __('See (author)');
+        $values[self::SURVEY]  = [
+            'short' => __('Reply to survey (my change)'),
+            'long'  => __('Reply to survey for ticket created by me')
+        ];
 
         return $values;
     }
@@ -1115,7 +1093,7 @@ class Change extends CommonITILObject
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
             '_add_validation'            => 0,
-            'users_id_validate'          => [],
+            '_validation_targets'        => [],
             '_tasktemplates_id'          => [],
             'controlistcontent'          => '',
             'impactcontent'              => '',

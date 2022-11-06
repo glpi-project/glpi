@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -44,6 +46,13 @@ class Blacklist extends CommonDropdown
     public static $rightname = 'config';
 
     public $can_be_translated = false;
+
+    /**
+     * Loaded blacklists.
+     * Used for caching purposes.
+     * @var array
+     */
+    private $blacklists;
 
     const IP             = 1;
     const MAC            = 2;
@@ -351,9 +360,10 @@ class Blacklist extends CommonDropdown
             'SYS-9876543210',
             'SN-12345',
             'SN-1234567890',
-            '1111111111',
-            '1111111',
-            '1',
+            '/^0+$/',
+            '/^1+$/',
+            '/\d\.\d(\.\d)?/',
+            '/^(0|1)+$/',
             '0123456789',
             '12345',
             '123456',
@@ -363,10 +373,6 @@ class Blacklist extends CommonDropdown
             '1234567890',
             '123456789000',
             '12345678901234567',
-            '0000000000',
-            '000000000',
-            '00000000',
-            '0000000',
             'NNNNNNN',
             'xxxxxxxxxxx',
             'EVAL',
@@ -379,7 +385,6 @@ class Blacklist extends CommonDropdown
             'Unknow',
             'System Serial Number',
             'MB-1234567890',
-            '0',
             'empty',
             'Not Specified',
             'OEM_Serial',
@@ -513,6 +518,14 @@ class Blacklist extends CommonDropdown
             && '' == $this->process(self::SERIAL, $value->serial)
         ) {
             unset($value->serial);
+        }
+
+        if (
+            !property_exists($value, 'serial')
+            && property_exists($value, 'mserial')
+            && '' != $this->process(self::SERIAL, $value->mserial)
+        ) {
+            $value->serial = $value->mserial;
         }
 
         if (property_exists($value, 'ipaddress') || property_exists($value, 'ip')) {

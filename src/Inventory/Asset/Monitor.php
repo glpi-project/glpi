@@ -2,13 +2,15 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2010-2022 by the FusionInventory Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +18,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,9 +38,9 @@ namespace Glpi\Inventory\Asset;
 
 use Computer_Item;
 use Glpi\Inventory\Conf;
+use Glpi\Toolbox\Sanitizer;
 use Monitor as GMonitor;
 use RuleImportAssetCollection;
-use Toolbox;
 
 class Monitor extends InventoryAsset
 {
@@ -49,7 +52,8 @@ class Monitor extends InventoryAsset
         $mapping = [
             'caption'      => 'name',
             'manufacturer' => 'manufacturers_id',
-            'description'  => 'comment'
+            'description'  => 'comment',
+            'type'         => 'monitortypes_id'
         ];
 
         foreach ($this->data as &$val) {
@@ -58,9 +62,14 @@ class Monitor extends InventoryAsset
                     $val->$dest = $val->$origin;
                 }
             }
+            $val->is_dynamic = 1;
 
             if (!property_exists($val, 'name')) {
                 $val->name = '';
+            }
+
+            if (property_exists($val, 'caption')) {
+                $val->monitormodels_id = $val->caption;
             }
 
             if (property_exists($val, 'comment')) {
@@ -79,7 +88,6 @@ class Monitor extends InventoryAsset
             }
 
             if (!isset($serials[$val->serial])) {
-                $this->linked_items['Monitor'][] = $val;
                 $serials[$val->serial] = 1;
             }
         }
@@ -143,7 +151,6 @@ class Monitor extends InventoryAsset
                 'itemtype'     => 'Monitor',
                 'name'         => $val->name,
                 'serial'       => $val->serial ?? '',
-                'is_dynamic'   => 1,
                 'entities_id'  => $entities_id
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
@@ -155,9 +162,11 @@ class Monitor extends InventoryAsset
                     // add monitor
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $monitor->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+                    $items_id = $monitor->add(Sanitizer::sanitize($this->handleInput($val, $monitor)));
                 } else {
                     $items_id = $data['found_inventories'][0];
+                    $monitor->getFromDB($items_id);
+                    $monitor->update(Sanitizer::sanitize($this->handleInput($val, $monitor) + ['id' => $items_id]));
                 }
 
                 $monitors[] = $items_id;
@@ -205,7 +214,7 @@ class Monitor extends InventoryAsset
            // Delete monitors links in DB
             if (!$this->main_asset || !$this->main_asset->isPartial()) {
                 foreach ($db_monitors as $idtmp => $monits_id) {
-                    $computer_Item->delete(['id' => $idtmp], 1);
+                    $computer_Item->delete(['id' => $idtmp], true);
                 }
             }
 
@@ -224,6 +233,11 @@ class Monitor extends InventoryAsset
     public function checkConf(Conf $conf): bool
     {
         $this->import_monitor_on_partial_sn = $conf->import_monitor_on_partial_sn;
-        return true;
+        return $conf->import_monitor == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \Computer_Item::class;
     }
 }

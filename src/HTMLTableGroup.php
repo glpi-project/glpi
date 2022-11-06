@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -39,6 +41,7 @@ class HTMLTableGroup extends HTMLTableBase
     private $name;
     private $content;
     private $new_headers = [];
+    private $ordered_headers;
     private $table;
     private $rows = [];
 
@@ -55,6 +58,43 @@ class HTMLTableGroup extends HTMLTableBase
         $this->table      = $table;
         $this->name       = $name;
         $this->content    = $content;
+    }
+
+
+    public function __get(string $property)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        $value = null;
+        switch ($property) {
+            case 'ordered_headers':
+                $value = $this->$property;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        // TODO Deprecate access to variables in GLPI 10.1.
+        switch ($property) {
+            case 'ordered_headers':
+                $this->$property = $value;
+                break;
+            default:
+                $trace = debug_backtrace();
+                trigger_error(
+                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
+                    E_USER_WARNING
+                );
+                break;
+        }
     }
 
 
@@ -77,7 +117,7 @@ class HTMLTableGroup extends HTMLTableBase
     {
 
         $header_name    = '';
-        $subHeader_name = '';
+        $subheader_name = '';
         $header->getHeaderAndSubHeaderName($header_name, $subheader_name);
         try {
             $subheaders = $this->getHeaders($header_name);
@@ -95,37 +135,14 @@ class HTMLTableGroup extends HTMLTableBase
     public function tryAddHeader()
     {
 
-        if (isset($this->ordered_headers)) {
+        if ($this->ordered_headers !== null) {
             throw new \Exception('Implementation error: must define all headers before any row');
-        }
-    }
-
-
-    private function completeHeaders()
-    {
-
-        if (!isset($this->ordered_headers)) {
-            $this->ordered_headers = [];
-
-            foreach ($this->table->getHeaderOrder() as $header_name) {
-                $header        = $this->table->getSuperHeaderByName($header_name);
-                $header_names  = $this->getHeaderOrder($header_name);
-                if (!$header_names) {
-                    $this->ordered_headers[] = $header;
-                } else {
-                    foreach ($header_names as $sub_header_name) {
-                        $this->ordered_headers[] = $this->getHeaderByName($header_name, $sub_header_name);
-                    }
-                }
-            }
         }
     }
 
 
     public function createRow()
     {
-
-       //$this->completeHeaders();
         $new_row      = new HTMLTableRow($this);
         $this->rows[] = $new_row;
         return $new_row;

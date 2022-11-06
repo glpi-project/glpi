@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -55,6 +57,21 @@ class NotificationTargetDomain extends NotificationTarget
 
     public function addDataForTemplate($event, $options = [])
     {
+        $domain = $this->obj;
+
+        if (!isset($options['domains'])) {
+            $options['domains'] = [];
+            if (!$domain->isNewItem()) {
+                $options['domains'][] = $domain->fields;// Compatibility with old behaviour
+            }
+        } else {
+            Toolbox::deprecated('Using "domains" option in NotificationTargetDomain is deprecated.');
+        }
+        if (!isset($options['entities_id'])) {
+            $options['entities_id'] = $domain->fields['entities_id'];
+        } else {
+            Toolbox::deprecated('Using "entities_id" option in NotificationTargetDomain is deprecated.');
+        }
 
         $this->data['##domain.entity##']      = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
         $this->data['##lang.domain.entity##'] = Entity::getTypeName(1);
@@ -62,12 +79,15 @@ class NotificationTargetDomain extends NotificationTarget
         $this->data['##lang.domain.name##']           = __('Name');
         $this->data['##lang.domain.dateexpiration##'] = __('Expiration date');
 
-        foreach ($options['domains'] as $domain) {
-            $tmp = [
-                '##domain.name##'             => $domain['name'],
-                '##domain.dateexpiration##'   => Html::convDate($domain['date_expiration'])
+        $this->data['##domain.name##']           = $domain->fields['name'];
+        $this->data['##domain.dateexpiration##'] = Html::convDate($domain->fields['date_expiration']);
+
+        foreach ($options['domains'] as $domain_data) {
+            // Old behaviour preserved as notifications rewriting in migrations is kind of complicated
+            $this->data['domains'][] = [
+                '##domain.name##'             => $domain_data['name'],
+                '##domain.dateexpiration##'   => Html::convDate($domain_data['date_expiration'])
             ];
-            $this->data['domains'][] = $tmp;
         }
     }
 
@@ -88,7 +108,7 @@ class NotificationTargetDomain extends NotificationTarget
 
         $this->addTagToList([
             'tag'     => 'domains',
-            'label'   => __('Expired or expiring domains'),
+            'label'   => __('Expired or expiring domains (deprecated; contains only one element)'),
             'value'   => false,
             'foreach' => true,
             'events'  => ['DomainsWhichExpire', 'ExpiredDomains']

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -160,6 +162,7 @@ class Planning extends CommonGLPI
                 ]
             ];
         }
+        return false;
     }
 
 
@@ -658,6 +661,8 @@ class Planning extends CommonGLPI
                 'license_key'  => $scheduler_key,
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
+                'can_create'   => PlanningExternalEvent::canCreate(),
+                'can_delete'   => PlanningExternalEvent::canPurge(),
             ];
         } else {
            // short view (on Central page)
@@ -673,7 +678,7 @@ class Planning extends CommonGLPI
         }
 
        // display planning (and call js from js/planning.js)
-        echo "<div id='planning$rand'></div>";
+        echo "<div id='planning$rand' class='flex-fill'></div>";
         echo "</div>";
 
         echo Html::scriptBlock("$(function() {
@@ -777,7 +782,7 @@ class Planning extends CommonGLPI
     public static function getPaletteColor($palette_name = 'bg', $color_index = 0)
     {
         if ($palette = self::getPalette($palette_name)) {
-            if ($color_index > count($palette)) {
+            if ($color_index >= count($palette)) {
                 $color_index = $color_index % count($palette);
             }
 
@@ -934,6 +939,7 @@ class Planning extends CommonGLPI
         $actor = explode('_', $filter_key);
         $uID = 0;
         $gID = 0;
+        $expanded = '';
         if ($filter_data['type'] == 'user') {
             $uID = $actor[1];
             $user = new User();
@@ -943,6 +949,18 @@ class Planning extends CommonGLPI
             $group = new Group();
             $group->getFromDB($actor[1]);
             $title = $group->getName();
+            $enabled = $disabled = 0;
+            foreach ($filter_data['users'] as $user) {
+                if ($user['display']) {
+                    $enabled++;
+                } else {
+                    $disabled++;
+                    $filter_data['display'] = false;
+                }
+            }
+            if ($enabled > 0 && $disabled > 0) {
+                $expanded = ' expanded';
+            }
         } else if ($filter_data['type'] == 'group') {
             $gID = $actor[1];
             $group = new Group();
@@ -967,7 +985,7 @@ class Planning extends CommonGLPI
 
         echo "<li event_type='" . $filter_data['type'] . "'
                event_name='$filter_key'
-               class='" . $filter_data['type'] . "'>";
+               class='" . $filter_data['type'] . $expanded . "'>";
         Html::showCheckbox([
             'name'          => 'filters[]',
             'value'         => $filter_key,
@@ -985,7 +1003,13 @@ class Planning extends CommonGLPI
             echo "<i class='actor_icon fa fa-fw fa-$icon'></i>";
         }
 
-        echo "<label for='$filter_key'>$title</label>";
+        echo "<label for='$filter_key'>";
+        echo $title;
+        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($filter_data['url'])) {
+            $warning = sprintf(__s('URL "%s" is not allowed by your administrator.'), $filter_data['url']);
+            echo "<i class='fas fa-exclamation-triangle' title='{$warning}'></i>";
+        }
+        echo "</label>";
 
         $color = self::$palette_bg[$params['filter_color_index']];
         if (isset($filter_data['color']) && !empty($filter_data['color'])) {
@@ -1254,7 +1278,10 @@ class Planning extends CommonGLPI
     {
         if (!$params['itemtype'] instanceof CommonDBTM) {
             echo "<div class='center'>";
-            echo "<a href='" . $params['url'] . "'>" . __("View this item in his context") . "</a>";
+            echo "<a href='" . $params['url'] . "' class='btn btn-outline-secondary'>" .
+                "<i class='ti ti-eye'></i>" .
+                "<span>" . __("View this item in his context") . "</span>" .
+            "</a>";
             echo "</div>";
             echo "<hr>";
             $rand = mt_rand();
@@ -1268,7 +1295,8 @@ class Planning extends CommonGLPI
                 $options['parent']->getFromDB($params['parentid']);
             }
             $item = getItemForItemtype($params['itemtype']);
-            $item->showForm(intval($params['id']), $options);
+            $item->getFromDB((int) $params['id']);
+            $item->showForm((int)$params['id'], $options);
             $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
@@ -1374,6 +1402,15 @@ class Planning extends CommonGLPI
      */
     public static function sendAddExternalForm($params = [])
     {
+        if (!Toolbox::isUrlSafe($params['url'])) {
+            Session::addMessageAfterRedirect(
+                sprintf(__('URL "%s" is not allowed by your administrator.'), $params['url']),
+                false,
+                ERROR
+            );
+            return;
+        }
+
         $_SESSION['glpi_plannings']['plannings']['external_' . md5($params['url'])] = [
             'color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
             'display' => true,
@@ -1533,6 +1570,9 @@ class Planning extends CommonGLPI
         echo "<tr class='tab_bg_2'><td>" . __('Period') . "&nbsp;";
 
         if (isset($params["rand_user"])) {
+            $_POST['parent_itemtype'] = $params["parent_itemtype"] ?? '';
+            $_POST['parent_items_id'] = $params["parent_items_id"] ?? '';
+            $_POST['parent_fk_field'] = $params["parent_fk_field"] ?? '';
             echo "<span id='user_available" . $params["rand_user"] . "'>";
             include_once(GLPI_ROOT . '/ajax/planningcheck.php');
             echo "</span>";
@@ -2361,6 +2401,8 @@ class Planning extends CommonGLPI
                 }
             }
         }
+
+        return false;
     }
 
     /**
@@ -2472,7 +2514,7 @@ class Planning extends CommonGLPI
      * @param $whogroup        group ID
      * @param $limititemtype   itemtype only display this itemtype (default '')
      *
-     * @return icalendar string
+     * @return void Outputs ical contents
      **/
     public static function generateIcal($who, $whogroup, $limititemtype = '')
     {
@@ -2482,7 +2524,7 @@ class Planning extends CommonGLPI
             ($who === 0)
             && ($whogroup === 0)
         ) {
-            return false;
+            return;
         }
 
         if (!empty($CFG_GLPI["version"])) {

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -85,7 +87,7 @@ class RegisteredID extends CommonDBChild
     /**
      * @see CommonDBChild::showChildForItemForm()
      **/
-    public function showChildForItemForm($canedit, $field_name, $id)
+    public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
 
         if ($this->isNewID($this->getID())) {
@@ -93,32 +95,39 @@ class RegisteredID extends CommonDBChild
         } else {
             $value = $this->getName();
         }
+        $result            = "";
         $main_field        = $field_name . "[$id]";
         $type_field        = $field_name . "_type[$id]";
         $registeredIDTypes = self::getRegisteredIDTypes();
 
         if ($canedit) {
-            echo "<select name='$type_field'>";
-            echo "<option value=''>" . Dropdown::EMPTY_VALUE . "</option>";
+            $result .= "<select name='$type_field'>";
+            $result .= "<option value=''>" . Dropdown::EMPTY_VALUE . "</option>";
             foreach ($registeredIDTypes as $name => $label) {
-                echo "<option value='$name'";
+                $result .= "<option value='$name'";
                 if ($this->fields['device_type'] == $name) {
-                    echo " selected";
+                    $result .= " selected";
                 }
-                echo ">$label</option>";
+                $result .= ">$label</option>";
             }
-            echo "</select> : <input type='text' size='30' name='$main_field' value='$value'>\n";
+            $result .= "</select> : <input type='text' size='30' name='$main_field' value='$value'>\n";
         } else {
-            echo "<input type='hidden' name='$main_field' value='$value'>";
+            $result .= "<input type='hidden' name='$main_field' value='$value'>";
             if (!empty($this->fields['device_type'])) {
-                printf(
+                $result .= sprintf(
                     __('%1$s: %2$s'),
                     $registeredIDTypes[$this->fields['device_type']],
                     $value
                 );
             } else {
-                echo $value;
+                $result .= $value;
             }
+        }
+
+        if ($display) {
+            echo $result;
+        } else {
+            return $result;
         }
     }
 }

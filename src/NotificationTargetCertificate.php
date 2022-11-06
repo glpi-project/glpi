@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -44,7 +46,7 @@ class NotificationTargetCertificate extends NotificationTarget
 {
     public function getEvents()
     {
-        return ['alert' => __('Alarms on expired certificates')];
+        return ['alert' => __('Alarm on expired certificate')];
     }
 
     public function addAdditionalTargets($event = '')
@@ -63,15 +65,20 @@ class NotificationTargetCertificate extends NotificationTarget
     {
 
         $events = $this->getAllEvents();
+        $certificate = $this->obj;
 
-       //These 2 params should be defined in $options table
-       //The only case where they're not defined in when displaying
-       //the debug tab of a certificate
         if (!isset($options['certificates'])) {
             $options['certificates'] = [];
+            if (!$certificate->isNewItem()) {
+                $options['certificates'][] = $certificate->fields;// Compatibility with old behaviour
+            }
+        } else {
+            Toolbox::deprecated('Using "certificates" option in NotificationTargetCertificate is deprecated.');
         }
         if (!isset($options['entities_id'])) {
-            $options['entities_id'] = $options['item']->fields['entities_id'];
+            $options['entities_id'] = $certificate->fields['entities_id'];
+        } else {
+            Toolbox::deprecated('Using "entities_id" option in NotificationTargetCertificate is deprecated.');
         }
 
         $this->data['##certificate.action##'] = $events[$event];
@@ -80,11 +87,20 @@ class NotificationTargetCertificate extends NotificationTarget
             $options['entities_id']
         );
 
-        foreach ($options['certificates'] as $id => $certificate) {
+        $this->data['##certificate.name##']           = $certificate->fields['name'];
+        $this->data['##certificate.serial##']         = $certificate->fields['serial'];
+        $this->data['##certificate.expirationdate##'] = Html::convDate($certificate->fields["date_expiration"]);
+        $this->data['##certificate.url##']            = $this->formatURL(
+            $options['additionnaloption']['usertype'],
+            "Certificate_" . $certificate->getID()
+        );
+
+        foreach ($options['certificates'] as $id => $certificate_data) {
+            // Old behaviour preserved as notifications rewriting in migrations is kind of complicated
             $this->data['certificates'][] = [
-                '##certificate.name##'           => $certificate['name'],
-                '##certificate.serial##'         => $certificate['serial'],
-                '##certificate.expirationdate##' => Html::convDate($certificate["date_expiration"]),
+                '##certificate.name##'           => $certificate_data['name'],
+                '##certificate.serial##'         => $certificate_data['serial'],
+                '##certificate.expirationdate##' => Html::convDate($certificate_data["date_expiration"]),
                 '##certificate.url##'            => $this->formatURL(
                     $options['additionnaloption']['usertype'],
                     "Certificate_" . $id
@@ -119,7 +135,7 @@ class NotificationTargetCertificate extends NotificationTarget
         }
 
         $this->addTagToList(['tag'     => 'certificates',
-            'label'   => __('Device list'),
+            'label'   => __('Certificates list (deprecated; contains only one element)'),
             'value'   => false,
             'foreach' => true
         ]);

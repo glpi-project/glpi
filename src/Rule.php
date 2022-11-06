@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,22 +17,24 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * Rule Class store all information about a GLPI rule :
@@ -87,6 +90,14 @@ class Rule extends CommonDBTM
     const PATTERN_UNDER           = 11;
     const PATTERN_NOT_UNDER       = 12;
     const PATTERN_IS_EMPTY        = 30; // Global criteria
+    const PATTERN_CIDR            = 333;
+    const PATTERN_NOT_CIDR        = 334;
+
+    // Specific to date and datetime
+    const PATTERN_DATE_IS_BEFORE    = 31;
+    const PATTERN_DATE_IS_AFTER     = 32;
+    const PATTERN_DATE_IS_EQUAL     = 33;
+    const PATTERN_DATE_IS_NOT_EQUAL = 34;
 
     const AND_MATCHING            = "AND";
     const OR_MATCHING             = "OR";
@@ -217,7 +228,9 @@ class Rule extends CommonDBTM
         if (
             Session::haveRight("rule_ldap", READ)
             || Session::haveRight("rule_import", READ)
+            || Session::haveRight("rule_location", READ)
             || Session::haveRight("rule_ticket", READ)
+            || Session::haveRight("rule_change", READ)
             || Session::haveRight("rule_softwarecategories", READ)
             || Session::haveRight("rule_mailcollector", READ)
         ) {
@@ -580,6 +593,9 @@ class Rule extends CommonDBTM
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
+        if (!$this->isEntityAssign()) {
+            unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
+        }
         $collectiontype = $this->getCollectionClassName();
         if ($collection = getItemForItemtype($collectiontype)) {
             if (
@@ -1007,7 +1023,6 @@ class Rule extends CommonDBTM
      **/
     public function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0)
     {
-
         if ($ID == "") {
             return $this->getEmpty();
         }
@@ -1479,15 +1494,14 @@ class Rule extends CommonDBTM
     /**
      * Process the rule
      *
-     * @param &$input          the input data used to check criteria
-     * @param &$output         the initial output array used to be manipulate by actions
-     * @param &$params         parameters for all internal functions
-     * @param &options   array options:
+     * @param array &$input the input data used to check criterias
+     * @param array &$output the initial ouput array used to be manipulate by actions
+     * @param array &$params parameters for all internal functions
+     * @param array &options array options:
      *                     - only_criteria : only react on specific criteria
      *
-     * @return the output array updated by actions.
-     *         If rule matched add field _rule_process to return value
-     **/
+     * @return void
+     */
     public function process(&$input, &$output, &$params, &$options = [])
     {
 
@@ -1522,7 +1536,7 @@ class Rule extends CommonDBTM
      * @param $refoutput   the initial output array used to be manipulate by actions
      * @param $newoutput   the output array after actions process
      *
-     * @return the options array updated.
+     * @return void
      **/
     public function updateOnlyCriteria(&$options, $refoutput, $newoutput)
     {
@@ -1650,7 +1664,7 @@ class Rule extends CommonDBTM
      * @param array $input          the input data used to check criteria
      * @param array &$check_results
      *
-     * @return boolean if criteria match
+     * @return void
      **/
     public function testCriterias($input, &$check_results)
     {
@@ -1675,7 +1689,6 @@ class Rule extends CommonDBTM
      **/
     public function checkCriteria(&$criteria, &$input)
     {
-
         $partial_regex_result = [];
        // Undefine criteria field : set to blank
         if (!isset($input[$criteria->fields["criteria"]])) {
@@ -1700,11 +1713,7 @@ class Rule extends CommonDBTM
            //If the value is, in fact, an array of values
            // Negative condition : Need to match all condition (never be)
             if (
-                in_array($criteria->fields["condition"], [self::PATTERN_IS_NOT,
-                    self::PATTERN_NOT_CONTAIN,
-                    self::REGEX_NOT_MATCH,
-                    self::PATTERN_DOES_NOT_EXISTS
-                ])
+                in_array($criteria->fields["condition"], self::getNegativesConditions())
             ) {
                 $res = true;
                 foreach ($input[$criteria->fields["criteria"]] as $tmp) {
@@ -2252,18 +2261,17 @@ class Rule extends CommonDBTM
      **/
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
+        $criterion = $this->getCriteriaName($fields["criteria"]);
+        $condition = RuleCriteria::getConditionByID($fields["condition"], get_class($this), $fields["criteria"]);
+        $pattern   = $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"], $fields["pattern"]);
 
-        $text  = "<td $addtotd>" . Html::entities_deep($this->getCriteriaName($fields["criteria"])) . "</td>";
-        $text .= "<td $addtotd>" . Html::entities_deep(RuleCriteria::getConditionByID(
-            $fields["condition"],
-            get_class($this),
-            $fields["criteria"]
-        )) . "</td>";
-        $text .= "<td $addtotd>" . Html::entities_deep($this->getCriteriaDisplayPattern(
-            $fields["criteria"],
-            $fields["condition"],
-            $fields["pattern"]
-        )) . "</td>";
+        // Some data may come from the database, and be sanitized (i.e. html special chars already encoded),
+        // but some data may have been build from translation or from some plugin code and may be not sanitized.
+        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode special chars to
+        // ensure HTML validity (and to prevent XSS).
+        $text  = "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($criterion)) . "</td>";
+        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($condition)) . "</td>";
+        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern)) . "</td>";
         return $text;
     }
 
@@ -2274,18 +2282,19 @@ class Rule extends CommonDBTM
      **/
     public function getMinimalActionText($fields, $addtotd = '')
     {
+        $field = $this->getActionName($fields["field"]);
+        $type  = RuleAction::getActionByID($fields["action_type"]);
+        $value = isset($fields["value"])
+            ? $this->getActionValue($fields["field"], $fields['action_type'], $fields["value"])
+            : '';
 
-        $text  = "<td $addtotd>" . $this->getActionName($fields["field"]) . "</td>";
-        $text .= "<td $addtotd>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
-        if (isset($fields["value"])) {
-            $text .= "<td $addtotd>" . $this->getActionValue(
-                $fields["field"],
-                $fields['action_type'],
-                $fields["value"]
-            ) . "</td>";
-        } else {
-            $text .= "<td $addtotd>&nbsp;</td>";
-        }
+        // Some data may come from the database, and be sanitized (i.e. html special chars already encoded),
+        // but some data may have been build from translation or from some plugin code and may be not sanitized.
+        // First, extract the verbatim value (i.e. with non encoded specia chars), then encode special chars to
+        // ensure HTML validity (and to prevent XSS).
+        $text  = "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($field)) . "</td>";
+        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($type)) . "</td>";
+        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($value)) . "</td>";
         return $text;
     }
 
@@ -2306,10 +2315,8 @@ class Rule extends CommonDBTM
             || ($condition == self::PATTERN_FIND)
         ) {
             return __('Yes');
-        } else if (
-            in_array($condition, [self::PATTERN_IS, self::PATTERN_IS_NOT,
-                self::PATTERN_NOT_UNDER, self::PATTERN_UNDER
-            ])
+        } elseif (
+            in_array($condition, self::getConditionsWithComplexValues())
         ) {
             $crit = $this->getCriteria($ID);
 
@@ -2318,6 +2325,20 @@ class Rule extends CommonDBTM
                     case "yesonly":
                     case "yesno":
                         return Dropdown::getYesNo($pattern);
+
+                    case "date":
+                        $dates = Html::getGenericDateTimeSearchItems([]);
+                        return $dates[$pattern] ?? Html::convDate(
+                            Html::computeGenericDateTimeSearch($pattern, true)
+                        );
+
+                    case "datetime":
+                        $dates = Html::getGenericDateTimeSearchItems([
+                            'with_time'   => true,
+                        ]);
+                        return $dates[$pattern] ?? Html::convDateTime(
+                            Html::computeGenericDateTimeSearch($pattern)
+                        );
 
                     case "dropdown":
                         $addentity = Dropdown::getDropdownName($crit["table"], $pattern);
@@ -2356,22 +2377,27 @@ class Rule extends CommonDBTM
                         break;
 
                     case "dropdown_status":
-                        return Ticket::getStatus($pattern);
+                        if ($this instanceof RuleCommonITILObject) {
+                            $itil = $this->getItemtype();
+                            return $itil::getStatus($pattern);
+                        } else {
+                            return Ticket::getStatus($pattern);
+                        }
 
                     case "dropdown_priority":
-                        return Ticket::getPriorityName($pattern);
+                        return CommonITILObject::getPriorityName($pattern);
 
                     case "dropdown_urgency":
-                        return Ticket::getUrgencyName($pattern);
+                        return CommonITILObject::getUrgencyName($pattern);
 
                     case "dropdown_impact":
-                        return Ticket::getImpactName($pattern);
+                        return CommonITILObject::getImpactName($pattern);
 
                     case "dropdown_tickettype":
                         return Ticket::getTicketTypeName($pattern);
 
                     case "dropdown_validation_status":
-                        return TicketValidation::getStatus($pattern);
+                        return CommonITILValidation::getStatus($pattern);
                 }
             }
         }
@@ -2389,7 +2415,7 @@ class Rule extends CommonDBTM
      * @param $condition condition used
      * @param $pattern   the pattern
      *
-     * @return a value associated with the criteria, or false otherwise
+     * @return mixed|false  A value associated with the criteria, or false otherwise
      **/
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
@@ -2416,10 +2442,7 @@ class Rule extends CommonDBTM
 
         if (
             isset($crit['type'])
-            && ($test
-              || in_array($condition, [self::PATTERN_IS, self::PATTERN_IS_NOT,
-                  self::PATTERN_NOT_UNDER, self::PATTERN_UNDER
-              ]))
+            && ($test || in_array($condition, self::getConditionsWithComplexValues()))
         ) {
             $tested = true;
             switch ($crit['type']) {
@@ -2430,6 +2453,18 @@ class Rule extends CommonDBTM
 
                 case "yesno":
                     Dropdown::showYesNo($name, $value);
+                    $display = true;
+                    break;
+
+                case "date":
+                    Html::showGenericDateTimeSearch($name, $value);
+                    $display = true;
+                    break;
+
+                case "datetime":
+                    Html::showGenericDateTimeSearch($name, $value, [
+                        'with_time' => true,
+                    ]);
                     $display = true;
                     break;
 
@@ -2470,27 +2505,22 @@ class Rule extends CommonDBTM
                     $display = true;
                     break;
 
-                case "dropdown_import_type":
-                    RuleAsset::dropdownImportType($name, $value);
-                    $display = true;
-                    break;
-
                 case "dropdown_urgency":
-                    Ticket::dropdownUrgency(['name'  => $name,
+                    CommonITILObject::dropdownUrgency(['name'  => $name,
                         'value' => $value
                     ]);
                     $display = true;
                     break;
 
                 case "dropdown_impact":
-                    Ticket::dropdownImpact(['name'  => $name,
+                    CommonITILObject::dropdownImpact(['name'  => $name,
                         'value' => $value
                     ]);
                     $display = true;
                     break;
 
                 case "dropdown_priority":
-                    Ticket::dropdownPriority(['name'  => $name,
+                    CommonITILObject::dropdownPriority(['name'  => $name,
                         'value' => $value,
                         'withmajor' => true
                     ]);
@@ -2498,9 +2528,16 @@ class Rule extends CommonDBTM
                     break;
 
                 case "dropdown_status":
-                    Ticket::dropdownStatus(['name'  => $name,
-                        'value' => $value
-                    ]);
+                    if ($this instanceof RuleCommonITILObject) {
+                        $itil = $this->getItemtype();
+                        $itil::dropdownStatus(['name' => $name,
+                            'value' => $value
+                        ]);
+                    } else {
+                        Ticket::dropdownStatus(['name' => $name,
+                            'value' => $value
+                        ]);
+                    }
                     $display = true;
                     break;
 
@@ -2510,7 +2547,7 @@ class Rule extends CommonDBTM
                     break;
 
                 case "dropdown_validation_status":
-                    TicketValidation::dropdownStatus($name, [
+                    CommonITILValidation::dropdownStatus($name, [
                         'global' => true,
                         'value' => $value,
                     ]);
@@ -2532,7 +2569,7 @@ class Rule extends CommonDBTM
             self::PATTERN_DOES_NOT_EXISTS,
             RuleImportAsset::PATTERN_ENTITY_RESTRICT,
             RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT,
-            RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE
+            RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE,
         ];
         if (in_array($condition, $hiddens)) {
             echo Html::hidden($name, ['value' => 1]);
@@ -2572,11 +2609,16 @@ class Rule extends CommonDBTM
                     }
 
                    // $type == assign
-                    $tmp = Dropdown::getDropdownName($action["table"], $value);
-                    return (($tmp == '&nbsp;') ? NOT_AVAILABLE : $tmp);
+                    $name = Dropdown::getDropdownName($action["table"], $value);
+                    return (($name == '&nbsp;') ? NOT_AVAILABLE : $name);
 
                 case "dropdown_status":
-                    return Ticket::getStatus($value);
+                    if ($this instanceof RuleCommonITILObject) {
+                        $itil = $this->getItemtype();
+                        return $itil::getStatus($value);
+                    } else {
+                        return Ticket::getStatus($value);
+                    }
 
                 case "dropdown_assign":
                 case "dropdown_users":
@@ -2584,7 +2626,8 @@ class Rule extends CommonDBTM
                     return getUserName($value);
 
                 case "dropdown_groups_validate":
-                    return Dropdown::getDropdownName('glpi_groups', $value);
+                    $name = Dropdown::getDropdownName('glpi_groups', $value);
+                    return (($name == '&nbsp;') ? NOT_AVAILABLE : $name);
 
                 case "dropdown_validation_percent":
                     return Dropdown::getValueWithUnit($value, '%');
@@ -2594,13 +2637,13 @@ class Rule extends CommonDBTM
                     return Dropdown::getYesNo($value);
 
                 case "dropdown_urgency":
-                    return Ticket::getUrgencyName($value);
+                    return CommonITILObject::getUrgencyName($value);
 
                 case "dropdown_impact":
-                    return Ticket::getImpactName($value);
+                    return CommonITILObject::getImpactName($value);
 
                 case "dropdown_priority":
-                    return Ticket::getPriorityName($value);
+                    return CommonITILObject::getPriorityName($value);
 
                 case "dropdown_tickettype":
                     return Ticket::getTicketTypeName($value);
@@ -2609,7 +2652,7 @@ class Rule extends CommonDBTM
                     return Dropdown::getGlobalSwitch($value);
 
                 case "dropdown_validation_status":
-                    return TicketValidation::getStatus($value);
+                    return CommonITILValidation::getStatus($value);
 
                 default:
                     return $this->displayAdditionRuleActionValue($value);
@@ -2629,12 +2672,13 @@ class Rule extends CommonDBTM
      **/
     public function getCriteriaValue($ID, $condition, $value)
     {
+        $conditions = array_merge([
+            self::PATTERN_DOES_NOT_EXISTS,
+            self::PATTERN_EXISTS
+        ], self::getConditionsWithComplexValues());
 
         if (
-            !in_array($condition, [self::PATTERN_DOES_NOT_EXISTS, self::PATTERN_EXISTS,
-                self::PATTERN_IS, self::PATTERN_IS_NOT,
-                self::PATTERN_NOT_UNDER, self::PATTERN_UNDER
-            ])
+            !in_array($condition, $conditions)
         ) {
             $crit = $this->getCriteria($ID);
             if (isset($crit['type'])) {
@@ -2657,19 +2701,20 @@ class Rule extends CommonDBTM
                         return Dropdown::getYesNo($value);
 
                     case "dropdown_impact":
-                        return Ticket::getImpactName($value);
+                        return CommonITILObject::getImpactName($value);
 
                     case "dropdown_urgency":
-                        return Ticket::getUrgencyName($value);
+                        return CommonITILObject::getUrgencyName($value);
 
                     case "dropdown_priority":
-                        return Ticket::getPriorityName($value);
+                        return CommonITILObject::getPriorityName($value);
 
                     case "dropdown_validation_status":
-                        return TicketValidation::getStatus($value);
+                        return CommonITILValidation::getStatus($value);
                 }
             }
         }
+
         return $value;
     }
 
@@ -2872,7 +2917,12 @@ class Rule extends CommonDBTM
 
     public function getActions()
     {
-        return [];
+        return [
+            '_stop_rules_processing' => [
+                'name' => __('Skip remaining rules'),
+                'type' => 'yesonly',
+            ]
+        ];
     }
 
 
@@ -2993,7 +3043,7 @@ class Rule extends CommonDBTM
         $this->dropdownRulesMatch();
         echo "</td><td class='tab_bg_2 center'>";
         echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
-        echo "<input type=hidden name='entities_id' value='-1'>";
+        echo "<input type=hidden name='entities_id' value='0'>";
         echo "<input type=hidden name='affectentity' value='$ID'>";
         echo "<input type=hidden name='_method' value='AddRule'>";
         echo "<input type='submit' name='execute' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -3314,7 +3364,7 @@ class Rule extends CommonDBTM
                              $nb = countElementsInTable(
                                  ['glpi_rules', 'glpi_ruleactions'],
                                  [
-                                     'glpi_ruleactions.rules_id'   => new \QueryExpression(DB::quoteName('glpi_rules.id')),
+                                     'glpi_ruleactions.rules_id'   => new \QueryExpression(DBmysql::quoteName('glpi_rules.id')),
                                      'glpi_rules.sub_type'         => $types,
                                      'glpi_ruleactions.field'      => 'entities_id',
                                      'glpi_ruleactions.value'      => $item->getID()
@@ -3466,7 +3516,6 @@ class Rule extends CommonDBTM
         $nextRanking = $this->getNextRanking();
 
        //Update fields of the new collection
-        $input['name']        = sprintf(__('Copy of %s'), $input['name']);
         $input['is_active']   = 0;
         $input['ranking']     = $nextRanking;
         $input['uuid']        = static::getUuid();
@@ -3474,5 +3523,41 @@ class Rule extends CommonDBTM
         $input = Toolbox::addslashes_deep($input);
 
         return $input;
+    }
+
+    /**
+     * Get all "negatives" condition (is not, does not contains, ...)
+     *
+     * @return array
+     */
+    public static function getNegativesConditions(): array
+    {
+        return [
+            self::PATTERN_IS_NOT,
+            self::PATTERN_NOT_CONTAIN,
+            self::REGEX_NOT_MATCH,
+            self::PATTERN_DOES_NOT_EXISTS,
+            self::PATTERN_DATE_IS_NOT_EQUAL,
+        ];
+    }
+
+    /**
+     * Get all condition that may not be displayed as a simple text
+     * For example, a dropdown value or a date
+     *
+     * @return array
+     */
+    public static function getConditionsWithComplexValues(): array
+    {
+        return [
+            self::PATTERN_IS,
+            self::PATTERN_IS_NOT,
+            self::PATTERN_NOT_UNDER,
+            self::PATTERN_UNDER,
+            self::PATTERN_DATE_IS_BEFORE,
+            self::PATTERN_DATE_IS_AFTER,
+            self::PATTERN_DATE_IS_EQUAL,
+            self::PATTERN_DATE_IS_NOT_EQUAL,
+        ];
     }
 }

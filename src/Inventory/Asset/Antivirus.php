@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,7 +37,7 @@ namespace Glpi\Inventory\Asset;
 
 use ComputerAntivirus;
 use Glpi\Inventory\Conf;
-use Toolbox;
+use Glpi\Toolbox\Sanitizer;
 
 class Antivirus extends InventoryAsset
 {
@@ -66,6 +68,10 @@ class Antivirus extends InventoryAsset
 
             if (!property_exists($val, 'is_active') || empty($val->is_active)) {
                 $val->is_active = 0;
+            }
+
+            if (!property_exists($val, 'is_uptodate') || empty($val->is_uptodate)) {
+                $val->is_uptodate = 0;
             }
 
             $val->is_dynamic = 1;
@@ -103,8 +109,6 @@ class Antivirus extends InventoryAsset
 
     public function handle()
     {
-        global $DB;
-
         $db_antivirus = $this->getExisting();
         $value = $this->data;
         $computerAntivirus = new ComputerAntivirus();
@@ -116,10 +120,11 @@ class Antivirus extends InventoryAsset
             foreach ($db_antivirus as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($compare == $arraydb) {
-                    $input = (array)$val + [
+                    $computerAntivirus->getFromDB($keydb);
+                    $input = $this->handleInput($val, $computerAntivirus) + [
                         'id'           => $keydb
                     ];
-                    $computerAntivirus->update(Toolbox::addslashes_deep($input), $this->withHistory());
+                    $computerAntivirus->update(Sanitizer::sanitize($input));
                     unset($value[$k]);
                     unset($db_antivirus[$keydb]);
                     break;
@@ -127,10 +132,10 @@ class Antivirus extends InventoryAsset
             }
         }
 
-        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) != 0) {
+        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) !== 0) {
             foreach ($db_antivirus as $idtmp => $data) {
                 if ($data['is_dynamic'] == 1) {
-                    $computerAntivirus->delete(['id' => $idtmp], 1);
+                    $computerAntivirus->delete(['id' => $idtmp], true);
                 }
             }
         }
@@ -139,7 +144,8 @@ class Antivirus extends InventoryAsset
             foreach ($value as $val) {
                 $val->computers_id = $this->item->fields['id'];
                 $val->is_dynamic = 1;
-                $computerAntivirus->add(Toolbox::addslashes_deep((array)$val), [], $this->withHistory());
+                $input = $this->handleInput($val, $computerAntivirus);
+                $computerAntivirus->add(Sanitizer::sanitize($input));
             }
         }
     }
@@ -147,5 +153,10 @@ class Antivirus extends InventoryAsset
     public function checkConf(Conf $conf): bool
     {
         return $conf->import_antivirus == 1;
+    }
+
+    public function getItemtype(): string
+    {
+        return \ComputerAntivirus::class;
     }
 }

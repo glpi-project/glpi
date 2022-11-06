@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -39,19 +41,6 @@ use DbTestCase;
 
 class Printer extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
     public function testAdd()
     {
         $obj = new \Printer();
@@ -66,12 +55,12 @@ class Printer extends DbTestCase
 
        // getField methods
         $this->variable($obj->getField('id'))->isEqualTo($id);
-        $this->string($obj->getField('name'))->isidenticalTo($this->method);
+        $this->string($obj->getField('name'))->isidenticalTo(__METHOD__);
 
        // fields property
         $this->array($obj->fields)
          ->integer['id']->isEqualTo($id)
-         ->string['name']->isidenticalTo($this->method);
+         ->string['name']->isidenticalTo(__METHOD__);
     }
 
     public function testDelete()
@@ -153,7 +142,7 @@ class Printer extends DbTestCase
         $nb_before = (int)countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
 
        // DeleteByCriteria without history
-        $this->boolean($obj->deleteByCriteria(['name' => $this->method], 0, 0))->isTrue();
+        $this->boolean($obj->deleteByCriteria(['name' => __METHOD__], 0, 0))->isTrue();
         $this->boolean($obj->getFromDB($id))->isTrue();
         $this->variable($obj->getField('is_deleted'))->isEqualTo(1);
         $this->variable($obj->isDeleted())->isEqualTo(1);
@@ -170,7 +159,7 @@ class Printer extends DbTestCase
         $nb_before = (int)countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
 
        // DeleteByCriteria with history
-        $this->boolean($obj->deleteByCriteria(['name' => $this->method], 0, 1))->isTrue;
+        $this->boolean($obj->deleteByCriteria(['name' => __METHOD__], 0, 1))->isTrue;
         $this->boolean($obj->getFromDB($id))->isTrue();
         $this->variable($obj->getField('is_deleted'))->isEqualTo(1);
         $this->variable($obj->isDeleted())->isEqualTo(1);

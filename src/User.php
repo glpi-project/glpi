@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -39,7 +41,9 @@ use Sabre\VObject;
 
 class User extends CommonDBTM
 {
-    use Glpi\Features\Clonable;
+    use Glpi\Features\Clonable {
+        Glpi\Features\Clonable::computeCloneName as baseComputeCloneName;
+    }
     use Glpi\Features\TreeBrowse;
 
    // From CommonDBTM
@@ -55,6 +59,7 @@ class User extends CommonDBTM
     const IMPORTEXTAUTHUSERS  = 1024;
     const READAUTHENT         = 2048;
     const UPDATEAUTHENT       = 4096;
+    const IMPERSONATE         = 8192;
 
     public static $rightname = 'user';
 
@@ -267,6 +272,7 @@ class User extends CommonDBTM
 
         switch ($item->getType()) {
             case __CLASS__:
+                /** @var User $item */
                 $item->showItems($tabnum == 2);
                 return true;
 
@@ -331,7 +337,7 @@ class User extends CommonDBTM
 
         $entities = $this->getEntities();
         $view_all = Session::canViewAllEntities();
-       // Have right on all entities ?
+        // Have right on all entities ?
         $all      = true;
         if (!$view_all) {
             foreach ($entities as $ent) {
@@ -343,10 +349,10 @@ class User extends CommonDBTM
         if ($all) { // Mark as deleted
             return true;
         }
-       // only delete profile
+
+        // only delete profile
         foreach ($entities as $ent) {
             if (Session::haveAccessToEntity($ent)) {
-                $all   = false;
                 $DB->delete(
                     'glpi_profiles_users',
                     [
@@ -355,8 +361,8 @@ class User extends CommonDBTM
                     ]
                 );
             }
-            return false;
         }
+        return false;
     }
 
 
@@ -433,11 +439,11 @@ class User extends CommonDBTM
 
         $this->dropPictureFiles($this->fields['picture']);
 
-       // Ticket rules use various _users_id_*
+        // Ticket rules use various _users_id_*
         Rule::cleanForItemAction($this, '_users_id%');
         Rule::cleanForItemCriteria($this, '_users_id%');
 
-       // Alert does not extends CommonDBConnexity
+        // Alert does not extends CommonDBConnexity
         $alert = new Alert();
         $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
     }
@@ -623,6 +629,14 @@ class User extends CommonDBTM
      */
     public function getFromDBbyToken($token, $field = 'personal_token')
     {
+        if (!is_string($token)) {
+            trigger_error(
+                sprintf('Unexpected token value received: "string" expected, received "%s".', gettype($token)),
+                E_USER_WARNING
+            );
+            return false;
+        }
+
         $fields = ['personal_token', 'api_token'];
         if (!in_array($field, $fields)) {
             trigger_error(
@@ -709,6 +723,8 @@ class User extends CommonDBTM
                     return false;
                 }
             }
+        } elseif (isset($this->input['_init_password']) && $this->input['_init_password']) {
+            $input['password'] = Toolbox::getRandomString(16);
         }
 
         if (isset($input["_extauth"])) {
@@ -735,20 +751,14 @@ class User extends CommonDBTM
         return $input;
     }
 
-    public function prepareInputForClone($input)
-    {
-        if (isset($input['name'])) {
-            $suffix = 1;
-            $possibleName = $input['name'] . $suffix;
-            while ($this->getFromDBbyName($possibleName)) {
-                $suffix++;
-                $possibleName = $input['name'] . $suffix;
-            }
-            $input['name'] = $possibleName;
-        }
-        return $input;
+    public function computeCloneName(
+        string $current_name,
+        ?int $copy_index = null
+    ): string {
+        return Toolbox::slugify(
+            $this->baseComputeCloneName($current_name, $copy_index)
+        );
     }
-
 
     public function post_addItem()
     {
@@ -807,6 +817,15 @@ class User extends CommonDBTM
                 $right->add($affectation);
             }
         }
+
+        if (isset($this->input['_init_password']) && $this->input['_init_password']) {
+            $email = $this->getDefaultEmail();
+            try {
+                $this->forgetPassword($email, true);
+            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+                Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+            }
+        }
     }
 
 
@@ -833,7 +852,7 @@ class User extends CommonDBTM
             }
             if ($newPicture) {
                 $fullpath = GLPI_TMP_DIR . "/" . $input["_picture"];
-                if (Toolbox::getMime($fullpath, 'image')) {
+                if (Document::isImage($fullpath, 'image')) {
                    // Unlink old picture (clean on changing format)
                     self::dropPictureFiles($this->fields['picture']);
                    // Move uploaded file
@@ -847,26 +866,24 @@ class User extends CommonDBTM
                     : 'jpg';
 
                     @mkdir(GLPI_PICTURE_DIR . "/$sub");
-                    $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
-                    self::dropPictureFiles("$sub/${filename}.$extension");
+                    $picture_path = GLPI_PICTURE_DIR  . "/{$sub}/{$filename}.{$extension}";
+                    self::dropPictureFiles("{$sub}/{$filename}.{$extension}");
 
-                    if (
-                        Document::isImage($fullpath)
-                        && Document::renameForce($fullpath, $picture_path)
-                    ) {
+                    if (Document::renameForce($fullpath, $picture_path)) {
                         Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
                         // For display
-                        $input['picture'] = "$sub/${filename}.$extension";
+                        $input['picture'] = "{$sub}/{$filename}.{$extension}";
 
                         //prepare a thumbnail
-                        $thumb_path = GLPI_PICTURE_DIR . "/$sub/${filename}_min.$extension";
+                        $thumb_path = GLPI_PICTURE_DIR . "/{$sub}/{$filename}_min.{$extension}";
                         Toolbox::resizePicture($picture_path, $thumb_path);
                     } else {
                         Session::addMessageAfterRedirect(
-                            __('Potential upload attack or file too large. Moving temporary file failed.'),
+                            __('Moving temporary file failed.'),
                             false,
                             ERROR
                         );
+                        @unlink($fullpath);
                     }
                 } else {
                     Session::addMessageAfterRedirect(
@@ -874,6 +891,7 @@ class User extends CommonDBTM
                         false,
                         ERROR
                     );
+                    @unlink($fullpath);
                 }
             } else {
                //ldap jpegphoto synchronisation.
@@ -899,8 +917,7 @@ class User extends CommonDBTM
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
                         || (($input['password_forget_token'] == $this->fields['password_forget_token'])
-                           && (abs(strtotime($_SESSION["glpi_currenttime"])
-                               - strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)))
+                           && (strtotime($_SESSION["glpi_currenttime"]) < strtotime($this->fields['password_forget_token_date']))))
                     ) {
                         $input["password"]
                         = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
@@ -1046,7 +1063,14 @@ class User extends CommonDBTM
         $this->applyGroupsRules();
         $this->applyRightRules();
 
-        if (in_array('password', $this->updates)) {
+        if (isset($this->input['_init_password']) && $this->input['_init_password']) {
+            $email = $this->getDefaultEmail();
+            try {
+                $this->forgetPassword($email, false);
+            } catch (\Glpi\Exception\ForgetPasswordException $e) {
+                Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+            }
+        } elseif (in_array('password', $this->updates)) {
             $alert = new Alert();
             $alert->deleteByCriteria(
                 [
@@ -1343,7 +1367,7 @@ class User extends CommonDBTM
                     $img       = array_pop($info[$picture_field]);
                     $filename  = uniqid($this->fields['id'] . '_');
                     $sub       = substr($filename, -2); /* 2 hex digit */
-                    $file      = GLPI_PICTURE_DIR . "/$sub/${filename}.jpg";
+                    $file      = GLPI_PICTURE_DIR . "/{$sub}/{$filename}.jpg";
 
                     if (array_key_exists('picture', $this->fields)) {
                         $oldfile = GLPI_PICTURE_DIR . "/" . $this->fields["picture"];
@@ -1367,10 +1391,10 @@ class User extends CommonDBTM
                         fclose($outjpeg);
 
                        //save thumbnail
-                        $thumb = GLPI_PICTURE_DIR . "/$sub/${filename}_min.jpg";
+                        $thumb = GLPI_PICTURE_DIR . "/{$sub}/{$filename}_min.jpg";
                         Toolbox::resizePicture($file, $thumb);
 
-                        return "$sub/${filename}.jpg";
+                        return "{$sub}/{$filename}.jpg";
                     }
                     return $this->fields["picture"];
                 }
@@ -1569,9 +1593,9 @@ class User extends CommonDBTM
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User login
      *
-     * @return string|boolean Basedn of the user / false if not found
+     * @return void
      */
-    private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login)
+    private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login): void
     {
         global $DB;
 
@@ -1638,9 +1662,9 @@ class User extends CommonDBTM
                         $lgroups = [];
                         foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
                             $lgroups[] = [
-                                new \QueryExpression($DB::quoteValue($lgroup) .
+                                new \QueryExpression($DB->quoteValue($lgroup) .
                                              " LIKE " .
-                                             $DB::quoteName('ldap_value'))
+                                             $DB->quoteName('ldap_value'))
                             ];
                         }
                         $group_iterator = $DB->request([
@@ -1693,7 +1717,7 @@ class User extends CommonDBTM
             $ldap_connection,
             $ldap_method["basedn"],
             $user_tmp,
-            $ldap_method["group_condition"],
+            Sanitizer::unsanitize($ldap_method["group_condition"]),
             $ldap_method["group_member_field"],
             $ldap_method["use_dn"],
             $ldap_method["login_field"]
@@ -1771,6 +1795,7 @@ class User extends CommonDBTM
            // force authtype as we retrieve this user by ldap (we could have login with SSO)
             $this->fields["authtype"] = Auth::LDAP;
 
+            $import_fields = [];
             foreach ($fields as $k => $e) {
                 $val = AuthLDAP::getFieldValue(
                     [$e => self::getLdapFieldValue($e, $v)],
@@ -1819,26 +1844,10 @@ class User extends CommonDBTM
                             break;
 
                         case "usertitles_id":
-                            $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
-                            break;
-
                         case 'locations_id':
-                           // use import to build the location tree
-                            $this->fields[$k] = Dropdown::import(
-                                'Location',
-                                ['completename' => $val,
-                                    'entities_id'  => 0,
-                                    'is_recursive' => 1
-                                ]
-                            );
-                            break;
-
                         case "usercategories_id":
-                            $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
-                            break;
-
                         case 'users_id_supervisor':
-                            $this->fields[$k] = self::getIdByField('user_dn', $val, false);
+                            $import_fields[$k] = $val;
                             break;
 
                         default:
@@ -1937,6 +1946,33 @@ class User extends CommonDBTM
                     }
                 }
 
+                foreach ($import_fields as $k => $val) {
+                    switch ($k) {
+                        case "usertitles_id":
+                            $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
+                            break;
+                        case 'locations_id':
+                            // use import to build the location tree
+                            $this->fields[$k] = Dropdown::import(
+                                'Location',
+                                ['completename' => $val,
+                                    'entities_id'  => 0,
+                                    'is_recursive' => 1
+                                ]
+                            );
+                            break;
+                        case "usercategories_id":
+                            $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
+                            break;
+                        case 'users_id_supervisor':
+                            $supervisor_id = self::getIdByField('user_dn', $val, false);
+                            if ($supervisor_id) {
+                                $this->fields[$k] = $supervisor_id;
+                            }
+                            break;
+                    }
+                }
+
                // Add ldap result to data send to the hook
                 $this->fields['_ldap_result'] = $v;
                 $this->fields['_ldap_conn']   = $ldap_connection;
@@ -1944,6 +1980,7 @@ class User extends CommonDBTM
                 $this->fields = Plugin::doHookFunction(Hooks::RETRIEVE_MORE_DATA_FROM_LDAP, $this->fields);
                 unset($this->fields['_ldap_result']);
             }
+
             return true;
         }
         return false;
@@ -1976,12 +2013,8 @@ class User extends CommonDBTM
         $groups     = [];
         $listgroups = [];
 
-       //User dn may contain ( or ), need to espace it!
-        $user_dn = str_replace(
-            ["(", ")", "\,", "\+"],
-            ["\(", "\)", "\\\,", "\\\+"],
-            $user_dn
-        );
+       //User dn may contain ['(', ')', ',', '\'] then it needs to be escaped!
+        $user_dn = ldap_escape($user_dn, "", LDAP_ESCAPE_FILTER);
 
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
@@ -2099,11 +2132,9 @@ class User extends CommonDBTM
             return true;
         }
         $this->fields['_ruleright_process'] = true;
-        foreach ($a_field as $field => $value) {
-            if (
-                !isset($_SERVER[$value])
-                || empty($_SERVER[$value])
-            ) {
+        foreach ($a_field as $field => $key) {
+            $value = $_SERVER[$key] ?? null;
+            if (empty($value)) {
                 switch ($field) {
                     case "title":
                         $this->fields['usertitles_id'] = 0;
@@ -2117,38 +2148,43 @@ class User extends CommonDBTM
                         $this->fields[$field] = "";
                 }
             } else {
+                if (!mb_check_encoding($value, 'UTF-8') && mb_check_encoding($value, 'ISO-8859-1')) {
+                    // Some applications, like Microsoft Azure Enterprise Applications (Header-based Single sign-on),
+                    // will provide ISO-8859-1 encoded values. They have to be converted into UTF-8 to prevent
+                    // encoding issues (see #12898).
+                    $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+                }
+                $value = Sanitizer::sanitize($value); // $_SERVER is not automatically sanitized
                 switch ($field) {
                     case "email1":
                     case "email2":
                     case "email3":
                     case "email4":
                         // Manage multivaluable fields
-                        if (!preg_match('/count/', $_SERVER[$value])) {
-                            $this->fields["_emails"][] = addslashes($_SERVER[$value]);
+                        if (!preg_match('/count/', $value)) {
+                            $this->fields["_emails"][] = $value;
                         }
                         // Only get them once if duplicated
                         $this->fields["_emails"] = array_unique($this->fields["_emails"]);
                         break;
 
                     case "language":
-                        $language = Config::getLanguage($_SERVER[$value]);
+                        $language = Config::getLanguage($value);
                         if ($language != '') {
                             $this->fields[$field] = $language;
                         }
                         break;
 
                     case "title":
-                        $this->fields['usertitles_id']
-                        = Dropdown::importExternal('UserTitle', addslashes($_SERVER[$value]));
+                        $this->fields['usertitles_id'] = Dropdown::importExternal('UserTitle', $value);
                         break;
 
                     case "category":
-                        $this->fields['usercategories_id']
-                        = Dropdown::importExternal('UserCategory', addslashes($_SERVER[$value]));
+                        $this->fields['usercategories_id'] = Dropdown::importExternal('UserCategory', $value);
                         break;
 
                     default:
-                        $this->fields[$field] = $_SERVER[$value];
+                        $this->fields[$field] = $value;
                         break;
                 }
             }
@@ -2157,8 +2193,10 @@ class User extends CommonDBTM
         if (!$DB->isSlave()) {
            //Instanciate the affectation's rule
             $rule = new RuleRightCollection();
+            $groups = Group_User::getUserGroups($this->fields['id']);
+            $groups_id = array_column($groups, 'id');
 
-            $this->fields = $rule->processAllRules([], Toolbox::stripslashes_deep($this->fields), [
+            $this->fields = $rule->processAllRules($groups_id, Toolbox::stripslashes_deep($this->fields), [
                 'type'   => Auth::EXTERNAL,
                 'email'  => $this->fields["_emails"],
                 'login'  => $this->fields["name"]
@@ -2252,6 +2290,70 @@ class User extends CommonDBTM
         return Profile::currentUserHaveMoreRightThan($user_prof);
     }
 
+    protected function getFormHeaderToolbar(): array
+    {
+        $ID = $this->getID();
+        $toolbar = [];
+
+        if ($ID > 0) {
+            $vcard_lbl = __s('Download user VCard');
+            $vcard_url = self::getFormURLWithID($ID) . "&amp;getvcard=1";
+            $vcard_btn = <<<HTML
+            <a href="{$vcard_url}" target="_blank"
+                     class="btn btn-icon btn-sm btn-ghost-secondary"
+                     title="{$vcard_lbl}"
+                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+               <i class="ti ti-id fa-lg"></i>
+            </a>
+HTML;
+            $toolbar[] = $vcard_btn;
+
+            $error_message = null;
+            $impersonate_form = self::getFormURLWithID($ID);
+            if (Session::canImpersonate($ID, $error_message)) {
+                $impersonate_lbl = __s('Impersonate');
+                $csrf_token = Session::getNewCSRFToken();
+                $impersonate_btn = <<<HTML
+                    <form method="post" action="{$impersonate_form}">
+                        <input type="hidden" name="id" value="{$ID}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{$csrf_token}">
+                        <button type="button" name="impersonate" value="1"
+                            class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
+                            title="{$impersonate_lbl}"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <i class="ti ti-spy fa-lg"></i>
+                        </button>
+                    </form>
+HTML;
+
+                // "impersonate" button type is set to "button" on form display to prevent it to be used
+                // by default (as it is the first found in current form) when pressing "enter" key.
+                // When clicking it, switch to "submit" type to make it submit current user form.
+                $impersonate_js = <<<JAVASCRIPT
+               (function($) {
+                  $('button[type="button"][name="impersonate"]').click(
+                     function () {
+                        $(this).attr('type', 'submit');
+                     }
+                  );
+               })(jQuery);
+JAVASCRIPT;
+                $toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
+            } elseif ($error_message !== null) {
+                $impersonate_btn = <<<HTML
+               <button type="button" name="impersonate" value="1"
+                       class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
+                       title="{$error_message}"
+                       data-bs-toggle="tooltip" data-bs-placement="bottom">
+                  <i class="ti ti-spy fa-lg"></i>
+               </button>
+HTML;
+                $toolbar[] = $impersonate_btn;
+            }
+        }
+        return $toolbar;
+    }
+
     /**
      * Print the user form.
      *
@@ -2270,6 +2372,8 @@ class User extends CommonDBTM
         if (($ID != Session::getLoginUserID()) && !self::canView()) {
             return false;
         }
+
+        $simplified_form = $options['simplified_form'] ?? false;
 
         $config = Config::getConfigurationValues('core');
         if ($this->getID() > 0 && $config['system_user'] == $this->getID()) {
@@ -2293,50 +2397,11 @@ class User extends CommonDBTM
 
         $formtitle = $this->getTypeName(1);
 
-        $header_toolbar = [];
-        if ($ID > 0) {
-            $vcard_lbl = __s('Download user VCard');
-            $vcard_url = User::getFormURLWithID($ID) . "&amp;getvcard=1";
-            $vcard_btn = <<<HTML
-            <a href="{$vcard_url}" target="_blank"
-                     class="btn btn-sm btn-ghost-secondary"
-                     title="{$vcard_lbl}"
-                     data-bs-toggle="tooltip" data-bs-placement="bottom">
-               <i class="far fa-address-card fa-lg"></i>
-            </a>
-         HTML;
-            $header_toolbar[] = $vcard_btn;
-
-            if (Session::canImpersonate($ID)) {
-                $impersonate_lbl = __s('Impersonate');
-                $impersonate_btn = <<<HTML
-               <button type="button" name="impersonate" value="1"
-                       class="btn btn-sm btn-ghost-secondary btn-impersonate"
-                       title="{$impersonate_lbl}"
-                       data-bs-toggle="tooltip" data-bs-placement="bottom">
-                  <i class="fas fa-user-secret fa-lg"></i>
-               </button>
-            HTML;
-
-               // "impersonate" button type is set to "button" on form display to prevent it to be used
-               // by default (as it is the first found in current form) when pressing "enter" key.
-               // When clicking it, switch to "submit" type to make it submit current user form.
-                $impersonate_js = <<<JAVASCRIPT
-               (function($) {
-                  $('button[type="button"][name="impersonate"]').click(
-                     function () {
-                        $(this).attr('type', 'submit');
-                     }
-                  );
-               })(jQuery);
-JAVASCRIPT;
-                $header_toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
-            }
-        }
-
         $options['formtitle']      = $formtitle;
         $options['formoptions']    = ($options['formoptions'] ?? '') . " enctype='multipart/form-data'";
-        $options['header_toolbar'] = $header_toolbar;
+        if (!self::isNewID($ID)) {
+            $options['no_header'] = true;
+        }
         $this->showFormHeader($options);
         $rand = mt_rand();
 
@@ -2354,7 +2419,7 @@ JAVASCRIPT;
             echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
         }
 
-        if (!empty($this->fields["name"])) {
+        if (!$simplified_form && !empty($this->fields["name"])) {
             echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
             echo "<td rowspan='7'>";
             echo self::getPictureForUser($ID);
@@ -2421,6 +2486,29 @@ JAVASCRIPT;
         );
         echo "</td></tr>";
 
+        if (
+            self::canUpdate()
+            && (!$extauth || empty($ID))
+        ) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td></td><td>";
+            $init_password_js = <<<JAVASCRIPT
+                var showPwdFields = function () {
+                    if ($('input[name="_init_password"]').is(':checked')) {
+                        $('.password_field').css("display", "none");
+                        $('input[name="_useremails[-1]"]').prop("required", true);
+                    } else {
+                        $('.password_field').css("display", "");
+                        $('input[name="_useremails[-1]"]').prop("required", false);
+                    }
+                };
+                $('input[name="_init_password"]').on('change', showPwdFields);
+JAVASCRIPT;
+            echo Html::scriptBlock($init_password_js);
+            Html::showCheckbox(['name'  => '_init_password']);
+            echo "&nbsp;&nbsp;" . __('Send an email to the user to set their own new password.');
+            echo "</td></tr>";
+        }
        //do some rights verification
         if (
             self::canUpdate()
@@ -2428,13 +2516,13 @@ JAVASCRIPT;
             && $caneditpassword
         ) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='password'>" . __('Password') . "</label></td>";
-            echo "<td><input id='password' type='password' name='password' value='' size='20'
+            echo "<td class='password_field'><label for='password'>" . __('Password') . "</label></td>";
+            echo "<td class='password_field'><input id='password' type='password' name='password' value='' size='20'
                     autocomplete='new-password' onkeyup=\"return passwordCheck();\" class='form-control'></td>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='password2'>" . __('Password confirmation') . "</label></td>";
-            echo "<td><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password' class='form-control'>";
+            echo "<td class='password_field'><label for='password2'>" . __('Password confirmation') . "</label></td>";
+            echo "<td class='password_field'><input type='password' id='password2' name='password2' value='' size='20' autocomplete='new-password' class='form-control'>";
             echo "</td></tr>";
 
             if ($CFG_GLPI["use_password_security"]) {
@@ -2452,7 +2540,7 @@ JAVASCRIPT;
             echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
         }
 
-        if ($DB->use_timezones || Session::haveRight("config", READ)) {
+        if ((!$simplified_form) && ($DB->use_timezones || Session::haveRight("config", READ))) {
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
             if ($DB->use_timezones) {
@@ -2491,7 +2579,7 @@ JAVASCRIPT;
         echo "</td>";
         echo "</tr>";
 
-        if (!GLPI_DEMO_MODE) {
+        if ((!$simplified_form) && (!GLPI_DEMO_MODE)) {
             $sincerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='showdate$sincerand'>" . __('Valid since') . "</label></td><td>";
@@ -2563,42 +2651,47 @@ JAVASCRIPT;
             ]
         );
         echo "</td>";
-        $catrand = mt_rand();
-        echo "<td><label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
-        UserCategory::dropdown(['value' => $this->fields["usercategories_id"], 'rand' => $catrand]);
+        echo "<td>";
+        if (!$simplified_form) {
+            $catrand = mt_rand();
+            echo "<label for='dropdown_usercategories_id$catrand'>" . _n('Category', 'Categories', 1) . "</label></td><td>";
+            UserCategory::dropdown(['value' => $this->fields["usercategories_id"], 'rand' => $catrand]);
+        }
         echo "</td></tr>";
 
-        $phone2rand = mt_rand();
-        echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
-        echo Html::input(
-            'phone2',
-            [
-                'value' => $this->fields['phone2'],
-                'id'    => "textfield_phone2$phone2rand",
-            ]
-        );
-        echo "</td>";
-        echo "<td rowspan='4' class='middle'><label for='comment'>" . __('Comments') . "</label></td>";
-        echo "<td class='center middle' rowspan='4'>";
-        echo "<textarea class='form-control' id='comment' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
+        if (!$simplified_form) {
+            $phone2rand = mt_rand();
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='textfield_phone2$phone2rand'>" .  __('Phone 2') . "</label></td><td>";
+            echo Html::input(
+                'phone2',
+                [
+                    'value' => $this->fields['phone2'],
+                    'id'    => "textfield_phone2$phone2rand",
+                ]
+            );
+            echo "</td>";
+            echo "<td rowspan='4' class='middle'><label for='comment'>" . __('Comments') . "</label></td>";
+            echo "<td class='center middle' rowspan='4'>";
+            echo "<textarea class='form-control' id='comment' name='comment' >" . $this->fields["comment"] . "</textarea>";
+            echo "</td></tr>";
 
-        $admnumrand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . __('Administrative number') . "</label></td><td>";
-        echo Html::input(
-            'registration_number',
-            [
-                'value' => $this->fields['registration_number'],
-                'id'    => "textfield_registration_number$admnumrand",
-            ]
-        );
-        echo "</td></tr>";
+            $admnumrand = mt_rand();
+            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _x('user', 'Administrative number') . "</label></td><td>";
+            echo Html::input(
+                'registration_number',
+                [
+                    'value' => $this->fields['registration_number'],
+                    'id'    => "textfield_registration_number$admnumrand",
+                ]
+            );
+            echo "</td></tr>";
 
-        $titlerand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='dropdown_usertitles_id$titlerand'>" . _x('person', 'Title') . "</label></td><td>";
-        UserTitle::dropdown(['value' => $this->fields["usertitles_id"], 'rand' => $titlerand]);
-        echo "</td></tr>";
+            $titlerand = mt_rand();
+            echo "<tr class='tab_bg_1'><td><label for='dropdown_usertitles_id$titlerand'>" . _x('person', 'Title') . "</label></td><td>";
+            UserTitle::dropdown(['value' => $this->fields["usertitles_id"], 'rand' => $titlerand]);
+            echo "</td></tr>";
+        }
 
         echo "<tr class='tab_bg_1'>";
         if (!empty($ID)) {
@@ -2636,7 +2729,8 @@ JAVASCRIPT;
             Entity::dropdown(['name'                => '_entities_id',
                 'display_emptychoice' => false,
                 'rand'                => $entrand,
-                'entity'              => $_SESSION['glpiactiveentities']
+                'entity'              => $_SESSION['glpiactiveentities'],
+                'value'               => $options['entities_id'] ?? $_SESSION['glpiactive_entity']
             ]);
             echo "</td></tr>";
         } else {
@@ -2689,7 +2783,7 @@ JAVASCRIPT;
 
                 echo "</td>";
                 $userrand = mt_rand();
-                echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __('Responsible') . "</label></td><td>";
+                echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __('Supervisor') . "</label></td><td>";
 
                 User::dropdown(['name'   => 'users_id_supervisor',
                     'value'  => $this->fields["users_id_supervisor"],
@@ -3075,7 +3169,7 @@ JAVASCRIPT;
             echo "</td></tr>";
 
             $admnumrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . __('Administrative number') . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _x('user', 'Administrative number') . "</label></td><td>";
             if (
                 $extauth
                 && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])
@@ -3641,7 +3735,7 @@ JAVASCRIPT;
             'id'                 => '22',
             'table'              => $this->getTable(),
             'field'              => 'registration_number',
-            'name'               => __('Administrative number'),
+            'name'               => _x('user', 'Administrative number'),
             'datatype'           => 'string',
         ];
 
@@ -3795,9 +3889,28 @@ JAVASCRIPT;
             'table'              => 'glpi_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_supervisor',
-            'name'               => __('Responsible'),
+            'name'               => __('Supervisor'),
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
+            'additionalfields'   => [
+                '0' => 'id'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                => 130,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_start_date',
+            'name'              => __('Substitution start date'),
+            'datatype'          => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'                => 131,
+            'table'             => 'glpi_users',
+            'field'             => 'substitution_end_date',
+            'name'              => __('Substitution end date'),
+            'datatype'          => 'datetime',
         ];
 
        // add objectlock search options
@@ -3917,6 +4030,8 @@ JAVASCRIPT;
     ) {
         global $DB;
 
+
+
        // No entity define : use active ones
         if ($entity_restrict < 0) {
             $entity_restrict = $_SESSION["glpiactiveentities"];
@@ -3925,6 +4040,7 @@ JAVASCRIPT;
         $joinprofile      = false;
         $joinprofileright = false;
         $WHERE = [];
+
 
         switch ($right) {
             case "interface":
@@ -4170,6 +4286,14 @@ JAVASCRIPT;
             ];
         }
 
+        // remove helpdesk user
+        $config = Config::getConfigurationValues('core');
+        $WHERE[] = [
+            'NOT' => [
+                'glpi_users.id' => $config['system_user']
+            ]
+        ];
+
         $criteria = [
             'FROM'            => 'glpi_users',
             'LEFT JOIN'       => [
@@ -4377,11 +4501,11 @@ JAVASCRIPT;
 
         // Make a select box with all glpi users
         if (!$p['multiple']) {
-            $user = getUserName($p['value'], 2);
+            $user = getUserName($p['value'], 2, true);
         }
 
         if ($p['readonly']) {
-            return $user["name"];
+            return '<span class="form-control" readonly>' . $user["name"] . '</span>';
         }
 
         $view_users = self::canView();
@@ -4780,7 +4904,7 @@ JAVASCRIPT;
 
                 foreach ($item_iterator as $data) {
                     $cansee = $item->can($data["id"], READ);
-                    $link   = $data["name"];
+                    $link   = $data[$item->getNameField()];
                     if ($cansee) {
                         $link_item = $item::getFormURLWithID($data['id']);
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
@@ -4920,10 +5044,11 @@ JAVASCRIPT;
      * Get user by email, importing it from LDAP if not existing.
      *
      * @param string $email
+     * @param bool $createuserfromemail
      *
      * @return integer ID of user, 0 if not found nor imported
      */
-    public static function getOrImportByEmail($email = '')
+    public static function getOrImportByEmail($email = '', bool $createuserfromemail = false)
     {
         global $DB, $CFG_GLPI;
 
@@ -4950,9 +5075,9 @@ JAVASCRIPT;
             return $result['id'];
         } else {
             if ($CFG_GLPI["is_users_auto_add"]) {
-               //Get all ldap servers with email field configured
+                //Get all ldap servers with email field configured
                 $ldaps = AuthLDAP::getServersWithImportByEmailActive();
-               //Try to find the user by his email on each ldap server
+                //Try to find the user by his email on each ldap server
 
                 foreach ($ldaps as $ldap) {
                     $params = [
@@ -4968,6 +5093,12 @@ JAVASCRIPT;
                     if (isset($res['id'])) {
                         return $res['id'];
                     }
+                }
+            }
+            if ($createuserfromemail) {
+                $user = self::createUserFromMail($email);
+                if ($user !== null) {
+                    return $user->fields['id'];
                 }
             }
         }
@@ -5001,11 +5132,6 @@ JAVASCRIPT;
         $myuser = new self();
         $myuser->getFromDB($users_id);
 
-       //User is already considered as delete from ldap
-        if ($myuser->fields['is_deleted_ldap'] == 1) {
-            return;
-        }
-
         switch ($CFG_GLPI['user_deleted_ldap']) {
            //DO nothing
             default:
@@ -5038,6 +5164,12 @@ JAVASCRIPT;
                 $tmp['is_active'] = 0;
                 $myuser->update($tmp);
                 Profile_User::deleteRights($users_id, true);
+                Group_User::deleteGroups($users_id, true);
+                break;
+
+            case AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS:
+                $tmp['is_active'] = 0;
+                $myuser->update($tmp);
                 Group_User::deleteGroups($users_id, true);
                 break;
         }
@@ -5250,16 +5382,48 @@ JAVASCRIPT;
         ]);
     }
 
+    /**
+     * Show new password form of password initialization process.
+     *
+     * @param string $token
+     *
+     * @return void
+     *
+     * @since 10.1.0
+     */
+    public static function showPasswordInitChangeForm(string $token): void
+    {
+        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+            'title'    => __('Password Initialization'),
+            'token'    => $token,
+            'token_ok' => User::getUserByForgottenPasswordToken($token) !== null,
+        ]);
+    }
+
 
     /**
      * Show request form of password recovery process.
      *
      * @return void
+     *
+     * @since 10.1.0
      */
-    public static function showPasswordForgetRequestForm()
+    public static function showPasswordForgetRequestForm(): void
     {
         TemplateRenderer::getInstance()->display('password_form.html.twig', [
             'title' => __('Forgotten password?'),
+        ]);
+    }
+
+    /**
+     * Show request form of password initialization process.
+     *
+     * @return void
+     */
+    public static function showPasswordInitRequestForm()
+    {
+        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+            'title' => __('Password initialization'),
         ]);
     }
 
@@ -5296,8 +5460,8 @@ JAVASCRIPT;
 
         // Same check but for the account activation dates
         if (
-            ($user->fields['begin_date'] !== null && $user->fields['begin_date'] < $_SESSION['glpi_currenttime'])
-            || ($user->fields['end_date'] !== null && $user->fields['end_date'] > $_SESSION['glpi_currenttime'])
+            ($user->fields['begin_date'] !== null && $user->fields['begin_date'] > $_SESSION['glpi_currenttime'])
+            || ($user->fields['end_date'] !== null && $user->fields['end_date'] < $_SESSION['glpi_currenttime'])
         ) {
             throw new ForgetPasswordException(
                 __("Unable to reset password, please contact your administrator")
@@ -5387,9 +5551,33 @@ JAVASCRIPT;
     }
 
     /**
+     * Send password recovery for a user and display result message.
+     *
+     * @param string $email email of the user
+     *
+     * @return void
+     */
+    public function showInitPassword(string $email): void
+    {
+        try {
+            $this->forgetPassword($email, true);
+        } catch (\Glpi\Exception\ForgetPasswordException $e) {
+            Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
+            return;
+        }
+        Session::addMessageAfterRedirect(__('The given email address will receive the informations required to define password.'));
+
+        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+            'title'         => __('Password initialization'),
+            'messages_only' => true,
+        ]);
+    }
+
+    /**
      * Send password recovery email for a user.
      *
      * @param string $email
+     * @param bool $firstpassword
      *
      * @throws ForgetPasswordException If the process failed and the user should
      *                                 be aware of it (e.g. incorrect email)
@@ -5399,8 +5587,16 @@ JAVASCRIPT;
      *              of it to avoid exposing whether or not the given email exist
      *              in our database.
      */
-    public function forgetPassword(string $email): bool
+    public function forgetPassword(string $email, bool $firstpassword = false): bool
     {
+        global $CFG_GLPI;
+        if ($firstpassword) {
+            $event = 'passwordinit';
+            $token_date = strtotime($_SESSION["glpi_currenttime"]) + $CFG_GLPI['password_init_token_delay'];
+        } else {
+            $event = 'passwordforget';
+            $token_date = strtotime($_SESSION["glpi_currenttime"]) + DAY_TIMESTAMP;
+        }
         $condition = [
             'glpi_users.is_active'  => 1,
             'glpi_users.is_deleted' => 0, [
@@ -5445,13 +5641,13 @@ JAVASCRIPT;
         // Store password reset token and date
         $input = [
             'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
-            'password_forget_token_date' => $_SESSION["glpi_currenttime"],
+            'password_forget_token_date' => date("Y-m-d H:i:s", $token_date),
             'id'                         => $this->fields['id'],
         ];
         $this->update($input);
 
         // Notication on root entity (glpi_users.entities_id is only a pref)
-        NotificationEvent::raiseEvent('passwordforget', $this, ['entities_id' => 0]);
+        NotificationEvent::raiseEvent($event, $this, ['entities_id' => 0]);
         QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
 
         return true;
@@ -5766,6 +5962,9 @@ JAVASCRIPT;
        //TRANS: short for : Update method for user authentication and synchronization
         $values[self::UPDATEAUTHENT]      = ['short' => __('Update auth and sync'),
             'long'  => __('Update method for user authentication and synchronization')
+        ];
+        $values[self::IMPERSONATE]      = ['short' => __('Impersonate'),
+            'long'  => __('Impersonate users with the same or less rights')
         ];
 
         return $values;
@@ -6130,10 +6329,10 @@ JAVASCRIPT;
         }
 
         $table  = self::getTable();
-        $first  = DB::quoteName("$table.$first");
-        $second = DB::quoteName("$table.$second");
-        $alias  = DB::quoteName($alias);
-        $name   = DB::quoteName(self::getNameField());
+        $first  = DBmysql::quoteName("$table.$first");
+        $second = DBmysql::quoteName("$table.$second");
+        $alias  = DBmysql::quoteName($alias);
+        $name   = DBmysql::quoteName(self::getNameField());
 
         return new QueryExpression("IF(
             $first <> '' && $second <> '',
@@ -6261,7 +6460,7 @@ JAVASCRIPT;
         );
         echo "</td>";
 
-        echo "<td rowspan='3'>" . __('Picture') . "</td>";
+        echo "<td rowspan='3'>" . _n('Picture', 'Pictures', 1) . "</td>";
         echo "<td rowspan='3'>";
         echo self::getPictureForUser($ID);
 
@@ -6414,7 +6613,7 @@ JAVASCRIPT;
      */
     public static function getUserByForgottenPasswordToken(string $token): ?User
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         if (empty($token)) {
             return null;
@@ -6427,7 +6626,7 @@ JAVASCRIPT;
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'password_forget_token'       => $token,
-                new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)')
+                new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', ' . $CFG_GLPI['password_init_token_delay'] . ')')
             ]
         ]);
 
@@ -6447,5 +6646,182 @@ JAVASCRIPT;
         }
 
         return $user;
+    }
+
+    /**
+     * Create a new user from an email address
+     *
+     * @param string $email The email address of the user.
+     *
+     * @return User|null Created user, null on failure.
+     */
+    private static function createUserFromMail(string $email): ?User
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => UserEmail::getTable(),
+            'WHERE'  => [
+                'email' => $email
+            ]
+        ]);
+
+        if (count($iterator) > 0) {
+            return null;
+        }
+
+        $user = new self();
+        $added = $user->add([
+            'name'           => $email,
+            'realname'       => $email,
+            '_useremails'    => [
+                '-1' => $email
+            ],
+            '_init_password' => true
+        ]);
+        if (!$added) {
+            return null;
+        }
+
+        return $user;
+    }
+        /**
+     * Get name of the user with ID
+     *
+     * @param integer $ID   ID of the user.
+     *
+     * @return string username string (realname if not empty and name if realname is empty).
+     */
+    public static function getNameForLog(int $ID): string
+    {
+        global $DB;
+
+        $iterator = $DB->request(
+            'glpi_users',
+            [
+                'WHERE' => ['id' => $ID]
+            ]
+        );
+
+        if (count($iterator) === 1) {
+            $data     = $iterator->current();
+
+            if (!empty($data['realname'])) {
+                $formatted = $data['realname'];
+
+                if (!empty($data['firstname'])) {
+                    $formatted .= " " . $data["firstname"];
+                }
+            } else {
+                $formatted = $data["name"];
+            }
+            return sprintf(__('%1$s (%2$s)'), $formatted, $ID);
+        }
+
+        return __('Unknown user');
+    }
+
+    /**
+     * Get all validation substitutes
+     *
+     * @return int[]
+     */
+    final public function getSubstitutes(): array
+    {
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $substitutes = [];
+        $rows = (new ValidatorSubstitute())->find([
+            'users_id' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $substitutes[] = $row['users_id_substitute'];
+        }
+
+        return $substitutes;
+    }
+
+    /**
+     * Get all delegators
+     *
+     * @return int[]
+     */
+    final public function getDelegators(): array
+    {
+        if ($this->isNewItem()) {
+            return [];
+        }
+
+        $delegators = [];
+        $rows = (new ValidatorSubstitute())->find([
+            'users_id_substitute' => $this->fields['id'],
+        ]);
+        foreach ($rows as $row) {
+            $delegators[] = $row['users_id'];
+        }
+
+        return $delegators;
+    }
+
+    /**
+     * Is a substitute of an other user ?
+     *
+     * @param integer $users_id_delegator
+     * @param bool    $use_date_range
+     *
+     * @return bool
+     */
+    final public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
+    {
+        global $DB;
+
+        if ($this->isNewItem()) {
+            return false;
+        }
+
+        $request = [
+            'FROM' => ValidatorSubstitute::getTable(),
+            'WHERE' => [
+                ValidatorSubstitute::getTableField('users_id')            => $users_id_delegator,
+                ValidatorSubstitute::getTableField('users_id_substitute') => $this->fields['id'],
+            ],
+        ];
+        if ($use_date_range) {
+            // add date range check
+            $request['INNER JOIN'] = [
+                self::getTable() => [
+                    'ON' => [
+                        self::getTable() => 'id',
+                        ValidatorSubstitute::getTable() => 'users_id',
+                    ],
+                    'AND' => [
+                        [
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_end_date') => null
+                                ], [
+                                    self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ], [
+                            'OR' => [
+                                [
+                                    self::getTableField('substitution_start_date') => null,
+                                ], [
+                                    self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
+                                ],
+                            ],
+                        ]
+                    ]
+                ],
+            ];
+        }
+
+        $result = $DB->request($request);
+
+        return (count($result) > 0);
     }
 }

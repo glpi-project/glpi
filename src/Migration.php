@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -370,6 +372,10 @@ class Migration
                 $format = "INT " . DBConnection::getDefaultPrimaryKeySignOption() . " NOT NULL AUTO_INCREMENT";
                 break;
 
+            case 'fkey':
+                $format = "INT " . DBConnection::getDefaultPrimaryKeySignOption() . " NOT NULL DEFAULT 0";
+                break;
+
             default:
                // for compatibility with old 0.80 migrations
                 $format = $type;
@@ -446,8 +452,8 @@ class Migration
                 }
                 return true;
             }
-            return false;
         }
+        return false;
     }
 
 
@@ -741,7 +747,7 @@ class Migration
      * @param string $table The table to alter
      * @param array  $input The elements to add inside the table
      *
-     * @return integer id of the last item inserted by mysql
+     * @return integer|null id of the last item inserted by mysql
      **/
     public function insertInTable($table, array $input)
     {
@@ -762,6 +768,8 @@ class Migration
 
             return $DB->insertId();
         }
+
+        return null;
     }
 
 
@@ -898,6 +906,8 @@ class Migration
             }
             $DB->insertOrDie('glpi_ruleactions', $values);
         }
+
+        return $rid;
     }
 
 
@@ -1090,7 +1100,7 @@ class Migration
      *
      * @since 9.2
      *
-     * @return boolean
+     * @return void
      */
     private function storeConfig()
     {
@@ -1204,6 +1214,74 @@ class Migration
         $this->displayWarning(
             sprintf(
                 'New rights has been added for %1$s, you should review ACLs after update',
+                $name
+            ),
+            true
+        );
+    }
+
+    /**
+     * Update right to profiles that match rights requirements
+     *    Default is to update rights of profiles with READ and UPDATE rights on config
+     *
+     * @param string  $name   Right name
+     * @param integer $rights Right to set
+     * @param array   $requiredrights Array of right name => value
+     *                   A profile must have these rights in order to get its rights updated.
+     *                   This array can be empty to add the right to every profile.
+     *                   Default is ['config' => READ | UPDATE].
+     *
+     * @return void
+     */
+    public function updateRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
+    {
+        global $DB;
+
+       // Get all profiles with required rights
+
+        $join = [];
+        $i = 1;
+        foreach ($requiredrights as $reqright => $reqvalue) {
+            $join["glpi_profilerights as right$i"] = [
+                'ON' => [
+                    "right$i"       => 'profiles_id',
+                    'glpi_profiles' => 'id',
+                    [
+                        'AND' => [
+                            "right$i.name"   => $reqright,
+                            new QueryExpression("{$DB->quoteName("right$i.rights")} & $reqvalue = $reqvalue"),
+                        ]
+                    ]
+                ]
+            ];
+            $i++;
+        }
+
+        $prof_iterator = $DB->request(
+            [
+                'SELECT'     => 'glpi_profiles.id',
+                'FROM'       => 'glpi_profiles',
+                'INNER JOIN' => $join,
+            ]
+        );
+
+        foreach ($prof_iterator as $profile) {
+            $DB->updateOrInsert(
+                'glpi_profilerights',
+                [
+                    'rights'       => $rights
+                ],
+                [
+                    'profiles_id'  => $profile['id'],
+                    'name'         => $name
+                ],
+                sprintf('%1$s update right for %2$s', $this->version, $name)
+            );
+        }
+
+        $this->displayWarning(
+            sprintf(
+                'Rights has been updated for %1$s, you should review ACLs after update',
                 $name
             ),
             true
@@ -1350,13 +1428,13 @@ class Migration
             return;
         }
 
-        $this->displayTitle(sprintf('Rename "%s" itemtype to "%s"', $old_itemtype, $new_itemtype));
+        $this->displayMessage(sprintf(__('Renaming "%s" itemtype to "%s"...'), $old_itemtype, $new_itemtype));
 
-        if ($update_structure) {
-            $old_table = getTableForItemType($old_itemtype);
-            $new_table = getTableForItemType($new_itemtype);
-            $old_fkey  = getForeignKeyFieldForItemType($old_itemtype);
-            $new_fkey  = getForeignKeyFieldForItemType($new_itemtype);
+        $old_table = getTableForItemType($old_itemtype);
+        $new_table = getTableForItemType($new_itemtype);
+        if ($old_table !== $new_table && $update_structure) {
+            $old_fkey  = getForeignKeyFieldForTable($old_table);
+            $new_fkey  = getForeignKeyFieldForTable($new_table);
 
            // Check prerequisites
             if (!$DB->tableExists($old_table)) {
@@ -1398,7 +1476,7 @@ class Migration
             foreach ($fkey_column_array as $fkey_column) {
                 $fkey_table   = $fkey_column['TABLE_NAME'];
                 $fkey_oldname = $fkey_column['COLUMN_NAME'];
-                $fkey_newname = preg_replace('/^' . preg_quote($old_fkey) . '/', $new_fkey, $fkey_oldname);
+                $fkey_newname = preg_replace('/^' . preg_quote($old_fkey, '/') . '/', $new_fkey, $fkey_oldname);
                 if ($DB->fieldExists($fkey_table, $fkey_newname)) {
                     throw new \RuntimeException(
                         sprintf(
@@ -1412,17 +1490,17 @@ class Migration
             }
 
            //1. Rename itemtype table
-            $this->displayMessage(sprintf('Rename "%s" table to "%s"', $old_table, $new_table));
+            $this->displayMessage(sprintf(__('Renaming "%s" table to "%s"...'), $old_table, $new_table));
             $this->renameTable($old_table, $new_table);
 
            //2. Rename foreign key fields
             $this->displayMessage(
-                sprintf('Rename "%s" foreign keys to "%s" in all tables', $old_fkey, $new_fkey)
+                sprintf(__('Renaming "%s" foreign keys to "%s" in all tables...'), $old_fkey, $new_fkey)
             );
             foreach ($fkey_column_array as $fkey_column) {
                 $fkey_table   = $fkey_column['TABLE_NAME'];
                 $fkey_oldname = $fkey_column['COLUMN_NAME'];
-                $fkey_newname = preg_replace('/^' . preg_quote($old_fkey) . '/', $new_fkey, $fkey_oldname);
+                $fkey_newname = preg_replace('/^' . preg_quote($old_fkey, '/') . '/', $new_fkey, $fkey_oldname);
 
                 if ($fkey_table == $old_table) {
                   // Special case, foreign key is inside renamed table, use new name
@@ -1440,7 +1518,7 @@ class Migration
 
        //3. Update "itemtype" values in all tables
         $this->displayMessage(
-            sprintf('Rename "%s" itemtype to "%s" in all tables', $old_itemtype, $new_itemtype)
+            sprintf(__('Renaming "%s" itemtype to "%s" in all tables...'), $old_itemtype, $new_itemtype)
         );
         $itemtype_column_iterator = $DB->request(
             [
@@ -1608,7 +1686,7 @@ class Migration
         $default_collation = DBConnection::getDefaultCollation();
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-        $this->addPreQuery("
+        $DB->queryOrDie("
             CREATE TABLE `$table` (
                 `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                 `$fk_1` int {$default_key_sign} NOT NULL DEFAULT '0',

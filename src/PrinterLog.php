@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -119,7 +121,22 @@ class PrinterLog extends CommonDBChild
             ] + $filters
         ]);
 
-        return iterator_to_array($iterator);
+        $series = iterator_to_array($iterator, false);
+
+        // Reduce the data to 25 points
+        $count = count($series);
+        $max_size = 25;
+        if ($count > $max_size) {
+            // Keep one row every X entry using modulo
+            $modulo = round($count / $max_size);
+            $series = array_filter(
+                $series,
+                fn($k) => (($count - ($k + 1)) % $modulo) == 0,
+                ARRAY_FILTER_USE_KEY
+            );
+        }
+
+        return $series;
     }
 
     /**
@@ -140,19 +157,35 @@ class PrinterLog extends CommonDBChild
 
         $series = [];
         $labels = [];
-        $i = 0;
+
+        // Formatter to display the date (months names) in the correct language
+        // Dates will be displayed as "d MMMM":
+        // d = short day number (1, 12, ...)
+        // MMM = short month name (jan, feb, ...)
+        // Note that PHP use ISO 8601 Date Output here which is different from
+        // the "Constants for PHP Date Output" used in others functions
+        // See https://framework.zend.com/manual/1.12/en/zend.date.constants.html#zend.date.constants.selfdefinedformats
+        $fmt = new IntlDateFormatter(
+            $_SESSION['glpilanguage'] ?? 'en_GB',
+            IntlDateFormatter::NONE,
+            IntlDateFormatter::NONE,
+            null,
+            null,
+            'd MMM'
+        );
+
         foreach ($raw_metrics as $metrics) {
             $date = new DateTime($metrics['date']);
-            $labels[] = $date->format(__('Y-m-d'));
+            $labels[] = $fmt->format($date);
             unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
 
             foreach ($metrics as $key => $value) {
-                if ($value > 0) {
-                    $series[$key]['name'] = $this->getLabelFor($key);
+                $label = $this->getLabelFor($key);
+                if ($label && $value > 0) {
+                    $series[$key]['name'] = $label;
                     $series[$key]['data'][] = $value;
                 }
             }
-            ++$i;
         }
 
         $bar_conf = [
@@ -168,11 +201,19 @@ class PrinterLog extends CommonDBChild
 
        //display graph
         echo "<div class='dashboard printer_barchart'>";
-        echo Widget::multipleBars($bar_conf);
+        echo Widget::multipleAreas($bar_conf);
         echo "</div>";
     }
 
-    private function getLabelFor($key)
+    /**
+     * Get the label for a given column of glpi_printerlogs.
+     * To be used when displaying the printed pages graph.
+     *
+     * @param string $key
+     *
+     * @return null|string null if the key didn't match any valid field
+     */
+    private function getLabelFor($key): ?string
     {
         switch ($key) {
             case 'total_pages':
@@ -200,5 +241,7 @@ class PrinterLog extends CommonDBChild
             case 'faxed':
                 return __('Fax');
         }
+
+        return null;
     }
 }

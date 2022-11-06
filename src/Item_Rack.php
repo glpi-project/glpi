@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -70,6 +72,7 @@ class Item_Rack extends CommonDBRelation
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showItems($item, $withtemplate);
+        return true;
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -231,16 +234,14 @@ class Item_Rack extends CommonDBRelation
             $modelsfield = strtolower($item->getType()) . 'models_id';
             $model = new $model_class();
             if ($model->getFromDB($item->fields[$modelsfield])) {
-                $item->model = $model;
-
-                if ($item->model->fields['required_units'] > 1) {
-                    $gs_item['height'] = $item->model->fields['required_units'];
+                if ($model->fields['required_units'] > 1) {
+                    $gs_item['height'] = $model->fields['required_units'];
                     $gs_item['y']      = $rack->fields['number_units'] + 1
                                     - $row['position']
-                                    - $item->model->fields['required_units'];
+                                    - $model->fields['required_units'];
                 }
 
-                if ($item->model->fields['is_half_rack'] == 1) {
+                if ($model->fields['is_half_rack'] == 1) {
                     $gs_item['half_rack'] = true;
                     $gs_item['width'] = 1;
                     $row['position'] .= "_" . $gs_item['x'];
@@ -249,27 +250,28 @@ class Item_Rack extends CommonDBRelation
                     }
                 }
 
-                if (!empty($item->model->fields['picture_front'])) {
-                    $gs_item['picture_f'] = Toolbox::getPictureUrl($item->model->fields['picture_front']);
+                if (!empty($model->fields['picture_front'])) {
+                    $gs_item['picture_f'] = Toolbox::getPictureUrl($model->fields['picture_front']);
                 }
-                if (!empty($item->model->fields['picture_rear'])) {
-                    $gs_item['picture_r'] = Toolbox::getPictureUrl($item->model->fields['picture_rear']);
+                if (!empty($model->fields['picture_rear'])) {
+                    $gs_item['picture_r'] = Toolbox::getPictureUrl($model->fields['picture_rear']);
                 }
             } else {
-                $item->model = null;
+                $model = null;
             }
 
             if (isset($data[$row['orientation']][$position])) {
                 $data[$row['orientation']][$row['position']] = [
                     'row'     => $row,
                     'item'    => $item,
+                    'model'   => $model,
                     'gs_item' => $gs_item
                 ];
 
                //add to other side if needed
                 if (
-                    $item->model == null
-                    || $item->model->fields['depth'] >= 1
+                    $model == null
+                    || $model->fields['depth'] >= 1
                 ) {
                     $gs_item['rear'] = true;
                     $flip_orientation = (int) !((bool) $row['orientation']);
@@ -284,7 +286,12 @@ class Item_Rack extends CommonDBRelation
                     ];
                 }
             } else {
-                $outbound[] = ['row' => $row, 'item' => $item, 'gs_item' => $gs_item];
+                $outbound[] = [
+                    'row'     => $row,
+                    'item'    => $item,
+                    'model'   => $model,
+                    'gs_item' => $gs_item,
+                ];
             }
         }
 
@@ -717,6 +724,8 @@ JAVASCRIPT;
         echo "</tr>";
 
         $this->showFormButtons($options);
+
+        return true;
     }
 
     public function post_getEmpty()
@@ -747,9 +756,10 @@ JAVASCRIPT;
                          ? $item->fields['otherserial']
                          : "";
             $model       = is_object($item)
-                        && is_object($item->model)
-                        && isset($item->model->fields['name'])
-                         ? $item->model->fields['name']
+                        && isset($cell['model'])
+                        && is_object($cell['model'])
+                        && isset($cell['model']->fields['name'])
+                         ? $cell['model']->fields['name']
                          : '';
             $rear        = $gs_item['rear'];
             $back_class  = $rear
@@ -969,30 +979,25 @@ JAVASCRIPT;
             $model_class = $item->getType() . 'Model';
             $modelsfield = strtolower($item->getType()) . 'models_id';
             $model = new $model_class();
-            if ($model->getFromDB($item->fields[$modelsfield])) {
-                $item->model = $model;
-            } else {
-                $item->model = null;
-            }
 
             $required_units = 1;
             $width          = 1;
             $depth          = 1;
-            if ($item->model != null) {
-                if ($item->model->fields['required_units'] > 1) {
-                    $required_units = $item->model->fields['required_units'];
+            if ($model->getFromDB($item->fields[$modelsfield])) {
+                if ($model->fields['required_units'] > 1) {
+                    $required_units = $model->fields['required_units'];
                 }
-                if ($item->model->fields['is_half_rack'] == 1) {
+                if ($model->fields['is_half_rack'] == 1) {
                     if ($this->isNewItem() && !isset($input['hpos']) || $input['hpos'] == 0) {
                         $error_detected[] = __('You must define an horizontal position for this item');
                     }
                     $width = 0.5;
                 }
-                if ($item->model->fields['depth'] != 1) {
+                if ($model->fields['depth'] != 1) {
                     if ($this->isNewItem() && !isset($input['orientation'])) {
                         $error_detected[] = __('You must define an orientation for this item');
                     }
-                    $depth = $item->model->fields['depth'];
+                    $depth = $model->fields['depth'];
                 }
             }
 

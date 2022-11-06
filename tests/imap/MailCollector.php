@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -43,6 +45,7 @@ use NotificationTargetSoftwareLicense;
 use NotificationTargetTicket;
 use SoftwareLicense;
 use Ticket;
+use Psr\Log\LogLevel;
 
 class MailCollector extends DbTestCase
 {
@@ -75,7 +78,8 @@ class MailCollector extends DbTestCase
                    'date_creation'        => '',
                    'requester_field'      => '',
                    'add_cc_to_observer'   => '',
-                   'collect_only_unread'  => ''
+                   'collect_only_unread'  => '',
+                   'create_user_from_email' => '',
                ]);
     }
 
@@ -90,7 +94,7 @@ class MailCollector extends DbTestCase
                 'expected'  => "With a \ncarriage return"
             ], [
                 'raw'       => 'We have a problem, <strong>URGENT</strong>',
-                'expected'  => 'We have a problem, &#60;strong&#62;URGENT&#60;/strong&#62;'
+                'expected'  => 'We have a problem, <strong>URGENT</strong>'
             ], [ //dunno why...
                 'raw'       => 'Subject with =20 character',
                 'expected'  => "Subject with \n character"
@@ -112,11 +116,17 @@ class MailCollector extends DbTestCase
 
     public function testListEncodings()
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->array($this->testedInstance->listEncodings())
-               ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252']);
+        $this->newTestedInstance;
+
+        $this->when(
+            function () {
+                $this->array($this->testedInstance->listEncodings())
+                    ->containsValues(['utf-8', 'iso-8859-1', 'iso-8859-14', 'cp1252']);
+            }
+        )->error()
+           ->withType(E_USER_DEPRECATED)
+           ->withMessage('Called method is deprecated')
+           ->exists();
     }
 
     public function testPrepareInput()
@@ -576,18 +586,33 @@ class MailCollector extends DbTestCase
        // Collect all mails
         $this->doConnect();
         $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
-        $msg = $this->collector->collect($this->mailgate_id);
 
-       // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
-        global $PHP_LOG_HANDLER;
-        $records  = $PHP_LOG_HANDLER->getRecords();
-        $messages = array_column($records, 'message');
-        $this->array($messages)->hasSize(2);
-       // 05-empty-from.eml
-        $this->string($messages[0])->contains('The input is not a valid email address. Use the basic format local-part@hostname');
-       // 17-malformed-email.eml
-        $this->string($messages[1])->contains('Header with Name date or date not found');
-        $PHP_LOG_HANDLER->clear();
+        $expected_logged_errors = [
+            // 05-empty-from.eml
+            'The input is not a valid email address. Use the basic format local-part@hostname' => LogLevel::CRITICAL,
+            // 17-malformed-email.eml
+            'Header with Name date or date not found' => LogLevel::CRITICAL,
+        ];
+
+        $msg = null;
+        $this->output(
+            function () use (&$msg) {
+                $this->when(
+                    function () use (&$msg) {
+                        $msg = $this->collector->collect($this->mailgate_id);
+                    }
+                )
+                ->error()
+                    ->withType(E_USER_WARNING)
+                    ->withMessage('Invalid header "X-Invalid-Encoding"')
+                    ->exists();
+            }
+        )->matches('/^(.*\n){' . count($expected_logged_errors) . '}$/'); // Ensure that output has same count of lines than expected error count
+
+        // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
+        foreach ($expected_logged_errors as $error_message => $error_level) {
+            $this->hasPhpLogRecordThatContains($error_message, $error_level);
+        }
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
         $expected_refused_count          = 3;
@@ -661,7 +686,7 @@ class MailCollector extends DbTestCase
                 'users_id'      => $nuid,
                 'actor_type'    => \CommonITILActor::REQUESTER,
                 'tickets_names' => [
-                    'Test import mail avec emoticons :smiley: unicode',
+                    'Test import mail avec emoticons 😃 unicode',
                     'Test images',
                     'Test\'ed issue',
                     'Test Email from Outlook',
@@ -679,6 +704,12 @@ class MailCollector extends DbTestCase
                     '25 - Test attachment with invalid chars for OS',
                     '26 Illegal char in body',
                     '28 Multiple attachments no extension',
+                    '30 - &#60;GLPI&#62; Special &#38; chars',
+                    '31 - HTML message without body',
+                    '32 - HTML message with attributes on body tag',
+                    '33 - HTML message with unwanted tags inside body tag',
+                    '34 - Message with no MessageID header',
+                    '35 - Message with some invalid headers',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -705,26 +736,37 @@ Best regards,
 PLAINTEXT,
          // HTML on multi-part email
             'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
-<html>
-<body>
 <p>This message have reply to header, requester should be get from this header.</p>
-</body>
-</html>
 HTML,
             'Mono-part HTML message' => <<<HTML
-<html>
-<body>
 <p>This HTML message does not use <strong>"multipart/alternative"</strong> format.</p>
-</body>
-</html>
 HTML,
             '26 Illegal char in body' => <<<PLAINTEXT
 这是很坏的Minus C Blabla
 PLAINTEXT,
             '28 Multiple attachments no extension' => <<<HTML
-
-<HTML><BODY><div>&nbsp;</div><div>Test</div><div>&nbsp;</div></BODY></HTML>
+<div>&nbsp;</div><div>Test</div><div>&nbsp;</div>
 HTML,
+            '31 - HTML message without body' => <<<HTML
+This HTML message does not have a <i>body</i> tag.
+HTML,
+            '32 - HTML message with attributes on body tag' => <<<HTML
+This HTML message has an attribut on its <i>body</i> tag.
+HTML,
+            '33 - HTML message with unwanted tags inside body tag' => <<<HTML
+<p>This HTML message constains style, scripts and meta tags.</p>
+    
+    <p>It also contains text,</p>
+    
+    <p>between</p>
+    
+    <p>these unwanted</p>
+    
+    <p>tags.</p>
+HTML,
+            '35 - Message with some invalid headers' => <<<PLAINTEXT
+This message has some invalid headers, but it should collected anyways.
+PLAINTEXT,
         ];
 
         foreach ($actors_specs as $actor_specs) {
@@ -837,10 +879,57 @@ HTML,
                 'users_id' => $tuid,
                 'content'  => 'This is a reply that references Ticket 100 in References header (new format).' . "\r\n" . 'It should be added as followup.',
             ],
+            [
+                // 29.1-ticket-followup-above-header-and-under-footer-lines.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts above header line...' . "\r\n" . '...and finishes under footer line.',
+            ],
+            [
+                // 29.2-ticket-followup-above-header-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located above header line.',
+            ],
+            [
+                // 29.3-ticket-followup-under-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located under footer line.',
+            ],
+            [
+                // 29.4-ticket-followup-above-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located above header line, and there is no footer line.',
+            ],
+            [
+                // 29.5-ticket-followup-under-footer-line-without-header-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup is located under footer line, and there is no header line.',
+            ],
+            [
+                // 29.6-ticket-followup-under-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts under header line...' . "\r\n\r\n"
+                    . 'HERE IS THE INITIAL NOTIFICATION CONTENT' . "\r\n\r\n"
+                    . '...and there is no footer line.',
+            ],
+            [
+                // 29.7-ticket-followup-under-header-line-without-footer-line.eml
+                'items_id' => 101,
+                'users_id' => $tuid,
+                'content'  => 'My followup starts above footer line...' . "\r\n\r\n"
+                    . 'HERE IS THE INITIAL NOTIFICATION CONTENT' . "\r\n\r\n"
+                    . '...and there is no header line.',
+            ],
         ];
 
         foreach ($expected_followups as $expected_followup) {
-            $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup)))->isEqualTo(1);
+            $this->integer(countElementsInTable(ITILFollowup::getTable(), Sanitizer::sanitize($expected_followup)))
+                ->isEqualTo(1, sprintf("Followup not found:\n> %s", $expected_followup['content']));
         }
     }
 

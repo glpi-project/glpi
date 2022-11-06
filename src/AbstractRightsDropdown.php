@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -38,17 +40,21 @@ abstract class AbstractRightsDropdown
     /**
      * Max limit per itemtype
      */
-    const LIMIT = 50;
+    public const LIMIT = 50;
+
+    /**
+     * To be redefined by subclasses, URL to front file
+     *
+     * @return string
+     */
+    abstract protected static function getAjaxUrl(): string;
 
     /**
      * To be redefined by subclasses, specify enabled types
      *
      * @return array
      */
-    protected static function getTypes(): array
-    {
-        return [];
-    }
+    abstract protected static function getTypes(): array;
 
     /**
      * Check if a given type is enabled
@@ -73,22 +79,28 @@ abstract class AbstractRightsDropdown
      */
     public static function show(string $name, array $values): string
     {
-        global $CFG_GLPI;
+        // Flatten values
+        $dropdown_values = [];
+        foreach ($values as $fkey => $ids) {
+            foreach ($ids as $id) {
+                $dropdown_values[] = $fkey . "-" . $id;
+            }
+        }
 
-       // Build DOM id
+        // Build DOM id
         $field_id = $name . "_" . mt_rand();
 
-       // Build url
-        $url = $CFG_GLPI['root_doc'] . "/ajax/getRightDropdownValue.php";
+        // Build url
+        $url = static::getAjaxUrl();
 
-       // Build params
+        // Build params
         $params = [
-            'values' => $values,
-            'valuesnames' => self::getValueNames($values),
+            'name'        => $name . "[]",
+            'values'      => $dropdown_values,
+            'valuesnames' => self::getValueNames($dropdown_values),
             'multiple'    => true,
         ];
-
-        return Html::jsAjaxDropdown($name, $field_id, $url, $params);
+        return Html::jsAjaxDropdown($params['name'], $field_id, $url, $params);
     }
 
     /**
@@ -259,5 +271,44 @@ abstract class AbstractRightsDropdown
         }
 
         return $groups_items;
+    }
+
+    /**
+     * To be used in front files dealing with dropdown input created by
+     * static::show()
+     * Read values from a "flattened" select 2 multi itemtype dropdown like this:
+     * [
+     *    0 => 'users_id-3',
+     *    1 => 'users_id-14',
+     *    2 => 'groups_id-2',
+     *    3 => 'groups_id-78',
+     *    4 => 'profiles_id-1',
+     * ]
+     * into an array containings the ids of the specified $class parameter:
+     * $class = User -> [3, 14]
+     * $class = Group -> [2, 78]
+     * $class = Profile -> [1]
+     *
+     * @param array  $values Flattened array containing multiple itemtypes and ids
+     * @param string $class  Class to filter results on
+     *
+     * @return array List of ids
+     */
+    public static function getPostedIds(array $values, string $class): array
+    {
+        $inflated_values = [];
+
+        foreach ($values as $value) {
+            // Split fkey and ids
+            $parsed_values = explode("-", $value);
+            $fkey  = $parsed_values[0];
+            $value = $parsed_values[1];
+
+            if ($fkey == $class::getForeignKeyField()) {
+                $inflated_values[] = $value;
+            }
+        }
+
+        return $inflated_values;
     }
 }

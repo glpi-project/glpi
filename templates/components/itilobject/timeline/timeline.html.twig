@@ -1,12 +1,13 @@
 {#
  # ---------------------------------------------------------------------
+ #
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
- # based on GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -14,32 +15,36 @@
  #
  # This file is part of GLPI.
  #
- # GLPI is free software; you can redistribute it and/or modify
+ # This program is free software: you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation; either version 2 of the License, or
+ # the Free Software Foundation, either version 3 of the License, or
  # (at your option) any later version.
  #
- # GLPI is distributed in the hope that it will be useful,
+ # This program is distributed in the hope that it will be useful,
  # but WITHOUT ANY WARRANTY; without even the implied warranty of
  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  # GNU General Public License for more details.
  #
  # You should have received a copy of the GNU General Public License
- # along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
  # ---------------------------------------------------------------------
  #}
 
-{% set timeline_order = "flex-column" %}
-{% if user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
-    {% set timeline_order = "flex-column-reverse" %}
-{% endif %}
+{% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
-<div class="itil-timeline d-flex {{ timeline_order }} align-items-start mb-auto">
-   {{ include('components/itilobject/timeline/main_description.html.twig') }}
+<div class="itil-timeline d-flex flex-column align-items-start mb-auto">
+    {% if not is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/main_description.html.twig') }}
+    {% else %}
+        {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
+        {{ include('components/itilobject/answer.html.twig') }}
+    {% endif %}
 
    {% set status_closed = (item.fields['status'] in item.getClosedStatusArray()) %}
    {% for entry in timeline %}
       {% set entry_i = entry['item'] %}
+      {% set entry_object = get_item(entry['type'], entry_i['id']) %}
       {% set users_id = entry_i['users_id'] %}
       {% set is_private = entry_i['is_private'] ?? false %}
       {% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
@@ -98,16 +103,27 @@
       <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
+
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
+
          <div class="row">
             <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
                {% if entry_i['state'] is constant('Planning::TODO') %}
-                  <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+                  {% if can_edit_i %}
+                     <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+                  {% else %}
+                     <span class="state state_1" title="{{ __('To do') }}" style="cursor: not-allowed;"></span>
+                  {% endif %}
                {% elseif entry_i['state'] is constant('Planning::DONE') %}
-                  <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+                  {% if can_edit_i %}
+                     <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+                  {% else %}
+                     <span class="state state_2" title="{{ __('Done') }}" style="cursor: not-allowed;"></span>
+                  {% endif %}
                {% endif %}
             </div>
 
-            <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
+            <div class="col-auto d-flex flex-column user-part {{ 'right' in item_position ? 'ms-auto ms-0 order-sm-last' : 'order-first' }}">
                {% set avatar_rand = random() %}
                {# log entries have no users_id #}
                {% set entry_user = users_id is defined and users_id is not null ? get_item('User', users_id) : null %}
@@ -135,20 +151,18 @@
                {% endif %}
             </div>
             <div class="col-12 col-sm d-flex flex-column content-part">
-               <span class="row mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
-                  <div class="card-body">
+               <span class="mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
+                  <div class="card-body px-1 px-xxl-3">
                      {{ include('components/itilobject/timeline/timeline_item_header.html.twig') }}
 
-                     {% if itiltype is same as 'ITILValidation' %}
-                        {{ include('components/itilobject/timeline/form_validation.html.twig', {'form_mode': 'view'}) }}
-                     {% elseif itiltype is same as 'ITILTask' %}
-                        {{ include('components/itilobject/timeline/form_task.html.twig', {'form_mode': 'view'}) }}
-                     {% elseif itiltype is same as 'ITILFollowup' %}
-                        {{ include('components/itilobject/timeline/form_followup.html.twig', {'form_mode': 'view'}) }}
-                     {% elseif itiltype is same as 'ITILSolution' %}
-                        {{ include('components/itilobject/timeline/form_solution.html.twig', {'form_mode': 'view'}) }}
-                     {% elseif itiltype is same as 'Document_Item' %}
-                        {{ include('components/itilobject/timeline/form_document_item.html.twig', {'form_mode': 'view'}) }}
+                     {% if itiltype in timeline_itemtypes|column('type') %}
+                        {% set matching_types = timeline_itemtypes|filter((v) => v.type == itiltype) %}
+                        {% if matching_types|length > 0 %}
+                           {% set timeline_itemtype = matching_types|first %}
+                           {% if timeline_itemtype.template is defined %}
+                              {{ include(timeline_itemtype.template, {'form_mode': 'view'}) }}
+                           {% endif %}
+                        {% endif %}
                      {% else %}
                         <div class="read-only-content">
                            {{ entry_i['content']|safe_html }}
@@ -168,21 +182,29 @@
                {% endif %}
             </div>
          </div>
+
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
       </div>
    {% endfor %}
 
-   <div class="timeline-item tasks-title d-none">
-      <h3>{{ _n('Task', 'Tasks', get_plural_number()) }}</h3>
-   </div>
+    {% if is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/main_description.html.twig') }}
+    {% endif %}
 
-   {{ include('components/itilobject/timeline/todo-list-summary.html.twig') }}
+    <div class="timeline-item tasks-title d-none">
+        <h3>{{ _n('Task', 'Tasks', get_plural_number()) }}</h3>
+    </div>
 
-   <div class="timeline-item validations-title d-none mt-4">
-      <h3>{{ _n('Validation', 'Validations', get_plural_number()) }}</h3>
-   </div>
+    {{ include('components/itilobject/timeline/todo-list-summary.html.twig') }}
 
-   {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
-   {{ include('components/itilobject/answer.html.twig') }}
+    <div class="timeline-item validations-title d-none mt-4">
+        <h3>{{ _n('Validation', 'Validations', get_plural_number()) }}</h3>
+    </div>
+
+    {% if not is_timeline_reversed %}
+        {{ include('components/itilobject/timeline/approbation_form.html.twig') }}
+        {{ include('components/itilobject/answer.html.twig') }}
+    {% endif %}
 
 </div>
 

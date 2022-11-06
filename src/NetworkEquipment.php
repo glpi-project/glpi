@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -78,11 +80,6 @@ class NetworkEquipment extends CommonDBTM
     }
 
 
-    /**
-     * @see CommonGLPI::getAdditionalMenuOptions()
-     *
-     * @since 0.85
-     **/
     public static function getAdditionalMenuOptions()
     {
 
@@ -142,6 +139,7 @@ class NetworkEquipment extends CommonDBTM
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
          ->addStandardTab('Item_SoftwareVersion', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
+         ->addStandardTab('Item_Line', $ong, $options)
          ->addStandardTab('Item_Disk', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('NetworkName', $ong, $options)
@@ -154,6 +152,7 @@ class NetworkEquipment extends CommonDBTM
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
+         ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Reservation', $ong, $options)
          ->addStandardTab('Certificate_Item', $ong, $options)
@@ -372,6 +371,14 @@ class NetworkEquipment extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '72',
+            'table'              => 'glpi_autoupdatesystems',
+            'field'              => 'name',
+            'name'               => AutoUpdateSystem::getTypeName(1),
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
             'field'              => 'date_mod',
@@ -481,6 +488,15 @@ class NetworkEquipment extends CommonDBTM
             'datatype'           => 'dropdown'
         ];
 
+        $tab[] = [
+            'id'                 => '83',
+            'table'              => self::getTable(),
+            'field'              => 'last_inventory_update',
+            'name'               => __('Last inventory date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
+        ];
+
        // add operating system search options
         $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 
@@ -490,7 +506,11 @@ class NetworkEquipment extends CommonDBTM
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
+        $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
+
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
+
+        $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,20 +17,23 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Toolbox\Sanitizer;
 
 /**
  * CommonTreeDropdown Class
@@ -329,12 +333,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
         if ($cache) {
             foreach ($ancestors as $ancestor) {
                 $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
-                if ($GLPI_CACHE->has($ckey)) {
-                    $sons = $GLPI_CACHE->get($ckey);
-                    if (isset($sons[$this->getID()])) {
-                        unset($sons[$this->getID()]);
-                        $GLPI_CACHE->set($ckey, $sons);
-                    }
+                $sons = $GLPI_CACHE->get($ckey);
+                if ($sons !== null && isset($sons[$this->getID()])) {
+                    unset($sons[$this->getID()]);
+                    $GLPI_CACHE->set($ckey, $sons);
                 }
             }
         }
@@ -354,12 +356,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $ancestors = getAncestorsOf($this->getTable(), $this->getID());
         foreach ($ancestors as $ancestor) {
             $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
-            if ($GLPI_CACHE->has($ckey)) {
-                $sons = $GLPI_CACHE->get($ckey);
-                if (!isset($sons[$this->getID()])) {
-                    $sons[$this->getID()] = $this->getID();
-                    $GLPI_CACHE->set($ckey, $sons);
-                }
+            $sons = $GLPI_CACHE->get($ckey);
+            if ($sons !== null && !isset($sons[$this->getID()])) {
+                $sons[$this->getID()] = $this->getID();
+                $GLPI_CACHE->set($ckey, $sons);
             }
         }
     }
@@ -376,7 +376,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $changes = [
                 0,
                 '',
-                addslashes($this->getNameID()),
+                addslashes($this->getNameID(['forceid' => true])),
             ];
             Log::history(
                 $parent,
@@ -407,11 +407,11 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 $this->cleanParentsSons($oldParentID);
                 if ($history) {
                     if ($parent->getFromDB($oldParentID)) {
-                        $oldParentNameID = $parent->getNameID();
+                        $oldParentNameID = $parent->getNameID(['forceid' => true]);
                     }
                     $changes = [
                         '0',
-                        addslashes($this->getNameID()),
+                        addslashes($this->getNameID(['forceid' => true])),
                         '',
                     ];
                     Log::history(
@@ -429,12 +429,12 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 $this->addSonInParents();
                 if ($history) {
                     if ($parent->getFromDB($newParentID)) {
-                        $newParentNameID = $parent->getNameID();
+                        $newParentNameID = $parent->getNameID(['forceid' => true]);
                     }
                     $changes = [
                         '0',
                         '',
-                        addslashes($this->getNameID()),
+                        addslashes($this->getNameID(['forceid' => true])),
                     ];
                     Log::history(
                         $newParentID,
@@ -472,7 +472,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         if ($parent && $this->dohistory) {
             $changes = [
                 '0',
-                addslashes($this->getNameID()),
+                addslashes($this->getNameID(['forceid' => true])),
                 '',
             ];
             Log::history(
@@ -720,7 +720,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     }
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-                    $ma->addMessage($parent->getErrorMessage(ERROR_COMPAT));
+                    $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                 }
                 return;
         }
@@ -981,5 +981,24 @@ abstract class CommonTreeDropdown extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-subtask";
+    }
+
+    /**
+     * Separator is not encoded in DB, and it could not be changed as this is mandatory to be able to split tree
+     * correctly even if some tree elements are containing ">" char in their name (this one will be encoded).
+     *
+     * This method aims to sanitize the completename value in display context.
+     *
+     * @param string|null $completename
+     *
+     * @return string|null
+     */
+    public static function sanitizeSeparatorInCompletename(?string $completename): ?string
+    {
+        if (empty($completename)) {
+            return $completename;
+        }
+        $separator = ' > ';
+        return implode(Sanitizer::sanitize($separator), explode($separator, $completename));
     }
 }

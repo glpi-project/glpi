@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -99,6 +101,7 @@ class Printer extends CommonDBTM
         $this->addStandardTab('Cartridge', $ong, $options);
         $this->addStandardTab('PrinterLog', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
         $this->addStandardTab('Computer_Item', $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
@@ -111,6 +114,7 @@ class Printer extends CommonDBTM
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
+        $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Notepad', $ong, $options);
         $this->addStandardTab('Reservation', $ong, $options);
         $this->addStandardTab('Certificate_Item', $ong, $options);
@@ -263,6 +267,7 @@ class Printer extends CommonDBTM
                 Certificate_Item::class,
                 Computer_Item::class,
                 Item_Project::class,
+                Printer_CartridgeInfo::class
             ]
         );
 
@@ -428,6 +433,14 @@ class Printer extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '72',
+            'table'              => 'glpi_autoupdatesystems',
+            'field'              => 'name',
+            'name'               => AutoUpdateSystem::getTypeName(1),
             'datatype'           => 'dropdown'
         ];
 
@@ -631,11 +644,57 @@ class Printer extends CommonDBTM
             'massiveaction'      => false
         ];
 
+        $tab[] = [
+            'id'                 => '83',
+            'table'              => self::getTable(),
+            'field'              => 'last_inventory_update',
+            'name'               => __('Last inventory date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
+        ];
+
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd(get_class($this)));
+
+        $tab = array_merge($tab, Printer_CartridgeInfo::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd(get_class($this)));
+
+        return $tab;
+    }
+
+
+   /**
+    * @param $itemtype
+    *
+    * @return array
+    */
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'printer',
+            'name'               => self::getTypeName(Session::getPluralNumber())
+        ];
+
+        $tab[] = [
+            'id'                 => '131',
+            'table'              => 'glpi_computers_items',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of printers'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.itemtype' => 'Printer']
+            ]
+        ];
 
         return $tab;
     }
@@ -710,7 +769,7 @@ class Printer extends CommonDBTM
             'WHERE'  => [
                 'manufacturers_id'   => $manufacturer_id,
                 'name'               => $name,
-            ] + getEntitiesRestrictCriteria(self::getTable, 'entities_id', $entity, true)
+            ] + getEntitiesRestrictCriteria(self::getTable(), 'entities_id', $entity, true)
         ]);
 
         if ($printer = $iterator->current()) {

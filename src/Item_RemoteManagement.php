@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -40,6 +42,9 @@ class Item_RemoteManagement extends CommonDBChild
     public const TEAMVIEWER = 'teamviewer';
     public const LITEMANAGER = 'litemanager';
     public const ANYDESK = 'anydesk';
+    public const MESHCENTRAL = 'meshcentral';
+    public const SUPREMO = 'supremo';
+    public const RUSTDESK = 'rustdesk';
 
 
     public static function getTypeName($nb = 0)
@@ -71,6 +76,7 @@ class Item_RemoteManagement extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForItem($item, $withtemplate);
+        return true;
     }
 
 
@@ -211,6 +217,9 @@ class Item_RemoteManagement extends CommonDBChild
             case self::ANYDESK:
                 $href = "anydesk:$id";
                 break;
+            case self::SUPREMO:
+                $href = "supremo:$id";
+                break;
         }
 
         if ($href === null) {
@@ -348,7 +357,10 @@ class Item_RemoteManagement extends CommonDBChild
         $types = [
             self::TEAMVIEWER => 'TeamViewer',
             self::LITEMANAGER => 'LiteManager',
-            self::ANYDESK => 'AnyDesk'
+            self::ANYDESK => 'AnyDesk',
+            self::MESHCENTRAL => 'MeshCentral',
+            self::SUPREMO => 'SupRemo',
+            self::RUSTDESK => 'RustDesk',
         ];
         echo "<td>";
         echo Dropdown::showFromArray(

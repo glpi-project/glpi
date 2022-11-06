@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,36 +17,40 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
 namespace Glpi\System;
 
+use Glpi\System\Requirement\DataDirectoriesProtectedPath;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoriesWriteAccess;
 use Glpi\System\Requirement\DirectoryWriteAccess;
 use Glpi\System\Requirement\Extension;
+use Glpi\System\Requirement\ExtensionConstant;
 use Glpi\System\Requirement\ExtensionGroup;
+use Glpi\System\Requirement\InstallationNotOverriden;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
 use Glpi\System\Requirement\PhpVersion;
-use Glpi\System\Requirement\ProtectedWebAccess;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
+use Glpi\System\Requirement\SessionsSecurityConfiguration;
 
 /**
  * @since 9.5.0
@@ -100,16 +105,24 @@ class RequirementsManager
             false,
             __('Required for handling of compressed communication with inventory agents, installation of gzip packages from marketplace and PDF generation.')
         );
+        $requirements[] = new ExtensionConstant(
+            __('Sodium ChaCha20-Poly1305 size constant'),
+            'SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES',
+            false,
+            __('Enable usage of ChaCha20-Poly1305 encryption required by GLPI. This is provided by libsodium 1.0.12 and newer.')
+        );
 
         if ($db instanceof \DBmysql) {
             $requirements[] = new DbEngine($db);
         }
 
+        $requirements[] = new InstallationNotOverriden($db);
+
         global $PHPLOGGER;
         $requirements[] = new LogsWriteAccess($PHPLOGGER);
 
         $requirements[] = new DirectoriesWriteAccess(
-            __('Permissions for GLPI var directories'),
+            __('Permissions for GLPI data directories'),
             array_filter(
                 Variables::getDataDirectories(),
                 function ($directory) {
@@ -118,12 +131,13 @@ class RequirementsManager
             )
         );
 
-        $requirements[] = new ProtectedWebAccess(Variables::getDataDirectories());
+        $requirements[] = new DataDirectoriesProtectedPath(Variables::getDataDirectoriesConstants());
 
         $requirements[] = new SeLinux();
 
        // Below requirements are optionals
 
+        $requirements[] = new SessionsSecurityConfiguration();
         $requirements[] = new Extension(
             'exif',
             true,

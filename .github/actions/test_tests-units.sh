@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e -u -x -o pipefail
 
 ATOUM_ADDITIONNAL_OPTIONS=""
 if [[ "$CODE_COVERAGE" = true ]]; then
@@ -13,6 +14,7 @@ vendor/bin/atoum \
   --force-terminal \
   --use-dot-report \
   --bootstrap-file tests/bootstrap.php \
+  --fail-if-void-methods \
   --fail-if-skipped-methods \
   $ATOUM_ADDITIONNAL_OPTIONS \
   --max-children-number 10 \

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -570,6 +572,8 @@ class Document extends DbTestCase
         $this->boolean($inlinedDocument->canViewFile())->isFalse();
         $this->boolean($basicDocument->canViewFile([$fkey => $item->getID()]))->isFalse();
         $this->boolean($inlinedDocument->canViewFile([$fkey => $item->getID()]))->isFalse();
+        $this->boolean($basicDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]))->isFalse();
+        $this->boolean($inlinedDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]))->isFalse();
 
        // post-only can see documents linked to its own ITIL (ITIL content)
         $itil_user_class = $itemtype . '_User';
@@ -586,6 +590,8 @@ class Document extends DbTestCase
         $this->boolean($inlinedDocument->canViewFile())->isFalse(); // False without params
         $this->boolean($basicDocument->canViewFile([$fkey => $item->getID()]))->isTrue();
         $this->boolean($inlinedDocument->canViewFile([$fkey => $item->getID()]))->isTrue();
+        $this->boolean($basicDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]))->isTrue();
+        $this->boolean($inlinedDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]))->isTrue();
     }
 
     /**
@@ -686,6 +692,7 @@ class Document extends DbTestCase
         $_SESSION["glpiactiveprofile"][$itil::$rightname] = READ; // force READ write for tested ITIL type
         $this->boolean($inlinedDocument->canViewFile())->isFalse();
         $this->boolean($inlinedDocument->canViewFile([$fkey => $itil->getID()]))->isFalse();
+        $this->boolean($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]))->isFalse();
 
        // post-only can see documents linked to its own ITIL
         $itil_user_class = $itil_itemtype . '_User';
@@ -700,6 +707,7 @@ class Document extends DbTestCase
 
         $this->boolean($inlinedDocument->canViewFile())->isFalse(); // False without params
         $this->boolean($inlinedDocument->canViewFile([$fkey => $itil->getID()]))->isTrue();
+        $this->boolean($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]))->isTrue();
     }
 
     public function testCronCleanorphans()

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -170,7 +172,7 @@ class KnowbaseItem_Comment extends CommonDBTM
                        cache: false,
                        data: _data,
                        success: function(data) {
-                          var _form = $('<div class=\"newcomment\" id=\"newcomment'+_this.data('id')+'\">' + data + '</div>');
+                          var _form = $('<div class=\"newcomment ms-3\" id=\"newcomment'+_this.data('id')+'\">' + data + '</div>');
                           _bindForm(_form);
                           _this.parents('.h_item').after(_form);
                        },
@@ -271,34 +273,30 @@ class KnowbaseItem_Comment extends CommonDBTM
             $user->getFromDB($comment['users_id']);
 
             $html .= "<li class='comment" . ($level > 0 ? ' subcomment' : '') . "' id='kbcomment{$comment['id']}'>";
-            $html .= "<div class='h_item left'>";
+            $html .= "<div class='h_item left d-flex'>";
             if ($level === 0) {
                 $html .= '<hr/>';
             }
             $html .= "<div class='h_info'>";
             $html .= "<div class='h_date'>" . Html::convDateTime($comment['date_creation']) . "</div>";
             $html .= "<div class='h_user'>";
-            $html .= "<div class='tooltip_picture_border'>";
-            $html .= "<img class='user_picture' alt='' src='" .
-                User::getThumbnailURLForPicture($user->fields['picture']) . "'>";
-            $html .= "</div>";
-            $html .= "<span class='h_user_name'>";
-            $userdata = getUserName($user->getID(), 2);
-            $html .= $user->getLink() . "&nbsp;";
-            $html .= Html::showToolTip(
-                $userdata["comment"],
-                ['link' => $userdata['link'], 'display' => false]
-            );
-            $html .= "</span>";
+            $thumbnail_url = User::getThumbnailURLForPicture($user->fields['picture']);
+            $style = !empty($thumbnail_url) ? "background-image: url(\"$thumbnail_url\")" : ("background-color: " . $user->getUserInitialsBgColor());
+            $html .= '<a href="' . $user->getLinkURL() . '">';
+            $html .= "<span class='avatar avatar-md rounded' style='{$style}'>";
+            if (empty($thumbnail_url)) {
+                $html .= $user->getUserInitials();
+            }
+            $html .= '</span></a>';
             $html .= "</div>"; // h_user
             $html .= "</div>"; //h_info
 
             $html .= "<div class='h_content KnowbaseItemComment'>";
-            $html .= "<div class='displayed_content'>";
+            $html .= "<div class='displayed_content ms-2'>";
 
             if ($cancomment) {
                 if (Session::getLoginUserID() == $comment['users_id']) {
-                    $html .= "<span class='fa fa-pencil-square-o edit_item'
+                    $html .= "<span class='ti ti-edit edit_item pointer'
                   data-kbitem_id='{$comment['knowbaseitems_id']}'
                   data-lang='{$comment['language']}'
                   data-id='{$comment['id']}'></span>";

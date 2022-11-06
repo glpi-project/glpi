@@ -1,14 +1,15 @@
-#!/bin/bash -e
+#!/bin/bash -eu
 
 #
 # ---------------------------------------------------------------------
+#
 # GLPI - Gestionnaire Libre de Parc Informatique
-# Copyright (C) 2015-2022 Teclib' and contributors.
 #
 # http://glpi-project.org
 #
-# based on GLPI - Gestionnaire Libre de Parc Informatique
-# Copyright (C) 2003-2014 by the INDEPNET Development Team.
+# @copyright 2015-2022 Teclib' and contributors.
+# @copyright 2003-2014 by the INDEPNET Development Team.
+# @licence   https://www.gnu.org/licenses/gpl-3.0.html
 #
 # ---------------------------------------------------------------------
 #
@@ -16,18 +17,19 @@
 #
 # This file is part of GLPI.
 #
-# GLPI is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# GLPI is distributed in the hope that it will be useful,
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 # ---------------------------------------------------------------------
 #
 
@@ -62,13 +64,13 @@ $WORKING_DIR/bin/console build:compile_scss
 
 echo "Remove dev files and directories"
 # Remove PHP dev dependencies that are not anymore used
-composer update nothing --ignore-platform-reqs --no-dev --no-scripts --working-dir=$WORKING_DIR
+composer update nothing --ansi --no-interaction --ignore-platform-reqs --no-dev --no-scripts --working-dir=$WORKING_DIR
 
 # Remove user generated files (i.e. cache and log from CLI commands ran during release)
-find $WORKING_DIR/files -depth -mindepth 2 ! -iname "remove.txt" -exec rm -rf {} \;
+find $WORKING_DIR/files -depth -mindepth 2 -exec rm -rf {} \;
 
-# Remove hidden files and directory, except .htaccess files
-find $WORKING_DIR -depth \( -iname ".*" ! -iname ".htaccess" \) -exec rm -rf {} \;
+# Remove hidden files and directory, except .version directory and .htaccess files
+find $WORKING_DIR -depth \( -iname ".*" ! -iname ".version" ! -iname ".htaccess" \) -exec rm -rf {} \;
 
 # Remove useless dev files and directories
 dev_nodes=(
@@ -79,14 +81,45 @@ dev_nodes=(
     "node_modules"
     "package.json"
     "package-lock.json"
+    "phpstan.neon"
     "PULL_REQUEST_TEMPLATE.md"
+    "stubs"
     "tests"
     "tools"
     "vendor/bin"
+    "vendor/blueimp/jquery-file-upload/cors"
+    "vendor/blueimp/jquery-file-upload/test"
+    "vendor/blueimp/jquery-file-upload/wdio"
+    "vendor/blueimp/jquery-file-upload/index.html"
+    "vendor/donatj/phpuseragentparser/.helpers"
+    "vendor/donatj/phpuseragentparser/bin"
+    "vendor/donatj/phpuseragentparser/tests"
+    "vendor/glpi-project/inventory_format/examples"
+    "vendor/glpi-project/inventory_format/source_files"
+    "vendor/htmlawed/htmlawed/htmLawedTest.php"
+    "vendor/html2text/html2text/test"
+    "vendor/mexitek/phpcolors/demo"
+    "vendor/mexitek/phpcolors/tests"
+    "vendor/michelf/php-markdown/test"
+    "vendor/phplang/scope-exit/tests"
+    "vendor/rlanvin/php-rrule/bin"
+    "vendor/rlanvin/php-rrule/tests"
+    "vendor/sabre/dav/bin"
+    "vendor/sabre/event/bin"
+    "vendor/sabre/http/bin"
+    "vendor/sabre/http/examples"
+    "vendor/sabre/http/tests"
+    "vendor/sabre/vobject/bin"
+    "vendor/sabre/xml/bin"
+    "vendor/scssphp/scssphp/bin"
+    "vendor/seld/jsonlint/bin"
+    "vendor/tecnickcom/tcpdf/examples"
+    "vendor/tecnickcom/tcpdf/tools"
+    "vendor/wapmorgan/unified-archive/bin"
+    "vendor/wapmorgan/unified-archive/tests"
     "webpack.config.js"
 )
 for node in "${dev_nodes[@]}"
 do
     rm -rf $WORKING_DIR/$node
 done
-find $WORKING_DIR/pics/ -depth -type f -iname "*.eps" -exec rm -rf {} \;

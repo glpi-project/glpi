@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -44,6 +46,9 @@ abstract class CommonDevice extends CommonDropdown
    // From CommonDBTM
     public $dohistory           = true;
 
+    public $first_level_menu  = "config";
+    public $second_level_menu = "commondevice";
+    public $third_level_menu  = "";
 
     public static function getTypeName($nb = 0)
     {
@@ -110,18 +115,40 @@ abstract class CommonDevice extends CommonDropdown
             foreach ($dps as $tab) {
                 foreach ($tab as $key => $val) {
                     if ($tmp = getItemForItemtype($key)) {
-                        $menu['options'][$key]['title']           = $val;
-                        $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
-                        $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
+                        $menu['options'][$key] = [
+                            'title' => $val,
+                            'page'  => $tmp->getSearchURL(false),
+                            'links' => [
+                                'search' => $tmp->getSearchURL(false),
+                            ]
+                        ];
                         if ($tmp->canCreate()) {
                             $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
                         }
+
                         if ($itemClass = getItemForItemtype(self::getItem_DeviceType($key))) {
-                            $itemTypeName = sprintf(__('%1$s items'), $key::getTypeName(1));
+                            $itemTypeName = sprintf(
+                                _n('%s item', '%s items', Session::getPluralNumber()),
+                                $key::getTypeName(1)
+                            );
 
                             $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
                             . '<span class="sr-only">' . $itemTypeName . '</span>';
                             $menu['options'][$key]['links'][$listLabel] = $itemClass->getSearchURL(false);
+
+                            // item device self links
+                            $item_device_key = $itemClass->getType();
+                            $item_device_search_url = $itemClass->getSearchURL(false);
+                            $menu['options'][$item_device_key] = [
+                                'title' => $itemTypeName,
+                                'page'  => $item_device_search_url,
+                                'links' => [
+                                    'search' => $item_device_search_url,
+                                ],
+                            ];
+                            if ($itemClass->canCreate()) {
+                                $menu['options'][$item_device_key]['links']['add'] = $itemClass->getFormURL(false);
+                            }
                         }
                     }
                 }
@@ -305,13 +332,6 @@ abstract class CommonDevice extends CommonDropdown
         );
     }
 
-
-    public function displayHeader()
-    {
-        Html::header($this->getTypeName(1), '', "config", "commondevice", get_class($this));
-    }
-
-
     /**
      * @since 0.84
      *
@@ -339,7 +359,7 @@ abstract class CommonDevice extends CommonDropdown
      *                            (default NULL)
      * @param $options   array    parameter such as restriction
      *
-     * @return HTMLTableHeader
+     * @return HTMLTableHeader|void
      **/
     public static function getHTMLTableHeader(
         $itemtype,
@@ -452,6 +472,9 @@ abstract class CommonDevice extends CommonDropdown
     {
         global $DB;
 
+        $with_history = $input['with_history'] ?? true;
+        unset($input['with_history']);
+
         if (!isset($input['designation']) || empty($input['designation'])) {
             return 0;
         }
@@ -486,7 +509,7 @@ abstract class CommonDevice extends CommonDropdown
             return $line['id'];
         }
 
-        return $this->add($input);
+        return $this->add($input, [], $with_history);
     }
 
 

@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -37,6 +39,7 @@ use DbTestCase;
 use GLPIKey;
 use Group;
 use Group_User;
+use UserTitle;
 
 /* Test for inc/authldap.class.php */
 
@@ -2155,5 +2158,42 @@ class AuthLDAP extends DbTestCase
         } else {
             $this->object($ldap_connection)->isInstanceOf('\LDAP\Connection');
         }
+    }
+
+    public function testIgnoreImport()
+    {
+        //prepare rules
+        $rules = new \RuleRight();
+        $rules_id = $rules->add([
+            'sub_type'     => 'RuleRight',
+            'name'         => 'test ldap ignore import',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $criteria = new \RuleCriteria();
+        $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LDAP_SERVER',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $this->ldap->getID(),
+        ]);
+        $actions = new \RuleAction();
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => '_ignore_user_import',
+            'value'       => '1', // Reject
+        ]);
+        // login the user to force synchronisation
+        $this->login('brazil6', 'password', false, false);
+
+        // Check title not created
+        $ut = new UserTitle();
+        $uts = $ut->find([
+            'name' => 'manager',
+        ]);
+        $this->array($uts)->hasSize(0);
     }
 }

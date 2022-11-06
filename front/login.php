@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,6 +37,7 @@
  * @since 0.85
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 
 include('../inc/includes.php');
@@ -86,12 +89,9 @@ $auth = new Auth();
 if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth)) {
     Auth::redirectIfAuthenticated();
 } else {
-   // we have done at least a good login? No, we exit.
-    Html::nullHeader("Login", $CFG_GLPI["root_doc"] . '/index.php');
-    echo '<div class="center b">' . $auth->getErr() . '<br><br>';
-   // Logout whit noAUto to manage auto_login with errors
-    echo '<a href="' . $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1' .
-         str_replace("?", "&", $REDIRECT) . '">' . __('Log in again') . '</a></div>';
-    Html::nullFooter();
+    TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
+        'errors'    => $auth->getErrors(),
+        'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1' . str_replace("?", "&", $REDIRECT),
+    ]);
     exit();
 }

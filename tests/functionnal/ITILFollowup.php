@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -35,6 +37,7 @@ namespace tests\units;
 
 use CommonITILActor;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
 use ITILFollowup as CoreITILFollowup;
 use Ticket;
 use Ticket_User;
@@ -45,12 +48,13 @@ use User;
 class ITILFollowup extends DbTestCase
 {
     /**
-     * Create a new ITILObject and return its id
+     * Create a new ITILObject and return its id or the object
      *
      * @param string $itemtype ITILObject parent to test followups on
-     * @return integer
+     * @param bool   $as_object
+     * @return integer|\CommonDBTM
      */
-    private function getNewITILObject($itemtype)
+    private function getNewITILObject($itemtype, bool $as_object = false)
     {
        //create reference ITILObject
         $itilobject = new $itemtype();
@@ -63,7 +67,7 @@ class ITILFollowup extends DbTestCase
 
         $this->boolean($itilobject->isNewItem())->isFalse();
         $this->boolean($itilobject->can($itilobject->getID(), \READ))->isTrue();
-        return (int)$itilobject->getID();
+        return $as_object ? $itilobject : (int)$itilobject->getID();
     }
 
     public function testACL()
@@ -246,10 +250,9 @@ class ITILFollowup extends DbTestCase
             'itemtype'                        => \Ticket::class,
         ]));
 
-        $this->boolean($ticket->getFromDB($ticketID))
-         ->isTrue();
-        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])
-         ->isGreaterThan(0);
+        $this->boolean($ticket->getFromDB($ticketID))->isTrue();
+        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])->isGreaterThan(0);
+        $this->string($ticket->fields['takeintoaccountdate'])->isEqualTo($_SESSION['glpi_currenttime']);
 
        // Now using the _do_not_compute_takeintoaccount flag
         $ticketID = $this->getNewITILObject('Ticket');
@@ -265,11 +268,9 @@ class ITILFollowup extends DbTestCase
             'itemtype'                        => \Ticket::class,
         ]));
 
-        $this->boolean($ticket->getFromDB($ticketID))
-         ->isTrue();
-
-        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])
-         ->isEqualTo(0);
+        $this->boolean($ticket->getFromDB($ticketID))->isTrue();
+        $this->integer((int) $ticket->fields['takeintoaccount_delay_stat'])->isEqualTo(0);
+        $this->variable($ticket->fields['takeintoaccountdate'])->isEqualTo(null);
 
        // Reset conf
         $_SESSION['glpiset_default_tech']      = $oldConf['glpiset_default_tech'];
@@ -412,15 +413,18 @@ class ITILFollowup extends DbTestCase
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
             'name'    => 'a followup',
-            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000"'
-         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-            '_content' => [
+            'content' => Sanitizer::sanitize(<<<HTML
+<p>Test with a ' (add)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML
+            ),
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.00000000',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
             ]
         ];
@@ -428,6 +432,7 @@ class ITILFollowup extends DbTestCase
 
         $instance->add($input);
         $this->boolean($instance->isNewItem())->isFalse();
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
         $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
 
@@ -437,19 +442,23 @@ class ITILFollowup extends DbTestCase
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
-            'content' => '&lt;p&gt; &lt;/p&gt;&lt;p&gt;&lt;img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333"'
-         . ' src="data:image/png;base64,' . $base64Image . '" width="12" height="12" /&gt;&lt;/p&gt;',
-            '_content' => [
+            'content' => Sanitizer::sanitize(<<<HTML
+<p>Test with a ' (update)</p>
+<p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
+HTML
+            ),
+            '_filename' => [
                 $filename,
             ],
-            '_tag_content' => [
+            '_tag_filename' => [
                 '3e29dffe-0237ea21-5e5e7034b1d1a1.33333333',
             ],
-            '_prefix_content' => [
+            '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
             ]
         ]);
         $this->boolean($success)->isTrue();
+        $this->boolean($instance->getFromDB($instance->getId()))->isTrue();
         $expected = 'a href="/front/document.send.php?docid=';
         $this->string($instance->fields['content'])->contains($expected);
     }
@@ -520,5 +529,41 @@ class ITILFollowup extends DbTestCase
             'items_id' => $instance->getID(),
         ]);
         $this->integer($count)->isEqualTo(2);
+    }
+
+    public function testAddFromTemplate()
+    {
+        $this->login();
+
+        $ticket = $this->getNewITILObject('Ticket', true);
+        $template = new \ITILFollowupTemplate();
+        $templates_id = $template->add([
+            'name'               => 'test template',
+            'content'            => 'test template',
+            'is_private'         => 1,
+        ]);
+        $this->integer($templates_id)->isGreaterThan(0);
+        $fup = new \ITILFollowup();
+        $fups_id = $fup->add([
+            '_itilfollowuptemplates_id' => $templates_id,
+            'itemtype'                  => 'Ticket',
+            'items_id'                  => $ticket->fields['id'],
+        ]);
+        $this->integer($fups_id)->isGreaterThan(0);
+
+        $this->string($fup->fields['content'])->isEqualTo(Sanitizer::sanitize('<p>test template</p>', false));
+        $this->integer($fup->fields['is_private'])->isEqualTo(1);
+
+        $fups_id = $fup->add([
+            '_itilfollowuptemplates_id' => $templates_id,
+            'itemtype'                  => 'Ticket',
+            'items_id'                  => $ticket->fields['id'],
+            'content'                   => 'test template2',
+            'is_private'                => 0,
+        ]);
+        $this->integer($fups_id)->isGreaterThan(0);
+
+        $this->string($fup->fields['content'])->isEqualTo('test template2');
+        $this->integer($fup->fields['is_private'])->isEqualTo(0);
     }
 }

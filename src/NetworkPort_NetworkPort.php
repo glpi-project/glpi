@@ -2,13 +2,14 @@
 
 /**
  * ---------------------------------------------------------------------
+ *
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
- * based on GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
  *
@@ -16,18 +17,19 @@
  *
  * This file is part of GLPI.
  *
- * GLPI is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * GLPI is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -82,8 +84,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation
             if ($this->fields['networkports_id_2'] == $ID) {
                 return $this->fields['networkports_id_1'];
             }
-            return false;
         }
+        return false;
     }
 
     /**
@@ -182,10 +184,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     {
         $opposite_id = $this->getOppositeContact($ports_id);
         if ($opposite_id && $this->getFromDBForNetworkPort($opposite_id) || $this->getFromDBForNetworkPort($ports_id)) {
-            if ($this->delete($this->fields)) {
-                $this->cleanHubPorts();
-            }
+            return $this->delete($this->fields);
         }
+        return true; // Nothing to disconnect
     }
 
     /**
@@ -228,7 +229,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
             }
         }
 
-       // If hub have no port, delete it
+        // If hub have no port, delete it
         foreach (array_keys($hubs_ids) as $unmanageds_id) {
             $networkports = $netport->find([
                 'itemtype'  => Unmanaged::getType(),
@@ -263,7 +264,10 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     public function prepareInputForAdd($input)
     {
 
-        if ($this->getFromDBForNetworkPort([$input['networkports_id_1'], $input['networkports_id_2']])) {
+        if (
+            $this->getFromDBForNetworkPort($input['networkports_id_1'])
+            || $this->getFromDBForNetworkPort($input['networkports_id_2'])
+        ) {
             trigger_error('Wired non unique!', E_USER_WARNING);
             return false;
         }
@@ -280,6 +284,11 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     {
         $this->storeConnectionLog('remove');
         return true;
+    }
+
+    public function post_deleteItem()
+    {
+        $this->cleanHubPorts();
     }
 
     /**
