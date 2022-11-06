@@ -1786,7 +1786,6 @@ class Ticket extends CommonITILObject
 
             $rules = new RuleTicketCollection($input['entities_id']);
 
-
             $input = $rules->processAllRules(
                 $input,
                 $input,
