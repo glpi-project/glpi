@@ -746,7 +746,7 @@ class Socket extends CommonDBChild
         $header_end .= "<th>" .  _n('Network port', 'Network ports', Session::getPluralNumber()) . "</th>";
         $header_end .= "<th>" .  Cable::getTypeName(0) . "</th>";
         $header_end .= "<th>" .  __('Itemtype') . "</th>";
-        $header_end .= "<th>" .  __('Item') . "</th>";
+        $header_end .= "<th>" .  __('Item', 'Items') . "</th>";
         $header_end .= "</tr>\n";
         echo $header_begin . $header_top . $header_end;
 
