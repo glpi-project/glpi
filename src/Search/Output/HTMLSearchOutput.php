@@ -138,7 +138,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'may_be_located'      => $item instanceof \CommonDBTM && $item->maybeLocated(),
             'may_be_browsed'      => $item !== null && \Toolbox::hasTrait($item, \Glpi\Features\TreeBrowse::class),
             'may_be_unpublished'  => $itemtype == 'KnowbaseItem' && $item->canUpdate(),
-        ]);
+        ] + ($params['extra_twig_params'] ?? []));
 
         // Add items in item list
         foreach ($data['data']['rows'] as $row) {
