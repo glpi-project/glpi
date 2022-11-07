@@ -1178,7 +1178,7 @@ class Ticket extends CommonITILObject
            //try to find user from changes if exist (defined as _itil_requester)
             if (isset($input["_itil_requester"]["users_id"])) {
                 $user_id = $input["_itil_requester"]["users_id"];
-            } elseif (isset($input["_users_id_requester"])) {  //else try to find user from input
+            } else if (isset($input["_users_id_requester"])) {  //else try to find user from input
                 $user_id = is_array($input["_users_id_requester"]) ? reset($input["_users_id_requester"]) : $input["_users_id_requester"];
             }
 
@@ -2629,7 +2629,7 @@ JAVASCRIPT;
                 foreach ($status as $id => $status_code) {
                     if ($status_code == 0) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                    } elseif ($status_code == 2) {
+                    } else if ($status_code == 2) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     } else {
@@ -4884,7 +4884,7 @@ JAVASCRIPT;
                         foreach ($job->hardwaredatas as $hardwaredatas) {
                             if ($hardwaredatas->canView()) {
                                 $associated_elements[] = $hardwaredatas->getTypeName() . " - " . "<span class='b'>" . $hardwaredatas->getLink() . "</span>";
-                            } elseif ($hardwaredatas) {
+                            } else if ($hardwaredatas) {
                                 $associated_elements[] = $hardwaredatas->getTypeName() . " - " . "<span class='b'>" . $hardwaredatas->getNameID() . "</span>";
                             }
                         }
@@ -5416,7 +5416,7 @@ JAVASCRIPT;
                     if ($hardwaredatas->canView()) {
                         echo $hardwaredatas->getTypeName() . " - ";
                         echo "<span class='b'>" . $hardwaredatas->getLink() . "</span><br/>";
-                    } elseif ($hardwaredatas) {
+                    } else if ($hardwaredatas) {
                         echo $hardwaredatas->getTypeName() . " - ";
                         echo "<span class='b'>" . $hardwaredatas->getNameID() . "</span><br/>";
                     }
@@ -6312,7 +6312,7 @@ JAVASCRIPT;
                                     ) {
                                         // Internal users
                                         return false;
-                                    } elseif (
+                                    } else if (
                                         $existing_user['users_id'] == 0 && $user['users_id'] == 0 &&
                                         $existing_user['alternative_email'] === $user['alternative_email'] &&
                                         $existing_user['type'] === $user['type']
@@ -6343,7 +6343,7 @@ JAVASCRIPT;
                                     ) {
                                         // Internal suppliers
                                         return false;
-                                    } elseif (
+                                    } else if (
                                         $existing_supplier['suppliers_id'] == 0 && $supplier['suppliers_id'] == 0 &&
                                         $existing_supplier['alternative_email'] === $supplier['alternative_email'] &&
                                         $existing_supplier['type'] === $supplier['type']
