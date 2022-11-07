@@ -496,6 +496,13 @@ class Update extends CommonGLPI {
             update956to957();
             break;
 
+         case "9.5.7":
+         case "9.5.8":
+         case "9.5.9":
+         case "9.5.10":
+         case "9.5.11":
+            // no schema update since 9.5.7
+
          case GLPI_VERSION:
          case GLPI_SCHEMA_VERSION:
             break;
