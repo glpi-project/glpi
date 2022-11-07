@@ -33,50 +33,47 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
-
-use CommonDBTM;
-use Glpi\Inventory\Conf;
-
-class HardDrive extends Device
+class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
 {
-    public function prepare(): array
+    /**
+     * Constructor
+     **/
+    public function __construct()
     {
-        $mapping = [
-            'disksize'      => 'capacity',
-            'interface'     => 'interfacetypes_id',
-            'manufacturer'  => 'manufacturers_id',
-            'model'         => 'designation'
-        ];
+        parent::__construct('RuleDictionnaryOperatingSystemEdition');
+    }
 
-        foreach ($this->data as &$val) {
-            foreach ($mapping as $origin => $dest) {
-                if (property_exists($val, $origin)) {
-                    $val->$dest = $val->$origin;
-                }
-            }
 
-            if ((!property_exists($val, 'model') || $val->model == '') && property_exists($val, 'name')) {
-                $val->designation = $val->name;
-            }
+    /**
+     * @see Rule::getCriterias()
+     **/
+    public function getCriterias()
+    {
 
-            if (!isset($val->capacity) || $val->capacity == '') {
-                $val->capacity = 0;
-            }
+        static $criterias = [];
 
-            $val->is_dynamic = 1;
+        if (count($criterias)) {
+            return $criterias;
         }
 
-        return $this->data;
+        $criterias['name']['field'] = 'name';
+        $criterias['name']['name']  = _n('Edition', 'Editions', 1);
+        $criterias['name']['table'] = 'glpi_operatingsystemeditions';
+
+        return $criterias;
     }
 
-    public function checkConf(Conf $conf): bool
-    {
-        return $conf->component_harddrive == 1;
-    }
 
-    public function getItemtype(): string
+    /**
+     * @see Rule::getActions()
+     **/
+    public function getActions()
     {
-        return \Item_DeviceHardDrive::class;
+
+        $actions                          = [];
+        $actions['name']['name']          = _n('Edition', 'Editions', 1);
+        $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
+
+        return $actions;
     }
 }

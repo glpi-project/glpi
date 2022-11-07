@@ -88,14 +88,15 @@
       {% endif %}
 
       {% set solution_class = '' %}
-      {% if itiltype == 'ITILSolution'  %}
-         {% if entry_i['status'] is constant('CommonITILValidation::WAITING') %}
+      {% if (itiltype == 'ITILSolution' or itiltype == 'ITILValidation') and entry_i['status'] is defined %}
+         {% set status = itiltype == 'ITILSolution' ? entry_i['status'] : entry_i['status']|replace({'status_': ''}) %}
+         {% if status == constant('CommonITILValidation::WAITING') %}
             {% set solution_class = 'waiting' %}
          {% endif %}
-         {% if entry_i['status'] is constant('CommonITILValidation::ACCEPTED') %}
+         {% if status == constant('CommonITILValidation::ACCEPTED') %}
             {% set solution_class = 'accepted' %}
          {% endif %}
-         {% if entry_i['status'] is constant('CommonITILValidation::REFUSED') %}
+         {% if status == constant('CommonITILValidation::REFUSED') %}
             {% set solution_class = 'refused' %}
          {% endif %}
       {% endif %}

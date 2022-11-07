@@ -49,7 +49,8 @@ describe('Search Tokenizer Input', () => {
     test('Constructor', () => {
         const test_input = $('input[name=filter]');
         const search_input = new SearchInput(test_input, {});
-        expect(search_input.original_input).toStrictEqual(test_input);
+        expect(search_input.original_input).toBeDefined();
+        expect(search_input.original_input.attr('name')).toBe('filter');
 
         expect(search_input.displayed_input).toBeDefined();
         const displayed_input = search_input.displayed_input;
@@ -77,7 +78,8 @@ describe('Search Tokenizer Input', () => {
         const search_input = new SearchInput(test_input, {
             input_options: input_options
         });
-        expect(search_input.original_input).toStrictEqual(test_input);
+        expect(search_input.original_input).toBeDefined();
+        expect(search_input.original_input.attr('name')).toBe('filter');
 
         const displayed_input = search_input.displayed_input.get(0);
         expect(displayed_input).toHaveClass(...input_options.classes);
@@ -119,7 +121,8 @@ describe('Search Tokenizer Input', () => {
                 data: 'copy',
             }
         });
-        expect(search_input.original_input).toStrictEqual(test_input);
+        expect(search_input.original_input).toBeDefined();
+        expect(search_input.original_input.attr('name')).toBe('filter');
 
         const displayed_input = search_input.displayed_input.get(0);
         expect(displayed_input).toHaveClass(...input_options.classes);

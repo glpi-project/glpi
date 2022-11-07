@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * @since 10.0.0
  */
@@ -155,7 +157,7 @@ class PendingReasonCron extends CommonDBTM
                     'itemtype' => $item::getType(),
                     'items_id' => $item->getID(),
                     'users_id' => $config['system_user'],
-                    'content' => addslashes($fup_template->getRenderedContent($item)),
+                    'content' => Sanitizer::sanitize($fup_template->getRenderedContent($item)),
                     'is_private' => $fup_template->fields['is_private'],
                     'requesttypes_id' => $fup_template->fields['requesttypes_id'],
                     'timeline_position' => CommonITILObject::TIMELINE_RIGHT,
@@ -182,7 +184,7 @@ class PendingReasonCron extends CommonDBTM
                     'itemtype'         => $item::getType(),
                     'items_id'         => $item->getID(),
                     'solutiontypes_id' => $solution_template->fields['solutiontypes_id'],
-                    'content'          => addslashes($solution_template->getRenderedContent($item)),
+                    'content'          => Sanitizer::sanitize($solution_template->getRenderedContent($item)),
                     'users_id'         => $config['system_user'],
                 ]);
                 $task->addVolume(1);

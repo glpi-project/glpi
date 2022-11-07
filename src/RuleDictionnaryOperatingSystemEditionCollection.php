@@ -33,50 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
-
-use CommonDBTM;
-use Glpi\Inventory\Conf;
-
-class HardDrive extends Device
+class RuleDictionnaryOperatingSystemEditionCollection extends RuleDictionnaryDropdownCollection
 {
-    public function prepare(): array
+    public $item_table  = "glpi_operatingsystemeditions";
+    public $menu_option = "os_edition";
+
+    /**
+     * @see RuleCollection::getTitle()
+     **/
+    public function getTitle()
     {
-        $mapping = [
-            'disksize'      => 'capacity',
-            'interface'     => 'interfacetypes_id',
-            'manufacturer'  => 'manufacturers_id',
-            'model'         => 'designation'
-        ];
-
-        foreach ($this->data as &$val) {
-            foreach ($mapping as $origin => $dest) {
-                if (property_exists($val, $origin)) {
-                    $val->$dest = $val->$origin;
-                }
-            }
-
-            if ((!property_exists($val, 'model') || $val->model == '') && property_exists($val, 'name')) {
-                $val->designation = $val->name;
-            }
-
-            if (!isset($val->capacity) || $val->capacity == '') {
-                $val->capacity = 0;
-            }
-
-            $val->is_dynamic = 1;
-        }
-
-        return $this->data;
-    }
-
-    public function checkConf(Conf $conf): bool
-    {
-        return $conf->component_harddrive == 1;
-    }
-
-    public function getItemtype(): string
-    {
-        return \Item_DeviceHardDrive::class;
+        return __('Dictionnary of operating system editions');
     }
 }

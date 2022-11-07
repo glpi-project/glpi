@@ -6332,7 +6332,7 @@ JAVASCRIPT;
         $first  = DBmysql::quoteName("$table.$first");
         $second = DBmysql::quoteName("$table.$second");
         $alias  = DBmysql::quoteName($alias);
-        $name   = DBmysql::quoteName(self::getNameField());
+        $name   = DBmysql::quoteName($table . '.' . self::getNameField());
 
         return new QueryExpression("IF(
             $first <> '' && $second <> '',

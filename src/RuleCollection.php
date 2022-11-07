@@ -2353,6 +2353,10 @@ JAVASCRIPT;
                         'label'  => OperatingSystemArchitecture::getTypeName(Session::getPluralNumber()),
                         'link'   => 'ruledictionnaryoperatingsystemarchitecture.php',
                         'icon'   => OperatingSystemArchitecture::getIcon(),
+                    ], [
+                        'label'  => OperatingSystemEdition::getTypeName(Session::getPluralNumber()),
+                        'link'   => 'ruledictionnaryoperatingsystemedition.php',
+                        'icon'   => OperatingSystemEdition::getIcon(),
                     ]
                 ]
             ];

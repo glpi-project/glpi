@@ -231,18 +231,6 @@
             border-color: $timeline-sol-border;
             border-left: 1em transparent solid;
 
-            &.waiting {
-                border-left-color: rgb(221, 157, 39);
-            }
-
-            &.accepted {
-                border-left-color: rgb(52, 143, 52);
-            }
-
-            &.refused {
-                border-left: 1em rgb(226, 80, 80) solid;
-            }
-
             .solimg {
                 position: absolute;
                 color: rgba(66, 91, 100, 10%);
@@ -263,6 +251,23 @@
 
             &.t-right::after {
                 border-color: $timeline-sol-bg transparent transparent $timeline-sol-bg;
+            }
+        }
+    }
+
+    &.ITILValidation,
+    &.ITILSolution {
+        .timeline-content {
+            &.waiting {
+                border-left-color: rgb(221, 157, 39);
+            }
+
+            &.accepted {
+                border-left: 1em rgb(52, 143, 52) solid;
+            }
+
+            &.refused {
+                border-left: 1em rgb(226, 80, 80) solid;
             }
         }
     }

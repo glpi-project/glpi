@@ -4118,12 +4118,14 @@ class Transfer extends CommonDBTM
             echo '</th></tr>';
 
             echo "<tr><td class='tab_bg_1 top'>";
+
+            /** @var class-string<CommonDBTM> $itemtype */
             foreach ($_SESSION['glpitransfer_list'] as $itemtype => $tab) {
                 if (count($tab)) {
                     if (!($item = getItemForItemtype($itemtype))) {
                         continue;
                     }
-                    $table = getTableForItemType($itemtype);
+                    $table = $itemtype::getTable();
 
                     $iterator = $DB->request([
                         'SELECT'    => [

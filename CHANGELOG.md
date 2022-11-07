@@ -92,7 +92,7 @@ The present file will list all changes made to the project; according to the
 - `Search::outputData()`
 - `Search::sylk_clean()`
 
-## [10.0.4] unreleased
+## [10.0.6] unreleased
 
 ### Added
 
@@ -112,25 +112,17 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
+## [10.0.5] 2022-11-04
+
+## [10.0.4] 2022-11-03
+
 ## [10.0.3] 2022-09-14
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
 
 ### API changes
 
 #### Added
 
 - `CommonDBTM::pre_addToDB()` added.
-
-#### Changes
-
-#### Deprecated
 
 #### Removed
 

@@ -501,6 +501,18 @@ class Rule extends CommonDBTM
                               = '/front/ruledictionnaryoperatingsystemarchitecture.form.php';
             }
 
+            $menu['dictionnary']['options']['os_edition']['title']
+            = OperatingSystemEdition::getTypeName(1);
+            $menu['dictionnary']['options']['os_edition']['page']
+                        = '/front/ruledictionnaryoperatingsystemedition.php';
+            $menu['dictionnary']['options']['os_edition']['links']['search']
+                        = '/front/ruledictionnaryoperatingsystemedition.php';
+
+            if (RuleDictionnaryDropdown::canCreate()) {
+                $menu['dictionnary']['options']['os_edition']['links']['add']
+                        = '/front/ruledictionnaryoperatingsystemedition.form.php';
+            }
+
             $menu['dictionnary']['options']['printer']['title']
                            = _n('Printer', 'Printers', Session::getPluralNumber());
             $menu['dictionnary']['options']['printer']['page']

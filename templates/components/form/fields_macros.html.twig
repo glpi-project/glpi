@@ -278,6 +278,9 @@
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
+   {% if value == 'NULL' %}
+      {% set value = null %}
+   {% endif %}
    {% if options.checkIsExpired %}
       {% if value|date('Y-m-d H:i:s') < "now"|date('Y-m-d H:i:s') %}
          {% set class = 'warn' %}
