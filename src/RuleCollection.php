@@ -1271,7 +1271,11 @@ JAVASCRIPT;
 
        //if no conflict detected, we can directly process the import
         if (!count($rules_refused)) {
-            Html::redirect("rule.backup.php?action=process_import");
+            if (!isCommandLine()) {
+                Html::redirect("rule.backup.php?action=process_import");
+            } else {
+                return RuleCollection::processImportRules();
+            }
         }
 
        //print report
