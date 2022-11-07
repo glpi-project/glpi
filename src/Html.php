@@ -3286,7 +3286,6 @@ JS;
             'with_days'   => true,
             'with_specific_date' => true,
             'display'     => true,
-            'auto_width'  => false
         ];
 
         if (is_array($options) && count($options)) {
@@ -3320,9 +3319,7 @@ JS;
             $specific_value = $value;
             $value          = 0;
         }
-        $table_width_attr = !$p['auto_width'] ? 'style="width: 100%"' : '';
-        $table_cell_width_attr = !$p['auto_width'] ? 'style="width: 50%"' : '';
-        $output    .= "<table $table_width_attr><tr><td $table_cell_width_attr>";
+        $output    .= "<table><tr><td>";
 
         $dates      = Html::getGenericDateTimeSearchItems($p);
 
@@ -3336,7 +3333,7 @@ JS;
         );
         $field_id   = Html::cleanId("dropdown__select_$element$rand");
 
-        $output    .= "</td><td $table_cell_width_attr>";
+        $output    .= "</td><td>";
         $contentid  = Html::cleanId("displaygenericdate$element$rand");
         $output    .= "<span id='$contentid'></span>";
 

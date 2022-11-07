@@ -5006,7 +5006,6 @@ class CommonDBTM extends CommonGLPI
                         if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
                              $options['with_future'] = true;
                         }
-                        $options['auto_width'] = true;
                         return Html::showGenericDateTimeSearch($name, $value, $options);
                     }
                     $copytooption = ['min', 'max', 'maybeempty', 'showyear'];
@@ -5024,7 +5023,6 @@ class CommonDBTM extends CommonGLPI
                              $options['with_future'] = true;
                         }
                         $options['with_time'] = true;
-                        $options['auto_width'] = true;
                         return Html::showGenericDateTimeSearch($name, $value, $options);
                     }
                     $copytooption = ['mindate', 'maxdate', 'mintime', 'maxtime',
