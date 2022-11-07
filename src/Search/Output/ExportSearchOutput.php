@@ -163,7 +163,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
         return $out;
     }
 
-    public static function displayData(array $data, array $params)
+    public static function displayData(array $data, array $params = [])
     {
         global $CFG_GLPI;
 
