@@ -1358,7 +1358,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
                 $user_tmp = new User();
                 if ($user_tmp->getFromDB($followup['users_id'])) {
-                    array_merge($tmp, self::getActorData($user_tmp, 0, 'followup.author'));
+                    $tmp = array_merge($tmp, self::getActorData($user_tmp, 0, 'followup.author'));
                 }
 
                 $tmp['##followup.requesttype##'] = '';
