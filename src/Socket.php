@@ -801,14 +801,14 @@ class Socket extends CommonDBChild
             }
 
             if (
-                $cable->fields['itemtype_endpoint_a'] === $item->getType() &&
-                    $cable->fields['items_id_endpoint_a'] === $item->getID()
+                $cable->fields['itemtype_endpoint_a'] === $item->getType()
+                && $cable->fields['items_id_endpoint_a'] === $item->getID()
             ) {
-                    $itemtype = $cable->fields['itemtype_endpoint_b'];
-                    $item_id = $cable->fields['items_id_endpoint_b'];
+                $itemtype = $cable->fields['itemtype_endpoint_b'];
+                $item_id = $cable->fields['items_id_endpoint_b'];
             } else {
                 $itemtype = $cable->fields['itemtype_endpoint_a'];
-                $itemId = $cable->fields['items_id_endpoint_a'];
+                $item_id = $cable->fields['items_id_endpoint_a'];
             }
 
             $endpoint = getItemForItemtype($itemtype);
