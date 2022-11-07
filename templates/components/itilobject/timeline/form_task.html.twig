@@ -350,7 +350,6 @@
                      <script type="text/javascript">
                         function showPlanUpdate{{ rand }}(e) {
                            $('#plan{{ rand }}').hide();
-                           $('#unplan{{ rand }}').hide();
                            $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
                               action: "add_event_classic_form",
                               form: "followups", // Was followups for tasks before. Can't find where this is used.
@@ -362,19 +361,25 @@
                               parent_itemtype: "{{ item.type }}",
                               parent_items_id: {{ item.fields['id'] }},
                               parent_fk_field: "{{ item.getForeignKeyField() }}",
+                              begin: "{{ subitem.fields['begin'] }}",
+                              end: "{{ subitem.fields['end'] }}",
                            });
                         }
                      </script>
                      <div class="col-12">
-                        <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
-                           <i class="fas fa-calendar"></i>
-                           <span>{{ __('Plan this task') }}</span>
-                        </button>
                         {% if subitem.can(id, constant('UPDATE')) and subitem.fields['begin'] %}
+                           <script type="text/javascript">
+                              showPlanUpdate{{ rand }}();
+                           </script>
                            <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
                                  onclick="return confirm('{{ __('Confirm the deletion of planning?') }}');">
                               <i class="fas ti ti-calendar-off"></i>
                               <span>{{ __('Unplan') }}</span>
+                           </button>
+                        {% else %}
+                           <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
+                              <i class="fas fa-calendar"></i>
+                              <span>{{ __('Plan this task') }}</span>
                            </button>
                         {% endif %}
                         <div id="viewplan{{ rand }}"></div>
