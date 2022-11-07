@@ -52,15 +52,24 @@ class Update
     private $language;
 
     /**
+     * Directory containing migrations.
+     *
+     * @var string
+     */
+    private $migrations_directory;
+
+    /**
      * Constructor
      *
      * @param object $DB   Database instance
      * @param array  $args Command line arguments; default to empty array
+     * @param string $migrations_directory
      */
-    public function __construct($DB, $args = [])
+    public function __construct($DB, $args = [], string $migrations_directory = GLPI_ROOT . '/install/migrations/')
     {
         $this->DB = $DB;
         $this->args = $args;
+        $this->migrations_directory = $migrations_directory;
     }
 
     /**
@@ -392,7 +401,7 @@ class Update
         $current_version = VersionParser::getNormalizedVersion($current_version);
 
         $pattern = '/^update_(?<source_version>\d+\.\d+\.(?:\d+|x))_to_(?<target_version>\d+\.\d+\.(?:\d+|x))\.php$/';
-        $migration_iterator = new DirectoryIterator(GLPI_ROOT . '/install/migrations/');
+        $migration_iterator = new DirectoryIterator($this->migrations_directory);
         foreach ($migration_iterator as $file) {
             $versions_matches = [];
             if ($file->isDir() || $file->isDot() || preg_match($pattern, $file->getFilename(), $versions_matches) !== 1) {
@@ -407,7 +416,7 @@ class Update
                 $force_migration = true;
             }
             if (version_compare($versions_matches['target_version'], $current_version, '>') || $force_migration) {
-                $migrations[$file->getRealPath()] = preg_replace(
+                $migrations[$file->getPathname()] = preg_replace(
                     '/^update_(\d+)\.(\d+)\.(\d+|x)_to_(\d+)\.(\d+)\.(\d+|x)\.php$/',
                     'update$1$2$3to$4$5$6',
                     $file->getBasename()
