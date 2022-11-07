@@ -880,7 +880,7 @@ class Ticket extends CommonITILObject
                 if (!Plugin::isPluginActive($plugin) || !is_callable($hook_callback)) {
                     continue;
                 }
-                $hook_result = $hook_callback(['item' => $ong]);
+                $hook_result = $hook_callback(['item' => $this, 'tabs' => $ong]);
                 if (is_array($hook_result)) {
                     $ong = $hook_result;
                 }
