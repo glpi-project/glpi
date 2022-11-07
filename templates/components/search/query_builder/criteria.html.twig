@@ -49,7 +49,7 @@
       num: num,
    }]) }}
 {% else %}
-   <div class="list-group-item {{ add_padding }} border-0 normalcriteria{{ add_class }}" id="{{ rowid }}">
+   <div class="list-group-item {{ add_padding }} border-0 normalcriteria{{ add_class }}" id="{{ row_id }}">
       <div class="row g-1">
          {% if not from_meta %}
             {% if num == 0 and mainform is defined and mainform %}
@@ -62,7 +62,7 @@
                <input type="hidden" id="unpublished" name="unpublished" value="{{ p['unpublished'] }}">
             {% endif %}
             <div class="col-auto">
-               <button class="btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria" type="button" data-rowid="{{ rowid }}"
+               <button class="btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria" type="button" data-rowid="{{ row_id }}"
                        data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Delete a rule') }}">
                   <i class="ti ti-square-minus" alt="-"></i>
                </button>

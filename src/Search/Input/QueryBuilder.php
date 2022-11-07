@@ -409,6 +409,7 @@ final class QueryBuilder implements SearchInputInterface
             'criteria'   => $criteria ?? null,
             'prefix'     => $prefix,
             'p'         => $p,
+            'row_id'      => $rowid,
         ]);
     }
 
@@ -458,7 +459,7 @@ final class QueryBuilder implements SearchInputInterface
 
         $rowid  = 'metasearchrow' . $request['itemtype'] . $rand;
         TemplateRenderer::getInstance()->display('components/search/query_builder/metacriteria.html.twig', [
-            'rowid'       => $rowid,
+            'row_id'       => $rowid,
             'metacriteria' => $metacriteria,
             'prefix'      => $prefix,
             'num'         => $num,
