@@ -3280,11 +3280,14 @@ JS;
     {
         global $CFG_GLPI;
 
-        $p['with_time']          = false;
-        $p['with_future']        = false;
-        $p['with_days']          = true;
-        $p['with_specific_date'] = true;
-        $p['display']            = true;
+        $p = [
+            'with_time'   => false,
+            'with_future' => false,
+            'with_days'   => true,
+            'with_specific_date' => true,
+            'display'     => true,
+            'auto_width'  => false
+        ];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -3317,7 +3320,9 @@ JS;
             $specific_value = $value;
             $value          = 0;
         }
-        $output    .= "<table width='100%'><tr><td width='50%'>";
+        $table_width_attr = !$p['auto_width'] ? 'style="width: 100%"' : '';
+        $table_cell_width_attr = !$p['auto_width'] ? 'style="width: 50%"' : '';
+        $output    .= "<table $table_width_attr><tr><td $table_cell_width_attr>";
 
         $dates      = Html::getGenericDateTimeSearchItems($p);
 
@@ -3331,7 +3336,7 @@ JS;
         );
         $field_id   = Html::cleanId("dropdown__select_$element$rand");
 
-        $output    .= "</td><td width='50%'>";
+        $output    .= "</td><td $table_cell_width_attr>";
         $contentid  = Html::cleanId("displaygenericdate$element$rand");
         $output    .= "<span id='$contentid'></span>";
 
