@@ -805,16 +805,14 @@ class Socket extends CommonDBChild
                     $cable->fields['items_id_endpoint_a'] === $item->getID()
             ) {
                     $itemtype = $cable->fields['itemtype_endpoint_b'];
-                    $itemId = $cable->fields['items_id_endpoint_b'];
+                    $item_id = $cable->fields['items_id_endpoint_b'];
             } else {
                 $itemtype = $cable->fields['itemtype_endpoint_a'];
                 $itemId = $cable->fields['items_id_endpoint_a'];
             }
 
-
-            if ($itemId !== 0) {
-                $endpoint = new $itemtype();
-                $endpoint->getFromDB($itemId);
+            $endpoint = getItemForItemtype($itemtype);
+            if ($endpoint !== false && $item_id !== 0 && $endpoint->getFromDB($item_id)) {
                 echo "<td>" . $endpoint->getType() . "</td>";
                 echo "<td><a href='" . $endpoint->getLinkURL() . "'>" . $endpoint->getName() . "</a></td>";
             } else {
