@@ -94,19 +94,16 @@ class OperatingSystem extends InventoryAsset
             'operatingsystemeditions_id'        => RuleDictionnaryOperatingSystemEditionCollection::class
         ];
 
-        //copy inventory data to prevent data override
-        $inventory_val = $val;
+        $rule_input = [
+            'os_name'           => $val->operatingsystems_id ?? '',
+            'os_version_name'   => $val->operatingsystemversions_id ?? '',
+            'servicepack_name'  => $val->operatingsystemservicepacks_id ?? '',
+            'arch_name'         => $val->operatingsystemarchitectures_id ?? '',
+            'os_edition'        => $val->operatingsystemeditions_id ?? '',
+        ];
+
         foreach ($mapping as $key => $rule_class) {
             $rulecollection = new $rule_class();
-            $rule_input = [
-                'name'              => $inventory_val->{$key} ?? "",
-                'os_name'           => $inventory_val->operatingsystems_id ?? '',
-                'os_version_name'   => $inventory_val->operatingsystemversions_id ?? '',
-                'servicepack_name'  => $inventory_val->operatingsystemservicepacks_id ?? '',
-                'arch_name'         => $inventory_val->operatingsystemarchitectures_id ?? '',
-                'os_edition'        => $inventory_val->operatingsystemeditions_id ?? '',
-            ];
-
             $res_rule = $rulecollection->processAllRules($rule_input);
             if (isset($res_rule['name'])) {
                 $val->{$key} = $res_rule['name'];

@@ -56,9 +56,9 @@ class RuleDictionnaryOperatingSystemArchitecture extends RuleDictionnaryDropdown
             return $criterias;
         }
 
-        $criterias['name']['field'] = 'name';
-        $criterias['name']['name']  = OperatingSystemArchitecture::getTypeName(1);
-        $criterias['name']['table'] = 'glpi_operatingsystemarchitectures';
+        $criterias['arch_name']['field'] = 'name';
+        $criterias['arch_name']['name']  = OperatingSystemArchitecture::getTypeName(1);
+        $criterias['arch_name']['table'] = 'glpi_operatingsystemarchitectures';
 
         $criterias['os_name']['field'] = 'name';
         $criterias['os_name']['name']  = OperatingSystem::getTypeName(1);
