@@ -162,7 +162,11 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         $informations->addRow([__('Database name'), $this->db->dbdefault, '']);
         $informations->addRow([__('Database user'), $this->db->dbuser, '']);
         $informations->addRow([__('GLPI version'), $current_version, GLPI_VERSION]);
-        $informations->addRow([__('GLPI database version'), $current_db_version, GLPI_SCHEMA_VERSION]);
+        $informations->addRow([
+            __('GLPI database version'),
+            $this->getPrettyDbVersion($current_db_version),
+            $this->getPrettyDbVersion(GLPI_SCHEMA_VERSION),
+        ]);
         $informations->render();
 
         if (Update::isDbUpToDate() && !$force) {
@@ -274,5 +278,44 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         } else {
             $this->output->writeln('<info>' . __('Database schema is OK.') . '</info>');
         }
+    }
+
+    /**
+     * Get DB version to display.
+     *
+     * @param string $raw_version
+     *
+     * @return string
+     */
+    private function getPrettyDbVersion(string $raw_version): string
+    {
+        $version_matches = [];
+        if (preg_match('/^(?<version>.+)@(?<hash>.+)$/', $raw_version, $version_matches) !== 1) {
+            // Version does not match expected pattern. It either contains no hash, either has an unexpected format.
+            // Preserve raw version string for debug purpose.
+            return $raw_version;
+        }
+
+        $version_cleaned = $version_matches['version'];
+        $version_hash    = $version_matches['hash'];
+
+        if (!VersionParser::isStableRelease($version_cleaned)) {
+            // Not a stable version. Keep hash for debug purpose.
+            return $raw_version;
+        }
+
+        $schema_path = sprintf(
+            '%s/install/mysql/glpi-%s-empty.sql',
+            GLPI_ROOT,
+            VersionParser::getNormalizedVersion($version_cleaned, false) // strip stability flag
+        );
+        if (file_exists($schema_path) && $version_hash !== sha1_file($schema_path)) {
+            // Version hash does not match schema file sha1. Installation was probably made from a specific commit
+            // or a nightly build.
+            // Keep hash for debug purpose.
+            return $raw_version;
+        }
+
+        return $version_cleaned;
     }
 }
