@@ -383,23 +383,24 @@ abstract class InventoryAsset
      */
     protected function addOrMoveItem(array $input): void
     {
-        $citem = new \Computer_Item();
-        $citem->getFromDBByCrit([
-            'itemtype' => $input['itemtype'],
-            'items_id' => $input['items_id'],
-            'is_deleted' => 0 //do not take care of deleted computers_items (e.g. the monitor / Printer / Peripheral is connected to another computer)
-        ]);
-
         $itemtype = $input['itemtype'];
         $item = new $itemtype();
-        $item->getFromDb($input['items_id']);
+        $item->getFromDB($input['items_id']);
 
-        //check for global management type configuration
         if (!$item->isGlobal()) {
-            if (isset($citem->fields['id'])) {
-                $citem->delete(['id' => $citem->fields['id']], true);
-            }
+            // Item is not global, delete links with other assets.
+            $citem = new \Computer_Item();
+            $citem->deleteByCriteria(
+                [
+                    'itemtype' => $input['itemtype'],
+                    'items_id' => $input['items_id'],
+                ],
+                true,
+                false
+            );
         }
+
+        $citem = new \Computer_Item();
         $citem->add($input, [], false);
     }
 
