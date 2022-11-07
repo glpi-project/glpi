@@ -876,14 +876,13 @@ class Ticket extends CommonITILObject
         }
 
         if (isset($PLUGIN_HOOKS["customtabs"]) && is_array($PLUGIN_HOOKS["customtabs"])) {
-            foreach ($PLUGIN_HOOKS['customtabs'] as $plugin => $hook_ong) {
-                if (!Plugin::isPluginActive($plugin)) {
+            foreach ($PLUGIN_HOOKS['customtabs'] as $plugin => $hook_callback) {
+                if (!Plugin::isPluginActive($plugin) || !is_callable($hook_callback)) {
                     continue;
                 }
-                if (is_callable($hook_ong)) {
-                    if (is_array($hook_ong(['item' => $ong]))) {
-                        $ong = $hook_ong(['item' => $ong]);
-                    }
+                $hook_result = $hook_callback(['item' => $ong]);
+                if (is_array($hook_result)) {
+                    $ong = $hook_result;
                 }
             }
         }
