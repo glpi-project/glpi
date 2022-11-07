@@ -72,7 +72,9 @@ class RuleDictionnaryOperatingSystemArchitecture extends RuleDictionnaryDropdown
         $criterias['servicepack_name']['name']  = OperatingSystemServicePack::getTypeName(1);
         $criterias['servicepack_name']['table'] = 'glpi_operatingsystemservicepacks';
 
-
+        $criterias['os_edition']['field'] = 'name';
+        $criterias['os_edition']['name']  = OperatingSystemEdition::getTypeName(1);
+        $criterias['os_edition']['table'] = 'glpi_operatingsystemeditions';
 
         return $criterias;
     }

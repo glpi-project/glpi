@@ -41,6 +41,7 @@ use Glpi\Toolbox\Sanitizer;
 use Item_OperatingSystem;
 use RuleDictionnaryOperatingSystemArchitectureCollection;
 use RuleDictionnaryOperatingSystemCollection;
+use RuleDictionnaryOperatingSystemEditionCollection;
 use RuleDictionnaryOperatingSystemServicePackCollection;
 use RuleDictionnaryOperatingSystemVersionCollection;
 
@@ -90,6 +91,7 @@ class OperatingSystem extends InventoryAsset
             'operatingsystemversions_id'        => RuleDictionnaryOperatingSystemVersionCollection::class,
             'operatingsystemservicepacks_id'    => RuleDictionnaryOperatingSystemServicePackCollection::class,
             'operatingsystemarchitectures_id'   => RuleDictionnaryOperatingSystemArchitectureCollection::class,
+            'operatingsystemeditions_id'        => RuleDictionnaryOperatingSystemEditionCollection::class
         ];
 
         //copy inventory data to prevent data override
@@ -97,11 +99,12 @@ class OperatingSystem extends InventoryAsset
         foreach ($mapping as $key => $rule_class) {
             $rulecollection = new $rule_class();
             $rule_input = [
-                'name'              => property_exists($inventory_val, $key) ? $inventory_val->{$key} : "",
+                'name'              => $inventory_val->{$key} ?? "",
                 'os_name'           => $inventory_val->operatingsystems_id ?? '',
                 'os_version_name'   => $inventory_val->operatingsystemversions_id ?? '',
                 'servicepack_name'  => $inventory_val->operatingsystemservicepacks_id ?? '',
                 'arch_name'         => $inventory_val->operatingsystemarchitectures_id ?? '',
+                'os_edition'        => $inventory_val->operatingsystemeditions_id ?? '',
             ];
 
             $res_rule = $rulecollection->processAllRules($rule_input);
