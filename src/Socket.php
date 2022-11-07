@@ -425,7 +425,7 @@ class Socket extends CommonDBChild
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'itemlink'
         ];
 
         $tab[] = [
