@@ -58,7 +58,7 @@
         "symfony/console": "^5.4",
         "symfony/css-selector": "^6.0",
         "symfony/dom-crawler": "^6.0",
-        "symfony/mailer": "^5.4",
+        "symfony/mailer": "^6.0",
         "symfony/mime": "^6.0",
         "symfony/polyfill-ctype": "^1.26",
         "symfony/polyfill-iconv": "^1.26",
