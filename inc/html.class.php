@@ -3972,7 +3972,7 @@ JS;
                      });
                   }
 
-                  editor.on('SaveContent', function (contentEvent) {
+                  editor.on('PostProcess', function (contentEvent) {
                      contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
                   });
                   editor.on('Change', function (e) {
