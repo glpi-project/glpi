@@ -3960,7 +3960,8 @@ HTML;
         $start = 0,
         $limit = -1,
         $inactive_deleted = 0,
-        $with_no_right = 0
+        $with_no_right = 0,
+        array $condition = []
     ) {
         global $DB;
 
@@ -4220,6 +4221,10 @@ HTML;
             ];
         }
 
+        if (count($condition)) {
+            $WHERE[] = [$condition];
+        }
+
         // remove helpdesk user
         $config = Config::getConfigurationValues('core');
         $WHERE[] = [
@@ -4396,7 +4401,7 @@ HTML;
             'hide_if_no_elements' => false,
             'readonly'            => false,
             'multiple'            => false,
-            'group_id'            => 0,
+            'condition'           => [],
         ];
 
         if (is_array($options) && count($options)) {
@@ -4478,6 +4483,7 @@ HTML;
             'placeholder'         => $p['placeholder'],
             'right'               => $p['right'],
             'on_change'           => $p['on_change'],
+            'used'                => $p['used'],
             'inactive_deleted'    => $p['inactive_deleted'],
             'with_no_right'       => $p['with_no_right'],
             'entity_restrict'     => ($entity_restrict = (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity'])),
@@ -4488,9 +4494,7 @@ HTML;
                 'right'           => $p['right'],
                 'entity_restrict' => $entity_restrict,
             ]),
-            'group_id'            => $p['group_id'],
-            'used'                => $p['used'],
-            'used_counter'        => count($p['used']),
+            'condition'           => $p['condition'],
         ];
 
         if ($p['multiple']) {

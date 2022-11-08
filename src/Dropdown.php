@@ -3884,13 +3884,11 @@ JAVASCRIPT;
 
         if (isset($post['used'])) {
             $used = $post['used'];
-            if (!isset($post['used_counter']) && isset($post['group_id'])) {
-                $gusers = Group_User::getGroupUsers($post['group_id']);
-                $used = [];
-                foreach ($gusers as $user) {
-                    $used[$user['id']] = $user['id'];
-                }
-            }
+        }
+
+        $condition = [];
+        if (isset($post['condition'])) {
+            $condition = $_SESSION['glpicondition'][$post['condition']];
         }
 
         if (!isset($post['value'])) {
@@ -3921,7 +3919,8 @@ JAVASCRIPT;
             $start,
             (int)$post['page_limit'],
             $inactive_deleted,
-            $with_no_right
+            $with_no_right,
+            $condition,
         );
 
         $users = [];
