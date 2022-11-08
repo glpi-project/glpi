@@ -7,7 +7,7 @@
             <name>Clean Linux OS Name</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 &#xD;
 Example :&#xD;
@@ -43,7 +43,7 @@ AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #0 = AlmaLinux&#xD;
             <name>Clean Linux OS Version</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 For : &#xD;
 &#xD;
@@ -79,7 +79,7 @@ AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #1 = 9.0&#xD;
             <name>Clean Linux OS Edition</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 For : &#xD;
 &#xD;
@@ -116,7 +116,7 @@ AlmaLinux 8.6 (Sky Tiger) -&amp;#62; #2 = Sky Tiger&#xD;
             <name>Clean Windows OS name</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
 &#xD;
 Example :&#xD;
@@ -149,7 +149,7 @@ Microsoft Windows 11 Professionnel  -&amp;#62; #1 : Windows</comment>
             <name>Clean Windows OS Version</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
 &#xD;
 Example :&#xD;
@@ -182,7 +182,7 @@ Microsoft Windows 11 Professionnel  -&amp;#62; #2 : 11</comment>
             <name>Clean Windows OS Edition</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
 &#xD;
 Example :&#xD;
@@ -215,7 +215,7 @@ Microsoft Windows 11 Professionnel  -&amp;#62; #4 : Professionnel</comment>
             <name>Clean Windows Server OS Name</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
 &#xD;
 Example :&#xD;
@@ -245,7 +245,7 @@ Microsoft&#xAE; Windows Server&#xAE; 2008 Standard -&amp;#62; #2 #3 : Windows Se
             <name>Clean Windows Server OS Version</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
 &#xD;
 Example :&#xD;
@@ -275,7 +275,7 @@ Microsoft&#xAE; Windows Server&#xAE; 2008 Standard -&amp;#62; #5 : 2008</comment
             <name>Clean Windows Server OS Edition</name>
             <description></description>
             <match>AND</match>
-            <is_active>1</is_active>
+            <is_active>0</is_active>
             <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
 &#xD;
 Example :&#xD;
