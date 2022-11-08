@@ -121,7 +121,7 @@ class Application extends BaseApplication
         }
     }
 
-    protected function getDefaultInputDefinition()
+    protected function getDefaultInputDefinition(): InputDefinition
     {
 
         $definition = new InputDefinition(
