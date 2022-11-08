@@ -2394,6 +2394,18 @@ class Toolbox
                 }
             }
 
+            Config::detectRootDoc();
+            Config::loadLegacyConfiguration();
+            //rules
+            $base_dir = GLPI_ROOT . '/src/Ressources/Rules/';
+            $files = array_diff(scandir($base_dir, 1), array('..', '.'));
+            foreach ($files as $rule_file) {
+                $rules = RuleCollection::extractRulesFromFile($base_dir . $rule_file);
+                if (RuleCollection::importRules($rules)) {
+                    RuleCollection::processImportRules();
+                }
+            }
+
             // update default language
             Config::setConfigurationValues(
                 'core',

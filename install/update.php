@@ -124,7 +124,6 @@ function doUpdateDb()
 
     // Init debug variable
     // Only show errors
-    Config::detectRootDoc();
     Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
     $currents            = $update->getCurrents();
