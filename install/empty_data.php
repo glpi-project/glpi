@@ -8392,21 +8392,21 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rules_id' => 12,
                 'criteria' => 'os_name',
                 'condition' => 6,
-                'pattern' => '/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/',
+                'pattern' => '/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/',
             ],
             [
                 'id' => 24,
                 'rules_id' => 13,
                 'criteria' => 'os_name',
                 'condition' => 6,
-                'pattern' => '/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/',
+                'pattern' => '/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/',
             ],
             [
                 'id' => 25,
                 'rules_id' => 14,
                 'criteria' => 'os_name',
                 'condition' => 6,
-                'pattern' => '/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/',
+                'pattern' => '/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/',
             ],
             [
                 'id' => 26,
@@ -8641,14 +8641,14 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_linux_os_name',
                 'condition' => '0',
-                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
 
                 Example :
                 Ubuntu 22.04.1 LTS -> #0 = Ubuntu
                 SUSE Linux Enterprise Server 11 (x86_64)  ->#0 = SUSE
                 SunOS -> #0 = SunOS
                 Red Hat Enterprise Linux Server release 7.9 (Maipo) -> #0 = Red Hat
-                Oracle Linux Server release 7.3 -> #0 = Oracle Linux
+                Oracle Linux Server release 7.3 -> #0 = Oracle
                 Fedora release 36 (Thirty Six) -> #0 = Fedora
                 Debian GNU/Linux 9.5 (stretch) -> #0 = Debian
                 CentOS Stream release 8 -> #0 = CentOS
@@ -8665,7 +8665,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_linux_os_version',
                 'condition' => '0',
-                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
 
                 Example :
                 Ubuntu 22.04.1 LTS -> #1 = 22.04.1
@@ -8689,7 +8689,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_linux_os_edition',
                 'condition' => '0',
-                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
 
                 Example :
                 Ubuntu 22.04.1 LTS -> #2 = LTS

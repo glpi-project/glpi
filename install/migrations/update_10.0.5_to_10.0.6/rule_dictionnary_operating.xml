@@ -8,14 +8,14 @@
             <description></description>
             <match>AND</match>
             <is_active>1</is_active>
-            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
+            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 &#xD;
 Example :&#xD;
 Ubuntu 22.04.1 LTS -&amp;#62; #0 = Ubuntu&#xD;
 SUSE Linux Enterprise Server 11 (x86_64)  -&amp;#62;#0 = SUSE&#xD;
 SunOS -&amp;#62; #0 = SunOS&#xD;
 Red Hat Enterprise Linux Server release 7.9 (Maipo) -&amp;#62; #0 = Red Hat&#xD;
-Oracle Linux Server release 7.3 -&amp;#62; #0 = Oracle Linux&#xD;
+Oracle Linux Server release 7.3 -&amp;#62; #0 = Oracle&#xD;
 Fedora release 36 (Thirty Six) -&amp;#62; #0 = Fedora&#xD;
 Debian GNU/Linux 9.5 (stretch) -&amp;#62; #0 = Debian&#xD;
 CentOS Stream release 8 -&amp;#62; #0 = CentOS&#xD;
@@ -28,7 +28,7 @@ AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #0 = AlmaLinux&#xD;
             <rulecriteria>
                   <criteria>os_name</criteria>
                   <condition>6</condition>
-                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
+                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
             </rulecriteria>
             <ruleaction>
                   <action_type>append_regex_result</action_type>
@@ -44,7 +44,7 @@ AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #0 = AlmaLinux&#xD;
             <description></description>
             <match>AND</match>
             <is_active>1</is_active>
-            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
+            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 For : &#xD;
 &#xD;
 Ubuntu 22.04.1 LTS -&amp;#62; #1 = 22.04.1&#xD;
@@ -64,7 +64,7 @@ AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #1 = 9.0&#xD;
             <rulecriteria>
                   <criteria>os_name</criteria>
                   <condition>6</condition>
-                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
+                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
             </rulecriteria>
             <ruleaction>
                   <action_type>append_regex_result</action_type>
@@ -80,7 +80,7 @@ AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #1 = 9.0&#xD;
             <description></description>
             <match>AND</match>
             <is_active>1</is_active>
-            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
+            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 For : &#xD;
 &#xD;
 Ubuntu 22.04.1 LTS -&amp;#62; #2 = LTS&#xD;
@@ -101,7 +101,7 @@ AlmaLinux 8.6 (Sky Tiger) -&amp;#62; #2 = Sky Tiger&#xD;
             <rulecriteria>
                   <criteria>os_name</criteria>
                   <condition>6</condition>
-                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
+                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
             </rulecriteria>
             <ruleaction>
                   <action_type>append_regex_result</action_type>
