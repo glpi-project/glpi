@@ -35,6 +35,11 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Rule;
+use RuleDictionnaryOperatingSystem;
+use RuleDictionnaryOperatingSystemEdition;
+use RuleDictionnaryOperatingSystemVersion;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/operatingsystem.class.php */
@@ -112,6 +117,287 @@ class OperatingSystem extends AbstractInventoryAsset
             $tz->offset = '+0200';
             $object->timezone = $tz;
         }
+        $this->object($result[0])->isEqualTo($object);
+    }
+
+    protected function assetCleanOsProvider(): array
+    {
+        $os_input = [
+            "fedora_01" => [
+                "full_name" => "Fedora 28 (Workstation Edition)",
+                "name" => "Fedora",
+                "version" => "28",
+                "edition" => "Workstation Edition"
+            ],
+            "fedora_02" => [
+                "full_name" => "Fedora release 25 (Twenty Five)",
+                "name" => "Fedora",
+                "version" => "25",
+                "edition" => "Twenty Five"
+            ],
+            "ubuntu_01" => [
+                "full_name" => "Ubuntu 16.04.5 LTS",
+                "name" => "Ubuntu",
+                "version" => "16.04.5",
+                "edition" => "LTS"
+            ],
+            "ubuntu_02" => [
+                "full_name" => "Ubuntu 16.10",
+                "name" => "Ubuntu",
+                "version" => "16.10",
+                "edition" => ""
+            ],
+            "ubuntu_03" => [
+                "full_name" => "Ubuntu 16.10 LTS",
+                "name" => "Ubuntu",
+                "version" => "16.10",
+                "edition" => "LTS"
+            ],
+            "redhat_01" => [
+                "full_name" => "Red Hat Enterprise Linux Server release 7.9 (Maipo)",
+                "name" => "Red Hat",
+                "version" => "7.9",
+                "edition" => "Maipo"
+            ],
+            "redhat_02" => [
+                "full_name" => "Red Hat Enterprise Linux 8.4 (Ootpa)",
+                "name" => "Red Hat",
+                "version" => "8.4",
+                "edition" => "Ootpa"
+            ],
+            "oracle_01" => [
+                "full_name" => "Oracle Linux Server release 7.3",
+                "name" => "Oracle",
+                "version" => "7.3",
+                "edition" => ""
+            ],
+            "oracle_01" => [
+                "full_name" => "Oracle Linux Server release 7.3",
+                "name" => "Oracle",
+                "version" => "7.3",
+                "edition" => ""
+            ],
+            "debian_01" => [
+                "full_name" => "Debian GNU/Linux 9.4 (stretch)",
+                "name" => "Debian",
+                "version" => "9.4",
+                "edition" => "stretch"
+            ],
+            "debian_02" => [
+                "full_name" => "Debian GNU/Linux 8.5",
+                "name" => "Debian",
+                "version" => "8.5",
+                "edition" => ""
+            ],
+            "debian_03" => [
+                "full_name" => "Debian GNU/Linux 7.11 (wheezy)",
+                "name" => "Debian",
+                "version" => "7.11",
+                "edition" => "wheezy"
+            ],
+            "centos_01" => [
+                "full_name" => "CentOS release 6.6 (Final)",
+                "name" => "CentOS",
+                "version" => "6.6",
+                "edition" => "Final"
+            ],
+            "centos_02" => [
+                "full_name" => "CentOS release 6.10 (Final)",
+                "name" => "CentOS",
+                "version" => "6.10",
+                "edition" => "Final"
+            ],
+            "centos_03" => [
+                "full_name" => "CentOS Linux release 7.7.1908 (Core)",
+                "name" => "CentOS",
+                "version" => "7.7.1908",
+                "edition" => "Core"
+            ],
+            "centos_04" => [
+                "full_name" => "CentOS Linux 8",
+                "name" => "CentOS",
+                "version" => "8",
+                "edition" => ""
+            ],
+            "centos_05" => [
+                "full_name" => "CentOS Linux 8 (Core)",
+                "name" => "CentOS",
+                "version" => "8",
+                "edition" => "Core"
+            ],
+            "alma_01" => [
+                "full_name" => "AlmaLinux 9.0 (Emerald Puma)",
+                "name" => "AlmaLinux",
+                "version" => "9.0",
+                "edition" => "Emerald Puma"
+            ],
+            "alma_02" => [
+                "full_name" => "AlmaLinux 8.5 (Arctic Sphynx)",
+                "name" => "AlmaLinux",
+                "version" => "8.5",
+                "edition" => "Arctic Sphynx"
+            ],
+            "windows_01" => [
+                "full_name" => "Microsoft Windows XP Professionnel",
+                "name" => "Windows",
+                "version" => "XP",
+                "edition" => "Professionnel"
+            ],
+            "windows_02" => [
+                "full_name" => "Microsoft® Windows Vista™ Professionnel",
+                "name" => "Windows",
+                "version" => "Vista",
+                "edition" => "Professionnel"
+            ],
+            "windows_03" => [
+                "full_name" => "Microsoft Windows 2000 Professionnel",
+                "name" => "Windows",
+                "version" => "2000",
+                "edition" => "Professionnel"
+            ],
+            "windows_04" => [
+                "full_name" => "Microsoft Windows 11 Professionnel",
+                "name" => "Windows",
+                "version" => "11",
+                "edition" => "Professionnel"
+            ],
+            "windows_05" => [
+                "full_name" => "Microsoft Windows 10 Entreprise",
+                "name" => "Windows",
+                "version" => "10",
+                "edition" => "Entreprise"
+            ],
+            "windows_server_01" => [
+                "full_name" => "Microsoft Windows Server 2012 R2 Datacenter",
+                "name" => "Windows Server",
+                "version" => "2012 R2",
+                "edition" => "Datacenter"
+            ],
+            "windows_server_02" => [
+                "full_name" => "Microsoft(R) Windows(R) Server 2003, Standard Edition x64",
+                "name" => "Windows Server",
+                "version" => "2003",
+                "edition" => "Standard"
+            ],
+            "windows_server_03" => [
+                "full_name" => "Microsoft Windows Server 2016 Standard",
+                "name" => "Windows Server",
+                "version" => "2016",
+                "edition" => "Standard"
+            ],
+            "windows_server_04" => [
+                "full_name" => "Microsoft Hyper-V Server 2012 R2",
+                "name" => "Hyper-V Server",
+                "version" => "2012 R2",
+                "edition" => ""
+            ],
+            "windows_server_05" => [
+                "full_name" => "Microsoft(R) Windows(R) Server 2003, Standard Edition",
+                "name" => "Windows Server",
+                "version" => "2003",
+                "edition" => "Standard"
+            ],
+            "windows_server_06" => [
+                "full_name" => "Microsoft® Windows Server® 2008 Standard",
+                "name" => "Windows Server",
+                "version" => "2008",
+                "edition" => "Standard"
+            ]
+        ];
+
+        $data = [];
+        foreach ($os_input as $value) {
+            $data[] = [
+                'nodes'  => [
+                    'ARCH'            => 'x86_64',
+                    'BOOT_TIME'       => '2018-10-02 08:56:09',
+                    'DNS_DOMAIN'      => 'teclib.infra',
+                    'FQDN'            => 'glpixps.teclib.infra',
+                    'FULL_NAME'       => $value['full_name'],
+                    'HOSTID'          => 'a8c07701',
+                    'KERNEL_NAME'     => 'linux',
+                    'KERNEL_VERSION'  => '4.18.9-200.fc28.x86_64',
+                    'NAME'            => $value['name'],
+                    'VERSION'         => $value['version'],
+                ],
+                'expected'  => '{
+                    "arch": "x86_64",
+                    "boot_time": "2018-10-02 08:56:09",
+                    "dns_domain": "teclib.infra",
+                    "fqdn": "glpixps.teclib.infra",
+                    "full_name": "' . $value['full_name'] .'",
+                    "hostid": "a8c07701",
+                    "kernel_name": "linux",
+                    "kernel_version": "4.18.9-200.fc28.x86_64",
+                    "name": "' . $value['name'] . '",
+                    "version": "' . $value['version'] . '",
+                    "timezone": {
+                        "name": "CEST",
+                        "offset": "+0200"
+                    },
+                    "operatingsystems_id": "' . $value['name'] . '",
+                    "operatingsystemversions_id": "' . $value['version'] . '",
+                    "operatingsystemarchitectures_id": "x86_64",
+                    "operatingsystemkernels_id": "linux",
+                    "operatingsystemkernelversions_id": "4.18.9-200.fc28.x86_64",
+                    "operatingsystemeditions_id": "' . $value['edition'] . '"
+                    }'
+            ];
+        }
+        return $data  + $this->fusionProvider();
+    }
+
+    /**
+     * @dataProvider assetCleanOsProvider
+     */
+    public function testPrepareWithCleanOS($nodes, $expected)
+    {
+        global $DB;
+        //enable rule to clean OS
+        $DB->update(
+            Rule::getTable(),
+            [
+                'is_active' => 1,
+            ],
+            [
+                "sub_type" =>
+                [
+                    RuleDictionnaryOperatingSystem::class,
+                    RuleDictionnaryOperatingSystemEdition::class,
+                    RuleDictionnaryOperatingSystemVersion::class,
+                ]
+            ]
+        );
+
+        $xml = $this->buildXml($nodes);
+
+        $this->login();
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
+        $asset->setExtraData((array)$json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $asset->checkConf($conf)
+        )->isTrue();
+        $result = $asset->prepare();
+        if (!is_array($expected)) {
+            $object = json_decode($expected);
+        } else {
+            $object = clone $json->content->operatingsystem;
+
+            foreach ($expected as $name => $value) {
+                $object->$name = $value;
+            }
+            $tz = new \stdClass();
+            $tz->name = 'CEST';
+            $tz->offset = '+0200';
+            $object->timezone = $tz;
+        }
+
         $this->object($result[0])->isEqualTo($object);
     }
 
