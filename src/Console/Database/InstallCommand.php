@@ -35,14 +35,12 @@
 
 namespace Glpi\Console\Database;
 
-use Config;
 use DBConnection;
 use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
-use RuleCollection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -307,7 +305,6 @@ class InstallCommand extends AbstractConfigureCommand
         ob_start();
         $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
         Toolbox::createSchema($default_language, $this->db);
-
         $message = ob_get_clean();
         if (!empty($message)) {
             $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
