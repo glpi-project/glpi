@@ -284,6 +284,9 @@ function step4($databasename, $newdatabasename)
     };
     $timezones_requirement = new DbTimezones($db);
 
+    Config::detectRootDoc();
+    Config::loadLegacyConfiguration();
+
     if (!empty($databasename)) { // use db already created
         $DB_selected = $link->select_db($databasename);
 

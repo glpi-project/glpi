@@ -2395,8 +2395,6 @@ class Toolbox
             }
 
             //rules
-            Config::detectRootDoc();
-            Config::loadLegacyConfiguration();
             Rule::initRules();
 
             // update default language
