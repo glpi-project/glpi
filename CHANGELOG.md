@@ -34,6 +34,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - `chartist` library has been replaced by `echarts`.
 - `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
+- `Symfony` libraries have been upgraded to version 6.0.
 - `users_id_validate` field in `CommonITILValidation` will now have a `0` value until someone approves or refuses the validation.
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
