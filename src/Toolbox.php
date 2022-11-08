@@ -2395,6 +2395,7 @@ class Toolbox
             }
 
            //rules
+            Config::loadLegacyConfiguration();
             Rule::initRules();
 
            // update default language
