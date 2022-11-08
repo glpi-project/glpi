@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <rules>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystem</sub_type>
-      <ranking>1</ranking>
-      <name>Clean Linux OS Name</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystem</sub_type>
+            <ranking>1</ranking>
+            <name>Clean Linux OS Name</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 &#xD;
 Example :&#xD;
 Ubuntu 22.04.1 LTS -&amp;#62; #0 = Ubuntu&#xD;
@@ -20,31 +20,31 @@ Fedora release 36 (Thirty Six) -&amp;#62; #0 = Fedora&#xD;
 Debian GNU/Linux 9.5 (stretch) -&amp;#62; #0 = Debian&#xD;
 CentOS Stream release 8 -&amp;#62; #0 = CentOS&#xD;
 AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #0 = AlmaLinux&#xD;
-      </comment>
-      <is_recursive>0</is_recursive>
-      <uuid>clean_linux_os_name</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 09:01:23</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#0</value>
-      </ruleaction>
-   </rule>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystemVersion</sub_type>
-      <ranking>1</ranking>
-      <name>Clean Linux OS Version</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
+            </comment>
+            <is_recursive>0</is_recursive>
+            <uuid>clean_linux_os_name</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 09:01:23</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#0</value>
+            </ruleaction>
+      </rule>
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystemVersion</sub_type>
+            <ranking>1</ranking>
+            <name>Clean Linux OS Version</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 For : &#xD;
 &#xD;
 Ubuntu 22.04.1 LTS -&amp;#62; #1 = 22.04.1&#xD;
@@ -56,31 +56,31 @@ Fedora release 36 (Thirty Six) -&amp;#62; #1 =  36&#xD;
 Debian GNU/Linux 9.5 (stretch) -&amp;#62; #1 = 9.5&#xD;
 CentOS release 6.9 (Final) -&amp;#62; #1 = 6.9&#xD;
 AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #1 = 9.0&#xD;
-      </comment>
-      <is_recursive>0</is_recursive>
-      <uuid>clean_linux_os_version</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 09:02:36</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#1</value>
-      </ruleaction>
-   </rule>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystemEdition</sub_type>
-      <ranking>1</ranking>
-      <name>Clean Linux OS Edition</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
+            </comment>
+            <is_recursive>0</is_recursive>
+            <uuid>clean_linux_os_version</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 09:02:36</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#1</value>
+            </ruleaction>
+      </rule>
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystemEdition</sub_type>
+            <ranking>1</ranking>
+            <name>Clean Linux OS Edition</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/&#xD;
 For : &#xD;
 &#xD;
 Ubuntu 22.04.1 LTS -&amp;#62; #2 = LTS&#xD;
@@ -93,31 +93,31 @@ Debian GNU/Linux 8.9 (jessie) -&amp;#62; #2 = jessie&#xD;
 CentOS Linux release 7.2.1511 (Core) -&amp;#62; #2 = Core&#xD;
 AlmaLinux 9.0 (Emerald Puma) -&amp;#62; #2 = Emerald Puma&#xD;
 AlmaLinux 8.6 (Sky Tiger) -&amp;#62; #2 = Sky Tiger&#xD;
-      </comment>
-      <is_recursive>0</is_recursive>
-      <uuid>clean_linux_os_edition</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 09:03:28</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#2</value>
-      </ruleaction>
-   </rule>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystem</sub_type>
-      <ranking>2</ranking>
-      <name>Clean Windows OS name</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
+            </comment>
+            <is_recursive>0</is_recursive>
+            <uuid>clean_linux_os_edition</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 09:03:28</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#2</value>
+            </ruleaction>
+      </rule>
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystem</sub_type>
+            <ranking>2</ranking>
+            <name>Clean Windows OS name</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
 &#xD;
 Example :&#xD;
 Microsoft Windows XP Professionnel -&amp;#62; #1 : Windows&#xD;
@@ -127,30 +127,30 @@ Microsoft Windows XP &#xC9;dition familiale  -&amp;#62; #1 : Windows&#xD;
 Microsoft Windows 10 Entreprise  -&amp;#62; #1 : Windows&#xD;
 Microsoft Windows 10 Professionnel  -&amp;#62; #1 : Windows&#xD;
 Microsoft Windows 11 Professionnel  -&amp;#62; #1 : Windows</comment>
-      <is_recursive>0</is_recursive>
-      <uuid>clean_windows_os_name</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 09:53:42</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#1</value>
-      </ruleaction>
-   </rule>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystemVersion</sub_type>
-      <ranking>2</ranking>
-      <name>Clean Windows OS Version</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
+            <is_recursive>0</is_recursive>
+            <uuid>clean_windows_os_name</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 09:53:42</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#1</value>
+            </ruleaction>
+      </rule>
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystemVersion</sub_type>
+            <ranking>2</ranking>
+            <name>Clean Windows OS Version</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
 &#xD;
 Example :&#xD;
 Microsoft Windows XP Professionnel -&amp;#62; #2 : XP&#xD;
@@ -160,30 +160,30 @@ Microsoft Windows XP &#xC9;dition familiale  -&amp;#62; #2 : XP&#xD;
 Microsoft Windows 10 Entreprise  -&amp;#62; #2 : 10&#xD;
 Microsoft Windows 10 Professionnel  -&amp;#62; #2 : 10&#xD;
 Microsoft Windows 11 Professionnel  -&amp;#62; #2 : 11</comment>
-      <is_recursive>0</is_recursive>
-      <uuid>uuid>clean_windows_os_version</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 09:55:09</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#2</value>
-      </ruleaction>
-   </rule>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystemEdition</sub_type>
-      <ranking>2</ranking>
-      <name>Clean Windows OS Edition</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
+            <is_recursive>0</is_recursive>
+            <uuid>clean_windows_os_version</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 09:55:09</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#2</value>
+            </ruleaction>
+      </rule>
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystemEdition</sub_type>
+            <ranking>2</ranking>
+            <name>Clean Windows OS Edition</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/&#xD;
 &#xD;
 Example :&#xD;
 Microsoft Windows XP Professionnel -&amp;#62; #4 : Professionnel&#xD;
@@ -193,109 +193,109 @@ Microsoft Windows XP &#xC9;dition familiale  -&amp;#62; #4 : &#xC9;dition famili
 Microsoft Windows 10 Entreprise  -&amp;#62; #4 : Entreprise&#xD;
 Microsoft Windows 10 Professionnel  -&amp;#62; #4 : Professionnel&#xD;
 Microsoft Windows 11 Professionnel  -&amp;#62; #4 : Professionnel</comment>
-      <is_recursive>0</is_recursive>
-      <uuid>uuid>clean_windows_os_edition</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 09:56:13</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#4</value>
-      </ruleaction>
-   </rule>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystem</sub_type>
-      <ranking>3</ranking>
-      <name>Clean Windows Server OS Name</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
+            <is_recursive>0</is_recursive>
+            <uuid>clean_windows_os_edition</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 09:56:13</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(&#x2122;)? ?(.*)/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#4</value>
+            </ruleaction>
+      </rule>
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystem</sub_type>
+            <ranking>3</ranking>
+            <name>Clean Windows Server OS Name</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
 &#xD;
 Example :&#xD;
 Microsoft Windows Server 2012 R2 Datacenter -&amp;#62; #2 #3 : Windows Server&#xD;
 Microsoft(R) Windows(R) Server 2003, Standard Edition x64 -&amp;#62; #2 #3 : Windows Server&#xD;
 Microsoft Hyper-V Server 2012 R2 -&amp;#62; #2 #3 : Hyper-V Server&#xD;
 Microsoft&#xAE; Windows Server&#xAE; 2008 Standard -&amp;#62; #2 #3 : Windows Server</comment>
-      <is_recursive>0</is_recursive>
-      <uuid>uuid>clean_windows_server_os_name</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 10:11:13</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#2 #3</value>
-      </ruleaction>
-   </rule>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystemVersion</sub_type>
-      <ranking>3</ranking>
-      <name>Clean Windows Server OS Version</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
+            <is_recursive>0</is_recursive>
+            <uuid>clean_windows_server_os_name</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 10:11:13</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|&#xAE;)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#1 #2</value>
+            </ruleaction>
+      </rule>
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystemVersion</sub_type>
+            <ranking>3</ranking>
+            <name>Clean Windows Server OS Version</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
 &#xD;
 Example :&#xD;
 Microsoft Windows Server 2012 R2 Datacenter -&amp;#62; #5 : 2012 R2&#xD;
 Microsoft(R) Windows(R) Server 2003, Standard Edition x64 -&amp;#62; #5 : 2003&#xD;
 Microsoft Hyper-V Server 2012 R2 -&amp;#62; #5 : 2012 R2&#xD;
 Microsoft&#xAE; Windows Server&#xAE; 2008 Standard -&amp;#62; #5 : 2008</comment>
-      <is_recursive>0</is_recursive>
-      <uuid>uuid>clean_windows_server_os_version</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 10:11:18</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#5</value>
-      </ruleaction>
-   </rule>
-   <rule>
-      <entities_id>Root entity</entities_id>
-      <sub_type>RuleDictionnaryOperatingSystemEdition</sub_type>
-      <ranking>3</ranking>
-      <name>Clean Windows Server OS Edition</name>
-      <description></description>
-      <match>AND</match>
-      <is_active>0</is_active>
-      <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
+            <is_recursive>0</is_recursive>
+            <uuid>clean_windows_server_os_version</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 10:11:18</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|&#xAE;)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#3</value>
+            </ruleaction>
+      </rule>
+      <rule>
+            <entities_id>Root entity</entities_id>
+            <sub_type>RuleDictionnaryOperatingSystemEdition</sub_type>
+            <ranking>3</ranking>
+            <name>Clean Windows Server OS Edition</name>
+            <description></description>
+            <match>AND</match>
+            <is_active>1</is_active>
+            <comment>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/&#xD;
 &#xD;
 Example :&#xD;
 Microsoft Windows Server 2012 R2 Datacenter -&amp;#62; #6 : Datacenter&#xD;
 Microsoft(R) Windows(R) Server 2003, Standard Edition x64 -&amp;#62; #6 : Standard&#xD;
 Microsoft Hyper-V Server 2012 R2 -&amp;#62; #6 :&#xD;
 Microsoft&#xAE; Windows Server&#xAE; 2008 Standard -&amp;#62; #6 : Standard</comment>
-      <is_recursive>0</is_recursive>
-      <uuid>uuid>clean_windows_server_os_edition</uuid>
-      <condition>0</condition>
-      <date_creation>2022-11-07 10:11:33</date_creation>
-      <rulecriteria>
-         <criteria>os_name</criteria>
-         <condition>6</condition>
-         <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? ((Hyper-V|Windows)(?&amp;#62;\(R\))?) ((?:Server|))((?&amp;#62;\(R\)|&#xAE;))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/</pattern>
-      </rulecriteria>
-      <ruleaction>
-         <action_type>append_regex_result</action_type>
-         <field>name</field>
-         <value>#6</value>
-      </ruleaction>
-   </rule>
+            <is_recursive>0</is_recursive>
+            <uuid>clean_windows_server_os_edition</uuid>
+            <condition>0</condition>
+            <date_creation>2022-11-07 10:11:33</date_creation>
+            <rulecriteria>
+                  <criteria>os_name</criteria>
+                  <condition>6</condition>
+                  <pattern>/(Microsoft)(?&amp;#62;\(R\)|&#xAE;)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|&#xAE;)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/</pattern>
+            </rulecriteria>
+            <ruleaction>
+                  <action_type>append_regex_result</action_type>
+                  <field>name</field>
+                  <value>#4</value>
+            </ruleaction>
+      </rule>
 </rules>

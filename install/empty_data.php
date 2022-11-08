@@ -36,6 +36,7 @@
 use Glpi\Inventory\Conf;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
+use Twig\Node\SandboxNode;
 
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
@@ -8253,21 +8254,21 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rules_id' => '18',
                 'action_type' => 'append_regex_result',
                 'field' => 'name',
-                'value' => '#2 #3',
+                'value' => '#1 #2',
             ],
             [
                 'id' => '19',
                 'rules_id' => '19',
                 'action_type' => 'append_regex_result',
                 'field' => 'name',
-                'value' => '#5',
+                'value' => '#3',
             ],
             [
                 'id' => '20',
                 'rules_id' => '20',
                 'action_type' => 'append_regex_result',
                 'field' => 'name',
-                'value' => '#6',
+                'value' => '#4',
             ],
         ];
 
@@ -8433,21 +8434,21 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rules_id' => 18,
                 'criteria' => 'os_name',
                 'condition' => 6,
-                'pattern' => Sanitizer::sanitize('/(Microsoft)(?>\(R\)|®)? ((Hyper-V|Windows)(?>\(R\))?) ((?:Server|))((?>\(R\)|®))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/'),
+                'pattern' => Sanitizer::sanitize('/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/'),
             ],
             [
                 'id' => 30,
                 'rules_id' => 19,
                 'criteria' => 'os_name',
                 'condition' => 6,
-                'pattern' => Sanitizer::sanitize('/(Microsoft)(?>\(R\)|®)? ((Hyper-V|Windows)(?>\(R\))?) ((?:Server|))((?>\(R\)|®))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/'),
+                'pattern' => Sanitizer::sanitize('/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/'),
             ],
             [
                 'id' => 31,
                 'rules_id' => 20,
                 'criteria' => 'os_name',
                 'condition' => 6,
-                'pattern' => Sanitizer::sanitize('/(Microsoft)(?>\(R\)|®)? ((Hyper-V|Windows)(?>\(R\))?) ((?:Server|))((?>\(R\)|®))? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/'),
+                'pattern' => Sanitizer::sanitize('/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/'),
             ],
         ];
 
@@ -8630,6 +8631,18 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_linux_os_name',
                 'condition' => '0',
+                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+
+                Example :
+                Ubuntu 22.04.1 LTS -> #0 = Ubuntu
+                SUSE Linux Enterprise Server 11 (x86_64)  ->#0 = SUSE
+                SunOS -> #0 = SunOS
+                Red Hat Enterprise Linux Server release 7.9 (Maipo) -> #0 = Red Hat
+                Oracle Linux Server release 7.3 -> #0 = Oracle Linux
+                Fedora release 36 (Thirty Six) -> #0 = Fedora
+                Debian GNU/Linux 9.5 (stretch) -> #0 = Debian
+                CentOS Stream release 8 -> #0 = CentOS
+                AlmaLinux 9.0 (Emerald Puma) -> #0 = AlmaLinux"),
             ],
             [
                 'id' => '13',
@@ -8642,6 +8655,18 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_linux_os_version',
                 'condition' => '0',
+                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+
+                Example :
+                Ubuntu 22.04.1 LTS -> #1 = 22.04.1
+                SUSE Linux Enterprise Server 11 (x86_64) -> #1 =  11
+                SunOS 5.10 -> #1 = 5.10
+                Red Hat Enterprise Linux Server release 7.9 (Maipo) -> #1 = 7.9
+                Oracle Linux Server release 7.3 -> #1 = 7.3
+                Fedora release 36 (Thirty Six) -> #1 =  36
+                Debian GNU/Linux 9.5 (stretch) -> #1 = 9.5
+                CentOS release 6.9 (Final) -> #1 = 6.9
+                AlmaLinux 9.0 (Emerald Puma) -> #1 = 9.0"),
             ],
             [
                 'id' => '14',
@@ -8654,6 +8679,19 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_linux_os_edition',
                 'condition' => '0',
+                'content' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+
+                Example :
+                Ubuntu 22.04.1 LTS -> #2 = LTS
+                SUSE Linux Enterprise Server 11 (x86_64) -> #2 = x86_64
+                Red Hat Enterprise Linux Server release 7.9 (Maipo) -> #2 = Maipo
+                Red Hat Enterprise Linux Server release 6.10 (Santiago) -> #2 = Santiago
+                Fedora release 36 (Thirty Six) -> #2 = Thirty Six
+                Debian GNU/Linux 9.5 (stretch) -> #2 = stretch
+                Debian GNU/Linux 8.9 (jessie) -> #2 = jessie
+                CentOS Linux release 7.2.1511 (Core) -> #2 = Core
+                AlmaLinux 9.0 (Emerald Puma) -> #2 = Emerald Puma
+                AlmaLinux 8.6 (Sky Tiger) -> #2 = Sky Tiger"),
             ],
             [
                 'id' => '15',
@@ -8666,6 +8704,16 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_os_name',
                 'condition' => '0',
+                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
+
+                Example :
+                Microsoft Windows XP Professionnel -> #1 : Windows
+                Microsoft Windows 7 Enterprise  -> #1 : Windows
+                Microsoft® Windows Vista Professionnel  -> #1 : Windows
+                Microsoft Windows XP Édition familiale  -> #1 : Windows
+                Microsoft Windows 10 Entreprise  -> #1 : Windows
+                Microsoft Windows 10 Professionnel  -> #1 : Windows
+                Microsoft Windows 11 Professionnel  -> #1 : Windows"),
             ],
             [
                 'id' => '16',
@@ -8678,6 +8726,16 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_os_version',
                 'condition' => '0',
+                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
+
+                Example :
+                Microsoft Windows XP Professionnel -> #2 : XP
+                Microsoft Windows 7 Enterprise  -> #2 : 7
+                Microsoft® Windows Vista Professionnel  -> #2 : Vista
+                Microsoft Windows XP Édition familiale  -> #2 : XP
+                Microsoft Windows 10 Entreprise  -> #2 : 10
+                Microsoft Windows 10 Professionnel  -> #2 : 10
+                Microsoft Windows 11 Professionnel  -> #2 : 11"),
             ],
             [
                 'id' => '17',
@@ -8690,6 +8748,16 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_os_edition',
                 'condition' => '0',
+                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
+
+                Example :
+                Microsoft Windows XP Professionnel -> #4 : Professionnel
+                Microsoft Windows 7 Enterprise  -> #4 : Enterprise
+                Microsoft® Windows Vista Professionnel  -> #4 : Professionnel
+                Microsoft Windows XP Édition familiale  -> #4 : Édition familiale
+                Microsoft Windows 10 Entreprise  -> #4 : Entreprise
+                Microsoft Windows 10 Professionnel  -> #4 : Professionnel
+                Microsoft Windows 11 Professionnel  -> #4 : Professionnel"),
             ],
 
             [
@@ -8703,6 +8771,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_server_os_name',
                 'condition' => '0',
+                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
+
+                Example :
+                Microsoft Windows Server 2012 R2 Datacenter -> #1 #2 : Windows Server
+                Microsoft(R) Windows(R) Server 2003, Standard Edition x64 -> #1 #2 : Windows Server
+                Microsoft Hyper-V Server 2012 R2 -> #1 #2 : Hyper-V Server
+                Microsoft® Windows Server® 2008 Standard -> #1 #2 : Windows Server"),
             ],
             [
                 'id' => '19',
@@ -8715,6 +8790,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_server_os_version',
                 'condition' => '0',
+                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
+
+                Example :
+                Microsoft Windows Server 2012 R2 Datacenter -> #3 : 2012 R2
+                Microsoft(R) Windows(R) Server 2003, Standard Edition x64 -> #3 : 2003
+                Microsoft Hyper-V Server 2012 R2 -> #3 : 2012 R2
+                Microsoft® Windows Server® 2008 Standard -> #3 : 2008"),
             ],
             [
                 'id' => '20',
@@ -8727,6 +8809,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_server_os_edition',
                 'condition' => '0',
+                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
+
+                Example :
+                Microsoft Windows Server 2012 R2 Datacenter -> #4 : Datacenter
+                Microsoft(R) Windows(R) Server 2003, Standard Edition x64 -> #4 : Standard
+                Microsoft Hyper-V Server 2012 R2 -> #4 :
+                Microsoft® Windows Server® 2008 Standard -> #4: Standard"),
             ],
 
         ];
