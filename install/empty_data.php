@@ -8520,6 +8520,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '1',
                 'is_recursive' => 0,
                 'condition' => 0,
+                'comment' => '',
             ], [
                 'id' => '3',
                 'sub_type' => 'RuleMailCollector',
@@ -8531,6 +8532,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '1',
                 'is_recursive' => '0',
                 'condition' => '0',
+                'comment' => '',
             ], [
                 'id' => '4',
                 'sub_type' => 'RuleMailCollector',
@@ -8542,6 +8544,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '0',
                 'is_recursive' => '1',
                 'condition' => '0',
+                'comment' => '',
             ], [
                 'id' => '5',
                 'sub_type' => 'RuleMailCollector',
@@ -8553,6 +8556,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '1',
                 'is_recursive' => '1',
                 'condition' => '0',
+                'comment' => '',
             ], [
                 'id' => '6',
                 'sub_type' => 'RuleTicket',
@@ -8564,6 +8568,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '0',
                 'is_recursive' => '1',
                 'condition' => '1',
+                'comment' => '',
             ], [
                 'id' => '7',
                 'sub_type' => 'RuleTicket',
@@ -8575,6 +8580,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '0',
                 'is_recursive' => '1',
                 'condition' => '1',
+                'comment' => '',
             ], [
                 'id' => '8',
                 'sub_type' => 'RuleSoftwareCategory',
@@ -8586,6 +8592,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '0',
                 'is_recursive' => '1',
                 'condition' => '1',
+                'comment' => '',
             ], [
                 'id' => '9',
                 'sub_type' => 'RuleAsset',
@@ -8597,6 +8604,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '1',
                 'is_recursive' => '1',
                 'condition' => '3',
+                'comment' => '',
             ], [
                 'id' => '10',
                 'sub_type' => 'RuleAsset',
@@ -8608,6 +8616,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '1',
                 'is_recursive' => '1',
                 'condition' => '3',
+                'comment' => '',
             ], [
                 'id' => '11',
                 'sub_type' => 'RuleAsset',
@@ -8619,6 +8628,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => '1',
                 'is_recursive' => '1',
                 'condition' => '3',
+                'comment' => '',
             ],
             [
                 'id' => '12',
