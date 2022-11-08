@@ -2394,6 +2394,8 @@ class Toolbox
                 }
             }
 
+            Config::detectRootDoc();
+            Config::loadLegacyConfiguration();
             //rules
             $base_dir = GLPI_ROOT . '/src/Ressources/Rules/';
             $files = array_diff(scandir($base_dir, 1), array('..', '.'));

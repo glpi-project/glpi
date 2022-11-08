@@ -305,8 +305,6 @@ class InstallCommand extends AbstractConfigureCommand
        // TODO Get rid of output buffering
         ob_start();
         $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
-        Config::detectRootDoc();
-        Config::loadLegacyConfiguration();
         Toolbox::createSchema($default_language, $this->db);
         $message = ob_get_clean();
         if (!empty($message)) {
