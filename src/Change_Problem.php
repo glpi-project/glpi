@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * @since 0.84
  *
@@ -158,33 +160,20 @@ class Change_Problem extends CommonDBRelation
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-
-            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='3'>" . __('Add a change') . "</th></tr>";
-
-            echo "<tr class='tab_bg_2'><td>";
-            echo "<input type='hidden' name='problems_id' value='$ID'>";
-            Change::dropdown([
-                'used'        => $used,
-                'entity'      => $problem->getEntityID(),
-                'entity_sons' => $problem->isRecursive(),
-                'displaywith' => ['id'],
+            echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => Problem::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Change::class,
+                'dropdown_options' => [
+                    'entity'      => $problem->getEntityID(),
+                    'entity_sons' => $problem->isRecursive(),
+                    'used'        => $used,
+                    'displaywith' => ['id']
+                ],
+                'create_link' => Session::haveRight(Change::$rightname, CREATE)
             ]);
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td><td>";
-            if (Session::haveRight('change', CREATE)) {
-                echo "<a href='" . Toolbox::getItemTypeFormURL('Change') . "?problems_id=$ID'>";
-                echo __('Create a change from this problem');
-                echo "</a>";
-            }
-            echo "</td></tr></table>";
-            Html::closeForm();
-            echo "</div>";
         }
 
         echo "<div class='spaced'>";
@@ -281,27 +270,20 @@ class Change_Problem extends CommonDBRelation
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-
-            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a problem') . "</th></tr>";
-
-            echo "<tr class='tab_bg_2'><td>";
-            echo "<input type='hidden' name='changes_id' value='$ID'>";
-            Problem::dropdown([
-                'used'   => $used,
-                'entity' => $change->getEntityID(),
-                'condition' => Problem::getOpenCriteria(),
-                'displaywith' => ['id'],
+            echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => Change::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Problem::class,
+                'dropdown_options' => [
+                    'entity'      => $change->getEntityID(),
+                    'entity_sons' => $change->isRecursive(),
+                    'used'        => $used,
+                    'displaywith' => ['id']
+                ],
+                'create_link' => false
             ]);
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr></table>";
-            Html::closeForm();
-            echo "</div>";
         }
 
         echo "<div class='spaced'>";
