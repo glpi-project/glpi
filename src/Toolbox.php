@@ -2394,11 +2394,12 @@ class Toolbox
                 }
             }
 
-           //rules
+            //rules
+            Config::detectRootDoc();
             Config::loadLegacyConfiguration();
             Rule::initRules();
 
-           // update default language
+            // update default language
             Config::setConfigurationValues(
                 'core',
                 [
