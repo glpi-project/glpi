@@ -161,7 +161,7 @@ if (!$DB->tableExists('glpi_rulematchedlogs')) {
 
 if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) === 0) {
     //default rules.
-    RuleImportAsset::initRules(false, false, true);
+    RuleImportAsset::initRules(false, false, true, RuleImportAsset::class);
 }
 
 //locked fields
