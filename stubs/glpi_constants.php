@@ -47,6 +47,7 @@ define('GLPI_LOCAL_I18N_DIR', null);
 define('GLPI_LOCK_DIR', null);
 define('GLPI_LOG_DIR', null);
 define('GLPI_MARKETPLACE_DIR', null);
+define('GLPI_RESSOURCE_DIR', null);
 define('GLPI_PICTURE_DIR', null);
 define('GLPI_PLUGIN_DOC_DIR', null);
 define('GLPI_RSS_DIR', null);
