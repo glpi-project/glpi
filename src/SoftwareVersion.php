@@ -45,6 +45,8 @@ class SoftwareVersion extends CommonDBChild
     public static $itemtype  = 'Software';
     public static $items_id  = 'softwares_id';
 
+    protected $displaylist = false;
+
 
     public static function getTypeName($nb = 0)
     {

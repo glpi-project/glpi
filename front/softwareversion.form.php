@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
         //TRANS: %s is the user login, %2$s is the version id
         sprintf(__('%1$s purges the version %2$s'), $_SESSION["glpiname"], $_POST["id"])
     );
-    $version->redirectToList();
+    Html::redirect(Software::getFormURLWithID($version->fields['softwares_id']));
 } else if (isset($_POST["update"])) {
     $version->check($_POST['id'], UPDATE);
 
