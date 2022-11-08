@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ede463e0c279365950b17ca08e3d9a1c",
+    "content-hash": "ee5b60afebd4a7fa7c31bb98a16a8e20",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -5600,20 +5600,20 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.5.1",
+            "version": "0.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "8d32c53bd9fb6c4cd85cbbb405a63ea88ca033e4"
+                "reference": "213782ac7c4ab22d0a30b32d9c693708ef0fa3d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/8d32c53bd9fb6c4cd85cbbb405a63ea88ca033e4",
-                "reference": "8d32c53bd9fb6c4cd85cbbb405a63ea88ca033e4",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/213782ac7c4ab22d0a30b32d9c693708ef0fa3d7",
+                "reference": "213782ac7c4ab22d0a30b32d9c693708ef0fa3d7",
                 "shasum": ""
             },
             "require": {
-                "symfony/console": "^4.4 || ^5.0",
+                "symfony/console": "^5.4 || ^6.0",
                 "twig/twig": "^3.3"
             },
             "bin": [
@@ -5648,7 +5648,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2022-06-28T11:18:30+00:00"
+            "time": "2022-11-07T14:14:46+00:00"
         },
         {
             "name": "maglnet/composer-require-checker",
