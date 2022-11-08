@@ -1280,7 +1280,7 @@ class Planning extends CommonGLPI
             echo "<div class='center'>";
             echo "<a href='" . $params['url'] . "' class='btn btn-outline-secondary'>" .
                 "<i class='ti ti-eye'></i>" .
-                "<span>" . __("View this item in his context") . "</span>" .
+                "<span>" . __("View this item in its context") . "</span>" .
             "</a>";
             echo "</div>";
             echo "<hr>";
