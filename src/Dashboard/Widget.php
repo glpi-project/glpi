@@ -1514,6 +1514,14 @@ JAVASCRIPT;
             Chartist.plugins.legend(),";
         }
 
+        // Adding a legend will add an "<ul>" element in a div that already have
+        // a <svg> child set to take 100% of the available height
+        // This will create some overflow that will impact the content below the
+        // graph (the label)
+        // We avoid that by adding some padding at the top of the label if a
+        // legend is defined
+        $label_class = $p['legend'] ? "mt-4" : "";
+
         $html = <<<HTML
       <style>
 
@@ -1557,7 +1565,7 @@ JAVASCRIPT;
           <div class="card g-chart $class"
                id="{$chart_id}">
              <div class="chart ct-chart"></div>
-             <span class="main-label">{$p['label']}</span>
+             <span class="main-label {$label_class}">{$p['label']}</span>
              <i class="main-icon {$p['icon']}"></i>
           </div>
       </div>
@@ -1581,18 +1589,27 @@ HTML;
                right: 40
             },
             axisY: {
-               labelInterpolationFnc: function(value) {
-                  if (value < 1e3) {
-                     // less than 1K
-                     return value;
-                  } else if (value < 1e6) {
-                     // More than 1k, less than 1M
-                     return value / 1e3 + "K";
-                  } else {
-                     // More than 1M
-                     return value / 1e6 + "M";
-                  }
-               },
+                labelInterpolationFnc: function(value) {
+                    let display_value = 0;
+                    let unit = "";
+                    if (value < 1e3) {
+                        // less than 1K
+                        display_value = value;
+                    } else if (value < 1e6) {
+                        // More than 1k, less than 1M
+                        display_value =  value / 1e3;
+                        unit = "K";
+                    } else {
+                        // More than 1M
+                        display_value = value / 1e6;
+                        unit = "M";
+                    }
+
+                    // 1 decimal max
+                    display_value = Math.round(display_value * 10) / 10;
+
+                    return display_value + unit;
+                },
             },
             {$area_options}
             plugins: [
