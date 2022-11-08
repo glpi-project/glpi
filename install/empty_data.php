@@ -8679,7 +8679,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_linux_os_edition',
                 'condition' => '0',
-                'content' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+                'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle Linux)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
 
                 Example :
                 Ubuntu 22.04.1 LTS -> #2 = LTS
@@ -8704,7 +8704,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_os_name',
                 'condition' => '0',
-                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
+                'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
 
                 Example :
                 Microsoft Windows XP Professionnel -> #1 : Windows
@@ -8726,7 +8726,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_os_version',
                 'condition' => '0',
-                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
+                'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
 
                 Example :
                 Microsoft Windows XP Professionnel -> #2 : XP
@@ -8748,7 +8748,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_os_edition',
                 'condition' => '0',
-                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
+                'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
 
                 Example :
                 Microsoft Windows XP Professionnel -> #4 : Professionnel
@@ -8771,7 +8771,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_server_os_name',
                 'condition' => '0',
-                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
+                'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
 
                 Example :
                 Microsoft Windows Server 2012 R2 Datacenter -> #1 #2 : Windows Server
@@ -8790,7 +8790,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_server_os_version',
                 'condition' => '0',
-                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
+                'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
 
                 Example :
                 Microsoft Windows Server 2012 R2 Datacenter -> #3 : 2012 R2
@@ -8809,7 +8809,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_recursive' => '1',
                 'uuid' => 'clean_windows_server_os_edition',
                 'condition' => '0',
-                'content' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
+                'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
 
                 Example :
                 Microsoft Windows Server 2012 R2 Datacenter -> #4 : Datacenter
