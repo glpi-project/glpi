@@ -442,7 +442,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
         $link_type = $link_types[$value];
         $resolved_value = $inverted && isset($link_type['inverse']) ? $link_types[$link_type['inverse']] : $link_type;
-        return $with_icon ? $resolved_value['name'] : sprintf($icon_tag, $resolved_value['icon'], $resolved_value['name']);
+        return !$with_icon ? $resolved_value['name'] : sprintf($icon_tag, $resolved_value['icon'], $resolved_value['name']);
     }
 
     /**

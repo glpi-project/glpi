@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\Application\View\TemplateRenderer;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -34,6 +32,8 @@ use Glpi\Application\View\TemplateRenderer;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 class Problem_Ticket extends CommonITILObject_CommonITILObject
 {
