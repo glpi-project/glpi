@@ -60,6 +60,7 @@ if (!($DB instanceof DBmysql)) { // $DB can have already been init in install.ph
 }
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
+Config::detectRootDoc();
 Config::loadLegacyConfiguration();
 
 $update = new Update($DB);
