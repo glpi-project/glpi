@@ -91,7 +91,7 @@ class CommandLoader implements CommandLoaderInterface
         $this->plugin          = $plugin;
     }
 
-    public function get($name)
+    public function get(string $name): Command
     {
         $commands = $this->getCommands();
 
@@ -102,14 +102,14 @@ class CommandLoader implements CommandLoaderInterface
         return $commands[$name];
     }
 
-    public function has($name)
+    public function has(string $name): bool
     {
         $commands = $this->getCommands();
 
         return array_key_exists($name, $commands);
     }
 
-    public function getNames()
+    public function getNames(): array
     {
         $commands = $this->getCommands();
 
