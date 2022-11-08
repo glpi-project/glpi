@@ -391,7 +391,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                 'icon' => 'fas fa-link',
             ],
             self::DUPLICATE_WITH => [
-                'name' => __('Duplicate with'),
+                'name' => __('Duplicates'),
                 'icon' => 'fas fa-clone',
             ],
             self::SON_OF => [
@@ -442,6 +442,11 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
         $link_type = $link_types[$value];
         $resolved_value = $inverted && isset($link_type['inverse']) ? $link_types[$link_type['inverse']] : $link_type;
+
+        // Handle simple label change for DUPLICATE_WITH when inverted
+        if ($inverted && $value === self::DUPLICATE_WITH) {
+            $resolved_value['name'] = __('Duplicated by');
+        }
         return !$with_icon ? $resolved_value['name'] : sprintf($icon_tag, $resolved_value['icon'], $resolved_value['name']);
     }
 
