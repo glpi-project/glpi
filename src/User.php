@@ -5489,7 +5489,7 @@ HTML;
         // Check that the configuration allow this user to change his password
         if ($this->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
             trigger_error(
-                __("The authentication method configuration doesn't allow the user '$email' to change his password."),
+                __("The authentication method configuration doesn't allow the user '$email' to change their password."),
                 E_USER_WARNING
             );
 
