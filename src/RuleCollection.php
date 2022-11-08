@@ -1152,6 +1152,7 @@ JAVASCRIPT;
      **/
     public static function importRules(array $rules): bool
     {
+        global $DB;
         //check rules (check if entities, criterias and actions is always good in this glpi)
         $entity        = new Entity();
         $rules_refused = [];
