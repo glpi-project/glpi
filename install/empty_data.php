@@ -8696,7 +8696,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'id' => '15',
                 'sub_type' => 'RuleDictionnaryOperatingSystem',
-                'ranking' => '1',
+                'ranking' => '2',
                 'name' => 'Clean Windows OS Name',
                 'description' => '',
                 'match' => 'AND',
@@ -8718,7 +8718,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'id' => '16',
                 'sub_type' => 'RuleDictionnaryOperatingSystemVersion',
-                'ranking' => '1',
+                'ranking' => '2',
                 'name' => 'Clean Windows OS Version',
                 'description' => '',
                 'match' => 'AND',
@@ -8740,7 +8740,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'id' => '17',
                 'sub_type' => 'RuleDictionnaryOperatingSystemEdition',
-                'ranking' => '1',
+                'ranking' => '2',
                 'name' => 'Clean Windows OS Edition',
                 'description' => '',
                 'match' => 'AND',
@@ -8763,7 +8763,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'id' => '18',
                 'sub_type' => 'RuleDictionnaryOperatingSystem',
-                'ranking' => '1',
+                'ranking' => '3',
                 'name' => 'Clean Windows Server OS Name',
                 'description' => '',
                 'match' => 'AND',
@@ -8782,7 +8782,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'id' => '19',
                 'sub_type' => 'RuleDictionnaryOperatingSystemVersion',
-                'ranking' => '1',
+                'ranking' => '3',
                 'name' => 'Clean Windows Server OS Version',
                 'description' => '',
                 'match' => 'AND',
@@ -8801,7 +8801,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             [
                 'id' => '20',
                 'sub_type' => 'RuleDictionnaryOperatingSystemEdition',
-                'ranking' => '1',
+                'ranking' => '3',
                 'name' => 'Clean Windows Server OS Edition',
                 'description' => '',
                 'match' => 'AND',
