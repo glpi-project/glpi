@@ -1466,6 +1466,13 @@ JAVASCRIPT;
         unset($_SESSION['glpi_import_rules']);
         unset($_SESSION['glpi_import_rules_refused']);
 
+        //important for CLI usage (GLPI install / or GLPI Update)
+        //to prevent message and redirect
+        $default_input = [];
+        if (isCommandLine()) {
+            $default_input['_no_message'] = true;
+        }
+
        // unset all refused rules
         foreach ($rules['rule'] as $k_rule => &$rule) {
             if (in_array($k_rule, $rr_keys)) {
@@ -1517,7 +1524,7 @@ JAVASCRIPT;
             if (empty($found)) {
                //Manage entity
                 $params['_add'] = true;
-                $rules_id       = $item->add($params);
+                $rules_id       = $item->add($params + $default_input);
                 if ($rules_id) {
                     Event::log(
                         $rules_id,
@@ -1533,7 +1540,7 @@ JAVASCRIPT;
                 $params['id']      = $tmp['id'];
                 $params['_update'] = true;
                 $rules_id          = $tmp['id'];
-                if ($item->update($params)) {
+                if ($item->update($params + $default_input)) {
                     Event::log(
                         $rules_id,
                         "rules",
@@ -1559,7 +1566,7 @@ JAVASCRIPT;
                         if (is_array($criteria['pattern'])) {
                             $criteria['pattern'] = null;
                         }
-                        $criteria = Toolbox::addslashes_deep($criteria);
+                        $criteria = Toolbox::addslashes_deep($criteria + $default_input);
                         $ruleCriteria->add($criteria);
                     }
                 }
@@ -1573,7 +1580,7 @@ JAVASCRIPT;
                         if (is_array($action['value'])) {
                              $action['value'] = null;
                         }
-                        $action = Toolbox::addslashes_deep($action);
+                        $action = Toolbox::addslashes_deep($action + $default_input);
                         $ruleAction->add($action);
                     }
                 }
