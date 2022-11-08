@@ -3503,7 +3503,7 @@ class Rule extends CommonDBTM
      * @param boolean $reset        Whether to reset before adding new rules, defaults to true
      * @param boolean $with_plugins Use plugins rules or not
      * @param boolean $check        Check if rule exists before creating
-     * @param string $subtype       Specify subtype to reset
+     * @param string  $subtype      Specify subtype to reset
      *
      * @return boolean
      */
@@ -3525,13 +3525,10 @@ class Rule extends CommonDBTM
         $files = array_diff(scandir($base_dir, 1), array('..', '.'));
         foreach ($files as $rule_file) {
             if (($subtype != null && str_contains($rule_file, $subtype)) || is_null($subtype)) {
-                $_FILES['xml_file'] =
-                [
-                    "size" => filesize($base_dir . $rule_file),
-                    "tmp_name" => $base_dir . $rule_file,
-                    "error" => UPLOAD_ERR_OK
-                ];
-                RuleCollection::previewImportRules();
+                $rules = RuleCollection::extractRulesFromFile($base_dir . $rule_file);
+                if (RuleCollection::importRules($rules)) {
+                    RuleCollection::processImportRules();
+                }
             }
         }
         return true;

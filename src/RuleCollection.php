@@ -1125,35 +1125,34 @@ JAVASCRIPT;
               && ($type == 'dropdown'));
     }
 
-
     /**
-     * Print a form to inform user when conflicts appear during the import of rules from a xml file
+     * Extract rules as array from XML file
+     * @param $path             path to XML file
      *
-     * @since 0.85
-     *
-     * @return true if all ok
+     * @return array
      **/
-    public static function previewImportRules()
+    public static function extractRulesFromFile(string $path): array
     {
-        global $DB;
-
-        if (!isset($_FILES["xml_file"]) || ($_FILES["xml_file"]["size"] == 0)) {
-            return false;
-        }
-
-        if ($_FILES["xml_file"]["error"] != UPLOAD_ERR_OK) {
-            Session::addMessageAfterRedirect(__("No file was uploaded"));
-            return false;
-        }
-       //get xml file content
-        $xml           = file_get_contents($_FILES["xml_file"]["tmp_name"]);
-       //convert a xml string into a SimpleXml object
+        $rules = [];
+        $xml = file_get_contents($path);
+        //convert a xml string into a SimpleXml object
         if (!$xmlE = simplexml_load_string($xml)) {
             Session::addMessageAfterRedirect(__('Unauthorized file type'), false, ERROR);
         }
-       //convert SimpleXml object into an array and store it in session
+        //convert SimpleXml object into an array and store it in session
         $rules         = json_decode(json_encode((array) $xmlE), true);
-       //check rules (check if entities, criterias and actions is always good in this glpi)
+        return $rules;
+    }
+
+    /**
+     * Import rules from array
+     * @param $rules    rules array
+     *
+     * @return bool
+     **/
+    public static function importRules(array $rules): bool
+    {
+        //check rules (check if entities, criterias and actions is always good in this glpi)
         $entity        = new Entity();
         $rules_refused = [];
 
@@ -1270,15 +1269,44 @@ JAVASCRIPT;
 
        //if no conflict detected, we can directly process the import
         if (!count($rules_refused)) {
-            if (!isCommandLine()) {
-                Html::redirect("rule.backup.php?action=process_import");
-            } else {
-                return RuleCollection::processImportRules();
-            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * Print a form to inform user when conflicts appear during the import of rules from a xml file
+     *
+     * @since 0.85
+     *
+     * @return true if all ok
+     **/
+    public static function previewImportRules()
+    {
+        global $DB;
+
+        if (!isset($_FILES["xml_file"]) || ($_FILES["xml_file"]["size"] == 0)) {
+            return false;
         }
 
-        if (isCommandLine()) {
+        if ($_FILES["xml_file"]["error"] != UPLOAD_ERR_OK) {
+            Session::addMessageAfterRedirect(__("No file was uploaded"));
             return false;
+        }
+       //get xml file content
+        $xml           = file_get_contents($_FILES["xml_file"]["tmp_name"]);
+       //convert a xml string into a SimpleXml object
+        if (!$xmlE = simplexml_load_string($xml)) {
+            Session::addMessageAfterRedirect(__('Unauthorized file type'), false, ERROR);
+        }
+       //convert SimpleXml object into an array and store it in session
+        $rules         = json_decode(json_encode((array) $xmlE), true);
+
+       //if no conflict detected, we can directly process the import
+        if (RuleCollection::importRules($rules)) {
+            Html::redirect("rule.backup.php?action=process_import");
         }
 
        //print report
@@ -1294,7 +1322,7 @@ JAVASCRIPT;
         echo "</tr>";
 
         $odd = true;
-        foreach ($rules_refused as $k_rule => $refused) {
+        foreach ($_SESSION['glpi_import_rules_refused'] as $k_rule => $refused) {
             $odd = !$odd;
             if ($odd) {
                 $class = " class='tab_bg_1' ";
@@ -1550,8 +1578,6 @@ JAVASCRIPT;
                 }
             }
         }
-
-        Session::addMessageAfterRedirect(__('Successful importation'));
 
         return true;
     }
