@@ -401,8 +401,6 @@ HTML;
         $p = [
             'controls' => [
                 'close'        => true,
-                'share'        => true,
-                'fullscreen'   => true,
                 'zoom'         => true,
             ],
             'rand'               => mt_rand(),
@@ -415,51 +413,7 @@ HTML;
             }
         }
 
-        $out = "<div id='psgallery{$p['rand']}' class='pswp' tabindex='-1'
-         role='dialog' aria-hidden='true'>";
-        $out .= "<div class='pswp__bg'></div>";
-        $out .= "<div class='pswp__scroll-wrap'>";
-        $out .= "<div class='pswp__container'>";
-        $out .= "<div class='pswp__item'></div>";
-        $out .= "<div class='pswp__item'></div>";
-        $out .= "<div class='pswp__item'></div>";
-        $out .= "</div>";
-        $out .= "<div class='pswp__ui pswp__ui--hidden'>";
-        $out .= "<div class='pswp__top-bar'>";
-        $out .= "<div class='pswp__counter'></div>";
-
-        if (isset($p['controls']['close']) && $p['controls']['close']) {
-            $out .= "<button class='pswp__button pswp__button--close' title='" . __('Close (Esc)') . "'></button>";
-        }
-
-        if (isset($p['controls']['share']) && $p['controls']['share']) {
-            $out .= "<button class='pswp__button pswp__button--share' title='" . __('Share') . "'></button>";
-        }
-
-        if (isset($p['controls']['fullscreen']) && $p['controls']['fullscreen']) {
-            $out .= "<button class='pswp__button pswp__button--fs' title='" . __('Toggle fullscreen') . "'></button>";
-        }
-
-        if (isset($p['controls']['zoom']) && $p['controls']['zoom']) {
-            $out .= "<button class='pswp__button pswp__button--zoom' title='" . __('Zoom in/out') . "'></button>";
-        }
-
-        $out .= "<div class='pswp__preloader'>";
-        $out .= "<div class='pswp__preloader__icn'>";
-        $out .= "<div class='pswp__preloader__cut'>";
-        $out .= "<div class='pswp__preloader__donut'></div>";
-        $out .= "</div></div></div></div>";
-        $out .= "<div class='pswp__share-modal pswp__share-modal--hidden pswp__single-tap'>";
-        $out .= "<div class='pswp__share-tooltip'></div>";
-        $out .= "</div>";
-        $out .= "<button class='pswp__button pswp__button--arrow--left' title='" . __('Previous (arrow left)') . "'>";
-        $out .= "</button>";
-        $out .= "<button class='pswp__button pswp__button--arrow--right' title='" . __('Next (arrow right)') . "'>";
-        $out .= "</button>";
-        $out .= "<div class='pswp__caption'>";
-        $out .= "<div class='pswp__caption__center'></div>";
-        $out .= "</div></div></div></div>";
-
+        $out = '';
         $out .= "<div class='pswp-img{$p['rand']} {$p['gallery_item_class']}' itemscope itemtype='http://schema.org/ImageGallery'>";
         foreach ($imgs as $img) {
             if (!isset($img['thumbnail_src'])) {
@@ -482,25 +436,46 @@ HTML;
         }, $imgs);
 
         $items_json = json_encode($imgs);
-        $dltext = __('Download');
+        $close_json = json_encode($p['controls']['close'] ?? false);
+        $zoom_json  = json_encode($p['controls']['zoom'] ?? false);
         $js = <<<JAVASCRIPT
       (function($) {
-         var pswp = document.getElementById('psgallery{$p['rand']}');
-
          $('.pswp-img{$p['rand']}').on('click', 'figure', function(event) {
             event.preventDefault();
 
-            var options = {
+            const options = {
                 index: $(this).index(),
                 bgOpacity: 0.7,
-                showHideOpacity: true,
-                shareButtons: [
-                  {id:'download', label:'{$dltext}', url:'{{raw_image_url}}', download:true}
-                ]
-            }
+                dataSource: {$items_json},
+                index: $(this).closest('figure').parent().index(),
 
-            var lightBox = new PhotoSwipe(pswp, PhotoSwipeUI_Default, {$items_json}, options);
-            lightBox.init();
+                close: {$close_json},
+                zoom: {$zoom_json},
+
+                arrowNextTitle: __('Next (arrow right)'),
+                arrowPrevTitle: __('Previous (arrow left)'),
+                closeTitle: __('Close (Esc)'),
+                downloadTitle: __('Download'),
+                zoomTitle: __('Zoom in/out'),
+            };
+            const gallery = new PhotoSwipe(options);
+            gallery.on(
+               'uiRegister',
+               function () {
+                  this.ui.registerElement({
+                     name: 'download',
+                     isButton: true,
+                     html: '<a class="text-white" target="_blank" download=""><i class="fa-solid fa-download"></i></a>',
+                     order: 8,
+                     onInit: (el, pswp) => {
+                        pswp.on('change', () => {
+                           el.getElementsByTagName('a')[0].href = pswp.currSlide.data.src;
+                        });
+                     }
+                  });
+               }
+            );
+            gallery.init();
         });
       })(jQuery);
 
