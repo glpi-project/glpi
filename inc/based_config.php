@@ -59,7 +59,6 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_CONFIG_DIR'      => GLPI_ROOT . '/config', // Path for configuration files (db, security key, ...)
         'GLPI_VAR_DIR'         => GLPI_ROOT . '/files',  // Path for all files
         'GLPI_MARKETPLACE_DIR' => GLPI_ROOT . '/marketplace', // Path for marketplace plugins
-        'GLPI_RESSOURCE_DIR'   => GLPI_ROOT . '/src/Ressources', // Path for marketplace plugins
         'GLPI_DOC_DIR'         => '{GLPI_VAR_DIR}', // Path for documents storage
         'GLPI_CACHE_DIR'       => '{GLPI_VAR_DIR}/_cache', // Path for cache
         'GLPI_CRON_DIR'        => '{GLPI_VAR_DIR}/_cron', // Path for cron storage
