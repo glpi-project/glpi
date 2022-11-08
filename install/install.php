@@ -415,6 +415,18 @@ function step8()
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
     $DB = new DB();
 
+    Config::detectRootDoc();
+    Config::loadLegacyConfiguration();
+    //rules
+    $base_dir = GLPI_ROOT . '/src/Ressources/Rules/';
+    $files = array_diff(scandir($base_dir, 1), array('..', '.'));
+    foreach ($files as $rule_file) {
+        $rules = RuleCollection::extractRulesFromFile($base_dir . $rule_file);
+        if (RuleCollection::importRules($rules)) {
+            RuleCollection::processImportRules();
+        }
+    }
+
     if (isset($_POST['send_stats'])) {
        //user has accepted to send telemetry infos; activate cronjob
         $DB->update(
