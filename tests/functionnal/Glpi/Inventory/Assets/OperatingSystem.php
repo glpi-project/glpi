@@ -325,7 +325,7 @@ class OperatingSystem extends AbstractInventoryAsset
                     "boot_time": "2018-10-02 08:56:09",
                     "dns_domain": "teclib.infra",
                     "fqdn": "glpixps.teclib.infra",
-                    "full_name": "' . $value['full_name'] .'",
+                    "full_name": "' . $value['full_name'] . '",
                     "hostid": "a8c07701",
                     "kernel_name": "linux",
                     "kernel_version": "4.18.9-200.fc28.x86_64",
