@@ -2395,7 +2395,7 @@ class Toolbox
             }
 
            //rules
-            RuleImportAsset::initRules();
+            Rule::initRules();
 
            // update default language
             Config::setConfigurationValues(

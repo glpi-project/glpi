@@ -3495,4 +3495,45 @@ class Rule extends CommonDBTM
 
         return $input;
     }
+
+        /**
+     * Create rules (initialisation)
+     *
+     *
+     * @param boolean $reset        Whether to reset before adding new rules, defaults to true
+     * @param boolean $with_plugins Use plugins rules or not
+     * @param boolean $check        Check if rule exists before creating
+     * @param string $subtype       Specify subtype to reset
+     *
+     * @return boolean
+     */
+    public static function initRules($reset = true, $with_plugins = true, $check = false, $subtype = null): bool
+    {
+        if ($reset) {
+            $rule = new Rule();
+            $input = [];
+            if ($subtype != null) {
+                $input = ['sub_type' => $subtype];
+            }
+            $rules = $rule->find($input);
+            foreach ($rules as $data) {
+                $rule->delete($data);
+            }
+        }
+
+        $base_dir = GLPI_RESSOURCE_DIR . '/Rules/';
+        $files = array_diff(scandir($base_dir, 1), array('..', '.'));
+        foreach ($files as $rule_file) {
+            if (($subtype != null && str_contains($rule_file, $subtype)) || is_null($subtype)) {
+                $_FILES['xml_file'] =
+                [
+                    "size" => filesize($base_dir . $rule_file),
+                    "tmp_name" => $base_dir . $rule_file,
+                    "error" => UPLOAD_ERR_OK
+                ];
+                RuleCollection::previewImportRules();
+            }
+        }
+        return true;
+    }
 }
