@@ -67,7 +67,7 @@ class RuleSoftwareCategory extends DbTestCase
             (int)countElementsInTable(
                 'glpi_rules',
                 [
-                    'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+                    'uuid' => 'glpi_rule_rule_software_category_import_category_from_inventory_tool',
                     'is_active' => 0
                 ]
             )
@@ -76,7 +76,7 @@ class RuleSoftwareCategory extends DbTestCase
             (int)countElementsInTable(
                 'glpi_rules',
                 [
-                    'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+                    'uuid' => 'glpi_rule_rule_software_category_import_category_from_inventory_tool',
                     'is_active' => 1
                 ]
             )
