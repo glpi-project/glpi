@@ -1999,7 +1999,7 @@ class User extends CommonDBTM
 
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
-        
+
         $group_condition = Sanitizer::unsanitize($group_condition);
         if (!$use_dn) {
             $filter = "(& $group_condition (|($group_member_field=$user_dn)
