@@ -193,7 +193,7 @@ abstract class InventoryAsset
         //compare current itemtype et mainasset itemtype to be sure
         //to get related lock
         if (get_class($this->item) == $itemtype) {
-            $items_id = $this->item->fields[static::getIndexName()] ?? 0;
+            $items_id = $this->item->fields['id'] ?? 0;
         }
         $locks = $lockedfield->getLockedNames($itemtype, $items_id);
 
