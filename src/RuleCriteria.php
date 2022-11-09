@@ -389,7 +389,8 @@ class RuleCriteria extends CommonDBChild
             return true;
         }
 
-        $pattern = trim($pattern);
+        //since 8.1 PHP Deprecated: trim(): Passing null to parameter #1 ($string) of type string is deprecated
+        $pattern = trim((string) $pattern);
 
         switch ($condition) {
             case Rule::PATTERN_EXISTS:
