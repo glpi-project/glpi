@@ -1999,7 +1999,8 @@ class User extends CommonDBTM
 
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
-
+        
+        $group_condition = Sanitizer::unsanitize($group_condition);
         if (!$use_dn) {
             $filter = "(& $group_condition (|($group_member_field=$user_dn)
                                           ($group_member_field=$login_field=$user_dn)))";
@@ -2008,7 +2009,6 @@ class User extends CommonDBTM
         }
 
        //Perform the search
-        $filter = Sanitizer::unsanitize($filter);
         $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
        //Get the result of the search as an array
