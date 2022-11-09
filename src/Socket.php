@@ -419,13 +419,13 @@ class Socket extends CommonDBChild
         $tab[] = [
             'id'                 => '1310',
             'table'              => Socket::getTable(),
-            'field'              => 'id',
+            'field'              => 'name',
             'name'               => Socket::getTypeName(0),
             'searchtype'         => 'equals',
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'itemlink'
         ];
 
         $tab[] = [
