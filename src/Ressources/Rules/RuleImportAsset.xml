@@ -1,4 +1,6 @@
-<rule>
+<?xml version="1.0"?>
+<rules>
+   <rule>
       <entities_id>Root entity</entities_id>
       <sub_type>RuleImportAsset</sub_type>
       <ranking>0</ranking>
@@ -1844,3 +1846,4 @@
          <value>2</value>
       </ruleaction>
    </rule>
+</rules>
