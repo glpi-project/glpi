@@ -161,6 +161,7 @@ class Search
 
         if (
             $itemtype == "Ticket"
+            && Session::getCurrentInterface() === 'central'
             && $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('mini_ticket', true)
         ) {
             $dashboard = new Glpi\Dashboard\Grid($default, 33, 2);
