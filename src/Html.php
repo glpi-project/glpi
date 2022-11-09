@@ -6809,13 +6809,13 @@ HTML;
         $scss = new Compiler();
         if (isset($args['debug'])) {
             $ckey .= '_sourcemap';
-            //$scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
-            /*$scss->setSourceMapOptions(
+            $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
+            $scss->setSourceMapOptions(
                 [
                     'sourceMapBasepath' => GLPI_ROOT . '/',
                     'sourceRoot'        => $CFG_GLPI['root_doc'] . '/',
                 ]
-            );*/
+            );
         }
 
         $file = $args['file'];
