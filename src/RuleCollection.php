@@ -641,7 +641,7 @@ JAVASCRIPT;
         //if rules provides an initRules method, then we're able to reset them
         if (file_exists(GLPI_ROOT . '/src/Ressources/Rules/' . $this->getRuleClassName() . ".xml")) {
             echo "<a class='btn btn-primary' id='reset_rules' href='" . $rule->getSearchURL() . "?reinit=true&subtype=" . $this->getRuleClassName() . "' " .
-            "onClick='if(confirm(\"" . __s('Rules will be erased and recreated from dafault. Are you sure?') . "\")) { return true } else { return false; };' " .
+            "onClick='if(confirm(\"" . sprintf(__s('%s will be erased and recreated from default. Are you sure?'), $this->getRuleClass()->getTitle()) . "\")) { return true } else { return false; };' " .
             "title='" . __s("Remove all equipment import rules and recreate from defaults") . "'" .
             ">" . __('Reset rules') . "</a>&nbsp;";
         }
