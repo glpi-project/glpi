@@ -1525,14 +1525,16 @@ JAVASCRIPT;
                //Manage entity
                 $params['_add'] = true;
                 $rules_id       = $item->add($params + $default_input);
-                if ($rules_id && !isCommandLine()) {
-                    Event::log(
-                        $rules_id,
-                        "rules",
-                        4,
-                        "setup",
-                        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $rules_id)
-                    );
+                if ($rules_id) {
+                    if (!isCommandLine()) {
+                        Event::log(
+                            $rules_id,
+                            "rules",
+                            4,
+                            "setup",
+                            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $rules_id)
+                        );
+                    }
                     $add_criteria_and_actions = true;
                 }
             } else { //if uuid exists, then update the rule
@@ -1540,14 +1542,16 @@ JAVASCRIPT;
                 $params['id']      = $tmp['id'];
                 $params['_update'] = true;
                 $rules_id          = $tmp['id'];
-                if ($item->update($params + $default_input) && !isCommandLine()) {
-                    Event::log(
-                        $rules_id,
-                        "rules",
-                        4,
-                        "setup",
-                        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
-                    );
+                if ($item->update($params + $default_input)) {
+                    if (!isCommandLine()) {
+                        Event::log(
+                            $rules_id,
+                            "rules",
+                            4,
+                            "setup",
+                            sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+                        );
+                    }
 
                    //remove all dependent criterias and action
                     $ruleCriteria->deleteByCriteria(["rules_id" => $rules_id]);
