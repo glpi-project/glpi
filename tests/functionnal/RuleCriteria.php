@@ -183,7 +183,9 @@ class RuleCriteria extends DbTestCase
 
         $this->boolean($criteria->prepareInputForAdd('name'))->isFalse();
 
-        $input    = ['rules_id' => 1, 'criteria' => 'name'];
+        //originally TU check non existing rulecrteria for rules_id = 1
+        //because empty_data.sql starts to insert rule form ID = 2
+        $input    = ['rules_id' => 999, 'criteria' => 'name'];
         $this->boolean($criteria->prepareInputForAdd($input))->isFalse();
 
         $rules_id = $rule->add(['name'        => 'Ignore import',
