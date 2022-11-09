@@ -465,7 +465,7 @@ class Document_Item extends CommonDBRelation
                     } else if ($item instanceof Item_Devices) {
                         $linkname = $data["itemtype"];
                     } else {
-                        $linkname = $data["name"];
+                        $linkname = $data["name"] ?? $data["id"];
                     }
                     if (
                         $_SESSION["glpiis_ids_visible"]
