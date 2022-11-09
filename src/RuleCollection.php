@@ -1525,7 +1525,7 @@ JAVASCRIPT;
                //Manage entity
                 $params['_add'] = true;
                 $rules_id       = $item->add($params + $default_input);
-                if ($rules_id) {
+                if ($rules_id && !isCommandLine()) {
                     Event::log(
                         $rules_id,
                         "rules",
@@ -1540,7 +1540,7 @@ JAVASCRIPT;
                 $params['id']      = $tmp['id'];
                 $params['_update'] = true;
                 $rules_id          = $tmp['id'];
-                if ($item->update($params + $default_input)) {
+                if ($item->update($params + $default_input) && !isCommandLine()) {
                     Event::log(
                         $rules_id,
                         "rules",
