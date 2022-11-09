@@ -1,6 +1,4 @@
-<?xml version="1.0"?>
-<rules>
-   <rule>
+<rule>
       <entities_id>Root entity</entities_id>
       <sub_type>RuleImportAsset</sub_type>
       <ranking>0</ranking>
@@ -10,9 +8,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab850808.04316799</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>partial</criteria>
          <condition>0</condition>
@@ -39,9 +37,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab853bc0.10985912</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -88,9 +86,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab855cd8.47034018</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -132,9 +130,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab858418.15174937</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -166,9 +164,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab85a464.30277924</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -215,9 +213,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab85c516.12424813</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -259,9 +257,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab85e653.07372567</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -293,9 +291,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab860470.59895714</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -332,9 +330,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab862721.84699689</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -366,9 +364,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab864660.78322044</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -395,9 +393,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8664d8.59960914</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -439,9 +437,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab868005.93095784</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -478,9 +476,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab869d89.53023217</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -512,9 +510,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab86b817.92331039</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -546,9 +544,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab86cfd7.62895090</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -580,9 +578,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab86e653.25956092</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -614,9 +612,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab86fca0.43301211</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -648,9 +646,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8713d8.63471569</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -677,9 +675,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab872f18.82151969</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -706,9 +704,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab874c29.85925977</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -735,9 +733,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab876385.46658469</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -764,9 +762,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab877a45.78936377</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -788,9 +786,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab879318.34896768</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -817,9 +815,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab87a9e5.56922128</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -851,9 +849,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab87c0a2.41144410</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -885,9 +883,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab87d754.75418496</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -914,9 +912,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab87f441.11007886</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -943,9 +941,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8814c5.69497984</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -967,9 +965,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab882e30.26900683</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -996,9 +994,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab884535.37679498</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1030,9 +1028,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab885c51.87972036</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1064,9 +1062,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab887ad4.99231319</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1093,9 +1091,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8893d8.57805629</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1122,9 +1120,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab88af81.92064508</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1146,9 +1144,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab88c8e3.29578975</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1180,9 +1178,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab88e276.58682541</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1209,9 +1207,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab88feb8.46654579</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1233,9 +1231,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8915e3.93561575</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1267,9 +1265,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab893451.66699357</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1296,9 +1294,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab895655.14778502</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1320,9 +1318,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab897b35.62627494</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1349,9 +1347,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab89a859.86389727</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1383,9 +1381,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab89cfa5.48915818</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1412,9 +1410,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab89f729.87109246</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1436,9 +1434,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8a1264.21744148</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1470,9 +1468,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8a2a50.88598726</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1499,9 +1497,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8a6186.26205369</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1523,9 +1521,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8a83b8.56023042</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1557,9 +1555,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8aa242.28758937</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1586,9 +1584,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8abe92.66564484</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1610,9 +1608,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8ada21.92402377</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>name</criteria>
          <condition>9</condition>
@@ -1634,9 +1632,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8af583.34020353</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>serial</criteria>
          <condition>8</condition>
@@ -1663,9 +1661,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8b1110.13660706</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>mac</criteria>
          <condition>8</condition>
@@ -1692,9 +1690,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8b2c94.77859038</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>serial</criteria>
          <condition>8</condition>
@@ -1716,9 +1714,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8b47c5.85391733</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>mac</criteria>
          <condition>8</condition>
@@ -1740,9 +1738,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8b62f8.17925059</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1764,9 +1762,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8b7f05.23068326</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1803,9 +1801,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8b9f24.36839508</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1832,9 +1830,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid></uuid>
+      <uuid>b392d75d-2276836b-636b69ab8bbb14.58521274</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-08 09:23:57</date_creation>
+      <date_creation>2022-11-09 09:49:17</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1846,4 +1844,3 @@
          <value>2</value>
       </ruleaction>
    </rule>
-</rules>
