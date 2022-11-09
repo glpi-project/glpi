@@ -43,22 +43,22 @@ use Glpi\Toolbox\VersionParser;
 class PhpVersion extends AbstractRequirement
 {
     /**
-     * Minimal required PHP version.
+     * Minimal required PHP version (inclusive).
      *
      * @var string
      */
     private $min_version;
 
     /**
-     * Maximum required PHP version (exclusive).
+     * Maximum required PHP version (inclusive).
      *
      * @var string
      */
     private $max_version;
 
     /**
-     * @param string $min_version  Minimal required PHP version
-     * @param string $max_version  Maximum required PHP version (exclusive)
+     * @param string $min_version  Minimal required PHP version (inclusive)
+     * @param string $max_version  Maximum required PHP version (inclusive)
      */
     public function __construct(string $min_version, string $max_version)
     {
