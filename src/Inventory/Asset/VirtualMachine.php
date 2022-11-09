@@ -281,6 +281,7 @@ class VirtualMachine extends InventoryAsset
             }
             // Define location of physical computer (host)
             $vm->locations_id = $this->item->fields['locations_id'];
+            $vm->autoupdatesystems_id = $this->item->fields['autoupdatesystems_id'];
             $vm->is_dynamic = 1;
 
             if ($this->conf->vm_type) {
