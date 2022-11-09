@@ -10,7 +10,7 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>1</is_recursive>
-      <uuid>fbeb1115-7a37b143-5a3a6fc1afdc17.92779763</uuid>
+      <uuid>glpi_rule_rule_asset_domain_user_assignation</uuid>
       <condition>3</condition>
       <date_creation></date_creation>
       <rulecriteria>
@@ -44,7 +44,7 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>1</is_recursive>
-      <uuid>fbeb1115-7a37b143-5a3a6fc1b03762.88595154</uuid>
+      <uuid>glpi_rule_rule_asset_multiple_user_assign_to_first</uuid>
       <condition>3</condition>
       <date_creation></date_creation>
       <rulecriteria>
@@ -78,7 +78,7 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>1</is_recursive>
-      <uuid>fbeb1115-7a37b143-5a3a6fc1b073e1.16257440</uuid>
+      <uuid>glpi_rule_rule_asset_one_user_assignation</uuid>
       <condition>3</condition>
       <date_creation></date_creation>
       <rulecriteria>

@@ -10,9 +10,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab850808.04316799</uuid>
+      <uuid>glpi_rule_import_asset_no_creation_on_partial_import</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>partial</criteria>
          <condition>0</condition>
@@ -39,9 +39,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab853bc0.10985912</uuid>
+      <uuid>glpi_rule_import_asset_global_update_mac_ifnumber_restricted_port</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -88,9 +88,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab855cd8.47034018</uuid>
+      <uuid>glpi_rule_import_asset_global_update_mac_ifnumber_no_restricted_port</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -132,9 +132,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab858418.15174937</uuid>
+      <uuid>glpi_rule_import_asset_global_import_mac_ifnumber</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -166,9 +166,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab85a464.30277924</uuid>
+      <uuid>glpi_rule_import_asset_global_update_mac_ifdescr_restricted_port</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -215,9 +215,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab85c516.12424813</uuid>
+      <uuid>glpi_rule_import_asset_global_update_ip_ifdescr_no_restricted_port</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -259,9 +259,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab85e653.07372567</uuid>
+      <uuid>glpi_rule_import_asset_global_import_ip_ifdescr</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -293,9 +293,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab860470.59895714</uuid>
+      <uuid>glpi_rule_import_asset_update_only_mac_adress</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -332,9 +332,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab862721.84699689</uuid>
+      <uuid>glpi_rule_import_asset_import_only_mac_adress</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>9</condition>
@@ -366,9 +366,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab864660.78322044</uuid>
+      <uuid>glpi_rule_import_asset_computer_constraint_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -395,9 +395,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8664d8.59960914</uuid>
+      <uuid>glpi_rule_import_asset_computer_update_serial_uuid</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -439,9 +439,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab868005.93095784</uuid>
+      <uuid>glpi_rule_import_asset_computer_update_serial_uuid_empty</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -478,9 +478,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab869d89.53023217</uuid>
+      <uuid>glpi_rule_import_asset_computer_import_serial_uuid</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -512,9 +512,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab86b817.92331039</uuid>
+      <uuid>glpi_rule_import_asset_computer_update_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -546,9 +546,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab86cfd7.62895090</uuid>
+      <uuid>glpi_rule_import_asset_computer_update_uuid</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -580,9 +580,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab86e653.25956092</uuid>
+      <uuid>glpi_rule_import_asset_computer_update_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -614,9 +614,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab86fca0.43301211</uuid>
+      <uuid>glpi_rule_import_asset_computer_update_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -648,9 +648,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8713d8.63471569</uuid>
+      <uuid>glpi_rule_import_asset_computer_import_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -677,9 +677,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab872f18.82151969</uuid>
+      <uuid>glpi_rule_import_asset_computer_import_uuid</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -706,9 +706,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab874c29.85925977</uuid>
+      <uuid>glpi_rule_import_asset_computer_import_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -735,9 +735,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab876385.46658469</uuid>
+      <uuid>glpi_rule_import_asset_computer_import_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -764,9 +764,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab877a45.78936377</uuid>
+      <uuid>glpi_rule_import_asset_computer_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -788,9 +788,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab879318.34896768</uuid>
+      <uuid>glpi_rule_import_asset_printer_constraint_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -817,9 +817,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab87a9e5.56922128</uuid>
+      <uuid>glpi_rule_import_asset_printer_update_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -851,9 +851,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab87c0a2.41144410</uuid>
+      <uuid>glpi_rule_import_asset_printer_update_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -885,9 +885,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab87d754.75418496</uuid>
+      <uuid>glpi_rule_import_asset_printer_import_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -914,9 +914,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab87f441.11007886</uuid>
+      <uuid>glpi_rule_import_asset_printer_import_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -943,9 +943,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8814c5.69497984</uuid>
+      <uuid>glpi_rule_import_asset_printer_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -967,9 +967,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab882e30.26900683</uuid>
+      <uuid>glpi_rule_import_asset_networkequipment_constraint_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -996,9 +996,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab884535.37679498</uuid>
+      <uuid>glpi_rule_import_asset_networkequipment_update_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1030,9 +1030,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab885c51.87972036</uuid>
+      <uuid>glpi_rule_import_asset_networkequipment_update_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1064,9 +1064,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab887ad4.99231319</uuid>
+      <uuid>glpi_rule_import_asset_networkequipment_import_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1093,9 +1093,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8893d8.57805629</uuid>
+      <uuid>glpi_rule_import_asset_networkequipment_import_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1122,9 +1122,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab88af81.92064508</uuid>
+      <uuid>glpi_rule_import_asset_networkequipment_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1146,9 +1146,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab88c8e3.29578975</uuid>
+      <uuid>glpi_rule_import_asset_device_update_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1180,9 +1180,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab88e276.58682541</uuid>
+      <uuid>glpi_rule_import_asset_device_importe_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1209,9 +1209,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab88feb8.46654579</uuid>
+      <uuid>glpi_rule_import_asset_device_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1233,9 +1233,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8915e3.93561575</uuid>
+      <uuid>glpi_rule_import_asset_monitor_update_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1267,9 +1267,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab893451.66699357</uuid>
+      <uuid>glpi_rule_import_asset_monitor_import_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1296,9 +1296,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab895655.14778502</uuid>
+      <uuid>glpi_rule_import_asset_monitor_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1320,9 +1320,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab897b35.62627494</uuid>
+      <uuid>glpi_rule_import_asset_phone_constraint_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1349,9 +1349,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab89a859.86389727</uuid>
+      <uuid>glpi_rule_import_asset_phone_update_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1383,9 +1383,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab89cfa5.48915818</uuid>
+      <uuid>glpi_rule_import_asset_phone_import_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1412,9 +1412,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab89f729.87109246</uuid>
+      <uuid>glpi_rule_import_asset_phone_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1436,9 +1436,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8a1264.21744148</uuid>
+      <uuid>glpi_rule_import_asset_cluster_update_uuid</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1470,9 +1470,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8a2a50.88598726</uuid>
+      <uuid>glpi_rule_import_asset_cluster_import_uuid</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1499,9 +1499,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8a6186.26205369</uuid>
+      <uuid>glpi_rule_import_asset_cluster_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1523,9 +1523,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8a83b8.56023042</uuid>
+      <uuid>glpi_rule_import_asset_enclosure_update_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1557,9 +1557,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8aa242.28758937</uuid>
+      <uuid>glpi_rule_import_asset_enclosure_import_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1586,9 +1586,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8abe92.66564484</uuid>
+      <uuid>glpi_rule_import_asset_enclosure_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1610,9 +1610,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8ada21.92402377</uuid>
+      <uuid>glpi_rule_import_asset_global_constraint_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>name</criteria>
          <condition>9</condition>
@@ -1634,9 +1634,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8af583.34020353</uuid>
+      <uuid>glpi_rule_import_asset_global_update_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>serial</criteria>
          <condition>8</condition>
@@ -1663,9 +1663,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8b1110.13660706</uuid>
+      <uuid>glpi_rule_import_asset_global_update_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>mac</criteria>
          <condition>8</condition>
@@ -1692,9 +1692,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8b2c94.77859038</uuid>
+      <uuid>glpi_rule_import_asset_global_import_serial</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>serial</criteria>
          <condition>8</condition>
@@ -1716,9 +1716,9 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8b47c5.85391733</uuid>
+      <uuid>glpi_rule_import_asset_global_import_mac</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>mac</criteria>
          <condition>8</condition>
@@ -1740,9 +1740,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8b62f8.17925059</uuid>
+      <uuid>glpi_rule_import_asset_global_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1764,9 +1764,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8b7f05.23068326</uuid>
+      <uuid>glpi_rule_import_asset_database_update_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1803,9 +1803,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8b9f24.36839508</uuid>
+      <uuid>glpi_rule_import_asset_database_import_name</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>
@@ -1832,9 +1832,9 @@
       <is_active>1</is_active>
       <comment></comment>
       <is_recursive>0</is_recursive>
-      <uuid>b392d75d-2276836b-636b69ab8bbb14.58521274</uuid>
+      <uuid>glpi_rule_import_asset_database_import_denied</uuid>
       <condition>0</condition>
-      <date_creation>2022-11-09 09:49:17</date_creation>
+      <date_creation>2022-11-09 10:34:59</date_creation>
       <rulecriteria>
          <criteria>itemtype</criteria>
          <condition>0</condition>

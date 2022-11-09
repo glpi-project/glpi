@@ -10,7 +10,7 @@
       <is_active>0</is_active>
       <comment></comment>
       <is_recursive>1</is_recursive>
-      <uuid>500717c8-2bd6e957-53a12b5fd38869.86003425</uuid>
+      <uuid>glpi_rule_rule_software_category_import_category_from_inventory_tool</uuid>
       <condition>1</condition>
       <date_creation></date_creation>
       <rulecriteria>
