@@ -68,7 +68,7 @@ class Processor extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"arch": "i386", "core": 2, "external_clock": 100, "familyname": "Core i5", "familynumber": "6", "internalid": "E3 06 04 00 FF FB EB BF", "manufacturer": "Intel", "model": "78", "name": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "serial": "To Be Filled By O.E.M.", "speed": 2300, "stepping": 3, "thread": 4, "frequency": 2300, "manufacturers_id": "Intel", "designation": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "nbcores": 2, "nbthreads": 4, "frequency_default": 2300, "frequency": 2300, "is_dynamic": 1}'
+                'expected'  => '{"arch": "i386", "core": 2, "external_clock": 100, "familyname": "Core i5", "familynumber": "6", "internalid": "E3 06 04 00 FF FB EB BF", "manufacturer": "Intel", "model": "78", "name": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "serial": "To Be Filled By O.E.M.", "speed": 2300, "stepping": 3, "thread": 4, "frequency": 2300, "manufacturers_id": "Intel", "designation": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "nbcores": 2, "nbthreads": 4, "frequency_default": 2300, "frequence": 2300, "is_dynamic": 1}'
             ],
             [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
