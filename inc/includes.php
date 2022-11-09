@@ -132,7 +132,7 @@ if (isset($_REQUEST['forcetab'])) {
 }
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-    Session::setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);
+    Session::setActiveTab($_UREQUEST['itemtype'], $_UREQUEST['glpi_tab']);
 }
 // Override list-limit if choosen
 if (isset($_REQUEST['glpilist_limit'])) {
