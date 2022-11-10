@@ -108,8 +108,7 @@ class NotificationAjaxSetting extends NotificationSetting
             $crontask = new CronTask();
             $crontask->getFromDBbyName('QueuedNotification', 'queuednotificationcleanstaleajax');
             $tooltip = sprintf(
-                __('%1$s: %2$s'),
-                __('Expired notifications will be trashed by the crontask'),
+                __('Notifications older than the selected value will not be displayed. Expired notifications will be deleted by the %s crontask.'),
                 $crontask->getLink()
             );
             echo "<tr class='tab_bg_2'><td>" . __('Validity period of notifications (in days)') .
@@ -118,7 +117,10 @@ class NotificationAjaxSetting extends NotificationSetting
             echo "<td>";
             Dropdown::showNumber(
                 'notifications_ajax_expiration_delay',
-                ['value' => $CFG_GLPI["notifications_ajax_expiration_delay"]]
+                [
+                    'toadd' => [0 => __('Unlimited')],
+                    'value' => $CFG_GLPI["notifications_ajax_expiration_delay"],
+                ]
             );
             echo "</td></tr>";
         } else {
