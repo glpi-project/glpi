@@ -64,6 +64,7 @@ abstract class MainAsset extends InventoryAsset
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,
+        'network_device' => null,
         '\Glpi\Inventory\Asset\NetworkCard' => null
     ];
     /** @var mixed */
@@ -428,6 +429,31 @@ abstract class MainAsset extends InventoryAsset
 
         if (!isset($input['name'])) {
             $input['name'] = '';
+        }
+
+        //from discovery put extra data to rule input
+        if ($this->is_discovery && isset($this->extra_data['network_device'])) {
+            if (property_exists($this->extra_data['network_device'], 'ips')) {
+                foreach ($this->extra_data['network_device']->ips as $ip) {
+                    if ($ip != '127.0.0.1' && $ip != '::1') {
+                        $input['ip'][] = $ip;
+                    }
+                }
+            }
+
+            if (
+                property_exists($this->extra_data['network_device'], 'mac')
+                && !empty($this->extra_data['network_device']->mac)
+            ) {
+                $input['mac'][] = $this->extra_data['network_device']->mac;
+            }
+
+            if (
+                property_exists($this->extra_data['network_device'], 'name')
+                && !empty($this->extra_data['network_device']->name)
+            ) {
+                $input['name'] = $this->extra_data['network_device']->name;
+            }
         }
 
         if (isset($this->extra_data['\Glpi\Inventory\Asset\NetworkCard'])) {
