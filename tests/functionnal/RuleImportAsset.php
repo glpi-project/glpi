@@ -716,7 +716,7 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Global import (by mac+ifnumber)");
         $this->integer($this->items_id)->isIdenticalTo(0);
         $this->string($this->itemtype)->isIdenticalTo('Unmanaged'); //not handled yet...
-        $this->integer(count($this->ports_id))->isIdenticalTo(0);
+        $this->array($this->ports_id)->isEmpty();
     }
 
     /**
