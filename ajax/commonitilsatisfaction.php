@@ -114,7 +114,7 @@ if (isset($_POST['inquest_config' . $config_suffix]) && isset($_POST['entities_i
             [
                 'value' => $inquest_max_rate,
                 'min'   => 1,
-                'max'   => 5,
+                'max'   => 10,
                 'step'  => 1,
                 'unit'  => ''
             ]
@@ -128,7 +128,7 @@ if (isset($_POST['inquest_config' . $config_suffix]) && isset($_POST['entities_i
             [
                 'value' => $inquest_default_rate,
                 'min'   => 1,
-                'max'   => 5,
+                'max'   => 10,
                 'step'  => 1,
                 'unit'  => ''
             ]
@@ -142,7 +142,7 @@ if (isset($_POST['inquest_config' . $config_suffix]) && isset($_POST['entities_i
             [
                 'value' => $inquest_mandatory_comment,
                 'min'   => 1,
-                'max'   => 5,
+                'max'   => 10,
                 'step'  => 1,
                 'toadd' => ['0' => __('Disabled')],
                 'unit'  => ''

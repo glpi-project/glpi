@@ -246,7 +246,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     /**
      * display satisfaction value
      *
-     * @param int $value Between 0 and 5
+     * @param int $value Between 0 and 10
      **/
     public static function displaySatisfaction($value)
     {
@@ -254,8 +254,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         if ($value < 0) {
             $value = 0;
         }
-        if ($value > 5) {
-            $value = 5;
+        if ($value > 10) {
+            $value = 10;
         }
 
         $out = "<div class='rateit' data-rateit-value='$value' data-rateit-ispreset='true'
