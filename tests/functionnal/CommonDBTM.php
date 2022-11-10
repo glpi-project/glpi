@@ -497,12 +497,12 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->can($id[0], READ))->isTrue("Fail can read Printer 1");
         $this->boolean($printer->can($id[1], READ))->isTrue("Fail can read Printer 2");
         $this->boolean($printer->can($id[2], READ))->isFalse("Fail can't read Printer 3");
-        $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 1");
+        $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isTrue("Fail can write Printer 1");
         $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
-        $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 1");
+        $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 3");
+        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
        // See only in child entity 1 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent1))->isTrue();
@@ -513,9 +513,9 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->can($id[3], READ))->isFalse("Fail can't read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[1]))->isFalse("Fail can't write Printer 2");
-        $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 2");
-        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 2");
+        $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
+        $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 3");
+        $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
        // See only in child entity 2 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent2))->isTrue();
@@ -526,7 +526,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->can($id[3], READ))->isTrue("Fail can read Printer 4");
 
         $this->boolean($printer->canEdit($id[0]))->isFalse("Fail can't write Printer 1");
-        $this->boolean($printer->canEdit($id[1]))->isFalse("Fail can't write Printer 2");
+        $this->boolean($printer->canEdit($id[1]))->isTrue("Fail can write Printer 2");
         $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isTrue("Fail can write Printer 4");
     }

@@ -2419,7 +2419,7 @@ class CommonDBTM extends CommonGLPI
             $infocom = new Infocom();
 
             if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
-                return $infocom->canPurge(true);
+                return $infocom->canPurge();
             }
         }
         return true;
