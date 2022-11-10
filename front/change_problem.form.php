@@ -39,8 +39,6 @@ include('../inc/includes.php');
 
 Session::checkLoginUser();
 
-Toolbox::deprecated();
-
 $item = new Change_Problem();
 if (isset($_POST["add"])) {
     $item->check(-1, CREATE, $_POST);

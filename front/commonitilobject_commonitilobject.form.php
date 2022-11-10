@@ -43,37 +43,6 @@ include('../inc/includes.php');
 
 Session ::checkCentralAccess();
 
-if (isset($_POST['add'])) {
-    $link_class = isset($_POST['itemtype_1'], $_POST['itemtype_2'])
-        ? CommonITILObject_CommonITILObject::getLinkClass($_POST['itemtype_1'], $_POST['itemtype_2'])
-        : null;
-
-    if ($link_class === null || !isset($_POST['items_id_1'], $_POST['items_id_2'])) {
-        Session::addMessageAfterRedirect(
-            __('Cannot create link.'),
-            false,
-            ERROR
-        );
-    }
-
-    $itil_itil = new $link_class();
-
-    $input = $itil_itil->normalizeInput($_POST);
-
-    $itil_itil->check(-1, CREATE, $input);
-
-    if ($itil_itil->add($input)) {
-        Event::log(
-            $_POST['items_id_1'],
-            $_POST['itemtype_1'],
-            4,
-            "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
-        );
-    }
-    Html::back();
-}
 if (isset($_POST['purge'], $_POST['id'])) {
     [$link_class_1, $link_class_2, $link_id] = explode('_', $_POST['id'], 3);
     $link_class = $link_class_1 . '_' . $link_class_2;
