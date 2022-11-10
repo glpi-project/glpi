@@ -994,8 +994,7 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Update only mac address (mac on switch port)");
         $this->integer($this->items_id)->isIdenticalTo($printers_id);
         $this->string($this->itemtype)->isIdenticalTo('Printer');
-        $this->array($this->ports_id)->hasSize(1);
-        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id_2);
+        $this->array($this->ports_id)->isEqualTo([$ports_id_2]);
     }
 
     public function testGetTitle()
