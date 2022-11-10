@@ -99,7 +99,11 @@ class Notification_NotificationTemplate extends DbTestCase
             function () use ($notif) {
                 \Notification_NotificationTemplate::showForNotification($notif);
             }
-        )->isIdenticalTo("<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>");
+        )->isIdenticalTo(<<<HTML
+<div class='center firstbloc'><a class='btn btn-primary' href='/glpi/front/notification_notificationtemplate.form.php?notifications_id=1&amp;withtemplate=0'>Add a template</a></div>
+<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title="1">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title="Alert Tickets not closed">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>
+HTML
+            );
     }
 
     public function testGetName()
