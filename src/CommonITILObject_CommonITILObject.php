@@ -383,6 +383,30 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         return $links;
     }
 
+    protected static function getITILLinkTypes(): array
+    {
+        return [
+            self::LINK_TO => [
+                'name' => __('Linked to'),
+                'icon' => 'fas fa-link',
+            ],
+            self::DUPLICATE_WITH => [
+                'name' => __('Duplicates'),
+                'icon' => 'fas fa-clone',
+            ],
+            self::SON_OF => [
+                'name' => __('Son of'),
+                'icon' => 'fa-level-up-alt fa-flip-horizontal',
+                'inverse' => self::PARENT_OF,
+            ],
+            self::PARENT_OF => [
+                'name' => __('Parent of'),
+                'icon' => 'fa-level-up-alt',
+                'inverse' => self::SON_OF,
+            ],
+        ];
+    }
+
     /**
      * Dropdown for link types
      *
@@ -393,12 +417,8 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      **/
     public static function dropdownLinks($myname, $value = self::LINK_TO)
     {
-
-        $tmp[self::LINK_TO]        = __('Linked to');
-        $tmp[self::DUPLICATE_WITH] = __('Duplicates');
-        $tmp[self::SON_OF]         = __('Son of');
-        $tmp[self::PARENT_OF]      = __('Parent of');
-        Dropdown::showFromArray($myname, $tmp, ['value' => $value]);
+        $link_options = array_map(static fn ($link) => $link['name'], self::getITILLinkTypes());
+        Dropdown::showFromArray($myname, $link_options, ['value' => $value]);
     }
 
     /**
@@ -412,34 +432,22 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      **/
     public static function getLinkName($value, bool $inverted = false, bool $with_icon = false): string
     {
-        $tmp = [];
+        $link_types = static::getITILLinkTypes();
 
-        if (!$inverted) {
-            $tmp[self::LINK_TO]        = __('Linked to');
-            $tmp[self::DUPLICATE_WITH] = __('Duplicates');
-            $tmp[self::SON_OF]         = __('Son of');
-            $tmp[self::PARENT_OF]      = __('Parent of');
-        } else {
-            $tmp[self::LINK_TO]        = __('Linked to');
-            $tmp[self::DUPLICATE_WITH] = __('Duplicated by');
-            $tmp[self::SON_OF]         = __('Parent of');
-            $tmp[self::PARENT_OF]      = __('Son of');
+        if (!isset($link_types[$value])) {
+            return NOT_AVAILABLE;
         }
 
-        if ($with_icon) {
-            $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';
-            $tmp[self::LINK_TO]        = sprintf($icon_tag, "fa-link", $tmp[self::LINK_TO]);
-            $tmp[self::DUPLICATE_WITH] = sprintf($icon_tag, "fa-clone", $tmp[self::DUPLICATE_WITH]);
-            $icon_son                  = $inverted ? "fa-level-down-alt" : "fa-level-up-alt fa-flip-horizontal";
-            $tmp[self::SON_OF]         = sprintf($icon_tag, $icon_son, $tmp[self::SON_OF]);
-            $icon_parent               = $inverted ? "fa-level-down-alt" : "fa-level-up-alt";
-            $tmp[self::PARENT_OF]      = sprintf($icon_tag, $icon_parent, $tmp[self::PARENT_OF]);
-        }
+        $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';
 
-        if (isset($tmp[$value])) {
-            return $tmp[$value];
+        $link_type = $link_types[$value];
+        $resolved_value = $inverted && isset($link_type['inverse']) ? $link_types[$link_type['inverse']] : $link_type;
+
+        // Handle simple label change for DUPLICATE_WITH when inverted
+        if ($inverted && $value === self::DUPLICATE_WITH) {
+            $resolved_value['name'] = __('Duplicated by');
         }
-        return NOT_AVAILABLE;
+        return !$with_icon ? $resolved_value['name'] : sprintf($icon_tag, $resolved_value['icon'], $resolved_value['name']);
     }
 
     /**

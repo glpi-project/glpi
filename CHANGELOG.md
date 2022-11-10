@@ -51,9 +51,6 @@ The present file will list all changes made to the project; according to the
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `ajax/itemTicket.php` script usage.
 - `ajax/knowbase.php` script usage.
-- `front/change_problem.form.php` script usage.
-- `front/change_ticket.form.php` script usage.
-- `front/problem_ticket.form.php` script usage.
 - `front/ticket_ticket.form.php` script usage.
 - Usage of `users_id_validate` input in `CommonITILObject`.
 - Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
