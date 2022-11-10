@@ -376,8 +376,7 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by mac)");
         $this->integer($this->items_id)->isIdenticalTo($computers_id);
         $this->string($this->itemtype)->isIdenticalTo('Computer');
-        $this->array($this->ports_id)->hasSize(1);
-        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id);
+        $this->array($this->ports_id)->isEqualTo([$ports_id]);
     }
 
     /**
