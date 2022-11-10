@@ -214,34 +214,38 @@
 
             {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
             <div class="d-flex card-footer mx-n3 mb-n3">
+               {% set pending_reasons %}
+                  {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) %}
+                     <span class="input-group-text bg-yellow-lt py-0 pe-0" id="pending-reasons-control-{{ rand }}">
+                        <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top" role="button">
+                           <i class="fas fa-pause me-2"></i>
+                           <label class="form-check form-switch pt-2">
+                              <input type="hidden"   name="pending" value="0" />
+                              <input type="checkbox" name="pending" value="1" class="form-check-input"
+                                    id="enable-pending-reasons-{{ rand }}"
+                                    role="button"
+                                    {{ item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen ? 'checked' : '' }}
+                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
+                           </label>
+                        </span>
+
+                        {% if item.fields['status'] != constant('CommonITILObject::WAITING') %}
+                           <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
+                              {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
+                           </div>
+                        {% endif %}
+                     </span>
+                  {% endif %}
+               {% endset %}
+
                {% if subitem.fields['id'] <= 0 %}
                   <div class="input-group">
                      <button class="btn btn-primary" type="submit" name="add">
                         <i class="fas fa-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>
-                     {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) %}
-                        <span class="input-group-text bg-yellow-lt py-0 pe-0" id="pending-reasons-control-{{ rand }}">
-                           <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
-                                 data-bs-toggle="tooltip" data-bs-placement="top" role="button">
-                              <i class="fas fa-pause me-2"></i>
-                              <label class="form-check form-switch pt-2">
-                                 <input type="hidden"   name="pending" value="0" />
-                                 <input type="checkbox" name="pending" value="1" class="form-check-input"
-                                       id="enable-pending-reasons-{{ rand }}"
-                                       role="button"
-                                       {{ item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen ? 'checked' : '' }}
-                                       data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
-                              </label>
-                           </span>
-
-                           {% if item.fields['status'] != constant('CommonITILObject::WAITING') %}
-                              <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
-                                 {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
-                              </div>
-                           {% endif %}
-                        </span>
-                     {% endif %}
+                     {{ pending_reasons|raw }}
                   </div>
                {% else %}
                   <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
@@ -257,6 +261,7 @@
                         <span>{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                   {% endif %}
+                  {{ pending_reasons|raw }}
                {% endif %}
             </div>
 
