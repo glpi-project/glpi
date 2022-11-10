@@ -771,8 +771,7 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Global update (by mac+ifnumber restricted port)");
         $this->integer($this->items_id)->isIdenticalTo($networkEquipments_id);
         $this->string($this->itemtype)->isIdenticalTo('NetworkEquipment');
-        $this->array($this->ports_id)->hasSize(1);
-        $this->integer(current($this->ports_id))->isIdenticalTo($ports_id);
+        $this->array($this->ports_id)->isEqualTo([$ports_id]);
     }
 
    //Above commented tests are related to SNMP inventory
