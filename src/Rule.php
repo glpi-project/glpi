@@ -3524,7 +3524,7 @@ class Rule extends CommonDBTM
         $base_dir = GLPI_ROOT . '/src/Ressources/Rules/';
         $files = array_diff(scandir($base_dir, 1), array('..', '.'));
         foreach ($files as $rule_file) {
-            if (($subtype != null && str_contains($rule_file, $subtype)) || is_null($subtype)) {
+            if ($subtype === null || str_contains($rule_file, $subtype)) {
                 $rules = RuleCollection::extractRulesFromFile($base_dir . $rule_file);
                 if (RuleCollection::importRules($rules)) {
                     RuleCollection::processImportRules();
