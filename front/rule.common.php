@@ -53,7 +53,6 @@ if (isset($_POST["action"])) {
     $rulecollection->changeRuleOrder($_POST["id"], $_POST["action"], $_POST['condition']);
     Html::back();
 } else if (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
-    $subtype = isset($_POST["reinit"]) ? $_POST["reinit"] : $_GET['reinit'];
     //reinitialize current rules
     $ruleclass = $rulecollection->getRuleClass();
     if ($ruleclass::initRules(true, true, false, $_GET['subtype'])) {
