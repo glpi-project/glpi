@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("config", READ);
+Session::checkRight("snmpcredential", READ);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";

@@ -66,14 +66,12 @@ class Update extends \GLPITestCase
         $this->array($_SESSION)->hasKeys([
             'glpilanguage',
             'glpi_currenttime',
-            'glpi_use_mode'
         ])->notHasKeys([
+            'glpi_use_mode',
             'debug_sql',
             'debug_vars',
             'use_log_in_files'
         ]);
-        $this->variable($_SESSION['glpi_use_mode'])->isIdenticalTo(\Session::DEBUG_MODE);
-        $this->variable(error_reporting())->isIdenticalTo(E_ALL | E_STRICT);
     }
 
     public function testSetMigration()
@@ -128,6 +126,8 @@ class Update extends \GLPITestCase
                     $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
                     $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                     $path . '/update_10.0.3_to_10.0.4.php' => 'update1003to1004',
+                    $path . '/update_10.0.4_to_10.0.5.php' => 'update1004to1005',
+                    $path . '/update_10.0.5_to_10.0.6.php' => 'update1005to1006',
                     $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
@@ -153,6 +153,8 @@ class Update extends \GLPITestCase
                     $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
                     $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                     $path . '/update_10.0.3_to_10.0.4.php' => 'update1003to1004',
+                    $path . '/update_10.0.4_to_10.0.5.php' => 'update1004to1005',
+                    $path . '/update_10.0.5_to_10.0.6.php' => 'update1005to1006',
                     $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],
@@ -185,6 +187,8 @@ class Update extends \GLPITestCase
                     $path . '/update_10.0.1_to_10.0.2.php' => 'update1001to1002',
                     $path . '/update_10.0.2_to_10.0.3.php' => 'update1002to1003',
                     $path . '/update_10.0.3_to_10.0.4.php' => 'update1003to1004',
+                    $path . '/update_10.0.4_to_10.0.5.php' => 'update1004to1005',
+                    $path . '/update_10.0.5_to_10.0.6.php' => 'update1005to1006',
                     $path . '/update_10.0.x_to_10.1.0.php' => 'update100xto1010',
                 ],
             ],

@@ -9,12 +9,6 @@
     "exif", "ldap", "pcntl", "xmlrpc", "zip"
   ],
   "symbol-whitelist": [
-    "// PHP symbols",
-    "null",
-    "false", "true",
-    "static", "self", "parent",
-    "array", "bool", "callable", "float", "int", "iterable", "object", "string", "void",
-
     "// Missing constant in Alpine Linux",
     "GLOB_BRACE",
 

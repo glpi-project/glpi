@@ -39,6 +39,7 @@ use Glpi\Features\CacheableListInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -4110,7 +4111,7 @@ class CommonDBTM extends CommonGLPI
     {
 
         if (!$this->searchopt) {
-            $this->searchopt = Search::getOptions($this->getType());
+            $this->searchopt = SearchOption::getOptionsForItemtype(static::getType());
         }
 
         return $this->searchopt;
@@ -5351,18 +5352,22 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Generate link
+     * Generate link(s).
      *
      * @since 9.1
      *
-     * @param string     $link original string content
-     * @param CommonDBTM $item item used to make replacements
+     * @param string        $link       original string content
+     * @param CommonDBTM    $item       item used to make replacements
+     * @param bool          $safe_url   indicates whether URL should be sanitized or not
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
-     **/
-    public static function generateLinkContents($link, CommonDBTM $item)
+     *
+     * @FIXME Uncomment $safe_url parameter declaration in GLPI 10.1.
+     */
+    public static function generateLinkContents($link, CommonDBTM $item/*, bool $safe_url = true*/)
     {
-        return Link::generateLinkContents($link, $item);
+        $safe_url = func_num_args() === 3 ? func_get_arg(2) : true;
+        return Link::generateLinkContents($link, $item, $safe_url);
     }
 
 

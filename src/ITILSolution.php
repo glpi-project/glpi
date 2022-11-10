@@ -269,7 +269,7 @@ class ITILSolution extends CommonDBChild
                 return false;
             }
 
-            $input['content'] = $html;
+            $input['content'] = Sanitizer::sanitize($html);
         }
 
         return $input;

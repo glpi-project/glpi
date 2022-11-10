@@ -662,7 +662,7 @@ class Planning extends CommonGLPI
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
-                'can_delete'   => PlanningExternalEvent::canDelete(),
+                'can_delete'   => PlanningExternalEvent::canPurge(),
             ];
         } else {
            // short view (on Central page)

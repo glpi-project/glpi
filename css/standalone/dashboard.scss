@@ -86,10 +86,9 @@ $break_tablet: 1400px;
     &.mini {
         padding-top: 0;
         margin: 0 auto;
-        margin-bottom: -10px;
+        margin-bottom: -45px !important;
         z-index: 1;
         box-sizing: content-box;
-        height: 100px;
 
         & + .search_page {
             z-index: 2;
@@ -101,7 +100,6 @@ $break_tablet: 1400px;
 
         .grid-guide {
             top: 0;
-            bottom: 0 !important;
         }
 
         .main-icon {
@@ -1056,7 +1054,7 @@ $break_tablet: 1400px;
 
         @keyframes slice-fill-opacity {
             to {
-                fill-opacity: 100%;
+                fill-opacity: 1;
             }
         }
 
@@ -1067,7 +1065,7 @@ $break_tablet: 1400px;
                 .ct-slice-donut-solid {
                     stroke-width: 1px;
                     transform-origin: center center;
-                    fill-opacity: 0%;
+                    fill-opacity: 0;
                     animation: slice-fill-opacity 1s ease-in-out forwards;
                 }
 
@@ -1075,15 +1073,15 @@ $break_tablet: 1400px;
                     .ct-slice-pie,
                     .ct-slice-donut-solid {
                         animation: none;
-                        fill-opacity: 100%;
+                        fill-opacity: 1;
                     }
                 }
 
                 &.mouseover {
                     .ct-slice-pie,
                     .ct-slice-donut-solid {
-                        fill-opacity: 100%;
-                        stroke-opacity: 100%;
+                        fill-opacity: 1;
+                        stroke-opacity: 1;
                         stroke-width: 3px;
                     }
                 }
@@ -1091,8 +1089,8 @@ $break_tablet: 1400px;
                 &.notmouseover {
                     .ct-slice-pie,
                     .ct-slice-donut-solid {
-                        fill-opacity: 50%;
-                        stroke-opacity: 0%;
+                        fill-opacity: 0.5;
+                        stroke-opacity: 0;
                     }
                 }
             }
@@ -1106,16 +1104,6 @@ $break_tablet: 1400px;
 
         .ct-point:hover {
             stroke-width: 13px;
-        }
-
-        &.pie,
-        &.line.multiple,
-        &.bar.tab10 {
-            @import "../includes/components/chartist/palette_d3_tab_10";
-        }
-
-        &.bar.tab20 {
-            @import "../includes/components/chartist/palette_d3_cat_20";
         }
 
         .ct-legend {
@@ -1253,19 +1241,6 @@ $break_tablet: 1400px;
                 color: inherit;
             }
         }
-    }
-}
-
-.chartist-tooltip.dashboard-tooltip {
-    $bg-color: rgba($color: #fff, $alpha: 65%);
-
-    z-index: 1080;
-    background-color: $bg-color;
-
-    @include soft-shadow;
-
-    &::before {
-        border-top-color: $bg-color;
     }
 }
 

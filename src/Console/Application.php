@@ -121,7 +121,7 @@ class Application extends BaseApplication
         }
     }
 
-    protected function getDefaultInputDefinition()
+    protected function getDefaultInputDefinition(): InputDefinition
     {
 
         $definition = new InputDefinition(
@@ -239,7 +239,11 @@ class Application extends BaseApplication
         if ($command instanceof GlpiCommandInterface && $command->requiresUpToDateDb() && !Update::isDbUpToDate()) {
             $output->writeln(
                 '<error>'
-                . __('The version of the database is not compatible with the version of the installed files. An update is necessary.')
+                . __('The GLPI codebase has been updated. The update of the GLPI database is necessary.')
+                . '</error>'
+                . PHP_EOL
+                . '<error>'
+                . sprintf(__('Run the "php bin/console %1$s" command to process to the update.'), 'glpi:database:update')
                 . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );

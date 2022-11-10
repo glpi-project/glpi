@@ -161,7 +161,13 @@ HTML,
   <div>
     <label>e-mail:</label><input type="email" /><br />
     <label>password:</label><input type="password" />
+    <input type="hidden" name="test3" value="malicious-input" />
     <button type="submit">OK</button>
+    <select name="test1">
+        <option value="1">Opt 1</option>
+        <option value="2">Opt 2</option>
+    </select>
+    <textarea name="test2">Some textarea content</textarea>
   </div>
 </form>
 
@@ -240,9 +246,15 @@ HTML,
 <h1>Form element should be removed</h1>
 
   <div>
-    <label>e-mail:</label><input type="email" /><br />
-    <label>password:</label><input type="password" />
-    <button type="submit">OK</button>
+    <label>e-mail:</label><br />
+    <label>password:</label>
+    
+    OK
+    
+        Opt 1
+        Opt 2
+    
+    Some textarea content
   </div>
 
 

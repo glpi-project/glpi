@@ -375,6 +375,14 @@ class DatabaseInstance extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '6',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'version',
+            'name'               => _n('Version', 'Versions', 1),
+            'datatype'           => 'text'
+        ];
+
+        $tab[] = [
             'id'                 => '40',
             'table'              => DatabaseInstanceCategory::getTable(),
             'field'              => 'name',

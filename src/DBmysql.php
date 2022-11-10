@@ -580,7 +580,15 @@ class DBmysql
      */
     public function insertId()
     {
-        return $this->dbh->insert_id;
+        $insert_id = $this->dbh->insert_id;
+
+        if ($insert_id === 0) {
+            // See https://www.php.net/manual/en/mysqli.insert-id.php
+            // `$this->dbh->insert_id` will return 0 value if `INSERT` statement did not change the `AUTO_INCREMENT` value.
+            // We have to retrieve it manually via `LAST_INSERT_ID()`.
+            $insert_id = $this->dbh->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+        }
+        return $insert_id;
     }
 
     /**

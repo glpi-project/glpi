@@ -55,22 +55,6 @@
             }
         }
 
-        .select2-container--focus& {
-            border-color: $input-focus-border-color;
-            box-shadow: $input-focus-box-shadow;
-        }
-
-        .select2-container--disabled& {
-            background-color: $input-disabled-bg;
-            border-color: $input-border-color;
-            box-shadow: none;
-            cursor: not-allowed;
-
-            .select2-selection__rendered {
-                color: $text-muted;
-            }
-        }
-
         &.select2-selection--single {
             @include font-size($input-font-size);
 
@@ -191,6 +175,22 @@
                     }
                 }
             }
+        }
+    }
+
+    &.select2-container--focus .select2-selection {
+        border-color: $input-focus-border-color;
+        box-shadow: $input-focus-box-shadow;
+    }
+
+    &.select2-container--disabled .select2-selection {
+        background-color: $input-disabled-bg;
+        border-color: $input-border-color;
+        box-shadow: none;
+        cursor: not-allowed;
+
+        .select2-selection__rendered {
+            color: $text-muted;
         }
     }
 

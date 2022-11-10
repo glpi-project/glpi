@@ -32,7 +32,10 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `chartist` library has been replaced by `echarts`.
+- `photoswipe` library has been upgraded to version 5.x.
 - `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
+- `Symfony` libraries have been upgraded to version 6.0.
 - `users_id_validate` field in `CommonITILValidation` will now have a `0` value until someone approves or refuses the validation.
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
@@ -48,9 +51,6 @@ The present file will list all changes made to the project; according to the
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `ajax/itemTicket.php` script usage.
 - `ajax/knowbase.php` script usage.
-- `front/change_problem.form.php` script usage.
-- `front/change_ticket.form.php` script usage.
-- `front/problem_ticket.form.php` script usage.
 - `front/ticket_ticket.form.php` script usage.
 - Usage of `users_id_validate` input in `CommonITILObject`.
 - Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
@@ -77,9 +77,11 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`
 - `Toolbox::seems_utf8()`
+- `Search::getOptions()` no longer returns a reference
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
+- `Glpi\Dashboard\Widget::getCssGradientPalette()`
 - `Search::computeTitle()`
 - `Search::csv_clean()`
 - `Search::findCriteriaInSession()`
@@ -89,7 +91,7 @@ The present file will list all changes made to the project; according to the
 - `Search::outputData()`
 - `Search::sylk_clean()`
 
-## [10.0.4] unreleased
+## [10.0.6] unreleased
 
 ### Added
 
@@ -109,25 +111,17 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
+## [10.0.5] 2022-11-04
+
+## [10.0.4] 2022-11-03
+
 ## [10.0.3] 2022-09-14
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
 
 ### API changes
 
 #### Added
 
 - `CommonDBTM::pre_addToDB()` added.
-
-#### Changes
-
-#### Deprecated
 
 #### Removed
 

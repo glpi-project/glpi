@@ -98,6 +98,11 @@ class NetworkPort extends CommonDBChild
         return $value;
     }
 
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+
     public function __set(string $property, $value)
     {
         switch ($property) {

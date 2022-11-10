@@ -158,6 +158,7 @@
                               'icon_label': true,
                               'on_change': 'solutiontemplate_update' ~ rand ~ '(this.value)',
                               'rand': rand,
+                              'entity': item.fields['entities_id'],
                               'disabled': disabled,
                            }
                         ) }}
@@ -189,6 +190,7 @@
                            'full_width': true,
                            'icon_label': true,
                            'rand': rand,
+                           'entity': item.fields['entities_id'],
                            'condition': sol_search,
                            'disabled': disabled,
                         }
@@ -274,7 +276,11 @@
                var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))
                   ? 0
                   : parseInt(data.solutiontypes_id);
-               $("#dropdown_solutiontypes_id{{ rand }}").trigger("setValue", solutiontypes_id);
+
+               //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
+               //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
+               var newOption = new Option(data.solutiontypes_name, solutiontypes_id, true, true);
+               $("#dropdown_solutiontypes_id{{ rand }}").append(newOption).trigger('change');
             });
          }
       </script>

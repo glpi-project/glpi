@@ -863,6 +863,7 @@ class Dropdown
                         $values[$file] = $file;
                     }
                 }
+                $rand = mt_rand();
                 self::showFromArray(
                     $myname,
                     $values,
@@ -870,11 +871,35 @@ class Dropdown
                         [
                             'value'                 => $value,
                             'display_emptychoice'   => true,
-                            'display'               => $display
+                            'display'               => $display,
+                            'noselect2'             => true, // we will instanciate it later
+                            'rand'                  => $rand,
                         ],
                         $options
                     )
                 );
+
+                global $CFG_GLPI;
+
+                // templates for select2 dropdown
+                $js = <<<JAVASCRIPT
+                $(function() {
+                    const formatFormIcon = function(icon) {
+                        if (!icon.id || icon.id == '0') {
+                            return icon.text;
+                        }
+                        var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
+                        var label = '<span>'+icon.text+'</span>';
+                        return $(img+'&nbsp;'+label);
+                    };
+                    $("#dropdown_{$myname}{$rand}").select2({
+                        width: '60%',
+                        templateSelection: formatFormIcon,
+                        templateResult: formatFormIcon
+                    });
+                });
+JAVASCRIPT;
+                echo Html::scriptBlock($js);
             } else {
                //TRANS: %s is the store path
                 printf(__('Error reading directory %s'), $store_path);

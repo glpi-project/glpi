@@ -2132,11 +2132,9 @@ class User extends CommonDBTM
             return true;
         }
         $this->fields['_ruleright_process'] = true;
-        foreach ($a_field as $field => $value) {
-            if (
-                !isset($_SERVER[$value])
-                || empty($_SERVER[$value])
-            ) {
+        foreach ($a_field as $field => $key) {
+            $value = $_SERVER[$key] ?? null;
+            if (empty($value)) {
                 switch ($field) {
                     case "title":
                         $this->fields['usertitles_id'] = 0;
@@ -2150,38 +2148,43 @@ class User extends CommonDBTM
                         $this->fields[$field] = "";
                 }
             } else {
+                if (!mb_check_encoding($value, 'UTF-8') && mb_check_encoding($value, 'ISO-8859-1')) {
+                    // Some applications, like Microsoft Azure Enterprise Applications (Header-based Single sign-on),
+                    // will provide ISO-8859-1 encoded values. They have to be converted into UTF-8 to prevent
+                    // encoding issues (see #12898).
+                    $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+                }
+                $value = Sanitizer::sanitize($value); // $_SERVER is not automatically sanitized
                 switch ($field) {
                     case "email1":
                     case "email2":
                     case "email3":
                     case "email4":
                         // Manage multivaluable fields
-                        if (!preg_match('/count/', $_SERVER[$value])) {
-                            $this->fields["_emails"][] = addslashes($_SERVER[$value]);
+                        if (!preg_match('/count/', $value)) {
+                            $this->fields["_emails"][] = $value;
                         }
                         // Only get them once if duplicated
                         $this->fields["_emails"] = array_unique($this->fields["_emails"]);
                         break;
 
                     case "language":
-                        $language = Config::getLanguage($_SERVER[$value]);
+                        $language = Config::getLanguage($value);
                         if ($language != '') {
                             $this->fields[$field] = $language;
                         }
                         break;
 
                     case "title":
-                        $this->fields['usertitles_id']
-                        = Dropdown::importExternal('UserTitle', addslashes($_SERVER[$value]));
+                        $this->fields['usertitles_id'] = Dropdown::importExternal('UserTitle', $value);
                         break;
 
                     case "category":
-                        $this->fields['usercategories_id']
-                        = Dropdown::importExternal('UserCategory', addslashes($_SERVER[$value]));
+                        $this->fields['usercategories_id'] = Dropdown::importExternal('UserCategory', $value);
                         break;
 
                     default:
-                        $this->fields[$field] = $_SERVER[$value];
+                        $this->fields[$field] = $value;
                         break;
                 }
             }
@@ -6329,7 +6332,7 @@ JAVASCRIPT;
         $first  = DBmysql::quoteName("$table.$first");
         $second = DBmysql::quoteName("$table.$second");
         $alias  = DBmysql::quoteName($alias);
-        $name   = DBmysql::quoteName(self::getNameField());
+        $name   = DBmysql::quoteName($table . '.' . self::getNameField());
 
         return new QueryExpression("IF(
             $first <> '' && $second <> '',

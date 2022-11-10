@@ -310,7 +310,7 @@ final class DbUtils
         global $GLPI_CACHE;
 
         // If a class exists for this itemtype, just return the declared class name.
-        $matches = preg_grep('/^' . preg_quote($itemtype) . '$/i', get_declared_classes());
+        $matches = preg_grep('/^' . preg_quote($itemtype, '/') . '$/i', get_declared_classes());
         if (count($matches) === 1) {
             return current($matches);
         }
@@ -325,12 +325,12 @@ final class DbUtils
            // indeed, we must be able to separate plugin name (directory) from class name (file)
            // so pattern must be the one provided by getItemTypeForTable: PluginDirectorynameClassname
             $context = strtolower($plugin_matches['plugin']);
-        } else if (preg_match('/^' . preg_quote(NS_PLUG) . '(?<plugin>[a-z]+)\\\/i', $itemtype, $plugin_matches)) {
+        } else if (preg_match('/^' . preg_quote(NS_PLUG, '/') . '(?<plugin>[a-z]+)\\\/i', $itemtype, $plugin_matches)) {
             $context = strtolower($plugin_matches['plugin']);
         }
 
         $namespace      = $context === 'glpi-core' ? NS_GLPI : NS_PLUG . ucfirst($context) . '\\';
-        $uses_namespace = preg_match('/^(' . preg_quote($namespace) . ')/i', $itemtype);
+        $uses_namespace = preg_match('/^(' . preg_quote($namespace, '/') . ')/i', $itemtype);
 
         $expected_lc_path = str_ireplace(
             [$namespace, '\\'],
@@ -1617,7 +1617,7 @@ final class DbUtils
             ($link == 1)
             && ($ID > 0)
         ) {
-            $before = "<a title=\"" . Toolbox::addslashes_deep($formatted) . "\"
+            $before = "<a title=\"" . htmlspecialchars($formatted) . "\"
                        href='" . User::getFormURLWithID($ID) . "'>";
             $after  = "</a>";
         }

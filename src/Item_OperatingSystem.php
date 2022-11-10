@@ -209,7 +209,10 @@ class Item_OperatingSystem extends CommonDBRelation
                 $instance->fields['install_date']   = $item->fields['install_date'] ?? '';
                 $instance->fields['entities_id']    = $item->fields['entities_id'];
             }
-            $instance->showForm($id, ['canedit' => $canedit]);
+            $instance->showForm($id, [
+                'canedit' => $canedit,
+                'candel'  => $canedit
+            ]);
             return;
         }
 

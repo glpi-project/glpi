@@ -110,7 +110,7 @@ final class SearchOption implements \ArrayAccess
      *
      * @return array The reference to the array of search options for the given item type
      **/
-    public static function &getOptionsForItemtype($itemtype, $withplugins = true): array
+    public static function getOptionsForItemtype($itemtype, $withplugins = true): array
     {
         global $CFG_GLPI;
         $item = null;
@@ -396,7 +396,7 @@ final class SearchOption implements \ArrayAccess
     public static function getActionsFor($itemtype, $field_num)
     {
 
-        $searchopt = &self::getOptionsForItemtype($itemtype);
+        $searchopt = self::getOptionsForItemtype($itemtype);
         $actions   = [
             'contains'    => __('contains'),
             'notcontains' => __('not contains'),
@@ -411,7 +411,6 @@ final class SearchOption implements \ArrayAccess
             if (isset($actions['searchopt']['searchtype'])) {
                 // Reset search option
                 $actions = [
-                    'empty'       => __('is empty'),
                     'searchopt'   => $searchopt[$field_num]
                 ];
                 if (!is_array($actions['searchopt']['searchtype'])) {
@@ -453,6 +452,8 @@ final class SearchOption implements \ArrayAccess
                             break;
                     }
                 }
+                // Force is empty to be last
+                $actions['empty'] = __('is empty');
                 return $actions;
             }
 
@@ -578,7 +579,7 @@ final class SearchOption implements \ArrayAccess
     {
 
         $table = $itemtype::getTable();
-        $opts  = &self::getOptionsForItemtype($itemtype);
+        $opts  = self::getOptionsForItemtype($itemtype);
 
         foreach ($opts as $num => $opt) {
             if (
@@ -606,7 +607,7 @@ final class SearchOption implements \ArrayAccess
     {
         global $CFG_GLPI;
 
-        $options = &self::getOptionsForItemtype($itemtype, $withplugins);
+        $options = self::getOptionsForItemtype($itemtype, $withplugins);
         $todel   = [];
 
         if (
