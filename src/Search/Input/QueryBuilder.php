@@ -439,9 +439,14 @@ final class QueryBuilder implements SearchInputInterface
         $prefix       = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
         $parents_num  = isset($p['parents_num']) ? $p['parents_num'] : [];
         $itemtype     = $request["itemtype"];
-        $metacriteria = [];
+        $metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num);
 
-        if (!$metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num)) {
+        // If itemtype is "0", it is an empty meta-criteria
+        if (is_array($metacriteria) && array_key_exists('itemtype', $metacriteria) && (string) $metacriteria['itemtype'] === '0') {
+            $metacriteria = false;
+        }
+
+        if (!$metacriteria) {
             $metacriteria = [];
             // Set default field
             $options  = \Search::getCleanedOptions($itemtype);
