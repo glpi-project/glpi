@@ -596,6 +596,9 @@ class NetworkPort extends InventoryAsset
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
+        if (!is_array($ports_id)) {
+           $ports_id = [$ports_id]; // Handle compatibility with previous signature.
+        }
         $netport = new \NetworkPort();
         if (empty($itemtype)) {
             $itemtype = 'Unmanaged';
