@@ -792,9 +792,9 @@ $empty_data_builder = new class
             ], [
                 'id' => 45,
                 'itemtype' => 'QueuedNotification',
-                'name' => 'queuednotificationcleanunset',
+                'name' => 'queuednotificationcleanstaleajax',
                 'frequency' => DAY_TIMESTAMP,
-                'param' => null,
+                'param' => 7,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,

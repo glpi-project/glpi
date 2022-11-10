@@ -39,7 +39,8 @@
  */
 
 // Register crontask
-CronTask::register('QueuedNotification', 'queuednotificationcleanunset', DAY_TIMESTAMP, [
+CronTask::register('QueuedNotification', 'queuednotificationcleanstaleajax', DAY_TIMESTAMP, [
     'state'     => CronTask::STATE_DISABLE,
-    'mode'      => CronTask::MODE_INTERNAL
+    'mode'      => CronTask::MODE_INTERNAL,
+    'param'     => 7,
 ]);

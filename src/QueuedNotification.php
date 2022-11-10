@@ -501,8 +501,8 @@ class QueuedNotification extends CommonDBTM
                     'parameter'   => __('Days to keep sent emails')
                 ];
 
-            case 'queuednotificationcleanunset':
-                return ['description' => __('Clean unsent notification queue'),
+            case 'queuednotificationcleanstaleajax':
+                return ['description' => __('Clean stale queued browser notifications'),
                     'parameter'   => __('Days to keep unsent notifications')
                 ];
         }
@@ -650,22 +650,21 @@ class QueuedNotification extends CommonDBTM
 
 
     /**
-     * Cron action on queued notification: clean unset notification queue
+     * Cron action on queued notification: clean stale ajax notification queue
      *
      * @param CommonDBTM $task for log (default NULL)
      *
      * @return integer either 0 or 1
      **/
-    public static function cronQueuedNotificationCleanUnset($task = null)
+    public static function cronQueuedNotificationCleanStaleAjax($task = null)
     {
         global $DB;
 
         $vol = 0;
 
-       // Expire mails in queue
+        // Stale ajax notifications in queue
         if ($task->fields['param'] > 0) {
             $secs      = $task->fields['param'] * DAY_TIMESTAMP;
-            $send_time = date("U") - $secs;
             $DB->update(
                 self::getTable(),
                 [
@@ -674,7 +673,7 @@ class QueuedNotification extends CommonDBTM
                 [
                     'is_deleted'   => 0,
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
-                    new \QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') < ' . $DB->quoteValue($send_time) . ')')
+                    new \QueryExpression('UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') + ' . $secs . ' < UNIX_TIMESTAMP(NOW())')
                 ]
             );
             $vol = $DB->affectedRows();
