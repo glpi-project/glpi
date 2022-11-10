@@ -105,7 +105,7 @@ class NotificationAjaxSetting extends NotificationSetting
                     "placeholder='{$CFG_GLPI['root_doc']}/pics/glpi.png'/>";
             echo "</td></tr>";
 
-            $crontask = new Crontask();
+            $crontask = new CronTask();
             $crontask->getFromDBbyName('QueuedNotification', 'queuednotificationcleanstaleajax');
             $tooltip = sprintf(
                 __('%1$s: %2$s'),
