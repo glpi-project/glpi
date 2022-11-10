@@ -931,8 +931,7 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo('Global update (by ip+ifdescr not restricted port)');
         $this->integer($this->items_id)->isIdenticalTo($networkEquipments_id);
         $this->string($this->itemtype)->isIdenticalTo('NetworkEquipment');
-        $this->array($this->ports_id)->hasSize(2);
-        $this->array(array_diff($this->ports_id, $a_portids))->hasSize(0);
+        $this->array($this->ports_id)->isEqualTo($a_portids);
     }
 
     /**
