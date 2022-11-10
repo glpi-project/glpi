@@ -42,5 +42,10 @@
 CronTask::register('QueuedNotification', 'queuednotificationcleanstaleajax', DAY_TIMESTAMP, [
     'state'     => CronTask::STATE_DISABLE,
     'mode'      => CronTask::MODE_INTERNAL,
-    'param'     => 7,
 ]);
+
+if (!isset($current_config['notifications_ajax_expiration_delay'])) {
+    $migration->addConfig([
+        'notifications_ajax_expiration_delay' => '7'
+    ]);
+}

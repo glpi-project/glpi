@@ -502,9 +502,7 @@ class QueuedNotification extends CommonDBTM
                 ];
 
             case 'queuednotificationcleanstaleajax':
-                return ['description' => __('Clean stale queued browser notifications'),
-                    'parameter'   => __('Days to keep unsent notifications')
-                ];
+                return ['description' => __('Clean stale queued browser notifications')];
         }
         return [];
     }
@@ -658,13 +656,13 @@ class QueuedNotification extends CommonDBTM
      **/
     public static function cronQueuedNotificationCleanStaleAjax($task = null)
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $vol = 0;
 
         // Stale ajax notifications in queue
-        if ($task->fields['param'] > 0) {
-            $secs      = $task->fields['param'] * DAY_TIMESTAMP;
+        if ($CFG_GLPI["notifications_ajax_expiration_delay"] > 0) {
+            $secs = $CFG_GLPI["notifications_ajax_expiration_delay"] * DAY_TIMESTAMP;
             $DB->update(
                 self::getTable(),
                 [
