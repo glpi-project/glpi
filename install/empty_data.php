@@ -300,6 +300,7 @@ $empty_data_builder = new class
             'notifications_ajax_check_interval' => '5',
             'notifications_ajax_sound' => null,
             'notifications_ajax_icon_url' => '/pics/glpi.png',
+            'notifications_ajax_expiration_delay' => '7',
             'dbversion' => 'FILLED AT INSTALL',
             'smtp_max_retries' => '5',
             'smtp_sender' => null,
@@ -789,7 +790,17 @@ $empty_data_builder = new class
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
-            ]
+            ], [
+                'id' => 45,
+                'itemtype' => 'QueuedNotification',
+                'name' => 'queuednotificationcleanstaleajax',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+            ],
         ];
 
         $dashboards_data = include_once __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";

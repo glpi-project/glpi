@@ -104,6 +104,25 @@ class NotificationAjaxSetting extends NotificationSetting
                     $CFG_GLPI["notifications_ajax_icon_url"] . "' " .
                     "placeholder='{$CFG_GLPI['root_doc']}/pics/glpi.png'/>";
             echo "</td></tr>";
+
+            $crontask = new CronTask();
+            $crontask->getFromDBbyName('QueuedNotification', 'queuednotificationcleanstaleajax');
+            $tooltip = sprintf(
+                __('Notifications older than the selected value will not be displayed. Expired notifications will be deleted by the %s crontask.'),
+                $crontask->getLink()
+            );
+            echo "<tr class='tab_bg_2'><td>" . __('Validity period of notifications (in days)') .
+              "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]) .
+              "</td>";
+            echo "<td>";
+            Dropdown::showNumber(
+                'notifications_ajax_expiration_delay',
+                [
+                    'toadd' => [0 => __('Unlimited')],
+                    'value' => $CFG_GLPI["notifications_ajax_expiration_delay"],
+                ]
+            );
+            echo "</td></tr>";
         } else {
             echo "<tr><td colspan='4'>" . __('Notifications are disabled.') .
               "<a href='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>" .

@@ -122,12 +122,14 @@ class NotificationAjax implements NotificationInterface
 
         $return = [];
         if ($CFG_GLPI['notifications_ajax']) {
+            $secs = $CFG_GLPI["notifications_ajax_expiration_delay"] * DAY_TIMESTAMP;
             $iterator = $DB->request([
                 'FROM'   => 'glpi_queuednotifications',
                 'WHERE'  => [
                     'is_deleted'   => false,
                     'recipient'    => Session::getLoginUserID(),
-                    'mode'         => Notification_NotificationTemplate::MODE_AJAX
+                    'mode'         => Notification_NotificationTemplate::MODE_AJAX,
+                    new \QueryExpression('UNIX_TIMESTAMP(' . $DB->quoteName('send_time') . ') + ' . $secs . ' > UNIX_TIMESTAMP(NOW())')
                 ]
             ]);
 
