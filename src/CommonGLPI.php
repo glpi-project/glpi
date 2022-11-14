@@ -854,6 +854,27 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
+        // In GLPI 9.5 $options was empty when reloading a ticket after a
+        // failed submition due to mising mandatory fields
+        // In GLPI 10.0, $options contains a single `id => 0` content for the
+        // same action
+        // This means the `count($options)` check below is true
+        //   -> which trigger input saving
+        //   -> which mean that the user submtted data is overriden.
+        // We must empty `$options['id']` in this specific case to avoid losing
+        // user submitted data
+        // TODO - This is a temporary solution - the backend should be improved
+        // to be more rebust and differenciate form reload on data change
+        // (category, requester, ...) and failed submission in a better way that
+        // checking whether or not $options is empty.
+        // See:
+        //  - https://github.com/glpi-project/glpi/pull/12929
+        //  - https://github.com/glpi-project/glpi/pull/13101
+        //  - https://github.com/glpi-project/glpi/commit/1d27bf14d4527f748876dcd556f2b995a0bf7684
+        if (isset($options['id']) && $this->isNewID($options['id'])) {
+            unset($options['id']);
+        }
+
         $target         = $_SERVER['PHP_SELF'];
         $extraparamhtml = "";
         $withtemplate   = "";
