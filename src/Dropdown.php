@@ -2840,12 +2840,13 @@ JAVASCRIPT;
             }
 
             $criteria = [
-                'SELECT' => array_merge(["$table.*"], $addselect),
-                'FROM'   => $table,
-                'WHERE'  => $where,
-                'ORDER'  => $order,
-                'START'  => $start,
-                'LIMIT'  => $limit
+                'SELECT'   => array_merge(["$table.*"], $addselect),
+                'DISTINCT' => true,
+                'FROM'     => $table,
+                'WHERE'    => $where,
+                'ORDER'    => $order,
+                'START'    => $start,
+                'LIMIT'    => $limit
             ];
             if (count($ljoin)) {
                 $criteria['LEFT JOIN'] = $ljoin;
@@ -3255,9 +3256,10 @@ JAVASCRIPT;
             $criteria = array_merge(
                 $criteria,
                 [
-                    'WHERE'  => $where,
-                    'START'  => $start,
-                    'LIMIT'  => $limit
+                    'DISTINCT' => true,
+                    'WHERE'    => $where,
+                    'START'    => $start,
+                    'LIMIT'    => $limit
                 ]
             );
 
