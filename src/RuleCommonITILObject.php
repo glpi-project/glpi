@@ -517,7 +517,7 @@ abstract class RuleCommonITILObject extends Rule
                                     break;
                                 }
                             }
-                        } elseif ($field == "itilcategories_id_by_completename") {
+                        } elseif ($field == "_itilcategories_id_by_completename") {
                             foreach ($regex_values as $regex_value) {
                                 // Search category by name
                                 $category = new ITILCategory();
@@ -722,10 +722,10 @@ abstract class RuleCommonITILObject extends Rule
         $actions['itilcategories_id']['table']                      = 'glpi_itilcategories';
         $actions['itilcategories_id']['force_actions']              = ['assign', 'regex_result'];
 
-        $actions['itilcategories_id_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), _n('Category', 'Categories', 1), __('by completename'));
-        $actions['itilcategories_id_by_completename']['type']                 = 'dropdown';
-        $actions['itilcategories_id_by_completename']['table']                = 'glpi_itilcategories';
-        $actions['itilcategories_id_by_completename']['force_actions']        = ['regex_result'];
+        $actions['_itilcategories_id_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), _n('Category', 'Categories', 1), __('by completename'));
+        $actions['_itilcategories_id_by_completename']['type']                 = 'dropdown';
+        $actions['_itilcategories_id_by_completename']['table']                = 'glpi_itilcategories';
+        $actions['_itilcategories_id_by_completename']['force_actions']        = ['regex_result'];
 
         $actions['_affect_itilcategory_by_code']['name']            = __('ITIL category from code');
         $actions['_affect_itilcategory_by_code']['type']            = 'text';

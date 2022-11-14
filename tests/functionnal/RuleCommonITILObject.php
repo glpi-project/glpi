@@ -2164,9 +2164,9 @@ abstract class RuleCommonITILObject extends DbTestCase
             ],
             'action' => [
                 'action_type' => 'regex_result',
-                'field'       => 'itilcategories_id_by_completename',
+                'field'       => '_itilcategories_id_by_completename',
                 'field_specific' => function ($ticket) {
-                    // Can't read 'itilcategories_id_by_completename' from group field, need
+                    // Can't read '_itilcategories_id_by_completename' from group field, need
                     // to fetch it from the Ticket table
                     return $ticket->fields['itilcategories_id'];
                 },
