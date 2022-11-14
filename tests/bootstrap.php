@@ -109,7 +109,7 @@ function loadDataset()
    // Unit test data definition
     $data = [
       // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.8',
+        '_version' => '4.9',
 
       // Type => array of entries
         'Entity' => [
@@ -366,7 +366,12 @@ function loadDataset()
             [
                 'name'         => '_location02',
                 'comment'      => 'Comment for location _sublocation02'
-            ]
+            ],
+            [
+                'name'         => '_location01_subentity',
+                'entities_id'  => '_test_root_entity',
+                'comment'      => 'Comment for location _location01_subentity'
+            ],
         ], Socket::class => [
             [
                 'name'         => '_socket01',
