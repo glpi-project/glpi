@@ -468,7 +468,7 @@ abstract class RuleCommonITILObject extends Rule
                                     $output['_additional_groups_observers'][$group->getID()] = $group->getID();
                                 }
                             }
-                        }  elseif ($field == "_groups_id_observer_by_completename") {
+                        } elseif ($field == "_groups_id_observer_by_completename") {
                             foreach ($regex_values as $regex_value) {
                                 // Search group by name
                                 $group = new Group();
