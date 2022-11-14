@@ -12,7 +12,6 @@
       <is_recursive>0</is_recursive>
       <uuid>glpi_rule_right_root</uuid>
       <condition>0</condition>
-      <date_creation></date_creation>
       <rulecriteria>
          <criteria>TYPE</criteria>
          <condition>0</condition>

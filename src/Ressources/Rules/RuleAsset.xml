@@ -12,7 +12,6 @@
       <is_recursive>1</is_recursive>
       <uuid>glpi_rule_rule_asset_domain_user_assignation</uuid>
       <condition>3</condition>
-      <date_creation></date_creation>
       <rulecriteria>
          <criteria>_itemtype</criteria>
          <condition>0</condition>
@@ -46,7 +45,6 @@
       <is_recursive>1</is_recursive>
       <uuid>glpi_rule_rule_asset_multiple_user_assign_to_first</uuid>
       <condition>3</condition>
-      <date_creation></date_creation>
       <rulecriteria>
          <criteria>_itemtype</criteria>
          <condition>0</condition>
@@ -80,7 +78,6 @@
       <is_recursive>1</is_recursive>
       <uuid>glpi_rule_rule_asset_one_user_assignation</uuid>
       <condition>3</condition>
-      <date_creation></date_creation>
       <rulecriteria>
          <criteria>_itemtype</criteria>
          <condition>0</condition>
