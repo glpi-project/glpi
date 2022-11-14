@@ -2156,6 +2156,8 @@ abstract class RuleCommonITILObject extends DbTestCase
             'itilcategories_id' => $root_category->fields['id']
         ]);
 
+        $this->string($sub_root_category->fields['completename'])->isEqualTo("Category root > Category sub");
+
         yield [
             'criteria' => [
                 'condition' => Rule::REGEX_MATCH,
@@ -2206,6 +2208,8 @@ abstract class RuleCommonITILObject extends DbTestCase
             'name' => 'Requester group sub',
             'groups_id' => $root_requester_group_completename->fields['id'],
         ]);
+
+        $this->string($sub_requester_group_completename->fields['completename'])->isEqualTo("Requester group root > Requester group sub");
 
         yield [
             'criteria' => [
@@ -2280,6 +2284,8 @@ abstract class RuleCommonITILObject extends DbTestCase
             'groups_id' => $root_observer_group_completename->fields['id'],
         ]);
 
+        $this->string($sub_observer_group_completename->fields['completename'])->isEqualTo("Observer group root > Observer group sub");
+
         yield [
             'criteria' => [
                 'condition' => Rule::REGEX_MATCH,
@@ -2352,6 +2358,8 @@ abstract class RuleCommonITILObject extends DbTestCase
             'name' => 'Observer group sub',
             'groups_id' => $root_assign_group_completename->fields['id'],
         ]);
+
+        $this->string($sub_assign_group_completename->fields['completename'])->isEqualTo("Observer group root > Observer group sub");
 
         yield [
             'criteria' => [
