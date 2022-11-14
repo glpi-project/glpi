@@ -86,8 +86,19 @@ final class Theme
         return $path;
     }
 
-    public function getPreviewPath(bool $relative = true): string
+    /**
+     * Return preview file path, if any.
+     *
+     * @param bool $relative
+     *
+     * @return string|null
+     */
+    public function getPreviewPath(bool $relative = true): ?string
     {
+        if (!file_exists($this->getBaseDir(false) . '/previews/' . $this->getKey() . '.png')) {
+            return null;
+        }
+
         return $this->getBaseDir($relative) . '/previews/' . $this->getKey() . '.png';
     }
 
