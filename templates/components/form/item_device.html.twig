@@ -128,19 +128,14 @@
                            ) }}
                         {% else %}
                            {% if specificities['protected'] %}
-
-                              {% set btn_group %}
-                                 &nbsp;<i class="far fa-eye pointer disclose" onmousedown="showField('{{ specificities['field'] ~ specificities['rand'] }}')"
-                                 onmouseup="hideField('{{ specificities['field'] ~ specificities['rand'] }}')"
-                                 onmouseout="hideField('{{ specificities['field'] ~ specificities['rand'] }}')"></i>
-                                 &nbsp;<i class="fa fa-paste pointer disclose" onclick="copyToClipboard('{{ specificities['field'] ~ specificities['rand'] }}')"></i>
-                              {% endset %}
-
                               {{ fields.passwordField(
                                  specificities['field'],
                                  specificities['value'],
-                                 specificities['label'] ~ btn_group,
-                                 field_options|merge({'id': specificities['protected_field_id']})
+                                 specificities['label'],
+                                 field_options|merge({
+                                    'id': specificities['protected_field_id'],
+                                    'is_disclosable': true,
+                                 })
                               ) }}
                            {% else %}
                               {{ fields.textField(
