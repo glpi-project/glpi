@@ -860,7 +860,7 @@ class CommonGLPI implements CommonGLPIInterface
         // same action
         // This means the `count($options)` check below is true
         //   -> which trigger input saving
-        //   -> which mean that the user submtted data is overriden.
+        //   -> which mean that the user submitted data is overridden.
         // We must empty `$options['id']` in this specific case to avoid losing
         // user submitted data
         // TODO - This is a temporary solution - the backend should be improved
