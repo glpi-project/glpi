@@ -257,6 +257,7 @@ class User extends CommonDBTM
                 $ong    = [];
                 $ong[1] = __('Used items');
                 $ong[2] = __('Managed items');
+                $ong[3] = SoftwareLicense::getTypeName(Session::getPluralNumber());
                 return $ong;
 
             case 'Preference':
@@ -272,8 +273,12 @@ class User extends CommonDBTM
 
         switch ($item->getType()) {
             case __CLASS__:
-                /** @var User $item */
-                $item->showItems($tabnum == 2);
+                if ($tabnum <= 2) {
+                    /** @var User $item */
+                    $item->showItems($tabnum == 2);
+                } else {
+                    $item->showLicenses();
+                }
                 return true;
 
             case 'Preference':
@@ -5039,6 +5044,88 @@ JAVASCRIPT;
         }
     }
 
+    /**
+     * Show software licenses assigned to the user
+     * @return void
+     */
+    public function showLicenses(): void
+    {
+        global $DB;
+
+        $item_softwarelicense_table = Item_SoftwareLicense::getTable();
+        $softwarelicense_table = SoftwareLicense::getTable();
+        $software_table = Software::getTable();
+
+        $iterator = $DB->request([
+            'SELECT' => [
+                $software_table . '.id AS software_id',
+                $software_table . '.name AS software_name',
+                $softwarelicense_table . '.id AS license_id',
+                $softwarelicense_table . '.name AS license_name',
+            ],
+            'FROM' => $item_softwarelicense_table,
+            'LEFT JOIN' => [
+                $softwarelicense_table => [
+                    'ON' => [
+                        $softwarelicense_table => 'id',
+                        $item_softwarelicense_table => 'softwarelicenses_id'
+                    ]
+                ],
+                $software_table => [
+                    'ON' => [
+                        $software_table => 'id',
+                        $softwarelicense_table => 'softwares_id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                Item_SoftwareLicense::getTableField('itemtype') => 'User',
+                Item_SoftwareLicense::getTableField('items_id') => $this->getID(),
+                Item_SoftwareLicense::getTableField('is_deleted') => 0
+            ]
+        ]);
+
+        $headers = [
+            Software::getTypeName(1),
+            SoftwareLicense::getTypeName(1)
+        ];
+        $rows = [];
+        foreach ($iterator as $row) {
+            $rows[] = [
+                'software' => [
+                    'text' => $row['software_name'],
+                    'href' => Software::getFormURLWithID($row['software_id'])
+                ],
+                'license' => [
+                    'text' => $row['license_name'],
+                    'href' => SoftwareLicense::getFormURLWithID($row['license_id'])
+                ]
+            ];
+        }
+        $start       = (int) ($_GET["start"] ?? 0);
+        $sort        = $_GET["sort"] ?? "";
+        $order       = strtoupper($_GET["order"] ?? "");
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'sort' => $sort,
+            'order' => $order,
+            'href' => $this->getLinkURL(),
+            'additional_params' => '',
+            'is_tab' => true,
+            'items_id' => $this->getID(),
+            'columns' => [
+                'software' => Software::getTypeName(1),
+                'license' => SoftwareLicense::getTypeName(1)
+            ],
+            'formatters' => [
+                'software' => 'link',
+                'license' => 'link'
+            ],
+            'entries' => $rows,
+            'total_number' => count($rows),
+        ]);
+    }
 
     /**
      * Get user by email, importing it from LDAP if not existing.

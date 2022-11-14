@@ -226,14 +226,14 @@ class Item_SoftwareLicense extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $expected = [1 => __('Summary'),
-            2 => _n('Item', 'Items', \Session::getPluralNumber())
+            2 => _n('Assignment', 'Assignments', \Session::getPluralNumber())
         ];
         $this->array($cSoftwareLicense->getTabNameForItem($license, 0))->isIdenticalTo($expected);
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $expected = [1 => __('Summary'),
             2 => \Item_SoftwareLicense::createTabEntry(
-                _n('Item', 'Items', \Session::getPluralNumber()),
+                _n('Assignment', 'Assignments', \Session::getPluralNumber()),
                 2
             )
         ];

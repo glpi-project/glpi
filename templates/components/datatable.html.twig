@@ -156,6 +156,8 @@
                                         {{ call("Html::convDateTime", [entry[colkey]])|raw }}
                                     {% elseif formatter == "bytesize" %}
                                         {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
+                                    {% elseif formatter == "link" %}
+                                        {{ call("Html::link", [entry[colkey]['text'], entry[colkey]['href']])|raw }}
                                     {% else %}
                                         {{ entry[colkey] }}
                                     {% endif %}

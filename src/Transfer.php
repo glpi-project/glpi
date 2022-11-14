@@ -492,7 +492,7 @@ class Transfer extends CommonDBTM
                     ]
                 ]);
 
-                if (count($this->needtobe_transfer[$itemtype])) {
+                if (isset($this->needtobe_transfer[$itemtype]) && count($this->needtobe_transfer[$itemtype])) {
                      $iterator = $DB->request([
                          'SELECT'       => [
                              'glpi_softwares.id',

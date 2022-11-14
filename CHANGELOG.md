@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
 - Group approval requests (any user from group can approve).
 - Satisfaction surveys for Changes
+- Assign software licenses to users
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.

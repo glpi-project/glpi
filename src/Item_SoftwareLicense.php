@@ -546,7 +546,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             $sort = "`entity` $order, `itemname`";
         }
 
-       //SoftwareLicense ID
+        //SoftwareLicense ID
         $number = self::countForLicense($searchID);
 
         echo "<div class='center'>";
@@ -555,7 +555,7 @@ class Item_SoftwareLicense extends CommonDBRelation
        //and over-quota is not allowed, do not allow to add more assets
         if (
             $canedit
-            && ($license->getField('number') == -1 || $number < $license->getField('number')
+            && ((int) $license->getField('number') === -1 || $number < $license->getField('number')
             || $license->getField('allow_overquota'))
         ) {
             echo "<form method='post' action='" . Item_SoftwareLicense::getFormURL() . "'>";
@@ -624,16 +624,12 @@ JAVASCRIPT;
 
         if ($number < 1) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __('No item found') . "</th></tr>";
+            echo "<tr><th>" . __('No assignments found') . "</th></tr>";
             echo "</table></div>\n";
             return;
         }
 
-       // Display the pager
-        Html::printAjaxPager(__('Affected items'), $start, $number);
-
-        $queries = [];
-        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+        $fn_get_assignments_subquery = static function ($itemtype) use ($DB, &$canshowitems, $item_license_table, $searchID) {
             $canshowitems[$itemtype] = $itemtype::canView();
             $itemtable = $itemtype::getTable();
             $query = [
@@ -644,7 +640,7 @@ JAVASCRIPT;
                     'glpi_softwarelicenses.softwares_id AS softid',
                     "{$itemtable}.name AS itemname",
                     "{$itemtable}.id AS iID",
-                    new QueryExpression($DB->quoteValue($itemtype) . " AS " . $DB->quoteName('item_type')),
+                    new QueryExpression($DB::quoteValue($itemtype) . " AS " . $DB::quoteName('item_type')),
                 ],
                 'FROM'   => $item_license_table,
                 'INNER JOIN' => [
@@ -676,14 +672,14 @@ JAVASCRIPT;
                 $query['SELECT'][] = $itemtable . '.serial';
             } else {
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".serial")
+                    $DB::quoteValue('') . " AS " . $DB::quoteName("serial")
                 );
             }
             if ($DB->fieldExists($itemtable, 'otherserial')) {
                 $query['SELECT'][] = $itemtable . '.otherserial';
             } else {
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".otherserial")
+                    $DB::quoteValue('') . " AS " . $DB::quoteName("otherserial")
                 );
             }
             if ($DB->fieldExists($itemtable, 'users_id')) {
@@ -699,16 +695,16 @@ JAVASCRIPT;
                 ];
             } else {
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".username")
+                    $DB::quoteValue('') . " AS " . $DB::quoteName("username")
                 );
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('-1') . " AS " . $DB->quoteName($itemtable . ".userid")
+                    $DB::quoteValue('-1') . " AS " . $DB::quoteName("userid")
                 );
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".userrealname")
+                    $DB::quoteValue('') . " AS " . $DB::quoteName("userrealname")
                 );
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".userfirstname")
+                    $DB::quoteValue('') . " AS " . $DB::quoteName("userfirstname")
                 );
             }
             $entity_fkey  = Entity::getForeignKeyField();
@@ -724,7 +720,7 @@ JAVASCRIPT;
                 $query['WHERE'] += getEntitiesRestrictCriteria($itemtable, '', '', true);
             } else {
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('') . " AS " . $DB->quoteName('entity')
+                    $DB::quoteValue('') . " AS " . $DB::quoteName('entity')
                 );
             }
             $location_fkey  = Location::getForeignKeyField();
@@ -754,7 +750,7 @@ JAVASCRIPT;
                 ];
             } else {
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('') . " AS " . $DB->quoteName('state')
+                    $DB::quoteValue('') . " AS " . $DB::quoteName('state')
                 );
             }
             $group_fkey  = State::getForeignKeyField();
@@ -769,7 +765,7 @@ JAVASCRIPT;
                 ];
             } else {
                 $query['SELECT'][] = new QueryExpression(
-                    $DB->quoteValue('') . " AS " . $DB->quoteName('groupe')
+                    $DB::quoteValue('') . " AS " . $DB::quoteName('groupe')
                 );
             }
             if ($DB->fieldExists($itemtable, 'is_deleted')) {
@@ -778,7 +774,12 @@ JAVASCRIPT;
             if ($DB->fieldExists($itemtable, 'is_template')) {
                 $query['WHERE']["{$itemtable}.is_template"] = 0;
             }
-            $queries[] = $query;
+            return $query;
+        };
+
+        $queries = [];
+        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+            $queries[] = $fn_get_assignments_subquery($itemtype);
         }
         $union = new QueryUnion($queries, true);
         $criteria = [
@@ -790,12 +791,21 @@ JAVASCRIPT;
         ];
         $iterator = $DB->request($criteria);
 
-        $rand = mt_rand();
+        $soft       = new Software();
+        $soft->getFromDB($license->fields['softwares_id']);
+        $showEntity = ($license->isRecursive());
+        $linkUser   = User::canView();
 
-        if ($data = $iterator->current()) {
+        $assignment_count = count($iterator);
+        $rand = mt_rand();
+        // Display the pager
+        Html::printAjaxPager(__('Assignments'), $start, $assignment_count);
+
+        if ($assignment_count !== 0) {
+            $data = $iterator->current();
             if ($canedit) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], count($iterator)),
+                $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $assignment_count),
                     'container'        => 'mass' . __CLASS__ . $rand,
                     'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
                 ];
@@ -812,11 +822,6 @@ JAVASCRIPT;
 
                 Html::showMassiveActions($massiveactionparams);
             }
-
-            $soft       = new Software();
-            $soft->getFromDB($license->fields['softwares_id']);
-            $showEntity = ($license->isRecursive());
-            $linkUser   = User::canView();
 
             $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["license"]);
@@ -911,9 +916,9 @@ JAVASCRIPT;
                 Html::closeForm();
             }
         } else { // Not found
-            echo __('No item found');
+            echo __('No assignments found');
         }
-        Html::printAjaxPager(__('Affected items'), $start, $number);
+        Html::printAjaxPager(__('Assignments'), $start, $number);
 
         echo "</div>\n";
     }
@@ -1010,7 +1015,7 @@ JAVASCRIPT;
                     }
                     return [1 => __('Summary'),
                         2 => self::createTabEntry(
-                            _n('Item', 'Items', Session::getPluralNumber()),
+                            _n('Assignment', 'Assignments', Session::getPluralNumber()),
                             $nb
                         )
                     ];
