@@ -35,6 +35,7 @@
 
 namespace Glpi\Search\Input;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\Sanitizer;
@@ -83,198 +84,17 @@ final class QueryBuilder implements SearchInputInterface
 
         // Itemtype name used in JS function names, etc
         $normalized_itemtype = strtolower(str_replace('\\', '', $itemtype));
-        $rand_criteria = mt_rand();
-        $main_block_class = '';
-        $card_class = 'search-form card card-sm mb-4';
-        if ($p['mainform']) {
-            echo "<form name='searchform$normalized_itemtype' class='search-form-container' method='get' action='" . $p['target'] . "'>";
-        } else {
-            $main_block_class = "sub_criteria";
-            $card_class = 'border d-inline-block ms-1';
-        }
-        $display = $_SESSION['glpifold_search'] ? 'style="display: none;"' : '';
-        echo "<div class='$card_class' $display>";
-
-        echo "<div id='searchcriteria$rand_criteria' class='$main_block_class' >";
-        $nbsearchcountvar      = 'nbcriteria' . $normalized_itemtype . mt_rand();
-        $searchcriteriatableid = 'criteriatable' . $normalized_itemtype . mt_rand();
-        // init criteria count
-        echo \Html::scriptBlock("
-         var $nbsearchcountvar = " . count($p['criteria']) . ";
-      ");
-
-        echo "<div class='list-group list-group-flush list-group-hoverable criteria-list pt-2' id='$searchcriteriatableid'>";
-
-        // Display normal search parameters
-        $i = 0;
-        foreach (array_keys($p['criteria']) as $i) {
-            self::displayCriteria([
-                'itemtype' => $itemtype,
-                'num'      => $i,
-                'p'        => $p
-            ]);
-        }
-
-        echo "<a id='more-criteria$rand_criteria' role='button'
-            class='normalcriteria fold-search list-group-item p-2 border-0'
-            style='display: none;'></a>";
-
-        echo "</div>"; // .list
-
-        // Keep track of the current savedsearches on reload
-        if (isset($_GET['savedsearches_id'])) {
-            echo \Html::input("savedsearches_id", [
-                'type' => "hidden",
-                'value' => $_GET['savedsearches_id'],
-            ]);
-        }
-
-        echo "<div class='card-footer d-flex search_actions'>";
         $linked = SearchEngine::getMetaItemtypeAvailable($itemtype);
-        echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
-               <i class='ti ti-square-plus'></i>
-               <span class='d-none d-sm-block'>" . __s('rule') . "</span>
-            </button>";
-        if (count($linked)) {
-            echo "<button id='addmetasearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
-                  <i class='ti ti-circle-plus'></i>
-                  <span class='d-none d-sm-block'>" . __s('global rule') . "</span>
-               </button>";
-        }
-        echo "<button id='addcriteriagroup$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
-               <i class='ti ti-code-plus'></i>
-               <span class='d-none d-sm-block'>" . __s('group') . "</span>
-            </button>";
-        $json_p = json_encode($p);
 
-        if ($p['mainform']) {
-            // Display submit button
-            echo "<button class='btn btn-sm btn-primary me-1' type='submit' name='" . $p['actionname'] . "'>
-               <i class='ti ti-list-search'></i>
-               <span class='d-none d-sm-block'>" . $p['actionvalue'] . "</span>
-            </button>";
-            if ($p['showbookmark'] || $p['showreset']) {
-                if ($p['showbookmark']) {
-                    \SavedSearch::showSaveButton(
-                        \SavedSearch::SEARCH,
-                        $itemtype,
-                        isset($_GET['savedsearches_id'])
-                    );
-                }
 
-                if ($p['showreset']) {
-                    echo "<a class='btn btn-ghost-secondary btn-icon btn-sm me-1 search-reset'
-                        data-bs-toggle='tooltip' data-bs-placement='bottom'
-                        href='"
-                        . $p['target']
-                        . (strpos($p['target'], '?') ? '&amp;' : '?')
-                        . "reset=reset' title=\"" . __s('Blank') . "\"
-                  ><i class='ti ti-circle-x'></i></a>";
-                }
-            }
-        }
-        echo "</div>"; //.search_actions
-
-        // idor checks
-        $idor_display_criteria       = \Session::getNewIDORToken($itemtype);
-        $idor_display_meta_criteria  = \Session::getNewIDORToken($itemtype);
-        $idor_display_criteria_group = \Session::getNewIDORToken($itemtype);
-
-        $itemtype_escaped = addslashes($itemtype);
-        $JS = <<<JAVASCRIPT
-         $('#addsearchcriteria$rand_criteria').on('click', function(event) {
-            event.preventDefault();
-            $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
-               'action': 'display_criteria',
-               'itemtype': '$itemtype_escaped',
-               'num': $nbsearchcountvar,
-               'p': $json_p,
-               '_idor_token': '$idor_display_criteria'
-            })
-            .done(function(data) {
-               $(data).insertBefore('#more-criteria$rand_criteria');
-               $nbsearchcountvar++;
-            });
-         });
-
-         $('#addmetasearchcriteria$rand_criteria').on('click', function(event) {
-            event.preventDefault();
-            $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
-               'action': 'display_meta_criteria',
-               'itemtype': '$itemtype_escaped',
-               'meta': true,
-               'num': $nbsearchcountvar,
-               'p': $json_p,
-               '_idor_token': '$idor_display_meta_criteria'
-            })
-            .done(function(data) {
-               $(data).insertBefore('#more-criteria$rand_criteria');
-               $nbsearchcountvar++;
-            });
-         });
-
-         $('#addcriteriagroup$rand_criteria').on('click', function(event) {
-            event.preventDefault();
-            $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
-               'action': 'display_criteria_group',
-               'itemtype': '$itemtype_escaped',
-               'meta': true,
-               'num': $nbsearchcountvar,
-               'p': $json_p,
-               '_idor_token': '$idor_display_criteria_group'
-            })
-            .done(function(data) {
-               $(data).insertBefore('#more-criteria$rand_criteria');
-               $nbsearchcountvar++;
-            });
-         });
-JAVASCRIPT;
-
-        if ($p['mainform']) {
-            $JS .= <<<JAVASCRIPT
-         var toggle_fold_search = function(show_search) {
-            $('#searchcriteria{$rand_criteria}').closest('.search-form').toggle(show_search);
-         };
-
-         // Init search_criteria state
-         var search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');
-         if (search_criteria_visibility !== undefined && search_criteria_visibility == 'false') {
-            $('.fold-search').click();
-         }
-
-         $(document).on("click", ".remove-search-criteria", function() {
-            // force removal of tooltip
-            var tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
-            if (tooltip !== null) {
-               tooltip.dispose();
-            }
-
-            var rowID = $(this).data('rowid');
-            $('#' + rowID).remove();
-            $('#searchcriteria{$rand_criteria} .criteria-list .list-group-item:first-child').addClass('headerRow').show();
-         });
-JAVASCRIPT;
-        }
-        echo \Html::scriptBlock($JS);
-
-        if (count($p['addhidden'])) {
-            foreach ($p['addhidden'] as $key => $val) {
-                echo \Html::hidden($key, ['value' => $val]);
-            }
-        }
-
-        if ($p['mainform']) {
-            // For dropdown
-            echo \Html::hidden('itemtype', ['value' => $itemtype]);
-            // Reset to start when submit new search
-            echo \Html::hidden('start', ['value'    => 0]);
-        }
-
-        echo "</div>"; // #searchcriteria
-        echo "</div>"; // .card
-        if ($p['mainform']) {
-            \Html::closeForm();
-        }
+        TemplateRenderer::getInstance()->display('components/search/query_builder/main.html.twig', [
+            'mainform' => $p['mainform'],
+            'itemtype' => $itemtype,
+            'normalized_itemtype' => $normalized_itemtype,
+            'criteria' => $p['criteria'],
+            'p' => $p,
+            'linked' => $linked,
+        ]);
     }
 
     /**
@@ -343,41 +163,20 @@ JAVASCRIPT;
                 unset($searchopt['name']);
                 unset($actions['searchopt']);
             }
-            $searchtype_name = "{$fieldname}{$prefix}[$num][searchtype]";
-            echo "<div class='col-auto'>";
-            $rands = \Dropdown::showFromArray($searchtype_name, $actions, [
-                'value' => $request["searchtype"],
-            ]);
-            echo "</div>";
-            $fieldsearch_id = \Html::cleanId("dropdown_$searchtype_name$rands");
         }
 
-        echo "<div class='col-auto' id='$dropdownname' data-itemtype='{$request["itemtype"]}' data-fieldname='$fieldname' data-prefix='$prefix' data-num='$num'>";
-        $params = [
-            'value'       => rawurlencode(Sanitizer::dbUnescape($request['value'])),
-            'searchopt'   => $searchopt,
-            'searchtype'  => $request["searchtype"],
-            'num'         => $num,
-            'itemtype'    => $request["itemtype"],
-            '_idor_token' => \Session::getNewIDORToken($request["itemtype"]),
-            'from_meta'   => isset($request['from_meta'])
-                ? $request['from_meta']
-                : false,
-            'field'       => $request["field"],
-            'p'           => $p,
-        ];
-        self::displaySearchoptionValue($params);
-        echo "</div>";
-
-        \Ajax::updateItemOnSelectEvent(
-            $fieldsearch_id,
-            $dropdownname,
-            $CFG_GLPI["root_doc"] . "/ajax/search.php",
-            [
-                'action'     => 'display_searchoption_value',
-                'searchtype' => '__VALUE__',
-            ] + $params
-        );
+        TemplateRenderer::getInstance()->display('components/search/query_builder/search_option.html.twig', [
+            'itemtype' => $request['itemtype'],
+            'fieldname' => $fieldname,
+            'searchtype' => $request['searchtype'],
+            'actions' => $actions,
+            'searchopt' => $searchopt,
+            'dropdownname' => $dropdownname,
+            'num' => $num,
+            'value' => $request['value'],
+            'prefix' => $prefix,
+            'p' => $p,
+        ]);
     }
 
     /**
@@ -558,85 +357,6 @@ JAVASCRIPT;
             $criteria = self::getDefaultCriteria($request["itemtype"]);
         }
 
-        if (
-            isset($criteria['meta'])
-            && $criteria['meta']
-            && !$from_meta
-        ) {
-            self::displayMetaCriteria($request);
-            return;
-        }
-
-        if (
-            isset($criteria['criteria'])
-            && is_array($criteria['criteria'])
-        ) {
-            self::displayCriteriaGroup($request);
-            return;
-        }
-
-        $add_padding = "p-2";
-        if (isset($request["from_meta"])) {
-            $add_padding = "p-0";
-        }
-
-        echo "<div class='list-group-item $add_padding border-0 normalcriteria$addclass' id='$rowid'>";
-        echo "<div class='row g-1'>";
-
-        if (!$from_meta) {
-            // First line display add / delete images for normal and meta search items
-            if (
-                $num == 0
-                && isset($p['mainform'])
-                && $p['mainform']
-            ) {
-                // Instanciate an object to access method
-                $item = null;
-                if ($request["itemtype"] != \AllAssets::getType()) {
-                    $item = getItemForItemtype($request["itemtype"]);
-                }
-                if ($item && $item->maybeDeleted()) {
-                    echo \Html::hidden('is_deleted', [
-                        'value' => $p['is_deleted'],
-                        'id'    => 'is_deleted'
-                    ]);
-                }
-                echo \Html::hidden('as_map', [
-                    'value' => $p['as_map'],
-                    'id'    => 'as_map'
-                ]);
-                echo \Html::hidden('browse', [
-                    'value' => $p['browse'],
-                    'id'    => 'browse'
-                ]);
-                echo \Html::hidden('unpublished', [
-                    'value' => $p['unpublished'],
-                    'id'    => 'unpublished'
-                ]);
-            }
-            echo "<div class='col-auto'>";
-            echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'
-                       data-bs-toggle='tooltip' data-bs-placement='left'
-                       title=\"" . __s('Delete a rule') . "\">
-            <i class='ti ti-square-minus' alt='-'></i>
-         </button>";
-            echo "</div>";
-        }
-
-        // Display link item
-        $value = '';
-        if (!$from_meta) {
-            echo "<div class='col-auto'>";
-            if (isset($criteria["link"])) {
-                $value = $criteria["link"];
-            }
-            $operators = SearchEngine::getLogicalOperators(($num == 0));
-            \Dropdown::showFromArray("criteria{$prefix}[$num][link]", $operators, [
-                'value' => $value,
-            ]);
-            echo "</div>";
-        }
-
         $values   = [];
         // display select box to define search item
         if ($CFG_GLPI['allow_search_view'] == 2 && !isset($request['from_meta'])) {
@@ -673,54 +393,24 @@ JAVASCRIPT;
             $value = $criteria['field'];
         }
 
-        echo "<div class='col-auto'>";
-        $rand = \Dropdown::showFromArray("criteria{$prefix}[$num][field]", $values, [
-            'value' => $value,
-        ]);
-        echo "</div>";
-        $field_id = \Html::cleanId("dropdown_criteria{$prefix}[$num][field]$rand");
-        $spanid   = \Html::cleanId('SearchSpan' . $normalized_itemtype . $prefix . $num);
-
-        echo "<div class='col-auto'>";
-        echo "<div class='row g-1' id='$spanid'>";
-
-        $used_itemtype = $request["itemtype"];
-        // Force Computer itemtype for AllAssets to permit to show specific items
-        if ($request["itemtype"] == \AllAssets::getType()) {
-            $used_itemtype = 'Computer';
-        }
-
-        $searchtype = isset($criteria['searchtype'])
-            ? $criteria['searchtype']
-            : "";
         $p_value    = isset($criteria['value'])
             ? Sanitizer::dbUnescape($criteria['value'])
             : "";
 
-        $params = [
-            'itemtype'    => $used_itemtype,
-            '_idor_token' => \Session::getNewIDORToken($used_itemtype),
-            'field'       => $value,
-            'searchtype'  => $searchtype,
-            'value'       => $p_value,
-            'num'         => $num,
-            'p'           => $p,
-        ];
-        self::displaySearchoption($params);
-        echo "</div>";
-
-        \Ajax::updateItemOnSelectEvent(
-            $field_id,
-            $spanid,
-            $CFG_GLPI["root_doc"] . "/ajax/search.php",
-            [
-                'action'     => 'display_searchoption',
-                'field'      => '__VALUE__',
-            ] + $params
-        );
-        echo "</div>"; //.row
-        echo "</div>"; //#$spanid
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/search/query_builder/criteria.html.twig', [
+            'from_meta'   => $from_meta,
+            'meta'        => $criteria['meta'] ?? false,
+            'sess_itemtype' => $sess_itemtype,
+            'values'      => $values,
+            'p_value'     => $p_value,
+            'criteria_value' => $value,
+            'itemtype'   => $request["itemtype"],
+            'num'        => $num,
+            'criteria'   => $criteria ?? null,
+            'prefix'     => $prefix,
+            'p'         => $p,
+            'row_id'      => $rowid,
+        ]);
     }
 
     /**
@@ -749,9 +439,14 @@ JAVASCRIPT;
         $prefix       = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
         $parents_num  = isset($p['parents_num']) ? $p['parents_num'] : [];
         $itemtype     = $request["itemtype"];
-        $metacriteria = [];
+        $metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num);
 
-        if (!$metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num)) {
+        // If itemtype is "0", it is an empty meta-criteria
+        if (is_array($metacriteria) && array_key_exists('itemtype', $metacriteria) && (string) $metacriteria['itemtype'] === '0') {
+            $metacriteria = false;
+        }
+
+        if (!$metacriteria) {
             $metacriteria = [];
             // Set default field
             $options  = \Search::getCleanedOptions($itemtype);
@@ -768,77 +463,14 @@ JAVASCRIPT;
         $rand   = mt_rand();
 
         $rowid  = 'metasearchrow' . $request['itemtype'] . $rand;
-
-        echo "<div class='list-group-item border-0 metacriteria p-2' id='$rowid'>";
-        echo "<div class='row g-1'>";
-
-        echo "<div class='col-auto'>";
-        echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'>
-         <i class='ti ti-square-minus' alt='-' title=\"" .
-            __s('Delete a global rule') . "\"></i>
-      </button>";
-        echo "</div>";
-
-        // Display link item (not for the first item)
-        echo "<div class='col-auto'>";
-        \Dropdown::showFromArray(
-            "criteria{$prefix}[$num][link]",
-            SearchEngine::getLogicalOperators(),
-            [
-                'value' => isset($metacriteria["link"])
-                    ? $metacriteria["link"]
-                    : "",
-            ]
-        );
-        echo "</div>";
-
-        // Display select of the linked item type available
-        echo "<div class='col-auto'>";
-        $rand = \Dropdown::showItemTypes("criteria{$prefix}[$num][itemtype]", $linked, [
-            'value' => isset($metacriteria['itemtype'])
-            && !empty($metacriteria['itemtype'])
-                ? $metacriteria['itemtype']
-                : "",
+        TemplateRenderer::getInstance()->display('components/search/query_builder/metacriteria.html.twig', [
+            'row_id'       => $rowid,
+            'metacriteria' => $metacriteria,
+            'prefix'      => $prefix,
+            'num'         => $num,
+            'itemtype'    => $itemtype,
+            'linked'      => $linked,
         ]);
-        echo "</div>";
-        echo \Html::hidden("criteria{$prefix}[$num][meta]", [
-            'value' => true
-        ]);
-        $field_id = \Html::cleanId("dropdown_criteria{$prefix}[$num][itemtype]$rand");
-        $spanid   = \Html::cleanId("show_" . $request["itemtype"] . "_" . $prefix . $num . "_$rand");
-        // Ajax script for display search met& item
-
-        $params = [
-            'action'          => 'display_criteria',
-            'itemtype'        => '__VALUE__',
-            'parent_itemtype' => $request['itemtype'],
-            'from_meta'       => true,
-            'num'             => $num,
-            'p'               => $request["p"],
-            '_idor_token'     => \Session::getNewIDORToken("", [
-                'parent_itemtype' => $request['itemtype']
-            ])
-        ];
-        \Ajax::updateItemOnSelectEvent(
-            $field_id,
-            $spanid,
-            $CFG_GLPI["root_doc"] . "/ajax/search.php",
-            $params
-        );
-
-        echo "<div class='col-auto' id='$spanid'>";
-        echo "<div class=row'>";
-        if (
-            isset($metacriteria['itemtype'])
-            && !empty($metacriteria['itemtype'])
-        ) {
-            $params['itemtype'] = $metacriteria['itemtype'];
-            self::displayCriteria($params);
-        }
-        echo "</div>";
-        echo "</div>";
-        echo "</div>";
-        echo "</div>";
     }
 
     /**
@@ -857,7 +489,6 @@ JAVASCRIPT;
         $p           = $request['p'];
         $randrow     = mt_rand();
         $rowid       = 'searchrow' . $request['itemtype'] . $randrow;
-        $addclass    = $num == 0 ? ' headerRow' : '';
         $prefix      = isset($p['prefix_crit']) ? $p['prefix_crit'] : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
 
@@ -867,37 +498,15 @@ JAVASCRIPT;
             ];
         }
 
-        echo "<div class='list-group-item p-2 border-0 normalcriteria$addclass' id='$rowid'>";
-        echo "<div class='row g-1'>";
-        echo "<div class='col-auto'>";
-        echo "<button class='btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria' type='button' data-rowid='$rowid'
-                    data-bs-toggle='tooltip' data-bs-placement='left'
-                    title=\"" . __s('Delete a rule') . "\"
-      >
-         <i class='ti ti-square-minus' alt='-'></i>
-      </button>";
-        echo "</div>";
-        echo "<div class='col-auto'>";
-        \Dropdown::showFromArray("criteria{$prefix}[$num][link]", SearchEngine::getLogicalOperators(), [
-            'value' => isset($criteria["link"]) ? $criteria["link"] : '',
-        ]);
-        echo "</div>";
-
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
-        array_push($parents_num, $num);
-        $params = [
-            'mainform'    => false,
-            'prefix_crit' => "{$prefix}[$num][criteria]",
+        TemplateRenderer::getInstance()->display('components/search/query_builder/criteria_group.html.twig', [
+            'num' => $num,
+            'row_id' => $rowid,
+            'prefix' => $prefix,
+            'criteria' => $criteria,
             'parents_num' => $parents_num,
-            'criteria'    => $criteria['criteria'],
-        ];
-
-        echo "<div class='col-auto'>";
-        self::showGenericSearch($request['itemtype'], $params);
-        echo "</div>";
-
-        echo "</div>";//.row
-        echo "</div>";//.list-group-item
+            'itemtype' => $request['itemtype'],
+            'p' => $p,
+        ]);
     }
 
     /**
