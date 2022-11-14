@@ -2144,6 +2144,34 @@ abstract class RuleCommonITILObject extends DbTestCase
      */
     protected function testActionProvider(): Generator
     {
+
+        // Test 'regex_result' action on the ticket category completename
+        $root_category = $this->createItem(ITILCategory::getType(), [
+            'name' => 'Category root'
+        ]);
+
+        // Test 'regex_result' action on the ticket category
+        $sub_root_category = $this->createItem(ITILCategory::getType(), [
+            'name' => 'Category sub',
+            'itilcategories_id' => $root_category->fields['id']
+        ]);
+
+        yield [
+            'criteria' => [
+                'condition' => Rule::REGEX_MATCH,
+                'field'     => 'name',
+                'pattern'   => '/(.*)/',
+            ],
+            'action' => [
+                'action_type' => 'regex_result',
+                'field'       => 'itilcategories_id_by_completename',
+                'value'       => '#0'
+            ],
+            'control_test_value' => 'Test_title_no_match',
+            'real_test_value'    => 'Category root > Category sub',
+            'expected_value'     => $sub_root_category->fields['id'],
+        ];
+
         // Test 'regex_result' action on the ticket category
         $category = $this->createItem(ITILCategory::getType(), [
             'name' => 'Category from regex'
@@ -2162,6 +2190,45 @@ abstract class RuleCommonITILObject extends DbTestCase
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Category from regex',
             'expected_value'     => $category->fields['id'],
+        ];
+
+        // Test 'regex_result' action on the ticket requester group by completename
+        $root_requester_group_completename = $this->createItem(Group::getType(), [
+            'name' => 'Requester group root'
+        ]);
+
+        $sub_requester_group_completename = $this->createItem(Group::getType(), [
+            'name' => 'Requester group sub',
+            'groups_id' => $root_requester_group_completename->fields['id'],
+        ]);
+
+        yield [
+            'criteria' => [
+                'condition' => Rule::REGEX_MATCH,
+                'field'     => 'name',
+                'pattern'   => '/(.*)/',
+            ],
+            'action' => [
+                'action_type'    => 'regex_result',
+                'field'          => '_groups_id_requester_by_completename',
+                'value'          => '#0',
+                'field_specific' => function ($ticket) {
+                    // Can't read '_groups_id_requester' from group field, need
+                    // to fetch it from the Group_Ticket table
+                    $groups = (new Group_Ticket())->find([
+                        'type' => CommonITILActor::REQUESTER,
+                        'tickets_id' => $ticket->fields['id'],
+                    ]);
+                    if (count($groups) == 1) {
+                        return array_pop($groups)['groups_id'];
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            'control_test_value' => 'Test_title_no_match',
+            'real_test_value'    => 'Requester group root > Requester group sub',
+            'expected_value'     => $sub_requester_group_completename->fields['id'],
         ];
 
         // Test 'regex_result' action on the ticket requester group
@@ -2197,6 +2264,47 @@ abstract class RuleCommonITILObject extends DbTestCase
             'expected_value'     => $requester_group->fields['id'],
         ];
 
+
+        // Test 'regex_result' action on the ticket observer group by completename
+        $root_observer_group_completename = $this->createItem(Group::getType(), [
+            'name' => 'Observer group root'
+        ]);
+
+        $sub_observer_group_completename = $this->createItem(Group::getType(), [
+            'name' => 'Observer group sub',
+            'groups_id' => $root_observer_group_completename->fields['id'],
+        ]);
+
+        yield [
+            'criteria' => [
+                'condition' => Rule::REGEX_MATCH,
+                'field'     => 'name',
+                'pattern'   => '/(.*)/',
+            ],
+            'action' => [
+                'action_type'    => 'regex_result',
+                'field'          => '_groups_id_observer_by_completename',
+                'value'          => '#0',
+                'field_specific' => function ($ticket) {
+                    // Can't read '_groups_id_observer' from group field, need
+                    // to fetch it from the Group_Ticket table
+                    $groups = (new Group_Ticket())->find([
+                        'type' => CommonITILActor::OBSERVER,
+                        'tickets_id' => $ticket->fields['id'],
+                    ]);
+                    if (count($groups) == 1) {
+                        return array_pop($groups)['groups_id'];
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            'control_test_value' => 'Test_title_no_match',
+            'real_test_value'    => 'Observer group root > Observer group sub',
+            'expected_value'     => $sub_observer_group_completename->fields['id'],
+        ];
+
+
         // Test 'regex_result' action on the ticket observer group
         $observer_group = $this->createItem(Group::getType(), [
             'name' => 'Observer group from regex'
@@ -2228,6 +2336,45 @@ abstract class RuleCommonITILObject extends DbTestCase
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Observer group from regex',
             'expected_value'     => $observer_group->fields['id'],
+        ];
+
+        // Test 'regex_result' action on the ticket observer group by completename
+        $root_assign_group_completename = $this->createItem(Group::getType(), [
+            'name' => 'Observer group root'
+        ]);
+
+        $sub_assign_group_completename = $this->createItem(Group::getType(), [
+            'name' => 'Observer group sub',
+            'groups_id' => $root_assign_group_completename->fields['id'],
+        ]);
+
+        yield [
+            'criteria' => [
+                'condition' => Rule::REGEX_MATCH,
+                'field'     => 'name',
+                'pattern'   => '/(.*)/',
+            ],
+            'action' => [
+                'action_type'    => 'regex_result',
+                'field'          => '_groups_id_assign_by_completename',
+                'value'          => '#0',
+                'field_specific' => function ($ticket) {
+                    // Can't read '_groups_id_assign' from group field, need
+                    // to fetch it from the Group_Ticket table
+                    $groups = (new Group_Ticket())->find([
+                        'type' => CommonITILActor::ASSIGN,
+                        'tickets_id' => $ticket->fields['id'],
+                    ]);
+                    if (count($groups) == 1) {
+                        return array_pop($groups)['groups_id'];
+                    } else {
+                        return 0;
+                    }
+                }
+            ],
+            'control_test_value' => 'Test_title_no_match',
+            'real_test_value'    => 'Observer group root > Observer group sub',
+            'expected_value'     => $sub_assign_group_completename->fields['id'],
         ];
 
         // Test 'regex_result' action on the ticket assigned group
