@@ -43,22 +43,22 @@ use Glpi\Toolbox\VersionParser;
 class PhpVersion extends AbstractRequirement
 {
     /**
-     * Minimal required PHP version.
+     * Minimal required PHP version (inclusive).
      *
      * @var string
      */
     private $min_version;
 
     /**
-     * Maximum required PHP version (exclusive).
+     * Maximum required PHP version (inclusive).
      *
      * @var string
      */
     private $max_version;
 
     /**
-     * @param string $min_version  Minimal required PHP version
-     * @param string $max_version  Maximum required PHP version (exclusive)
+     * @param string $min_version  Minimal required PHP version (inclusive)
+     * @param string $max_version  Maximum required PHP version (inclusive)
      */
     public function __construct(string $min_version, string $max_version)
     {
@@ -73,14 +73,12 @@ class PhpVersion extends AbstractRequirement
         $min_version = VersionParser::getNormalizedVersion($this->min_version, false);
         $max_version = VersionParser::getNormalizedVersion($this->max_version, false);
 
-        // Use `-dev` stability flag in comparisons
-        // -> 7.4.0-dev, 7.4.0-alphaX, 7.4.0-rcX are accepted when $this->min_version is 7.4.0
-        // -> 8.2.0-dev, 8.2.0-alphaX, 8.2.0-rcX is refused when $this->max_version is 8.2.0
-        $this->validated = version_compare(PHP_VERSION, sprintf('%s-dev', $min_version), '>=')
-            && version_compare(PHP_VERSION, sprintf('%s-dev', $max_version), '<');
+        // Accept any version between first stable release of min version (i.e. X.Y.0) and any release of the max version (i.e. X.Y.999).
+        $this->validated = version_compare(PHP_VERSION, preg_replace('/^(\d+)\.(\d+)\./', '$1.$2.0', $min_version), '>=')
+            && version_compare(PHP_VERSION, preg_replace('/^(\d+)\.(\d+)\./', '$1.$2.999', $max_version), '<');
 
         $this->validation_messages[] = $this->validated
             ? sprintf(__('PHP version (%s) is supported.'), PHP_VERSION)
-            : sprintf(__('PHP version must be between %s and %s (exclusive).'), $min_version, $max_version);
+            : sprintf(__('PHP version must be between %s and %s.'), $this->min_version, $this->max_version);
     }
 }
