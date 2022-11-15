@@ -189,7 +189,7 @@ JAVASCRIPT;
         $replacement_select = 'SELECT DISTINCT ' . $itemtype::getTableField('id');
         $sql = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
         // Remove GROUP BY and ORDER BY clauses
-        $sql = str_replace(array($data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']), '', $sql);
+        $sql = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql);
 
         $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql . ') AS id_criteria )');
 
