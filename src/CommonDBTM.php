@@ -169,15 +169,6 @@ class CommonDBTM extends CommonGLPI
     protected $usenotepad = false;
 
     /**
-     * Flag to determine whether or not queued notifications should be deduplicated.
-     * Deduplication is done when a new notification is raised.
-     * Any existing notification for same object, event and recipient is dropped to be replaced by the new one.
-     *
-     * @var boolean
-     */
-    public $deduplicate_queued_notifications = true;
-
-    /**
      * Computed/forced values of classes tables.
      * @var string[]
      */
