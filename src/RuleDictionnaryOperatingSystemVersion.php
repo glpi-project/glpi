@@ -254,6 +254,7 @@ class RuleDictionnaryOperatingSystemVersion extends RuleDictionnaryDropdown
         ];
 
         foreach ($rules as $rule) {
+            $rule = Sanitizer::sanitize($rule);
             $rulecollection = new RuleDictionnaryOperatingSystemEditionCollection();
             $input = [
                 'is_active'     => $rule['is_active'],
