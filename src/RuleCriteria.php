@@ -375,6 +375,11 @@ class RuleCriteria extends CommonDBChild
      **/
     public static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result)
     {
+        if (is_array($field)) {
+            $field = Sanitizer::decodeHtmlSpecialCharsRecursive($field);
+        } else {
+            $field = Sanitizer::decodeHtmlSpecialChars($field ?? '');
+        }
 
         $condition = $criterion->fields['condition'];
         $pattern   = $criterion->fields['pattern'];

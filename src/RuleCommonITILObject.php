@@ -412,6 +412,20 @@ abstract class RuleCommonITILObject extends Rule
                                     $output['_additional_groups_requesters'][$group->getID()] = $group->getID();
                                 }
                             }
+                        } elseif ($field == "_groups_id_requester_by_completename") {
+                            foreach ($regex_values as $regex_value) {
+                                // Search group by name
+                                $group = new Group();
+                                $result = $group->getFromDBByCrit([
+                                    "completename" => $regex_value,
+                                    "is_requester" => true
+                                ]);
+
+                                // Add groups found for each regex
+                                if ($result) {
+                                    $output['_additional_groups_requesters'][$group->getID()] = $group->getID();
+                                }
+                            }
                         } elseif ($field == "_groups_id_assign") {
                             foreach ($regex_values as $regex_value) {
                                 // Search group by name
@@ -426,12 +440,40 @@ abstract class RuleCommonITILObject extends Rule
                                     $output['_additional_groups_assigns'][$group->getID()] = $group->getID();
                                 }
                             }
+                        } elseif ($field == "_groups_id_assign_by_completename") {
+                            foreach ($regex_values as $regex_value) {
+                                // Search group by name
+                                $group = new Group();
+                                $result = $group->getFromDBByCrit([
+                                    "completename" => $regex_value,
+                                    "is_assign" => true
+                                ]);
+
+                                // Add groups found for each regex
+                                if ($result) {
+                                    $output['_additional_groups_assigns'][$group->getID()] = $group->getID();
+                                }
+                            }
                         } elseif ($field == "_groups_id_observer") {
                             foreach ($regex_values as $regex_value) {
                                 // Search group by name
                                 $group = new Group();
                                 $result = $group->getFromDBByCrit([
                                     "name" => $regex_value,
+                                    "is_watcher" => true
+                                ]);
+
+                                // Add groups found for each regex
+                                if ($result) {
+                                    $output['_additional_groups_observers'][$group->getID()] = $group->getID();
+                                }
+                            }
+                        } elseif ($field == "_groups_id_observer_by_completename") {
+                            foreach ($regex_values as $regex_value) {
+                                // Search group by name
+                                $group = new Group();
+                                $result = $group->getFromDBByCrit([
+                                    "completename" => $regex_value,
                                     "is_watcher" => true
                                 ]);
 
@@ -467,6 +509,20 @@ abstract class RuleCommonITILObject extends Rule
                                 $category = new ITILCategory();
                                 $result = $category->getFromDBByCrit([
                                     "name" => $regex_value,
+                                ]);
+
+                                // Stop at the first valid category found
+                                if ($result) {
+                                    $output['itilcategories_id'] = $category->getID();
+                                    break;
+                                }
+                            }
+                        } elseif ($field == "_itilcategories_id_by_completename") {
+                            foreach ($regex_values as $regex_value) {
+                                // Search category by name
+                                $category = new ITILCategory();
+                                $result = $category->getFromDBByCrit([
+                                    "completename" => $regex_value,
                                 ]);
 
                                 // Stop at the first valid category found
@@ -666,6 +722,11 @@ abstract class RuleCommonITILObject extends Rule
         $actions['itilcategories_id']['table']                      = 'glpi_itilcategories';
         $actions['itilcategories_id']['force_actions']              = ['assign', 'regex_result'];
 
+        $actions['_itilcategories_id_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), _n('Category', 'Categories', 1), __('by completename'));
+        $actions['_itilcategories_id_by_completename']['type']                 = 'dropdown';
+        $actions['_itilcategories_id_by_completename']['table']                = 'glpi_itilcategories';
+        $actions['_itilcategories_id_by_completename']['force_actions']        = ['regex_result'];
+
         $actions['_affect_itilcategory_by_code']['name']            = __('ITIL category from code');
         $actions['_affect_itilcategory_by_code']['type']            = 'text';
         $actions['_affect_itilcategory_by_code']['force_actions']   = ['regex_result'];
@@ -686,6 +747,14 @@ abstract class RuleCommonITILObject extends Rule
         $actions['_groups_id_requester']['permitseveral']           = ['append'];
         $actions['_groups_id_requester']['appendto']                = '_additional_groups_requesters';
 
+        $actions['_groups_id_requester_by_completename']['name']              = sprintf(__('%1$s (%2$s)'), _n('Requester group', 'Requester groups', 1), __('by completename'));
+        $actions['_groups_id_requester_by_completename']['type']              = 'dropdown';
+        $actions['_groups_id_requester_by_completename']['table']             = 'glpi_groups';
+        $actions['_groups_id_requester_by_completename']['condition']         = ['is_requester' => 1];
+        $actions['_groups_id_requester_by_completename']['force_actions']     = ['regex_result'];
+        $actions['_groups_id_requester_by_completename']['permitseveral']     = ['append'];
+        $actions['_groups_id_requester_by_completename']['appendto']          = '_additional_groups_requesters';
+
         $actions['_users_id_assign']['name']                        = __('Technician');
         $actions['_users_id_assign']['type']                        = 'dropdown_assign';
         $actions['_users_id_assign']['force_actions']                = ['assign', 'append'];
@@ -701,6 +770,14 @@ abstract class RuleCommonITILObject extends Rule
         $actions['_groups_id_assign']['force_actions']              = ['assign', 'append', 'regex_result'];
         $actions['_groups_id_assign']['permitseveral']              = ['append'];
         $actions['_groups_id_assign']['appendto']                   = '_additional_groups_assigns';
+
+        $actions['_groups_id_assign_by_completename']['table']                = 'glpi_groups';
+        $actions['_groups_id_assign_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), __('Technician group'), __('by completename'));
+        $actions['_groups_id_assign_by_completename']['type']                 = 'dropdown';
+        $actions['_groups_id_assign_by_completename']['condition']            = ['is_assign' => 1];
+        $actions['_groups_id_assign_by_completename']['force_actions']        = ['regex_result'];
+        $actions['_groups_id_assign_by_completename']['permitseveral']        = ['append'];
+        $actions['_groups_id_assign_by_completename']['appendto']             = '_additional_groups_assigns';
 
         $actions['_suppliers_id_assign']['table']                   = 'glpi_suppliers';
         $actions['_suppliers_id_assign']['name']                    = __('Assigned to a supplier');
@@ -726,6 +803,14 @@ abstract class RuleCommonITILObject extends Rule
         $actions['_groups_id_observer']['force_actions']            = ['assign', 'append', 'regex_result'];
         $actions['_groups_id_observer']['permitseveral']            = ['append'];
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
+
+        $actions['_groups_id_observer_by_completename']['table']              = 'glpi_groups';
+        $actions['_groups_id_observer_by_completename']['name']               = sprintf(__('%1$s (%2$s)'), _n('Watcher group', 'Watcher groups', 1), __('by completename'));
+        $actions['_groups_id_observer_by_completename']['type']               = 'dropdown';
+        $actions['_groups_id_observer_by_completename']['condition']          = ['is_watcher' => 1];
+        $actions['_groups_id_observer_by_completename']['force_actions']      = ['regex_result'];
+        $actions['_groups_id_observer_by_completename']['permitseveral']      = ['append'];
+        $actions['_groups_id_observer_by_completename']['appendto']           = '_additional_groups_observers';
 
         $actions['urgency']['name']                                 = __('Urgency');
         $actions['urgency']['type']                                 = 'dropdown_urgency';
