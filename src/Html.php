@@ -41,6 +41,7 @@ use Glpi\Console\Application;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\UI\ThemeManager;
 use ScssPhp\ScssPhp\Compiler;
 
 /**
@@ -1261,7 +1262,7 @@ HTML;
        // Send extra expires header
         self::header_nocache();
 
-        $theme = $_SESSION['glpipalette'] ?? 'auror';
+        $theme = ThemeManager::getInstance()->getCurrentTheme();
 
         $tpl_vars = [
             'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
@@ -1427,7 +1428,7 @@ HTML;
                 }
             }
         }
-        $tpl_vars['css_files'][] = ['path' => 'css/palettes/' . $theme . '.scss'];
+        $tpl_vars['css_files'][] = ['path' => $theme->getPath()];
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
 
@@ -3877,7 +3878,8 @@ JS;
         $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs6/' . $language . '.js';
 
        // Apply all GLPI styles to editor content
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss(('css/palettes/' . $_SESSION['glpipalette'] ?? 'auror') . '.scss', ['force_no_version' => true]))
+        $theme = ThemeManager::getInstance()->getCurrentTheme();
+        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($theme->getPath(), ['force_no_version' => true]))
          . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
@@ -3921,7 +3923,8 @@ JS;
        // init tinymce
         $js = <<<JS
          $(function() {
-            var is_dark = $('html').css('--is-dark').trim() === 'true';
+            const html_el = $('html');
+            var is_dark = html_el.attr('data-glpi-theme-dark') || html_el.css('--is-dark').trim() === 'true';
             var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
             // init editor

@@ -32,7 +32,8 @@
  #}
 
 <!DOCTYPE html>
-<html lang="{{ lang }}" {% if high_contrast %}data-high-contrast="1"{% endif %}>
+<html lang="{{ lang }}" {% if high_contrast %}data-high-contrast="1"{% endif %}
+      data-glpi-theme="{{ theme.getKey() }}" data-glpi-theme-dark="{{ theme.isDarkTheme() ? '1' : '0' }}">
 <head>
    <title>{{ title }} - GLPI</title>
 

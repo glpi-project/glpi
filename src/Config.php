@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\UI\ThemeManager;
 use SimplePie\SimplePie;
 
 /**
@@ -1325,23 +1325,25 @@ class Config extends CommonDBTM
                 'selected'  => $data['palette']
             ]
         );
-        echo Html::scriptBlock("
-         function formatThemes(theme) {
-             if (!theme.id) {
-                return theme.text;
-             }
+        echo Html::scriptBlock(<<<JAVASCRIPT
+            function formatThemes(theme) {
+                if (!theme.id) {
+                    return theme.text;
+                }
 
-             return $('<span></span>').html('<img src=\'../css/palettes/previews/' + theme.text.toLowerCase() + '.png\'/>'
-                      + '&nbsp;' + theme.text);
-         }
-         $(\"#theme-selector\").select2({
-             templateResult: formatThemes,
-             templateSelection: formatThemes,
-             width: '100%',
-             escapeMarkup: function(m) { return m; }
-         });
-         $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
-      ");
+                return $('<span></span>').html(
+                    `<img src="{$CFG_GLPI['root_doc']}/front/palette_preview.php?key=\${theme.id}" /> \${theme.text}`
+                );
+            }
+            $("#theme-selector").select2({
+                templateResult: formatThemes,
+                templateSelection: formatThemes,
+                width: '100%',
+                escapeMarkup: function(m) { return m; }
+            });
+            $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
+JAVASCRIPT
+            );
         echo "</td>";
         echo "<td>";
 
@@ -3222,13 +3224,10 @@ HTML;
      */
     public function getPalettes()
     {
-        $themes_files = scandir(GLPI_ROOT . "/css/palettes/");
+        $all_themes = ThemeManager::getInstance()->getAllThemes();
         $themes = [];
-        foreach ($themes_files as $file) {
-            if (preg_match('/^[^_].*\.scss$/', $file) === 1) {
-                $name          = basename($file, '.scss');
-                $themes[$name] = ucfirst($name);
-            }
+        foreach ($all_themes as $theme) {
+            $themes[$theme->getKey()] = $theme->getName();
         }
         return $themes;
     }
