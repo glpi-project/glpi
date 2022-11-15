@@ -420,10 +420,10 @@
          {{ options.required ? 'required' : '' }} />
    {% endset %}
    {% set btn_group %}
-      &nbsp;<i class="far fa-eye pointer disclose" onmousedown="showField('{{ options.id }}')"
-               onmouseup="hideField('{{ options.id }}')"
-               onmouseout="hideField('{{ options.id }}')"></i>
-      &nbsp;<i class="fa fa-paste pointer disclose" onclick="copyToClipboard('{{ options.id }}')"></i>
+      &nbsp;<i class="far fa-eye pointer disclose" onmousedown="showDisclosablePasswordField('{{ options.id }}')"
+               onmouseup="hideDisclosablePasswordField('{{ options.id }}')"
+               onmouseout="hideDisclosablePasswordField('{{ options.id }}')"></i>
+      &nbsp;<i class="fa fa-paste pointer disclose" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id }}')"></i>
    {% endset %}
    {% if options.is_disclosable %}
       {% set label = label ~ btn_group %}

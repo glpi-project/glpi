@@ -53,20 +53,16 @@
                <div class="row flex-row">
                   <script>
                      function showField(item) {
-                        $("#" + item).prop("type", "text");
+                        // BC - Remove in 10.1
+                        showDisclosablePasswordField(item);
                      }
                      function hideField(item) {
-                        $("#" + item).prop("type", "password");
+                        // BC - Remove in 10.1
+                        hideDisclosablePasswordField(item);
                      }
                      function copyToClipboard(item) {
-                        showField(item);
-                        $("#" + item).select();
-                        try {
-                           document.execCommand("copy");
-                        } catch (e) {
-                           alert("Copy to clipboard failed'");
-                        }
-                        hideField(item);
+                        // BC - Remove in 10.1
+                        copyDisclosablePasswordFieldToClipboard(item);
                      }
                   </script>
 
