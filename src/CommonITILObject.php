@@ -64,8 +64,6 @@ abstract class CommonITILObject extends CommonDBTM
    /// Use user entity to select entity of the object
     protected $userentity_oncreate = false;
 
-    public $deduplicate_queued_notifications = false;
-
     protected static $showTitleInNavigationHeader = true;
 
     const MATRIX_FIELD         = '';

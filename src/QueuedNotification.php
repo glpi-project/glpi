@@ -168,33 +168,6 @@ class QueuedNotification extends CommonDBTM
             $input['items_id'] = 0;
         }
 
-       // Drop existing mails in queue for the same event and item  and recipient
-        $item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : false;
-        if (
-            $item instanceof CommonDBTM && $item->deduplicate_queued_notifications
-            && isset($input['entities_id']) && ($input['entities_id'] >= 0)
-            && isset($input['items_id']) && ($input['items_id'] >= 0)
-            && isset($input['notificationtemplates_id']) && !empty($input['notificationtemplates_id'])
-            && isset($input['recipient'])
-        ) {
-            $criteria = [
-                'FROM'   => $this->getTable(),
-                'WHERE'  => [
-                    'is_deleted'   => 0,
-                    'itemtype'     => $input['itemtype'],
-                    'items_id'     => $input['items_id'],
-                    'entities_id'  => $input['entities_id'],
-                    'notificationtemplates_id' => $input['notificationtemplates_id'],
-                    'recipient'                => $input['recipient']
-
-                ]
-            ];
-            $iterator = $DB->request($criteria);
-            foreach ($iterator as $data) {
-                $this->delete(['id' => $data['id']], 1);
-            }
-        }
-
         return $input;
     }
 

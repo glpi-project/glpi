@@ -38,6 +38,7 @@ The present file will list all changes made to the project; according to the
 - `Symfony` libraries have been upgraded to version 6.0.
 - `users_id_validate` field in `CommonITILValidation` will now have a `0` value until someone approves or refuses the validation.
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
+- Notifications are not deduplicated anymore.
 - Notifications with `Approver` recipient have had this recipient replaced with the new `Approval target` recipient to maintain previous behavior as much as possible.
   The previous recipient option still exists if needed. This replacement will only happen once during the upgrade.
 - `GLPIMailer` mailer class does not extends anymore `PHPMailer\PHPMailer\PHPMailer`.
@@ -81,6 +82,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
+- `CommonDBTM::$deduplicate_queued_notifications` property.
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
 - `Search::computeTitle()`
 - `Search::csv_clean()`
