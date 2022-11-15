@@ -378,7 +378,7 @@ class RuleCriteria extends CommonDBChild
         if (is_array($field)) {
             $field = Sanitizer::decodeHtmlSpecialCharsRecursive($field);
         } else {
-            $field = Sanitizer::decodeHtmlSpecialChars($field);
+            $field = Sanitizer::decodeHtmlSpecialChars($field ?? '');
         }
 
         $condition = $criterion->fields['condition'];
