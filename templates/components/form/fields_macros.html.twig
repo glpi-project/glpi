@@ -426,7 +426,7 @@
       &nbsp;<i class="fa fa-paste pointer disclose" onclick="copyToClipboard('{{ options.id }}')"></i>
    {% endset %}
    {% if options.is_disclosable %}
-      {%  set label = label ~ btn_group %}
+      {% set label = label ~ btn_group %}
    {% endif %}
    {% if options.clearable %}
       {% set clear_chk %}
