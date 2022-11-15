@@ -36,7 +36,6 @@
 use Glpi\Inventory\Conf;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
-use Twig\Node\SandboxNode;
 
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
