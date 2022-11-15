@@ -158,7 +158,7 @@ class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
             'is_recursive' => '1',
             'uuid' => 'clean_linux_os_edition',
             'condition' => '0',
-            'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
+            'comment' => "/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
 
         Example :
         Ubuntu 22.04.1 LTS -> #2 = LTS
@@ -170,7 +170,7 @@ class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
         Debian GNU/Linux 8.9 (jessie) -> #2 = jessie
         CentOS Linux release 7.2.1511 (Core) -> #2 = Core
         AlmaLinux 9.0 (Emerald Puma) -> #2 = Emerald Puma
-        AlmaLinux 8.6 (Sky Tiger) -> #2 = Sky Tiger"),
+        AlmaLinux 8.6 (Sky Tiger) -> #2 = Sky Tiger",
             'criteria'  => [
                 [
                     'criteria' => 'os_name',
@@ -196,7 +196,7 @@ class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
             'is_recursive' => '1',
             'uuid' => 'clean_windows_os_edition',
             'condition' => '0',
-            'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
+            'comment' => "/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
 
         Example :
         Microsoft Windows XP Professionnel -> #4 : Professionnel
@@ -205,12 +205,12 @@ class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
         Microsoft Windows XP Édition familiale  -> #4 : Édition familiale
         Microsoft Windows 10 Entreprise  -> #4 : Entreprise
         Microsoft Windows 10 Professionnel  -> #4 : Professionnel
-        Microsoft Windows 11 Professionnel  -> #4 : Professionnel"),
+        Microsoft Windows 11 Professionnel  -> #4 : Professionnel",
             'criteria'  => [
                 [
                     'criteria' => 'os_name',
                     'condition' => 6,
-                    'pattern' => Sanitizer::sanitize('/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/'),
+                    'pattern' => '/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/',
                 ]
             ],
             'action'  => [
@@ -231,18 +231,18 @@ class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
             'is_recursive' => '1',
             'uuid' => 'clean_windows_server_os_edition',
             'condition' => '0',
-            'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
+            'comment' => "/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
 
         Example :
         Microsoft Windows Server 2012 R2 Datacenter -> #4 : Datacenter
         Microsoft(R) Windows(R) Server 2003, Standard Edition x64 -> #4 : Standard
         Microsoft Hyper-V Server 2012 R2 -> #4 :
-        Microsoft® Windows Server® 2008 Standard -> #4: Standard"),
+        Microsoft® Windows Server® 2008 Standard -> #4: Standard",
             'criteria'  => [
                 [
                     'criteria' => 'os_name',
                     'condition' => 6,
-                    'pattern' => Sanitizer::sanitize('/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/'),
+                    'pattern' => '/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/',
                 ]
             ],
             'action'  => [
