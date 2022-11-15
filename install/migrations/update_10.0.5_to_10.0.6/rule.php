@@ -82,10 +82,10 @@ $result = $DB->request(
 
 //foreach crierias, change 'name' key to desired
 foreach ($result as $data) {
-    $ruleCriteria = new RuleCriteria();
-    $ruleCriteria->getFromDB($data['criteria_id']);
-    $ruleCriteria->fields['criteria'] = array_search($data['sub_type'], $subType);
-    $ruleCriteria->update($ruleCriteria->fields);
+    $query = "UPDATE `glpi_rulecriterias`
+               SET `criteria` = '" . array_search($data['sub_type'], $subType) . "'
+               WHERE `id` = " . $data['criteria_id'];
+    $DB->queryOrDie($query, "10.0.6 change crtieria name");
 }
 
 //create default dictionnaries if needed
