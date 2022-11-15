@@ -8683,11 +8683,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'sub_type' => 'RuleDictionnaryOperatingSystem',
                 'ranking' => '1',
                 'name' => 'Clean Linux OS Name',
+                'uuid' => 'clean_linux_os_name',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_linux_os_name',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
@@ -8710,11 +8710,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'sub_type' => 'RuleDictionnaryOperatingSystemVersion',
                 'ranking' => '1',
                 'name' => 'Clean Linux OS Version',
+                'uuid' => 'clean_linux_os_version',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_linux_os_version',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
@@ -8737,11 +8737,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'sub_type' => 'RuleDictionnaryOperatingSystemEdition',
                 'ranking' => '1',
                 'name' => 'Clean Linux OS Edition',
+                'uuid' => 'clean_linux_os_edition',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_linux_os_edition',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(SUSE|SunOS|Red Hat|CentOS|Ubuntu|Debian|Fedora|AlmaLinux|Oracle)(?:\D+|)([\d.]+) ?(?:\(?([\w ]+)\)?)?/
@@ -8769,11 +8769,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'ranking' => '1',
 >>>>>>> 4ecd6fa6b6 (add rule from empty-data)
                 'name' => 'Clean Windows OS Name',
+                'uuid' => 'clean_windows_os_name',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_windows_os_name',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
@@ -8798,11 +8798,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'ranking' => '1',
 >>>>>>> 4ecd6fa6b6 (add rule from empty-data)
                 'name' => 'Clean Windows OS Version',
+                'uuid' => 'clean_windows_os_version',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_windows_os_version',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
@@ -8827,11 +8827,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'ranking' => '1',
 >>>>>>> 4ecd6fa6b6 (add rule from empty-data)
                 'name' => 'Clean Windows OS Edition',
+                'uuid' => 'clean_windows_os_edition',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_windows_os_edition',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (Windows) (XP|\d\.\d|\d{1,4}|Vista)(™)? ?(.*)/
@@ -8857,11 +8857,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'ranking' => '1',
 >>>>>>> 4ecd6fa6b6 (add rule from empty-data)
                 'name' => 'Clean Windows Server OS Name',
+                'uuid' => 'clean_windows_server_os_name',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_windows_server_os_name',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
@@ -8883,11 +8883,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'ranking' => '1',
 >>>>>>> 4ecd6fa6b6 (add rule from empty-data)
                 'name' => 'Clean Windows Server OS Version',
+                'uuid' => 'clean_windows_server_os_version',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_windows_server_os_version',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
@@ -8909,11 +8909,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'ranking' => '1',
 >>>>>>> 4ecd6fa6b6 (add rule from empty-data)
                 'name' => 'Clean Windows Server OS Edition',
+                'uuid' => 'clean_windows_server_os_edition',
                 'description' => '',
                 'match' => 'AND',
                 'is_active' => '0',
                 'is_recursive' => '1',
-                'uuid' => 'clean_windows_server_os_edition',
                 'condition' => '0',
 <<<<<<< HEAD
                 'comment' => Sanitizer::sanitize("/(Microsoft)(?>\(R\)|®)? (?:(Hyper-V|Windows)(?:\(R\))?) ((?:Server|))(?:\(R\)|®)? (\d{4}(?: R2)?)(?:[,\s]++)?([^\s]*)(?: Edition(?: x64)?)?$/
@@ -8926,7 +8926,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 =======
 >>>>>>> 4ecd6fa6b6 (add rule from empty-data)
             ],
-
         ];
 
         $tables['glpi_softwarecategories'] = [
