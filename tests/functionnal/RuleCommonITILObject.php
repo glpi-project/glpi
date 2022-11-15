@@ -2345,11 +2345,11 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Test 'regex_result' action on the ticket observer group by completename
         $root_assign_group_completename = $this->createItem(Group::getType(), [
-            'name' => 'Observer group root'
+            'name' => 'Assign group root'
         ]);
 
         $sub_assign_group_completename = $this->createItem(Group::getType(), [
-            'name' => 'Observer group sub',
+            'name' => 'Assign group sub',
             'groups_id' => $root_assign_group_completename->fields['id'],
         ]);
 
@@ -2378,7 +2378,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 }
             ],
             'control_test_value' => 'Test_title_no_match',
-            'real_test_value'    => 'Observer group root > Observer group sub',
+            'real_test_value'    => 'Assign group root > Assign group sub',
             'expected_value'     => $sub_assign_group_completename->fields['id'],
         ];
 
