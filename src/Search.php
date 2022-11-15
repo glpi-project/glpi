@@ -692,6 +692,7 @@ class Search
 
         $data['sql']['count']  = [];
         $data['sql']['search'] = '';
+        $data['sql']['raw']    = [];
 
         $searchopt        = self::getOptions($data['itemtype']);
 
@@ -1106,7 +1107,7 @@ class Search
                         $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
                         $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
                     }
-                     $QUERY .= $tmpquery;
+                    $QUERY .= $tmpquery;
                 }
             }
             if (empty($QUERY)) {
@@ -1116,6 +1117,15 @@ class Search
             $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']] . ".", "", $ORDER) .
                    $LIMIT;
         } else {
+            $data['sql']['raw'] = [
+                'SELECT' => $SELECT,
+                'FROM' => $FROM,
+                'WHERE' => $WHERE,
+                'GROUPBY' => $GROUPBY,
+                'HAVING' => $HAVING,
+                'ORDER' => $ORDER,
+                'LIMIT' => $LIMIT
+            ];
             $QUERY = $SELECT .
                   $FROM .
                   $WHERE .
