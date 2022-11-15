@@ -80,7 +80,7 @@ $result = $DB->request(
     ]
 );
 
-//Foreach crierias, change 'name' key to desired
+//foreach crierias, change 'name' key to desired
 foreach ($result as $data) {
     $ruleCriteria = new RuleCriteria();
     $ruleCriteria->getFromDB($data['criteria_id']);
@@ -88,12 +88,11 @@ foreach ($result as $data) {
     $ruleCriteria->update($ruleCriteria->fields);
 }
 
-//add new rules to clean operating system informations
-$filePath = __DIR__ . '/rule_dictionnary_operating.xml';
-$_FILES['xml_file'] =
-[
-    "size" => filesize($filePath),
-    "tmp_name" => $filePath,
-    "error" => ''
-];
-RuleCollection::previewImportRules();
+//create default dictionnaries if needed
+foreach (array_values($subType) as $ruleDictionnaryType) {
+    //Toolbox::logError(method_exists($ruleDictionnaryType, 'initRules'));
+    if (method_exists($ruleDictionnaryType, 'initRules') && countElementsInTable(Rule::getTable(), ['sub_type' => $ruleDictionnaryType]) === 0) {
+        //default rules.
+        $ruleDictionnaryType::initRules(false, false, true);
+    }
+}
