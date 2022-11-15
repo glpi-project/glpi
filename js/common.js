@@ -1472,3 +1472,34 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
         }
     }
 });
+
+/**
+ * Converts a disclosable password field to a normal text field
+ * @param {string} item The ID of the field to be shown
+ */
+function showDisclosablePasswordField(item) {
+    $("#" + item).prop("type", "text");
+}
+
+/**
+ * Converts a normal text field to a password field
+ * @param {string} item The ID of the field to be hidden
+ */
+function hideDisclosablePasswordField(item) {
+    $("#" + item).prop("type", "password");
+}
+
+/**
+ * Copies the password from a disclosable password field to the clipboard
+ * @param {string} item The ID of the field to be copied
+ */
+function copyDisclosablePasswordFieldToClipboard(item) {
+    showDisclosablePasswordField(item);
+    $("#" + item).select();
+    try {
+        document.execCommand("copy");
+    } catch (e) {
+        alert("Copy to clipboard failed'");
+    }
+    hideDisclosablePasswordField(item);
+}
