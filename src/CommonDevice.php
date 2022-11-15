@@ -505,7 +505,7 @@ abstract class CommonDevice extends CommonDropdown
             } else {
                 $where[] = [
                     'OR' => [
-                        [$model_fk => NULL],
+                        [$model_fk => null],
                         [$model_fk => 0]
                     ]
                 ];
