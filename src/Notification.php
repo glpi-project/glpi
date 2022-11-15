@@ -468,7 +468,7 @@ class Notification extends CommonDBTM
             'field'              => 'allow_response',
             'name'               => __('Allow response'),
             'datatype'           => 'bool'
-         ];
+        ];
 
         return $tab;
     }
