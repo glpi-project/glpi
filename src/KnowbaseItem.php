@@ -593,7 +593,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         // Handle logged in users
         if (Session::getCurrentInterface() == "helpdesk") {
             // Show FAQ for helpdesk user
-            $criteria['WHERE'] = self::getVisibilityCriteriaFAQ();
+            if (!Session::getLoginUserID()) {
+                $criteria['WHERE'] = self::getVisibilityCriteriaFAQ();
+            } else {
+                $criteria['WHERE'] = self::getVisibilityCriteriaKB();
+            }
             return $criteria;
         } else {
             // Show knowledge base for central users
