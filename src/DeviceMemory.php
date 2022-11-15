@@ -216,7 +216,6 @@ class DeviceMemory extends CommonDevice
 
         return ['designation'          => 'equal',
             'devicememorytypes_id' => 'equal',
-            'devicememorymodels_id' => 'equal',
             'manufacturers_id'     => 'equal',
             'frequence'            => 'delta:10'
         ];

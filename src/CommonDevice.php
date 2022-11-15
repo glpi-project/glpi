@@ -495,9 +495,20 @@ abstract class CommonDevice extends CommonDropdown
                         ];
                         break;
                 }
-            } else if (preg_match('/^.+models_id/', $field)) {
-                // an item having no associated model
-                $where[$field] = 'NULL';
+            }
+        }
+
+        $model_fk = getForeignKeyFieldForItemType(static::class . 'Model');
+        if ($DB->fieldExists(static::getTable(), $model_fk)) {
+            if (isset($input[$model_fk])) {
+                $where[$model_fk] = $input[$model_fk];
+            } else {
+                $where[] = [
+                    'OR' => [
+                        [$model_fk => NULL],
+                        [$model_fk => 0]
+                    ]
+                ];
             }
         }
 
