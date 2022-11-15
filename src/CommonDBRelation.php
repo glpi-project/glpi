@@ -99,6 +99,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     {
         global $DB;
 
+        $table = static::getTable();
+
         $conditions = [];
         $fields     = [
             static::getIndexName(),
@@ -108,13 +110,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
        // Check item 1 type
         $where1 = [
-            static::$items_id_1  => $items_id
+            $table . '.' . static::$items_id_1  => $items_id
         ];
 
         $request = false;
         if (preg_match('/^itemtype/', static::$itemtype_1)) {
             $fields[] = static::$itemtype_1 . ' AS itemtype_1';
-            $where1[static::$itemtype_1] = $itemtype;
+            $where1[$table . '.' . static::$itemtype_1] = $itemtype;
             $request = true;
         } else {
             $fields[] = new \QueryExpression("'" . static::$itemtype_1 . "' AS itemtype_1");
@@ -137,12 +139,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
        // Check item 2 type
         $where2 = [
-            static::$items_id_2 => $items_id
+            $table . '.' . static::$items_id_2 => $items_id
         ];
         $request = false;
         if (preg_match('/^itemtype/', static::$itemtype_2)) {
             $fields[] = static::$itemtype_2 . ' AS itemtype_2';
-            $where2[static::$itemtype_2] = $itemtype;
+            $where2[$table . '.' . static::$itemtype_2] = $itemtype;
             $request = true;
         } else {
             $fields[] = new \QueryExpression("'" . static::$itemtype_2 . "' AS itemtype_2");
@@ -166,7 +168,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if (count($conditions) != 0) {
             $criteria = [
                 'SELECT' => $fields,
-                'FROM'   => static::getTable(),
+                'FROM'   => $table,
                 'WHERE'  => ['OR' => $conditions]
             ];
             return $criteria;

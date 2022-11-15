@@ -204,11 +204,15 @@ class Item_OperatingSystem extends CommonDBRelation
                 $id = array_keys($os)[0];
             } else {
                //set itemtype and items_id
-                $instance->fields['itemtype']    = $item->getType();
-                $instance->fields['items_id']    = $item->getID();
-                $instance->fields['entities_id'] = $item->fields['entities_id'];
+                $instance->fields['itemtype']       = $item->getType();
+                $instance->fields['items_id']       = $item->getID();
+                $instance->fields['install_date']   = $item->fields['install_date'] ?? '';
+                $instance->fields['entities_id']    = $item->fields['entities_id'];
             }
-            $instance->showForm($id, ['canedit' => $canedit]);
+            $instance->showForm($id, [
+                'canedit' => $canedit,
+                'candel'  => $canedit
+            ]);
             return;
         }
 
@@ -432,6 +436,19 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'licenseid',
             'name'               => __('Product ID'),
             'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'specific_itemtype'  => $itemtype
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '66',
+            'table'              => 'glpi_items_operatingsystems',
+            'field'              => 'install_date',
+            'name'               => __('Installation date'),
+            'datatype'           => 'datetime',
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',

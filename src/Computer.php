@@ -451,6 +451,14 @@ class Computer extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => 'last_boot',
+            'name'               => __('Last boot date'),
+            'datatype'           => 'datetime',
+        ];
+
+        $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',

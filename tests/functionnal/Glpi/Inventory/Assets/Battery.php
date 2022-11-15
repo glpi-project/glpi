@@ -97,7 +97,7 @@ class Battery extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION", "is_dynamic": 1}'
+                'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "capacity": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION", "is_dynamic": 1}'
             ]
         ];
     }
@@ -241,14 +241,15 @@ class Battery extends AbstractInventoryAsset
             'devicebatterytypes_id' => $types_id,
             'voltage' => 8614,
             'capacity' => 43746,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->integer($battery_1_id)->isGreaterThan(0);
 
         $item_battery_1_id = $item_battery->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicebatteries_id' => $battery_1_id
+            'devicebatteries_id' => $battery_1_id,
+            'serial' => '3701'
         ]);
 
         $battery_2_id = $device_battery->add([
@@ -257,14 +258,15 @@ class Battery extends AbstractInventoryAsset
             'devicebatterytypes_id' => $types_id,
             'voltage' => 11100,
             'capacity' => 45280,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->integer($battery_2_id)->isGreaterThan(0);
 
         $item_battery_2_id = $item_battery->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicebatteries_id' => $battery_2_id
+            'devicebatteries_id' => $battery_2_id,
+            'serial' => '7565'
         ]);
 
         $battery_3_id = $device_battery->add([
@@ -280,6 +282,7 @@ class Battery extends AbstractInventoryAsset
             'itemtype'     => 'Computer',
             'devicebatteries_id' => $battery_3_id
         ]);
+        $this->integer($item_battery_3_id)->isGreaterThan(0);
 
         $disks = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($disks))->isIdenticalTo(3);

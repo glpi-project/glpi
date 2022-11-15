@@ -48,7 +48,7 @@
    {% endif %}
 
    {% if is_multi_entities_mode() %}
-      {% set entity_name = get_item_name('Entity', item.getEntityID()) %}
+      {% set entity_name = get_item_name('Entity', entity_id is not empty ? entity_id : null) %}
    {% endif %}
 {% endif %}
 

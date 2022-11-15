@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 
 /**
@@ -165,15 +166,6 @@ class ProjectTask_Ticket extends CommonDBRelation
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand'
-                method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='3'>" . __('Add a ticket') . "</th></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo "<input type='hidden' name='projecttasks_id' value='$ID'>";
             $condition = [
                 'NOT' => [
                     'glpi_tickets.status'    => array_merge(
@@ -182,25 +174,21 @@ class ProjectTask_Ticket extends CommonDBRelation
                     )
                 ]
             ];
-            Ticket::dropdown([
-                'used'        => $used,
-                'entity'      => $projecttask->getEntityID(),
-                'entity_sons' => $projecttask->isRecursive(),
-                'condition'   => $condition,
-                'displaywith' => ['id']
+            echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => ProjectTask::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Ticket::class,
+                'dropdown_options' => [
+                    'entity'      => $projecttask->getEntityID(),
+                    'entity_sons' => $projecttask->isRecursive(),
+                    'used'        => $used,
+                    'displaywith' => ['id'],
+                    'condition'   => $condition
+                ],
+                'create_link' => Session::haveRight(Ticket::$rightname, CREATE)
             ]);
-
-            echo "</td><td width='20%'>";
-            echo "<a href='" . Toolbox::getItemTypeFormURL('Ticket') . "?_projecttasks_id=$ID'>";
-            echo __('Create a ticket from this task');
-            echo "</a>";
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
         }
 
         echo "<div class='spaced'>";
@@ -286,13 +274,6 @@ class ProjectTask_Ticket extends CommonDBRelation
                 $ticket->getSolvedStatusArray()
             ))
         ) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand'
-                 method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='4'>" . __('Add a project task') . "</th></tr>";
-
             $rand = mt_rand();
 
             $finished_states_it = $DB->request(
@@ -309,31 +290,12 @@ class ProjectTask_Ticket extends CommonDBRelation
                 $finished_states_ids[] = $finished_state['id'];
             }
 
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo Html::hidden('tickets_id', ['value' => $ID]);
-            Project::dropdown([
-                'entity'      => $ticket->getEntityID(),
-                'entity_sons' => $ticket->isRecursive(),
-                'condition'   => ['NOT' => ['glpi_projects.projectstates_id' => $finished_states_ids]],
-                'rand'        => $rand
-            ]);
-
             $p = ['projects_id'     => '__VALUE__',
                 'entity_restrict' => $ticket->getEntityID(),
                 'used'            => $used,
                 'rand'            => $rand,
                 'myname'          => "projects"
             ];
-
-            Ajax::updateItemOnSelectEvent(
-                "dropdown_projects_id$rand",
-                "results_projects$rand",
-                $CFG_GLPI["root_doc"] .
-                                       "/ajax/dropdownProjectTaskTicket.php",
-                $p
-            );
-
-            echo "</td>";
 
             if (count($finished_states_ids)) {
                 $where = [
@@ -357,8 +319,6 @@ class ProjectTask_Ticket extends CommonDBRelation
             foreach ($excluded_projects_it as $excluded_project) {
                 $excluded_projects_ids[] = $excluded_project['id'];
             }
-            echo "<td class='right'>";
-            echo "<span id='results_projects$rand'>";
 
             $dd_params = [
                 'used'        => $used,
@@ -379,17 +339,30 @@ class ProjectTask_Ticket extends CommonDBRelation
                 $dd_params['condition'] = ['NOT' => $condition];
             }
 
-            ProjectTask::dropdown($dd_params);
-            echo "</span>";
-
-            echo "</td><td width='20%'>";
-            echo "</td><td class='center'>";
-            echo Html::submit(_sx('button', 'Add'), ['name' => 'add']);
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_itemtype' => __CLASS__,
+                'source_itemtype' => Ticket::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => ProjectTask::class,
+                'dropdown_options' => [
+                    "itemtype" => Project::class,
+                    'entity'      => $ticket->getEntityID(),
+                    'entity_sons' => $ticket->isRecursive(),
+                    'condition'   => ['NOT' => ['glpi_projects.projectstates_id' => $finished_states_ids]],
+                ],
+                'ajax_dropdown' => [
+                    'toobserve' => "dropdown_projects_id$rand",
+                    'toupdate' => [
+                        "id" => "results_projects$rand",
+                        "itemtype" => ProjectTask::class,
+                        'params' => $dd_params
+                    ],
+                    'url' => $CFG_GLPI["root_doc"] . "/ajax/dropdownProjectTaskTicket.php",
+                    'params' => $p
+                ],
+                'create_link' => false
+            ]);
         }
 
         echo "<div class='spaced'>";

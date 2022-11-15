@@ -294,12 +294,15 @@ class NotificationTemplate extends CommonDBTM
                //If no html content, then send only in text
                 if (!empty($template_datas['content_html'])) {
                     $signature_html = RichText::getSafeHtml($this->signature);
-                    $signature_text = RichText::getTextFromHtml($this->signature, false, false);
 
                     $template_datas['content_html'] = self::process(
                         $template_datas['content_html'],
                         self::getDataForHtml($data)
                     );
+
+                    $css = !empty($this->fields['css'])
+                        ? Sanitizer::decodeHtmlSpecialChars($this->fields['css'])
+                        : '';
 
                     $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
@@ -309,7 +312,7 @@ class NotificationTemplate extends CommonDBTM
                          <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
                          <title>" . Html::entities_deep($lang['subject']) . "</title>
                          <style type='text/css'>
-                           " . $this->fields['css'] . "
+                           {$css}
                          </style>
                         </head>
                         <body>\n" . (!empty($add_header) ? $add_header . "\n<br><br>" : '') .
@@ -320,6 +323,7 @@ class NotificationTemplate extends CommonDBTM
                      "\n</body></html>";
                 }
 
+                $signature_text = RichText::getTextFromHtml($this->signature, false, false);
                 $lang['content_text'] = (!empty($add_header) ? $add_header . "\n\n" : '')
                 . self::process($template_datas['content_text'], self::getDataForPlainText($data))
                 . "\n\n-- \n" . $signature_text

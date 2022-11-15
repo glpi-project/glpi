@@ -100,6 +100,12 @@
             {{ nametype }}
          {% endif %}
       </span>
+      {% if in_navheader and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
+      <span class="mx-1 bg-secondary status rounded-1" title="{{ __('Automatic Inventory') }}" data-bs-toggle="tooltip">
+         <i class="{{ call('Agent::getIcon') }}"></i>
+      </span>
+      {% endif %}
+
       {% if header_toolbar %}
          <div class="d-inline-block toolbar ms-2">
             {% for raw_element in header_toolbar %}

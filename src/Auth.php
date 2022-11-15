@@ -815,7 +815,7 @@ class Auth extends CommonGLPI
                                      'basedn'            => $ldap_method["basedn"],
                                      'login_field'       => $ldap_method['login_field'],
                                      'search_parameters' => $params,
-                                     'condition'         => $ldap_method["condition"],
+                                     'condition'         => Sanitizer::unsanitize($ldap_method["condition"]),
                                      'user_params'       => [
                                          'method' => AuthLDAP::IDENTIFIER_LOGIN,
                                          'value'  => $login_name
@@ -1578,7 +1578,7 @@ class Auth extends CommonGLPI
            //TRANS: for CAS SSO system
             echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Version') . "</td>";
             echo "<td>";
-            Auth::dropdownCasVersion($CFG_GLPI["cas_version"]);
+            Auth::dropdownCasVersion($CFG_GLPI["cas_version"] ?? null);
             echo "</td>";
             echo "</tr>";
            //TRANS: for CAS SSO system

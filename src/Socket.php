@@ -419,13 +419,13 @@ class Socket extends CommonDBChild
         $tab[] = [
             'id'                 => '1310',
             'table'              => Socket::getTable(),
-            'field'              => 'id',
+            'field'              => 'name',
             'name'               => Socket::getTypeName(0),
             'searchtype'         => 'equals',
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'itemlink'
         ];
 
         $tab[] = [
@@ -734,6 +734,8 @@ class Socket extends CommonDBChild
         $header_end .= "<th>" . __('Wiring side') . "</th>";
         $header_end .= "<th>" .  _n('Network port', 'Network ports', Session::getPluralNumber()) . "</th>";
         $header_end .= "<th>" .  Cable::getTypeName(0) . "</th>";
+        $header_end .= "<th>" .  __('Itemtype') . "</th>";
+        $header_end .= "<th>" .  __('Item Name') . "</th>";
         $header_end .= "</tr>\n";
         echo $header_begin . $header_top . $header_end;
 
@@ -784,6 +786,26 @@ class Socket extends CommonDBChild
             ) {
                 echo "<td><a href='" . $cable->getLinkURL() . "'>" . $cable->getName() . "</a></td>";
             } else {
+                echo "<td></td>";
+            }
+
+            if (
+                $cable->fields['itemtype_endpoint_a'] === $item->getType()
+                && $cable->fields['items_id_endpoint_a'] === $item->getID()
+            ) {
+                $itemtype = $cable->fields['itemtype_endpoint_b'];
+                $item_id = $cable->fields['items_id_endpoint_b'];
+            } else {
+                $itemtype = $cable->fields['itemtype_endpoint_a'];
+                $item_id = $cable->fields['items_id_endpoint_a'];
+            }
+
+            $endpoint = getItemForItemtype($itemtype);
+            if ($endpoint !== false && $item_id !== 0 && $endpoint->getFromDB($item_id)) {
+                echo "<td>" . $endpoint->getType() . "</td>";
+                echo "<td><a href='" . $endpoint->getLinkURL() . "'>" . $endpoint->getName() . "</a></td>";
+            } else {
+                echo "<td></td>";
                 echo "<td></td>";
             }
 

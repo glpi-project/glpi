@@ -42,11 +42,41 @@ class SNMPCredential extends CommonDBTM
 {
    // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname = 'computer';
+    public static $rightname = 'snmpcredential';
 
     public static function getTypeName($nb = 0)
     {
         return _n('SNMP credential', 'SNMP credentials', $nb);
+    }
+
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'                => 'snmpcredential',
+            'name'              => SNMPCredential::getTypeName(0)
+        ];
+
+        $tab[] = [
+            'id'                => '108',
+            'table'             => 'glpi_snmpcredentials',
+            'field'             => 'name',
+            'name'              => __('Name'),
+            'datatype'          => 'dropdown',
+            'massiveaction'     => false,
+        ];
+
+        $tab[] = [
+            'id'                => '109',
+            'table'             => 'glpi_snmpcredentials',
+            'field'             => 'community',
+            'name'              => __('Community'),
+            'datatype'          => 'string',
+            'massiveaction'     => false,
+        ];
+
+        return $tab;
     }
 
     public function rawSearchOptions()

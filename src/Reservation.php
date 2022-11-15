@@ -631,6 +631,8 @@ JAVASCRIPT;
             return false;
         }
 
+        $event = Planning::cleanDates($event);
+
         return $reservation->update([
             'id'    => (int) $event['id'],
             'begin' => date("Y-m-d H:i:s", strtotime($event['start'])),
@@ -674,6 +676,7 @@ JAVASCRIPT;
             }
         } else {
             $resa->getEmpty();
+            $options = Planning::cleanDates($options);
             $resa->fields["begin"] = date("Y-m-d H:i:s", strtotime($options['begin']));
             if (!isset($options['end'])) {
                 $resa->fields["end"] = date("Y-m-d H:00:00", strtotime($resa->fields["begin"]) + HOUR_TIMESTAMP);

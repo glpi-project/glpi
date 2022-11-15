@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("config", READ);
+Session::checkRight("refusedequipment", READ);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
@@ -46,21 +46,36 @@ if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = "";
 }
 
-$refused = new RefusedEquipment();
-if (isset($_POST['delete']) || isset($_POST["purge"])) {
-    $refused->check($_POST["id"], PURGE);
-
-    $refused->delete($_POST, 1);
+$refusedequipment = new RefusedEquipment();
+if (isset($_POST["purge"])) {
+    $refusedequipment->check($_POST["id"], PURGE);
+    if ($refusedequipment->delete($_POST, 1)) {
+        Event::log(
+            $_POST["id"],
+            "refusedequipment",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        );
+    }
+    $refusedequipment->redirectToList();
+} else if (isset($_POST["update"])) {
+    $refusedequipment->check($_POST["id"], UPDATE);
+    $refusedequipment->update($_POST);
     Event::log(
         $_POST["id"],
-        "refused",
+        "refusedequipment",
         4,
         "inventory",
         //TRANS: %s is the user login
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
-    $refused->redirectToList();
+    Html::back();
 } else {
     $menus = ["admin", "glpi\inventory\inventory", "refusedequipment"];
-    RefusedEquipment::displayFullPageForItem($_GET["id"], $menus);
+    RefusedEquipment::displayFullPageForItem($_GET["id"], $menus, [
+        'withtemplate' => $_GET["withtemplate"],
+        'formoptions'  => "data-track-changes=true"
+    ]);
 }

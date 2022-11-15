@@ -379,4 +379,194 @@ class Computer extends AbstractInventoryAsset
         //check serial came from "MSN" node.
         $this->string($computer->fields['serial'])->isIdenticalTo('640HP72');
     }
+
+    public function testLastBoot()
+    {
+        global $DB;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check last_boot came from "operatingsystem->boot_time" node.
+        $this->string($computer->fields['last_boot'])->isIdenticalTo('2020-06-09 07:58:08');
+    }
+
+    public function testInventoryChangeStatusOrNotFromManualInjection()
+    {
+        //create states
+        $state = new \State();
+        $state_1_id = $state->add(
+            [
+                'name'      => 'Manual state',
+                'states_id' => 0,
+                "entities_id" => 0,
+                'is_visible_computer' => 1
+            ]
+        );
+        $this->integer($state_1_id)->isGreaterThan(0);
+
+        $state_2_id = $state->add(
+            [
+                'name'      => 'Inventory state',
+                'states_id' => 0,
+                "entities_id" => 0,
+                'is_visible_computer' => 1
+            ]
+        );
+        $this->integer($state_2_id)->isGreaterThan(0);
+
+        //create computer manually with specific states before do an automatic inventory
+        $computer = new \Computer();
+        $computer->add(
+            [
+                "name" => "glpixps",
+                "serial" => "640HP72",
+                "states_id" => $state_1_id,
+                "entities_id" => 0
+            ]
+        );
+
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        //per default, do not change states_id
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
+                'states_id_default' => '-1'
+            ])
+        )->isTrue();
+        $this->logout();
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //load printer
+        $computer->getFromDB($computers_id);
+        $this->integer($computer->fields['states_id'])->isEqualTo($state_1_id);
+
+        //restore default configuration
+        $this->login();
+        $this->boolean(
+            $conf->saveConf([
+                'states_id_default' => $state_2_id
+            ])
+        )->isTrue();
+        $this->logOut();
+
+        //inventory again
+        $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //load printer
+        $computer->getFromDB($computers_id);
+        $this->integer($computer->fields['states_id'])->isEqualTo($state_2_id);
+    }
+
+    public function testInventoryChangeStatusOrNotFromAutomaticInventory()
+    {
+        //create states
+        $state = new \State();
+        $state_1_id = $state->add(
+            [
+                'name'      => 'Manual state',
+                'states_id' => 0,
+                "entities_id" => 0,
+                'is_visible_computer' => 1
+            ]
+        );
+        $this->integer($state_1_id)->isGreaterThan(0);
+
+
+
+        $computer = new \Computer();
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        //per default, do not change states_id
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
+                'states_id_default' => '-1'
+            ])
+        )->isTrue();
+        $this->logout();
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //load printer
+        $computer->getFromDB($computers_id);
+        $this->integer($computer->fields['states_id'])->isEqualTo(0);
+
+        //restore default configuration
+        $this->login();
+        $this->boolean(
+            $conf->saveConf([
+                'states_id_default' => $state_1_id
+            ])
+        )->isTrue();
+        $this->logOut();
+
+        //inventory again
+        $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //load printer
+        $computer->getFromDB($computers_id);
+        $this->integer($computer->fields['states_id'])->isEqualTo($state_1_id);
+    }
 }

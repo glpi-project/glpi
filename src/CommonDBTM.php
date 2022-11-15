@@ -5345,18 +5345,22 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Generate link
+     * Generate link(s).
      *
      * @since 9.1
      *
-     * @param string     $link original string content
-     * @param CommonDBTM $item item used to make replacements
+     * @param string        $link       original string content
+     * @param CommonDBTM    $item       item used to make replacements
+     * @param bool          $safe_url   indicates whether URL should be sanitized or not
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
-     **/
-    public static function generateLinkContents($link, CommonDBTM $item)
+     *
+     * @FIXME Uncomment $safe_url parameter declaration in GLPI 10.1.
+     */
+    public static function generateLinkContents($link, CommonDBTM $item/*, bool $safe_url = true*/)
     {
-        return Link::generateLinkContents($link, $item);
+        $safe_url = func_num_args() === 3 ? func_get_arg(2) : true;
+        return Link::generateLinkContents($link, $item, $safe_url);
     }
 
 
@@ -5438,7 +5442,7 @@ class CommonDBTM extends CommonGLPI
                 $is_recursive = $input['_job']->fields['is_recursive'];
             }
 
-           // Check for duplicate
+           // Check for duplicate and availability (e.g. file deleted in _files)
             if ($doc->getDuplicateOf($entities_id, $filename)) {
                 $docID = $doc->fields["id"];
                // File already exist, we replace the tag by the existing one
@@ -5453,6 +5457,14 @@ class CommonDBTM extends CommonGLPI
                         $input[$options['content_field']]
                     );
                     $docadded[$docID]['tag'] = $doc->fields["tag"];
+                }
+                if (!$doc->checkAvailability($filename)) {
+                    $doc->update([
+                        'id'                      => $docID,
+                        '_only_if_upload_succeed' => 1,
+                        '_filename'               => [$file],
+                        'current_filepath'        => $filename,
+                    ]);
                 }
             } else {
                 if ($this->getType() == 'Ticket') {

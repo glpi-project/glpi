@@ -1010,6 +1010,9 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
+    if (typeof(text) !== 'string') {
+        return text;
+    }
     if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
         // escape text, if it contains chevrons (can already be escaped prior to this point :/)
         text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);

@@ -87,14 +87,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                                 ? editor.dom.select('img[data-upload_id="' + uploaded_image.upload_id + '"]')
                                 : [];
                             if (matching_image.length > 0) {
-                                editor.dom.setAttribs(
-                                    matching_image,
-                                    {
-                                        id: tag_data.tag.replace(/#/g, ''),
-                                        // Ensure URL is a blob, to not pollute DOM with base64 data URL
-                                        src: URL.createObjectURL(file),
-                                    }
-                                );
+                                editor.dom.setAttrib(matching_image, 'id', tag_data.tag.replace(/#/g, ''));
                             } else if(Object.prototype.hasOwnProperty.call(insertIntoEditor, file.name) && insertIntoEditor[file.name]) {
                                 // Legacy behaviour
                                 // FIXME deprecate this in GLPI 10.1.
@@ -353,13 +346,50 @@ var insertImageInTinyMCE = function(editor, image) {
  */
 if (typeof tinyMCE != 'undefined') {
     tinyMCE.PluginManager.add('glpi_upload_doc', function(editor) {
+        let last_paste_content = null;
+        const rtf_img_types = {
+            'pngblip': 'image/png',
+            'jpegblip': 'image/jpeg',
+        };
+        editor.on('paste', (e) => {
+            last_paste_content = e.clipboardData;
+        });
         editor.on('PastePreProcess', function(event) {
+            const base64_img_contents = [];
+            if (last_paste_content !== null && last_paste_content.types.includes('text/rtf')) {
+                // Extract all RTF images and remove line breaks
+                const rtf_content = last_paste_content.getData('text/rtf');
+                const rtf_content_no_line_break = rtf_content.replace(/(\r\n|\n|\r)/gm, "");
+                const hex_binary = rtf_content_no_line_break.matchAll(/\\(pngblip|jpegblip)([a-z0-9]*)}/g);
+
+                // For each match, convert to base64
+                for (const match of hex_binary) {
+                    const img_type = match[1];
+                    const hex = match[2];
+                    const hexToBase64 = function(hexstring) {
+                        return btoa(hexstring.match(/\w{2}/g).map(function(a) {
+                            return String.fromCharCode(parseInt(a, 16));
+                        }).join(""));
+                    };
+                    base64_img_contents.push({
+                        type: rtf_img_types[img_type],
+                        content: hexToBase64(hex)
+                    });
+                }
+            }
             // Trigger upload process for each pasted image
             var fragment = $('<div></div>');
             fragment.append(event.content);
             fragment.find('img').each(function() {
                 const image = $(this);
-                const src = image.attr('src');
+                let src = image.attr('src');
+                const file_pattern = '^file://';
+
+                if (src.match(file_pattern) !== null && base64_img_contents.length > 0) {
+                    const rtf_content = base64_img_contents.shift();
+                    src = `data:${rtf_content['type']};base64,` + rtf_content['content'];
+                    image.attr('src', src);
+                }
                 if (src.match(new RegExp('^(data|blob):')) !== null) {
                     const upload_id = Math.random().toString();
                     image.attr('data-upload_id', upload_id);
@@ -396,6 +426,22 @@ if (typeof tinyMCE != 'undefined') {
 
             // Update HTML to paste to include "data-upload_id" attributes on images.
             event.content = fragment.html();
+        });
+
+        $(editor.formElement).on('submit', function() {
+            // Remove base64 src from images that were handled by upload process.
+            // This will prevent sending too many data on server and will also prevent issues with
+            // regex that are not correctly handling huge strings (see #8044).
+            var fragment = $('<div></div>');
+            fragment.append($(editor.targetElm).val());
+            fragment.find('img').each(function () {
+                const image = $(this);
+                const upload_id = image.attr('data-upload_id');
+                if (upload_id !== undefined) {
+                    image.removeAttr('src');
+                }
+            });
+            $(editor.targetElm).val(fragment.html());
         });
     });
 }

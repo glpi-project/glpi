@@ -36,11 +36,12 @@
 
 namespace Glpi\Inventory\Asset;
 
+use AutoUpdateSystem;
 use Computer;
 use ComputerVirtualMachine;
 use Glpi\Inventory\Conf;
+use Glpi\Toolbox\Sanitizer;
 use RuleImportAssetCollection;
-use Toolbox;
 
 class VirtualMachine extends InventoryAsset
 {
@@ -90,7 +91,7 @@ class VirtualMachine extends InventoryAsset
             }
 
             if (!property_exists($vm_val, 'autoupdatesystems_id')) {
-                $vm_val->autoupdatesystems_id = 'GLPI Native Inventory';
+                $vm_val->autoupdatesystems_id = AutoUpdateSystem::NATIVE_INVENTORY;
             }
 
             // Hack for BSD jails
@@ -235,7 +236,7 @@ class VirtualMachine extends InventoryAsset
                             $input[$prop] = $handled_input[$prop];
                         }
                     }
-                    $computerVirtualmachine->update(Toolbox::addslashes_deep($input));
+                    $computerVirtualmachine->update(Sanitizer::sanitize($input));
                     unset($value[$key]);
                     unset($db_vms[$keydb]);
                     break;
@@ -255,7 +256,7 @@ class VirtualMachine extends InventoryAsset
                 $input = $this->handleInput($val, $computerVirtualmachine);
                 $input['computers_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
-                $computerVirtualmachine->add(Toolbox::addslashes_deep($input));
+                $computerVirtualmachine->add(Sanitizer::sanitize($input));
             }
         }
 
@@ -280,6 +281,7 @@ class VirtualMachine extends InventoryAsset
             }
             // Define location of physical computer (host)
             $vm->locations_id = $this->item->fields['locations_id'];
+            $vm->autoupdatesystems_id = $this->item->fields['autoupdatesystems_id'];
             $vm->is_dynamic = 1;
 
             if ($this->conf->vm_type) {
@@ -309,7 +311,7 @@ class VirtualMachine extends InventoryAsset
                     $input = (array)$vm;
                     $input['itemtype'] = \Computer::class;
                     $input['entities_id'] = $this->main_asset->getEntityID();
-                    $input  = \Toolbox::addslashes_deep($input);
+                    $input  = Sanitizer::sanitize($input);
                     $datarules = $rule->processAllRules($input);
 
                     if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
@@ -325,7 +327,7 @@ class VirtualMachine extends InventoryAsset
                     $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
-                    $computervm->update(Toolbox::addslashes_deep($input));
+                    $computervm->update(Sanitizer::sanitize($input));
                 }
 
                 //load if new, reload if not.

@@ -1501,7 +1501,7 @@ class Document extends CommonDBTM
             $uploaded_files = [];
             if ($handle = opendir(GLPI_UPLOAD_DIR)) {
                 while (false !== ($file = readdir($handle))) {
-                    if (($file != '.') && ($file != '..') && ($file != 'remove.txt')) {
+                    if (!in_array($file, ['.', '..', '.gitkeep', 'remove.txt'])) {
                         $dir = self::isValidDoc($file);
                         if (!empty($dir)) {
                             $uploaded_files[$file] = $file;
@@ -1888,6 +1888,28 @@ class Document extends CommonDBTM
         }
 
         if ($this->fields['is_blacklisted']) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * It checks if a file exists and is readable
+     *
+     * @param string filename The name of the file to check.
+     *
+     * @return boolean
+     */
+    public function checkAvailability(string $filename): bool
+    {
+        $file = GLPI_DOC_DIR . '/' . $filename;
+        if (!file_exists($file)) {
+            return false;
+        }
+
+        if (!is_readable($file)) {
             return false;
         }
 

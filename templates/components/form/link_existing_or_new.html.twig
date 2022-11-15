@@ -1,0 +1,86 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = rand|default(random()) %}
+<div class="firstbloc">
+   <form id="{{ link_itemtype|lower ~ "_form" ~ rand }}" name="{{ link_itemtype|lower ~ "_form" ~ rand }}" method="post" action="{{ link_itemtype|itemtype_form_path }}">
+      {{ fields.largeTitle(__("Add a %s")|format(target_itemtype|itemtype_name)) }}
+      {{ fields.hiddenField(source_itemtype|itemtype_foreign_key, source_items_id, '', {
+         no_label: true,
+      }) }}
+      {% set primary_dropdown_itemtype = dropdown_options['itemtype']|default(target_itemtype) %}
+      <div class="d-flex">
+         <div class="col-auto">
+            {{ fields.dropdownField(primary_dropdown_itemtype, primary_dropdown_itemtype|itemtype_foreign_key, '', '', {
+               no_label: true,
+               field_class: ''
+            }|merge(dropdown_options)) }}
+            {% if ajax_dropdown is defined %}
+               {% do call('Ajax::updateItemOnSelectEvent', [
+                  ajax_dropdown['toobserve'],
+                  ajax_dropdown['toupdate']['id'],
+                  ajax_dropdown['url'],
+                  ajax_dropdown['params'],
+               ]) %}
+            {% endif %}
+            {% if ajax_dropdown is defined %}
+               <span id="{{ ajax_dropdown['toupdate']['id'] }}">
+                  {{ fields.dropdownField(ajax_dropdown['toupdate']['itemtype'], (ajax_dropdown['toupdate']['itemtype'])|itemtype_foreign_key, '', '', {
+                     no_label: true,
+                     field_class: ''
+                  }|merge(ajax_dropdown['toupdate']['params'])) }}
+               </span>
+            {% endif %}
+         </div>
+         <div class="col-auto">
+            <button class="btn btn-primary ms-1" type="submit" name="add">
+               <i class="ti ti-link"></i>
+               <span>{{ _x('button', 'Add') }}</span>
+            </button>
+         </div>
+         <div class="col-auto ms-4">
+            {% if create_link %}
+               {% set target_form_path = (target_itemtype|itemtype_form_path ~ "?_" ~ source_itemtype|itemtype_foreign_key ~ "=" ~ source_items_id) %}
+               {% set create_url = create_link['url'] is defined ? create_link['url'] : target_form_path %}
+               <a href="{{ create_url }}" class="btn btn-primary">
+                  <i class="ti ti-plus"></i>
+                  <span>{{ __("Create a %s from this %s")|format(target_itemtype|itemtype_name, source_itemtype|itemtype_name) }}</span>
+               </a>
+            {% endif %}
+         </div>
+      </div>
+      {{ fields.hiddenField('_glpi_csrf_token', csrf_token()) }}
+   </form>
+</div>

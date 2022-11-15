@@ -109,7 +109,7 @@ function loadDataset()
    // Unit test data definition
     $data = [
       // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.8',
+        '_version' => '4.9',
 
       // Type => array of entries
         'Entity' => [
@@ -254,6 +254,18 @@ function loadDataset()
                 '_entities_id'  => 0,
                 '_profiles_id'  => 4,
                 '_is_recursive' => 1,
+            ],
+            [
+                'name'          => 'jsmith123',
+                'realname'      => 'Smith',
+                'firstname'     => 'John',
+                'password'      => TU_PASS,
+                'password2'     => TU_PASS,
+                'entities_id'   => '_test_root_entity',
+                'profiles_id'   => 4,
+                '_entities_id'  => 0,
+                '_profiles_id'  => 4,
+                '_is_recursive' => 1,
             ]
         ], 'Group'   => [
             [
@@ -354,7 +366,12 @@ function loadDataset()
             [
                 'name'         => '_location02',
                 'comment'      => 'Comment for location _sublocation02'
-            ]
+            ],
+            [
+                'name'         => '_location01_subentity',
+                'entities_id'  => '_test_root_entity',
+                'comment'      => 'Comment for location _location01_subentity'
+            ],
         ], Socket::class => [
             [
                 'name'         => '_socket01',

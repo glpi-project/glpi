@@ -86,10 +86,9 @@ $break_tablet: 1400px;
     &.mini {
         padding-top: 0;
         margin: 0 auto;
-        margin-bottom: -10px;
+        margin-bottom: -45px !important;
         z-index: 1;
         box-sizing: content-box;
-        height: 100px;
 
         & + .search_page {
             z-index: 2;
@@ -101,7 +100,6 @@ $break_tablet: 1400px;
 
         .grid-guide {
             top: 0;
-            bottom: 0 !important;
         }
 
         .main-icon {
@@ -457,7 +455,8 @@ $break_tablet: 1400px;
                         &::after {
                             position: absolute;
                             color: #509ee3;
-                            font: 11px var(--fa-font-solid);
+                            font: var(--fa-font-solid);
+                            font-size: 11px;
                             content: "\f057";
                             opacity: 0.7;
                             left: 7px;
@@ -580,7 +579,8 @@ $break_tablet: 1400px;
                 left: 40%;
                 top: 40%;
                 color: grey;
-                font: 1em var(--fa-font-solid);
+                font: var(--fa-font-solid);
+                font-size: 1em;
                 position: absolute;
             }
         }
@@ -694,7 +694,8 @@ $break_tablet: 1400px;
 
                 &::before {
                     content: "\f338";
-                    font: 13px var(--fa-font-solid);
+                    font: var(--fa-font-solid);
+                    font-size: 13px;
                     position: absolute;
                     bottom: -5px;
                     right: 1px;
@@ -1314,7 +1315,8 @@ $break_tablet: 1400px;
                 right: 5px;
                 bottom: 3px;
                 color: rgb(39, 39, 39);
-                font: 1em var(--fa-font-solid);
+                font: var(--fa-font-solid);
+                font-size: 1em;
                 position: absolute;
             }
         }

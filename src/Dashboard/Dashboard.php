@@ -476,6 +476,10 @@ class Dashboard extends \CommonDBTM
         ];
         $rights = array_merge_recursive($default_rights, $rights);
 
+        if (!Session::getLoginUserID()) {
+            return false;
+        }
+
        // check specific rights
         if (
             count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities']))

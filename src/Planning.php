@@ -35,6 +35,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\Sanitizer;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -662,7 +663,7 @@ class Planning extends CommonGLPI
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
-                'can_delete'   => PlanningExternalEvent::canDelete(),
+                'can_delete'   => PlanningExternalEvent::canPurge(),
             ];
         } else {
            // short view (on Central page)
@@ -1005,7 +1006,8 @@ class Planning extends CommonGLPI
 
         echo "<label for='$filter_key'>";
         echo $title;
-        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($filter_data['url'])) {
+        $raw_url = Sanitizer::decodeHtmlSpecialChars($filter_data['url'] ?? '');
+        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($raw_url)) {
             $warning = sprintf(__s('URL "%s" is not allowed by your administrator.'), $filter_data['url']);
             echo "<i class='fas fa-exclamation-triangle' title='{$warning}'></i>";
         }
@@ -1280,7 +1282,7 @@ class Planning extends CommonGLPI
             echo "<div class='center'>";
             echo "<a href='" . $params['url'] . "' class='btn btn-outline-secondary'>" .
                 "<i class='ti ti-eye'></i>" .
-                "<span>" . __("View this item in his context") . "</span>" .
+                "<span>" . __("View this item in its context") . "</span>" .
             "</a>";
             echo "</div>";
             echo "<hr>";
@@ -1402,7 +1404,8 @@ class Planning extends CommonGLPI
      */
     public static function sendAddExternalForm($params = [])
     {
-        if (!Toolbox::isUrlSafe($params['url'])) {
+        $raw_url = Sanitizer::decodeHtmlSpecialChars($params['url']);
+        if (!Toolbox::isUrlSafe($raw_url)) {
             Session::addMessageAfterRedirect(
                 sprintf(__('URL "%s" is not allowed by your administrator.'), $params['url']),
                 false,
@@ -2178,7 +2181,8 @@ class Planning extends CommonGLPI
             if ('external' !== $planning_params['type'] || !$planning_params['display']) {
                 continue; // Ignore non external and inactive calendars
             }
-            $calendar_data = Toolbox::getURLContent($planning_params['url']);
+            $raw_url = Sanitizer::decodeHtmlSpecialChars($planning_params['url']);
+            $calendar_data = Toolbox::getURLContent($raw_url);
             if (empty($calendar_data)) {
                 continue;
             }
@@ -2186,14 +2190,14 @@ class Planning extends CommonGLPI
                 $vcalendar = Reader::read($calendar_data);
             } catch (\Sabre\VObject\ParseException $exception) {
                 trigger_error(
-                    sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']),
+                    sprintf('Unable to parse calendar data from URL "%s"', $raw_url),
                     E_USER_WARNING
                 );
                 continue;
             }
             if (!$vcalendar instanceof VCalendar) {
                 trigger_error(
-                    sprintf('No VCalendar object found at URL "%s"', $planning_params['url']),
+                    sprintf('No VCalendar object found at URL "%s"', $raw_url),
                     E_USER_WARNING
                 );
                 continue;

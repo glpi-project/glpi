@@ -69,7 +69,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
             } else { // Compat with GLPI < 9.4.2 TODO: remove in 9.5
                 $processed = [];
             }
-            $notprocessed = [];
 
             $targets = getAllDataFromTable(
                 'glpi_notificationtargets',
@@ -102,14 +101,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                     ) {
                         //If the user have not yet been notified
                         if (!isset($processed[$users_infos['language']][$key])) {
-                      //If ther user's language is the same as the template's one
-                            if (
-                                isset($notprocessed[$users_infos['language']]
-                                                  [$key])
-                            ) {
-                                  unset($notprocessed[$users_infos['language']]
-                                                   [$key]);
-                            }
+                            //If ther user's language is the same as the template's one
                             $options['item'] = $item;
 
                       // set timezone from user
@@ -163,9 +155,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                 }
                                 $processed[$users_infos['language']][$key]
                                                                   = $users_infos;
-                            } else {
-                                $notprocessed[$users_infos['language']][$key]
-                                                               = $users_infos;
                             }
                         }
                     }
@@ -173,7 +162,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
             }
 
             unset($processed);
-            unset($notprocessed);
         }
     }
 

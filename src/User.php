@@ -1698,7 +1698,7 @@ class User extends CommonDBTM
             $ldap_connection,
             $ldap_method["basedn"],
             $user_tmp,
-            $ldap_method["group_condition"],
+            Sanitizer::unsanitize($ldap_method["group_condition"]),
             $ldap_method["group_member_field"],
             $ldap_method["use_dn"],
             $ldap_method["login_field"]
@@ -2000,6 +2000,7 @@ class User extends CommonDBTM
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
 
+        $group_condition = Sanitizer::unsanitize($group_condition);
         if (!$use_dn) {
             $filter = "(& $group_condition (|($group_member_field=$user_dn)
                                           ($group_member_field=$login_field=$user_dn)))";
@@ -2008,7 +2009,6 @@ class User extends CommonDBTM
         }
 
        //Perform the search
-        $filter = Sanitizer::unsanitize($filter);
         $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
        //Get the result of the search as an array
@@ -2113,11 +2113,9 @@ class User extends CommonDBTM
             return true;
         }
         $this->fields['_ruleright_process'] = true;
-        foreach ($a_field as $field => $value) {
-            if (
-                !isset($_SERVER[$value])
-                || empty($_SERVER[$value])
-            ) {
+        foreach ($a_field as $field => $key) {
+            $value = $_SERVER[$key] ?? null;
+            if (empty($value)) {
                 switch ($field) {
                     case "title":
                         $this->fields['usertitles_id'] = 0;
@@ -2131,38 +2129,43 @@ class User extends CommonDBTM
                         $this->fields[$field] = "";
                 }
             } else {
+                if (!mb_check_encoding($value, 'UTF-8') && mb_check_encoding($value, 'ISO-8859-1')) {
+                    // Some applications, like Microsoft Azure Enterprise Applications (Header-based Single sign-on),
+                    // will provide ISO-8859-1 encoded values. They have to be converted into UTF-8 to prevent
+                    // encoding issues (see #12898).
+                    $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+                }
+                $value = Sanitizer::sanitize($value); // $_SERVER is not automatically sanitized
                 switch ($field) {
                     case "email1":
                     case "email2":
                     case "email3":
                     case "email4":
                         // Manage multivaluable fields
-                        if (!preg_match('/count/', $_SERVER[$value])) {
-                            $this->fields["_emails"][] = addslashes($_SERVER[$value]);
+                        if (!preg_match('/count/', $value)) {
+                            $this->fields["_emails"][] = $value;
                         }
                         // Only get them once if duplicated
                         $this->fields["_emails"] = array_unique($this->fields["_emails"]);
                         break;
 
                     case "language":
-                        $language = Config::getLanguage($_SERVER[$value]);
+                        $language = Config::getLanguage($value);
                         if ($language != '') {
                             $this->fields[$field] = $language;
                         }
                         break;
 
                     case "title":
-                        $this->fields['usertitles_id']
-                        = Dropdown::importExternal('UserTitle', addslashes($_SERVER[$value]));
+                        $this->fields['usertitles_id'] = Dropdown::importExternal('UserTitle', $value);
                         break;
 
                     case "category":
-                        $this->fields['usercategories_id']
-                        = Dropdown::importExternal('UserCategory', addslashes($_SERVER[$value]));
+                        $this->fields['usercategories_id'] = Dropdown::importExternal('UserCategory', $value);
                         break;
 
                     default:
-                        $this->fields[$field] = $_SERVER[$value];
+                        $this->fields[$field] = $value;
                         break;
                 }
             }
@@ -5486,7 +5489,7 @@ HTML;
         // Check that the configuration allow this user to change his password
         if ($this->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
             trigger_error(
-                __("The authentication method configuration doesn't allow the user '$email' to change his password."),
+                __("The authentication method configuration doesn't allow the user '$email' to change their password."),
                 E_USER_WARNING
             );
 
@@ -6189,7 +6192,7 @@ HTML;
         $first  = DBmysql::quoteName("$table.$first");
         $second = DBmysql::quoteName("$table.$second");
         $alias  = DBmysql::quoteName($alias);
-        $name   = DBmysql::quoteName(self::getNameField());
+        $name   = DBmysql::quoteName($table . '.' . self::getNameField());
 
         return new QueryExpression("IF(
             $first <> '' && $second <> '',
@@ -6503,5 +6506,41 @@ HTML;
         }
 
         return $user;
+    }
+
+    /**
+     * Get name of the user with ID
+     *
+     * @param integer $ID   ID of the user.
+     *
+     * @return string username string (realname if not empty and name if realname is empty).
+     */
+    public static function getNameForLog(int $ID): string
+    {
+        global $DB;
+
+        $iterator = $DB->request(
+            'glpi_users',
+            [
+                'WHERE' => ['id' => $ID]
+            ]
+        );
+
+        if (count($iterator) === 1) {
+            $data     = $iterator->current();
+
+            if (!empty($data['realname'])) {
+                $formatted = $data['realname'];
+
+                if (!empty($data['firstname'])) {
+                    $formatted .= " " . $data["firstname"];
+                }
+            } else {
+                $formatted = $data["name"];
+            }
+            return sprintf(__('%1$s (%2$s)'), $formatted, $ID);
+        }
+
+        return __('Unknown user');
     }
 }

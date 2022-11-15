@@ -1029,9 +1029,6 @@ class Plugin extends CommonDBTM
     {
 
         if ($this->getFromDB($ID)) {
-           // Clean crontask after "hard" remove
-            CronTask::Unregister($this->fields['directory']);
-
             $this->unload($this->fields['directory']);
             self::doHook(Hooks::POST_PLUGIN_CLEAN, $this->fields['directory']);
             $this->delete(['id' => $ID]);

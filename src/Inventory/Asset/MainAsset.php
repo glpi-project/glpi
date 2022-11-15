@@ -37,13 +37,14 @@
 namespace Glpi\Inventory\Asset;
 
 use Auth;
+use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
 use Dropdown;
 use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
-use Lockedfield;
+use Glpi\Toolbox\Sanitizer;
 use NetworkEquipment;
 use Printer;
 use RefusedEquipment;
@@ -52,7 +53,6 @@ use RuleImportEntityCollection;
 use RuleLocationCollection;
 use RuleMatchedLog;
 use stdClass;
-use Toolbox;
 use Transfer;
 
 abstract class MainAsset extends InventoryAsset
@@ -128,8 +128,18 @@ abstract class MainAsset extends InventoryAsset
             $val = new \stdClass();
 
             //set update system
-            $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? 'GLPI Native Inventory';
+            $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? AutoUpdateSystem::NATIVE_INVENTORY;
             $val->last_inventory_update = $_SESSION["glpi_currenttime"];
+
+            //try to get "last_boot" only available from "operatingsystem->boot_time" node
+            if (
+                $this->raw_data instanceof stdClass
+                && property_exists($this->raw_data, 'content')
+                && property_exists($this->raw_data->content, 'operatingsystem')
+                && property_exists($this->raw_data->content->operatingsystem, 'boot_time')
+            ) {
+                $val->last_boot = $entry->content->operatingsystem->boot_time;
+            }
 
             if (isset($this->extra_data['hardware'])) {
                 $this->prepareForHardware($val);
@@ -602,16 +612,24 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (!is_numeric($input['autoupdatesystems_id'])) {
-            $input['autoupdatesystems_id'] = Dropdown::importExternal(
-                getItemtypeForForeignKeyField('autoupdatesystems_id'),
-                addslashes($input['autoupdatesystems_id']),
-                $input['entities_id']
-            );
+            $system_name = Sanitizer::sanitize($input['autoupdatesystems_id']);
+            $auto_update_system = new AutoUpdateSystem();
+            if ($auto_update_system->getFromDBByCrit(['name' => $system_name])) {
+                // Load from DB
+                $input['autoupdatesystems_id'] = $auto_update_system->getID();
+            } else {
+                // Import
+                $input['autoupdatesystems_id'] = Dropdown::importExternal(
+                    getItemtypeForForeignKeyField('autoupdatesystems_id'),
+                    $system_name,
+                    $input['entities_id']
+                );
+            }
         }
         $refused_input['autoupdatesystems_id'] = $input['autoupdatesystems_id'];
 
         $refused = new \RefusedEquipment();
-        $refused->add(Toolbox::addslashes_deep($refused_input));
+        $refused->add(Sanitizer::sanitize($refused_input));
         $this->refused[] = $refused;
     }
 
@@ -639,7 +657,13 @@ abstract class MainAsset extends InventoryAsset
         $entities_id = $this->entities_id;
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
-        $val->states_id = $this->states_id_default ?? 0;
+        $default_states_id = $this->states_id_default ?? 0;
+        if ($items_id != 0 && $default_states_id != '-1') {
+            $val->states_id = $default_states_id;
+        } elseif ($items_id == 0) {
+            //if create mode default states_id can't be '-1' put 0 if needed
+            $val->states_id = $default_states_id > 0 ? $default_states_id : 0;
+        }
 
         // append data from RuleImportEntity
         foreach ($this->ruleentity_data as $attribute => $value) {
@@ -672,7 +696,7 @@ abstract class MainAsset extends InventoryAsset
             $input = $this->handleInput($val, $this->item);
             unset($input['ap_port']);
             unset($input['firmware']);
-            $items_id = $this->item->add(Toolbox::addslashes_deep($input));
+            $items_id = $this->item->add(Sanitizer::sanitize($input));
             $this->setNew();
         }
 
@@ -707,12 +731,14 @@ abstract class MainAsset extends InventoryAsset
             if ($doTransfer > 0 && $transfer->getFromDB($doTransfer)) {
                 $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
                 $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
+                //and set new entity in session
+                $_SESSION['glpiactiveentities']        = [$entities_id];
+                $_SESSION['glpiactiveentities_string'] = $entities_id;
+                $_SESSION['glpiactive_entity']         = $entities_id;
+            } else {
+                //no transfert so revert to old entities_id
+                $val->entities_id = $this->item->fields['entities_id'];
             }
-
-            //and set new entity in session
-            $_SESSION['glpiactiveentities']        = [$entities_id];
-            $_SESSION['glpiactiveentities_string'] = $entities_id;
-            $_SESSION['glpiactive_entity']         = $entities_id;
         }
 
         if ($this->is_discovery === true && !$this->isNew()) {
@@ -729,12 +755,12 @@ abstract class MainAsset extends InventoryAsset
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
                 $input = $this->handleInput($val, $this->item);
-                $this->item->update(['id' => $input['id'],
+                $this->item->update(Sanitizer::sanitize(['id' => $input['id'],
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
                     'snmpcredentials_id'    => $input['snmpcredentials_id'],
                     'is_dynamic'            => true
-                ]);
+                ]));
                 return;
             }
         }
@@ -763,7 +789,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $input = $this->handleInput($val, $this->item);
-        $this->item->update(Toolbox::addslashes_deep($input));
+        $this->item->update(Sanitizer::sanitize($input));
 
         if (!($this->item instanceof RefusedEquipment)) {
             $this->handleAssets();

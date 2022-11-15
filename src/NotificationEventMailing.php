@@ -271,20 +271,36 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 $doc->getFromDB($docID);
 
                                 //find width
-                                $width = null;
+                                $custom_width = null;
                                 if (preg_match("/width=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $wmatches)) {
-                                    $width = intval($wmatches[1]);
+                                    $custom_width = intval($wmatches[1]);
                                 }
-                                $height = null;
+                                $custom_height = null;
                                 if (preg_match("/height=[\"|'](\d+)(\.\d+)?[\"|']/", $matches[0][$pos], $hmatches)) {
-                                    $height = intval($hmatches[1]);
+                                    $custom_height = intval($hmatches[1]);
+                                }
+
+                                $img_infos  = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
+                                $initial_width = $img_infos[0];
+                                $initial_height = $img_infos[1];
+
+                                if ($custom_width !== null && $custom_height === null) {
+                                    //compute height if needed
+                                    $custom_height = $initial_height * $custom_width / $initial_width;
+                                } elseif ($custom_height !== null && $custom_width === null) {
+                                    //compute width if needed
+                                    $custom_width = $initial_width * $custom_height / $initial_height;
+                                } elseif ($custom_height === null && $custom_width === null) {
+                                    //if both are null keep initial size
+                                    $custom_width = $initial_width;
+                                    $custom_height = $initial_height;
                                 }
 
                                 $image_path = Document::getImage(
                                     GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
                                     'mail',
-                                    $width,
-                                    $height
+                                    $custom_width,
+                                    $custom_height
                                 );
                                 if (
                                     $mmail->AddEmbeddedImage(

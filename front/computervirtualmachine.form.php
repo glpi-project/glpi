@@ -47,11 +47,11 @@ if (!isset($_GET["computers_id"])) {
     $_GET["computers_id"] = "";
 }
 
-$disk = new ComputerVirtualMachine();
+$computer_vm = new ComputerVirtualMachine();
 if (isset($_POST["add"])) {
-    $disk->check(-1, CREATE, $_POST);
+    $computer_vm->check(-1, CREATE, $_POST);
 
-    if ($disk->add($_POST)) {
+    if ($computer_vm->add($_POST)) {
         Event::log(
             $_POST['computers_id'],
             "computers",
@@ -61,16 +61,30 @@ if (isset($_POST["add"])) {
             sprintf(__('%s adds a virtual machine'), $_SESSION["glpiname"])
         );
         if ($_SESSION['glpibackcreated']) {
-            Html::redirect($disk->getLinkURL());
+            Html::redirect($computer_vm->getLinkURL());
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
-    $disk->check($_POST["id"], PURGE);
+} else if (isset($_POST["delete"])) {
+    $computer_vm->check($_POST["id"], DELETE);
+    $computer_vm->delete($_POST);
 
-    if ($disk->delete($_POST, 1)) {
+    Event::log(
+        $_POST["id"],
+        "computers",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
+    );
+    Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $computer_vm->fields['computers_id'] .
+                  ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
+} else if (isset($_POST["purge"])) {
+    $computer_vm->check($_POST["id"], PURGE);
+
+    if ($computer_vm->delete($_POST, 1)) {
         Event::log(
-            $disk->fields['computers_id'],
+            $computer_vm->fields['computers_id'],
             "computers",
             4,
             "inventory",
@@ -79,15 +93,15 @@ if (isset($_POST["add"])) {
         );
     }
     $computer = new Computer();
-    $computer->getFromDB($disk->fields['computers_id']);
-    Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $disk->fields['computers_id'] .
+    $computer->getFromDB($computer_vm->fields['computers_id']);
+    Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $computer_vm->fields['computers_id'] .
                   ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
 } else if (isset($_POST["update"])) {
-    $disk->check($_POST["id"], UPDATE);
+    $computer_vm->check($_POST["id"], UPDATE);
 
-    if ($disk->update($_POST)) {
+    if ($computer_vm->update($_POST)) {
         Event::log(
-            $disk->fields['computers_id'],
+            $computer_vm->fields['computers_id'],
             "computers",
             4,
             "inventory",

@@ -1785,6 +1785,16 @@ class Profile extends CommonDBTM
                 'label'     => __('Notification queue'),
                 'field'     => 'queuednotification'
             ], [
+                'itemtype'  => 'Log',
+                'label'     => Log::getTypeName(Session::getPluralNumber()),
+                'field'     => 'logs'
+            ]
+        ];
+        $matrix_options['title'] = __('Administration');
+        $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
+        $rights = [
+            [
                 'itemtype'  => 'Glpi\Inventory\Conf',
                 'label'     => __('Inventory'),
                 'field'     => 'inventory'
@@ -1793,18 +1803,38 @@ class Profile extends CommonDBTM
                 'label'     => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'field'     => 'locked_field',
                 'rights'  => [
-                    CREATE  => __('Create'),
+                    CREATE => __('Create'), // For READ / CREATE
+                    UPDATE => __('Update'), //for CREATE / PURGE global lock
+                ],
+            ], [
+                'itemtype'  => 'SNMPCredential',
+                'label'     => SNMPCredential::getTypeName(Session::getPluralNumber()),
+                'field'     => 'snmpcredential',
+            ], [
+                'itemtype'  => 'RefusedEquipment',
+                'label'     => RefusedEquipment::getTypeName(Session::getPluralNumber()),
+                'field'     => 'refusedequipment',
+                'rights'  => [
+                    READ  => __('Read'),
+                    UPDATE  => __('Update'),
                     PURGE   => ['short' => __('Purge'),
                         'long'  => _x('button', 'Delete permanently')
                     ]
                 ],
             ], [
-                'itemtype'  => 'Log',
-                'label'     => Log::getTypeName(Session::getPluralNumber()),
-                'field'     => 'logs'
+                'itemtype'  => 'Agent',
+                'label'     => Agent::getTypeName(Session::getPluralNumber()),
+                'field'     => 'agent',
+                'rights'  => [
+                    READ    => __('Read'),
+                    UPDATE  => __('Update'),
+                    PURGE   => ['short' => __('Purge'),
+                        'long'  => _x('button', 'Delete permanently')
+                    ]
+                ],
             ]
         ];
-        $matrix_options['title'] = __('Administration');
+        $matrix_options['title'] = __('Inventory');
         $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
         $rights = [['itemtype'  => 'Rule',

@@ -366,30 +366,32 @@ class Dropdown
                 $item->isField('knowbaseitemcategories_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
                 && method_exists($item, 'getLinks')
             ) {
-                $paramskblinks = [
-                    'value'       => '__VALUE__',
-                    'itemtype'    => $itemtype,
-                    '_idor_token' => Session::getNewIDORToken($itemtype),
-                    'withlink'    => $kblink_id,
-                ];
-                $kb_link_icon = '<div>';
-                $kb_link_icon .= Ajax::updateItemOnSelectEvent(
-                    $field_id,
-                    $kblink_id,
-                    $CFG_GLPI["root_doc"] . "/ajax/kblink.php",
-                    $paramskblinks,
-                    false
-                );
                 // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,
                 //  as the profile does not have rights to ITILCategory to initialise it before.
                 if ($item->isNewItem()) {
                     $item->getFromDB($params['value']);
                 }
-                $kb_link_icon .= "<span id='$kblink_id'>";
-                $kb_link_icon .= '&nbsp;' . $item->getLinks();
-                $kb_link_icon .= "</span>";
-                $kb_link_icon .= '</div>';
-                $icon_array[] = $kb_link_icon;
+                if ($itemlinks = $item->getLinks()) {
+                    $paramskblinks = [
+                        'value'       => '__VALUE__',
+                        'itemtype'    => $itemtype,
+                        '_idor_token' => Session::getNewIDORToken($itemtype),
+                        'withlink'    => $kblink_id,
+                    ];
+                    $kb_link_icon = '<div class="btn btn-outline-secondary">';
+                    $kb_link_icon .= Ajax::updateItemOnSelectEvent(
+                        $field_id,
+                        $kblink_id,
+                        $CFG_GLPI["root_doc"] . "/ajax/kblink.php",
+                        $paramskblinks,
+                        false
+                    );
+                    $kb_link_icon .= "<span id='$kblink_id'>";
+                    $kb_link_icon .= $itemlinks;
+                    $kb_link_icon .= "</span>";
+                    $kb_link_icon .= '</div>';
+                    $icon_array[] = $kb_link_icon;
+                }
             }
         }
 
@@ -861,6 +863,7 @@ class Dropdown
                         $values[$file] = $file;
                     }
                 }
+                $rand = mt_rand();
                 self::showFromArray(
                     $myname,
                     $values,
@@ -868,11 +871,35 @@ class Dropdown
                         [
                             'value'                 => $value,
                             'display_emptychoice'   => true,
-                            'display'               => $display
+                            'display'               => $display,
+                            'noselect2'             => true, // we will instanciate it later
+                            'rand'                  => $rand,
                         ],
                         $options
                     )
                 );
+
+                global $CFG_GLPI;
+
+                // templates for select2 dropdown
+                $js = <<<JAVASCRIPT
+                $(function() {
+                    const formatFormIcon = function(icon) {
+                        if (!icon.id || icon.id == '0') {
+                            return icon.text;
+                        }
+                        var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
+                        var label = '<span>'+icon.text+'</span>';
+                        return $(img+'&nbsp;'+label);
+                    };
+                    $("#dropdown_{$myname}{$rand}").select2({
+                        width: '60%',
+                        templateSelection: formatFormIcon,
+                        templateResult: formatFormIcon
+                    });
+                });
+JAVASCRIPT;
+                echo Html::scriptBlock($js);
             } else {
                //TRANS: %s is the store path
                 printf(__('Error reading directory %s'), $store_path);
@@ -1137,7 +1164,8 @@ class Dropdown
                 __('Management') => [
                     'DocumentCategory' => null,
                     'DocumentType' => null,
-                    'BusinessCriticity' => null
+                    'BusinessCriticity' => null,
+                    'DatabaseInstanceCategory' => null,
                 ],
 
                 __('Tools') => [

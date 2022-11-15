@@ -197,6 +197,7 @@ class Inventory
             'deviceid' => $this->raw_data->deviceid,
             'version' => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
             'itemtype' => $this->raw_data->itemtype ?? 'Computer',
+            'port'      => $this->raw_data->{'httpd-port'} ?? null,
         ];
 
         if (property_exists($this->raw_data, 'content') && property_exists($this->raw_data->content, 'versionprovider')) {
@@ -250,6 +251,10 @@ class Inventory
             $_SESSION['glpiinventoryuserrunning'] = 'inventory';
         }
 
+        if (!isset($_SESSION['glpiname'])) {
+            $_SESSION['glpiname'] = $_SESSION['glpiinventoryuserrunning'];
+        }
+
         try {
             //bench
             $main_start = microtime(true);
@@ -270,7 +275,7 @@ class Inventory
             if (method_exists($this, 'getSchemaExtraProps')) {
                 $properties = array_merge(
                     $properties,
-                    $this->getSchemaExtraProps()
+                    array_keys($this->getSchemaExtraProps())
                 );
             }
             $contents = $this->raw_data->content;
@@ -493,7 +498,7 @@ class Inventory
             ];
         }
 
-        if (Session::haveRight(Lockedfield::$rightname, READ)) {
+        if (Session::haveRight(Lockedfield::$rightname, UPDATE)) {
             $menu['options']['lockedfield'] = [
                 'icon'  => Lockedfield::getIcon(),
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),

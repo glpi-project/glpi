@@ -65,13 +65,15 @@ class OperatingSystem extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '6.1.7600',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => ''
+                    'SERVICE_PACK'   => '',
+                    'INSTALL_DATE'   => '2022-01-01 10:35:07'
                 ],
                 'expected'  => [
                     'operatingsystemarchitectures_id'   => '64-bit',
                     'operatingsystemkernels_id'         => 'MSWin32',
                     'operatingsystemkernelversions_id'  => '6.1.7600',
                     'operatingsystems_id'               => 'Microsoft Windows 7 Enterprise',
+                    'install_date'                      => '2022-01-01',
                 ]
             ]
         ] + $this->fusionProvider();
@@ -782,6 +784,7 @@ class OperatingSystem extends AbstractInventoryAsset
       <FQDN>test-pc002</FQDN>
       <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
       <HOSTID>a8c07701</HOSTID>
+      <INSTALL_DATE>2022-01-01 10:35:07</INSTALL_DATE>
       <KERNEL_NAME>linux</KERNEL_NAME>
       <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
       <NAME>Fedora</NAME>
@@ -834,6 +837,8 @@ class OperatingSystem extends AbstractInventoryAsset
         $theos = current($list);
         $this->integer($theos['operatingsystems_id'])->isIdenticalTo($os_id);
         $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
+        $this->string($theos['install_date'])->isIdenticalTo("2022-01-01");
+
 
        //Redo inventory, but with updated operating system
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -846,6 +851,7 @@ class OperatingSystem extends AbstractInventoryAsset
       <FQDN>test-pc002</FQDN>
       <FULL_NAME>Fedora 32 (Workstation Edition)</FULL_NAME>
       <HOSTID>a8c06c01</HOSTID>
+      <INSTALL_DATE>2022-10-14 10:35:07</INSTALL_DATE>
       <KERNEL_NAME>linux</KERNEL_NAME>
       <KERNEL_VERSION>5.9.13-100.fc32.x86_64</KERNEL_VERSION>
       <NAME>Fedora</NAME>
@@ -879,5 +885,6 @@ class OperatingSystem extends AbstractInventoryAsset
         $theos = current($list);
         $this->integer($theos['operatingsystems_id'])->isNotIdenticalTo($os_id, 'Operating system link has not been updated');
         $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
+        $this->string($theos['install_date'])->isIdenticalTo("2022-10-14");
     }
 }

@@ -116,7 +116,7 @@ class MassiveAction
      * Items remaining in current process.
      * @var array
      */
-    private $remainings = [];
+    private $remainings = null;
 
     /**
      * Fields to remove after reload.
@@ -403,7 +403,9 @@ class MassiveAction
 
        // Add process elements
         if ($stage == 'process') {
-            $this->remainings = $this->items;
+            if (!isset($this->remainings)) {
+                $this->remainings = $this->items;
+            }
 
             $this->fields_to_remove_when_reload = ['fields_to_remove_when_reload'];
 
@@ -568,7 +570,7 @@ class MassiveAction
      **/
     public function getRemainings()
     {
-        return $this->remainings;
+        return $this->remainings ?? [];
     }
 
 
@@ -732,10 +734,12 @@ class MassiveAction
             $canupdate = $checkitem->canUpdate();
             $candelete = $checkitem->canDelete();
             $canpurge  = $checkitem->canPurge();
+            $cancreate = $checkitem->canCreate();
         } else {
             $canupdate = $itemtype::canUpdate();
             $candelete = $itemtype::canDelete();
             $canpurge  = $itemtype::canPurge();
+            $cancreate = $itemtype::canCreate();
         }
 
         $actions   = [];
@@ -764,7 +768,7 @@ class MassiveAction
                //TRANS: select action 'update' (before doing it)
                 $actions[$self_pref . 'update'] = _x('button', 'Update');
 
-                if (Toolbox::hasTrait($itemtype, Clonable::class)) {
+                if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
                     $actions[$self_pref . 'clone'] = "<i class='fa-fw far fa-clone'></i>" . _x('button', 'Clone');
                 }
             }

@@ -44,7 +44,7 @@ $migration->addConfig([
     'fold_menu'             => 0,
     'fold_search'           => 0,
     'savedsearches_pinned'  => 0,
-    'richtext_layout'       => 'inline',
+    'richtext_layout'       => 'classic',
     'user_restored_ldap'    => 0,
     'timeline_order'        => 'natural',
     'itil_layout'           => 0,

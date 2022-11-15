@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 include('../inc/includes.php');
 $AJAX_INCLUDE = 1;
 
@@ -50,6 +52,7 @@ if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/hel
 if (!isset($_GET['_glpi_tab'])) {
     exit();
 }
+$_GET['_glpi_tab'] = Sanitizer::unsanitize($_GET['_glpi_tab']);
 
 if (!isset($_GET['_itemtype']) || empty($_GET['_itemtype'])) {
     exit();
@@ -94,9 +97,9 @@ if (isset($_GET['_target'])) {
     $_GET['_target'] = Toolbox::cleanTarget($_GET['_target']);
 }
 
-$tabs = Toolbox::getAvailablesTabs($_UGET['_itemtype'], $_GET['id'] ?? null);
+$tabs = Toolbox::getAvailablesTabs($_GET['_itemtype'], $_GET['id'] ?? null);
 if (isset($tabs[$_GET['_glpi_tab']])) {
-    Session::setActiveTab($_UGET['_itemtype'], $_GET['_glpi_tab']);
+    Session::setActiveTab($_GET['_itemtype'], $_GET['_glpi_tab']);
 }
 
 $notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate', 'formoptions'];
@@ -110,7 +113,7 @@ if (isset($options['locked'])) {
     ObjectLock::setReadOnlyProfile();
 }
 
-CommonGLPI::displayStandardTab($item, $_UGET['_glpi_tab'], $_GET["withtemplate"], $options);
+CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], $_GET["withtemplate"], $options);
 
 
 if (isset($_GET['full_page_tab'])) {

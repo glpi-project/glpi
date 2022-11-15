@@ -48,7 +48,7 @@ class StatDataSatisfaction extends StatDataAlwaysDisplay
         parent::__construct($params);
 
         $opensatisfaction   = $this->getDataByType($params, "inter_opensatisfaction");
-        $answersatisfaction = $this->getDataByType($params, "answersatisfaction");
+        $answersatisfaction = $this->getDataByType($params, "inter_answersatisfaction");
 
         $this->labels = array_keys($opensatisfaction);
         $this->series = [

@@ -3832,7 +3832,7 @@ class Transfer extends CommonDBTM
                     } else {
                         foreach ($iterator as $data) {
                           // Not a copy -> only update socket
-                            if ($data['sockets_id']) {
+                            if (isset($data['sockets_id']) && $data['sockets_id']) {
                                  $socket = new Socket();
                                 if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
                                     if ($socket->getID()) {
@@ -4118,12 +4118,14 @@ class Transfer extends CommonDBTM
             echo '</th></tr>';
 
             echo "<tr><td class='tab_bg_1 top'>";
+
+            /** @var class-string<CommonDBTM> $itemtype */
             foreach ($_SESSION['glpitransfer_list'] as $itemtype => $tab) {
                 if (count($tab)) {
                     if (!($item = getItemForItemtype($itemtype))) {
                         continue;
                     }
-                    $table = getTableForItemType($itemtype);
+                    $table = $itemtype::getTable();
 
                     $iterator = $DB->request([
                         'SELECT'    => [

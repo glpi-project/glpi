@@ -63,10 +63,10 @@ class Agent extends CommonDBTM
     public $dohistory = true;
 
     /** @var string */
-    public static $rightname = 'computer';
+    public static $rightname = 'agent';
    //static $rightname = 'inventory';
 
-    private static $found_adress = false;
+    private static $found_address = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -157,6 +157,78 @@ class Agent extends CommonDBTM
                 'additionalfields' => ['itemtype'],
                 'joinparams'       => ['jointype' => 'child']
             ],
+            [
+                'id'            => '16',
+                'table'         => $this->getTable(),
+                'field'         => 'remote_addr',
+                'name'          => __('Public contact address'),
+                'datatype'      => 'text',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 17,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_wake_on_lan',
+                'name'          => __('Wake on LAN'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 18,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_computer_inventory',
+                'name'          => __('Computer inventory'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 19,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_esx_remote_inventory',
+                'name'          => __('ESX remote inventory'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 20,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_network_inventory',
+                'name'          => __('Network inventory (SNMP)'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 21,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_network_discovery',
+                'name'          => __('Network discovery (SNMP)'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 22,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_package_deployment',
+                'name'          => __('Package Deployment'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 23,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_collect_data',
+                'name'          => __('Collect data'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ],
+            [
+                'id'            => 24,
+                'table'         => $this->getTable(),
+                'field'         => 'use_module_remote_inventory',
+                'name'          => __('Remote inventory'),
+                'datatype'      => 'bool',
+                'massiveaction' => false,
+            ]
 
         ];
 
@@ -237,6 +309,13 @@ class Agent extends CommonDBTM
             'id'         => 904,
             'field'      => 'deviceid',
             'name'       => __('Device id'),
+            'datatype'   => 'text',
+        ] + $baseopts;
+
+        $tab[] = [
+            'id'         => 905,
+            'field'      => 'remote_addr',
+            'name'       => __('Public contact address'),
             'datatype'   => 'text',
         ] + $baseopts;
 
@@ -329,6 +408,39 @@ class Agent extends CommonDBTM
             $input['tag'] = $metadata['tag'];
         }
 
+        if (isset($metadata['port'])) {
+            $input['port'] = $metadata['port'];
+        }
+
+        if (isset($metadata['enabled-tasks'])) {
+            $input['use_module_computer_inventory']   = in_array("inventory", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_network_discovery']    = in_array("netdiscovery", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_network_inventory']    = in_array("netinventory", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_remote_inventory']     = in_array("remoteinventory", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_wake_on_lan']          = in_array("wakeonlan", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_esx_remote_inventory'] = in_array("esx", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_package_deployment']   = in_array("deploy", $metadata['enabled-tasks']) ? 1 : 0;
+            $input['use_module_collect_data']         = in_array("collect", $metadata['enabled-tasks']) ? 1 : 0;
+        }
+
+        $remote_ip = "";
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            //Managing IP through a PROXY
+            $remote_ip = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+        } elseif (isset($_SERVER['HTTP_X_REAL_IP'])) {
+            //try with X-Real-IP
+            $remote_ip = $_SERVER['HTTP_X_REAL_IP'];
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            //then get connected IP
+            $remote_ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        $remote_ip = new IPAddress($remote_ip);
+        if ($remote_ip->is_valid()) {
+            $input['remote_addr'] = $remote_ip->getTextual();
+        }
+
+
         $has_expected_agent_type = in_array($metadata['itemtype'], $CFG_GLPI['agent_types']);
         if ($deviceid === 'foo' || (!$has_expected_agent_type && !$aid)) {
             $input += [
@@ -416,7 +528,7 @@ class Agent extends CommonDBTM
     }
 
     /**
-     * Guess possible adresses the agent should answer on
+     * Guess possible addresses the agent should answer on
      *
      * @return array
      */
@@ -424,20 +536,20 @@ class Agent extends CommonDBTM
     {
         global $DB;
 
-        $adresses = [];
+        $addresses = [];
 
        //retrieve linked items
         $item = $this->getLinkedItem();
         if ((int)$item->getID() > 0) {
             $item_name = $item->getFriendlyName();
-            $adresses[] = $item_name;
+            $addresses[] = $item_name;
 
            //deviceid should contains machines name
             $matches = [];
             preg_match('/^(\s)+-\d{4}(-\d{2}){5}$/', $this->fields['deviceid'], $matches);
             if (isset($matches[1])) {
-                if (!in_array($matches[1], $adresses)) {
-                    $adresses[] = $matches[1];
+                if (!in_array($matches[1], $addresses)) {
+                    $addresses[] = $matches[1];
                 }
             }
 
@@ -484,12 +596,12 @@ class Agent extends CommonDBTM
                 ]
             ]);
             foreach ($ports_iterator as $row) {
-                if (!in_array($row['name'], $adresses)) {
+                if (!in_array($row['name'], $addresses)) {
                     if ($row['version'] == 4) {
-                        $adresses[] = $row['name'];
+                        $addresses[] = $row['name'];
                     } else {
                         //surrounds IPV6 with '[' and ']'
-                        $adresses[] = "[" . $row['name'] . "]";
+                        $addresses[] = "[" . $row['name'] . "]";
                     }
                 }
             }
@@ -513,11 +625,11 @@ class Agent extends CommonDBTM
             ]);
 
             foreach ($iterator as $row) {
-                 $adresses[] = sprintf('%s.%s', $item_name, $row['name']);
+                 $addresses[] = sprintf('%s.%s', $item_name, $row['name']);
             }
         }
 
-        return $adresses;
+        return $addresses;
     }
 
     /**
@@ -527,7 +639,7 @@ class Agent extends CommonDBTM
      */
     public function getAgentURLs(): array
     {
-        $adresses = $this->guessAddresses();
+        $addresses = $this->guessAddresses();
         $protocols = ['http', 'https'];
         $port = (int)$this->fields['port'];
         if ($port === 0) {
@@ -536,7 +648,7 @@ class Agent extends CommonDBTM
 
         $urls = [];
         foreach ($protocols as $protocol) {
-            foreach ($adresses as $address) {
+            foreach ($addresses as $address) {
                 $urls[] = sprintf(
                     '%s://%s:%s',
                     $protocol,
@@ -560,16 +672,16 @@ class Agent extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        if (self::$found_adress !== false) {
-            $adresses = [self::$found_adress];
+        if (self::$found_address !== false) {
+            $addresses = [self::$found_address];
         } else {
-            $adresses = $this->getAgentURLs();
+            $addresses = $this->getAgentURLs();
         }
 
         $response = null;
-        foreach ($adresses as $adress) {
+        foreach ($addresses as $address) {
             $options = [
-                'base_uri'        => sprintf('%s/%s', $adress, $endpoint),
+                'base_uri'        => $address,
                 'connect_timeout' => self::TIMEOUT,
             ];
 
@@ -586,11 +698,10 @@ class Agent extends CommonDBTM
             $httpClient = new Guzzle_Client($options);
             try {
                 $response = $httpClient->request('GET', $endpoint, []);
-                self::$found_adress = $adress;
+                self::$found_address = $address;
                 break;
             } catch (Exception $e) {
-                //many adresses will be incorrect
-                $cs = true;
+                //many addresses will be incorrect
             }
         }
 

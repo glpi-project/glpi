@@ -39,17 +39,12 @@
 
 include('../inc/includes.php');
 
-//@session_start();
-
-Session::destroy();
-
-//Remove cookie to allow new login
-Auth::setRememberMeCookie('');
 
 if (
     $CFG_GLPI["ssovariables_id"] > 0
     && strlen($CFG_GLPI['ssologout_url']) > 0
 ) {
+    Session::cleanOnLogout();
     Html::redirect($CFG_GLPI["ssologout_url"]);
 }
 
@@ -87,6 +82,8 @@ if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
     }
     $toADD .= "noAUTO=1";
 }
+
+Session::cleanOnLogout();
 
 // Redirect to the login-page
 Html::redirect($CFG_GLPI["root_doc"] . "/index.php" . $toADD);
