@@ -41,7 +41,7 @@ use Project;
 
 class QueuedNotification extends DbTestCase
 {
-    public function testAddNotificationWithDeduplication()
+    public function testAddProjectNotification()
     {
         $queued_notification = new \QueuedNotification();
 
@@ -55,7 +55,7 @@ class QueuedNotification extends DbTestCase
         $project_id_2 = $project->add(['name' => 'Test project 2', 'entities_id' => $root_entity_id]);
         $this->integer($project_id_2)->isGreaterThan(0);
 
-       // First notification
+        // First notification
         $queued_id_1 = $queued_notification->add(
             [
                 'itemtype'                 => 'Project',
@@ -72,7 +72,7 @@ class QueuedNotification extends DbTestCase
         $this->integer($queued_id_1)->isGreaterThan(0);
         $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
 
-       // Notification with same item and recipient, should trigger previous notification deletion
+        // Notification with same item and recipient, should not trigger previous notification deletion
         $queued_id_2 = $queued_notification->add(
             [
                 'itemtype'                 => 'Project',
@@ -88,10 +88,10 @@ class QueuedNotification extends DbTestCase
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
         $this->boolean($queued_notification->getFromDB($queued_id_2))->isTrue();
-       // Previous notifications have been removed
-        $this->boolean($queued_notification->getFromDB($queued_id_1))->isFalse();
+        // Previous notifications have not been removed
+        $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
 
-       // Notification with different recipient, should not trigger previous notification deletion
+        // Notification with different recipient, should not trigger previous notification deletion
         $queued_id_3 = $queued_notification->add(
             [
                 'itemtype'                 => 'Project',
@@ -107,10 +107,11 @@ class QueuedNotification extends DbTestCase
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
         $this->boolean($queued_notification->getFromDB($queued_id_3))->isTrue();
-       // Previous notifications have not been removed
+        // Previous notifications have not been removed
         $this->boolean($queued_notification->getFromDB($queued_id_2))->isTrue();
+        $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
 
-       // Notification with different item, should not trigger previous notification deletion
+        // Notification with different item, should not trigger previous notification deletion
         $this->integer($project_id_1)->isGreaterThan(0);
         $queued_id_4 = $queued_notification->add(
             [
@@ -127,12 +128,13 @@ class QueuedNotification extends DbTestCase
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
         $this->boolean($queued_notification->getFromDB($queued_id_4))->isTrue();
-       // Previous notifications have not been removed
+        // Previous notifications have not been removed
         $this->boolean($queued_notification->getFromDB($queued_id_3))->isTrue();
         $this->boolean($queued_notification->getFromDB($queued_id_2))->isTrue();
+        $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
     }
 
-    public function testAddNotificationWithoutDeduplication()
+    public function testAddTicketNotification()
     {
         $queued_notification = new \QueuedNotification();
 
@@ -146,7 +148,7 @@ class QueuedNotification extends DbTestCase
         $ticket_id_2 = $ticket->add(['name' => 'Test ticket 2', 'entities_id' => $root_entity_id]);
         $this->integer($ticket_id_2)->isGreaterThan(0);
 
-       // First notification
+        // First notification
         $queued_id_1 = $queued_notification->add(
             [
                 'itemtype'                 => 'Ticket',
@@ -163,7 +165,7 @@ class QueuedNotification extends DbTestCase
         $this->integer($queued_id_1)->isGreaterThan(0);
         $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
 
-       // Notification with same item and recipient, should trigger previous notification deletion
+        // Notification with same item and recipient, should not trigger previous notification deletion
         $queued_id_2 = $queued_notification->add(
             [
                 'itemtype'                 => 'Ticket',
@@ -179,10 +181,10 @@ class QueuedNotification extends DbTestCase
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
         $this->boolean($queued_notification->getFromDB($queued_id_2))->isTrue();
-       // Previous notifications have not been removed
+        // Previous notifications have not been removed
         $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
 
-       // Notification with different recipient, should not trigger previous notification deletion
+        // Notification with different recipient, should not trigger previous notification deletion
         $queued_id_3 = $queued_notification->add(
             [
                 'itemtype'                 => 'Ticket',
@@ -198,11 +200,11 @@ class QueuedNotification extends DbTestCase
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
         $this->boolean($queued_notification->getFromDB($queued_id_3))->isTrue();
-       // Previous notifications have not been removed
+        // Previous notifications have not been removed
         $this->boolean($queued_notification->getFromDB($queued_id_2))->isTrue();
         $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
 
-       // Notification with different item, should not trigger previous notification deletion
+        // Notification with different item, should not trigger previous notification deletion
         $this->integer($ticket_id_1)->isGreaterThan(0);
         $queued_id_4 = $queued_notification->add(
             [
@@ -219,7 +221,7 @@ class QueuedNotification extends DbTestCase
         );
         $this->integer($queued_id_2)->isGreaterThan(0);
         $this->boolean($queued_notification->getFromDB($queued_id_4))->isTrue();
-       // Previous notifications have not been removed
+        // Previous notifications have not been removed
         $this->boolean($queued_notification->getFromDB($queued_id_3))->isTrue();
         $this->boolean($queued_notification->getFromDB($queued_id_2))->isTrue();
         $this->boolean($queued_notification->getFromDB($queued_id_1))->isTrue();
