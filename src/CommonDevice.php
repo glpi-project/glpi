@@ -498,6 +498,20 @@ abstract class CommonDevice extends CommonDropdown
             }
         }
 
+        $model_fk = getForeignKeyFieldForItemType(static::class . 'Model');
+        if ($DB->fieldExists(static::getTable(), $model_fk)) {
+            if (isset($input[$model_fk])) {
+                $where[$model_fk] = $input[$model_fk];
+            } else {
+                $where[] = [
+                    'OR' => [
+                        [$model_fk => null],
+                        [$model_fk => 0]
+                    ]
+                ];
+            }
+        }
+
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => $this->getTable(),
