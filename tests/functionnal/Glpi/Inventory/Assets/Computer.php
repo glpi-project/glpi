@@ -193,7 +193,7 @@ class Computer extends AbstractInventoryAsset
     }
 
 
-    public function testAutoUpdate()
+    public function testAutoUpdateWithoutLockedField()
     {
         global $DB, $CFG_GLPI;
         $item_monitor = new \Computer_Item();
