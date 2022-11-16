@@ -61,7 +61,7 @@ use NetworkEquipment;
 use NetworkPort;
 use Notepad;
 use Problem;
-use QueryExpression;
+use QueryFunction;
 use SavedSearch;
 use Search;
 use Session;
@@ -1263,7 +1263,7 @@ abstract class API
         }
 
        // get result full row counts
-        $count_query = "SELECT COUNT(*) FROM {$DB->quoteName($table)} $join WHERE $where";
+        $count_query = "SELECT " . QueryFunction::count('*') . " FROM {$DB::quoteName($table)} $join WHERE $where";
         $totalcount = $DB->doQuery($count_query)->fetch_row()[0];
 
         if ($params['range'][0] > $totalcount) {
@@ -2892,10 +2892,15 @@ abstract class API
 
                 foreach ($netp_iterator as $data) {
                     if (isset($data['netport_id'])) {
-                       // append network name
-                        $concat_expr = new QueryExpression(
-                            "GROUP_CONCAT(CONCAT(" . $DB->quoteName('ipadr.id') . ", " . $DB->quoteValue(Search::SHORTSEP) . " , " . $DB->quoteName('ipadr.name') . ")
-                     SEPARATOR " . $DB->quoteValue(Search::LONGSEP) . ") AS " . $DB->quoteName('ipadresses')
+                        // append network name
+                        $concat_expr = QueryFunction::groupConcat(
+                            expression: QueryFunction::concat([
+                                $DB::quoteName('ipadr.id'),
+                                $DB::quoteValue(Search::SHORTSEP),
+                                $DB::quoteName('ipadr.name'),
+                            ]),
+                            separator: $DB::quoteValue(Search::LONGSEP),
+                            alias: $DB::quoteName('ipadresses')
                         );
                         $netn_iterator = $DB->request([
                             'SELECT'    => [

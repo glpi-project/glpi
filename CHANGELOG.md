@@ -63,6 +63,7 @@ The present file will list all changes made to the project; according to the
 
 #### Added
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
+- `QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 
 #### Changes
 - `chartist` library has been replaced by `echarts`.
@@ -146,6 +147,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::seems_utf8()`
 - `Toolbox::stripslashes_deep()`
 - `Search::getOptions()` no longer returns a reference
+- Use of raw SQL function strings. Use `QueryFunction` static methods instead.
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.

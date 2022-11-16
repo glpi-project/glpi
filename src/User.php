@@ -4492,16 +4492,13 @@ JAVASCRIPT;
             if (strlen((string)$search) > 0) {
                 $txt_search = Search::makeTextSearchValue($search);
 
-                $firstname_field = $DB->quoteName(self::getTableField('firstname'));
-                $realname_field = $DB->quoteName(self::getTableField('realname'));
+                $firstname_field = $DB::quoteName(self::getTableField('firstname'));
+                $realname_field = $DB::quoteName(self::getTableField('realname'));
                 $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
                 ? [$firstname_field, $realname_field]
                 : [$realname_field, $firstname_field];
 
-                $concat = new \QueryExpression(
-                    'CONCAT(' . implode(',' . $DB->quoteValue(' ') . ',', $fields) . ')'
-                    . ' LIKE ' . $DB->quoteValue($txt_search)
-                );
+                $concat = new \QueryExpression(QueryFunction::concat($fields) . ' LIKE ' . $DB::quoteValue($txt_search));
                 $WHERE[] = [
                     'OR' => [
                         'glpi_users.name'                => ['LIKE', $txt_search],
@@ -6451,25 +6448,43 @@ JAVASCRIPT;
 
     public static function getFriendlyNameSearchCriteria(string $filter): array
     {
+        global $DB;
+
         $table     = self::getTable();
-        $login     = DBmysql::quoteName("$table.name");
-        $firstname = DBmysql::quoteName("$table.firstname");
-        $lastname  = DBmysql::quoteName("$table.realname");
+        $login     = $DB::quoteName("$table.name");
+        $firstname = $DB::quoteName("$table.firstname");
+        $lastname  = $DB::quoteName("$table.realname");
 
         $filter = strtolower($filter);
         $filter_no_spaces = str_replace(" ", "", $filter);
+        $concat_names_first_last = QueryFunction::lower(
+            QueryFunction::replace(
+                expression: QueryFunction::concat([$firstname, $lastname]),
+                search: $DB::quoteValue(' '),
+                replace: $DB::quoteValue('')
+            )
+        );
+        $concat_names_last_first = QueryFunction::lower(
+            QueryFunction::replace(
+                expression: QueryFunction::concat([$lastname, $firstname]),
+                search: $DB::quoteValue(' '),
+                replace: $DB::quoteValue('')
+            )
+        );
 
         return [
             'OR' => [
-                ['RAW' => ["LOWER($login)" => ['LIKE', "%$filter%"]]],
-                ['RAW' => ["LOWER(REPLACE(CONCAT($firstname, $lastname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
-                ['RAW' => ["LOWER(REPLACE(CONCAT($lastname, $firstname), ' ', ''))" => ['LIKE', "%$filter_no_spaces%"]]],
+                (string) QueryFunction::lower($login) => ['LIKE', "%$filter%"],
+                (string) $concat_names_first_last     => ['LIKE', "%$filter_no_spaces%"],
+                (string) $concat_names_last_first     => ['LIKE', "%$filter_no_spaces%"],
             ]
         ];
     }
 
     public static function getFriendlyNameFields(string $alias = "name")
     {
+        global $DB;
+
         $config = Config::getConfigurationValues('core');
         if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
             $first = "firstname";
@@ -6481,15 +6496,16 @@ JAVASCRIPT;
 
         $table  = self::getTable();
         $first  = DBmysql::quoteName("$table.$first");
-        $second = DBmysql::quoteName("$table.$second");
-        $alias  = DBmysql::quoteName($alias);
-        $name   = DBmysql::quoteName($table . '.' . self::getNameField());
+        $second = $DB::quoteName("$table.$second");
+        $alias  = $DB::quoteName($alias);
+        $name   = $DB::quoteName($table . '.' . self::getNameField());
 
-        return new QueryExpression("IF(
-            $first <> '' && $second <> '',
-            CONCAT($first, ' ', $second),
-            $name
-         ) AS $alias");
+        return QueryFunction::if(
+            condition: new QueryExpression("$first <> " . $DB::quoteValue('') . " && $second <> " . $DB::quoteValue('')),
+            true_expression: QueryFunction::concat([$first, $second]),
+            false_expression: $name,
+            alias: $DB::quoteName($alias)
+        );
     }
 
     public static function getIcon()

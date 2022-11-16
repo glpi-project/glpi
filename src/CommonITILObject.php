@@ -4646,28 +4646,57 @@ abstract class CommonITILObject extends CommonDBTM
         switch ($type) {
             case 'internal_time_to_own':
             case 'time_to_own':
-                return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
-            AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND
-                 ' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
-                 OR (' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NULL AND
-                 ' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . '
-                        > TIMESTAMPDIFF(SECOND,
-                                        ' . $DB->quoteName($table . '.date') . ',
-                                        ' . $DB->quoteName($table . '.' . $type) . '))
-                 OR (' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . ' = 0
-                      AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
-            1, 0)';
+            return QueryFunction::if(
+                condition: [
+                    'NOT' => ["{$table}.{$type}" => null],
+                    "$table.status" => ['<>', self::WAITING],
+                    'OR' => [
+                        [
+                            'AND' => [
+                                'NOT' => ["$table.takeintoaccountdate" => null],
+                                "$table.takeintoaccountdate" => ['>', new QueryExpression($DB::quoteName("{$table}.{$type}"))]
+                            ]
+                        ],
+                        [
+                            'AND' => [
+                                "$table.takeintoaccountdate" => null,
+                                "$table.takeintoaccount_delay_stat" => ['>', QueryFunction::timestampDiff(
+                                    unit: 'SECOND',
+                                    expression1: $DB::quoteName("$table.date"),
+                                    expression2: $DB::quoteName("{$table}.{$type}")
+                                )]
+                            ]
+                        ],
+                        [
+                            'AND' => [
+                                "$table.takeintoaccount_delay_stat" => 0,
+                                "$table.$type" => ['<', QueryFunction::now()]
+                            ]
+                        ]
+                    ]
+                ],
+                true_expression: 1,
+                false_expression: 0
+            );
             break;
 
             case 'internal_time_to_resolve':
             case 'time_to_resolve':
-                return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
-            AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND (' . $DB->quoteName($table . '.solvedate') . ' > ' . $DB->quoteName($table . '.' . $type) . '
-                  OR (' . $DB->quoteName($table . '.solvedate') . ' IS NULL
-                     AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
-            1, 0)';
+            return QueryFunction::if(
+                condition: [
+                    'NOT' => ["{$table}.{$type}" => null],
+                    "$table.status" => ['<>', self::WAITING],
+                    'OR' => [
+                        "$table.solvedate" => ['>', new QueryExpression($DB::quoteName("$table.$type"))],
+                        'AND' => [
+                            "$table.solvedate" => null,
+                            "$table.$type" => ['<', QueryFunction::now()]
+                        ]
+                    ]
+                ],
+                true_expression: 1,
+                false_expression: 0
+            );
             break;
         }
     }

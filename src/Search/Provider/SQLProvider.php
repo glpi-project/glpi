@@ -198,9 +198,9 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        $tocompute      = "`$table$addtable`.`$field`";
-        $tocomputeid    = "`$table$addtable`.`id`";
-        $tocomputetrans = "IFNULL(`$table" . $addtable . "_trans_" . $field . "`.`value`,'" . \Search::NULLVALUE . "')";
+        $tocompute      = $DB::quoteName("$table$addtable.$field");
+        $tocomputeid    = $DB::quoteName("$table$addtable.id");
+        $tocomputetrans = QueryFunction::ifNull($DB::quoteName("{$table}{$addtable}_trans_{$field}.value"), $DB::quoteValue(\Search::NULLVALUE));
 
         $ADDITONALFIELDS = [];
         if (
@@ -215,17 +215,25 @@ final class SQLProvider implements SearchProviderInterface
                     $additionalfield_field = $DB->quoteName($table . $addtable . '.' . $key);
                 }
                 if ($meta || $opt->isForceGroupBy()) {
-                    $ADDITONALFIELDS[] = new QueryExpression("
-                        IFNULL(
-                            GROUP_CONCAT(
-                                DISTINCT CONCAT(
-                                    IFNULL($additionalfield_field, '" . \Search::NULLVALUE . "'),
-                                    '" . \Search::SHORTSEP . "', $tocomputeid
-                                ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
-                            ), '" . \Search::NULLVALUE . \Search::SHORTSEP . "'
-                        ) AS `{$NAME}_$key`");
+                    $ADDITONALFIELDS[] = QueryFunction::ifNull(
+                        expression: QueryFunction::groupConcat(
+                            expression: QueryFunction::concat([
+                                QueryFunction::ifNull(
+                                    expression: $DB::quoteName("{$additionalfield_field}"),
+                                    value: $DB::quoteValue(\Search::NULLVALUE)
+                                ),
+                                $DB::quoteValue(\Search::SHORTSEP),
+                                $tocomputeid
+                            ]),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            distinct: true,
+                            order_by: $tocomputeid
+                        ),
+                        value: $DB::quoteValue(\Search::NULLVALUE . \Search::SHORTSEP),
+                        alias: $DB::quoteName("{$NAME}_{$key}")
+                    );
                 } else {
-                    $ADDITONALFIELDS[] = "$additionalfield_field AS `" . $NAME . "_$key`";
+                    $ADDITONALFIELDS[] = $DB::quoteName("{$additionalfield_field} AS {$NAME}_{$key}");
                 }
             }
         }
@@ -240,7 +248,6 @@ final class SQLProvider implements SearchProviderInterface
                 if ($itemtype !== User::class) {
                     if ($opt->isForceGroupBy()) {
                         $addaltemail = "";
-                        $itilobject_tables = [Ticket::getTable(), Change::getTable(), Problem::getTable()];
                         if (
                             in_array($itemtype, ['Ticket', 'Change', 'Problem'])
                             && isset($opt['joinparams']['beforejoin']['table'])
@@ -248,24 +255,35 @@ final class SQLProvider implements SearchProviderInterface
                         ) { // For tickets_users
                             $before_join = $opt['joinparams']['beforejoin'];
                             $ticket_user_table = $before_join['table'] . "_" . \Search::computeComplexJoinID($before_join['joinparams']) . $addmeta;
-                            $addaltemail
-                                = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
-                                                        `$ticket_user_table`.`alternative_email`)
-                                                        SEPARATOR '" . \Search::LONGSEP . "') AS `" . $NAME . "_2`";
+                            $addaltemail = QueryFunction::groupConcat(
+                                expression: QueryFunction::concat([
+                                    $DB::quoteName("{$ticket_user_table}.users_id"),
+                                    $DB::quoteValue(' '),
+                                    $DB::quoteName("{$ticket_user_table}.alternative_email")
+                                ]),
+                                separator: $DB::quoteValue(\Search::LONGSEP),
+                                distinct: true,
+                                alias: $DB::quoteName("{$NAME}_2")
+                            );
                         }
                         $SELECT = [
-                            new QueryExpression("GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}`")
+                            QueryFunction::groupConcat(
+                                expression: $DB::quoteName("{$table}{$addtable}.id"),
+                                separator: $DB::quoteValue(\Search::LONGSEP),
+                                distinct: true,
+                                alias: $DB::quoteName($NAME)
+                            ),
                         ];
                         if (!empty($addaltemail)) {
-                            $SELECT[] = new QueryExpression($addaltemail);
+                            $SELECT[] = $addaltemail;
                         }
                         return array_merge($SELECT, $ADDITONALFIELDS);
                     }
                     $SELECT = [
-                        "`$table$addtable`.`$field` AS `{$NAME}`",
-                        "`$table$addtable`.`realname` AS `{$NAME}_realname`",
-                        "`$table$addtable`.`id` AS `{$NAME}_id`",
-                        "`$table$addtable`.`firstname` AS `{$NAME}_firstname`",
+                        $DB::quoteName("$table$addtable.$field AS {$NAME}"),
+                        $DB::quoteName("$table$addtable.realname AS {$NAME}_realname"),
+                        $DB::quoteName("$table$addtable.id AS {$NAME}_id"),
+                        $DB::quoteName("$table$addtable.firstname AS {$NAME}_firstname"),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
@@ -274,10 +292,13 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_softwarelicenses.number":
                 $_table_add_table = $table . ($meta ? $addtable2 : $addtable);
                 $SELECT = [
-                    new QueryExpression("FLOOR(SUM(`$_table_add_table`.`$field`)
-                          * COUNT(DISTINCT `$_table_add_table`.`id`)
-                          / COUNT(`$_table_add_table`.`id`)) AS `{$NAME}`"),
-                    new QueryExpression("MIN(`$_table_add_table`.`$field`) AS `{$NAME}_min`"),
+                    QueryFunction::floor(
+                        expression: QueryFunction::sum($DB::quoteName("{$_table_add_table}.{$field}")) . ' * ' .
+                            QueryFunction::count($DB::quoteName("{$_table_add_table}.id"), true) . ' / ' .
+                            QueryFunction::count($DB::quoteName("{$_table_add_table}.id")),
+                        alias: $DB::quoteName($NAME)
+                    ),
+                    QueryFunction::min($DB::quoteName("{$_table_add_table}.{$field}"), $DB::quoteName("{$NAME}_min")),
                 ];
                 return array_merge($SELECT, $ADDITONALFIELDS);
 
@@ -288,10 +309,29 @@ final class SQLProvider implements SearchProviderInterface
                         $addtable2 = "_" . $meta_type;
                     }
                     $SELECT = [
-                        new QueryExpression("GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}`"),
-                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`entities_id` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_entities_id`"),
-                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_is_recursive`"),
-                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_is_dynamic`"),
+                        QueryFunction::groupConcat(
+                            expression: $DB::quoteName("{$table}{$addtable}.{$field}"),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            alias: $DB::quoteName($NAME)
+                        ),
+                        QueryFunction::groupConcat(
+                            expression: $DB::quoteName("glpi_profiles_users{$addtable2}.entities_id"),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            distinct: true,
+                            alias: $DB::quoteName("{$NAME}_entities_id")
+                        ),
+                        QueryFunction::groupConcat(
+                            expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_recursive"),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            distinct: true,
+                            alias: $DB::quoteName("{$NAME}_is_recursive")
+                        ),
+                        QueryFunction::groupConcat(
+                            expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_dynamic"),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            distinct: true,
+                            alias: $DB::quoteName("{$NAME}_is_dynamic")
+                        ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
@@ -304,10 +344,26 @@ final class SQLProvider implements SearchProviderInterface
                         $addtable2 = "_" . $meta_type;
                     }
                     $SELECT = [
-                        new QueryExpression("GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}`"),
-                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`profiles_id` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_profiles_id`"),
-                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_is_recursive`"),
-                        new QueryExpression("GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '" . \Search::LONGSEP . "') AS `{$NAME}_is_dynamic`"),
+                        QueryFunction::groupConcat(
+                            expression: $DB::quoteName("{$table}{$addtable}.completename"),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            alias: $DB::quoteName($NAME)
+                        ),
+                        QueryFunction::groupConcat(
+                            expression: $DB::quoteName("glpi_profiles_users{$addtable2}.profiles_id"),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            alias: $DB::quoteName("{$NAME}_profiles_id")
+                        ),
+                        QueryFunction::groupConcat(
+                            expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_recursive"),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            alias: $DB::quoteName("{$NAME}_is_recursive")
+                        ),
+                        QueryFunction::groupConcat(
+                            expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_dynamic"),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            alias: $DB::quoteName("{$NAME}_is_dynamic")
+                        ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
@@ -316,24 +372,28 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_auth_tables.name":
                 $user_searchopt = SearchOption::getOptionsForItemtype('User');
                 $SELECT = [
-                    "`glpi_users`.`authtype` AS `{$NAME}`",
-                    "`glpi_users`.`auths_id` AS `{$NAME}_auths_id`",
-                    "`glpi_authldaps{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . "{$addmeta}`.`{$field}` AS `{$NAME}_{$ID}_ldapname`",
-                    "`glpi_authmails{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . "{$addmeta}`.`{$field}` AS `{$NAME}_{$ID}_mailname`",
+                    $DB::quoteName("glpi_users.authtype AS {$NAME}"),
+                    $DB::quoteName("glpi_users.auths_id AS {$NAME}_auths_id"),
+                    $DB::quoteName("glpi_authldaps{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[30]['joinparams']) . "{$addmeta},{$field} AS {$NAME}_{$ID}_ldapname"),
+                    $DB::quoteName("glpi_authldaps{$addtable}_" . \Search::computeComplexJoinID($user_searchopt[31]['joinparams']) . "{$addmeta},{$field} AS {$NAME}_{$ID}_mailname"),
                 ];
                 return array_merge($SELECT, $ADDITONALFIELDS);
 
             case "glpi_softwareversions.name":
                 if ($meta && $meta_type === Software::class) {
                     $SELECT = [
-                        new QueryExpression("
-                            GROUP_CONCAT(
-                                DISTINCT CONCAT(
-                                    `glpi_softwares`.`name`, ' - ',
-                                    `$table$addtable2`.`$field`, '" . \Search::SHORTSEP . "',
-                                    `$table$addtable2`.`id`
-                                ) SEPARATOR '" . \Search::LONGSEP . "'
-                            ) AS `{$NAME}`")
+                        QueryFunction::groupConcat(
+                            expression: QueryFunction::concat([
+                                $DB::quoteName("glpi_softwares.name"),
+                                $DB::quoteValue(" - "),
+                                $DB::quoteName("{$table}{$addtable2}.{$field}"),
+                                $DB::quoteValue(\Search::SHORTSEP),
+                                $DB::quoteName("{$table}{$addtable2}.id"),
+                            ]),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            distinct: true,
+                            alias: $DB::quoteName($NAME)
+                        ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
@@ -343,43 +403,54 @@ final class SQLProvider implements SearchProviderInterface
                 $_table = ($meta && $meta_type === Software::class) ? 'glpi_softwares' : ($table . $addtable);
                 $_table_add_table = $table . (($meta && $meta_type === Software::class) ? $addtable2 : $addtable);
                 $SELECT = [
-                    new QueryExpression("
-                        GROUP_CONCAT(
-                            DISTINCT CONCAT(
-                                `$_table`.`name`,
-                                ' - ',
-                                `$_table_add_table`.`$field`,
-                                '" . \Search::SHORTSEP . "',
-                                `$_table_add_table`.`id`
-                            ) SEPARATOR '" . \Search::LONGSEP . "'
-                        ) AS `{$NAME}`"),
+                    QueryFunction::groupConcat(
+                        expression: QueryFunction::concat([
+                            $DB::quoteName("{$_table}.name"),
+                            $DB::quoteValue(" - "),
+                            $DB::quoteName("{$_table_add_table}.{$field}"),
+                            $DB::quoteValue(\Search::SHORTSEP),
+                            $DB::quoteName("{$_table_add_table}.id"),
+                        ]),
+                        separator: $DB::quoteValue(\Search::LONGSEP),
+                        distinct: true,
+                        alias: $DB::quoteName($NAME)
+                    ),
                 ];
                 return array_merge($SELECT, $ADDITONALFIELDS);
 
             case "glpi_states.name":
                 if ($meta && $meta_type === Software::class) {
                     $SELECT = [
-                        new QueryExpression("
-                            GROUP_CONCAT(
-                                DISTINCT CONCAT(
-                                    `glpi_softwares`.`name`, ' - ',
-                                    `glpi_softwareversions$addtable`.`name`, ' - ',
-                                    `$table$addtable2`.`$field`, '" . \Search::SHORTSEP . "',
-                                    `$table$addtable2`.`id`
-                                ) SEPARATOR '" . \Search::LONGSEP . "'
-                            ) AS `{$NAME}`")
+                        QueryFunction::groupConcat(
+                            expression: QueryFunction::concat([
+                                $DB::quoteName("glpi_softwares.name"),
+                                $DB::quoteValue(" - "),
+                                $DB::quoteName("glpi_softwareversions{$addtable}.name"),
+                                $DB::quoteValue(" - "),
+                                $DB::quoteName("{$table}{$addtable2}.{$field}"),
+                                $DB::quoteValue(\Search::SHORTSEP),
+                                $DB::quoteName("{$table}{$addtable2}.id"),
+                            ]),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            distinct: true,
+                            alias: $DB::quoteName($NAME)
+                        ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 } else if ($meta_type === Software::class) {
                     $SELECT = [
-                        new QueryExpression("
-                            GROUP_CONCAT(
-                                DISTINCT CONCAT(
-                                    `glpi_softwareversions`.`name`, ' - ',
-                                    `$table$addtable`.`$field`,'" . \Search::SHORTSEP . "',
-                                    `$table$addtable`.`id`
-                                ) SEPARATOR '" . \Search::LONGSEP . "'
-                            ) AS `{$NAME}`")
+                        QueryFunction::groupConcat(
+                            expression: QueryFunction::concat([
+                                $DB::quoteName("glpi_softwareversions.name"),
+                                $DB::quoteValue(" - "),
+                                $DB::quoteName("{$table}{$addtable}.{$field}"),
+                                $DB::quoteValue(\Search::SHORTSEP),
+                                $DB::quoteName("{$table}{$addtable}.id"),
+                            ]),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            distinct: true,
+                            alias: $DB::quoteName($NAME)
+                        ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
@@ -391,14 +462,17 @@ final class SQLProvider implements SearchProviderInterface
                 if (is_subclass_of($itemtype, CommonITILObject::class)) {
                     // force ordering by date desc
                     $SELECT = [
-                        new QueryExpression("
-                            GROUP_CONCAT(
-                                DISTINCT CONCAT(
-                                    IFNULL($tocompute, '" . \Search::NULLVALUE . "'),
-                                    '" . \Search::SHORTSEP . "',
-                                    $tocomputeid
-                                ) ORDER BY `$table$addtable`.`date` DESC SEPARATOR '" . \Search::LONGSEP . "'
-                            ) AS `{$NAME}`")
+                        QueryFunction::groupConcat(
+                            expression: QueryFunction::concat([
+                                QueryFunction::ifNull($tocompute, $DB::quoteValue(\Search::NULLVALUE)),
+                                $DB::quoteValue(\Search::SHORTSEP),
+                                $tocomputeid
+                            ]),
+                            separator: $DB::quoteValue(\Search::LONGSEP),
+                            distinct: true,
+                            order_by: $DB::quoteName("{$table}{$addtable}.date") . ' DESC',
+                            alias: $DB::quoteName($NAME)
+                        ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
@@ -429,7 +503,11 @@ final class SQLProvider implements SearchProviderInterface
             switch ($opt["datatype"]) {
                 case "count":
                     return array_merge([
-                        new QueryExpression("COUNT(DISTINCT `$table$addtable`.`$field`) AS `{$NAME}`")
+                        QueryFunction::count(
+                            expression: $DB::quoteName("$table$addtable.$field"),
+                            distinct: true,
+                            alias: $DB::quoteName($NAME)
+                        ),
                     ], $ADDITONALFIELDS);
 
                 case "date_delay":
@@ -437,58 +515,68 @@ final class SQLProvider implements SearchProviderInterface
 
                     $add_minus = '';
                     if (isset($opt["datafields"][3])) {
-                        $add_minus = "-`$table$addtable`.`" . $opt["datafields"][3] . "`";
+                        $add_minus = '-' . $DB::quoteName("{$table}{$addtable}.{$opt["datafields"][3]}");
                     }
                     if ($meta || $opt->isForceGroupBy()) {
                         return array_merge([
-                            new QueryExpression("
-                                GROUP_CONCAT(
-                                    DISTINCT ADDDATE(
-                                        `$table$addtable`.`" .  $opt["datafields"][1] . "`,
-                                        INTERVAL (`$table$addtable`.`" . $opt["datafields"][2] . "` $add_minus) $interval
-                                    ) SEPARATOR '" . \Search::LONGSEP . "'
-                                ) AS `{$NAME}`")
+                            QueryFunction::groupConcat(
+                                expression: QueryFunction::addDate(
+                                    date: $DB::quoteName("{$table}{$addtable}.{$opt["datafields"][1]}"),
+                                    interval: $opt['datafields'][2] . $add_minus,
+                                    interval_unit: $interval
+                                ),
+                                separator: $DB::quoteValue(\Search::LONGSEP),
+                                distinct: true,
+                                alias: $DB::quoteName($NAME)
+                            ),
                         ], $ADDITONALFIELDS);
                     }
                     return array_merge([
-                        new QueryExpression("
-                            ADDDATE(
-                                `$table$addtable`.`" .  $opt["datafields"][1] . "`,
-                                INTERVAL (`$table$addtable`.`" . $opt["datafields"][2] . "` $add_minus) $interval
-                            ) AS `{$NAME}`")
+                        QueryFunction::addDate(
+                            date: $DB::quoteName("{$table}{$addtable}.{$opt['datafields'][1]}"),
+                            interval: $DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus,
+                            interval_unit: $interval,
+                            alias: $DB::quoteName($NAME)
+                        ),
                     ], $ADDITONALFIELDS);
 
                 case "itemlink":
                     if ($meta || $opt->isForceGroupBy()) {
                         $TRANS = '';
                         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                            $TRANS = "
-                                GROUP_CONCAT(
-                                    DISTINCT CONCAT(
-                                        IFNULL($tocomputetrans, '" . \Search::NULLVALUE . "'),
-                                        '" . \Search::SHORTSEP . "',$tocomputeid
-                                    ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
-                                ) AS `{$NAME}_trans_{$field}`
-                            ";
+                            $TRANS = QueryFunction::groupConcat(
+                                expression: QueryFunction::concat([
+                                    QueryFunction::ifNull($tocomputetrans, $DB::quoteValue(\Search::NULLVALUE)),
+                                    $DB::quoteValue(\Search::SHORTSEP),
+                                    $tocomputeid
+                                ]),
+                                separator: $DB::quoteValue(\Search::LONGSEP),
+                                distinct: true,
+                                order_by: $tocomputeid,
+                                alias: $DB::quoteName("{$NAME}_trans_{$field}")
+                            );
                         }
                         $SELECT = [
-                            new QueryExpression("
-                                GROUP_CONCAT(
-                                    DISTINCT CONCAT(
-                                        $tocompute, '" . \Search::SHORTSEP . "' ,
-                                        `$table$addtable`.`id`
-                                    ) ORDER BY `$table$addtable`.`id` SEPARATOR '" . \Search::LONGSEP . "'
-                                ) AS `{$NAME}`
-                            ")
+                            QueryFunction::groupConcat(
+                                expression: QueryFunction::concat([
+                                    $tocompute,
+                                    $DB::quoteValue(\Search::SHORTSEP),
+                                    $DB::quoteName("{$table}{$addtable}.id"),
+                                ]),
+                                separator: $DB::quoteValue(\Search::LONGSEP),
+                                distinct: true,
+                                order_by: $DB::quoteName("{$table}{$addtable}.id"),
+                                alias: $DB::quoteName($NAME)
+                            ),
                         ];
                         if (!empty($TRANS)) {
-                            $SELECT[] = new QueryExpression($TRANS);
+                            $SELECT[] = $TRANS;
                         }
                         return array_merge($SELECT, $ADDITONALFIELDS);
                     }
                     return array_merge([
-                        "$tocompute AS `{$NAME}`",
-                        "`$table$addtable`.`id` AS `{$NAME}_id`"
+                        $tocompute . ' AS ' . $DB::quoteName($NAME),
+                        $DB::quoteName("{$table}{$addtable}.id AS {$NAME}_id"),
                     ], $ADDITONALFIELDS);
             }
         }
@@ -502,37 +590,41 @@ final class SQLProvider implements SearchProviderInterface
         ) { // Not specific computation
             $TRANS = '';
             if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                $TRANS = "
-                    GROUP_CONCAT(
-                        DISTINCT CONCAT(
-                            IFNULL($tocomputetrans, '" . \Search::NULLVALUE . "'),
-                            '" . \Search::SHORTSEP . "',
-                            $tocomputeid
-                        ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
-                    ) AS `" . $NAME . "_trans_" . $field . "`,
-                ";
+                $TRANS = QueryFunction::groupConcat(
+                    expression: QueryFunction::concat([
+                        QueryFunction::ifNull($tocomputetrans, $DB::quoteValue(\Search::NULLVALUE)),
+                        $DB::quoteValue(\Search::SHORTSEP),
+                        $tocomputeid
+                    ]),
+                    separator: $DB::quoteValue(\Search::LONGSEP),
+                    distinct: true,
+                    order_by: $tocomputeid,
+                    alias: $DB::quoteName("{$NAME}_trans_{$field}")
+                );
             }
             $SELECT = [
-                new QueryExpression("
-                    GROUP_CONCAT(
-                        DISTINCT CONCAT(
-                            IFNULL($tocompute, '" . \Search::NULLVALUE . "'),
-                            '" . \Search::SHORTSEP . "',
-                            $tocomputeid
-                        ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
-                    ) AS `{$NAME}`
-                ")
+                QueryFunction::groupConcat(
+                    expression: QueryFunction::concat([
+                        QueryFunction::ifNull($tocompute, $DB::quoteValue(\Search::NULLVALUE)),
+                        $DB::quoteValue(\Search::SHORTSEP),
+                        $tocomputeid
+                    ]),
+                    separator: $DB::quoteValue(\Search::LONGSEP),
+                    distinct: true,
+                    order_by: $tocomputeid,
+                    alias: $DB::quoteName($NAME)
+                ),
             ];
             if (!empty($TRANS)) {
-                $SELECT[] = new QueryExpression($TRANS);
+                $SELECT[] = $TRANS;
             }
             return array_merge($SELECT, $ADDITONALFIELDS);
         }
         $SELECT = [
-            "$tocompute AS `{$NAME}`",
+            "$tocompute AS " . $DB::quoteName($NAME),
         ];
         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-            $SELECT[] = $tocomputetrans . " AS `{$NAME}_trans_{$field}`";
+            $SELECT[] = "$tocomputetrans AS " . $DB::quoteName("{$NAME}_trans_{$field}");
         }
         return array_merge($SELECT, $ADDITONALFIELDS);
     }
@@ -551,6 +643,7 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getDefaultWhereCriteria(string $itemtype): array
     {
+        global $DB;
         $criteria = [];
 
         switch ($itemtype) {
@@ -569,7 +662,7 @@ final class SQLProvider implements SearchProviderInterface
             case 'Notification':
                 if (!\Config::canView()) {
                     $criteria = [
-                        'NOT' => ['`glpi_notifications`.`itemtype`' => ['CronTask', 'DBConnection']]
+                        'NOT' => [$DB::quoteName('glpi_notifications.itemtype') => ['CronTask', 'DBConnection']]
                     ];
                 }
                 break;
@@ -587,16 +680,16 @@ final class SQLProvider implements SearchProviderInterface
                 $group_criteria = [];
                 if (count($_SESSION['glpigroups'])) {
                     $group_criteria = [
-                        "`$teamtable`.`itemtype`" => Group::class,
-                        "`$teamtable`.`items_id`" => $_SESSION['glpigroups']
+                        $DB::quoteName("$teamtable.itemtype") => Group::class,
+                        $DB::quoteName("$teamtable.items_id") => $_SESSION['glpigroups']
                     ];
                 }
                 $user_criteria = [
-                    "`$teamtable`.`itemtype`" => User::class,
-                    "`$teamtable`.`items_id`" => Session::getLoginUserID()
+                    $DB::quoteName("$teamtable.itemtype") => User::class,
+                    $DB::quoteName("$teamtable.items_id") => Session::getLoginUserID()
                 ];
                 $criteria = [
-                    "`glpi_projects`.`is_template`" => 0,
+                    $DB::quoteName("glpi_projects.is_template") => 0,
                     'OR' => [
                         $user_criteria
                     ]
@@ -610,18 +703,18 @@ final class SQLProvider implements SearchProviderInterface
                 if (!Session::haveRight("project", \Project::READALL)) {
                     $teamtable  = 'glpi_projectteams';
                     $user_criteria = [
-                        "`$teamtable`.`itemtype`" => User::class,
-                        "`$teamtable`.`items_id`" => Session::getLoginUserID()
+                        $DB::quoteName("$teamtable.itemtype") => User::class,
+                        $DB::quoteName("$teamtable.items_id") => Session::getLoginUserID()
                     ];
                     $group_criteria = [
-                        "`$teamtable`.`itemtype`" => Group::class,
-                        "`$teamtable`.`items_id`" => $_SESSION['glpigroups']
+                        $DB::quoteName("$teamtable.itemtype") => Group::class,
+                        $DB::quoteName("$teamtable.items_id") => $_SESSION['glpigroups']
                     ];
                     $criteria = [
                         "OR" => [
-                            "`glpi_projects`.users_id" => Session::getLoginUserID(),
+                            $DB::quoteName("glpi_projects.users_id") => Session::getLoginUserID(),
                             $user_criteria,
-                            "`glpi_projects`.`groups_id`" => $_SESSION['glpigroups'],
+                            $DB::quoteName("glpi_projects.groups_id") => $_SESSION['glpigroups'],
                             $group_criteria
                         ]
                     ];
@@ -1542,7 +1635,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     if (in_array($searchtype, ["contains", "notcontains"])) {
                         $default_charset = \DBConnection::getDefaultCharset();
-                        $date_computation = "CONVERT($date_computation USING {$default_charset})";
+                        $date_computation = QueryFunction::convert($date_computation, $default_charset);
                     }
                     $search_unit = $opt['searchunit'] ?? 'MONTH';
                     if ($opt["datatype"] === "date_delay") {
@@ -1567,7 +1660,12 @@ final class SQLProvider implements SearchProviderInterface
                     if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                         if (is_numeric($regs[2])) {
                             return [
-                                new QueryExpression("$date_computation " . $regs[1] . "ADDDATE(NOW(), INTERVAL " . $regs[2] . " $search_unit)")
+                                new QueryExpression("$date_computation " .
+                                    QueryFunction::addDate(
+                                        date: QueryFunction::now(),
+                                        interval: $regs[2],
+                                        interval_unit: $search_unit
+                                    ))
                             ];
                         }
                         // ELSE Reformat date if needed
@@ -3247,7 +3345,7 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getOrderByCriteria(string $itemtype, array $sort_fields): array
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         $orderby_criteria = [];
         $searchopt = SearchOption::getOptionsForItemtype($itemtype);
@@ -3382,10 +3480,11 @@ final class SQLProvider implements SearchProviderInterface
                         if (isset($searchopt[$ID]["datafields"][3])) {
                             $add_minus = "- `$table$addtable`.`" . $searchopt[$ID]["datafields"][3] . "`";
                         }
-                        $criterion = "ADDDATE(`$table$addtable`.`" . $searchopt[$ID]["datafields"][1] . "`,
-                                         INTERVAL (`$table$addtable`.`" .
-                            $searchopt[$ID]["datafields"][2] . "` $add_minus)
-                                         $interval) $order";
+                        $criterion = QueryFunction::addDate(
+                                date: $DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}"),
+                                interval: $DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus",
+                                interval_unit: $interval,
+                            ) . " $order";
                 }
             }
 
