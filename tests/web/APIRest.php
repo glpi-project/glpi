@@ -337,6 +337,120 @@ class APIRest extends APIBaseClass
 
     /**
      * @tags    api
+     * @covers  API::CreateItems
+     */
+    public function testCreateTicketWithoutDefaultRequesterOrAssign()
+    {
+        //change user pref
+        $data = $this->query(
+            'updateItems',
+            ['itemtype' => 'User',
+                'id'       =>  getItemByTypeName('User', TU_USER, true),
+                'verb'     => 'PUT',
+                'headers'  => [
+                    'Session-Token' => $this->session_token
+                ],
+                'json'     => [
+                    'input' => [
+                        'set_default_tech' => false,
+                        'set_default_requester' => false
+                    ]
+                ]
+            ]
+        );
+
+        $this->variable($data)->isNotFalse();
+
+        //create ticket
+        $data = $this->query(
+            'createItems',
+            ['verb'     => 'POST',
+                'itemtype' => 'Ticket',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input' => [
+                        [
+                            'name' => "Ticket test",
+                            'content' => "Ticket test"
+                        ]
+                    ]
+                ]
+            ],
+            201
+        );
+
+        $this->variable($data)->isNotFalse();
+
+        $ticket_input = $data[0];
+
+        $this->array($ticket_input)
+         ->hasKey('id')
+         ->hasKey('message');
+
+        $this->boolean(is_numeric($ticket_input['id']))->isTrue();
+
+        $this->integer((int)$ticket_input['id'])->isGreaterThanOrEqualTo(0);
+
+        $ticket = new \Ticket();
+        $this->boolean((bool)$ticket->getFromDB($ticket_input['id']))->isTrue();
+
+        $ticket_user = new \Ticket_User();
+        $requester = $ticket_user->find(['tickets_id' => $ticket_input['id'], 'type' => \CommonITILActor::REQUESTER]);
+        $this->integer(count($requester))->isIdenticalTo(0);
+
+        $assign = $ticket_user->find(['tickets_id' => $ticket_input['id'], 'type' => \CommonITILActor::ASSIGN]);
+        $this->integer(count($assign))->isIdenticalTo(0);
+    }
+
+    /**
+     * @tags    api
+     * @covers  API::CreateItems
+     */
+    public function testCreateTicketWithDefaultRequesterOrAssign()
+    {
+        $data = $this->query(
+            'createItems',
+            ['verb'     => 'POST',
+                'itemtype' => 'Ticket',
+                'headers'  => ['Session-Token' => $this->session_token],
+                'json'     => [
+                    'input' => [
+                        [
+                            'name' => "Ticket test",
+                            'content' => "Ticket test"
+                        ]
+                    ]
+                ]
+            ],
+            201
+        );
+
+        $this->variable($data)->isNotFalse();
+
+        $ticket_input = $data[0];
+
+        $this->array($ticket_input)
+         ->hasKey('id')
+         ->hasKey('message');
+
+        $this->boolean(is_numeric($ticket_input['id']))->isTrue();
+
+        $this->integer((int)$ticket_input['id'])->isGreaterThanOrEqualTo(0);
+
+        $ticket = new \Ticket();
+        $this->boolean((bool)$ticket->getFromDB($ticket_input['id']))->isTrue();
+
+
+        $ticket_user = new \Ticket_User();
+        $requester = $ticket_user->find(['tickets_id' => $ticket_input['id'], 'type' => \CommonITILActor::REQUESTER]);
+        $this->integer(count($requester))->isIdenticalTo(1);
+
+        $assign = $ticket_user->find(['tickets_id' => $ticket_input['id'], 'type' => \CommonITILActor::ASSIGN]);
+        $this->integer(count($assign))->isIdenticalTo(1);
+    }
+
+    /**
+     * @tags    api
      */
     public function testUpdateItemWithIdInQueryString()
     {
