@@ -554,10 +554,8 @@ JAVASCRIPT;
                 'resourceId'  => $data['itemtype'] . "-" . $data['items_id'],
                 'start'       => $data['begin'],
                 'end'         => $data['end'],
-                'comment'     => $data['comment'] .
-                             $canedit_admin || $my_item
-                              ? "\n" . sprintf(__("Reserved by %s"), $username)
-                              : "",
+                'comment'     => $data['comment'],
+                'username'    => ($canedit_admin || $my_item) ? $username : "",
                 'title'       => $params['reservationitems_id'] ? "" : $name,
                 'icon'        => $item->getIcon(),
                 'description' => $item->getTypeName(),
