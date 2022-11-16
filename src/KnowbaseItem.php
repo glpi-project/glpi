@@ -1471,15 +1471,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'SELECT' => [
                 'glpi_knowbaseitems.*',
                 'glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id',
-                new QueryExpression(
-                    'GROUP_CONCAT(DISTINCT ' . $DB->quoteName('glpi_knowbaseitemcategories.completename') . ') AS category'
+                QueryFunction::groupConcat(
+                    expression: $DB::quoteName('glpi_knowbaseitemcategories.completename'),
+                    distinct: true,
+                    alias: $DB::quoteName('category')
                 ),
                 new QueryExpression(
-                    'COUNT(' . $DB->quoteName('glpi_knowbaseitems_users.id') . ')' .
-                    ' + COUNT(' . $DB->quoteName('glpi_groups_knowbaseitems.id') . ')' .
-                    ' + COUNT(' . $DB->quoteName('glpi_knowbaseitems_profiles.id') . ')' .
-                    ' + COUNT(' . $DB->quoteName('glpi_entities_knowbaseitems.id') . ') AS ' .
-                    $DB->quoteName('visibility_count')
+                    QueryFunction::count($DB::quoteName('glpi_knowbaseitems_users.id')) . ' + ' .
+                    QueryFunction::count($DB::quoteName('glpi_groups_knowbaseitems.id')) . ' + ' .
+                    QueryFunction::count($DB::quoteName('glpi_knowbaseitems_profiles.id')) . ' + ' .
+                    QueryFunction::count($DB::quoteName('glpi_entities_knowbaseitems.id')) . ' AS ' .
+                    $DB::quoteName('visibility_count')
                 )
             ],
             'FROM'   => 'glpi_knowbaseitems',

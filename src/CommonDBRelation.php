@@ -129,10 +129,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
         if ($request === true) {
             $conditions[] = $where1;
-            $it = new \DBmysqlIterator($DB);
-            $fields[]     = new \QueryExpression(
-                'IF(' . $it->analyseCrit($where1) . ', 1, 0) AS is_1'
-            );
+            $fields[] = QueryFunction::if($where1, 1, 0, $DB::quoteName('is_1'));
         } else {
             $fields[] = new \QueryExpression('0 AS is_1');
         }
@@ -157,10 +154,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
         if ($request === true) {
             $conditions[] = $where2;
-            $it = new \DBmysqlIterator($DB);
-            $fields[]     = new \QueryExpression(
-                'IF(' . $it->analyseCrit($where2) . ', 1, 0) AS is_2'
-            );
+            $fields[] = QueryFunction::if($where2, 1, 0, $DB::quoteName('is_2'));
         } else {
             $fields[] = new \QueryExpression('0 AS is_2');
         }

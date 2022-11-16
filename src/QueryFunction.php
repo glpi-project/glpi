@@ -80,6 +80,43 @@ class QueryFunction
             );
             $output .= $alias;
             return $output;
+        } else if ($this->name === 'GROUP_CONCAT') {
+            [$expression, $separator, $distinct, $order_by] = $parameters;
+            $output = 'GROUP_CONCAT(';
+            if ($distinct) {
+                $output .= 'DISTINCT ';
+            }
+            $output .= $expression;
+            if ($order_by) {
+                $output .= ' ORDER BY ' . $order_by;
+            }
+            if ($separator) {
+                $output .= ' SEPARATOR ' . $separator;
+            }
+            $output .= ')' . $alias;
+            return $output;
+        } else if ($this->name === 'COUNT') {
+            [$expression, $distinct] = $parameters;
+            $output = 'COUNT(';
+            if ($distinct) {
+                $output .= 'DISTINCT ';
+            }
+            $output .= $expression . ')' . $alias;
+            return $output;
+        } else if ($this->name === 'SUM') {
+            [$expression, $distinct] = $parameters;
+            $output = 'SUM(';
+            if ($distinct) {
+                $output .= 'DISTINCT ';
+            }
+            $output .= $expression . ')' . $alias;
+            return $output;
+        } else if ($this->name === 'CAST') {
+            [$expression, $type] = $parameters;
+            return 'CAST(' . $expression . ' AS ' . $type . ')' . $alias;
+        } else if ($this->name === 'CONVERT') {
+            [$expression, $transcoding] = $parameters;
+            return 'CONVERT(' . $expression . ' USING ' . $transcoding . ')' . $alias;
         }
 
         return $this->name . '(' . implode(', ', $parameters) . ')' . $alias;
@@ -113,5 +150,279 @@ class QueryFunction
     public static function addDate(string $date, string $interval, string $interval_unit, ?string $alias = null): self
     {
         return new self('ADDDATE', [$date, $interval, $interval_unit], $alias);
+    }
+
+    /**
+     * Build an IF SQL function call
+     * @param string|array $condition Condition to test
+     * @param string $true_expression Expression to return if condition is true
+     * @param string $false_expression Expression to return if condition is false
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function if(string|array $condition, string $true_expression, string $false_expression, ?string $alias = null): self
+    {
+        if (is_array($condition)) {
+            $condition = (new DBmysqlIterator(null))->analyseCrit($condition);
+        }
+        return new self('IF', [$condition, $true_expression, $false_expression], $alias);
+    }
+
+    /**
+     * Build an IFNULL SQL function call
+     * Parameters must be already quoted if needed with {@link DBmysql::quote()} or {@link DBmysql::quoteName()}
+     * @param string $expression Expression to check
+     * @param string $value Value to return if expression is null
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function ifNull(string $expression, string $value, ?string $alias = null): self
+    {
+        return new self('IFNULL', [$expression, $value], $alias);
+    }
+
+    /**
+     * Build a GROUP_CONCAT SQL function call
+     * @param string $expression Expression to group
+     * @param string|null $separator Separator to use
+     * @param bool $distinct Use DISTINCT or not
+     * @param string|null $order_by Order by clause
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function groupConcat(string $expression, ?string $separator = null, bool $distinct = false, ?string $order_by = null, ?string $alias = null): self
+    {
+        return new self('GROUP_CONCAT', [$expression, $separator, $distinct, $order_by], $alias);
+    }
+
+    /**
+     * Build a FLOOR SQL function call
+     * @param string $expression Expression to floor
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function floor(string $expression, ?string $alias = null): self
+    {
+        return new self('FLOOR', [$expression], $alias);
+    }
+
+    /**
+     * Build a SUM SQL function call
+     * @param string $expression Expression to sum
+     * @param bool $distinct Use DISTINCT or not
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function sum(string $expression, bool $distinct = false, ?string $alias = null): self
+    {
+        return new self('SUM', [$expression, $distinct], $alias);
+    }
+
+    /**
+     * Build a COUNT SQL function call
+     * @param string $expression Expression to count
+     * @param bool $distinct Use DISTINCT or not
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function count(string $expression, bool $distinct = false, ?string $alias = null): self
+    {
+        return new self('COUNT', [$expression, $distinct], $alias);
+    }
+
+    /**
+     * Build a MIN SQL function call
+     * @param string $expression Expression to get min value
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function min(string $expression, ?string $alias = null): self
+    {
+        return new self('MIN', [$expression], $alias);
+    }
+
+    /**
+     * Build an AVG SQL function call
+     * @param string $expression Expression to get average value
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function avg(string $expression, ?string $alias = null): self
+    {
+        return new self('AVG', [$expression], $alias);
+    }
+
+    /**
+     * Build a CAST SQL function call
+     * @param string $expression Expression to cast
+     * @param string $type Type to cast to
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function cast(string $expression, string $type, ?string $alias = null): self
+    {
+        return new self('CAST', [$expression, $type], $alias);
+    }
+
+    /**
+     * Build a CONVERT SQL function call
+     * @param string $expression Expression to convert
+     * @param string $transcoding Transcoding to use
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function convert(string $expression, string $transcoding, ?string $alias = null): self
+    {
+        return new self('CONVERT', [$expression, $transcoding], $alias);
+    }
+
+    /**
+     * Build a NOW SQL function call
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function now(?string $alias = null): self
+    {
+        return new self('NOW', [], $alias);
+    }
+
+    /**
+     * Build a LOWER SQL function call
+     * @param string $expression Expression to convert
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function lower(string $expression, ?string $alias = null): self
+    {
+        return new self('LOWER', [$expression], $alias);
+    }
+
+    /**
+     * Build a REPLACE SQL function call
+     * @param string $expression Expression to search in
+     * @param string $search String to search
+     * @param string $replace  String to replace
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function replace(string $expression, string $search, string $replace, ?string $alias = null): self
+    {
+        return new self('REPLACE', [$expression, $search, $replace], $alias);
+    }
+
+    /**
+     * Build a UNIX_TIMESTAMP SQL function call
+     * @param string $expression Expression to convert
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function unixTimestamp(string $expression, ?string $alias = null): self
+    {
+        return new self('UNIX_TIMESTAMP', [$expression], $alias);
+    }
+
+    /**
+     * Build a FROM_UNIXTIME SQL function call
+     * @param string $expression Expression to convert
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function fromUnixTimestamp(string $expression, string $format, ?string $alias = null): self
+    {
+        return new self('FROM_UNIXTIME', [$expression, $format], $alias);
+    }
+
+    /**
+     * Build a DATE_FORMAT SQL function call
+     * @param string $expression Expression to format
+     * @param string $format Format to use
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function dateFormat(string $expression, string $format, ?string $alias = null): self
+    {
+        return new self('DATE_FORMAT', [$expression, $format], $alias);
+    }
+
+    /**
+     * Build a LPAD SQL function call
+     * @param string $expression Expression to pad
+     * @param string $length Length to pad to
+     * @param string $pad_string String to pad with
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function lpad(string $expression, string $length, string $pad_string, ?string $alias = null): self
+    {
+        return new self('LPAD', [$expression, $length, $pad_string], $alias);
+    }
+
+    /**
+     * Buidl a ROUND SQL function call
+     * @param string $expression Expression to round
+     * @param int $precision Precision to round to
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function round(string $expression, int $precision = 0, ?string $alias = null): self
+    {
+        return new self('ROUND', [$expression, $precision], $alias);
+    }
+
+    /**
+     * Build a NULLIF SQL function call
+     * @param string $expression Expression to check
+     * @param string $value Value to check against
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function nullIf(string $expression, string $value, ?string $alias = null): self
+    {
+        return new self('NULLIF', [$expression, $value], $alias);
+    }
+
+    /**
+     * Build a COALESCE SQL function call
+     * @param array $params Parameters to check
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function coalesce(array $params, ?string $alias = null): self
+    {
+        return new self('COALESCE', $params, $alias);
+    }
+
+    /**
+     * Build a LEAST SQL function call
+     * @param array $params Parameters to check
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function least(array $params, ?string $alias = null): self
+    {
+        return new self('LEAST', $params, $alias);
+    }
+
+    /**
+     * Build a TIMESTAMPDIFF SQL function call
+     * @param string $unit Unit to use
+     * @param string $expression1 Expression to compare
+     * @param string $expression2 Expression to compare
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function timestampDiff(string $unit, string $expression1, string $expression2, ?string $alias = null): self
+    {
+        return new self('TIMESTAMPDIFF', [$unit, $expression1, $expression2], $alias);
+    }
+
+    public static function bitCount(string $expression, ?string $alias = null): self
+    {
+        return new self('BIT_COUNT', [$expression], $alias);
+    }
+
+    public static function dateDiff(string $expression1, string $expression2, ?string $alias = null): self
+    {
+        return new self('DATEDIFF', [$expression1, $expression2], $alias);
     }
 }

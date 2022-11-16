@@ -30,6 +30,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- `QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 
 #### Changes
 - `chartist` library has been replaced by `echarts`.
@@ -80,6 +81,7 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`
 - `Toolbox::seems_utf8()`
 - `Search::getOptions()` no longer returns a reference
+- Use of raw SQL function strings. Use `QueryFunction` static methods instead.
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.

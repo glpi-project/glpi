@@ -73,4 +73,424 @@ class QueryFunction extends \GLPITestCase
     {
         $this->string((string) \QueryFunction::concat($params, $alias))->isIdenticalTo($expected);
     }
+
+    protected function ifProvider()
+    {
+        return [
+            ['`glpi_computers`.`is_deleted`', "'deleted'", "'not deleted'", null, "IF(`glpi_computers`.`is_deleted`, 'deleted', 'not deleted')"],
+            ['`glpi_computers`.`is_deleted`', "'deleted'", "'not deleted'", '`if_alias`', "IF(`glpi_computers`.`is_deleted`, 'deleted', 'not deleted') AS `if_alias`"],
+            ['`glpi_computers`.`is_deleted`', '`glpi_computers`.`name`', "'not deleted'", null, "IF(`glpi_computers`.`is_deleted`, `glpi_computers`.`name`, 'not deleted')"],
+            ['`glpi_computers`.`is_deleted`', '`glpi_computers`.`name`', "'not deleted'", '`if_alias`', "IF(`glpi_computers`.`is_deleted`, `glpi_computers`.`name`, 'not deleted') AS `if_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider ifProvider
+     */
+    public function testIf($condition, $true, $false, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::if($condition, $true, $false, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function ifNullProvider()
+    {
+        return [
+            ['`glpi_computers`.`name`', "'unknown'", null, "IFNULL(`glpi_computers`.`name`, 'unknown')"],
+            ['`glpi_computers`.`name`', "'unknown'", '`ifnull_alias`', "IFNULL(`glpi_computers`.`name`, 'unknown') AS `ifnull_alias`"],
+            ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', null, "IFNULL(`glpi_computers`.`name`, `glpi_computers`.`serial`)"],
+            ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', '`ifnull_alias`', "IFNULL(`glpi_computers`.`name`, `glpi_computers`.`serial`) AS `ifnull_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider ifNullProvider
+     */
+    public function testIfNUll($expression, $value, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::ifNull($expression, $value, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function groupConcatProvider()
+    {
+        return [
+            [
+                'expression' => '`glpi_computers`.`name`',
+                'separator' => '',
+                'distinct' => false,
+                'order_by' => null,
+                'alias' => null,
+                'expected' => "GROUP_CONCAT(`glpi_computers`.`name`)"
+            ],
+            [
+                'expression' => '`glpi_computers`.`name`',
+                'separator' => "'_'",
+                'distinct' => false,
+                'order_by' => null,
+                'alias' => null,
+                'expected' => "GROUP_CONCAT(`glpi_computers`.`name` SEPARATOR '_')"
+            ],
+            [
+                'expression' => '`glpi_computers`.`name`',
+                'separator' => "'_'",
+                'distinct' => true,
+                'order_by' => null,
+                'alias' => null,
+                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` SEPARATOR '_')"
+            ],
+            [
+                'expression' => '`glpi_computers`.`name`',
+                'separator' => "'_'",
+                'distinct' => true,
+                'order_by' => '`glpi_computers`.`is_deleted`',
+                'alias' => null,
+                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` ORDER BY `glpi_computers`.`is_deleted` SEPARATOR '_')"
+            ],
+            [
+                'expression' => '`glpi_computers`.`name`',
+                'separator' => "'_'",
+                'distinct' => true,
+                'order_by' => '`glpi_computers`.`is_deleted`',
+                'alias' => '`group_concat_alias`',
+                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` ORDER BY `glpi_computers`.`is_deleted` SEPARATOR '_') AS `group_concat_alias`"
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider groupConcatProvider
+     */
+    public function testGroupConcat($expression, $separator, $distinct, $order_by, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::groupConcat($expression, $separator, $distinct, $order_by, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function floorProvider()
+    {
+        return [
+            ['`glpi_computers`.`name`', null, "FLOOR(`glpi_computers`.`name`)"],
+            ['`glpi_computers`.`name`', '`floor_alias`', "FLOOR(`glpi_computers`.`name`) AS `floor_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider floorProvider
+     */
+    public function testFloor($expression, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::floor($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function sumProvider()
+    {
+        return [
+            ['`glpi_computers`.`name`', false, null, "SUM(`glpi_computers`.`name`)"],
+            ['`glpi_computers`.`name`', false, '`sum_alias`', "SUM(`glpi_computers`.`name`) AS `sum_alias`"],
+            ['`glpi_computers`.`name`', true, null, "SUM(DISTINCT `glpi_computers`.`name`)"],
+            ['`glpi_computers`.`name`', true, '`sum_alias`', "SUM(DISTINCT `glpi_computers`.`name`) AS `sum_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider sumProvider
+     */
+    public function testSum($expression, $distinct, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::sum($expression, $distinct, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function countProvider()
+    {
+        return [
+            ['`glpi_computers`.`name`', false, null, "COUNT(`glpi_computers`.`name`)"],
+            ['`glpi_computers`.`name`', false, '`count_alias`', "COUNT(`glpi_computers`.`name`) AS `count_alias`"],
+            ['`glpi_computers`.`name`', true, null, "COUNT(DISTINCT `glpi_computers`.`name`)"],
+            ['`glpi_computers`.`name`', true, '`count_alias`', "COUNT(DISTINCT `glpi_computers`.`name`) AS `count_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider countProvider
+     */
+    public function testCount($expression, $distinct, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::count($expression, $distinct, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function minProvider()
+    {
+        return [
+            ['`glpi_computers`.`uuid`', null, "MIN(`glpi_computers`.`uuid`)"],
+            ['`glpi_computers`.`uuid`', '`min_alias`', "MIN(`glpi_computers`.`uuid`) AS `min_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider minProvider
+     */
+    public function testMin($expression, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::min($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function avgProvider()
+    {
+        return [
+            ['`glpi_tickets`.`waiting_duration`', null, "AVG(`glpi_tickets`.`waiting_duration`)"],
+            ['`glpi_tickets`.`waiting_duration`', '`avg_alias`', "AVG(`glpi_tickets`.`waiting_duration`) AS `avg_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider avgProvider
+     */
+    public function testAvg($expression, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::avg($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function castProvider()
+    {
+        return [
+            ['`glpi_computers`.`serial`', 'INT', null, "CAST(`glpi_computers`.`serial` AS INT)"],
+            ['`glpi_computers`.`serial`', 'INT', '`cast_alias`', "CAST(`glpi_computers`.`serial` AS INT) AS `cast_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider castProvider
+     */
+    public function testCast($expression, $type, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::cast($expression, $type, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function convertProvider()
+    {
+        return [
+            ['`glpi_computers`.`name`', 'utf8mb4', null, "CONVERT(`glpi_computers`.`name` USING utf8mb4)"],
+            ['`glpi_computers`.`name`', 'utf8mb4', '`convert_alias`', "CONVERT(`glpi_computers`.`name` USING utf8mb4) AS `convert_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider convertProvider
+     */
+    public function testConvert($expression, $transcoding, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::convert($expression, $transcoding, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function nowProvider()
+    {
+        return [
+            [null, "NOW()"],
+            ['`now_alias`', "NOW() AS `now_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider nowProvider
+     */
+    public function testNow($alias, $expected)
+    {
+        $this->string((string) \QueryFunction::now($alias))->isIdenticalTo($expected);
+    }
+
+    protected function lowerProvider()
+    {
+        return [
+            ['`glpi_computers`.`name`', null, "LOWER(`glpi_computers`.`name`)"],
+            ['`glpi_computers`.`name`', '`lower_alias`', "LOWER(`glpi_computers`.`name`) AS `lower_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider lowerProvider
+     */
+    public function testLower($expression, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::lower($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function replaceProvider()
+    {
+        return [
+            ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', '`glpi_computers`.`otherserial`', null, "REPLACE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`)"],
+            ['`glpi_computers`.`name`', '`glpi_computers`.`serial`', '`glpi_computers`.`otherserial`', '`replace_alias`', "REPLACE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`) AS `replace_alias`"],
+            ['`glpi_computers`.`name`', "'test'", '`glpi_computers`.`otherserial`', null, "REPLACE(`glpi_computers`.`name`, 'test', `glpi_computers`.`otherserial`)"],
+            ['`glpi_computers`.`name`', "'test'", '`glpi_computers`.`otherserial`', '`replace_alias`', "REPLACE(`glpi_computers`.`name`, 'test', `glpi_computers`.`otherserial`) AS `replace_alias`"],
+            ['`glpi_computers`.`name`', "'test'", "'test2'", null, "REPLACE(`glpi_computers`.`name`, 'test', 'test2')"],
+            ['`glpi_computers`.`name`', "'test'", "'test2'", '`replace_alias`', "REPLACE(`glpi_computers`.`name`, 'test', 'test2') AS `replace_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider replaceProvider
+     */
+    public function testReplace($expression, $search, $replace, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::replace($expression, $search, $replace, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function unixTimestampProvider()
+    {
+        return [
+            ['`glpi_computers`.`date_mod`', null, "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`)"],
+            ['`glpi_computers`.`date_mod`', '`unix_timestamp_alias`', "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`) AS `unix_timestamp_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider unixTimestampProvider
+     */
+    public function testUnixTimestamp($expression, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::unixTimestamp($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function fromUnixTimestampProvider()
+    {
+        return [
+            ['`glpi_computers`.`date_mod`', null, "FROM_UNIXTIME(`glpi_computers`.`date_mod`)"],
+            ['`glpi_computers`.`date_mod`', '`from_unix_timestamp_alias`', "FROM_UNIXTIME(`glpi_computers`.`date_mod`) AS `from_unix_timestamp_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider fromUnixTimestampProvider
+     */
+    public function testFromUnixTimestamp($expression, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::fromUnixTimestamp($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function dateFormatProvider()
+    {
+        return [
+            ['`glpi_computers`.`date_mod`', '%Y-%m-%d', null, "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d')"],
+            ['`glpi_computers`.`date_mod`', '%Y-%m-%d', '`date_format_alias`', "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `date_format_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider dateFormatProvider
+     */
+    public function testDateFormat($expression, $format, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::dateFormat($expression, $format, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function coalesceProvider()
+    {
+        return [
+            [
+                'params' => [
+                    '`glpi_computers`.`name`',
+                    '`glpi_computers`.`serial`',
+                    '`glpi_computers`.`otherserial`',
+                ],
+                'alias' => null,
+                'expected' => "COALESCE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`)",
+            ],
+            [
+                'params' => [
+                    '`glpi_computers`.`name`',
+                    '`glpi_computers`.`serial`',
+                    '`glpi_computers`.`otherserial`',
+                ],
+                'alias' => '`coalesce_alias`',
+                'expected' => "COALESCE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`) AS `coalesce_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider coalesceProvider
+     */
+    public function testCoalesce($params, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::coalesce($params, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function leastProvider()
+    {
+        return [
+            [
+                'params' => [
+                    '`glpi_computers`.`date_mod`',
+                    '`glpi_computers`.`date_creation`',
+                ],
+                'alias' => null,
+                'expected' => "LEAST(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`)",
+            ],
+            [
+                'params' => [
+                    '`glpi_computers`.`date_mod`',
+                    '`glpi_computers`.`date_creation`',
+                ],
+                'alias' => '`least_alias`',
+                'expected' => "LEAST(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `least_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider leastProvider
+     */
+    public function testLeast($params, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::least($params, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function timestampDiffProvider()
+    {
+        return [
+            [
+                'unit' => 'SECOND',
+                'date1' => '`glpi_computers`.`date_mod`',
+                'date2' => '`glpi_computers`.`date_creation`',
+                'alias' => null,
+                'expected' => "TIMESTAMPDIFF(SECOND, `glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`)",
+            ],
+            [
+                'unit' => 'SECOND',
+                'date1' => '`glpi_computers`.`date_mod`',
+                'date2' => '`glpi_computers`.`date_creation`',
+                'alias' => '`timestampdiff_alias`',
+                'expected' => "TIMESTAMPDIFF(SECOND, `glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `timestampdiff_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider timestampDiffProvider
+     */
+    public function testTimestampDiff($unit, $expression1, $expression2, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::timestampDiff($unit, $expression1, $expression2, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function bitCountProvider()
+    {
+        return [
+            [
+                'expression' => '`glpi_ipnetworks`.`netmask_0`',
+                'alias' => null,
+                'expected' => "BIT_COUNT(`glpi_ipnetworks`.`netmask_0`)",
+            ],
+            [
+                'expression' => '`glpi_ipnetworks`.`netmask_0`',
+                'alias' => '`bit_count_alias`',
+                'expected' => "BIT_COUNT(`glpi_ipnetworks`.`netmask_0`) AS `bit_count_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider bitCountProvider
+     */
+    public function testBitCount($expression, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::bitCount($expression, $alias))->isIdenticalTo($expected);
+    }
 }
