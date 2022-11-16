@@ -434,6 +434,7 @@ var Dashboard = {
             var widgetdom   = $(this);
             var widgettype  = widgetdom.val();
             var widget      = Dashboard.all_widgets[widgettype];
+            var haspalette  = widget.haspalette || false;
             var usegradient = widget.gradient || false;
             var pointlabels = widget.pointlbl || false;
             var uselimit    = widget.limit || false;
@@ -441,6 +442,7 @@ var Dashboard = {
             var height      = widget.height || 2;
 
             var form = widgetdom.closest('.display-widget-form');
+            form.find('.palette_field').toggle(haspalette);
             form.find('.gradient_field').toggle(usegradient);
             form.find('.pointlbl_field').toggle(pointlabels);
             form.find('.limit_field').toggle(uselimit);
@@ -503,7 +505,6 @@ var Dashboard = {
         // prepare options
         form_data.card_options.color        = form_data.color || null;
         form_data.card_options.widgettype   = form_data.widgettype || null;
-        form_data.card_options.palette      = form_data.palette || null;
         form_data.card_options.use_gradient = form_data.use_gradient || 0;
         form_data.card_options.palette      = form_data.palette || '';
         form_data.card_options.labels       = form_data.labels || 0;
