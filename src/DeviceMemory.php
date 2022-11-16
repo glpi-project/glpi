@@ -257,10 +257,10 @@ class DeviceMemory extends CommonDevice
             'width'              => 100,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            '(SUM(' . $DB->quoteName('TABLE.size') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . '))
-            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
+            'computation'        => '(' .
+                QueryFunction::sum($DB::quoteName('TABLE.size')) . '/' .
+                QueryFunction::count($DB::quoteName('TABLE.id')) . ') * ' .
+                QueryFunction::count($DB::quoteName('TABLE.id'),true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

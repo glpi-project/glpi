@@ -3217,9 +3217,13 @@ JAVASCRIPT;
                     $criteria = [
                         'SELECT' => [
                             "$table.entities_id",
-                            new \QueryExpression(
-                                "CONCAT(IFNULL(" . $DB->quoteName('name') . ",''),' ',IFNULL(" .
-                                $DB->quoteName('firstname') . ",'')) AS " . $DB->quoteName($field)
+                            QueryFunction::concat(
+                                params: [
+                                    QueryFunction::ifNull($DB::quoteName('name'), $DB::quoteValue('')),
+                                    $DB::quoteValue(' '),
+                                    QueryFunction::ifNull($DB::quoteName('firstname'), $DB::quoteValue(''))
+                                ],
+                                alias: $DB::quoteName($field)
                             ),
                             "$table.comment",
                             "$table.id"
@@ -3232,7 +3236,9 @@ JAVASCRIPT;
                     $criteria = [
                         'SELECT' => [
                             "$table.*",
-                            new \QueryExpression("CONCAT(glpi_softwares.name,' - ',glpi_softwarelicenses.name) AS $field")
+                            QueryFunction::concat(
+                                params: [$DB::quoteName('glpi_softwares.name'), $DB::quoteValue(' - '), $DB::quoteName('glpi_softwarelicenses.name')],
+                                alias: $DB::quoteName($field)),
                         ],
                         'FROM'   => $table,
                         'LEFT JOIN' => [

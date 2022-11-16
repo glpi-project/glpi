@@ -80,6 +80,8 @@ class RuleImportAssetCollection extends RuleCollection
 
     public function collectionFilter($criteria, $options = [])
     {
+        global $DB;
+
        //current tab
         $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());
         $current_tab = str_replace(__CLASS__ . '$', '', $active_tab);
@@ -107,7 +109,18 @@ class RuleImportAssetCollection extends RuleCollection
             if (!is_array($criteria['SELECT'])) {
                 $criteria['SELECT'] = [$criteria['SELECT']];
             }
-            $criteria['SELECT'][] = new QueryExpression("COUNT(IF(crit.criteria = 'itemtype', IF(crit.pattern IN ('" . implode("', '", array_keys($tabs)) . "'), 1, NULL), NULL)) AS is_itemtype");
+            $criteria['SELECT'][] = QueryFunction::count(
+                expression: QueryFunction::if(
+                    condition: $DB::quoteName('crit.criteria') . ' = ' . $DB::quoteValue('itemtype'),
+                    true_expression: QueryFunction::if(
+                        condition: $DB::quoteName('crit.pattern') . ' IN (' . implode(', ', array_map(static fn ($k) => $DB::quoteValue($k), array_keys($tabs))) . ')',
+                        true_expression: 1,
+                        false_expression: null
+                    ),
+                    false_expression: null
+                ),
+                alias: $DB::quoteName('is_itemtype')
+            );
             $where = [];
             $criteria['HAVING'] = ['is_itemtype' => 0];
         }

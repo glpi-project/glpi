@@ -53,6 +53,7 @@ use ITILCategory;
 use Problem;
 use Profile_User;
 use QueryExpression;
+use QueryFunction;
 use QuerySubQuery;
 use Session;
 use Stat;
@@ -449,9 +450,9 @@ class Provider
     }
 
 
-    public static function nbTicketsByAgreementStatusAndTechnician(
-        array $params = []
-    ): array {
+    public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array {
+        global $DB;
+
         $DBread = DBConnection::getReadConnection();
 
         $default_params = [
@@ -469,7 +470,19 @@ class Provider
 
         $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
         $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
-        $slaState = "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))";
+        $slaState = QueryFunction::if(
+            condition: new QueryExpression("$ownExceeded AND $resolveExceeded"),
+            true_expression: 3,
+            false_expression: QueryFunction::if(
+                condition: $resolveExceeded,
+                true_expression: 2,
+                false_expression: QueryFunction::if(
+                    condition: $ownExceeded,
+                    true_expression: 1,
+                    false_expression: 0
+                )
+            )
+        );
         $config = Config::getConfigurationValues('core');
         if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
             $first = "firstname";
@@ -479,7 +492,7 @@ class Provider
             $second = "firstname";
         }
 
-        $friendlyName = "CONCAT(`$userTable`.$first, ' ', `$userTable`.$second)";
+        $friendlyName = QueryFunction::concat([$DB::quoteName("{$userTable}.{$first}"), $DB::quoteValue(' '), $DB::quoteName("{$userTable}.{$second}")]);
         $query_criteria = [
             'COUNT' => 'cpt',
             'SELECT'    => [
@@ -965,7 +978,7 @@ class Provider
             [
                 'SELECT' => [
                     'COUNT DISTINCT' => "$t_table.id as nb_tickets",
-                    new QueryExpression("DATE_FORMAT(" . $DB->quoteName("date") . ", '%Y-%m') AS ticket_month")
+                    QueryFunction::dateFormat($DB::quoteName('date'), $DB::quoteValue('%Y-%m'), $DB::quoteName('ticket_month')),
                 ],
                 'FROM'    => $t_table,
                 'WHERE'    => [
@@ -1242,32 +1255,58 @@ class Provider
 
         $criteria = [
             'SELECT'   => [
-                new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("{$t_table}_distinct.date") . "),'%Y-%m') AS period"
+                QueryFunction::fromUnixTimestamp(
+                    expression: QueryFunction::unixTimestamp($DB::quoteName("{$t_table}_distinct.date")),
+                    format: '%Y-%m',
+                    alias: $DB::quoteName('period')
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::INCOMING . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'New'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: "$t_table.status = " . Ticket::INCOMING,
+                        true_expression: 1,
+                        false_expression: 0
+                    ),
+                    alias: $DB::quoteValue(_x('status', 'New'))
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::ASSIGNED . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'Processing (assigned)'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: "$t_table.status = " . Ticket::ASSIGNED,
+                        true_expression: 1,
+                        false_expression: 0
+                    ),
+                    alias: $DB::quoteValue(_x('status', 'Processing (assigned)'))
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::PLANNED . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'Processing (planned)'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: "$t_table.status = " . Ticket::PLANNED,
+                        true_expression: 1,
+                        false_expression: 0
+                    ),
+                    alias: $DB::quoteValue(_x('status', 'Processing (planned)'))
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::WAITING . ", 1, 0))
-                  as " . $DB->quoteValue(__('Pending'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: "$t_table.status = " . Ticket::WAITING,
+                        true_expression: 1,
+                        false_expression: 0
+                    ),
+                    alias: $DB::quoteValue(__('Pending'))
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::SOLVED . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'Solved'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: "$t_table.status = " . Ticket::SOLVED,
+                        true_expression: 1,
+                        false_expression: 0
+                    ),
+                    alias: $DB::quoteValue(_x('status', 'Solved'))
                 ),
-                new QueryExpression(
-                    "SUM(IF({$t_table}_distinct.status = " . Ticket::CLOSED . ", 1, 0))
-                  as " . $DB->quoteValue(_x('status', 'Closed'))
+                QueryFunction::sum(
+                    expression: QueryFunction::if(
+                        condition: "$t_table.status = " . Ticket::CLOSED,
+                        true_expression: 1,
+                        false_expression: 0
+                    ),
+                    alias: $DB::quoteValue(_x('status', 'Closed'))
                 ),
             ],
             'FROM' => new QuerySubQuery($sub_query, "{$t_table}_distinct"),
@@ -1509,11 +1548,11 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT' => [
-                    new QueryExpression("DATE_FORMAT(" . $DBread->quoteName("date") . ", '%Y-%m') AS period"),
-                    new QueryExpression("AVG(" . $DBread->quoteName("takeintoaccount_delay_stat") . ") AS avg_takeintoaccount_delay_stat"),
-                    new QueryExpression("AVG(" . $DBread->quoteName("waiting_duration") . ") AS avg_waiting_duration"),
-                    new QueryExpression("AVG(" . $DBread->quoteName("solve_delay_stat") . ") AS avg_solve_delay_stat"),
-                    new QueryExpression("AVG(" . $DBread->quoteName("close_delay_stat") . ") AS close_delay_stat"),
+                    QueryFunction::dateFormat($DBread::quoteName('date'), '%Y-%m', $DBread::quoteName('period')),
+                    QueryFunction::avg($DBread::quoteName('takeintoaccount_delay_stat'), $DBread::quoteName('avg_takeintoaccount_delay_stat')),
+                    QueryFunction::avg($DBread::quoteName('waiting_duration'), $DBread::quoteName('avg_waiting_duration')),
+                    QueryFunction::avg($DBread::quoteName('solve_delay_stat'), $DBread::quoteName('avg_solve_delay_stat')),
+                    QueryFunction::avg($DBread::quoteName('close_delay_stat'), $DBread::quoteName('close_delay_stat')),
                 ],
                 'FROM' => $t_table,
                 'WHERE' => [

@@ -637,7 +637,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $iterator = $DB->request([
-            'SELECT'    => new QueryExpression('SUM(glpi_tickets.actiontime) AS duration'),
+            'SELECT'    => [
+                QueryFunction::sum(
+                    expression: $DB::quoteName('glpi_tickets.actiontime'),
+                    alias: $DB::quoteName('duration')
+                )
+            ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_projecttasks_tickets'   => [
@@ -699,7 +704,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => new QueryExpression('SUM(planned_duration) AS duration'),
+            'SELECT'    => [
+                QueryFunction::sum(
+                    expression: $DB::quoteName('planned_duration'),
+                    alias: $DB::quoteName('duration')
+                )
+            ],
             'FROM'   => self::getTable(),
             'WHERE'  => ['projects_id' => $projects_id]
         ]);

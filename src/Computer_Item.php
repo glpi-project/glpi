@@ -855,7 +855,11 @@ class Computer_Item extends CommonDBRelation
             $iterator = $DB->request([
                 'SELECT' => [
                     'itemtype',
-                    new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+                    QueryFunction::groupConcat(
+                        expression: $DB::quoteName('items_id'),
+                        distinct: true,
+                        alias: $DB::quoteName('ids')
+                    ),
                 ],
                 'FROM' => self::getTable(),
                 'WHERE' => [
@@ -877,7 +881,11 @@ class Computer_Item extends CommonDBRelation
             $iterator = $DB->request([
                 'SELECT' => [
                     'itemtype',
-                    new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
+                    QueryFunction::groupConcat(
+                        expression: $DB::quoteName('items_id'),
+                        distinct: true,
+                        alias: $DB::quoteName('ids')
+                    ),
                     'computers_id'
                 ],
                 'FROM'   => self::getTable(),

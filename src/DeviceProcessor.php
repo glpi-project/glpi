@@ -253,9 +253,10 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.nbcores') . ') * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ') / COUNT(*)',
+            'computation'        => QueryFunction::sum($DB::quoteName('TABLE.nbcores')) . ' * ' . QueryFunction::count(
+                    expression: $DB::quoteName('TABLE.id'),
+                    distinct: true
+                ) . ' / ' . QueryFunction::count('*'),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -269,9 +270,10 @@ class DeviceProcessor extends CommonDevice
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.nbthreads') . ') * COUNT(DISTINCT ' .
-            $DB->quoteName('TABLE.id') . ') / COUNT(*)',
+            'computation'        => QueryFunction::sum($DB::quoteName('TABLE.nbthreads')) . ' * ' . QueryFunction::count(
+                    expression: $DB::quoteName('TABLE.id'),
+                    distinct: true
+                ) . ' / ' . QueryFunction::count('*'),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -287,9 +289,9 @@ class DeviceProcessor extends CommonDevice
             'width'              => 100,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        =>
-            'SUM(' . $DB->quoteName('TABLE.frequency') . ') / COUNT(' .
-            $DB->quoteName('TABLE.id') . ')',
+            'computation'        => QueryFunction::sum($DB::quoteName('TABLE.frequency')) . ' * ' . QueryFunction::count(
+                    expression: $DB::quoteName('TABLE.id'),
+                ) . ' / ' . QueryFunction::count('*'),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
