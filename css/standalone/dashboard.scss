@@ -1257,6 +1257,8 @@ $break_tablet: 1400px;
 .widgettype_field {
     .widget-list {
         max-width: 400px;
+        display: flex;
+        flex-wrap: wrap;
     }
 
     input[type="radio"].widget-select {
@@ -1271,6 +1273,7 @@ $break_tablet: 1400px;
             display: none;
             text-align: center;
             font-weight: bold;
+            width: 30%;
 
             &:hover {
                 background: rgba($color: #000, $alpha: 10%);
