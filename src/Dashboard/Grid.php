@@ -336,7 +336,7 @@ HTML;
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-share fs-toggle open-embed' title='$embed_label'></i>";
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
-               <i class='btn btn-ghost-secondary far fa-save save-dashboard-name' title='{$save_label}'></i>
+               <i class='btn btn-ghost-secondary ti ti-device-floppy ms-1 save-dashboard-name' title='{$save_label}'></i>
                <span class='display-message'></span>
             </div>";
             }
