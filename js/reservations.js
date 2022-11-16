@@ -171,6 +171,9 @@ var Reservations = function() {
                     element.find(".fc-title, .fc-list-item-title")
                         .append("&nbsp;<i class='"+extProps.icon+"' title='"+icon_alt+"'></i>");
                 }
+                
+                var reservation_content =  extProps.comment + (extProps.comment ?  " - " : "") + extProps.username;
+                element.find(".fc-content, .fc-list-item-title").append("&nbsp;"+reservation_content);
 
                 // detect ideal position
                 var qtip_position = {
@@ -188,7 +191,7 @@ var Reservations = function() {
 
                 element.qtip({
                     position: qtip_position,
-                    content: extProps.comment,
+                    content: reservation_content,
                     style: {
                         classes: 'qtip-shadow qtip-bootstrap'
                     },
