@@ -2333,6 +2333,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
            // No Auto set Import for external source
+           // manage users_id_recipient
             if (
                 ($uid = Session::getLoginUserID())
                 && !isset($input['_auto_import'])
@@ -2345,6 +2346,28 @@ abstract class CommonITILObject extends CommonDBTM
                 && !isset($input["users_id_recipient"])
             ) {
                 $input["users_id_recipient"] = $input["_users_id_requester"];
+            }
+
+            //manage default users_id_assign
+            if (
+                !isset($input['_auto_import'])
+                && isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
+                && Session::getCurrentInterface() == 'central'
+                && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)
+                && Session::haveRight("ticket", Ticket::OWN)
+            ) {
+                $input['_users_id_assign'] = Session::getLoginUserID();
+            }
+
+            //manage default users_id_requester
+            if (
+                !isset($input['_auto_import'])
+                && isset($_SESSION['glpiset_default_requester']) && $_SESSION['glpiset_default_requester']
+                && Session::getCurrentInterface() == 'central'
+                && (!isset($input['_users_id_requester']) || $input['_users_id_requester'] == 0)
+                && Session::haveRight("ticket", Ticket::OWN)
+            ) {
+                $input['_users_id_requester'] = Session::getLoginUserID();
             }
         }
 
