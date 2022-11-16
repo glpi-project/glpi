@@ -2350,7 +2350,8 @@ abstract class CommonITILObject extends CommonDBTM
 
             //manage default users_id_assign
             if (
-                !isset($input['_auto_import'])
+                isAPI()
+                && !isset($input['_auto_import'])
                 && isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
                 && Session::getCurrentInterface() == 'central'
                 && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)
@@ -2361,7 +2362,8 @@ abstract class CommonITILObject extends CommonDBTM
 
             //manage default users_id_requester
             if (
-                !isset($input['_auto_import'])
+                isAPI()
+                &&!isset($input['_auto_import'])
                 && isset($_SESSION['glpiset_default_requester']) && $_SESSION['glpiset_default_requester']
                 && Session::getCurrentInterface() == 'central'
                 && (!isset($input['_users_id_requester']) || $input['_users_id_requester'] == 0)
