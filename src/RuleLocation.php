@@ -65,7 +65,7 @@ class RuleLocation extends Rule
                                     $action->fields["value"],
                                     $regex_result
                                 );
-                                $compute_entities_id = $input['entities_id'] ?? -1;
+                                $compute_entities_id = $input['entities_id'] ?? 0;
                                 $location = new Location();
                                 $output['locations_id'] = $location->importExternal($regexvalue, $compute_entities_id);
                             }
