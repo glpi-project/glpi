@@ -2394,8 +2394,11 @@ class Toolbox
                 }
             }
 
-           //rules
+            //rules
             RuleImportAsset::initRules();
+            RuleDictionnaryOperatingSystemVersion::initRules();
+            RuleDictionnaryOperatingSystemEdition::initRules();
+            RuleDictionnaryOperatingSystem::initRules();
 
            // update default language
             Config::setConfigurationValues(

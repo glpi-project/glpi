@@ -40,6 +40,10 @@ use Glpi\Inventory\Conf;
 use Glpi\Toolbox\Sanitizer;
 use Item_OperatingSystem;
 use RuleDictionnaryOperatingSystemArchitectureCollection;
+use RuleDictionnaryOperatingSystemCollection;
+use RuleDictionnaryOperatingSystemEditionCollection;
+use RuleDictionnaryOperatingSystemServicePackCollection;
+use RuleDictionnaryOperatingSystemVersionCollection;
 
 class OperatingSystem extends InventoryAsset
 {
@@ -82,21 +86,32 @@ class OperatingSystem extends InventoryAsset
             $val->install_date = date('Y-m-d', strtotime($val->install_date));
         }
 
-        if (
-            property_exists($val, 'operatingsystemarchitectures_id')
-            && $val->operatingsystemarchitectures_id != ''
-        ) {
-            $rulecollection = new RuleDictionnaryOperatingSystemArchitectureCollection();
-            $res_rule = $rulecollection->processAllRules(['name' => $val->operatingsystemarchitectures_id]);
+        $mapping = [
+            'operatingsystems_id'               => RuleDictionnaryOperatingSystemCollection::class,
+            'operatingsystemversions_id'        => RuleDictionnaryOperatingSystemVersionCollection::class,
+            'operatingsystemservicepacks_id'    => RuleDictionnaryOperatingSystemServicePackCollection::class,
+            'operatingsystemarchitectures_id'   => RuleDictionnaryOperatingSystemArchitectureCollection::class,
+            'operatingsystemeditions_id'        => RuleDictionnaryOperatingSystemEditionCollection::class
+        ];
+
+        $rule_input = [
+            'os_name'           => $val->operatingsystems_id ?? '',
+            'os_version_name'   => $val->operatingsystemversions_id ?? '',
+            'servicepack_name'  => $val->operatingsystemservicepacks_id ?? '',
+            'arch_name'         => $val->operatingsystemarchitectures_id ?? '',
+            'os_edition'        => $val->operatingsystemeditions_id ?? '',
+        ];
+
+        foreach ($mapping as $key => $rule_class) {
+            $rulecollection = new $rule_class();
+            $res_rule = $rulecollection->processAllRules($rule_input);
             if (isset($res_rule['name'])) {
-                $val->operatingsystemarchitectures_id = $res_rule['name'];
+                $val->{$key} = $res_rule['name'];
             }
-            if ($val->operatingsystemarchitectures_id == '0') {
-                $val->operatingsystemarchitectures_id = '';
+
+            if (property_exists($val, $key) && $val->{$key} == '0') {
+                $val->{$key} = '';
             }
-        }
-        if (property_exists($val, 'operatingsystemservicepacks_id') && $val->operatingsystemservicepacks_id == '0') {
-            $val->operatingsystemservicepacks_id = '';
         }
 
         $this->data = [$val];

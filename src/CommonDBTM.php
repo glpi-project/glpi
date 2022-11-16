@@ -3708,7 +3708,11 @@ class CommonDBTM extends CommonGLPI
 
         if (
             $p['forceid']
-            || $_SESSION['glpiis_ids_visible']
+            ||
+            (
+                isset($_SESSION['glpiis_ids_visible'])
+                && $_SESSION['glpiis_ids_visible']
+            )
         ) {
             $addcomment = $p['comments'];
 
