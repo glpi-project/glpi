@@ -269,7 +269,7 @@ class Supplier extends CommonDBTM
             'massiveaction'      => false
         ];
 
-        if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
+        if (($_SESSION["glpinames_format"] ?? User::REALNAME_BEFORE) == User::FIRSTNAME_BEFORE) {
             $name1 = 'firstname';
             $name2 = 'name';
         } else {

@@ -552,7 +552,8 @@ class ITILFollowup extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'content',
             'name'               => __('Description'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true,
         ];
 
         $tab[] = [

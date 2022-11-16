@@ -314,7 +314,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         // Iterate on items
         foreach ($iterable as $key => $value) {
             if (is_callable($message_callback)) {
-                $this->progress_bar->setMessage($message_callback($value));
+                $this->progress_bar->setMessage($message_callback($value, $key));
                 $this->progress_bar->display();
             }
 
@@ -345,6 +345,13 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      */
     final protected function outputMessage(string $message, int $verbosity = OutputInterface::VERBOSITY_NORMAL): void
     {
-        $this->writelnOutputWithProgressBar($message, $this->progress_bar, $verbosity);
+        if ($this->progress_bar !== null) {
+            $this->writelnOutputWithProgressBar($message, $this->progress_bar, $verbosity);
+        } else {
+            $this->output->writeln(
+                $message,
+                $verbosity
+            );
+        }
     }
 }
