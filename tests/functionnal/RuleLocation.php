@@ -170,10 +170,10 @@ class RuleLocation extends DbTestCase
 
 
         $this->array($location_data)->hasKey('locations_id');
-        $this->integer((integer) $location_data['locations_id'])->isGreaterThan(0);
-        $this->integer((integer) $location_data['locations_id'])->isNotEqualTo($locations_id);
+        $this->integer((int)$location_data['locations_id'])->isGreaterThan(0);
+        $this->integer((int)$location_data['locations_id'])->isNotEqualTo($locations_id);
         $this->array($location_data)->hasKey('_ruleid');
-        $this->integer((integer) $location_data['_ruleid'])->isGreaterThan(0);
+        $this->integer((int)$location_data['_ruleid'])->isGreaterThan(0);
     }
 
 
