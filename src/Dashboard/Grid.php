@@ -374,7 +374,7 @@ HTML;
          $left_toolbar
          <span class="toolbar">
             <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-refresh auto-refresh" title="$history_label"></i>
-            <i class="btn btn-sm btn-icon btn-ghost-secondary fas fa-moon night-mode" title="$night_label"></i>
+            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-moon night-mode" title="$night_label"></i>
             $r_tb_icons
          </span>
 HTML;
