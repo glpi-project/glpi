@@ -50,6 +50,32 @@ class RuleLocation extends Rule
         return 2;
     }
 
+    public function executeActions($output, $params, array $input = [])
+    {
+        if (count($this->actions)) {
+            foreach ($this->actions as $action) {
+                switch ($action->fields["action_type"]) {
+                    case "assign":
+                        $output[$action->fields["field"]] = $action->fields["value"];
+                        break;
+                    case 'regex_result':
+                        if ($action->fields["field"] == "locations_id") {
+                            foreach ($this->regex_results as $regex_result) {
+                                $regexvalue          = RuleAction::getRegexResultById(
+                                    $action->fields["value"],
+                                    $regex_result
+                                );
+                                $compute_entities_id = $input['entities_id'] ?? -1;
+                                $location = new Location();
+                                $output['locations_id'] = $location->importExternal($regexvalue, $compute_entities_id);
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        return $output;
+    }
 
     public function getCriterias()
     {
