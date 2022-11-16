@@ -48,6 +48,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      */
     public const TYPE_EXTERNAL = 2;
 
+    abstract public static function getConfigSufix(): string;
+
     public static function getTypeName($nb = 0)
     {
         return __('Satisfaction');
@@ -248,18 +250,38 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param int $value Between 0 and 10
      **/
-    public static function displaySatisfaction($value)
+    public static function displaySatisfaction($value, $entities_id)
     {
+        if (is_null($value)) {
+            return "";
+        }
+
+        $max_rate = Entity::getUsedConfig(
+            'inquest_config',
+            $entities_id,
+            'inquest_max_rate' . static::getConfigSufix()
+        );
 
         if ($value < 0) {
             $value = 0;
         }
-        if ($value > 10) {
-            $value = 10;
+        if ($value > $max_rate) {
+            $value = $max_rate;
         }
 
-        $out = "<div class='rateit' data-rateit-value='$value' data-rateit-ispreset='true'
-               data-rateit-readonly='true'></div>";
+        $rand = mt_rand();
+        $out = "<input type='hidden' id='backing_$rand'>";
+        $out .= "<div id='rateit_$rand' class='rateit'></div>";
+        $out .= Html::scriptBlock("
+            $(function () {
+                $('#rateit_$rand').rateit({
+                    max: $max_rate,
+                    resetable: false,
+                    value: $value,
+                    readonly: true,
+                });
+            });
+        ");
 
         return $out;
     }
@@ -330,5 +352,77 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         /** @var CommonDBTM $itemtype */
         $itemtype = static::getItemtype();
         return $itemtype::getFormURLWithID($satisfaction->fields[$itemtype::getForeignKeyField()]) . '&forcetab=' . $itemtype::getType() . '$3';
+    }
+
+    public static function rawSearchOptionsToAdd(string $table, $base_id = 0)
+    {
+        $tab[] = [
+            'id'                 => 'satisfaction',
+            'name'               => __('Satisfaction survey')
+        ];
+
+        $tab[] = [
+            'id'                 => 31 + $base_id,
+            'table'              => $table,
+            'field'              => 'type',
+            'name'               => _n('Type', 'Types', 1),
+            'massiveaction'      => false,
+            'searchtype'         => ['equals', 'notequals'],
+            'searchequalsonfield' => true,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'datatype'           => 'specific'
+        ];
+
+        $tab[] = [
+            'id'                 => 60 + $base_id,
+            'table'              => $table,
+            'field'              => 'date_begin',
+            'name'               => __('Creation date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => 61 + $base_id,
+            'table'              => $table,
+            'field'              => 'date_answered',
+            'name'               => __('Response date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => 62 + $base_id,
+            'table'              => $table,
+            'field'              => 'satisfaction',
+            'name'               => __('Satisfaction'),
+            'datatype'           => 'number',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => 63 + $base_id,
+            'table'              => $table,
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
+        return $tab;
     }
 }

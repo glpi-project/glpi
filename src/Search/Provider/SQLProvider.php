@@ -5297,7 +5297,21 @@ final class SQLProvider implements SearchProviderInterface
 
                 case 'glpi_ticketsatisfactions.satisfaction':
                     if ($html_output) {
-                        return \TicketSatisfaction::displaySatisfaction($data[$ID][0]['name']);
+                        $ticket = Ticket::getById($data['raw']['id']);
+                        return \TicketSatisfaction::displaySatisfaction(
+                            $data[$ID][0]['name'],
+                            $ticket->fields['entities_id']
+                        );
+                    }
+                    break;
+
+                case 'glpi_changesatisfactions.satisfaction':
+                    if ($html_output) {
+                        $change = Change::getById($data['raw']['id']);
+                        return \ChangeSatisfaction::displaySatisfaction(
+                            $data[$ID][0]['name'],
+                            $change->fields['entities_id']
+                        );
                     }
                     break;
 
