@@ -3008,7 +3008,7 @@ HTML;
      *
      * @return boolean True for success, false if an error occurred
      *
-     * @since 10.0.0 Parameter $older_to_latest is not longer used.
+     * @since 10.0.0 Parameter $older_to_latest is no longer used.
      */
     public static function loadLegacyConfiguration()
     {

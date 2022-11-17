@@ -1005,7 +1005,7 @@ class Migration
      *
      * @param string $type    Either self::PRE_QUERY or self::POST_QUERY
      * @param string $query   Query to execute
-     * @param string $message Mesage to display on error, defaults to null
+     * @param string $message Message to display on error, defaults to null
      *
      * @return Migration
      */

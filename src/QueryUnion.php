@@ -47,7 +47,7 @@ class QueryUnion extends AbstractQuery
      * @param array   $queries  An array of queries to union. Either SubQuery objects
      *                          or an array of criteria to build them.
      *                          You can also add later using @see addQuery
-     * @param boolean $distinct Include duplicatesi or not. Turning on may has
+     * @param boolean $distinct Include duplicates or not. Turning on may has
      *                          huge cost on queries performances.
      * @param string  $alias    Union ALIAS. Defaults to null.
      */

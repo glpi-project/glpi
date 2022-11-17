@@ -74,7 +74,7 @@ class Sanitizer
         }
 
         if (self::isNsClassOrCallableIdentifier($value)) {
-            // Do not sanitize values that corresponds to an existing namespaced class, to prevent prevent having to unsanitize
+            // Do not sanitize values that corresponds to an existing namespaced class, to prevent having to unsanitize
             // every usage of `itemtype` to correctly handle namespaces.
             return $value;
         }

@@ -72,6 +72,8 @@ class Antivirus extends InventoryAsset
 
             if (!property_exists($val, 'is_uptodate') || empty($val->is_uptodate)) {
                 $val->is_uptodate = 0;
+            } else {
+                $val->is_uptodate = (int)$val->is_uptodate;
             }
 
             $val->is_dynamic = 1;

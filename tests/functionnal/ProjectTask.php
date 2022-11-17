@@ -210,7 +210,7 @@ class ProjectTask extends DbTestCase
      */
     public function testTeamManagement(): void
     {
-
+        $this->login();
         $project_task = new \ProjectTask();
 
         $project = new \Project();
