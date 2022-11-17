@@ -300,14 +300,19 @@ $break_tablet: 1400px;
         i.far,
         i.fa-regular,
         i.ti {
-            margin-left: 5px;
+            padding: 5px 8px;
+            border: 2px solid transparent;
+            margin-left: 3px;
 
             @media screen and (max-width: $break_phones) {
                 display: none;
             }
 
-            &.active {
-                border: 2px inset currentcolor;
+            &.active:not(:hover) {
+                // override tabler styles
+                border: 2px inset var(--tblr-border-color);
+                color: var(--tblr-secondary);
+                background-color: rgba(var(--tblr-secondary-rgb), 0.1);
             }
 
             &.fa-moon {
