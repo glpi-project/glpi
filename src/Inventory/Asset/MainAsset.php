@@ -624,7 +624,6 @@ abstract class MainAsset extends InventoryAsset
     {
         $this->conf = $conf;
         $this->states_id_default = $conf->states_id_default;
-        $this->entities_id_default = $conf->entities_id_default;
         return true;
     }
 
