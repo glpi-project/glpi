@@ -83,6 +83,14 @@ class Memory extends Device
             ) {
                 $designation = $val->type;
             }
+
+            if (property_exists($val, 'frequence')) {
+                $val->frequence = str_replace([' MHz', ' MT/s'], '', $val->frequence);
+                if ($designation != '') {
+                    $designation .= ' - ' . $val->frequence;
+                }
+            }
+
             if (property_exists($val, 'description')) {
                 if ($designation != '') {
                     $designation .= ' - ';
@@ -92,10 +100,6 @@ class Memory extends Device
 
             if ($designation != '') {
                 $val->designation = $designation;
-            }
-
-            if (property_exists($val, 'frequence')) {
-                $val->frequence = str_replace([' MHz', ' MT/s'], '', $val->frequence);
             }
 
             $val->is_dynamic = 1;
