@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Kanban;
 use Glpi\Features\Teamwork;
 use Glpi\Http\Response;
+use Glpi\Toolbox\Sanitizer;
 
 $AJAX_INCLUDE = 1;
 
@@ -142,7 +143,7 @@ if (($_POST['action'] ?? null) === 'update') {
     $inputs = [];
     parse_str($_POST['inputs'], $inputs);
 
-    $item->add($inputs);
+    $item->add(Sanitizer::sanitize($inputs));
 } else if (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
     $item = new $itemtype();
@@ -155,7 +156,7 @@ if (($_POST['action'] ?? null) === 'update') {
         foreach ($bulk_item_list as $item_entry) {
             $item_entry = trim($item_entry);
             if (!empty($item_entry)) {
-                $item->add($inputs + ['name' => $item_entry, 'content' => '']);
+                $item->add(Sanitizer::sanitize($inputs + ['name' => $item_entry, 'content' => '']));
             }
         }
     }

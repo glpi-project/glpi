@@ -51,6 +51,7 @@ use Contract;
 use Document;
 use Dropdown;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\Sanitizer;
 use Html;
 use Infocom;
 use Item_Devices;
@@ -1846,6 +1847,7 @@ abstract class API
                     $object["_add"] = true;
 
                    //add current item
+                    $object = Sanitizer::sanitize($object);
                     $new_id = $item->add($object);
                     if ($new_id === false) {
                         $failed++;
@@ -1986,7 +1988,7 @@ abstract class API
                         }
 
                      //update item
-                        $object = $this->inputObjectToArray($object);
+                        $object = Sanitizer::sanitize($this->inputObjectToArray($object));
                         $update_return = $item->update($object);
                         if ($update_return === false) {
                              $failed++;
