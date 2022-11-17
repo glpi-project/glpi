@@ -37,6 +37,7 @@ namespace Glpi\CalDAV\Traits;
 
 use Glpi\Application\ErrorHandler;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\Sanitizer;
 use RRule\RRule;
 use Sabre\VObject\Component;
 use Sabre\VObject\Component\VCalendar;
@@ -97,7 +98,7 @@ trait VobjectConverterTrait
             $vcomp = $vcalendar->add($component_type);
         }
 
-        $fields = $item->fields;
+        $fields = Sanitizer::unsanitize($item->fields);
         $utc_tz = new \DateTimeZone('UTC');
 
         if (array_key_exists('uuid', $fields)) {

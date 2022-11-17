@@ -550,7 +550,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $this->boolean($itilSolution->getFromDBByCrit([
             'items_id' => $itil_id,
             'itemtype' => $itil::getType(),
-            'content'  => "<p>content of solution template  white ' quote</p>"
+            'content'  => Sanitizer::encodeHtmlSpecialChars("<p>content of solution template  white ' quote</p>")
         ]))->isTrue();
 
         $this->integer((int)$itilSolution->getID())->isGreaterThan(0);

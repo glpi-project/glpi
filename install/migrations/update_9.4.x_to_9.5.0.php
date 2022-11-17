@@ -379,7 +379,7 @@ function update94xto950()
                     )
                 ],
                 [new \QueryExpression('true')]
-            ),
+            )
         );
         $migration->addKey('glpi_documents_items', 'date_creation');
     }

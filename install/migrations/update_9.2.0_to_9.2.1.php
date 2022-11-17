@@ -332,24 +332,24 @@ function update920to921()
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['itemtype' => 'QueuedNotification'],
-            ['itemtype' => 'QueuedMail']
+            ['itemtype' => "QueuedNotification"],
+            ['itemtype' => "QueuedMail"]
         )
     );
 
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['name' => 'queuednotification'],
-            ['name' => 'queuedmail']
+            ['name' => "queuednotification"],
+            ['name' => "queuedmail"]
         )
     );
 
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['name' => 'queuednotificationclean'],
-            ['name' => 'queuedmailclean']
+            ['name' => "queuednotificationclean"],
+            ['name' => "queuedmailclean"]
         )
     );
 
@@ -363,8 +363,8 @@ function update920to921()
     $migration->addPreQuery(
         $DB->buildUpdate(
             "glpi_profilerights",
-            ['name' => 'queuednotification'],
-            ['name' => 'queuedmail']
+            ['name' => "queuednotification"],
+            ['name' => "queuedmail"]
         )
     );
 
