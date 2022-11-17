@@ -116,9 +116,7 @@ function update956to957()
             'operatingsystemarchitectures_id' => $row['operatingsystemarchitectures_id'],
             'id' => ['!=', $row['valid_entry_id']],
         ]);
-        $migration->addPostQuery(
-            $delete
-        );
+        $migration->addPostQuery($delete);
     }
     /** /Fix unicity in glpi_items_operatingsystems table */
 

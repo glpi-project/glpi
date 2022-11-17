@@ -337,7 +337,6 @@ class DBmysql
         return $this->dbh->real_escape_string($string);
     }
 
-
     /**
      * Execute a MySQL query
      *

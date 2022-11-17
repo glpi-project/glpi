@@ -74,7 +74,6 @@ function update940to941()
                 ]
             ]
         )->current();
-
         $migration->addPostQuery(
             $DB->buildInsert(
                 'glpi_displaypreferences',

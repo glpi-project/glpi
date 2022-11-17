@@ -1606,10 +1606,6 @@ abstract class API
                     ) {
                         return __("Forbidden field ID in search criteria");
                     }
-
-                    // Escape value to prevent SQL injection
-                    // FIXME: still relevant? Not sure how this is used.
-                    $criterion['value'] = Toolbox::addslashes_deep($criterion['value']);
                 }
 
                 return true;

@@ -594,6 +594,8 @@ class Software extends InventoryAsset
                 'ssss',
                 $input['name'],
                 $input['manufacturers_id'],
+                $this->entities_id,
+                $this->is_recursive,
             );
             $DB->executeStatement($stmt);
             $results = $stmt->get_result();
@@ -667,6 +669,7 @@ class Software extends InventoryAsset
 
             $stmt->bind_param(
                 'sssss',
+                $this->entities_id,
                 $input['version'],
                 $input['arch'],
                 $input['softwares_id'],

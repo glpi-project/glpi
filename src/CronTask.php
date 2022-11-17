@@ -405,7 +405,7 @@ class CronTask extends CommonDBTM
             $itemtype_orwhere[] = [
                 'OR' => [
                     ['itemtype' => ['LIKE', sprintf('Plugin%s', $plug) . '%']],
-                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plug) . '%']]
+	                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plug) . '%']]
                 ]
             ];
         }

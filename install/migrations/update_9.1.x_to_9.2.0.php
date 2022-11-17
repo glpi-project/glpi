@@ -1076,29 +1076,29 @@ function update91xto920()
     $migration->addPostQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['itemtype' => 'QueuedNotification'],
-            ['itemtype' => 'QueuedMail']
+            ['itemtype' => "QueuedNotification"],
+            ['itemtype' => "QueuedMail"]
         )
     );
     $migration->addPostQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['name' => 'queuednotification'],
-            ['name' => 'queuedmail']
+            ['name' => "queuednotification"],
+            ['name' => "queuedmail"]
         )
     );
     $migration->addPostQuery(
         $DB->buildUpdate(
             "glpi_crontasks",
-            ['name' => 'queuednotificationclean'],
-            ['name' => 'queuedmailclean']
+            ['name' => "queuednotificationclean"],
+            ['name' => "queuedmailclean"]
         )
     );
     $migration->addPostQuery(
         $DB->buildUpdate(
             "glpi_profilerights",
-            ['name' => 'queuednotification'],
-            ['name' => 'queuedmail']
+            ['name' => "queuednotification"],
+            ['name' => "queuedmail"]
         )
     );
 
@@ -1164,7 +1164,7 @@ function update91xto920()
         $DB->buildUpdate(
             "glpi_notifications_notificationtemplates",
             ['mode' => Notification_NotificationTemplate::MODE_MAIL],
-            ['mode' => 'mail']
+            ['mode' => "mail"]
         ),
         "9.2 set default mode in notifications templates"
     );
@@ -2353,10 +2353,9 @@ Regards,',
                     DBmysql::quoteName("glpi_tickets_users.users_id")
                 ),
             ];
-
             if (!$DB->fieldExists($tl_table, 'tickets_id')) {
                 $where = [
-                    "$tl_table.itemtype"    => 'Ticket',
+                    "$tl_table.itemtype"    => "Ticket",
                     "$tl_table.items_id"    => new \QueryExpression(
                         DBmysql::quoteName("glpi_tickets_users.tickets_id")
                     ),
@@ -2378,7 +2377,7 @@ Regards,',
                      DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)")
                     ],
                     $where
-                ),
+                )
             );
 
             $where = [
