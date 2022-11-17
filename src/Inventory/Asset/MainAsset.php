@@ -64,6 +64,7 @@ abstract class MainAsset extends InventoryAsset
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,
+        'network_device'  => null,
         '\Glpi\Inventory\Asset\NetworkCard' => null
     ];
     /** @var mixed */
