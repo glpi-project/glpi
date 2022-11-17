@@ -725,4 +725,90 @@ class Computer extends AbstractInventoryAsset
         $computer->getFromDB($computers_id);
         $this->integer($computer->fields['states_id'])->isEqualTo($state_1_id);
     }
+
+    public function testInventoryDefaultEntity()
+    {
+        //first step : run an inventory with default entities_id = 0
+        $computer = new \Computer();
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+        //per default, do not change states_id
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
+                'entities_id_default' => 0
+            ])
+        )->isTrue();
+        $this->logout();
+
+        $inventory = $this->doInventory($xml_source, true);
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //load computer and check entities_id
+        $computer->getFromDB($computers_id);
+        $this->integer($computer->fields['entities_id'])->isEqualTo(0);
+
+
+        //per default, use entities_id 1
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean(
+            $conf->saveConf([
+                'entities_id_default' => 1
+            ])
+        )->isTrue();
+        $this->logout();
+
+        //second step : run same inventory and check that entities_id not change
+        $inventory = $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //load computer and check entities_id is always 0
+        $computer->getFromDB($computers_id);
+        $this->integer($computer->fields['entities_id'])->isEqualTo(0);
+
+        //third step : run new inventory and check that entities_id is 1
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixpsxps</NAME>
+            <UUID>5404A6A534C4-25C1BB60-5BCB-11D9-B18F</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixpsxps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        //inventory again
+        $inventory = $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //load computer and check entities_id 1
+        $computer->getFromDB($computers_id);
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1);
+    }
 }

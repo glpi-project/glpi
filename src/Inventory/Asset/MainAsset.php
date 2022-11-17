@@ -529,7 +529,7 @@ abstract class MainAsset extends InventoryAsset
                 }
 
                 if (!isset($dataEntity['entities_id']) || $dataEntity['entities_id'] == -1) {
-                    $input['entities_id'] = 0;
+                    $input['entities_id'] = $this->conf->entities_id_default ?? 0; //use default entity
                 } else {
                     $input['entities_id'] = $dataEntity['entities_id'];
                 }
