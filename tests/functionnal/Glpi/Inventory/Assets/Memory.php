@@ -65,7 +65,7 @@ class Memory extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"capacity": 4096, "caption": "System Board Memory", "description": "Chip", "manufacturer": "Elpida", "model": "EBJ81UG8BBU5GNF", "memorycorrection": "None", "numslots": 1, "serialnumber": "12161217", "speed": "1867", "type": "LPDDR3", "size": 4096, "frequence": "1867", "manufacturers_id": "Elpida", "devicememorymodels_id": "EBJ81UG8BBU5GNF", "devicememorytypes_id": "LPDDR3", "serial": "12161217", "busID": 1, "designation": "LPDDR3 - Chip", "is_dynamic": 1}'
+                'expected'  => '{"capacity": 4096, "caption": "System Board Memory", "description": "Chip", "manufacturer": "Elpida", "model": "EBJ81UG8BBU5GNF", "memorycorrection": "None", "numslots": 1, "serialnumber": "12161217", "speed": "1867", "type": "LPDDR3", "size": 4096, "frequence": "1867", "manufacturers_id": "Elpida", "devicememorymodels_id": "EBJ81UG8BBU5GNF", "devicememorytypes_id": "LPDDR3", "serial": "12161217", "busID": 1, "designation": "LPDDR3 - 1867 - Chip", "is_dynamic": 1}'
             ]
         ];
     }
@@ -187,7 +187,7 @@ class Memory extends AbstractInventoryAsset
         $this->integer($types_id)->isGreaterThan(0);
 
         $mem_1_id = $device_mem->add([
-            'designation' => 'DDR4 - SODIMM',
+            'designation' => 'DDR4 - 2133 - SODIMM',
             'manufacturers_id' => $manufacturers_id,
             'devicememorymodels_id' => $mem_model_id,
             'devicememorytypes_id' => $types_id,
@@ -215,7 +215,7 @@ class Memory extends AbstractInventoryAsset
         $this->integer($item_mem_2_id)->isGreaterThan(0);
 
         $mem_3_id = $device_mem->add([
-            'designation' => 'DDR3 - SODIMM',
+            'designation' => 'DDR3 - 2133 - SODIMM',
             'manufacturers_id' => $manufacturers_id,
             'devicememorytypes_id' => $types_id,
             'frequence' => '2133',
@@ -291,9 +291,9 @@ class Memory extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
        //we now have 3 memories
-       // 'DDR4 - SODIMM' and 'DDR3 - SODIMM'
+       // 'DDR4 - 2133 - SODIMM' and 'DDR3 - 2133 - SODIMM'
         $this->integer(count($device_mem->find(['devicememorymodels_id' => null])))->isIdenticalTo(2);
-       // 'DDR4 - SODIMM' (MODEL-A)
+       // 'DDR4 - 2133 - SODIMM' (MODEL-A)
         $this->integer(count($device_mem->find(['devicememorymodels_id' => $mem_model_id])))->isIdenticalTo(1);
 
        //we now have 2 memories linked to computer only
