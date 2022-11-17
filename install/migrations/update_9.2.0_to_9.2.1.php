@@ -442,14 +442,16 @@ function update920to921()
             'operatingsystemkernelversions_id'  => "0",
             'operatingsystemeditions_id'        => "0",
             [
-            'OR' => [
-                ['license_number' => null],
-                ['license_number' => ""]
-            ]],
+                'OR' => [
+                    ['license_number' => null],
+                    ['license_number' => ""]
+                ]
+            ],
             ['OR' => [
                 ['license_id' => null],
                 ['license_id' => ""]
-            ]]
+            ]
+            ]
         ])
     );
 
