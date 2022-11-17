@@ -1,0 +1,81 @@
+name: "Bump version after release"
+
+on:
+  release:
+    types:
+      - "published"
+
+jobs:
+  bump-version:
+    name: "Bump version"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Compute variables"
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          MAJOR_VERSION="$( echo "$TAG" | cut -d '.' -f 1 )"
+          MINOR_VERSION="$( echo "$TAG" | cut -d '.' -f 2 )"
+          BUGFIX_VERSION="$( echo "$TAG" | cut -d '.' -f 3 | cut -d '-' -f 1 )"
+          STABILITY_FLAG="$( echo "$TAG" | grep -Po '(\-\w+)?$' )"
+          NEXT_VERSION="$MAJOR_VERSION.$MINOR_VERSION.$(($BUGFIX_VERSION+1))"
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "IS_STABLE_RELEASE=$( [[ -z "$STABILITY_FLAG" ]] && echo "yes" || echo "no" )" >> $GITHUB_ENV
+          echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
+          echo "BASE_BRANCH=$MAJOR_VERSION.$MINOR_VERSION/bugfixes" >> $GITHUB_ENV
+          echo "BUMP_BRANCH=bump-version/$NEXT_VERSION" >> $GITHUB_ENV
+          CHANGELOG_ENTRY="## [$NEXT_VERSION] unreleased
+          
+          ### Added
+          
+          ### Changed
+          
+          ### Deprecated
+          
+          ### Removed
+          
+          ### API changes
+          
+          #### Added
+          
+          #### Changes
+          
+          #### Deprecated
+          
+          #### Removed
+          
+          "
+          echo "CHANGELOG_ENTRY=${CHANGELOG_ENTRY//$'\n'/'\n'}" >> $GITHUB_ENV
+      - name: "Checkout"
+        if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
+        uses: "actions/checkout@v3"
+      - name: "Update codebase"
+        if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
+        run: |
+          git config --local user.email "$(git log --format='%ae' HEAD^!)"
+          git config --local user.name "$(git log --format='%an' HEAD^!)"
+          git checkout -b ${{ env.BUMP_BRANCH }}
+          echo "Renaming .version file..."
+          git mv .version/${{ env.TAG }} .version/${{ env.NEXT_VERSION }}
+          echo "Replacing version in inc/define.php..."
+          sed -i "s/define('GLPI_VERSION', '[^)]*');/define('GLPI_VERSION', '${{ env.NEXT_VERSION }}-dev');/g" inc/define.php
+          echo "Archiving MySQL empty schema file..."
+          cp install/mysql/glpi-empty.sql install/mysql/glpi-${{ env.TAG }}-empty.sql
+          echo "Updating CHANGELOG.md..."
+          sed -i "0,/##/s//${{ env.CHANGELOG_ENTRY }}\n##/" CHANGELOG.md
+          git add .
+          git commit -m "Bump version"
+          git push origin ${{ env.BUMP_BRANCH }}
+      - name: "Create Pull Request"
+        if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
+        uses: "actions/github-script@v6"
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const result = await github.rest.pulls.create({
+              title: 'Bump version to ${{ env.NEXT_VERSION }}-dev',
+              owner,
+              repo,
+              head: '${{ env.BUMP_BRANCH }}',
+              base: '${{ env.BASE_BRANCH }}',
+              body: 'Bump version to ensure next nightly build will use not use same version string as the version that was just released.'
+            });

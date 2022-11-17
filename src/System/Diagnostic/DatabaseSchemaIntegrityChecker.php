@@ -36,6 +36,7 @@
 namespace Glpi\System\Diagnostic;
 
 use DBmysql;
+use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use Plugin;
 use SebastianBergmann\Diff\Differ;
@@ -713,8 +714,7 @@ class DatabaseSchemaIntegrityChecker
 
         if ($context === 'core') {
             $schema_version_nohash = preg_replace('/@.+$/', '', $schema_version); // strip hash
-            $schema_version_clean  = VersionParser::getNormalizedVersion($schema_version_nohash, false); // strip stability flag
-            $schema_path = sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $schema_version_clean);
+            $schema_path = DatabaseSchema::getEmptySchemaPath($schema_version_nohash);
         } elseif (preg_match('/^plugin:(?<plugin_key>\w+)$/', $context) === 1) {
             $plugin_key = str_replace('plugin:', '', $context);
             Plugin::load($plugin_key); // Load setup file, to be able to check schema even on inactive plugins

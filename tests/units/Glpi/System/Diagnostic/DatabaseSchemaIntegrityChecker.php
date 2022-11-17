@@ -1634,15 +1634,16 @@ DIFF
 
     protected function versionProvider(): iterable
     {
+        $root = realpath(GLPI_ROOT);
+
         // Current version -> can check
         yield [
             'version'              => GLPI_SCHEMA_VERSION,
             'context'              => 'core',
             'expected_can_check'   => true,
             'expected_schema_path' => sprintf(
-                '%s/install/mysql/glpi-%s-empty.sql',
-                GLPI_ROOT,
-                VersionParser::getNormalizedVersion(GLPI_VERSION, false)
+                '%s/install/mysql/glpi-empty.sql',
+                $root
             ),
         ];
 
@@ -1651,7 +1652,7 @@ DIFF
             'version'              => '10.0.2@1530dc89c7d9b131c2e2ea59fe0d6260fe93d831',
             'context'              => 'core',
             'expected_can_check'   => true,
-            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', $root),
         ];
 
         // Stable version WITHOUT hash -> can check
@@ -1659,7 +1660,7 @@ DIFF
             'version'              => '10.0.2',
             'context'              => 'core',
             'expected_can_check'   => true,
-            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', $root),
         ];
 
         // Unstable version with hash -> cannot check
@@ -1667,7 +1668,7 @@ DIFF
             'version'              => '10.0.2-dev@b130dc89c7d9b131c2e2ea59fe0d6260fe93d831',
             'context'              => 'core',
             'expected_can_check'   => false,
-            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', $root),
         ];
 
         // Unstable version WITHOUT hash -> cannot check
@@ -1675,7 +1676,7 @@ DIFF
             'version'              => '10.0.2-dev',
             'context'              => 'core',
             'expected_can_check'   => false,
-            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', GLPI_ROOT),
+            'expected_schema_path' => sprintf('%s/install/mysql/glpi-10.0.2-empty.sql', $root),
         ];
 
         // Old unsupported version -> cannot check
