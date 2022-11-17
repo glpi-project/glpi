@@ -5057,7 +5057,6 @@ HTML;
             'is_deleted_ldap' => 1,
         ];
         $myuser = new self();
-        $myuser->getFromDB($users_id);
 
         switch ($CFG_GLPI['user_deleted_ldap']) {
            //DO nothing
