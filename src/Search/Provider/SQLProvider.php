@@ -1214,16 +1214,25 @@ final class SQLProvider implements SearchProviderInterface
                 if ($val === 'mygroups') {
                     switch ($searchtype) {
                         case 'equals':
+                            if (count($_SESSION['glpigroups']) < 1) {
+                                return [];
+                            }
                             return [
                                 "$table.id" => $_SESSION['glpigroups']
                             ];
 
                         case 'notequals':
+                            if (count($_SESSION['glpigroups']) < 1) {
+                                return [];
+                            }
                             return [
                                 "$table.id" => ['NOT IN', $_SESSION['glpigroups']]
                             ];
 
                         case 'under':
+                            if (count($_SESSION['glpigroups']) < 1) {
+                                return [];
+                            }
                             $groups = $_SESSION['glpigroups'];
                             foreach ($_SESSION['glpigroups'] as $g) {
                                 $groups += getSonsOf($inittable, $g);
@@ -1234,6 +1243,9 @@ final class SQLProvider implements SearchProviderInterface
                             ];
 
                         case 'notunder':
+                            if (count($_SESSION['glpigroups']) < 1) {
+                                return [];
+                            }
                             $groups = $_SESSION['glpigroups'];
                             foreach ($_SESSION['glpigroups'] as $g) {
                                 $groups += getSonsOf($inittable, $g);
