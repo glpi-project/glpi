@@ -312,7 +312,7 @@ $break_tablet: 1400px;
                 // override tabler styles
                 border: 2px inset var(--tblr-border-color);
                 color: var(--tblr-secondary);
-                background-color: rgba(var(--tblr-secondary-rgb),.1);
+                background-color: rgba(var(--tblr-secondary-rgb), 0.1);
             }
 
             &.fa-moon {
