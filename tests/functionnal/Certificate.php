@@ -216,7 +216,7 @@ class Certificate extends DbTestCase
             'certificates_alert_repeat_interval'   => 60
         ]);
 
-       // force usage of notification (no alert sended otherwise)
+       // force usage of notification (no alert sent otherwise)
         $CFG_GLPI['use_notifications']  = true;
         $CFG_GLPI['notifications_ajax'] = 1;
 
