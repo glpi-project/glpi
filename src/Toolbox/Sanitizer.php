@@ -58,7 +58,7 @@ class Sanitizer
      *
      * @return mixed
      */
-    public static function sanitize($value, bool $db_escape = true)
+    public static function sanitize($value, bool $db_escape = false)
     {
         if (is_array($value)) {
             return array_map(
