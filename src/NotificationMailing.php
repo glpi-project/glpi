@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\Mime\Address;
 
 /**
@@ -179,7 +180,7 @@ class NotificationMailing implements NotificationInterface
 
         $queue = new QueuedNotification();
 
-        if (!$queue->add($data)) {
+        if (!$queue->add(Sanitizer::sanitize($data))) {
             Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
             return false;
         } else {

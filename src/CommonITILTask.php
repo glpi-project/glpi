@@ -488,7 +488,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $input['tasktemplates_id']  = $input['_tasktemplates_id'];
             $input = array_replace(
                 [
-                    'content'           => $template->getRenderedContent($parent_item),
+                    'content'           => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
                     'taskcategories_id' => $template->fields['taskcategories_id'],
                     'actiontime'        => $template->fields['actiontime'],
                     'state'             => $template->fields['state'],
