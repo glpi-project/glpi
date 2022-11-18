@@ -149,25 +149,25 @@ class NotificationEventMailing extends NotificationEventAbstract
             }
 
            // Add custom header for mail grouping in reader
-            $mmail->AddCustomHeader(
-                str_replace(
-                    [
-                        '%uuid',
-                        '%itemtype',
-                        '%items_id',
-                        '%host',
-                        '%event',
-                    ],
-                    [
-                        Config::getUuid('notification'),
-                        $current->fields['itemtype'],
-                        $current->fields['items_id'],
-                        php_uname('n'),
-                        'new',
-                    ],
-                    "In-Reply-To: <GLPI-%uuid-%itemtype-%items_id/%event@%host>"
-                )
+           $thread_id = str_replace(
+                [
+                    '%uuid',
+                    '%itemtype',
+                    '%items_id',
+                    '%host',
+                    '%event',
+                ],
+                [
+                    Config::getUuid('notification'),
+                    $current->fields['itemtype'],
+                    $current->fields['items_id'],
+                    php_uname('n'),
+                    'new',
+                ],
+                "<GLPI-%uuid-%itemtype-%items_id/%event@%host>"
             );
+            $mmail->AddCustomHeader("In-Reply-To: " . $thread_id);
+            $mmail->AddCustomHeader("References: " . $thread_id);
 
             $mmail->SetFrom($current->fields['sender'], $current->fields['sendername']);
 
