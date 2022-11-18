@@ -1917,7 +1917,7 @@ class AuthLDAP extends CommonDBTM
                                 $info[$ligne]['modifytimestamp'][0],
                                 $config_ldap->fields['time_offset']
                             );
-            } else {
+                        } else {
                             $user_infos[$uid]["timestamp"] = 0;
                         }
 
