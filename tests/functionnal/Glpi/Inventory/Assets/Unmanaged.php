@@ -172,6 +172,50 @@ class Unmanaged extends AbstractInventoryAsset
         $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(2);
 
+
+
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+            <DEVICE>
+            <DNSHOSTNAME>192.168.1.22</DNSHOSTNAME>
+            <ENTITY>0</ENTITY>
+            <IP>192.168.1.22</IP>
+            <MAC>4c:cc:6a:02:13:a9</MAC>
+            <NETBIOSNAME>DESKTOP-A3J16LF</NETBIOSNAME>
+            <WORKGROUP>WORKGROUP</WORKGROUP>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>189</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>asus-desktop-2022-09-20-16-43-09</DEVICEID>
+        <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>
+        ";
+
+        //redo inventory but change IP
+        $this->doInventory($xml, true);
+
+        //check for always one Unmanaged
+        $this->boolean($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check last_inventory_update
+        $this->variable($unmanaged->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
+
+        //check for always  one NetworkPort
+        $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
+        $this->integer(count($nps))->isIdenticalTo(1);
+
+        //check for always one IPAdress
+        $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.22"]);
+        $this->integer(count($ips))->isIdenticalTo(1);
+
+        //check for 3 RuleMatchLog
+        $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
+        $this->integer(count($rms))->isIdenticalTo(3);
+
+
         //convert as Computer
         $unmanaged->convert($unmanaged->fields['id'], "Computer");
 
@@ -187,12 +231,12 @@ class Unmanaged extends AbstractInventoryAsset
         $this->integer(count($nps))->isIdenticalTo(1);
 
         //check for always  one IPAdress
-        $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.20"]);
+        $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.22"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
         //check for two RuleMatchLog
         $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
-        $this->integer(count($rms))->isIdenticalTo(2);
+        $this->integer(count($rms))->isIdenticalTo(3);
 
         //redo inventory
         $this->doInventory($xml, true);
@@ -209,11 +253,11 @@ class Unmanaged extends AbstractInventoryAsset
         $this->integer(count($nps))->isIdenticalTo(1);
 
         //check for always one IPAdress
-        $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.20"]);
+        $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.22"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
         //check for 3 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
-        $this->integer(count($rms))->isIdenticalTo(3);
+        $this->integer(count($rms))->isIdenticalTo(4);
     }
 }

@@ -103,7 +103,6 @@ class Unmanaged extends MainAsset
                 'ips'       => 'ips'
             ];
 
-
             foreach ($dev_mapping as $origin => $dest) {
                 if (property_exists($device, $origin)) {
                     $device->$dest = $device->$origin;
@@ -195,57 +194,36 @@ class Unmanaged extends MainAsset
         if ($items_id == 0) {
             //before add check if an asset already exist with mac
             //if found, the Unmanaged device has been converted
+            $need_to_add = false;
+
             if (property_exists($val, "mac")) {
                 $result = NetworkPortInstantiation::getUniqueItemByMac(
                     $val->mac,
                     $entities_id
                 );
-                //update converted object
+                //manage converted object
                 if (!empty($result)) {
                     $converted_object = new $result['itemtype']();
                     if ($converted_object->getFromDB($result['id'])) {
-                        $source = new \AutoUpdateSystem();
-                        $source->getFromDBByCrit(['name' => AutoUpdateSystem::NATIVE_INVENTORY]);
-
-                        $input = $this->handleInput($val, $this->item);
-                        $converted_object->update(Sanitizer::sanitize(
-                            [
-                                'id' => $result['id'],
-                                'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
-                                'last_inventory_update' => $input['last_inventory_update'],
-                                'is_dynamic'            => true
-                            ]
-                        ));
-
-                        //add RuleMatchLog
-                        $rulesmatched = new RuleMatchedLog();
-                        $inputrulelog = [
-                            'date'      => date('Y-m-d H:i:s'),
-                            'rules_id'  => $rules_id,
-                            'items_id'  => $result['id'],
-                            'itemtype'  => $result['itemtype'],
-                            'agents_id' => $this->agent->fields['id'],
-                            'method'    => $this->request_query ?? Request::INVENT_QUERY
-                        ];
-                        $rulesmatched->add($inputrulelog, [], false);
-                        $rulesmatched->cleanOlddata($items_id, $itemtype);
-
-                        //reload object
-                        $converted_object->getFromDB($result['id']);
-                        //item managed are no longer an Unamaged device
                         $this->item = $converted_object;
-                        $this->inventoried[] = $converted_object;
-                        return;
+                        $items_id = $result['id'];
+                        $itemtype = $result['itemtype'];
                     }
+                } else {
+                    $need_to_add = true;
                 }
+            } else {
+                $need_to_add = true;
             }
 
-            //else add it
-            $input = $this->handleInput($val, $this->item);
-            unset($input['ap_port']);
-            unset($input['firmware']);
-            $items_id = $this->item->add(Sanitizer::sanitize($input));
-            $this->setNew();
+            if ($need_to_add) {
+                //else add it
+                $input = $this->handleInput($val, $this->item);
+                unset($input['ap_port']);
+                unset($input['firmware']);
+                $items_id = $this->item->add(Sanitizer::sanitize($input));
+                $this->setNew();
+            }
         }
 
         if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
