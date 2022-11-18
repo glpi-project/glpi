@@ -208,6 +208,8 @@ class Unmanaged extends MainAsset
                         $this->item = $converted_object;
                         $items_id = $result['id'];
                         $itemtype = $result['itemtype'];
+                    } else{
+                        $need_to_add = true;
                     }
                 } else {
                     $need_to_add = true;
