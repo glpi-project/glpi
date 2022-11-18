@@ -3913,7 +3913,7 @@ JS;
                skin_url: '{$skin_url}',
                content_css: '{$content_css}',
 
-               min_height: '150px',
+               min_height: 150,
                resize: true,
 
                // disable path indicator in bottom bar
@@ -3921,6 +3921,7 @@ JS;
 
                menubar: false,
                toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
+               contextmenu: false,
 
                // Content settings
                entity_encoding: 'raw',
