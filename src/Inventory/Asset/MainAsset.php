@@ -53,6 +53,7 @@ use RuleImportEntityCollection;
 use RuleLocationCollection;
 use RuleMatchedLog;
 use stdClass;
+use Toolbox;
 use Transfer;
 
 abstract class MainAsset extends InventoryAsset
@@ -524,7 +525,6 @@ abstract class MainAsset extends InventoryAsset
 
             if (!$this->isAccessPoint($data)) {
                 $entity_input = $this->prepareEntitiesRulesInput($data, $input);
-
                 $ruleEntity = new RuleImportEntityCollection();
                 $ruleEntity->getCollectionPart();
                 $dataEntity = $ruleEntity->processAllRules($entity_input, []);

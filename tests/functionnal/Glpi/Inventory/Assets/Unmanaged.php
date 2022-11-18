@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use AgentType;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/antivirus.class.php */
@@ -102,6 +104,7 @@ class Unmanaged extends AbstractInventoryAsset
 
     public function testInventory()
     {
+
         global $DB;
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
         <REQUEST>
@@ -122,11 +125,85 @@ class Unmanaged extends AbstractInventoryAsset
         </REQUEST>
         ";
 
+        //create agent
+        //From SNMP Discovery or ionventory agetn already exist
+        $agent = new \Agent();
+        $agent_id = $agent->add([
+            'deviceid'  => 'asus-desktop-2022-09-20-16-43-09',
+            'tag'       => 'sub',
+            'agenttypes_id' => 1, //Core
+            'itemtype' => 'Computer', //Core
+            'items_id' =>  0 //Core
+        ]);
+
+        $this->integer($agent_id)->isGreaterThan(0);
+        //create rule
+        $this->login();
+        $entity = new \Entity();
+        $entities_id_a = $entity->add([
+            'name'         => 'Entity A',
+            'entities_id'  => 0,
+            'completename' => 'Root entitiy > Entity A',
+            'level'        => 2,
+            'tag'          => 'entA'
+        ]);
+        $this->integer($entities_id_a)->isGreaterThan(0);
+
+        $entities_id_b = $entity->add([
+            'name'         => 'Entity B',
+            'entities_id'  => 0,
+            'completename' => 'Root entitiy > Entity B',
+            'level'        => 2,
+            'tag'          => 'sub'
+        ]);
+        $this->integer($entities_id_b)->isGreaterThan(0);
+
+        // Add a rule for get entity tag (1)
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'entity rule 1',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportEntity',
+            'ranking'   => 1
+        ];
+        $rule1_id = $rule->add($input);
+        $this->integer($rule1_id)->isGreaterThan(0);
+
+        // Add criteria
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rule1_id,
+            'criteria'  => "tag",
+            'pattern'   => "/(.*)/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->integer($rulecriteria->add($input))->isGreaterThan(0);
+
+        $input = [
+            'rules_id'  => $rule1_id,
+            'criteria'  => "itemtype",
+            'pattern'   => "Unmanaged",
+            'condition' => \RuleImportEntity::PATTERN_IS
+        ];
+        $this->integer($rulecriteria->add($input))->isGreaterThan(0);
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'regex_result',
+            'field'       => '_affect_entity_by_tag',
+            'value'       => '#0'
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+
+
         $this->doInventory($xml, true);
 
         //no Agent from discovery
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
-        $this->integer(count($agents))->isIdenticalTo(0);
+        $this->integer(count($agents))->isIdenticalTo(1);
 
         //check for one Unmanaged
         $unmanaged = new \Unmanaged();
@@ -134,6 +211,10 @@ class Unmanaged extends AbstractInventoryAsset
 
         //check last_inventory_update
         $this->variable($unmanaged->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
+
+        //check entity
+        $this->variable($unmanaged->fields['entities_id'])->isEqualTo($entities_id_b);
+
 
         //check for one NetworkPort
         $np = new \NetworkPort();
@@ -159,6 +240,9 @@ class Unmanaged extends AbstractInventoryAsset
 
         //check last_inventory_update
         $this->variable($unmanaged->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
+
+        //check entity
+        $this->variable($unmanaged->fields['entities_id'])->isEqualTo($entities_id_b);
 
         //check for always  one NetworkPort
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
@@ -203,6 +287,9 @@ class Unmanaged extends AbstractInventoryAsset
         //check last_inventory_update
         $this->variable($unmanaged->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
 
+        //check entity
+        $this->variable($unmanaged->fields['entities_id'])->isEqualTo($entities_id_b);
+
         //check for always  one NetworkPort
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
@@ -226,6 +313,12 @@ class Unmanaged extends AbstractInventoryAsset
         $computer = new \Computer();
         $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
 
+        //check last_inventory_update
+        $this->variable($computer->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
+
+        //check entity
+        $this->variable($computer->fields['entities_id'])->isEqualTo($entities_id_b);
+
         //check for always  one NetworkPort
         $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
@@ -247,6 +340,9 @@ class Unmanaged extends AbstractInventoryAsset
 
         //check last_inventory_update
         $this->variable($computer->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
+
+        //check entity
+        $this->variable($computer->fields['entities_id'])->isEqualTo($entities_id_b);
 
         //check for always one NetworkPort
         $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
