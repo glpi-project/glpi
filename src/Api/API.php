@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
 use Html;
 use Infocom;
@@ -1052,7 +1053,7 @@ abstract class API
     /**
      * Return a collection of rows of the desired itemtype
      *
-     * @param string  $itemtype   itemtype (class) of object
+     * @param class-string<CommonDBTM>  $itemtype   itemtype (class) of object
      * @param array   $params     with theses options :
      * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optionnal
      * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
@@ -1122,14 +1123,18 @@ abstract class API
 
        //specific case for restriction
         $already_linked_table = [];
-        $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-        $where = Search::addDefaultWhere($itemtype);
+        $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $table, $already_linked_table) + SQLProvider::getDefaultWhereCriteria($itemtype);
+        if (!isset($criteria['LEFT JOIN'])) {
+            $criteria['LEFT JOIN'] = [];
+        }
 
-        if ($where == '') {
-            $where = "1=1 ";
+        if (empty($criteria['WHERE'])) {
+            $criteria['WHERE'] = [
+                '1' => '1'
+            ];
         }
         if ($item->maybeDeleted()) {
-            $where .= "AND " . $DB->quoteName("$table.is_deleted") . " = " . (int)$params['is_deleted'];
+            $criteria['WHERE'][$DB::quoteName("$table.is_deleted")] = (int)$params['is_deleted'];
         }
 
        // add filter for a parent itemtype
@@ -1163,24 +1168,38 @@ abstract class API
 
            // filter with parents fields
             if (isset($item->fields[$fk_parent])) {
-                $where .= " AND " . $DB->quoteName("$table.$fk_parent") . " = " . (int)$this->parameters['parent_id'];
+                $criteria['WHERE'][$DB::quoteName("$table.$fk_parent")] = (int) $this->parameters['parent_id'];
             } else if (
-                isset($item->fields['itemtype'])
-                 && isset($item->fields['items_id'])
+                isset($item->fields['itemtype'], $item->fields['items_id'])
             ) {
-                $where .= " AND " . $DB->quoteName("$table.itemtype") . " = " . $DB->quoteValue($this->parameters['parent_itemtype']) . "
-                       AND " . $DB->quoteName("$table.items_id") . " = " . (int)$this->parameters['parent_id'];
+                $criteria['WHERE'][$DB::quoteName("$table.itemtype")] = $this->parameters['parent_itemtype'];
+                $criteria['WHERE'][$DB::quoteName("$table.items_id")] = (int) $this->parameters['parent_id'];
             } else if (isset($parent_item->fields[$fk_child])) {
                 $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-                $join .= " LEFT JOIN " . $DB->quoteName($parentTable) . " ON " . $DB->quoteName("$parentTable.$fk_child") . " = " . $DB->quoteName("$table.id");
-                $where .= " AND " . $DB->quoteName("$parentTable.id") . " = " . (int)$this->parameters['parent_id'];
+                $criteria['LEFT JOIN'][$parentTable] = [
+                    'ON' => [
+                        $parentTable => $fk_child,
+                        $table       => 'id'
+                    ]
+                ];
+                $criteria['WHERE']["$parentTable.id"] = (int) $this->parameters['parent_id'];
             } else if (
                 isset($parent_item->fields['itemtype'])
                  && isset($parent_item->fields['items_id'])
             ) {
                 $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
-                $join .= " LEFT JOIN " . $DB->quoteName($parentTable) . " ON " . $DB->quoteName("itemtype") . "=" . $DB->quoteValue($itemtype) . " AND " . $DB->quoteName("$parentTable.items_id") . " = " . $DB->quoteName("$table.id");
-                $where .= " AND " . $DB->quoteName("$parentTable.id") . " = " . (int)$this->parameters['parent_id'];
+                $criteria['LEFT JOIN'][$DB::quoteName($parentTable)] = [
+                    'ON' => [
+                        $parentTable => 'itemtype',
+                        new \QueryExpression($DB::quoteValue($itemtype)),
+                        [
+                            'AND' => [
+                                "$parentTable.items_id" => "$table.id",
+                            ]
+                        ]
+                    ]
+                ];
+                $criteria['WHERE']["$parentTable.id"] = (int) $this->parameters['parent_id'];
             }
         }
 
@@ -1203,68 +1222,69 @@ abstract class API
            // make text search
             foreach ($params['searchText'] as $filter_field => $filter_value) {
                 if (!empty($filter_value)) {
-                    $search_value = Search::makeTextSearch($filter_value);
-                    $where .= " AND (" . $DB->quoteName("$table.$filter_field") . " $search_value)";
+                    $criteria['WHERE'][$DB::quoteName("$table.$filter_field")] = ['LIKE', SQLProvider::makeTextSearchValue($filter_value)];
                 }
             }
         }
 
        // filter with entity
         if ($item->getType() == 'Entity') {
-            $where .= " AND (" . getEntitiesRestrictRequest("", $itemtype::getTable()) . ")";
+            $criteria['WHERE'][] = [getEntitiesRestrictCriteria($itemtype::getTable())];
         } else if (
             $item->isEntityAssign()
             // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
             && array_key_exists('entities_id', $item->fields)
         ) {
-            $where .= " AND (" . getEntitiesRestrictRequest(
-                "",
-                $itemtype::getTable(),
-                '',
-                $_SESSION['glpiactiveentities'],
-                $item->maybeRecursive(),
-                true
-            );
+            $entity_restrict = getEntitiesRestrictCriteria($itemtype::getTable(), '', $_SESSION['glpiactiveentities'], $item->maybeRecursive(), true);
 
             if ($item instanceof SavedSearch) {
-                $where .= " OR " . $itemtype::getTable() . ".is_private = 1";
+                $criteria['WHERE'][] = [
+                    'OR' => [
+                        $entity_restrict,
+                        $DB::quoteName("$table.is_private") => 1,
+                    ]
+                ];
+            } else {
+                $criteria['WHERE'][] = $entity_restrict;
             }
-
-            $where .= ")";
         }
 
        // Check if we need to add raw names later on
         $add_keys_names = count($params['add_keys_names']) > 0;
 
        // build query
-        $query = "SELECT DISTINCT " . $DB->quoteName("$table.id") . ",  " . $DB->quoteName("$table.*") . "
-                FROM " . $DB->quoteName($table) . "
-                $join
-                WHERE $where
-                ORDER BY " . $DB->quoteName($params['sort']) . " " . $params['order'] . "
-                LIMIT " . (int)$params['start'] . ", " . (int)$params['list_limit'];
-        if ($result = $DB->doQuery($query)) {
-            while ($data = $DB->fetchAssoc($result)) {
-                if ($add_keys_names) {
-                    // Insert raw names into the data row
-                    $data["_keys_names"] = $this->getFriendlyNames(
-                        $data,
-                        $params,
-                        $itemtype
-                    );
-                }
-
-                if (isset($params['with_networkports']) && $params['with_networkports']) {
-                    $data['_networkports'] = $this->getNetworkPorts($data['id'], $itemtype);
-                }
-
-                $found[] = $data;
+        $criteria['SELECT'] = [$DB::quoteName("$table.id"), $DB::quoteName("$table.*")];
+        $criteria['DISTINCT'] = true;
+        $criteria['FROM'] = $table;
+        $criteria['ORDER'] = [$DB->quoteName($params['sort']), $params['order']];
+        $criteria['START'] = (int) $params['start'];
+        $criteria['LIMIT'] = (int) $params['list_limit'];
+        $result = $DB->request($criteria);
+        foreach ($result as $data) {
+            if ($add_keys_names) {
+                // Insert raw names into the data row
+                $data["_keys_names"] = $this->getFriendlyNames(
+                    $data,
+                    $params,
+                    $itemtype
+                );
             }
+
+            if (isset($params['with_networkports']) && $params['with_networkports']) {
+                $data['_networkports'] = $this->getNetworkPorts($data['id'], $itemtype);
+            }
+
+            $found[] = $data;
         }
 
-       // get result full row counts
-        $count_query = "SELECT " . QueryFunction::count('*') . " FROM {$DB::quoteName($table)} $join WHERE $where";
-        $totalcount = $DB->doQuery($count_query)->fetch_row()[0];
+        // get result full row counts
+        $count_result = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => $DB::quoteName($table),
+            'LEFT JOIN' => $criteria['LEFT JOIN'],
+            'WHERE' => $criteria['WHERE'],
+        ]);
+        $totalcount = $count_result->current()['cpt'];
 
         if ($params['range'][0] > $totalcount) {
             $this->returnError(
