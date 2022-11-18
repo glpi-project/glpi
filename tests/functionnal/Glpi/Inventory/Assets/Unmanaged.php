@@ -234,7 +234,7 @@ class Unmanaged extends AbstractInventoryAsset
         $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.22"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
-        //check for two RuleMatchLog
+        //check for 3 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(3);
 
@@ -256,7 +256,7 @@ class Unmanaged extends AbstractInventoryAsset
         $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.22"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
-        //check for 3 RuleMatchLog
+        //check for 4 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(4);
     }
