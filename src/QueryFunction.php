@@ -69,7 +69,7 @@ class QueryFunction
 
         $parameters = $this->params;
 
-        $alias = $this->alias ? ' AS ' . $DB::quoteName($this->alias) : '';
+        $alias = $this->alias ? ' AS ' . $this->alias : '';
 
         if ($this->name === 'ADDDATE') {
             $output = sprintf(
@@ -324,12 +324,17 @@ class QueryFunction
     /**
      * Build a FROM_UNIXTIME SQL function call
      * @param string $expression Expression to convert
+     * @param string|null $format Function result alias
      * @param string|null $alias Function result alias
      * @return static
      */
-    public static function fromUnixTimestamp(string $expression, string $format, ?string $alias = null): self
+    public static function fromUnixTimestamp(string $expression, ?string $format = null, ?string $alias = null): self
     {
-        return new self('FROM_UNIXTIME', [$expression, $format], $alias);
+        $params = [$expression];
+        if ($format !== null) {
+            $params[] = $format;
+        }
+        return new self('FROM_UNIXTIME', $params, $alias);
     }
 
     /**

@@ -351,24 +351,46 @@ class QueryFunction extends \GLPITestCase
     protected function fromUnixTimestampProvider()
     {
         return [
-            ['`glpi_computers`.`date_mod`', null, "FROM_UNIXTIME(`glpi_computers`.`date_mod`)"],
-            ['`glpi_computers`.`date_mod`', '`from_unix_timestamp_alias`', "FROM_UNIXTIME(`glpi_computers`.`date_mod`) AS `from_unix_timestamp_alias`"],
+            [
+                'expression' => '`glpi_computers`.`date_mod`',
+                'format' => null,
+                'alias' => null,
+                'expected' => "FROM_UNIXTIME(`glpi_computers`.`date_mod`)",
+            ],
+            [
+                'expression' => '`glpi_computers`.`date_mod`',
+                'format' => null,
+                'alias' => '`from_unix_timestamp_alias`',
+                'expected' => "FROM_UNIXTIME(`glpi_computers`.`date_mod`) AS `from_unix_timestamp_alias`",
+            ],
+            [
+                'expression' => '`glpi_computers`.`date_mod`',
+                'format' => "'%Y-%m-%d'",
+                'alias' => null,
+                'expected' => "FROM_UNIXTIME(`glpi_computers`.`date_mod`, '%Y-%m-%d')",
+            ],
+            [
+                'expression' => '`glpi_computers`.`date_mod`',
+                'format' => "'%Y-%m-%d'",
+                'alias' => '`from_unix_timestamp_alias`',
+                'expected' => "FROM_UNIXTIME(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `from_unix_timestamp_alias`",
+            ],
         ];
     }
 
     /**
      * @dataProvider fromUnixTimestampProvider
      */
-    public function testFromUnixTimestamp($expression, $alias, $expected)
+    public function testFromUnixTimestamp($expression, $format, $alias, $expected)
     {
-        $this->string((string) \QueryFunction::fromUnixTimestamp($expression, $alias))->isIdenticalTo($expected);
+        $this->string((string) \QueryFunction::fromUnixTimestamp($expression, $format, $alias))->isIdenticalTo($expected);
     }
 
     protected function dateFormatProvider()
     {
         return [
-            ['`glpi_computers`.`date_mod`', '%Y-%m-%d', null, "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d')"],
-            ['`glpi_computers`.`date_mod`', '%Y-%m-%d', '`date_format_alias`', "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `date_format_alias`"],
+            ['`glpi_computers`.`date_mod`', "'%Y-%m-%d'", null, "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d')"],
+            ['`glpi_computers`.`date_mod`', "'%Y-%m-%d'", '`date_format_alias`', "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d') AS `date_format_alias`"],
         ];
     }
 
@@ -447,15 +469,15 @@ class QueryFunction extends \GLPITestCase
         return [
             [
                 'unit' => 'SECOND',
-                'date1' => '`glpi_computers`.`date_mod`',
-                'date2' => '`glpi_computers`.`date_creation`',
+                'expression1' => '`glpi_computers`.`date_mod`',
+                'expression2' => '`glpi_computers`.`date_creation`',
                 'alias' => null,
                 'expected' => "TIMESTAMPDIFF(SECOND, `glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`)",
             ],
             [
                 'unit' => 'SECOND',
-                'date1' => '`glpi_computers`.`date_mod`',
-                'date2' => '`glpi_computers`.`date_creation`',
+                'expression1' => '`glpi_computers`.`date_mod`',
+                'expression2' => '`glpi_computers`.`date_creation`',
                 'alias' => '`timestampdiff_alias`',
                 'expected' => "TIMESTAMPDIFF(SECOND, `glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `timestampdiff_alias`",
             ],
