@@ -154,17 +154,17 @@ class Unmanaged extends AbstractInventoryAsset
         //redo inventory
         $this->doInventory($xml, true);
 
-        //check for one Unmanaged
+        //check for always one Unmanaged
         $this->boolean($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
 
         //check last_inventory_update
         $this->variable($unmanaged->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
 
-        //check for one NetworkPort
+        //check for always  one NetworkPort
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
 
-        //check for one IPAdress
+        //check for always one IPAdress
         $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.20"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
@@ -178,23 +178,23 @@ class Unmanaged extends AbstractInventoryAsset
         //unamage device no longer exist
         $this->boolean($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isFalse();
 
-        //computer exist now
+        //check computer exist now
         $computer = new \Computer();
         $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
 
-        //check for one NetworkPort
+        //check for always  one NetworkPort
         $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
 
-        //check for one IPAdress
+        //check for always  one IPAdress
         $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.20"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
-        //check for one RuleMatchLog
+        //check for two RuleMatchLog
         $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(2);
 
-        //redo ivnentory
+        //redo inventory
         $this->doInventory($xml, true);
 
         //check for one computer
@@ -204,11 +204,11 @@ class Unmanaged extends AbstractInventoryAsset
         //check last_inventory_update
         $this->variable($computer->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
 
-        //check for one NetworkPort
+        //check for always one NetworkPort
         $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
 
-        //check for one IPAdress
+        //check for always one IPAdress
         $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.20"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
