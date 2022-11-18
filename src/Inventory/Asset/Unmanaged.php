@@ -204,7 +204,6 @@ class Unmanaged extends MainAsset
                 if (!empty($result)) {
                     $converted_object = new $result['itemtype']();
                     if ($converted_object->getFromDB($result['id'])) {
-
                         $source = new \AutoUpdateSystem();
                         $source->getFromDBByCrit(['name' => AutoUpdateSystem::NATIVE_INVENTORY]);
 
