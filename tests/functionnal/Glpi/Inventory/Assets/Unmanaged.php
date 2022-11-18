@@ -108,7 +108,7 @@ class Unmanaged extends AbstractInventoryAsset
      * 2 - as computer
      * test RuleEntity
      * test LockedField
-     * test unmazanged converter
+     * test unmanaged converter
      */
     public function testInventory()
     {
@@ -133,7 +133,7 @@ class Unmanaged extends AbstractInventoryAsset
         ";
 
         //create agent
-        //From SNMP Discovery or ionventory agetn already exist
+        //from SNMP Discovery or Inventory agent already exist
         $agent = new \Agent();
         $agent_id = $agent->add([
             'deviceid'  => 'asus-desktop-2022-09-20-16-43-09',
@@ -237,7 +237,7 @@ class Unmanaged extends AbstractInventoryAsset
         $this->integer(count($rms))->isIdenticalTo(1);
 
 
-        //update field to create lcoked field
+        //update field to create locked field
         //update computer to add lock on serial
         $this->boolean($unmanaged->update([
             'id' => $unmanaged->fields['id'],
@@ -271,7 +271,7 @@ class Unmanaged extends AbstractInventoryAsset
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
 
-        //check for always one IPAdress
+        //check for always one IPAddress
         $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.20"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
@@ -318,7 +318,7 @@ class Unmanaged extends AbstractInventoryAsset
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
 
-        //check for always one IPAdress
+        //check for always one IPAddress but .22
         $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.22"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
@@ -355,7 +355,7 @@ class Unmanaged extends AbstractInventoryAsset
         $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
 
-        //check for always  one IPAdress
+        //check for always  one IPAddress but .22
         $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.22"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
@@ -380,7 +380,7 @@ class Unmanaged extends AbstractInventoryAsset
         $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
 
-        //check for always one IPAdress
+        //check for always one IPAddress but .22
         $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.22"]);
         $this->integer(count($ips))->isIdenticalTo(1);
 
@@ -418,7 +418,7 @@ class Unmanaged extends AbstractInventoryAsset
         $computer = new \Computer();
         $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
 
-        //check users_id always glpi
+        //check users_id is always glpi
         $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'glpi', true));
 
         //release lock
