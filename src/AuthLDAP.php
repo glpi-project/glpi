@@ -1918,7 +1918,7 @@ class AuthLDAP extends CommonDBTM
                                 $config_ldap->fields['time_offset']
                             );
                         } else {
-                            $user_infos[$uid]["timestamp"] = 0;
+                            $user_infos[$uid]["timestamp"] = '';
                         }
 
                         $user_infos[$uid]["user_dn"] = $info[$ligne]['dn'];
@@ -1937,6 +1937,8 @@ class AuthLDAP extends CommonDBTM
                                     $info[$ligne]['modifytimestamp'][0],
                                     $config_ldap->fields['time_offset']
                                 );
+                            } else {
+                                $ldap_users[$uid] = '';
                             }
                             $user_infos[$uid]["name"] = $info[$ligne][$login_field][0];
                         }
