@@ -65,9 +65,11 @@ $rules[] = [
         ]
     ],
     'action'    => [
-        'field'         => '_inventory',
-        'action_field'  => "assign",
-        'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+        [
+            'field'         => '_inventory',
+            'action_type'  => "assign",
+            'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+        ]
     ]
 ];
 
@@ -89,9 +91,11 @@ $rules[] = [
         ]
     ],
     'action'    => [
-        'field'         => '_inventory',
-        'action_field'  => "assign",
-        'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+        [
+            'field'         => '_inventory',
+            'action_type'  => "assign",
+            'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+        ]
     ]
 ];
 
@@ -108,13 +112,15 @@ $rules[] = [
         ]
     ],
     'action'    => [
-        'field'         => '_inventory',
-        'action_field'  => "assign",
-        'value'         => RuleImportAsset::RULE_ACTION_DENIED
+        [
+            'field'         => '_inventory',
+            'action_type'  => "assign",
+            'value'         => RuleImportAsset::RULE_ACTION_DENIED
+        ]
     ]
 ];
 
-$query = "SELECT MAX(`rank`) FROM `glpi_rules`";
+$query = "SELECT MAX(`ranking`) FROM `glpi_rules`";
 $result = $DB->query($query);
 $ranking   = $DB->result($result, 0, 0);
 
@@ -136,8 +142,8 @@ foreach ($rules as $rule) {
 
     // Add rule
     $query = "INSERT INTO `glpi_rules`
-    (`is_active`, `name`, `uuid`, `match`, `sub_type`, `uuid`, `ranking`)
-    VALUES (" . $input['is_active'] . ", " . $input['name'] . ", " . $input['uuid'] . ", " . $input['match'] . ", " . $input['sub_type'] . ", " . $input['uuid'] . ", " . $input['ranking'] . ")";
+    (`is_active`, `name`, `match`, `sub_type`, `uuid`, `ranking`)
+    VALUES (" . $input['is_active'] . ", '" . $input['name'] . "', '" . $input['match'] . "', '" . $input['sub_type'] . "', '" . $input['uuid'] . "', " . $input['ranking'] . ")";
     $DB->queryOrDie($query, "10.0.0.6 add Unmanaged RuleIMportAsset");
     $rule_id = $DB->insertId();
 
@@ -145,15 +151,15 @@ foreach ($rules as $rule) {
     foreach ($rule['criteria'] as $criteria) {
         $query = "INSERT INTO `glpi_rulecriterias`
         (`rules_id`, `criteria`, `condition`, `pattern`)
-        VALUES (" . $rule_id . ", " . $criteria['criteria'] . ", " . $criteria['condition'] . ", " . $criteria['pattern'] . ")";
+        VALUES (" . $rule_id . ", '" . $criteria['criteria'] . "', '" . $criteria['condition'] . "', '" . $criteria['pattern'] . "')";
         $DB->queryOrDie($query);
     }
 
     // Add actions
     foreach ($rule['action'] as $action) {
-        $query = "INSERT INTO `glpi_ruleactoion`
+        $query = "INSERT INTO `glpi_ruleactions`
         (`rules_id`, `action_type`, `field`, `value`)
-        VALUES (" . $rule_id . ", " . $action['action_type'] . ", " . $action['field'] . ", " . $action['value'] . ")";
+        VALUES (" . $rule_id . ", '" . $action['action_type'] . "', '" . $action['field'] . "', " . $action['value'] . ")";
         $DB->queryOrDie($query);
     }
 
