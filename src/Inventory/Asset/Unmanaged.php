@@ -51,7 +51,6 @@ use Transfer;
 
 class Unmanaged extends MainAsset
 {
-
     private $management_ports = [];
 
     protected $extra_data = [
