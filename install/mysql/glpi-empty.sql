@@ -8843,6 +8843,7 @@ CREATE TABLE `glpi_unmanageds` (
   `hub` tinyint NOT NULL DEFAULT '0',
   `ip` varchar(255) DEFAULT NULL,
   `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
+  `last_inventory_update` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
