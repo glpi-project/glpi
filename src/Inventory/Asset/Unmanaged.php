@@ -35,44 +35,53 @@
 
 namespace Glpi\Inventory\Asset;
 
-use AutoUpdateSystem;
-use CommonDBTM;
-use ComputerAntivirus;
+use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\Request;
 use Glpi\Toolbox\Sanitizer;
-use Unmanaged as GlobalUnmanaged;
+use NetworkEquipment;
+use NetworkName;
+use NetworkPortInstantiation;
+use Printer;
+use RefusedEquipment;
+use RuleMatchedLog;
+use Toolbox;
+use Transfer;
 
 class Unmanaged extends MainAsset
 {
+
+    private $management_ports = [];
+
+    protected $extra_data = [
+        'hardware'        => null,
+        'network_device'  => null,
+    ];
+
     public function prepare(): array
     {
+        parent::prepare();
+        $val = $this->data[0];
 
         $raw_data = $this->raw_data;
         if (!is_array($raw_data)) {
             $raw_data = [$raw_data];
         }
 
-        $this->data = [];
-
-        foreach ($raw_data as $entry) {
-
-            $val = new \stdClass();
-
-            //set update system
-            $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? AutoUpdateSystem::NATIVE_INVENTORY;
-            $val->last_inventory_update = $_SESSION["glpi_currenttime"];
-
-            if (isset($this->extra_data['hardware'])) {
-                $this->prepareForHardware($val);
-            }
-
-            if (isset($this->extra_data['network_device'])) {
-                $this->prepareForNetworkDevice($val);
-            }
-
-            $this->data[] = $val;
+        if (isset($this->extra_data['network_device'])) {
+            $this->prepareForNetworkDevice($val);
         }
 
+        //remove useless properties
+        // DOMAIN are not managed yet for Unmanaged item
+        if (property_exists($val, 'domains_id')) {
+            unset($val->domains_id);
+        }
+        if (property_exists($val, 'workgroup')) {
+            unset($val->workgroup);
+        }
+
+        $this->data[0] = $val;
         return $this->data;
     }
 
@@ -85,129 +94,320 @@ class Unmanaged extends MainAsset
      */
     protected function prepareForNetworkDevice($val)
     {
-        $network_device = (object)$this->extra_data['network_device'];
-        $nd_mapping = [
-            'type'      => 'type',
-            'mac'       => 'mac',
-            'name'      => 'name',
-            'workgroup' => 'domains_id',
-            'ips'       => 'ips'
-        ];
+        if (isset($this->extra_data['network_device'])) {
+            $device = (object)$this->extra_data['network_device'];
 
-        foreach ($nd_mapping as $origin => $dest) {
-            if (property_exists($network_device, $origin)) {
-                $network_device->$dest = $network_device->$origin;
+            $dev_mapping = [
+                'mac'       => 'mac',
+                'name'      => 'name',
+                'ips'       => 'ips'
+            ];
+
+
+            foreach ($dev_mapping as $origin => $dest) {
+                if (property_exists($device, $origin)) {
+                    $device->$dest = $device->$origin;
+                }
             }
-        }
 
-        foreach ($network_device as $key => $property) {
-            $val->$key = $property;
+            foreach ($device as $key => $property) {
+                $val->$key = $property;
+            }
+
+            if (property_exists($device, 'ips')) {
+                $portkey = 'management';
+                $port = new \stdClass();
+                if (property_exists($device, 'mac')) {
+                    $port->mac = $device->mac;
+                }
+                $port->name = 'Management';
+                $port->netname = __('internal');
+                $port->instantiation_type = 'NetworkPortAggregate';
+                $port->is_internal = true;
+                $port->logical_number = 0;
+                $port->ipaddress = [];
+
+               //add internal port(s)
+                foreach ($device->ips as $ip) {
+                    if ($ip != '127.0.0.1' && $ip != '::1' && !in_array($ip, $port->ipaddress)) {
+                        $port->ipaddress[] = $ip;
+                    }
+                }
+
+                $this->management_ports[$portkey] = $port;
+            }
         }
     }
 
     /**
-     * Prepare hardware information
+     * After rule engine passed, update task (log) and create item if required
      *
-     * @param stdClass $val
-     *
-     * @return void
+     * @param integer $items_id id of the item (0 if new)
+     * @param string  $itemtype Item type
+     * @param integer $rules_id Matched rule id, if any
+     * @param integer $ports_id Matched port id, if any
      */
-    protected function prepareForHardware($val)
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
     {
-        $hardware = (object)$this->extra_data['hardware'];
-        $hw_mapping = [
-            'name'           => 'name',
-            'winprodid'      => 'licenseid',
-            'winprodkey'     => 'license_number',
-            'workgroup'      => 'domains_id',
-            'lastloggeduser' => 'users_id',
-        ];
+        global $CFG_GLPI;
 
-        foreach ($hw_mapping as $origin => $dest) {
-            if (property_exists($hardware, $origin)) {
-                $hardware->$dest = $hardware->$origin;
+        $key = $this->current_key;
+        $val = &$this->data[$key];
+        $entities_id = $this->entities_id;
+        $val->is_dynamic = 1;
+        $val->entities_id = $entities_id;
+        $default_states_id = $this->states_id_default ?? 0;
+        if ($items_id != 0 && $default_states_id != '-1') {
+            $val->states_id = $default_states_id;
+        } elseif ($items_id == 0) {
+            //if create mode default states_id can't be '-1' put 0 if needed
+            $val->states_id = $default_states_id > 0 ? $default_states_id : 0;
+        }
+
+        // append data from RuleImportEntity
+        foreach ($this->ruleentity_data as $attribute => $value) {
+            $val->{$attribute} = $value;
+        }
+        // append data from RuleLocation
+        foreach ($this->rulelocation_data as $attribute => $value) {
+            $known_key = md5($attribute . $value);
+            $this->known_links[$known_key] = $value;
+            $val->{$attribute} = $value;
+        }
+
+        $orig_glpiactive_entity = $_SESSION['glpiactive_entity'] ?? null;
+        $orig_glpiactiveentities = $_SESSION['glpiactiveentities'] ?? null;
+        $orig_glpiactiveentities_string = $_SESSION['glpiactiveentities_string'] ?? null;
+
+        //set entity in session
+        $_SESSION['glpiactiveentities']        = [$entities_id];
+        $_SESSION['glpiactiveentities_string'] = $entities_id;
+        $_SESSION['glpiactive_entity']         = $entities_id;
+
+        if ($items_id != 0) {
+            $this->item->getFromDB($items_id);
+        }
+
+        //handleLinks relies on $this->data; update it before the call
+        $this->handleLinks();
+
+
+        if ($items_id == 0) {
+            //before add check if an asset already exist with mac
+            //if found, the Unmanaged device has been converted
+            if (property_exists($val, "mac")) {
+                $result = NetworkPortInstantiation::getUniqueItemByMac(
+                    $val->mac,
+                    $entities_id
+                );
+                //update converted object
+                if (!empty($result)) {
+                    $converted_object = new $result['itemtype']();
+                    if ($converted_object->getFromDB($result['id'])) {
+                        $converted_object->update(Sanitizer::sanitize(
+                            [
+                                'id' => $result['id'],
+                                'autoupdatesystems_id'  => $val->autoupdatesystems_id,
+                                'last_inventory_update' => $val->last_inventory_update,
+                                'is_dynamic'            => true
+                            ]
+                        ));
+                        //reload object
+                        $converted_object->getFromDB($result['id']);
+                        //item managed are no longer an Unamaged device
+                        $this->item = $converted_object;
+                        return;
+                    }
+                }
             }
+
+            //else add it
+            $input = $this->handleInput($val, $this->item);
+            unset($input['ap_port']);
+            unset($input['firmware']);
+            $items_id = $this->item->add(Sanitizer::sanitize($input));
+            $this->setNew();
         }
-        $this->hardware = $hardware;
 
-        foreach ($hardware as $key => $property) {
-            $val->$key = $property;
+        if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
+            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
+        } else {
+            $this->agent->fields['items_id'] = $items_id;
+            $this->agent->fields['entities_id'] = $entities_id;
         }
-    }
 
-    /**
-     * Get existing entries from database
-     *
-     * @return array
-     */
-    protected function getExisting(): array
-    {
-        global $DB;
-
-        $db_existing = [];
-
-        $iterator = $DB->request([
-            'SELECT' => ['id', 'name', 'antivirus_version', 'is_dynamic'],
-            'FROM'   => GlobalUnmanaged::getTable(),
-            'WHERE'  => ['name' => $this->item->fields['id']]
+        //check for any old agent to remove
+        $agent = new \Agent();
+        $agent->deleteByCriteria([
+            'itemtype' => $this->item->getType(),
+            'items_id' => $items_id,
+            'NOT' => [
+                'id' => $this->agent->fields['id']
+            ]
         ]);
 
-        foreach ($iterator as $data) {
-            $idtmp = $data['id'];
-            unset($data['id']);
-            $data = array_map('strtolower', $data);
-            $db_existing[$idtmp] = $data;
+        $val->id = $this->item->fields['id'];
+
+        if ($entities_id == -1) {
+            $entities_id = $this->item->fields['entities_id'];
+        }
+        $val->entities_id = $entities_id;
+
+        if ($entities_id != $this->item->fields['entities_id']) {
+            //asset entity has changed in rules; do transfer
+            $doTransfer = \Entity::getUsedConfig('transfers_strategy', $this->item->fields['entities_id'], 'transfers_id', 0);
+            $transfer = new Transfer();
+            if ($doTransfer > 0 && $transfer->getFromDB($doTransfer)) {
+                $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
+                $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
+                //and set new entity in session
+                $_SESSION['glpiactiveentities']        = [$entities_id];
+                $_SESSION['glpiactiveentities_string'] = $entities_id;
+                $_SESSION['glpiactive_entity']         = $entities_id;
+            } else {
+                //no transfert so revert to old entities_id
+                $val->entities_id = $this->item->fields['entities_id'];
+            }
         }
 
-        return $db_existing;
-    }
+        if ($this->is_discovery === true && !$this->isNew()) {
+            //if NetworkEquipement
+            //Or printer that has not changed its IP
+            //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
+            if (
+                $itemtype == NetworkEquipment::getType()
+                ||
+                (
+                $itemtype == Printer::getType()
+                && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
+                )
+            ) {
+                //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
+                $input = $this->handleInput($val, $this->item);
+                $this->item->update(Sanitizer::sanitize(['id' => $input['id'],
+                    'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
+                    'last_inventory_update' => $input['last_inventory_update'],
+                    'snmpcredentials_id'    => $input['snmpcredentials_id'],
+                    'is_dynamic'            => true
+                ]));
+                return;
+            }
+        }
 
-    public function handle()
-    {
-        $db_antivirus = $this->getExisting();
-        $value = $this->data;
-        $computerAntivirus = new ComputerAntivirus();
+        $this->handlePorts();
 
-       //check for existing
-        foreach ($value as $k => $val) {
-            $compare = ['name' => $val->name, 'antivirus_version' => $val->antivirus_version];
-            $compare = array_map('strtolower', $compare);
-            foreach ($db_antivirus as $keydb => $arraydb) {
-                unset($arraydb['is_dynamic']);
-                if ($compare == $arraydb) {
-                    $computerAntivirus->getFromDB($keydb);
-                    $input = $this->handleInput($val, $computerAntivirus) + [
-                        'id'           => $keydb
-                    ];
-                    $computerAntivirus->update(Sanitizer::sanitize($input));
-                    unset($value[$k]);
-                    unset($db_antivirus[$keydb]);
-                    break;
+        if (method_exists($this, 'isWirelessController') && $this->isWirelessController()) {
+            if (property_exists($val, 'firmware') && $val->firmware instanceof \stdClass) {
+                $fw = new Firmware($this->item, [$val->firmware]);
+                if ($fw->checkConf($this->conf)) {
+                    $fw->setAgent($this->getAgent());
+                    $fw->prepare();
+                    $fw->handleLinks();
+                    $this->assets['Glpi\Inventory\Asset\Firmware'] = [$fw];
+                    unset($val->firmware);
                 }
             }
-        }
 
-        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_antivirus) !== 0) {
-            foreach ($db_antivirus as $idtmp => $data) {
-                if ($data['is_dynamic'] == 1) {
-                    $computerAntivirus->delete(['id' => $idtmp], true);
-                }
+            if (property_exists($val, 'ap_port') && method_exists($this, 'setManagementPorts')) {
+                $this->setManagementPorts(['management' => $val->ap_port]);
+                unset($val->ap_port);
             }
         }
 
-        if (count($value) != 0) {
-            foreach ($value as $val) {
-                $val->computers_id = $this->item->fields['id'];
-                $val->is_dynamic = 1;
-                $input = $this->handleInput($val, $computerAntivirus);
-                $computerAntivirus->add(Sanitizer::sanitize($input));
-            }
+        $input = $this->handleInput($val, $this->item);
+        $this->item->update(Sanitizer::sanitize($input));
+
+        if (!($this->item instanceof RefusedEquipment)) {
+            $this->handleAssets();
+        }
+
+        $rulesmatched = new RuleMatchedLog();
+        $inputrulelog = [
+            'date'      => date('Y-m-d H:i:s'),
+            'rules_id'  => $rules_id,
+            'items_id'  => $items_id,
+            'itemtype'  => $itemtype,
+            'agents_id' => $this->agent->fields['id'],
+            'method'    => $this->request_query ?? Request::INVENT_QUERY
+        ];
+        $rulesmatched->add($inputrulelog, [], false);
+        $rulesmatched->cleanOlddata($items_id, $itemtype);
+
+        //keep trace of inventoried assets, but not APs.
+        if (!$this->isAccessPoint($val)) {
+            $this->inventoried[] = clone $this->item;
+        }
+
+        //Restore entities in session
+        if ($orig_glpiactive_entity !== null) {
+            $_SESSION['glpiactive_entity'] = $orig_glpiactive_entity;
+        }
+
+        if ($orig_glpiactiveentities !== null) {
+            $_SESSION['glpiactiveentities'] = $orig_glpiactiveentities;
+        }
+
+        if ($orig_glpiactiveentities_string !== null) {
+            $_SESSION['glpiactiveentities_string'] = $orig_glpiactiveentities_string;
         }
     }
 
-    public function checkConf(Conf $conf): bool
+    /**
+     * Is device a stacked switch
+     * Relies on level/dependencies of network_components
+     *
+     * @param integer $parent_index Parent index for recursive calls
+     *
+     * @return boolean
+     */
+    public function isStackedSwitch($parent_index = 0): bool
     {
-        return 1;
+        return false;
+    }
+
+    public function handleLinks(array $data = null)
+    {
+        if ($this->current_key !== null) {
+            $data = [$this->data[$this->current_key]];
+        } else {
+            $data = $this->data;
+        }
+        return parent::handleLinks();
+    }
+
+    protected function portCreated(\stdClass $port, int $netports_id)
+    {
+        if (property_exists($port, 'is_internal') && $port->is_internal) {
+            return;
+        }
+
+       // Get networkname
+        $netname = new NetworkName();
+        if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
+            if ($netname->fields['name'] != $port->name) {
+                $netname->update(Sanitizer::sanitize([
+                    'id'     => $netname->getID(),
+                    'name'   => $port->netname ?? $port->name
+                ]));
+            }
+        } else {
+            $netname->add([
+                'itemtype'  => 'NetworkPort',
+                'items_id'  => $netports_id,
+                'name'      => addslashes($port->name)
+            ]);
+        }
+    }
+
+    public function getManagementPorts()
+    {
+        return $this->management_ports;
+    }
+
+    public function setManagementPorts(array $ports): Unmanaged
+    {
+        $this->management_ports = $ports;
+        return $this;
     }
 
     protected function getModelsFieldName(): string
@@ -218,6 +418,12 @@ class Unmanaged extends MainAsset
     protected function getTypesFieldName(): string
     {
         return "";
+    }
+
+    public function checkConf(Conf $conf): bool
+    {
+        $this->conf = $conf;
+        return $conf->import_unmanaged == 1;
     }
 
     public function getItemtype(): string

@@ -41,6 +41,8 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class Unmanaged extends CommonDBTM
 {
+    use Glpi\Features\Inventoriable;
+
    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'config';
@@ -57,6 +59,7 @@ class Unmanaged extends CommonDBTM
         $this->addDefaultFormTab($ong)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('Lock', $ong, $options)
+         ->addStandardTab('RuleMatchedLog', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
         return $ong;
     }

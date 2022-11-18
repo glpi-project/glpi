@@ -2377,6 +2377,84 @@ class RuleImportAsset extends Rule
             'action'    => '_deny'
         ];
 
+        $rules[] = [
+            'name'      => 'Unmanaged update (by name)',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_update_name',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Unmanaged'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_FIND,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Unmanaged import (by name)',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_import_name',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Unmanaged'
+                ],
+                [
+                    'criteria'  => 'name',
+                    'condition' => Rule::PATTERN_EXISTS,
+                    'pattern'   => 1
+                ]
+            ],
+            'action'    => '_link'
+        ];
+
+        $rules[] = [
+            'name'      => 'Unmanaged import denied',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_import_denied',
+            'match'     => 'AND',
+            'is_active' => 1,
+            'criteria'  => [
+                [
+                    'criteria'  => 'itemtype',
+                    'condition' => Rule::PATTERN_IS,
+                    'pattern'   => 'Unmanaged'
+                ]
+            ],
+            'action'    => '_deny'
+        ];
+
+        //load default rules from plugins
+        if ($with_plugins && isset($PLUGIN_HOOKS['add_rules'])) {
+            $ria = new self();
+            foreach ($PLUGIN_HOOKS['add_rules'] as $plugin => $val) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                $rules = array_merge(
+                    $rules,
+                    Plugin::doOneHook(
+                        $plugin,
+                        "ruleImportAsset_addGlobalCriteria",
+                        $ria->getGlobalCriteria()
+                    )
+                );
+            }
+        }
+
         $ranking = 0;
         foreach ($rules as $rule) {
             $rulecollection = new RuleImportAssetCollection();

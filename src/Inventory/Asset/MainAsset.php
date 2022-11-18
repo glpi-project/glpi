@@ -64,7 +64,6 @@ abstract class MainAsset extends InventoryAsset
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,
-        'network_device'  => null,
         '\Glpi\Inventory\Asset\NetworkCard' => null
     ];
     /** @var mixed */
@@ -210,22 +209,24 @@ abstract class MainAsset extends InventoryAsset
                     $val->uuid .= '-' . $val->name;
                 }
             } else {
-                $bios = (object)$this->extra_data['bios'];
-                if (
-                    property_exists($hardware, 'chassis_type')
-                    && !empty($hardware->chassis_type)
-                ) {
-                    $val->$types_id = $hardware->chassis_type;
-                } else if (
-                    isset($bios) && property_exists($bios, 'type')
-                    && !empty($bios->type)
-                ) {
-                    $val->$types_id = $bios->type;
-                } else if (
-                    isset($bios) && property_exists($bios, 'mmodel')
-                    && !empty($bios->mmodel)
-                ) {
-                    $val->$types_id = $bios->mmodel;
+                if (isset($this->extra_data['bios'])) {
+                    $bios = (object)$this->extra_data['bios'];
+                    if (
+                        property_exists($hardware, 'chassis_type')
+                        && !empty($hardware->chassis_type)
+                    ) {
+                        $val->$types_id = $hardware->chassis_type;
+                    } else if (
+                        isset($bios) && property_exists($bios, 'type')
+                        && !empty($bios->type)
+                    ) {
+                        $val->$types_id = $bios->type;
+                    } else if (
+                        isset($bios) && property_exists($bios, 'mmodel')
+                        && !empty($bios->mmodel)
+                    ) {
+                        $val->$types_id = $bios->mmodel;
+                    }
                 }
             }
         }
