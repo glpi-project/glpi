@@ -104,8 +104,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $template = new NotificationTemplate();
       $template->getFromDB($notificationtemplates_id);
 
-      Html::initEditorSystem('content_html');
-
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -152,8 +150,15 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<td>";
       echo __('Email HTML body');
       echo "</td><td colspan='3'>";
-      echo "<textarea cols='100' rows='15' name='content_html'>".$this->fields["content_html"];
-      echo "</textarea>";
+      $content_id = "content$rand";
+      Html::textarea(['name'              => 'content_html',
+                         'value'             => $this->fields['content_html'],
+                         'rand'              => $rand,
+                         'editor_id'         => $content_id,
+                         'enable_fileupload' => false,
+                         'enable_richtext'   => true,
+                         'cols'              => 100,
+                         'rows'              => 15]);
       echo "<input type='hidden' name='notificationtemplates_id' value='".
              $template->getField('id')."'>";
       echo "</td></tr>";
