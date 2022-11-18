@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use AutoUpdateSystem;
 use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
@@ -207,7 +208,7 @@ class Unmanaged extends MainAsset
                         $converted_object->update(Sanitizer::sanitize(
                             [
                                 'id' => $result['id'],
-                                'autoupdatesystems_id'  => $val->autoupdatesystems_id,
+                                'autoupdatesystems_id'  => AutoUpdateSystem::NATIVE_INVENTORY,
                                 'last_inventory_update' => $val->last_inventory_update,
                                 'is_dynamic'            => true
                             ]
@@ -216,6 +217,7 @@ class Unmanaged extends MainAsset
                         $converted_object->getFromDB($result['id']);
                         //item managed are no longer an Unamaged device
                         $this->item = $converted_object;
+                        $this->inventoried[] = $converted_object;
                         return;
                     }
                 }
