@@ -102,6 +102,14 @@ class Unmanaged extends AbstractInventoryAsset
     }
 
 
+    /**
+     * test :
+     * 1 - as unmanaged
+     * 2 - as computer
+     * test RuleEntity
+     * test LockedField
+     * test unmazanged converter
+     */
     public function testInventory()
     {
         global $DB;
