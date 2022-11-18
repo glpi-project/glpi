@@ -35,6 +35,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Sabre\DAV\Exception\Locked;
 
 /**
  * Not managed devices from inventory
@@ -275,6 +276,7 @@ class Unmanaged extends CommonDBTM
         $this->getFromDB($items_id);
         $netport = new NetworkPort();
         $rulematch = new RuleMatchedLog();
+        $lockfield = new Lockedfield();
 
         $iterator_np = $DB->request([
             'SELECT' => ['id'],
@@ -288,6 +290,15 @@ class Unmanaged extends CommonDBTM
         $iterator_rml = $DB->request([
             'SELECT' => ['id'],
             'FROM' => RuleMatchedLog::getTable(),
+            'WHERE' => [
+                'itemtype' => self::getType(),
+                'items_id' => $items_id
+            ]
+        ]);
+
+        $iterator_lf = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => Lockedfield::getTable(),
             'WHERE' => [
                 'itemtype' => self::getType(),
                 'items_id' => $items_id
@@ -322,6 +333,14 @@ class Unmanaged extends CommonDBTM
                 'itemtype' => $itemtype
             ];
             $rulematch->update(Toolbox::addslashes_deep($row));
+        }
+
+        foreach ($iterator_lf as $row) {
+            $row += [
+                'items_id' => $assets_id,
+                'itemtype' => $itemtype
+            ];
+            $lockfield->update(Toolbox::addslashes_deep($row));
         }
         $this->deleteFromDB(1);
     }

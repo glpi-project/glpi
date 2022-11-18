@@ -228,6 +228,20 @@ class Unmanaged extends AbstractInventoryAsset
         $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(1);
 
+
+        //update field to create lcoked field
+        //update computer to add lock on serial
+        $this->boolean($unmanaged->update([
+            'id' => $unmanaged->fields['id'],
+            'users_id' => getItemByTypeName('User', 'glpi', true)
+        ]))->isTrue();
+
+        //get lockedfield field
+        $lock = new \Lockedfield();
+        $locks = $lock->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "field" => "users_id"]);
+        $this->integer(count($locks))->isIdenticalTo(1);
+
+
         //redo inventory
         $this->doInventory($xml, true);
 
@@ -239,6 +253,11 @@ class Unmanaged extends AbstractInventoryAsset
 
         //check entity
         $this->variable($unmanaged->fields['entities_id'])->isEqualTo($entities_id_b);
+
+        //check for lock
+        $locks = $lock->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "field" => "users_id"]);
+        $this->integer(count($locks))->isIdenticalTo(1);
+
 
         //check for always  one NetworkPort
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
@@ -283,6 +302,10 @@ class Unmanaged extends AbstractInventoryAsset
         //check entity
         $this->variable($unmanaged->fields['entities_id'])->isEqualTo($entities_id_b);
 
+        //check for lock
+        $locks = $lock->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "field" => "users_id"]);
+        $this->integer(count($locks))->isIdenticalTo(1);
+
         //check for always  one NetworkPort
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
         $this->integer(count($nps))->isIdenticalTo(1);
@@ -310,6 +333,15 @@ class Unmanaged extends AbstractInventoryAsset
 
         //check entity
         $this->variable($computer->fields['entities_id'])->isEqualTo($entities_id_b);
+
+        //check for lock move to computer
+        $locks = $lock->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "field" => "users_id"]);
+        $this->integer(count($locks))->isIdenticalTo(1);
+
+        //check for lock move to computer
+        $locks = $lock->find(["itemtype" => \Unmanaged::class, "items_id" => $computer->fields['id'], "field" => "users_id"]);
+        $this->integer(count($locks))->isIdenticalTo(0);
+
 
         //check for always  one NetworkPort
         $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
@@ -378,19 +410,11 @@ class Unmanaged extends AbstractInventoryAsset
         $computer = new \Computer();
         $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
 
-        //check users_id
-        $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'tech', true));
+        //check users_id always glpi
+        $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'glpi', true));
 
-        //update computer to add lock on serial
-        $this->boolean($computer->update([
-            'id' => $computer->fields['id'],
-            'users_id' => getItemByTypeName('User', 'glpi', true)
-        ]))->isTrue();
-
-        //get Locekd field
-        $lock = new \Lockedfield();
-        $locks = $lock->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "field" => "users_id"]);
-        $this->integer(count($locks))->isIdenticalTo(1);
+        //release lock
+        $this->boolean($lock->deleteByCriteria(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "field" => "users_id"]))->isTrue();
 
         //redo inventory with another user
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -405,7 +429,7 @@ class Unmanaged extends AbstractInventoryAsset
                 <WORKGROUP>WORKGROUP</WORKGROUP>
             </DEVICE>
             <HARDWARE>
-                <LASTLOGGEDUSER>toto</LASTLOGGEDUSER>
+                <LASTLOGGEDUSER>tech</LASTLOGGEDUSER>
             </HARDWARE>
             <MODULEVERSION>5.1</MODULEVERSION>
             <PROCESSNUMBER>189</PROCESSNUMBER>
@@ -415,11 +439,14 @@ class Unmanaged extends AbstractInventoryAsset
         </REQUEST>
         ";
 
+        //redo inventory
+        $this->doInventory($xml, true);
+
         //check for one computer
         $computer = new \Computer();
         $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
 
-        //check users_id is alwais glpi
-        $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'glpi', true));
+        //check users_id is changed to tech
+        $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'tech', true));
     }
 }
