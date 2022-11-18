@@ -1,0 +1,210 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Inventory\Asset;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
+
+/* Test for inc/inventory/asset/antivirus.class.php */
+
+class Unmanaged extends AbstractInventoryAsset
+{
+    protected function assetProvider(): array
+    {
+        return [
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+<CONTENT>
+    <DEVICE>
+    <DNSHOSTNAME>192.168.1.20</DNSHOSTNAME>
+    <ENTITY>0</ENTITY>
+    <IP>192.168.1.20</IP>
+    <MAC>4c:cc:6a:02:13:a9</MAC>
+    <NETBIOSNAME>DESKTOP-A3J16LF</NETBIOSNAME>
+    <WORKGROUP>WORKGROUP</WORKGROUP>
+    </DEVICE>
+    <MODULEVERSION>5.1</MODULEVERSION>
+    <PROCESSNUMBER>189</PROCESSNUMBER>
+</CONTENT>
+<DEVICEID>asus-desktop-2022-09-20-16-43-09</DEVICEID>
+<QUERY>NETDISCOVERY</QUERY>
+</REQUEST>
+",
+                'expected'  => '
+                {
+                    "content": {
+                        "hardware": {
+                            "workgroup": "WORKGROUP"
+                        },
+                        "versionclient": "5.1",
+                        "network_device": {
+                            "type": "Unmanaged",
+                            "mac": "4c:cc:6a:02:13:a9",
+                            "name": "DESKTOP-A3J16LF",
+                            "ips": [
+                                "192.168.1.20"
+                            ]
+                        }
+                    },
+                    "deviceid": "asus-desktop-2022-09-20-16-43-09",
+                    "action": "netdiscovery",
+                    "jobid": 189,
+                    "itemtype": "Unmanaged"
+                }'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider assetProvider
+     */
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+        $this->object($json)->isEqualTo(json_decode($expected));
+    }
+
+
+    public function testInventory()
+    {
+        global $DB;
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+            <DEVICE>
+            <DNSHOSTNAME>192.168.1.20</DNSHOSTNAME>
+            <ENTITY>0</ENTITY>
+            <IP>192.168.1.20</IP>
+            <MAC>4c:cc:6a:02:13:a9</MAC>
+            <NETBIOSNAME>DESKTOP-A3J16LF</NETBIOSNAME>
+            <WORKGROUP>WORKGROUP</WORKGROUP>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>189</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>asus-desktop-2022-09-20-16-43-09</DEVICEID>
+        <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>
+        ";
+
+        $this->doInventory($xml, true);
+
+        //no Agent from discovery
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(0);
+
+        //check for one Unmanaged
+        $unmanaged = new \Unmanaged();
+        $this->boolean($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check for one NetworkPort
+        $np = new \NetworkPort();
+        $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
+        $this->integer(count($nps))->isIdenticalTo(1);
+
+        //check for one IPAdress
+        $ip = new \IPAddress();
+        $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.20"]);
+        $this->integer(count($ips))->isIdenticalTo(1);
+
+        $rm = new \RuleMatchedLog();
+        //check for one RuleMatchLog
+        $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
+        $this->integer(count($rms))->isIdenticalTo(1);
+
+
+        //redo inventory
+        $this->doInventory($xml, true);
+
+        //check for one Unmanaged
+        $this->boolean($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check for one NetworkPort
+        $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
+        $this->integer(count($nps))->isIdenticalTo(1);
+
+        //check for one IPAdress
+        $ips = $ip->find(["mainitemtype" => \Unmanaged::class, "mainitems_id" => $unmanaged->fields['id'], "name" => "192.168.1.20"]);
+        $this->integer(count($ips))->isIdenticalTo(1);
+
+        //check for 2 RuleMatchLog
+        $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
+        $this->integer(count($rms))->isIdenticalTo(2);
+
+        //convert as Computer
+        $unmanaged->convert($unmanaged->fields['id'], "Computer");
+
+        //unamage device no longer exist
+        $this->boolean($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isFalse();
+
+        //computer exist now
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check for one NetworkPort
+        $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
+        $this->integer(count($nps))->isIdenticalTo(1);
+
+        //check for one IPAdress
+        $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.20"]);
+        $this->integer(count($ips))->isIdenticalTo(1);
+
+        //check for one RuleMatchLog
+        $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
+        $this->integer(count($rms))->isIdenticalTo(2);
+
+        //redo ivnentory
+        $this->doInventory($xml, true);
+
+        //check for one computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check for one NetworkPort
+        $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
+        $this->integer(count($nps))->isIdenticalTo(1);
+
+        //check for one IPAdress
+        $ips = $ip->find(["mainitemtype" => \Computer::class, "mainitems_id" => $computer->fields['id'], "name" => "192.168.1.20"]);
+        $this->integer(count($ips))->isIdenticalTo(1);
+
+        //check for 3 RuleMatchLog
+        $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
+        $this->integer(count($rms))->isIdenticalTo(3);
+    }
+}
