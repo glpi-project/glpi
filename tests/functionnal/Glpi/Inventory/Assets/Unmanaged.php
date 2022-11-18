@@ -35,8 +35,6 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-use AgentType;
-
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/antivirus.class.php */
@@ -104,7 +102,6 @@ class Unmanaged extends AbstractInventoryAsset
 
     public function testInventory()
     {
-
         global $DB;
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
         <REQUEST>
@@ -198,7 +195,6 @@ class Unmanaged extends AbstractInventoryAsset
         ];
         $this->integer($ruleaction->add($input))->isGreaterThan(0);
 
-
         $this->doInventory($xml, true);
 
         //no Agent from discovery
@@ -215,7 +211,6 @@ class Unmanaged extends AbstractInventoryAsset
         //check entity
         $this->variable($unmanaged->fields['entities_id'])->isEqualTo($entities_id_b);
 
-
         //check for one NetworkPort
         $np = new \NetworkPort();
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
@@ -230,7 +225,6 @@ class Unmanaged extends AbstractInventoryAsset
         //check for one RuleMatchLog
         $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(1);
-
 
         //redo inventory
         $this->doInventory($xml, true);
@@ -255,9 +249,6 @@ class Unmanaged extends AbstractInventoryAsset
         //check for 2 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(2);
-
-
-
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
         <REQUEST>
@@ -301,7 +292,6 @@ class Unmanaged extends AbstractInventoryAsset
         //check for 3 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(3);
-
 
         //convert as Computer
         $unmanaged->convert($unmanaged->fields['id'], "Computer");
