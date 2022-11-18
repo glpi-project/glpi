@@ -154,6 +154,8 @@ class NetworkPort extends InventoryAsset
      */
     private function prepareConnections(\stdClass $port)
     {
+        global $DB;
+
         $results = [];
         $connections = $port->connections;
         $ifnumber = $port->ifnumber;
@@ -171,6 +173,35 @@ class NetworkPort extends InventoryAsset
                 foreach ($lldp_mapping as $origin => $dest) {
                     if (property_exists($connection, $origin)) {
                         $connection->$dest = $connection->$origin;
+                    }
+                }
+
+                // LLDP provides ifnumber as one of: local (logical) number, mac, interface name
+                // We'll try to find the real mac and logical_number of the connection
+                if (
+                    property_exists($connection, 'sysmac')
+                    && property_exists($connection, 'ifnumber')
+                ) {
+                    $field = 'logical_number';
+                    if (!is_numeric($connection->ifnumber)) {
+                        $field = strstr($connection->ifnumber, ':') ? 'mac' : 'name';
+                    }
+                    $criteria = [
+                        'SELECT'    => ['n1.logical_number', 'n1.mac'],
+                        'FROM'      => \NetworkPort::getTable() . ' AS n1',
+                        'WHERE'     => [
+                            'n1.' . $field => $connection->ifnumber,
+                            'n2.mac'       => $connection->sysmac,
+                        ]
+                    ];
+                    $criteria['LEFT JOIN'][\NetworkPort::getTable() . ' AS n2'][] =
+                        new \QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
+
+                    $iterator = $DB->request($criteria);
+                    if (count($iterator)) {
+                        $result = $iterator->current();
+                        $connection->logical_number = (int)$result['logical_number'];
+                        $connection->mac = $result['mac'];
                     }
                 }
                 if (!property_exists($connection, 'name') && property_exists($connection, 'ifdescr')) {
@@ -342,7 +373,8 @@ class NetworkPort extends InventoryAsset
                 // the only remaining option is multiple macs on the same computer,
                 $this->addPortsWiring($netports_id, array_key_first($real_port_ids));
             } else if (count($real_port_ids) > 1) {
-                trigger_error('Multiple non-virtual NetworkPorts on the computer', E_USER_WARNING);
+                trigger_error('Multiple non-virtual NetworkPorts on the computer ('
+                    . join(',', array_keys($real_port_ids)) . ')', E_USER_WARNING);
                 return;
             }
         } else { // One mac on port

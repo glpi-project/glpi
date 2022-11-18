@@ -1450,7 +1450,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'instantiation_type' => 'NetworkPortEthernet',
             'items_id'           => $networkEquipments_id,
             'itemtype'           => 'NetworkEquipment',
-            'ifdescr'         => '20',
+            'ifdescr'            => '20',
+            'mac'                => '00:24:b5:bd:c8:02',
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
@@ -1461,7 +1462,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'instantiation_type' => 'NetworkPortEthernet',
             'items_id'           => $networkEquipments_id,
             'itemtype'           => 'NetworkEquipment',
-            'ifdescr'         => '21',
+            'ifdescr'            => '21',
+            'mac'                => '00:24:b5:bd:c8:03',
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
@@ -1472,7 +1474,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'instantiation_type' => 'NetworkPortEthernet',
             'items_id'           => $networkEquipments_id,
             'itemtype'           => 'NetworkEquipment',
-            'ifdescr'         => '22',
+            'ifdescr'            => '22',
+            'mac'                => '00:24:b5:bd:c8:04',
         ]);
         $this->integer($ports_id)->isGreaterThan(0);
 
