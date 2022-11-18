@@ -1257,12 +1257,12 @@ class Provider
             'SELECT'   => [
                 QueryFunction::fromUnixTimestamp(
                     expression: QueryFunction::unixTimestamp($DB::quoteName("{$t_table}_distinct.date")),
-                    format: '%Y-%m',
+                    format: $DB::quoteValue('%Y-%m'),
                     alias: $DB::quoteName('period')
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: "$t_table.status = " . Ticket::INCOMING,
+                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::INCOMING,
                         true_expression: 1,
                         false_expression: 0
                     ),
@@ -1270,7 +1270,7 @@ class Provider
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: "$t_table.status = " . Ticket::ASSIGNED,
+                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::ASSIGNED,
                         true_expression: 1,
                         false_expression: 0
                     ),
@@ -1278,7 +1278,7 @@ class Provider
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: "$t_table.status = " . Ticket::PLANNED,
+                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::PLANNED,
                         true_expression: 1,
                         false_expression: 0
                     ),
@@ -1286,7 +1286,7 @@ class Provider
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: "$t_table.status = " . Ticket::WAITING,
+                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::WAITING,
                         true_expression: 1,
                         false_expression: 0
                     ),
@@ -1294,7 +1294,7 @@ class Provider
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: "$t_table.status = " . Ticket::SOLVED,
+                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::SOLVED,
                         true_expression: 1,
                         false_expression: 0
                     ),
@@ -1302,7 +1302,7 @@ class Provider
                 ),
                 QueryFunction::sum(
                     expression: QueryFunction::if(
-                        condition: "$t_table.status = " . Ticket::CLOSED,
+                        condition: $DB::quoteName("{$t_table}_distinct.status") . ' = ' . Ticket::CLOSED,
                         true_expression: 1,
                         false_expression: 0
                     ),

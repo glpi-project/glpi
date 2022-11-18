@@ -379,7 +379,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     }
                     $cleanorderby[] = $new;
                 }
-            } else if ($o instanceof QueryExpression) {
+            } else if ($o instanceof QueryExpression || $o instanceof QueryFunction) {
                 $cleanorderby[] = $o->getValue();
             } else {
                 trigger_error("Invalid order clause", E_USER_ERROR);
@@ -624,7 +624,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         if ($value instanceof \AbstractQuery) {
             return $value->getQuery();
-        } else if ($value instanceof \QueryExpression) {
+        } else if ($value instanceof \QueryExpression || $value instanceof \QueryFunction) {
             return $value->getValue();
         } else if ($value instanceof \QueryParam) {
             return $value->getValue();
