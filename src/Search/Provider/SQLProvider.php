@@ -3482,10 +3482,10 @@ final class SQLProvider implements SearchProviderInterface
                             $add_minus = "- `$table$addtable`.`" . $searchopt[$ID]["datafields"][3] . "`";
                         }
                         $criterion = QueryFunction::addDate(
-                                date: $DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}"),
-                                interval: $DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus",
-                                interval_unit: $interval,
-                            ) . " $order";
+                            date: $DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}"),
+                            interval: $DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus",
+                            interval_unit: $interval,
+                        ) . " $order";
                 }
             }
 
