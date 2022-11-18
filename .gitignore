@@ -5,8 +5,10 @@
 /config/local_define.php
 /tests/config_db*
 /tests/cache.php
-/marketplace/
-/plugins/
+/marketplace/*
+!/marketplace/.gitkeep
+/plugins/*
+!/plugins/.gitkeep
 /files/*/*
 !/files/*/.gitkeep
 /.buildpath
