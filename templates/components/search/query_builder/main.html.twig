@@ -32,7 +32,7 @@
  #}
 
 {% set rand = random() %}
-{% set mainform = mainform is not defined ? true : (mainform and showaction )%}
+{% set mainform = mainform is not defined ? true : (mainform and showaction) %}
 {% set main_block_class = mainform ? '' : 'sub_criteria' %}
 {% set card_class = mainform ? 'search-form card card-sm mb-4' : 'border d-inline-block ms-1' %}
 
