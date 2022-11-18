@@ -222,7 +222,7 @@ abstract class CommonITILCost extends CommonDBChild
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
-                    expression: $DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') .' / ' .
+                    expression: $DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / ' .
                         HOUR_TIMESTAMP . ' + ' . $DB::quoteName('TABLE.cost_fixed') . ' + ' . $DB::quoteName('TABLE.cost_material')
                 ) . ' / ' . QueryFunction::count($DB::quoteName('TABLE.id')) . ') * ' .
                     QueryFunction::count(expression: $DB::quoteName('TABLE.id'), distinct: true)
@@ -244,7 +244,7 @@ abstract class CommonITILCost extends CommonDBChild
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
-                    expression: $DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') .' / ' .
+                    expression: $DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / ' .
                         HOUR_TIMESTAMP
                 ) . ' / ' . QueryFunction::count($DB::quoteName('TABLE.id')) . ') * ' .
                     QueryFunction::count(expression: $DB::quoteName('TABLE.id'), distinct: true)

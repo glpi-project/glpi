@@ -447,7 +447,8 @@ class Provider
     }
 
 
-    public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array {
+    public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
+    {
         global $DB;
 
         $DBread = DBConnection::getReadConnection();

@@ -3220,7 +3220,8 @@ JAVASCRIPT;
                             "$table.*",
                             QueryFunction::concat(
                                 params: [$DB::quoteName('glpi_softwares.name'), $DB::quoteValue(' - '), $DB::quoteName('glpi_softwarelicenses.name')],
-                                alias: $DB::quoteName($field)),
+                                alias: $DB::quoteName($field)
+                            ),
                         ],
                         'FROM'   => $table,
                         'LEFT JOIN' => [

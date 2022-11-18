@@ -254,9 +254,9 @@ class DeviceProcessor extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => QueryFunction::sum($DB::quoteName('TABLE.nbcores')) . ' * ' . QueryFunction::count(
-                    expression: $DB::quoteName('TABLE.id'),
-                    distinct: true
-                ) . ' / ' . QueryFunction::count('*'),
+                expression: $DB::quoteName('TABLE.id'),
+                distinct: true
+            ) . ' / ' . QueryFunction::count('*'),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -271,9 +271,9 @@ class DeviceProcessor extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => QueryFunction::sum($DB::quoteName('TABLE.nbthreads')) . ' * ' . QueryFunction::count(
-                    expression: $DB::quoteName('TABLE.id'),
-                    distinct: true
-                ) . ' / ' . QueryFunction::count('*'),
+                expression: $DB::quoteName('TABLE.id'),
+                distinct: true
+            ) . ' / ' . QueryFunction::count('*'),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -290,8 +290,8 @@ class DeviceProcessor extends CommonDevice
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
             'computation'        => QueryFunction::sum($DB::quoteName('TABLE.frequency')) . ' * ' . QueryFunction::count(
-                    expression: $DB::quoteName('TABLE.id'),
-                ) . ' / ' . QueryFunction::count('*'),
+                expression: $DB::quoteName('TABLE.id'),
+            ) . ' / ' . QueryFunction::count('*'),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
