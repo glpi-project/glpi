@@ -1356,6 +1356,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $tmp['##followup.author##'] = getUserName($followup['users_id']);
                 }
 
+                $user_tmp = new User();
+                if ($user_tmp->getFromDB($followup['users_id'])) {
+                    $tmp = array_merge($tmp, self::getActorData($user_tmp, 0, 'followup.author'));
+                }
+
                 $tmp['##followup.requesttype##'] = '';
                 if ($followup['requesttypes_id']) {
                      $tmp['##followup.requesttype##'] = Dropdown::getDropdownName(
@@ -1797,6 +1802,26 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'followup.date'                     => __('Opening date'),
             'followup.isprivate'                => __('Private'),
             'followup.author'                   => __('Writer'),
+            'followup.author.itemtype'          => __('Internal type'),
+            'followup.author.actortype'         => __('Actor type'),
+            'followup.author.id'                => __('ID'),
+            'followup.author.name'              => __('Name'),
+            'followup.author.location'          => __('User location'),
+            'followup.author.usertitle'         => _x('person', 'Title'),
+            'followup.author.usercategory'      => _n('Category', 'Categories', 1),
+            'followup.author.email'             => _n('Email', 'Emails', 1),
+            'followup.author.mobile'            => __('Mobile phone'),
+            'followup.author.phone'             => Phone::getTypeName(1),
+            'followup.author.phone2'            => __('Phone 2'),
+            'followup.author.fax'               => __('Fax'),
+            'followup.author.website'           => __('Website'),
+            'followup.author.address'           => __('Address'),
+            'followup.author.postcode'          => __('Postal code'),
+            'followup.author.town'              => __('City'),
+            'followup.author.state'             => _x('location', 'State'),
+            'followup.author.country'           => __('Country'),
+            'followup.author.comments'          => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'followup.author.suppliertype'      => SupplierType::getTypeName(1),
             'followup.description'              => __('Description'),
             'followup.requesttype'              => RequestType::getTypeName(1),
             $objettype . '.numberoffollowups'     => _x('quantity', 'Number of followups'),
