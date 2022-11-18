@@ -68,14 +68,12 @@ $result = $DB->request(
                 'FKEY' => [
                     'glpi_rulecriterias'   => 'rules_id',
                     'glpi_rules'            => 'id',
-                    [
-                        'AND' => ['glpi_rules.sub_type' => array_values($subType)],
-                    ],
                 ]
             ]
         ],
         'WHERE'     => [
-            'glpi_rulecriterias.criteria'      => 'name'
+            'glpi_rulecriterias.criteria'      => 'name',
+            'glpi_rules.sub_type' => array_values($subType)
         ],
     ]
 );
