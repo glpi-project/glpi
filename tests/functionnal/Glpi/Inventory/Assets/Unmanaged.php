@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Lockedfield;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/antivirus.class.php */
@@ -345,5 +347,79 @@ class Unmanaged extends AbstractInventoryAsset
         //check for 4 RuleMatchLog
         $rms = $rm->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id']]);
         $this->integer(count($rms))->isIdenticalTo(4);
+
+        //redo inventory with users_id
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+            <DEVICE>
+                <DNSHOSTNAME>192.168.1.22</DNSHOSTNAME>
+                <ENTITY>0</ENTITY>
+                <IP>192.168.1.22</IP>
+                <MAC>4c:cc:6a:02:13:a9</MAC>
+                <NETBIOSNAME>DESKTOP-A3J16LF</NETBIOSNAME>
+                <WORKGROUP>WORKGROUP</WORKGROUP>
+            </DEVICE>
+            <HARDWARE>
+                <LASTLOGGEDUSER>tech</LASTLOGGEDUSER>
+            </HARDWARE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>189</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>asus-desktop-2022-09-20-16-43-09</DEVICEID>
+        <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>
+        ";
+
+        //redo inventory
+        $this->doInventory($xml, true);
+
+        //check for one computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check users_id
+        $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'tech', true));
+
+        //update computer to add lock on serial
+        $this->boolean($computer->update([
+            'id' => $computer->fields['id'],
+            'users_id' => getItemByTypeName('User', 'glpi', true)
+        ]))->isTrue();
+
+        //get Locekd field
+        $lock = new \Lockedfield();
+        $locks = $lock->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "field" => "users_id"]);
+        $this->integer(count($locks))->isIdenticalTo(1);
+
+        //redo inventory with another user
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+            <DEVICE>
+                <DNSHOSTNAME>192.168.1.22</DNSHOSTNAME>
+                <ENTITY>0</ENTITY>
+                <IP>192.168.1.22</IP>
+                <MAC>4c:cc:6a:02:13:a9</MAC>
+                <NETBIOSNAME>DESKTOP-A3J16LF</NETBIOSNAME>
+                <WORKGROUP>WORKGROUP</WORKGROUP>
+            </DEVICE>
+            <HARDWARE>
+                <LASTLOGGEDUSER>toto</LASTLOGGEDUSER>
+            </HARDWARE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>189</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>asus-desktop-2022-09-20-16-43-09</DEVICEID>
+        <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>
+        ";
+
+        //check for one computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check users_id is alwais glpi
+        $this->variable($computer->fields['users_id'])->isEqualTo(getItemByTypeName('User', 'glpi', true));
     }
 }
