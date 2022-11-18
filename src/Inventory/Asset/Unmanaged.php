@@ -204,14 +204,33 @@ class Unmanaged extends MainAsset
                 if (!empty($result)) {
                     $converted_object = new $result['itemtype']();
                     if ($converted_object->getFromDB($result['id'])) {
+
+                        $source = new \AutoUpdateSystem();
+                        $source->getFromDBByCrit(['name' => AutoUpdateSystem::NATIVE_INVENTORY]);
+
+                        $input = $this->handleInput($val, $this->item);
                         $converted_object->update(Sanitizer::sanitize(
                             [
                                 'id' => $result['id'],
-                                'autoupdatesystems_id'  => AutoUpdateSystem::NATIVE_INVENTORY,
-                                'last_inventory_update' => $val->last_inventory_update,
+                                'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
+                                'last_inventory_update' => $input['last_inventory_update'],
                                 'is_dynamic'            => true
                             ]
                         ));
+
+                        //add RuleMatchLog
+                        $rulesmatched = new RuleMatchedLog();
+                        $inputrulelog = [
+                            'date'      => date('Y-m-d H:i:s'),
+                            'rules_id'  => $rules_id,
+                            'items_id'  => $result['id'],
+                            'itemtype'  => $result['itemtype'],
+                            'agents_id' => $this->agent->fields['id'],
+                            'method'    => $this->request_query ?? Request::INVENT_QUERY
+                        ];
+                        $rulesmatched->add($inputrulelog, [], false);
+                        $rulesmatched->cleanOlddata($items_id, $itemtype);
+
                         //reload object
                         $converted_object->getFromDB($result['id']);
                         //item managed are no longer an Unamaged device
@@ -271,49 +290,7 @@ class Unmanaged extends MainAsset
             }
         }
 
-        if ($this->is_discovery === true && !$this->isNew()) {
-            //if NetworkEquipement
-            //Or printer that has not changed its IP
-            //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
-            if (
-                $itemtype == NetworkEquipment::getType()
-                ||
-                (
-                $itemtype == Printer::getType()
-                && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
-                )
-            ) {
-                //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
-                $input = $this->handleInput($val, $this->item);
-                $this->item->update(Sanitizer::sanitize(['id' => $input['id'],
-                    'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
-                    'last_inventory_update' => $input['last_inventory_update'],
-                    'snmpcredentials_id'    => $input['snmpcredentials_id'],
-                    'is_dynamic'            => true
-                ]));
-                return;
-            }
-        }
-
         $this->handlePorts();
-
-        if (method_exists($this, 'isWirelessController') && $this->isWirelessController()) {
-            if (property_exists($val, 'firmware') && $val->firmware instanceof \stdClass) {
-                $fw = new Firmware($this->item, [$val->firmware]);
-                if ($fw->checkConf($this->conf)) {
-                    $fw->setAgent($this->getAgent());
-                    $fw->prepare();
-                    $fw->handleLinks();
-                    $this->assets['Glpi\Inventory\Asset\Firmware'] = [$fw];
-                    unset($val->firmware);
-                }
-            }
-
-            if (property_exists($val, 'ap_port') && method_exists($this, 'setManagementPorts')) {
-                $this->setManagementPorts(['management' => $val->ap_port]);
-                unset($val->ap_port);
-            }
-        }
 
         $input = $this->handleInput($val, $this->item);
         $this->item->update(Sanitizer::sanitize($input));
