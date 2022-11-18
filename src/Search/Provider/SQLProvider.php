@@ -111,7 +111,10 @@ final class SQLProvider implements SearchProviderInterface
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
-                    $ret[] = new QueryExpression(\Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype));
+                    $default_select = \Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype);
+                    if ($default_select !== "") {
+                        $ret[] = new QueryExpression($default_select);
+                    }
                 }
         }
         if ($itemtable === 'glpi_entities') {
@@ -890,7 +893,10 @@ final class SQLProvider implements SearchProviderInterface
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
-                    $criteria = [new QueryExpression(\Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype))];
+                    $default_where = \Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
+                    if ($default_where !== '') {
+                        $criteria = [new QueryExpression($default_where)];
+                    }
                 }
                 break;
         }
@@ -1208,16 +1214,25 @@ final class SQLProvider implements SearchProviderInterface
                 if ($val === 'mygroups') {
                     switch ($searchtype) {
                         case 'equals':
+                            if (count($_SESSION['glpigroups']) === 0) {
+                                return [];
+                            }
                             return [
                                 "$table.id" => $_SESSION['glpigroups']
                             ];
 
                         case 'notequals':
+                            if (count($_SESSION['glpigroups']) === 0) {
+                                return [];
+                            }
                             return [
                                 "$table.id" => ['NOT IN', $_SESSION['glpigroups']]
                             ];
 
                         case 'under':
+                            if (count($_SESSION['glpigroups']) === 0) {
+                                return [];
+                            }
                             $groups = $_SESSION['glpigroups'];
                             foreach ($_SESSION['glpigroups'] as $g) {
                                 $groups += getSonsOf($inittable, $g);
@@ -1228,6 +1243,9 @@ final class SQLProvider implements SearchProviderInterface
                             ];
 
                         case 'notunder':
+                            if (count($_SESSION['glpigroups']) === 0) {
+                                return [];
+                            }
                             $groups = $_SESSION['glpigroups'];
                             foreach ($_SESSION['glpigroups'] as $g) {
                                 $groups += getSonsOf($inittable, $g);
