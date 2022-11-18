@@ -274,10 +274,20 @@ class Unmanaged extends CommonDBTM
 
         $this->getFromDB($items_id);
         $netport = new NetworkPort();
+        $rulematch = new RuleMatchedLog();
 
-        $iterator = $DB->request([
+        $iterator_np = $DB->request([
             'SELECT' => ['id'],
             'FROM' => NetworkPort::getTable(),
+            'WHERE' => [
+                'itemtype' => self::getType(),
+                'items_id' => $items_id
+            ]
+        ]);
+
+        $iterator_rml = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => RuleMatchedLog::getTable(),
             'WHERE' => [
                 'itemtype' => self::getType(),
                 'items_id' => $items_id
@@ -298,12 +308,20 @@ class Unmanaged extends CommonDBTM
         ] + $this->fields;
         $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
 
-        foreach ($iterator as $row) {
+        foreach ($iterator_np as $row) {
             $row += [
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
             $netport->update(Toolbox::addslashes_deep($row));
+        }
+
+        foreach ($iterator_rml as $row) {
+            $row += [
+                'items_id' => $assets_id,
+                'itemtype' => $itemtype
+            ];
+            $rulematch->update(Toolbox::addslashes_deep($row));
         }
         $this->deleteFromDB(1);
     }
