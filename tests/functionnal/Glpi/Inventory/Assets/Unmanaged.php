@@ -132,6 +132,9 @@ class Unmanaged extends AbstractInventoryAsset
         $unmanaged = new \Unmanaged();
         $this->boolean($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
 
+        //check last_inventory_update
+        $this->variable($unmanaged->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
+
         //check for one NetworkPort
         $np = new \NetworkPort();
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
@@ -153,6 +156,9 @@ class Unmanaged extends AbstractInventoryAsset
 
         //check for one Unmanaged
         $this->boolean($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check last_inventory_update
+        $this->variable($unmanaged->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
 
         //check for one NetworkPort
         $nps = $np->find(["itemtype" => \Unmanaged::class, "items_id" => $unmanaged->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
@@ -194,6 +200,9 @@ class Unmanaged extends AbstractInventoryAsset
         //check for one computer
         $computer = new \Computer();
         $this->boolean($computer->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']))->isTrue();
+
+        //check last_inventory_update
+        $this->variable($computer->fields['last_inventory_update'])->isEqualTo($_SESSION['glpi_currenttime']);
 
         //check for one NetworkPort
         $nps = $np->find(["itemtype" => \Computer::class, "items_id" => $computer->fields['id'], "mac" => "4c:cc:6a:02:13:a9"]);
