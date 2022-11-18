@@ -1912,7 +1912,7 @@ class AuthLDAP extends CommonDBTM
                              continue;
                         }
 
-                        if ( isset($info[$ligne]['modifytimestamp']) ){
+                        if (isset($info[$ligne]['modifytimestamp'])) {
                             $user_infos[$uid]["timestamp"] = self::ldapStamp2UnixStamp(
                                 $info[$ligne]['modifytimestamp'][0],
                                 $config_ldap->fields['time_offset']
@@ -1932,7 +1932,7 @@ class AuthLDAP extends CommonDBTM
                              $ldap_users[$uid] = $uid;
                         } else {
                            //If ldap synchronisation
-                            if ( isset($info[$ligne]['modifytimestamp']) ){
+                            if (isset($info[$ligne]['modifytimestamp'])) {
                                 $ldap_users[$uid] = self::ldapStamp2UnixStamp(
                                     $info[$ligne]['modifytimestamp'][0],
                                     $config_ldap->fields['time_offset']
