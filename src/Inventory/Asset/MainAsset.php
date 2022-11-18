@@ -209,7 +209,7 @@ abstract class MainAsset extends InventoryAsset
                     $val->uuid .= '-' . $val->name;
                 }
             } else {
-                if (isset($this->extra_data['bios'])) {
+                if (array_key_exists('bios', $this->extra_data)) {
                     $bios = (object)$this->extra_data['bios'];
                     if (
                         property_exists($hardware, 'chassis_type')
