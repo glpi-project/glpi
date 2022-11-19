@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 
@@ -1812,9 +1813,14 @@ final class DbUtils
 
             $criteria = [
                 'SELECT' => [
-                    new QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName('code') . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring(
+                            expression: $DB::quoteName('code'),
+                            start: $pos,
+                            length: $len
+                        ),
+                        type: 'UNSIGNED',
+                        alias: $DB::quoteName('no')
                     )
                 ],
                 'FROM'   => new QueryUnion($subqueries, false, 'codes')
@@ -1823,9 +1829,14 @@ final class DbUtils
             $table = $this->getTableForItemType($itemtype);
             $criteria = [
                 'SELECT' => [
-                    new QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName($field) . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring(
+                            expression: $DB::quoteName($field),
+                            start: $pos,
+                            length: $len
+                        ),
+                        type: 'UNSIGNED',
+                        alias: $DB::quoteName('no')
                     )
                 ],
                 'FROM'   => $table,
@@ -1849,7 +1860,9 @@ final class DbUtils
 
         $subquery = new QuerySubQuery($criteria, 'Num');
         $iterator = $DB->request([
-            'SELECT' => ['MAX' => 'Num.no AS lastNo'],
+            'SELECT' => [
+                QueryFunction::max(expression: $DB::quoteName('Num.no'), alias: $DB::quoteName('lastNo'))
+            ],
             'FROM'   => $subquery
         ]);
 
@@ -1919,7 +1932,7 @@ final class DbUtils
 
         if (is_string($end) && preg_match($date_pattern, $end) === 1) {
             $end_expr = new QueryExpression(
-                'ADDDATE(' . $DB->quoteValue($end) . ', INTERVAL 1 DAY)'
+                QueryFunction::addDate(date: $DB::quoteValue($end), interval: 1, interval_unit: 'DAY')
             );
             $criteria[] = [$field => ['<=', $end_expr]];
         } elseif ($end !== null && $end !== '') {

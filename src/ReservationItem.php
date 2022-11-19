@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * ReservationItem Class
@@ -786,8 +787,10 @@ class ReservationItem extends CommonDBChild
                 ],
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
-                    new QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('glpi_reservations.end') . ') - ' . $secs . ') < UNIX_TIMESTAMP()'),
-                    'glpi_reservations.begin'  => ['<', new QueryExpression('NOW()')],
+                        QueryFunction::unixTimestamp($DB::quoteName('glpi_reservations.end') . " - $secs") .
+                            ' < ' . QueryFunction::unixTimestamp()
+                    ),
+                    'glpi_reservations.begin'  => ['<', QueryFunction::now()],
                     'glpi_alerts.date'         => null
                 ]
             ];

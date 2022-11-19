@@ -5967,7 +5967,7 @@ class CommonDBTM extends CommonGLPI
 
         return [
             'RAW' => [
-                "LOWER($name)" => ['LIKE', "%$filter%"],
+                (string) QueryFunction::lower($name) => ['LIKE', "%$filter%"],
             ]
         ];
     }

@@ -558,8 +558,18 @@ class Domain extends CommonDBTM
                 'NOT' => ['date_expiration' => null],
                 'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > $delay"),
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > 0")
+                new QueryExpression(
+                    QueryFunction::dateDiff(
+                        expression1: QueryFunction::curDate(),
+                        expression2: $DB::quoteName('date_expiration')
+                    ) . " > $delay"
+                ),
+                new QueryExpression(
+                    QueryFunction::dateDiff(
+                        expression1: QueryFunction::curDate(),
+                        expression2: $DB::quoteName('date_expiration')
+                    ) . ' > 0'
+                )
             ]
         ];
     }
@@ -582,8 +592,18 @@ class Domain extends CommonDBTM
                 'NOT' => ['date_expiration' => null],
                 'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > -$delay"),
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") < 0")
+                new QueryExpression(
+                    QueryFunction::dateDiff(
+                        expression1: QueryFunction::curDate(),
+                        expression2: $DB::quoteName('date_expiration')
+                    ) . " > -$delay"
+                ),
+                new QueryExpression(
+                    QueryFunction::dateDiff(
+                        expression1: QueryFunction::curDate(),
+                        expression2: $DB::quoteName('date_expiration')
+                    ) . ' < 0'
+                )
             ]
         ];
     }

@@ -2657,7 +2657,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $union = new QueryUnion([$query1, $query2], false, 'all_items');
         $iterator = $DB->request([
             'SELECT' => [
-                new QueryExpression('CAST(AVG(' . $DB->quoteName('percent_done') . ') AS UNSIGNED) AS percent_done')
+                QueryFunction::cast(
+                    expression: QueryFunction::avg($DB::quoteName('percent_done')),
+                    type: 'UNSIGNED',
+                    alias: $DB::quoteName('percent_done')
+                )
             ],
             'FROM'   => $union
         ]);

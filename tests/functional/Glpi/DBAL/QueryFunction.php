@@ -232,6 +232,22 @@ class QueryFunction extends \GLPITestCase
         $this->string((string) \Glpi\DBAL\QueryFunction::min($expression, $alias))->isIdenticalTo($expected);
     }
 
+    protected function maxProvider()
+    {
+        return [
+            ['`glpi_computers`.`uuid`', null, "MAX(`glpi_computers`.`uuid`)"],
+            ['`glpi_computers`.`uuid`', '`max_alias`', "MAX(`glpi_computers`.`uuid`) AS `max_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider maxProvider
+     */
+    public function testMax($expression, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::max($expression, $alias))->isIdenticalTo($expected);
+    }
+
     protected function avgProvider()
     {
         return [
@@ -337,6 +353,7 @@ class QueryFunction extends \GLPITestCase
         return [
             ['`glpi_computers`.`date_mod`', null, "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`)"],
             ['`glpi_computers`.`date_mod`', '`unix_timestamp_alias`', "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`) AS `unix_timestamp_alias`"],
+            [null, null, "UNIX_TIMESTAMP()"],
         ];
     }
 
@@ -402,6 +419,22 @@ class QueryFunction extends \GLPITestCase
         $this->string((string) \Glpi\DBAL\QueryFunction::dateFormat($expression, $format, $alias))->isIdenticalTo($expected);
     }
 
+    protected function timeDiffProvider()
+    {
+        return [
+            ['`glpi_computers`.`date_mod`', '`glpi_computers`.`date_creation`', null, "DATEDIFF(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`)"],
+            ['`glpi_computers`.`date_mod`', '`glpi_computers`.`date_creation`', '`date_diff_alias`', "DATEDIFF(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `date_diff_alias`"],
+        ];
+    }
+
+    /**
+     * @dataProvider timeDiffProvider
+     */
+    public function testTimeDiff($expression, $expression2, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::timeDiff($expression, $expression2, $alias))->isIdenticalTo($expected);
+    }
+
     protected function coalesceProvider()
     {
         return [
@@ -464,6 +497,36 @@ class QueryFunction extends \GLPITestCase
         $this->string((string) \Glpi\DBAL\QueryFunction::least($params, $alias))->isIdenticalTo($expected);
     }
 
+    protected function greatestProvider()
+    {
+        return [
+            [
+                'params' => [
+                    '`glpi_computers`.`date_mod`',
+                    '`glpi_computers`.`date_creation`',
+                ],
+                'alias' => null,
+                'expected' => "GREATEST(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`)",
+            ],
+            [
+                'params' => [
+                    '`glpi_computers`.`date_mod`',
+                    '`glpi_computers`.`date_creation`',
+                ],
+                'alias' => '`greatest_alias`',
+                'expected' => "GREATEST(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `greatest_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider greatestProvider
+     */
+    public function testGreatest($params, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::greatest($params, $alias))->isIdenticalTo($expected);
+    }
+
     protected function timestampDiffProvider()
     {
         return [
@@ -514,5 +577,103 @@ class QueryFunction extends \GLPITestCase
     public function testBitCount($expression, $alias, $expected)
     {
         $this->string((string) \Glpi\DBAL\QueryFunction::bitCount($expression, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function dateDiffProvider()
+    {
+        return [
+            [
+                'date1' => '`glpi_computers`.`date_mod`',
+                'date2' => '`glpi_computers`.`date_creation`',
+                'alias' => null,
+                'expected' => "DATEDIFF(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`)",
+            ],
+            [
+                'date1' => '`glpi_computers`.`date_mod`',
+                'date2' => '`glpi_computers`.`date_creation`',
+                'alias' => '`date_diff_alias`',
+                'expected' => "DATEDIFF(`glpi_computers`.`date_mod`, `glpi_computers`.`date_creation`) AS `date_diff_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dateDiffProvider
+     */
+    public function testDateDiff($date1, $date2, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::dateDiff($date1, $date2, $alias))->isIdenticalTo($expected);
+    }
+
+    protected function curDateProvider()
+    {
+        return [
+            [
+                'alias' => null,
+                'expected' => "CURDATE()",
+            ],
+            [
+                'alias' => '`cur_date_alias`',
+                'expected' => "CURDATE() AS `cur_date_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider curDateProvider
+     */
+    public function testCurDate($alias, $expected)
+    {
+        $this->string((string) \QueryFunction::curDate($alias))->isIdenticalTo($expected);
+    }
+
+    protected function currentTimestampProvider()
+    {
+        return [
+            [
+                'alias' => null,
+                'expected' => "CURRENT_TIMESTAMP()",
+            ],
+            [
+                'alias' => '`current_timestamp_alias`',
+                'expected' => "CURRENT_TIMESTAMP() AS `current_timestamp_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider currentTimestampProvider
+     */
+    public function testCurrentTimestamp($alias, $expected)
+    {
+        $this->string((string) \QueryFunction::currentTimestamp($alias))->isIdenticalTo($expected);
+    }
+
+    protected function substringProvider()
+    {
+        return [
+            [
+                'expression' => '`glpi_computers`.`name`',
+                'start' => 1,
+                'length' => 2,
+                'alias' => null,
+                'expected' => "SUBSTRING(`glpi_computers`.`name`, 1, 2)",
+            ],
+            [
+                'expression' => '`glpi_computers`.`name`',
+                'start' => 1,
+                'length' => 2,
+                'alias' => '`substring_alias`',
+                'expected' => "SUBSTRING(`glpi_computers`.`name`, 1, 2) AS `substring_alias`",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider substringProvider
+     */
+    public function testSubstring($expression, $start, $length, $alias, $expected)
+    {
+        $this->string((string) \QueryFunction::substring($expression, $start, $length, $alias))->isIdenticalTo($expected);
     }
 }

@@ -43,6 +43,7 @@ use DBConnection;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Html;
 use Infocom;
 use ITILSolution;
@@ -137,7 +138,9 @@ class Event extends CommonDBTM
         $DB->delete(
             'glpi_events',
             [
-                new QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression(
+                    QueryFunction::unixTimestamp($DB::quoteName('date')) . ' < ' . \QueryFunction::unixTimestamp() . " - $secs"
+                )
             ]
         );
         return $DB->affectedRows();

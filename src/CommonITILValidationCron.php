@@ -82,10 +82,10 @@ class CommonITILValidationCron extends CommonDBTM
                         'WHERE'  => [
                             'status'          => CommonITILValidation::WAITING,
                             'entities_id'     => $entity,
-                            'submission_date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')],
+                            'submission_date' => ['<', new QueryExpression(QueryFunction::currentTimestamp() . ' - INTERVAL ' . $repeat . ' second')],
                             'OR'              => [
                                 ['last_reminder_date' => null],
-                                ['last_reminder_date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                                ['last_reminder_date' => ['<', new QueryExpression(QueryFunction::currentTimestamp() . ' - INTERVAL ' . $repeat . ' second')]],
                             ],
                         ]
                     ]);

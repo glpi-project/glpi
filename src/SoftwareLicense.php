@@ -597,7 +597,7 @@ class SoftwareLicense extends CommonTreeDropdown
                     'NEWTABLE.is_template' => 0,
                     'OR'  => [
                         ['NEWTABLE.expire' => null],
-                        ['NEWTABLE.expire' => ['>', new QueryExpression('NOW()')]]
+                        ['NEWTABLE.expire' => ['>', QueryFunction::now()]]
                     ]
                 ]
             )
@@ -774,7 +774,12 @@ class SoftwareLicense extends CommonTreeDropdown
                 'WHERE'        => [
                     'glpi_alerts.date'   => null,
                     'NOT'                => ['glpi_softwarelicenses.expire' => null],
-                    new QueryExpression('DATEDIFF(' . $DB->quoteName('glpi_softwarelicenses.expire') . ', CURDATE()) < ' . $before),
+                    new QueryExpression(
+                        QueryFunction::dateDiff(
+                            expression1: $DB::quoteName('glpi_softwarelicenses.expire'),
+                            expression2: QueryFunction::curDate()
+                        ) . " < $before"
+                    ),
                     'glpi_softwares.is_template'  => 0,
                     'glpi_softwares.is_deleted'   => 0,
                     'glpi_softwares.entities_id'  => $entity

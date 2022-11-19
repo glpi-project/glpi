@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\RichText\RichText;
 use Sabre\VObject\Component\VCalendar;
@@ -1174,7 +1175,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 [
                     'AND' => [
                         $item->getTable() . '.state'  => Planning::INFO,
-                        $item->getTable() . '.end'    => ['>', new QueryExpression('NOW()')]
+                        $item->getTable() . '.end'    => ['>', QueryFunction::now()]
                     ]
                 ]
             ]

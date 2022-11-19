@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QueryUnion;
 use Glpi\System\Requirement\DbTimezones;
@@ -1287,7 +1288,7 @@ class DBmysql
      */
     public static function quoteValue($value)
     {
-        if ($value instanceof QueryParam || $value instanceof QueryExpression) {
+        if ($value instanceof QueryParam || $value instanceof QueryExpression || $value instanceof QueryFunction) {
             //no quote for query parameters nor expressions
             $value = $value->getValue();
         } else if ($value === null || $value === 'NULL' || $value === 'null') {
@@ -1435,7 +1436,7 @@ class DBmysql
 
         $query .= " SET ";
         foreach ($params as $field => $value) {
-            if ($value instanceof QueryParam || $value instanceof QueryExpression) {
+            if ($value instanceof QueryParam || $value instanceof QueryExpression || $value instanceof QueryFunction) {
                 //no quote for query parameters nor expressions
                 $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
             } else if ($value === null || $value === 'NULL' || $value === 'null') {

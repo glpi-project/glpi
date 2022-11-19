@@ -719,7 +719,7 @@ class Certificate extends CommonDBTM
                 $where_date = [
                     'OR' => [
                         ['glpi_alerts.date' => null],
-                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                        ['glpi_alerts.date' => ['<', new QueryExpression(QueryFunction::currentTimestamp() . ' - INTERVAL ' . $repeat . ' second')]],
                     ]
                 ];
             } else {
@@ -754,7 +754,7 @@ class Certificate extends CommonDBTM
                         ],
                         [
                             'RAW' => [
-                                'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before]
+                                (string) QueryFunction::dateDiff($DB::quoteName('glpi_certificates.date_expiration'), QueryFunction::curDate()) => ['<', $before]
                             ]
                         ],
                         'glpi_certificates.entities_id' => $entity,
