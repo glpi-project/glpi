@@ -2428,7 +2428,7 @@ final class SQLProvider implements SearchProviderInterface
                     $replaced_key = (string) $new_key !== (string) $key;
                     if (is_array($value)) {
                         $new_criteria[$new_key] = $replace_placeholders($value);
-                    } else if (is_a($value, QueryExpression::class)) {
+                    } else if (is_a($value, QueryExpression::class) || is_a($value, QueryFunction::class)) {
                         $value_string = $value->getValue();
                         $new_value = strtr($value_string, $placeholders);
                         $new_criteria[$new_key] = new QueryExpression($new_value);

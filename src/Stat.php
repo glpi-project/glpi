@@ -990,6 +990,30 @@ class Stat extends CommonGLPI
             ]
         ];
 
+        $date_unix = QueryFunction::fromUnixTimestamp(
+            expression: QueryFunction::unixTimestamp(
+                expression: $DB::quoteName("$table.date")
+            ),
+            format: $DB::quoteValue('%Y-%m'),
+            alias: $DB::quoteName('date_unix')
+        );
+
+        $solve_date_unix = QueryFunction::fromUnixTimestamp(
+            expression: QueryFunction::unixTimestamp(
+                expression: $DB::quoteName("$table.solvedate")
+            ),
+            format: $DB::quoteValue('%Y-%m'),
+            alias: $DB::quoteName('date_unix')
+        );
+
+        $close_date_unix = QueryFunction::fromUnixTimestamp(
+            expression: QueryFunction::unixTimestamp(
+                expression: $DB::quoteName("$table.closedate")
+            ),
+            format: $DB::quoteValue('%Y-%m'),
+            alias: $DB::quoteName('date_unix')
+        );
+
         switch ($param) {
             case "technicien":
                 $LEFTJOIN = $LEFTJOINUSER;
@@ -1211,10 +1235,6 @@ class Stat extends CommonGLPI
             case "inter_total":
                 $WHERE[] = getDateCriteria("$table.date", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.date") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
                         $date_unix,
@@ -1232,13 +1252,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solve_date_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1259,13 +1275,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
                 $WHERE[] = new QueryExpression("$table.solvedate > $table.time_to_resolve");
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solve_date_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1280,13 +1292,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.closedate" => null]];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.closedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $close_date_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1302,13 +1310,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solve_date_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1323,13 +1327,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solve_date_unix,
                         'AVG' => "solve_delay_stat AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1344,13 +1344,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.closedate" => null]];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.closedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $close_date_unix,
                         'AVG'  => "close_delay_stat AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1369,13 +1365,9 @@ class Stat extends CommonGLPI
                 $WHERE["$actiontime_table.actiontime"] = ['>', 0];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solve_date_unix,
                         'AVG'  => "$actiontime_table.actiontime AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1390,13 +1382,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.solvedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solve_date_unix,
                         'AVG'  => "$table.takeintoaccount_delay_stat AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1411,10 +1399,6 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.closedate" => null]];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.closedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
                     'ON' => [
                         'glpi_ticketsatisfactions' => 'tickets_id',
@@ -1424,7 +1408,7 @@ class Stat extends CommonGLPI
 
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $close_date_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1443,10 +1427,6 @@ class Stat extends CommonGLPI
 
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.closedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
                     'ON' => [
                         'glpi_ticketsatisfactions' => 'tickets_id',
@@ -1456,7 +1436,7 @@ class Stat extends CommonGLPI
 
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $close_date_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1476,10 +1456,6 @@ class Stat extends CommonGLPI
                 ];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = new QueryExpression(
-                    "FROM_UNIXTIME(UNIX_TIMESTAMP(" . $DB->quoteName("$table.closedate") . "),'%Y-%m') AS " . $DB->quoteName('date_unix')
-                );
-
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
                     'ON' => [
                         'glpi_ticketsatisfactions' => 'tickets_id',
@@ -1489,7 +1465,7 @@ class Stat extends CommonGLPI
 
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $close_date_unix,
                         'AVG'  => "glpi_ticketsatisfactions.satisfaction AS total_visites"
                     ],
                     'FROM'      => $table,

@@ -50,6 +50,7 @@ use Planning;
 use PlanningEventCategory;
 use PlanningRecall;
 use QueryExpression;
+use QueryFunction;
 use Reminder;
 use RRule\RRule;
 use RRule\RSet;
@@ -503,7 +504,7 @@ trait PlanningEvent
                     'state'  => Planning::TODO,
                     'AND'    => [
                         'state'  => Planning::INFO,
-                        'end'    => ['>', new QueryExpression('NOW()')]
+                        'end'    => ['>', QueryFunction::now()]
                     ]
                 ]
             ];

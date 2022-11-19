@@ -38,6 +38,7 @@ namespace Glpi\Console\Migration;
 use CommonDBTM;
 use Glpi\Console\AbstractCommand;
 use Log;
+use QueryFunction;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -93,7 +94,8 @@ class BuildMissingTimestampsCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERBOSE
             );
 
-            $target_date = $column === 'date_creation' ? 'MIN(`date_mod`)' : 'MAX(`date_mod`)';
+            $date_mod = $this->db::quoteName('date_mod');
+            $target_date = $column === 'date_creation' ? QueryFunction::min($date_mod) : QueryFunction::max($date_mod);
 
             $result = $this->db->query(
                 "

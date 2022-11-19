@@ -519,11 +519,14 @@ class Infocom extends CommonDBChild
                     "$table.entities_id"       => $entity,
                     "$table.warranty_duration" => ['>', 0],
                     'NOT'                      => ["$table.warranty_date" => null],
-                    new \QueryExpression(
-                        'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_infocoms.warranty_date') . ', INTERVAL (' .
-                        $DB->quoteName('glpi_infocoms.warranty_duration') . ') MONTH), CURDATE() ) <= ' .
-                        $DB->quoteValue($before)
-                    ),
+                    new QueryExpression(QueryFunction::dateDiff(
+                        expression1: QueryFunction::addDate(
+                            date: $DB::quoteName('glpi_infocoms.warranty_date'),
+                            interval: $DB::quoteName('glpi_infocoms.warranty_duration'),
+                            interval_unit: 'MONTH'
+                        ),
+                        expression2: QueryFunction::curDate()
+                    ). ' <= ' . $DB::quoteValue($before)),
                     'glpi_alerts.date'         => null
                 ]
             ]);

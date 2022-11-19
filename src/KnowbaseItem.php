@@ -1647,12 +1647,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                         [
                             'OR'  => [
                                 ['glpi_knowbaseitems.begin_date'  => null],
-                                ['glpi_knowbaseitems.begin_date'  => ['<', new QueryExpression('NOW()')]]
+                                ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]]
                             ]
                         ], [
                             'OR'  => [
                                 ['glpi_knowbaseitems.end_date'    => null],
-                                ['glpi_knowbaseitems.end_date'    => ['>', new QueryExpression('NOW()')]]
+                                ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]]
                             ]
                         ]
                     ];
@@ -1708,13 +1708,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     $criteria['WHERE'][] = [
                         'OR'  => [
                             ['glpi_knowbaseitems.begin_date' => null],
-                            ['glpi_knowbaseitems.begin_date' => ['<', new QueryExpression('NOW()')]]
+                            ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]]
                         ]
                     ];
                     $criteria['WHERE'][] = [
                         'OR'  => [
                             ['glpi_knowbaseitems.end_date' => null],
-                            ['glpi_knowbaseitems.end_date' => ['>', new QueryExpression('NOW()')]]
+                            ['glpi_knowbaseitems.end_date' => ['>', QueryFunction::now()]]
                         ]
                     ];
                 }
@@ -2123,13 +2123,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $criteria['WHERE'][] = [
             'OR'  => [
                 ['glpi_knowbaseitems.begin_date' => null],
-                ['glpi_knowbaseitems.begin_date' => ['<', new QueryExpression('NOW()')]]
+                ['glpi_knowbaseitems.begin_date' => ['<', QueryFunction::now()]]
             ]
         ];
         $criteria['WHERE'][] = [
             'OR'  => [
                 ['glpi_knowbaseitems.end_date'   => null],
-                ['glpi_knowbaseitems.end_date'   => ['>', new QueryExpression('NOW()')]]
+                ['glpi_knowbaseitems.end_date'   => ['>', QueryFunction::now()]]
             ]
         ];
 

@@ -379,25 +379,23 @@ class Auth extends CommonGLPI
         $pass_expiration_delay = (int)$CFG_GLPI['password_expiration_delay'];
         $lock_delay            = (int)$CFG_GLPI['password_expiration_lock_delay'];
 
-       // SQL query
+        // SQL query
         $result = $DB->request(
             [
                 'SELECT' => [
                     'id',
                     'password',
-                    new QueryExpression(
-                        sprintf(
-                            'ADDDATE(%s, INTERVAL %d DAY) AS ' . $DB->quoteName('password_expiration_date'),
-                            $DB->quoteName('password_last_update'),
-                            $pass_expiration_delay
-                        )
+                    QueryFunction::addDate(
+                        date: $DB::quoteName('password_last_update'),
+                        interval: $pass_expiration_delay,
+                        interval_unit: 'DAY',
+                        alias: $DB::quoteName('password_expiration_date')
                     ),
-                    new QueryExpression(
-                        sprintf(
-                            'ADDDATE(%s, INTERVAL %d DAY) AS ' . $DB->quoteName('lock_date'),
-                            $DB->quoteName('password_last_update'),
-                            $pass_expiration_delay + $lock_delay
-                        )
+                    QueryFunction::addDate(
+                        date: $DB::quoteName('password_last_update'),
+                        interval: $pass_expiration_delay + $lock_delay,
+                        interval_unit: 'DAY',
+                        alias: $DB::quoteName('lock_date')
                     )
                 ],
                 'FROM'   => User::getTable(),

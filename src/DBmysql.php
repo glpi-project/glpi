@@ -1253,7 +1253,7 @@ class DBmysql
      */
     public static function quoteValue($value)
     {
-        if ($value instanceof QueryParam || $value instanceof QueryExpression) {
+        if ($value instanceof QueryParam || $value instanceof QueryExpression || $value instanceof QueryFunction) {
             //no quote for query parameters nor expressions
             $value = $value->getValue();
         } else if ($value === null || $value === 'NULL' || $value === 'null') {
@@ -1401,7 +1401,11 @@ class DBmysql
 
         $query .= " SET ";
         foreach ($params as $field => $value) {
-            $query .= self::quoteName($field) . " = " . $this->quoteValue($value) . ", ";
+            $v = $value;
+            if (!($v instanceof QueryFunction)) {
+                $v = self::quoteValue($v);
+            }
+            $query .= self::quoteName($field) . " = " . $v . ", ";
         }
         $query = rtrim($query, ', ');
 

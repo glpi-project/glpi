@@ -242,6 +242,17 @@ class QueryFunction
     }
 
     /**
+     * Build a MAX SQL function call
+     * @param string $expression Expression to get max value
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function max(string $expression, ?string $alias = null): self
+    {
+        return new self('MAX', [$expression], $alias);
+    }
+
+    /**
      * Build an AVG SQL function call
      * @param string $expression Expression to get average value
      * @param string|null $alias Function result alias
@@ -312,13 +323,17 @@ class QueryFunction
 
     /**
      * Build a UNIX_TIMESTAMP SQL function call
-     * @param string $expression Expression to convert
+     * @param string $expression Expression to convert (Defaults to current timestamp)
      * @param string|null $alias Function result alias
      * @return static
      */
-    public static function unixTimestamp(string $expression, ?string $alias = null): self
+    public static function unixTimestamp(?string $expression = null, ?string $alias = null): self
     {
-        return new self('UNIX_TIMESTAMP', [$expression], $alias);
+        $params = [];
+        if ($expression !== null) {
+            $params[] = $expression;
+        }
+        return new self('UNIX_TIMESTAMP', $params, $alias);
     }
 
     /**
@@ -347,6 +362,18 @@ class QueryFunction
     public static function dateFormat(string $expression, string $format, ?string $alias = null): self
     {
         return new self('DATE_FORMAT', [$expression, $format], $alias);
+    }
+
+    /**
+     * Build a TIMEDIFF SQL function call
+     * @param string $expression1 The base expression
+     * @param string $expression2 The expression to subtract
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function timeDiff(string $expression1, string $expression2, ?string $alias = null): self
+    {
+        return new self('TIMEDIFF', [$expression1, $expression2], $alias);
     }
 
     /**
@@ -409,6 +436,17 @@ class QueryFunction
     }
 
     /**
+     * Build a GREATEST SQL function call
+     * @param array $params Parameters to check
+     * @param string|null $alias Function result alias
+     * @return static
+     */
+    public static function greatest(array $params, ?string $alias = null): self
+    {
+        return new self('GREATEST', $params, $alias);
+    }
+
+    /**
      * Build a TIMESTAMPDIFF SQL function call
      * @param string $unit Unit to use
      * @param string $expression1 Expression to compare
@@ -429,5 +467,20 @@ class QueryFunction
     public static function dateDiff(string $expression1, string $expression2, ?string $alias = null): self
     {
         return new self('DATEDIFF', [$expression1, $expression2], $alias);
+    }
+
+    public static function curDate(?string $alias = null): self
+    {
+        return new self('CURDATE', [], $alias);
+    }
+
+    public static function currentTimestamp(?string $alias = null): self
+    {
+        return new self('CURRENT_TIMESTAMP', [], $alias);
+    }
+
+    public static function substring(string $expression, string $start, ?string $length = null, ?string $alias = null): self
+    {
+        return new self('SUBSTRING', [$expression, $start, $length], $alias);
     }
 }

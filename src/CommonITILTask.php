@@ -1168,7 +1168,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 [
                     'AND' => [
                         $item->getTable() . '.state'  => Planning::INFO,
-                        $item->getTable() . '.end'    => ['>', new \QueryExpression('NOW()')]
+                        $item->getTable() . '.end'    => ['>', QueryFunction::now()]
                     ]
                 ]
             ]

@@ -395,8 +395,8 @@ class SavedSearch_Alert extends CommonDBChild
                 'OR' => [
                     ['glpi_alerts.date' => null],
                     ['glpi_alerts.date' => ['<', new QueryExpression(sprintf(
-                        'CURRENT_TIMESTAMP() - INTERVAL %s second',
-                        $DB->quoteName('glpi_savedsearches_alerts.frequency')
+                        QueryFunction::currentTimestamp() . ' - INTERVAL %s second',
+                        $DB::quoteName('glpi_savedsearches_alerts.frequency')
                     ))
                     ]
                     ],

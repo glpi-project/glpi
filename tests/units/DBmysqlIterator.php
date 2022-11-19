@@ -42,6 +42,9 @@ use Psr\Log\LogLevel;
 
 class DBmysqlIterator extends DbTestCase
 {
+    /**
+     * @var \DBmysqlIterator
+     */
     private $it;
 
     public function beforeTestMethod($method)
@@ -484,6 +487,20 @@ class DBmysqlIterator extends DbTestCase
     {
         $join = $this->it->analyseJoins(['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
         $this->string($join)->isIdenticalTo(' LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
+        $join = $this->it->analyseJoins([
+            'LEFT JOIN' => [
+                'bar' => [
+                    'FKEY' => [
+                        'bar' => 'id',
+                        'foo' => 'fk', [
+                            'OR'  => ['field' => ['>', \QueryFunction::now()]]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+        $this->string($join)->isIdenticalTo(' LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` OR `field` > NOW())');
 
         $this->exception(
             function () {
@@ -1245,15 +1262,36 @@ class DBmysqlIterator extends DbTestCase
         $this->string($it->getSql())->isIdenticalTo($raw_query);
     }
 
-    public function testAnalyseCrit()
+    protected function analyseCritProvider()
     {
-        $crit = [new \QuerySubQuery([
-            'SELECT' => ['COUNT' => ['users_id']],
-            'FROM'   => 'glpi_groups_users',
-            'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
-        ])
+        global $DB;
+
+        return [
+            [
+                'criteria' => [
+                    new \QuerySubQuery([
+                        'SELECT' => ['COUNT' => ['users_id']],
+                        'FROM'   => 'glpi_groups_users',
+                        'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+                    ])
+                ],
+                'expected' => "(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)"
+            ],
+            [
+                'criteria' => [
+                    'date_mod' => ['<=', \QueryFunction::now($DB::quoteName('now'))]
+                ],
+                'expected' => "`date_mod` <= NOW() AS `now`"
+            ]
         ];
-        $this->string($this->it->analyseCrit($crit))->isIdenticalTo("(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)");
+    }
+
+    /**
+     * @dataProvider analyseCritProvider
+     */
+    public function testAnalyseCrit($criteria, $expected)
+    {
+        $this->string($this->it->analyseCrit($criteria))->isIdenticalTo($expected);
     }
 
     public function testIteratorKeyWithId()

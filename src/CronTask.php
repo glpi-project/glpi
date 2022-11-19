@@ -231,7 +231,7 @@ class CronTask extends CommonDBTM
             $this->getTable(),
             [
                 'state'  => self::STATE_RUNNING,
-                'lastrun'   => new \QueryExpression('DATE_FORMAT(NOW(),\'%Y-%m-%d %H:%i:00\')')
+                'lastrun'   => QueryFunction::dateFormat(QueryFunction::now(), $DB::quoteValue('%Y-%m-%d %H:%i:00'))
             ],
             [
                 'id'  => $this->fields['id'],
@@ -503,7 +503,7 @@ class CronTask extends CommonDBTM
                 'WHERE'     => [
                     'items_id' => $this->fields['id'],
                     'itemtype' => 'CronTask',
-                    'date'     => ['>', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL 1 day')],
+                    'date'     => ['>', new QueryExpression(QueryFunction::currentTimestamp() . ' - INTERVAL 1 day')],
                 ],
             ]
         );

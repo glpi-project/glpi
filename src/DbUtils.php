@@ -1829,9 +1829,14 @@ final class DbUtils
 
             $criteria = [
                 'SELECT' => [
-                    new \QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName('code') . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring(
+                            expression: $DB::quoteName('code'),
+                            start: $pos,
+                            length: $len
+                        ),
+                        type: 'UNSIGNED',
+                        alias: $DB::quoteName('no')
                     )
                 ],
                 'FROM'   => new \QueryUnion($subqueries, false, 'codes')
@@ -1840,9 +1845,14 @@ final class DbUtils
             $table = $this->getTableForItemType($itemtype);
             $criteria = [
                 'SELECT' => [
-                    new \QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName($field) . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring(
+                            expression: $DB::quoteName($field),
+                            start: $pos,
+                            length: $len
+                        ),
+                        type: 'UNSIGNED',
+                        alias: $DB::quoteName('no')
                     )
                 ],
                 'FROM'   => $table,
@@ -1866,7 +1876,9 @@ final class DbUtils
 
         $subquery = new \QuerySubQuery($criteria, 'Num');
         $iterator = $DB->request([
-            'SELECT' => ['MAX' => 'Num.no AS lastNo'],
+            'SELECT' => [
+                QueryFunction::max(expression: $DB::quoteName('Num.no'), alias: $DB::quoteName('lastNo'))
+            ],
             'FROM'   => $subquery
         ]);
 
@@ -1924,6 +1936,7 @@ final class DbUtils
      */
     public function getDateCriteria($field, $begin, $end)
     {
+        global $DB;
         $criteria = [];
         if (!empty($begin)) {
             $criteria[] = [$field => ['>=', $begin]];
@@ -1931,7 +1944,7 @@ final class DbUtils
 
         if (!empty($end)) {
             $end_expr = new QueryExpression(
-                'ADDDATE(\'' . $end . '\', INTERVAL 1 DAY)'
+                QueryFunction::addDate(date: $DB::quoteValue($end), interval: 1, interval_unit: 'DAY')
             );
             $criteria[] = [$field => ['<=', $end_expr]];
         }

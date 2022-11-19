@@ -294,7 +294,7 @@ class VirtualMachine extends InventoryAsset
                     'FROM'   => 'glpi_computers',
                     'WHERE'  => [
                         'RAW' => [
-                            'LOWER(uuid)'  => ComputerVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
+                            (string) \QueryFunction::lower($DB::quoteName('uuid')) => ComputerVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
                         ]
                     ],
                     'LIMIT'  => 1

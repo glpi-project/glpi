@@ -168,6 +168,7 @@ class ComputerVirtualMachine extends CommonDBChild
      **/
     public static function showForVirtualMachine(Computer $comp)
     {
+        global $DB;
 
         $ID = $comp->fields['id'];
 
@@ -182,7 +183,7 @@ class ComputerVirtualMachine extends CommonDBChild
                 self::getTable(),
                 [
                     'RAW' => [
-                        'LOWER(uuid)' => self::getUUIDRestrictCriteria($comp->fields['uuid'])
+                        (string) QueryFunction::lower($DB::quoteName('uuid')) => self::getUUIDRestrictCriteria($comp->fields['uuid'])
                     ]
                 ]
             );
@@ -421,7 +422,7 @@ class ComputerVirtualMachine extends CommonDBChild
             'FROM'   => 'glpi_computers',
             'WHERE'  => [
                 'RAW' => [
-                    'LOWER(uuid)'  => self::getUUIDRestrictCriteria($fields['uuid'])
+                    (string) QueryFunction::lower($DB::quoteName('uuid'))  => self::getUUIDRestrictCriteria($fields['uuid'])
                 ]
             ]
         ]);

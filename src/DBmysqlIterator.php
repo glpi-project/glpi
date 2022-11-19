@@ -536,8 +536,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
             if (is_numeric($name)) {
                // no key and direct expression
-                if ($value instanceof QueryExpression) {
-                    $ret .= $value->getValue();
+                if ($value instanceof QueryExpression || $value instanceof QueryFunction) {
+                    $ret .= $value;
                 } else if ($value instanceof QuerySubQuery) {
                     $ret .= $value->getQuery();
                 } else {
@@ -620,7 +620,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         if ($value instanceof \AbstractQuery) {
             return $value->getQuery();
-        } else if ($value instanceof \QueryExpression || $value instanceof \QueryFunction) {
+        } else if ($value instanceof \QueryExpression) {
             return $value->getValue();
         } else if ($value instanceof \QueryParam) {
             return $value->getValue();

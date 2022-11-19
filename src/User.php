@@ -4261,13 +4261,13 @@ JAVASCRIPT;
                     [
                         'OR' => [
                             ['glpi_users.begin_date' => null],
-                            ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+                            ['glpi_users.begin_date' => ['<', QueryFunction::now()]]
                         ]
                     ],
                     [
                         'OR' => [
                             ['glpi_users.end_date' => null],
-                            ['glpi_users.end_date' => ['>', new QueryExpression('NOW()')]]
+                            ['glpi_users.end_date' => ['>', QueryFunction::now()]]
                         ]
                     ]
 
@@ -5598,12 +5598,12 @@ JAVASCRIPT;
             'glpi_users.is_deleted' => 0, [
                 'OR' => [
                     ['glpi_users.begin_date' => null],
-                    ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]]
                 ],
             ], [
                 'OR'  => [
                     ['glpi_users.end_date'   => null],
-                    ['glpi_users.end_date'   => ['>', new QueryExpression('NOW()')]]
+                    ['glpi_users.end_date'   => ['>', QueryFunction::now()]]
                 ]
             ]
         ];
@@ -6125,16 +6125,16 @@ JAVASCRIPT;
                     self::getTableField('is_active')  => 1,
                     self::getTableField('authtype')   => Auth::DB_GLPI,
                     new QueryExpression(
-                        sprintf(
-                            'NOW() > ADDDATE(%s, INTERVAL %s DAY)',
-                            $DB->quoteName(self::getTableField('password_last_update')),
-                            $expiration_delay - $notice_time
+                        QueryFunction::now() . ' > ' . QueryFunction::addDate(
+                            date: $DB::quoteName(self::getTableField('password_last_update')),
+                            interval: $expiration_delay - $notice_time,
+                            interval_unit: 'DAY'
                         )
                     ),
-               // Get only users that has not yet been notified within last day
+                    // Get only users that has not yet been notified within last day
                     'OR'                              => [
                         [Alert::getTableField('date') => null],
-                        [Alert::getTableField('date') => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL 1 day')]],
+                        [Alert::getTableField('date') => ['<', new QueryExpression(QueryFunction::currentTimestamp() . ' - INTERVAL 1 day')]],
                     ],
                 ],
             ];
@@ -6209,11 +6209,10 @@ JAVASCRIPT;
                     'is_active'  => 1,
                     'authtype'   => Auth::DB_GLPI,
                     new QueryExpression(
-                        sprintf(
-                            'NOW() > ADDDATE(ADDDATE(%s, INTERVAL %d DAY), INTERVAL %s DAY)',
-                            $DB->quoteName(self::getTableField('password_last_update')),
-                            $expiration_delay,
-                            $lock_delay
+                        QueryFunction::now() . ' > ' . QueryFunction::addDate(
+                            date: $DB::quoteName('password_last_update'),
+                            interval: $expiration_delay + $lock_delay,
+                            interval_unit: 'DAY'
                         )
                     ),
                 ]
@@ -6641,7 +6640,13 @@ JAVASCRIPT;
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'password_forget_token'       => $token,
-                new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', ' . $CFG_GLPI['password_init_token_delay'] . ')')
+                new \QueryExpression(
+                    QueryFunction::now() . ' < ' . QueryFunction::addDate(
+                        date: $DB::quoteName('password_forget_token_date'),
+                        interval: $CFG_GLPI['password_init_token_delay'],
+                        interval_unit: 'SECOND'
+                    )
+                )
             ]
         ]);
 
@@ -6818,7 +6823,7 @@ JAVASCRIPT;
                                 [
                                     self::getTableField('substitution_end_date') => null
                                 ], [
-                                    self::getTableField('substitution_end_date') => ['>=', new QueryExpression('NOW()')],
+                                    self::getTableField('substitution_end_date') => ['>=', QueryFunction::now()],
                                 ],
                             ],
                         ], [
@@ -6826,7 +6831,7 @@ JAVASCRIPT;
                                 [
                                     self::getTableField('substitution_start_date') => null,
                                 ], [
-                                    self::getTableField('substitution_start_date') => ['<=', new QueryExpression('NOW()')],
+                                    self::getTableField('substitution_start_date') => ['<=', QueryFunction::now()],
                                 ],
                             ],
                         ]
