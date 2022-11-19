@@ -170,38 +170,46 @@ class NetworkPort extends InventoryAsset
         foreach ($connections as $connection) {
             $connection = (object)$connection;
             if ($this->isLLDP($port)) {
-                foreach ($lldp_mapping as $origin => $dest) {
-                    if (property_exists($connection, $origin)) {
-                        $connection->$dest = $connection->$origin;
+                // LLDP provides ChassisId (sysmac) and PortID as one of: local number, mac, interface name
+                // We'll try to find the real mac and logical_number of the connection
+                if (property_exists($connection, 'sysmac')) {
+                    if (property_exists($connection, 'ifnumber')) {
+                        $field = 'logical_number';
+                        $val = $connection->ifnumber;
+                    } else if (property_exists($connection, 'mac')) {
+                        $field = 'mac';
+                        $val = $connection->mac;
+                    } else if (property_exists($connection, 'ifdescr')) {
+                        $field = 'name';
+                        $val = $connection->ifdescr;
+                    }
+
+                    if ($field && $val) {
+                        $criteria = [
+                            'SELECT'    => ['n1.logical_number', 'n1.mac'],
+                            'FROM'      => \NetworkPort::getTable() . ' AS n1',
+                            'WHERE'     => [
+                                'n1.' . $field => $val,
+                                'n2.mac'       => $connection->sysmac,
+                            ]
+                        ];
+                        $criteria['LEFT JOIN'][\NetworkPort::getTable() . ' AS n2'][] =
+                            new \QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
+
+                        $iterator = $DB->request($criteria);
+                        if (count($iterator)) {
+                            $result = $iterator->current();
+                            $connection->logical_number = (int)$result['logical_number'];
+                            $connection->mac = $result['mac'];
+                            // make sure mac does't get overwritten below
+                            unset($lldp_mapping['sysmac']);
+                        }
                     }
                 }
 
-                // LLDP provides ifnumber as one of: local (logical) number, mac, interface name
-                // We'll try to find the real mac and logical_number of the connection
-                if (
-                    property_exists($connection, 'sysmac')
-                    && property_exists($connection, 'ifnumber')
-                ) {
-                    $field = 'logical_number';
-                    if (!is_numeric($connection->ifnumber)) {
-                        $field = substr_count($connection->ifnumber, ':') == 5 ? 'mac' : 'name';
-                    }
-                    $criteria = [
-                        'SELECT'    => ['n1.logical_number', 'n1.mac'],
-                        'FROM'      => \NetworkPort::getTable() . ' AS n1',
-                        'WHERE'     => [
-                            'n1.' . $field => $connection->ifnumber,
-                            'n2.mac'       => $connection->sysmac,
-                        ]
-                    ];
-                    $criteria['LEFT JOIN'][\NetworkPort::getTable() . ' AS n2'][] =
-                        new \QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
-
-                    $iterator = $DB->request($criteria);
-                    if (count($iterator)) {
-                        $result = $iterator->current();
-                        $connection->logical_number = (int)$result['logical_number'];
-                        $connection->mac = $result['mac'];
+                foreach ($lldp_mapping as $origin => $dest) {
+                    if (property_exists($connection, $origin)) {
+                        $connection->$dest = $connection->$origin;
                     }
                 }
                 if (!property_exists($connection, 'name') && property_exists($connection, 'ifdescr')) {

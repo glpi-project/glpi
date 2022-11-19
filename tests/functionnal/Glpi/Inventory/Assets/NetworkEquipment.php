@@ -2492,4 +2492,117 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean($networkPort->getFromDBByCrit(['name' => 'eth0']));
         $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
     }
-}
+
+    public function testPrepareConnectionsProvider()
+    {
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $networkEquipments_id = $networkEquipment->add([
+            'entities_id' => 0,
+            'name'        => 'sw001',
+        ]);
+        $this->integer($networkEquipments_id)->isGreaterThan(0);
+
+        $mngtports_id = $networkPort->add([
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'instantiation_type' => 'NetworkPortAggregate',
+            'name'               => 'management',
+            'mac'                => '2c:fa:a2:d1:b2:28',
+        ]);
+        $this->integer($mngtports_id)->isGreaterThan(0);
+
+        $ports_id = $networkPort->add([
+            'name'               => 'port47',
+            'logical_number'     => '1047',
+            'instantiation_type' => 'NetworkPortEthernet',
+            'items_id'           => $networkEquipments_id,
+            'itemtype'           => 'NetworkEquipment',
+            'ifdescr'            => '47',
+            'mac'                => '2c:fa:a2:d1:b2:99',
+        ]);
+        $this->integer($ports_id)->isGreaterThan(0);
+
+        return [
+            ['json_source' =>
+                '{
+                  "content": {
+                      "network_ports": [
+                         {
+                            "connections": [
+                               {
+                                  "ifdescr": "port47",
+                                  "ifnumber": 1047,
+                                  "sysdescr": "sw001",
+                                  "sysmac": "2c:fa:a2:d1:b2:28"
+                               }
+                            ],
+                            "ifnumber": 2,
+                            "lldp": true
+                         }
+                      ]
+                   }
+                }'],
+            ['json_source' =>
+                '{
+                  "content": {
+                      "network_ports": [
+                         {
+                            "connections": [
+                               {
+                                  "ifdescr": "port47",
+                                  "mac": "2c:fa:a2:d1:b2:99",
+                                  "sysdescr": "sw001",
+                                  "sysmac": "2c:fa:a2:d1:b2:28"
+                               }
+                            ],
+                            "ifnumber": 2,
+                            "lldp": true
+                         }
+                      ]
+                   }
+                }'],
+            ['json_source' =>
+                '{
+                  "content": {
+                      "network_ports": [
+                         {
+                            "connections": [
+                               {
+                                  "ifdescr": "port47",
+                                  "sysdescr": "sw001",
+                                  "sysmac": "2c:fa:a2:d1:b2:28"
+                               }
+                            ],
+                            "ifnumber": 2,
+                            "lldp": true
+                         }
+                      ]
+                   }
+                }'],
+        ];
+    }
+
+    /**
+     * @dataProvider testPrepareConnectionsProvider
+     */
+    public function testPrepareConnections($json_source)
+    {
+        $json = json_decode($json_source);
+
+        $networkEquipment = getItemByTypeName('NetworkEquipment', '_test_networkequipment_1');
+
+        $asset = new \Glpi\Inventory\Asset\NetworkPort($networkEquipment, (array)$json->content->network_ports);
+
+        $result = $asset->prepare();
+        $this->array($result)->hasSize(1);
+
+        $connections = $asset->getPart('connections');
+        $this->array($connections)->hasSize(1);
+
+        $networkPort = current(current($connections));
+        $this->boolean(property_exists($networkPort, 'logical_number'))->isTrue();
+        $this->integer($networkPort->logical_number)->isEqualTo(1047);
+    }
+ }
