@@ -2543,7 +2543,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'],
+                }'
+            ],
             ['json_source' =>
                 '{
                   "content": {
@@ -2562,7 +2563,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'],
+                }'
+            ],
             ['json_source' =>
                 '{
                   "content": {
@@ -2580,7 +2582,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'],
+                }'
+            ],
         ];
     }
 
@@ -2605,4 +2608,4 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->boolean(property_exists($networkPort, 'logical_number'))->isTrue();
         $this->integer($networkPort->logical_number)->isEqualTo(1047);
     }
- }
+}
