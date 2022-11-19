@@ -184,7 +184,7 @@ class NetworkPort extends InventoryAsset
                 ) {
                     $field = 'logical_number';
                     if (!is_numeric($connection->ifnumber)) {
-                        $field = strstr($connection->ifnumber, ':') ? 'mac' : 'name';
+                        $field = substr_count($connection->ifnumber, ':') == 5 ? 'mac' : 'name';
                     }
                     $criteria = [
                         'SELECT'    => ['n1.logical_number', 'n1.mac'],
