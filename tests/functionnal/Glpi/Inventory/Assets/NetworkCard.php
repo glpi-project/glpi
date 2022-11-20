@@ -752,6 +752,7 @@ class NetworkCard extends AbstractInventoryAsset
         $computer = new \Computer();
         $device_net = new \DeviceNetworkCard();
         $item_net = new \Item_DeviceNetworkCard();
+        $network_port = new \NetworkPort();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -898,7 +899,14 @@ class NetworkCard extends AbstractInventoryAsset
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->integer(count($cards))->isIdenticalTo(1);
 
+        $this->boolean(
+            $network_port->getFromDBByCrit(['mac' => '08:00:27:16:9c:60'])
+        )->isTrue();
+        // the port is up
+        $this->string($network_port->fields['ifstatus'])->isEqualTo('1');
+
        //Redo inventory, but with removed last network card
+       //and the port on the first card down
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -921,7 +929,7 @@ class NetworkCard extends AbstractInventoryAsset
       <MACADDR>08:00:27:16:9C:60</MACADDR>
       <PCIID>8086:100E:001E:8086</PCIID>
       <SPEED>1000</SPEED>
-      <STATUS>Up</STATUS>
+      <STATUS>Down</STATUS>
       <VIRTUALDEV>0</VIRTUALDEV>
     </NETWORKS>
     <HARDWARE>
@@ -953,5 +961,11 @@ class NetworkCard extends AbstractInventoryAsset
        //network card not present in the inventory is still not dynamic
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->integer(count($cards))->isIdenticalTo(1);
+
+        $this->boolean(
+            $network_port->getFromDBByCrit(['mac' => '08:00:27:16:9c:60'])
+        )->isTrue();
+        // the port is down
+        $this->string($network_port->fields['ifstatus'])->isEqualTo('2');
     }
 }

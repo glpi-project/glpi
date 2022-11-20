@@ -206,26 +206,31 @@ class Inventory extends InventoryTestCase
                 'name' => 'lo',
                 'instantiation_type' => 'NetworkPortEthernet',
                 'mac' => '00:00:00:00:00:00',
+                'ifstatus' => '1',
             ], [
                 'logical_number' => 1,
                 'name' => 'enp57s0u1u4',
                 'instantiation_type' => 'NetworkPortEthernet',
                 'mac' => '00:e0:4c:68:01:db',
+                'ifstatus' => '1',
             ], [
                 'logical_number' => 1,
                 'name' => 'wlp58s0',
                 'instantiation_type' => 'NetworkPortWifi',
                 'mac' => '44:85:00:2b:90:bc',
+                'ifstatus' => '1',
             ], [
                 'logical_number' => 0,
                 'name' => 'virbr0',
                 'instantiation_type' => 'NetworkPortEthernet',
                 'mac' => '52:54:00:fa:20:0e',
+                'ifstatus' => '1',
             ], [
                 'logical_number' => 0,
                 'name' => 'virbr0-nic',
                 'instantiation_type' => null,
                 'mac' => '52:54:00:fa:20:0e',
+                'ifstatus' => '2',
             ]
         ];
 
@@ -4988,6 +4993,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'name' => 'No description found',
                 'instantiation_type' => 'NetworkPortWifi',
                 'mac' => 'e0:dc:ff:ed:09:59',
+                'ifstatus' => '1',
             ]
         ];
 
