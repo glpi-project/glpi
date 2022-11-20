@@ -173,6 +173,8 @@ class NetworkPort extends InventoryAsset
                 // LLDP provides ChassisId (sysmac) and PortID as one of: local number, mac, interface name
                 // We'll try to find the real mac and logical_number of the connection
                 if (property_exists($connection, 'sysmac')) {
+                    $field = null;
+                    $val = null;
                     if (property_exists($connection, 'ifnumber')) {
                         $field = 'logical_number';
                         $val = $connection->ifnumber;
