@@ -1123,7 +1123,8 @@ abstract class API
 
        //specific case for restriction
         $already_linked_table = [];
-        $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $table, $already_linked_table) + SQLProvider::getDefaultWhereCriteria($itemtype);
+        $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $table, $already_linked_table);
+        $criteria['WHERE'] = SQLProvider::getDefaultWhereCriteria($itemtype);
         if (!isset($criteria['LEFT JOIN'])) {
             $criteria['LEFT JOIN'] = [];
         }
@@ -1256,7 +1257,7 @@ abstract class API
         $criteria['SELECT'] = [$DB::quoteName("$table.id"), $DB::quoteName("$table.*")];
         $criteria['DISTINCT'] = true;
         $criteria['FROM'] = $table;
-        $criteria['ORDER'] = [$DB->quoteName($params['sort']), $params['order']];
+        $criteria['ORDER'] = $params['sort'] . ' ' . $params['order'];
         $criteria['START'] = (int) $params['start'];
         $criteria['LIMIT'] = (int) $params['list_limit'];
         $result = $DB->request($criteria);
