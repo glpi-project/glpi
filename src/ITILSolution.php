@@ -220,41 +220,43 @@ class ITILSolution extends CommonDBChild
             $input = array_replace($template_fields, $input);
         }
 
-       // check itil object is not already solved
-        if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
-            Session::addMessageAfterRedirect(
-                __("The item is already solved, did anyone pushed a solution before you?"),
-                false,
-                ERROR
-            );
-            return false;
-        }
-
-       //default status for global solutions
-        $status = CommonITILValidation::ACCEPTED;
-
-       //handle autoclose, for tickets only
-        if ($input['itemtype'] == Ticket::getType()) {
-            $autoclosedelay =  Entity::getUsedConfig(
-                'autoclose_delay',
-                $this->item->getEntityID(),
-                '',
-                Entity::CONFIG_NEVER
-            );
-
-           // 0  or ticket status CLOSED = immediately
-            if ($autoclosedelay != 0 && $this->item->fields["status"] != $this->item::CLOSED) {
-                $status = CommonITILValidation::WAITING;
+        if (!$this->item->isStatusComputationBlocked($input)) {
+        // check itil object is not already solved
+            if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
+                Session::addMessageAfterRedirect(
+                    __("The item is already solved, did anyone pushed a solution before you?"),
+                    false,
+                    ERROR
+                );
+                return false;
             }
-        }
 
-       //Accepted; store user and date
-        if ($status == CommonITILValidation::ACCEPTED) {
-            $input['users_id_approval'] = Session::getLoginUserID();
-            $input['date_approval'] = $_SESSION["glpi_currenttime"];
-        }
+            //default status for global solutions
+            $status = CommonITILValidation::ACCEPTED;
 
-        $input['status'] = $status;
+            //handle autoclose, for tickets only
+            if ($input['itemtype'] == Ticket::getType()) {
+                $autoclosedelay =  Entity::getUsedConfig(
+                    'autoclose_delay',
+                    $this->item->getEntityID(),
+                    '',
+                    Entity::CONFIG_NEVER
+                );
+
+                // 0  or ticket status CLOSED = immediately
+                if ($autoclosedelay != 0 && $this->item->fields["status"] != $this->item::CLOSED) {
+                    $status = CommonITILValidation::WAITING;
+                }
+            }
+
+            //Accepted; store user and date
+            if ($status == CommonITILValidation::ACCEPTED) {
+                $input['users_id_approval'] = Session::getLoginUserID();
+                $input['date_approval'] = $_SESSION["glpi_currenttime"];
+            }
+
+            $input['status'] = $status;
+        }
 
        // Render twig content, needed for massives action where we the content
        // can't be rendered directly in the form

@@ -7724,11 +7724,15 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         $solution = new ITILSolution();
-        $solution->add([
+        $input = [
             '_solutiontemplates_id' => $this->input['_solutiontemplates_id'],
-            'itemtype'              => static::getType(),
-            'items_id'              => $this->fields['id'],
-        ]);
+            'itemtype'              => $this->getType(),
+            'items_id'              => $this->getID(),
+        ];
+        if (isset($this->input['_do_not_compute_status'])) {
+            $input['_do_not_compute_status'] = $this->input['_do_not_compute_status'];
+        }
+        $solution->add($input);
     }
 
     /**
