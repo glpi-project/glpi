@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e13448f175fee2427c0361506ea32e78",
+    "content-hash": "99b828d820c71d65f8cb4b9f0c7cc600",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -4972,16 +4972,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "4.0.3",
+            "version": "4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "0fe4495643f6a529f9e304ea6933d29733253489"
+                "reference": "e866f3d4ad683c35757cd73fc6da3e3d5e563667"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/0fe4495643f6a529f9e304ea6933d29733253489",
-                "reference": "0fe4495643f6a529f9e304ea6933d29733253489",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/e866f3d4ad683c35757cd73fc6da3e3d5e563667",
+                "reference": "e866f3d4ad683c35757cd73fc6da3e3d5e563667",
                 "shasum": ""
             },
             "require": {
@@ -4989,7 +4989,7 @@
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": "^7.2 || ^8.0"
+                "php": "^7.4 || ^8.0"
             },
             "replace": {
                 "mageekguy/atoum": "*"
@@ -5053,9 +5053,9 @@
             ],
             "support": {
                 "issues": "https://github.com/atoum/atoum/issues",
-                "source": "https://github.com/atoum/atoum/tree/4.0.3"
+                "source": "https://github.com/atoum/atoum/tree/4.1"
             },
-            "time": "2021-10-22T08:10:33+00:00"
+            "time": "2022-11-20T20:18:31+00:00"
         },
         {
             "name": "friendsoftwig/twigcs",
