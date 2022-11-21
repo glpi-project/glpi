@@ -220,6 +220,9 @@ class ITILSolution extends CommonDBChild
             $input = array_replace($template_fields, $input);
         }
 
+        if (isset($input['_do_not_compute_status'])) {
+            return $input;
+        }
        // check itil object is not already solved
         if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
             Session::addMessageAfterRedirect(
