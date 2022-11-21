@@ -6527,4 +6527,32 @@ class CommonDBTM extends CommonGLPI
 
         return $is_global;
     }
+
+
+    /**
+     * Return a message-id string for the current item
+     * This string is used as header to identify the item in a mail
+     *
+     * @param string $event append /eventname to the message-id (before the host information)
+     *
+     * @return string "GLPI_{instance_uuid}-{itemtype}-{items_id}/{event}@{host}"
+     *
+     * @since 10.0.6
+     */
+    public function getItemMessageId(string $event = null): string
+    {
+        $event_str = '';
+        if ($event) {
+            $event_str = '/' . $event;
+        }
+
+        return sprintf(
+            'GLPI_%s-%s-%s%s@%s',
+            Config::getUuid('notification'),
+            $this->getType(),
+            $this->getField('id'),
+            $event_str,
+            php_uname('n')
+        );
+    }
 }
