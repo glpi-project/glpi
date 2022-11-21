@@ -8832,7 +8832,7 @@ CREATE TABLE `glpi_unmanageds` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `states_id` int unsigned NOT NULL DEFAULT '0',
-  `groups_id_tech` int NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
