@@ -74,6 +74,7 @@ final class QueryBuilder implements SearchInputInterface
         $p['mainform']     = true;
         $p['prefix_crit']  = '';
         $p['addhidden']    = [];
+        $p['showaction']   = true;
         $p['actionname']   = 'search';
         $p['actionvalue']  = _sx('button', 'Search');
         $p['unpublished'] = 1;
@@ -88,12 +89,13 @@ final class QueryBuilder implements SearchInputInterface
 
 
         TemplateRenderer::getInstance()->display('components/search/query_builder/main.html.twig', [
-            'mainform' => $p['mainform'],
-            'itemtype' => $itemtype,
+            'mainform'            => $p['mainform'],
+            'showaction'          => $p['showaction'],
+            'itemtype'            => $itemtype,
             'normalized_itemtype' => $normalized_itemtype,
-            'criteria' => $p['criteria'],
-            'p' => $p,
-            'linked' => $linked,
+            'criteria'            => $p['criteria'],
+            'p'                   => $p,
+            'linked'              => $linked,
         ]);
     }
 
