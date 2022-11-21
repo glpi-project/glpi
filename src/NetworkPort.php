@@ -654,6 +654,15 @@ class NetworkPort extends CommonDBChild
         $itemtype = $item->getType();
         $items_id = $item->getField('id');
 
+        //from dynamic asset, deleted items are displayed from lock tab
+        //from manual asset, deleted items are always displayed (with is_deleted column)
+        $deleted_criteria = [];
+        if ($item->isDynamic()) {
+            $deleted_criteria = [
+                "is_deleted" => 0
+            ];
+        }
+
         if (
             !NetworkEquipment::canView()
             || !$item->can($items_id, READ)
@@ -704,7 +713,7 @@ class NetworkPort extends CommonDBChild
                         ['name' => null]
                     ]
                 ]
-            ]
+            ] + $deleted_criteria
         ];
 
         $ports_iterator = $DB->request($criteria);
@@ -880,7 +889,7 @@ class NetworkPort extends CommonDBChild
                 'items_id'  => $item->getID(),
                 'itemtype'  => $item->getType(),
                 'name'      => 'Management'
-            ]
+            ] + $deleted_criteria
         ];
 
         $mports_iterator = $DB->request($criteria);
@@ -975,6 +984,9 @@ class NetworkPort extends CommonDBChild
             foreach ($so as $option) {
                 if ($option['id'] == $dpref) {
                     switch ($dpref) {
+                        case 6:
+                            $output .= Dropdown::getYesNo($port['is_deleted']);
+                            break;
                         case 1:
                             if ($agg === true) {
                                 $td_class = 'aggregated';
@@ -1529,6 +1541,15 @@ class NetworkPort extends CommonDBChild
             'name'               => NetworkPortType::getTypeName(1),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'networkport_instantiations',
+            'massiveaction'      => false
+        ];
+
+        $tab[] = [
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'is_deleted',
+            'name'               => __('Deleted'),
+            'datatype'           => 'bool',
             'massiveaction'      => false
         ];
 
