@@ -41,4 +41,9 @@ class ChangeSatisfaction extends CommonITILSatisfaction
     {
         return "_change";
     }
+
+    public static function getSearchOptionIDOffset(): int
+    {
+        return 200;
+    }
 }

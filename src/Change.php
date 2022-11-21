@@ -721,7 +721,7 @@ class Change extends CommonITILObject
 
         $tab = array_merge($tab, ChangeValidation::rawSearchOptionsToAdd());
 
-        $tab = array_merge($tab, CommonITILSatisfaction::rawSearchOptionsToAdd('glpi_changesatisfactions', 200));
+        $tab = array_merge($tab, ChangeSatisfaction::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd());
 

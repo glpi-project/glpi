@@ -3109,7 +3109,7 @@ JAVASCRIPT;
         }
         $tab = array_merge($tab, $validation_options);
 
-        $tab = array_merge($tab, CommonITILSatisfaction::rawSearchOptionsToAdd('glpi_ticketsatisfactions'));
+        $tab = array_merge($tab, TicketSatisfaction::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd());
 

@@ -41,4 +41,9 @@ class TicketSatisfaction extends CommonITILSatisfaction
     {
         return "";
     }
+
+    public static function getSearchOptionIDOffset(): int
+    {
+        return 0;
+    }
 }

@@ -49,6 +49,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     public const TYPE_EXTERNAL = 2;
 
     abstract public static function getConfigSufix(): string;
+    abstract public static function getSearchOptionIDOffset(): int;
 
     public static function getTypeName($nb = 0)
     {
@@ -354,8 +355,11 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return $itemtype::getFormURLWithID($satisfaction->fields[$itemtype::getForeignKeyField()]) . '&forcetab=' . $itemtype::getType() . '$3';
     }
 
-    public static function rawSearchOptionsToAdd(string $table, $base_id = 0)
+    public static function rawSearchOptionsToAdd()
     {
+        $base_id = static::getSearchOptionIDOffset();
+        $table = static::getTable();
+
         $tab[] = [
             'id'                 => 'satisfaction',
             'name'               => __('Satisfaction survey')
