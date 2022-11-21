@@ -1479,14 +1479,55 @@ class NetworkPort extends CommonDBChild
     public function getSpecificMassiveActions($checkitem = null)
     {
 
+        var_dump($checkitem);
         $isadmin = $checkitem !== null && $checkitem->canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
+
+        //add purge action if main item is not dynamic
+        //NetworkPort delete / purge are handled a different way on dynamic asset (lock)
+        if (!$checkitem->isDynamic()) {
+            $actions['NetworkPort' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge']    = __('Delete permanently');
+        }
+
         if ($isadmin) {
             $vlan_prefix                    = 'NetworkPort_Vlan' . MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$vlan_prefix . 'add']    = __('Associate a VLAN');
             $actions[$vlan_prefix . 'remove'] = __('Dissociate a VLAN');
         }
         return $actions;
+    }
+
+
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+        switch ($ma->getAction()) {
+            case 'purge':
+                foreach ($ids as $id) {
+                    if ($item->can($id, PURGE)) {
+                        // Only mark deletion for
+                        if (!$item->isDeleted()) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage(sprintf(__('%1$s: %2$s'), $item->getLink(), __('Item need to be deleted first')));
+                        } else {
+                            $delete_array = ['id' => $id];
+
+                            if ($item->delete($delete_array, true)) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    }
+                }
+                return;
+        }
     }
 
 
