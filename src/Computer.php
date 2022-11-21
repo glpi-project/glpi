@@ -196,7 +196,6 @@ class Computer extends CommonDBTM
 
         if (count($changes)) {
             //propage is_dynamic value if needed to prevent locked fields
-            //check from $this->input instaed of $input['is_dynamic'] which contain reloadded data from DB
             if (isset($this->input['is_dynamic'])) {
                 $changes['is_dynamic'] = $this->input['is_dynamic'];
             }
