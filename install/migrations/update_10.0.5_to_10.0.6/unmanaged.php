@@ -146,7 +146,7 @@ foreach ($rules as $rule) {
     }
 
     //create rule
-    $stmt = $DB->prepare($DB->buildInsert(
+    $DB->queryOrDie($DB->buildInsert(
         "glpi_rules",
         [
             'is_active' => $input['is_active'],
@@ -156,26 +156,12 @@ foreach ($rules as $rule) {
             'uuid'      => $input['uuid'],
             'ranking'   => $input['ranking'],
         ]
-    ));
-
-    if (false === $stmt) {
-        $msg = "Error preparing statement in table glpi_rules";
-        throw new \RuntimeException($msg);
-    }
-
-    $res = $stmt->execute();
-    if (false === $res) {
-        $msg = $stmt->error;
-        $msg .= "\nError execution statement in table glpi_rules\n";
-        $msg .= print_r($row, true);
-        throw new \RuntimeException($msg);
-    }
-
+    ), "10.0.0.6 add Unmanaged RuleIMportAsset");
     $rule_id = $DB->insertId();
 
     // Add criteria
     foreach ($rule['criteria'] as $criteria) {
-        $stmt = $DB->prepare($DB->buildInsert(
+        $DB->queryOrDie($DB->buildInsert(
             "glpi_rulecriterias",
             [
                 'rules_id'  => $rule_id,
@@ -184,24 +170,11 @@ foreach ($rules as $rule) {
                 'pattern'   => $criteria['pattern'],
             ]
         ));
-
-        if (false === $stmt) {
-            $msg = "Error preparing statement in table glpi_rulecriterias";
-            throw new \RuntimeException($msg);
-        }
-
-        $res = $stmt->execute();
-        if (false === $res) {
-            $msg = $stmt->error;
-            $msg .= "\nError execution statement in table glpi_rulecriterias\n";
-            $msg .= print_r($row, true);
-            throw new \RuntimeException($msg);
-        }
     }
 
     // Add action
     foreach ($rule['action'] as $action) {
-        $stmt = $DB->prepare($DB->buildInsert(
+        $DB->queryOrDie($DB->buildInsert(
             "glpi_ruleactions",
             [
                 'rules_id'      => $rule_id,
@@ -210,21 +183,7 @@ foreach ($rules as $rule) {
                 'value'         => $action['value'],
             ]
         ));
-
-        if (false === $stmt) {
-            $msg = "Error preparing statement in table glpi_rulecriterias";
-            throw new \RuntimeException($msg);
-        }
-
-        $res = $stmt->execute();
-        if (false === $res) {
-            $msg = $stmt->error;
-            $msg .= "\nError execution statement in table glpi_rulecriterias\n";
-            $msg .= print_r($row, true);
-            throw new \RuntimeException($msg);
-        }
     }
-
 
     $ranking++;
 }
