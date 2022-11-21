@@ -36,6 +36,11 @@
 namespace tests\units\Glpi\Inventory;
 
 use InventoryTestCase;
+use Item_OperatingSystem;
+use OperatingSystem;
+use OperatingSystemArchitecture;
+use OperatingSystemServicePack;
+use OperatingSystemVersion;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends InventoryTestCase
@@ -5443,5 +5448,389 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $manufacturer = new \Manufacturer();
         $this->boolean($manufacturer->getFromDB($computer->fields['manufacturers_id']))->isTrue();
         $this->string($manufacturer->fields['name'])->isIdenticalTo('Dictionary manufacturer');
+    }
+
+    public function testDictionnaryOperatingSystem()
+    {
+        global $DB;
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //check OS
+        $item_operating = new Item_OperatingSystem();
+        $this->boolean(
+            $item_operating->getFromDBByCrit([
+                "itemtype" => 'Computer',
+                "items_id" => $agent['items_id'],
+            ])
+        )->isTrue();
+
+        $operating_system = new OperatingSystem();
+        $this->boolean(
+            $operating_system->getFromDB($item_operating->fields['operatingsystems_id'])
+        )->isTrue();
+
+        $this->string($operating_system->fields['name'])->isEqualTo("Fedora 31 (Workstation Edition)");
+
+        //create rule dictionnary operating system
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+
+        $rules_id = $rule->add(['name' => 'Set specific operatingSystem',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => 'RuleDictionnaryOperatingSystem',
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => ''
+        ]);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $this->integer(
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'name',
+                'condition' => \Rule::PATTERN_CONTAIN,
+                'pattern' => 'Fedora 31'
+            ])
+        )->isGreaterThan(0);
+
+        $this->integer(
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => 'name',
+                'value' => 'Ubuntu'
+            ])
+        )->isGreaterThan(0);
+
+        //redo an inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check updated computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //check OS
+        $item_operating = new Item_OperatingSystem();
+        $this->boolean(
+            $item_operating->getFromDBByCrit([
+                "itemtype" => 'Computer',
+                "items_id" => $agent['items_id'],
+            ])
+        )->isTrue();
+
+        $operating_system = new OperatingSystem();
+        $this->boolean(
+            $operating_system->getFromDB($item_operating->fields['operatingsystems_id'])
+        )->isTrue();
+
+        $this->string($operating_system->fields['name'])->isEqualTo("Ubuntu");
+    }
+
+    public function testDictionnaryOperatingSystemVersion()
+    {
+        global $DB;
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //check OS
+        $item_operating = new Item_OperatingSystem();
+        $this->boolean(
+            $item_operating->getFromDBByCrit([
+                "itemtype" => 'Computer',
+                "items_id" => $agent['items_id'],
+            ])
+        )->isTrue();
+
+        $operating_system_version = new OperatingSystemVersion();
+        $this->boolean(
+            $operating_system_version->getFromDB($item_operating->fields['operatingsystemversions_id'])
+        )->isTrue();
+
+        //check if is original value
+        $this->string($operating_system_version->fields['name'])->isEqualTo("31 (Workstation Edition)");
+
+        //create rule dictionnary operating system
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+
+        $rules_id = $rule->add(['name' => 'Set specific operatingSystem version',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => 'RuleDictionnaryOperatingSystemVersion',
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => ''
+        ]);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $this->integer(
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'name',
+                'condition' => \Rule::PATTERN_CONTAIN,
+                'pattern' => '31 (Workstation Edition)'
+            ])
+        )->isGreaterThan(0);
+
+        $this->integer(
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => 'name',
+                'value' => 'New version'
+            ])
+        )->isGreaterThan(0);
+
+        //redo an inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check updated computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //check OS
+        $item_operating = new Item_OperatingSystem();
+        $this->boolean(
+            $item_operating->getFromDBByCrit([
+                "itemtype" => 'Computer',
+                "items_id" => $agent['items_id'],
+            ])
+        )->isTrue();
+
+        $operating_system_version = new OperatingSystemVersion();
+        $this->boolean(
+            $operating_system_version->getFromDB($item_operating->fields['operatingsystemversions_id'])
+        )->isTrue();
+
+        //check if is specific value
+        $this->string($operating_system_version->fields['name'])->isEqualTo("New version");
+    }
+
+    public function testDictionnaryOperatingSystemArchitecture()
+    {
+        global $DB;
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //check OS
+        $item_operating = new Item_OperatingSystem();
+        $this->boolean(
+            $item_operating->getFromDBByCrit([
+                "itemtype" => 'Computer',
+                "items_id" => $agent['items_id'],
+            ])
+        )->isTrue();
+
+        $operating_arch = new OperatingSystemArchitecture();
+        $this->boolean(
+            $operating_arch->getFromDB($item_operating->fields['operatingsystemarchitectures_id'])
+        )->isTrue();
+        //check if is original value
+        $this->string($operating_arch->fields['name'])->isEqualTo("x86_64");
+
+        //create rule dictionnary operating system
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+
+        $rules_id = $rule->add(['name' => 'Set specific operatingSystem arch',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => 'RuleDictionnaryOperatingSystemArchitecture',
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => ''
+        ]);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $this->integer(
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'name',
+                'condition' => \Rule::PATTERN_CONTAIN,
+                'pattern' => 'x86_64'
+            ])
+        )->isGreaterThan(0);
+
+        $this->integer(
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => 'name',
+                'value' => 'New arch'
+            ])
+        )->isGreaterThan(0);
+
+        //redo an inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check updated computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //check OS
+        $item_operating = new Item_OperatingSystem();
+        $this->boolean(
+            $item_operating->getFromDBByCrit([
+                "itemtype" => 'Computer',
+                "items_id" => $agent['items_id'],
+            ])
+        )->isTrue();
+
+        $operating_arch = new OperatingSystemArchitecture();
+        $this->boolean(
+            $operating_arch->getFromDB($item_operating->fields['operatingsystemarchitectures_id'])
+        )->isTrue();
+
+        //check if is specific value
+        $this->string($operating_arch->fields['name'])->isEqualTo("New arch");
+    }
+
+    public function testDictionnaryOperatingSystemServicePack()
+    {
+        global $DB;
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //check OS
+        $item_operating = new Item_OperatingSystem();
+        $this->boolean(
+            $item_operating->getFromDBByCrit([
+                "itemtype" => 'Computer',
+                "items_id" => $agent['items_id'],
+            ])
+        )->isTrue();
+
+        //No service pack from linux (normal)
+        $this->integer($item_operating->fields['operatingsystemservicepacks_id'])->isEqualto(0);
+
+        //create rule dictionnary operating system
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+
+        $rules_id = $rule->add(['name' => 'Set specific operatingSystem service pack',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => 'RuleDictionnaryOperatingSystemServicePack',
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => ''
+        ]);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria on os_name
+        $this->integer(
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'os_name',
+                'condition' => \Rule::PATTERN_CONTAIN,
+                'pattern' => 'Fedora 31'
+            ])
+        )->isGreaterThan(0);
+
+        $this->integer(
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => 'name',
+                'value' => 'New service_pack'
+            ])
+        )->isGreaterThan(0);
+
+        //redo an inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check updated computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //check OS
+        $item_operating = new Item_OperatingSystem();
+        $this->boolean(
+            $item_operating->getFromDBByCrit([
+                "itemtype" => 'Computer',
+                "items_id" => $agent['items_id'],
+            ])
+        )->isTrue();
+
+        $operating_service_pack = new OperatingSystemServicePack();
+        $this->boolean(
+            $operating_service_pack->getFromDB($item_operating->fields['operatingsystemservicepacks_id'])
+        )->isTrue();
+        //check if is specific value
+        $this->string($operating_service_pack->fields['name'])->isEqualTo("New service_pack");
     }
 }

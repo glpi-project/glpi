@@ -108,6 +108,74 @@ class RuleLocation extends DbTestCase
         $this->array($location_data)->isEqualTo($expected);
     }
 
+    public function testActionRegex()
+    {
+        $this->login();
+
+        $location = new \Location();
+        $locations_id = $location->add([
+            'name' => 'Location 1',
+        ]);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'location rule 1',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleLocation',
+            'ranking'   => 1
+        ];
+        $rules_id = $rule->add($input);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rules_id,
+            'criteria'  => "tag",
+            'pattern'   => " /(.*)/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->integer($rulecriteria->add($input))->isGreaterThan(0);
+
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => 'regex_result',
+            'field'       => 'locations_id',
+            'value'       => '#0'
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+
+        //test with existing location
+        $input = [
+            'tag' => 'Location 1',
+        ];
+
+        $ruleLocation = new \RuleLocationCollection();
+        $ruleLocation->getCollectionPart();
+        $location_data = $ruleLocation->processAllRules($input, []);
+
+        $expected = [
+            'locations_id' => $locations_id,
+            '_ruleid'      => $rules_id
+        ];
+        $this->array($location_data)->isEqualTo($expected);
+
+        //test with non existing location
+        $input = [
+            'tag' => 'testtag2',
+        ];
+        $location_data = $ruleLocation->processAllRules($input, []);
+
+
+        $this->array($location_data)->hasKey('locations_id');
+        $this->integer((int)$location_data['locations_id'])->isGreaterThan(0);
+        $this->integer((int)$location_data['locations_id'])->isNotEqualTo($locations_id);
+        $this->array($location_data)->hasKey('_ruleid');
+        $this->integer((int)$location_data['_ruleid'])->isGreaterThan(0);
+    }
+
 
     public function testIPCIDR()
     {

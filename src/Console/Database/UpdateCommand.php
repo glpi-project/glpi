@@ -40,6 +40,7 @@ use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
+use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use Migration;
 use Session;
@@ -304,12 +305,8 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             return $raw_version;
         }
 
-        $schema_path = sprintf(
-            '%s/install/mysql/glpi-%s-empty.sql',
-            GLPI_ROOT,
-            VersionParser::getNormalizedVersion($version_cleaned, false) // strip stability flag
-        );
-        if (file_exists($schema_path) && $version_hash !== sha1_file($schema_path)) {
+        $schema_path = DatabaseSchema::getEmptySchemaPath($version_cleaned);
+        if ($schema_path === null || $version_hash !== sha1_file($schema_path)) {
             // Version hash does not match schema file sha1. Installation was probably made from a specific commit
             // or a nightly build.
             // Keep hash for debug purpose.

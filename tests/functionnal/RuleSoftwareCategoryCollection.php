@@ -96,7 +96,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase
 
         $rules = getAllDataFromTable(
             'glpi_rules',
-            ['uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425']
+            ['uuid' => 'glpi_rule_rule_software_category_import_category_from_inventory_tool']
         );
         $this->array($rules)->hasSize(1);
 

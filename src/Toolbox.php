@@ -2348,8 +2348,7 @@ class Toolbox
        // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
         $DB = $database;
 
-        $normalized_nersion = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-%s-empty.sql', GLPI_ROOT, $normalized_nersion))) {
+        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
             echo "Errors occurred inserting default database";
         } else {
            //dataset
@@ -2397,8 +2396,11 @@ class Toolbox
                 }
             }
 
-           //rules
+            //rules
             RuleImportAsset::initRules();
+            RuleDictionnaryOperatingSystemVersion::initRules();
+            RuleDictionnaryOperatingSystemEdition::initRules();
+            RuleDictionnaryOperatingSystem::initRules();
 
            // update default language
             Config::setConfigurationValues(

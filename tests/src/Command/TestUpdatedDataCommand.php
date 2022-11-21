@@ -221,6 +221,7 @@ class TestUpdatedDataCommand extends Command
          // Rules are not automatically updated
             'glpi_rules',
             'glpi_rulecriterias',
+            'glpi_ruleactions',
         ];
     }
 

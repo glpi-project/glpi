@@ -403,15 +403,41 @@
 {% endmacro %}
 
 {% macro passwordField(name, value, label = '', options = {}) %}
-   {% set options = {'autocomplete': 'new-password'}|merge(options) %}
+   {% set options = {
+      'autocomplete': 'new-password',
+      'is_disclosable': false,
+      'rand': options.rand ?? random()
+   }|merge(options) %}
+   {% set options = {
+      'id': options.id is defined ? options.id : name ~ random(),
+      'clearable': options.clearable is defined ? options.clearable : not options.is_disclosable,
+   }|merge(options) %}
+
    {% set field %}
-      <input type="password" id="%id%"
+      <input type="password" id="{{ options.id }}"
              class="form-control"
              name="{{ name }}"
+             value="{{ options.is_disclosable ? value : '' }}"
          {{ options.readonly ? 'readonly' : '' }}
          {{ options.disabled ? 'disabled' : '' }}
          {{ options.required ? 'required' : '' }} />
    {% endset %}
+   {% set btn_group %}
+      &nbsp;<i class="far fa-eye pointer disclose" onmousedown="showDisclosablePasswordField('{{ options.id }}')"
+               onmouseup="hideDisclosablePasswordField('{{ options.id }}')"
+               onmouseout="hideDisclosablePasswordField('{{ options.id }}')"></i>
+      &nbsp;<i class="fa fa-paste pointer disclose" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id }}')"></i>
+   {% endset %}
+   {% if options.is_disclosable %}
+      {% set label = label ~ btn_group %}
+   {% endif %}
+   {% if options.clearable %}
+      {% set clear_chk %}
+         <input type="checkbox" name="_blank_{{ name }}" id="_blank_{{ name }}">&nbsp;<label for="_blank_{{ name }}">{{ __('Clear') }}</label>
+      {% endset %}
+      {% set field = field ~ clear_chk %}
+   {% endif %}
+
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 

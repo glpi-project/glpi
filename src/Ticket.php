@@ -1632,7 +1632,6 @@ class Ticket extends CommonITILObject
            // Read again ticket to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent($mailtype, $this);
-            $this->input['_disablenotif'] = true;
         }
 
         $this->handleSatisfactionSurveyOnUpdate();

@@ -388,7 +388,12 @@ function loadDataset()
                 'comment'      => 'Comment for location _sublocation04',
                 'code'         => 'code_sublocation04',
                 'alias'        => 'alias_sublocation04'
-            ]
+            ],
+            [
+                'name'         => '_location01_subentity',
+                'entities_id'  => '_test_root_entity',
+                'comment'      => 'Comment for location _location01_subentity'
+            ],
         ], Socket::class => [
             [
                 'name'         => '_socket01',

@@ -60,6 +60,10 @@ class Processor extends Device
             if (property_exists($val, 'frequency')) {
                 $val->frequency_default = $val->frequency;
                 $val->frequence = $val->frequency;
+            } else {
+                $val->frequency_default = 0;
+                $val->frequency = 0;
+                $val->frequence = 0;
             }
             if (property_exists($val, 'type')) {
                 $val->designation = $val->type;

@@ -53,6 +53,10 @@ class NotificationTemplateTranslation extends CommonDBChild
         return _n('Template translation', 'Template translations', $nb);
     }
 
+    public static function getNameField()
+    {
+        return 'id';
+    }
 
     /**
      * @since 0.84
@@ -296,6 +300,32 @@ class NotificationTemplateTranslation extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
         return parent::prepareInputForUpdate(self::cleanContentHtml($input));
+    }
+
+
+    public function post_addItem($history = 1)
+    {
+        // Handle rich-text images and uploaded documents
+        $this->input = $this->addFiles($this->input, [
+            'force_update' => true,
+            'name' => 'content_html',
+            'content_field' => 'content_html'
+        ]);
+
+        parent::post_addItem($history);
+    }
+
+
+    public function post_updateItem($history = 1)
+    {
+        // Handle rich-text images and uploaded documents
+        $this->input = $this->addFiles($this->input, [
+            'force_update' => true,
+            'name' => 'content_html',
+            'content_field' => 'content_html'
+        ]);
+
+        parent::post_updateItem($history);
     }
 
 

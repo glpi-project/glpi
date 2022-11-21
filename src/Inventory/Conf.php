@@ -85,6 +85,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
  * @property int $component_battery
  * @property int $component_simcard
  * @property int $states_id_default
+ * @property int $entities_id_default
  * @property int $location
  * @property int $group
  * @property int $vm_type
@@ -124,6 +125,7 @@ class Conf extends CommonGLPI
         'component_battery'              => 1,
         'component_simcard'              => 1,
         'states_id_default'              => 0,
+        'entities_id_default'            => 0,
         'location'                       => 0,
         'group'                          => 0,
         'vm_type'                        => 0,
@@ -537,6 +539,25 @@ class Conf extends CommonGLPI
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
+
+        echo "<td>";
+        echo "<label for='dropdown_entities_id_id_default$rand'>";
+        echo __('Default entity');
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+
+        \Dropdown::show(
+            'Entity',
+            [
+                'name'   => 'entities_id_default',
+                'id'     => 'entities_id_default',
+                'value'  => $config['entities_id_default'] ?? 0,
+                'rand' => $rand
+            ]
+        );
+        echo "</td>";
+
         echo "<td>";
         echo "<label for='import_monitor_on_partial_sn'>";
         echo __('Import monitor on serial partial match');

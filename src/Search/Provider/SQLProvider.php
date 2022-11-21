@@ -501,7 +501,7 @@ final class SQLProvider implements SearchProviderInterface
                             '" . \Search::SHORTSEP . "',
                             $tocomputeid
                         ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
-                    ) AS `" . $NAME . "_trans_" . $field . "`, 
+                    ) AS `" . $NAME . "_trans_" . $field . "`,
                 ";
             }
             $SELECT = [
@@ -3416,6 +3416,7 @@ final class SQLProvider implements SearchProviderInterface
 
         $data['sql']['count']  = [];
         $data['sql']['search'] = '';
+        $data['sql']['raw']    = [];
 
         $searchopt        = SearchOption::getOptionsForItemtype($data['itemtype']);
 
@@ -3829,6 +3830,15 @@ final class SQLProvider implements SearchProviderInterface
             $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']] . ".", "", $ORDER) .
                 $LIMIT;
         } else {
+            $data['sql']['raw'] = [
+                'SELECT' => $SELECT,
+                'FROM' => $FROM,
+                'WHERE' => $WHERE,
+                'GROUPBY' => $GROUPBY,
+                'HAVING' => $HAVING,
+                'ORDER' => $ORDER,
+                'LIMIT' => $LIMIT
+            ];
             $QUERY = $SELECT .
                 $FROM .
                 $WHERE .

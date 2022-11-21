@@ -2019,6 +2019,7 @@ class User extends CommonDBTM
        //Only retrive cn and member attributes from groups
         $attrs = ['dn'];
 
+        $group_condition = Sanitizer::unsanitize($group_condition);
         if (!$use_dn) {
             $filter = "(& $group_condition (|($group_member_field=$user_dn)
                                           ($group_member_field=$login_field=$user_dn)))";
@@ -2027,7 +2028,6 @@ class User extends CommonDBTM
         }
 
        //Perform the search
-        $filter = Sanitizer::unsanitize($filter);
         $sr     = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
        //Get the result of the search as an array
@@ -5130,7 +5130,6 @@ JAVASCRIPT;
             'is_deleted_ldap' => 1,
         ];
         $myuser = new self();
-        $myuser->getFromDB($users_id);
 
         switch ($CFG_GLPI['user_deleted_ldap']) {
            //DO nothing
@@ -5626,7 +5625,7 @@ JAVASCRIPT;
         // Check that the configuration allow this user to change his password
         if ($this->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
             trigger_error(
-                __("The authentication method configuration doesn't allow the user '$email' to change his password."),
+                __("The authentication method configuration doesn't allow the user '$email' to change their password."),
                 E_USER_WARNING
             );
 

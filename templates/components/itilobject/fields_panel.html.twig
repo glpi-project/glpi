@@ -212,7 +212,9 @@
                   item.fields['locations_id'],
                   'Location'|itemtype_name,
                   field_options|merge({
-                     'hide_if_no_elements': true
+                     'hide_if_no_elements': true,
+                     'entity': item.fields['entities_id'],
+                     'entity_sons': true
                   })
                ) }}
             {% endif %}

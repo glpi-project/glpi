@@ -200,6 +200,11 @@ class Computer extends CommonDBTM
         }
 
         if (count($changes)) {
+            //propage is_dynamic value if needed to prevent locked fields
+            if (isset($input['is_dynamic'])) {
+                $changes['is_dynamic'] = $input['is_dynamic'];
+            }
+
             $update_done = false;
 
            // Propagates the changes to linked items

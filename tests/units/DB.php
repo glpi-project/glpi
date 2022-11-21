@@ -144,13 +144,13 @@ class DB extends \GLPITestCase
                     'other'  => new \QueryParam()
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
-            ], [
+            ]/*, [
                 'table', [
                     'field'  => new \QueryParam('field'),
                     'other'  => new \QueryParam('other')
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (:field, :other)'
-            ]
+            ]*/ //mysqli does not support named parameters
         ];
     }
 
@@ -202,14 +202,14 @@ class DB extends \GLPITestCase
                 [],
                 'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
             ], [
-                'table', [
+                /*'table', [
                     'field'  => new \QueryParam('field')
                 ], [
                     'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
                 ],
                 [],
                 'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
-            ], [
+            ], [*/
                 'table', [
                     'field'  => new \QueryExpression(\DBmysql::quoteName('field') . ' + 1')
                 ], [
@@ -306,12 +306,12 @@ class DB extends \GLPITestCase
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))'
             ], [
-                'table', [
+                /*'table', [
                     'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
                 ],
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
-            ], [
+            ], [*/
                 'table', [
                     'id'  => 1
                 ],

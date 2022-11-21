@@ -1213,7 +1213,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->array($inventory->getErrors())->isIdenticalTo([]);
 
         // check port
-        $this->boolean($networkPort->getFromDBByCrit(['name' => 'port28']));
+        $this->boolean($networkPort->getFromDBByCrit(['name' => 'port28']))->isTrue();
         $this->boolean($networkPort_NetworkPort->getFromDBForNetworkPort($networkPort->fields['id']))->isTrue();
     }
 

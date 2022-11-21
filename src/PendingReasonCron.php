@@ -161,6 +161,7 @@ class PendingReasonCron extends CommonDBTM
                     'is_private' => $fup_template->fields['is_private'],
                     'requesttypes_id' => $fup_template->fields['requesttypes_id'],
                     'timeline_position' => CommonITILObject::TIMELINE_RIGHT,
+                    '_no_reopen' => 1,
                 ]);
                 $task->addVolume(1);
             } else if ($resolve && $now > $resolve) {

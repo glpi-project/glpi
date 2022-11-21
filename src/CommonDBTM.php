@@ -1752,7 +1752,12 @@ class CommonDBTM extends CommonGLPI
      */
     protected function cleanLockeds()
     {
-        if ($this->isDynamic() && (in_array('is_dynamic', $this->updates) || isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true)) {
+        if (
+            !isset($this->input['_transfer']) //do not managed lock from transfer
+            && $this->isDynamic()
+            && (in_array('is_dynamic', $this->updates) || isset($this->input['is_dynamic'])
+            && $this->input['is_dynamic'] == true)
+        ) {
             $lockedfield = new Lockedfield();
             $locks = $lockedfield->getLockedNames($this->getType(), $this->fields['id']);
             foreach ($locks as $lock) {
@@ -1779,7 +1784,11 @@ class CommonDBTM extends CommonGLPI
         global $DB;
 
         $lockedfield = new Lockedfield();
-        if ($lockedfield->isHandled($this) && (!isset($this->input['is_dynamic']) || $this->input['is_dynamic'] == false)) {
+        if (
+            !isset($this->input['_transfer']) //do not managed lock from transfer
+            && $lockedfield->isHandled($this)
+            && (!isset($this->input['is_dynamic']) || $this->input['is_dynamic'] == false)
+        ) {
             $fields = array_values($this->updates);
             $idx = array_search('date_mod', $fields);
             if ($idx !== false) {
@@ -3706,7 +3715,11 @@ class CommonDBTM extends CommonGLPI
 
         if (
             $p['forceid']
-            || $_SESSION['glpiis_ids_visible']
+            ||
+            (
+                isset($_SESSION['glpiis_ids_visible'])
+                && $_SESSION['glpiis_ids_visible']
+            )
         ) {
             $addcomment = $p['comments'];
 

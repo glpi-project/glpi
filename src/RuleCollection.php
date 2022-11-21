@@ -640,10 +640,10 @@ JAVASCRIPT;
 
        //if rules provides an initRules method, then we're able to reset them
         if (method_exists($this->getRuleClass(), 'initRules')) {
-            echo "<a class='btn btn-primary' id='reset_rules' href='" . $rule->getSearchURL() . "?reinit=true' " .
-            //does not work.
-            //"onClick='if(confirm(\"" . __s('All rules will be erased and recreated from scratch. Are you sure?')."\")) { return true } else { return false; };' " .
-            "title='" . __s("Remove all equipment import rules and recreate from defaults") . "'" .
+            echo "<a class='btn btn-primary' id='reset_rules' href='" . $rule->getSearchURL() . "?reinit=true&subtype=" . $this->getRuleClassName() . "' " .
+            "onClick='if(confirm(\"" . __s('Rules will be erased and recreated from default. Are you sure?') . "\"))
+            { return true } else { return false; };' " .
+            "title='" . __s("Delete all rules and recreate them by default") . "'" .
             ">" . __('Reset rules') . "</a>&nbsp;";
         }
         echo "<a class='btn btn-primary' href='#' data-bs-toggle='modal' data-bs-target='#allruletest$rand'>" .

@@ -35,6 +35,7 @@
 
 namespace Glpi\Features;
 
+use CommonDBTM;
 use CommonITILObject;
 use CommonTreeDropdown;
 use DropdownTranslation;
@@ -168,7 +169,7 @@ JAVASCRIPT;
     /**
      * Get list of document categories in fancytree format.
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param array $params
      *
      * @return array
@@ -177,6 +178,7 @@ JAVASCRIPT;
     {
         global $DB;
 
+        /** @var class-string<CommonDBTM> $cat_itemtype */
         $cat_itemtype = static::getCategoryItemType($itemtype);
         $cat_item     = new $cat_itemtype();
 
@@ -184,10 +186,16 @@ JAVASCRIPT;
 
         $data = Search::prepareDatasForSearch($itemtype, $params);
         Search::constructSQL($data);
-        $ids = [0];
-        foreach ($DB->query($data['sql']['search']) as $row) {
-            $ids[] = $row['id'];
-        }
+        // This query is used to get the IDs of all results matching the search criteria
+        $sql = $data['sql']['search'];
+        // We can remove all the SELECT fields and replace it with just the ID field
+        $raw_select = $data['sql']['raw']['SELECT'];
+        $replacement_select = 'SELECT DISTINCT ' . $itemtype::getTableField('id');
+        $sql = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
+        // Remove GROUP BY and ORDER BY clauses
+        $sql = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql);
+
+        $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql . ') AS id_criteria )');
 
         $cat_table = $cat_itemtype::getTable();
         $cat_fk    = $cat_itemtype::getForeignKeyField();
@@ -209,14 +217,14 @@ JAVASCRIPT;
 
         $items_subquery = new QuerySubQuery(
             [
-                'SELECT' => ['COUNT DISTINCT' => $itemtype::getTableField('id') . ' as cpt'],
+                'SELECT' => ['COUNT DISTINCT' => $itemtype::getTableField('id') . ' AS cpt'],
                 'FROM'   => $itemtype::getTable(),
                 'LEFT JOIN' => $join,
                 'WHERE'  => [
                     $cat_join::getTableField($cat_fk) => new QueryExpression(
                         $DB->quoteName($cat_itemtype::getTableField('id'))
                     ),
-                    $itemtype::getTableField('id') => $ids,
+                    $id_criteria
                 ]
             ],
             'items_count'
@@ -271,7 +279,7 @@ JAVASCRIPT;
                 'LEFT JOIN' => $join,
                 'WHERE'  => [
                     $cat_itemtype::getTableField('id') => null,
-                    $itemtype::getTableField('id') => $ids,
+                    $id_criteria,
                 ]
             ]
         )->current();

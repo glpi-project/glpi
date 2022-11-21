@@ -389,7 +389,7 @@ $stat_params = [
     'itemtype' => $_GET['itemtype'],
     'date1'    => $_GET['date1'],
     'date2'    => $_GET['date2'],
-    'type'     => $_GET['$type'],
+    'type'     => $_GET['type'],
     'val1'     => $val1,
     'val2'     => $val2,
 ];

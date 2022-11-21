@@ -50,6 +50,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
     {
         if (
             $itemtype === Ticket::class
+            && \Session::getCurrentInterface() === 'central'
             && $default = Grid::getDefaultDashboardForMenu('mini_ticket', true)
         ) {
             $dashboard = new Grid($default, 33, 2);
