@@ -339,8 +339,9 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus'];
         $iterator = $DB->request([
-            'SELECT' => ['id', 'name', 'mac', 'instantiation_type', 'logical_number', 'ifstatus'],
+            'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
             'WHERE'  => [
                 'items_id'     => $this->items_id,
@@ -371,7 +372,7 @@ trait InventoryNetworkPort
         foreach ($ports as $key => $data) {
             foreach ($db_ports as $keydb => $datadb) {
                 $dbdata_copy = [];
-                foreach (['logical_number', 'ifstatus', 'instantiation_type'] as $k) {
+                foreach (array_merge(['instantiation_type'], $np_dyn_props) as $k) {
                     $dbdata_copy[$k] = $datadb[$k];
                     unset($datadb[$k]);
                 }
@@ -391,7 +392,7 @@ trait InventoryNetworkPort
                 }
 
                 $criteria = [];
-                foreach (['logical_number', 'ifstatus'] as $k) {
+                foreach ($np_dyn_props as $k) {
                     if (property_exists($data, $k) && $data->$k != $dbdata_copy[$k]) {
                         $criteria[$k] = $data->$k;
                     }
