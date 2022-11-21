@@ -429,6 +429,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child'
             ],
+            'additionalfields' => ['TABLE.entities_id'],
         ];
 
         $tab[] = [
