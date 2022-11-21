@@ -1478,8 +1478,6 @@ class NetworkPort extends CommonDBChild
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
-        var_dump($checkitem);
         $isadmin = $checkitem !== null && $checkitem->canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
