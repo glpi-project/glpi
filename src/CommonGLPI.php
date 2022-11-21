@@ -855,12 +855,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $cleaned_options = $options;
-        if (isset($cleaned_options['id'])) {
-            unset($cleaned_options['id']);
-        }
-        if (isset($cleaned_options['stock_image'])) {
-            unset($cleaned_options['stock_image']);
-        }
+        unset($cleaned_options['id'], $cleaned_options['stock_image']);
 
         $target         = $_SERVER['PHP_SELF'];
         $extraparamhtml = "";
