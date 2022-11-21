@@ -41,6 +41,7 @@ use Glpi\Console\Application;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\Sanitizer;
+use Glpi\Toolbox\URL;
 use ScssPhp\ScssPhp\Compiler;
 
 /**
@@ -1737,11 +1738,6 @@ HTML;
         ];
         $tpl_vars += self::getPageHeaderTplVars();
 
-        $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
-        $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'https://glpi-project.org/documentation/';
-
-        $tpl_vars['help_url'] = $help_url;
-
         TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
         if (
@@ -1999,11 +1995,6 @@ HTML;
         ];
         $tpl_vars += self::getPageHeaderTplVars();
 
-        $help_url_key = Session::getCurrentInterface() === 'central' ? 'central_doc_url' : 'helpdesk_doc_url';
-        $help_url = !empty($CFG_GLPI[$help_url_key]) ? $CFG_GLPI[$help_url_key] : 'http://glpi-project.org/help-central';
-
-        $tpl_vars['help_url'] = $help_url;
-
         TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
         // call static function callcron() every 5min
@@ -2036,12 +2027,20 @@ HTML;
             $platform = $ua->platform();
         }
 
+        $help_url_key = Session::getCurrentInterface() === 'central'
+            ? 'central_doc_url'
+            : 'helpdesk_doc_url';
+        $help_url = !empty($CFG_GLPI[$help_url_key])
+            ? $CFG_GLPI[$help_url_key]
+            : 'http://glpi-project.org/documentation';
+
         return [
             'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
             'is_impersonate_active' => Session::isImpersonateActive(),
             'founded_new_version'   => $founded_new_version,
             'user'                  => $user instanceof User ? $user : null,
             'platform'              => $platform,
+            'help_url'              => URL::sanitizeURL($help_url),
         ];
     }
 
