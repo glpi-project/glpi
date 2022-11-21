@@ -854,20 +854,24 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
+        $cleaned_options = $options;
+        unset($cleaned_options['id'], $cleaned_options['stock_image']);
+
         $target         = $_SERVER['PHP_SELF'];
         $extraparamhtml = "";
         $withtemplate   = "";
-        if (is_array($options) && count($options)) {
+
+        // TODO - There should be a better option than checking whether or not
+        // $options is empty.
+        // See:
+        //  - https://github.com/glpi-project/glpi/pull/12929
+        //  - https://github.com/glpi-project/glpi/pull/13101
+        //  - https://github.com/glpi-project/glpi/commit/1d27bf14d4527f748876dcd556f2b995a0bf7684
+        if (is_array($cleaned_options) && count($cleaned_options)) {
             if (isset($options['withtemplate'])) {
                 $withtemplate = $options['withtemplate'];
             }
-            $cleaned_options = $options;
-            if (isset($cleaned_options['id'])) {
-                unset($cleaned_options['id']);
-            }
-            if (isset($cleaned_options['stock_image'])) {
-                unset($cleaned_options['stock_image']);
-            }
+
             if ($this instanceof CommonITILObject && $this->isNewItem()) {
                 $this->input = $cleaned_options;
                 $this->saveInput();
