@@ -145,28 +145,86 @@ foreach ($rules as $rule) {
         continue;
     }
 
-    // Add rule
-    $query = "INSERT INTO `glpi_rules`
-    (`is_active`, `name`, `match`, `sub_type`, `uuid`, `ranking`)
-    VALUES (" . $input['is_active'] . ", '" . $input['name'] . "', '" . $input['match'] . "', '" . $input['sub_type'] . "', '" . $input['uuid'] . "', " . $input['ranking'] . ")";
-    $DB->queryOrDie($query, "10.0.0.6 add Unmanaged RuleIMportAsset");
+    //create rule
+    $stmt = $DB->prepare($DB->buildInsert(
+        "glpi_rules",
+        [
+            'is_active' => $input['is_active'],
+            'name'      => $input['name'],
+            'match'     => $input['match'],
+            'sub_type'  => $input['sub_type'],
+            'uuid'      => $input['uuid'],
+            'ranking'   => $input['ranking'],
+        ]
+    ));
+
+    if (false === $stmt) {
+        $msg = "Error preparing statement in table glpi_rules";
+        throw new \RuntimeException($msg);
+    }
+
+    $res = $stmt->execute();
+    if (false === $res) {
+        $msg = $stmt->error;
+        $msg .= "\nError execution statement in table glpi_rules\n";
+        $msg .= print_r($row, true);
+        throw new \RuntimeException($msg);
+    }
+
     $rule_id = $DB->insertId();
 
     // Add criteria
     foreach ($rule['criteria'] as $criteria) {
-        $query = "INSERT INTO `glpi_rulecriterias`
-        (`rules_id`, `criteria`, `condition`, `pattern`)
-        VALUES (" . $rule_id . ", '" . $criteria['criteria'] . "', '" . $criteria['condition'] . "', '" . $criteria['pattern'] . "')";
-        $DB->queryOrDie($query);
+        $stmt = $DB->prepare($DB->buildInsert(
+            "glpi_rulecriterias",
+            [
+                'rules_id'  => $rule_id,
+                'criteria'  => $criteria['criteria'],
+                'condition' => $criteria['condition'],
+                'pattern'   => $criteria['pattern'],
+            ]
+        ));
+
+        if (false === $stmt) {
+            $msg = "Error preparing statement in table glpi_rulecriterias";
+            throw new \RuntimeException($msg);
+        }
+
+        $res = $stmt->execute();
+        if (false === $res) {
+            $msg = $stmt->error;
+            $msg .= "\nError execution statement in table glpi_rulecriterias\n";
+            $msg .= print_r($row, true);
+            throw new \RuntimeException($msg);
+        }
     }
 
-    // Add actions
+    // Add action
     foreach ($rule['action'] as $action) {
-        $query = "INSERT INTO `glpi_ruleactions`
-        (`rules_id`, `action_type`, `field`, `value`)
-        VALUES (" . $rule_id . ", '" . $action['action_type'] . "', '" . $action['field'] . "', " . $action['value'] . ")";
-        $DB->queryOrDie($query);
+        $stmt = $DB->prepare($DB->buildInsert(
+            "glpi_ruleactions",
+            [
+                'rules_id'      => $rule_id,
+                'action_type'   => $action['action_type'],
+                'field'         => $action['field'],
+                'value'         => $action['value'],
+            ]
+        ));
+
+        if (false === $stmt) {
+            $msg = "Error preparing statement in table glpi_rulecriterias";
+            throw new \RuntimeException($msg);
+        }
+
+        $res = $stmt->execute();
+        if (false === $res) {
+            $msg = $stmt->error;
+            $msg .= "\nError execution statement in table glpi_rulecriterias\n";
+            $msg .= print_r($row, true);
+            throw new \RuntimeException($msg);
+        }
     }
+
 
     $ranking++;
 }
