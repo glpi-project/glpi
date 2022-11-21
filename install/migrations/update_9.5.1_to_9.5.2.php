@@ -48,8 +48,10 @@ function update951to952()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.5.2'));
     $migration->setVersion('9.5.2');
 
-   /* Fix document_item migration */
+    /* Fix document_item migration */
     $migration->displayTitle("Building inline images data in " . Document_Item::getTable());
+
+    $now = date('Y-m-d H:i:s');
 
     $itemtypes = [
         'ITILFollowup' => 'content',
@@ -65,7 +67,7 @@ function update951to952()
 
     $docs_input = [];
     foreach ($itemtypes as $itemtype => $field) {
-       // Check ticket and child items (followups, tasks, solutions) contents
+        // Check ticket and child items (followups, tasks, solutions) contents
         $regexPattern = 'document\\\.send\\\.php\\\?docid=[0-9]+';
         $user_field = is_a($itemtype, CommonITILObject::class, true) ? 'users_id_recipient' : 'users_id';
         $result = $DB->request([
@@ -77,6 +79,7 @@ function update951to952()
         ]);
 
         foreach ($result as $data) {
+            $matches = [];
             preg_match_all('/document\\.send\\.php\\?docid=([0-9]+)/', $data[$field], $matches);
 
             // No inline documents found in this item, skip to next
@@ -85,26 +88,49 @@ function update951to952()
             }
 
             foreach ($matches[1] as $docid) {
-                $docs_input[] = [
-                    'documents_id'       => $docid,
-                    'itemtype'           => $itemtype,
-                    'items_id'           => $data['id'],
-                    'timeline_position'  => CommonITILObject::NO_TIMELINE,
-                    'users_id'           => $data[$user_field],
-                    '_disablenotif'      => true, // prevent parent object "update" notification
-                    '_do_update_ticket'  => false
+                $document = $DB->request(
+                    [
+                        'SELECT' => ['entities_id'],
+                        'FROM'   => 'glpi_documents',
+                        'WHERE'  => [
+                            'id' => $docid,
+                        ]
+                    ]
+                );
+                if ($document->count() === 0) {
+                    continue; // Invalid link to document
+                }
+                $entities_id = $document->current()['entities_id'];
+
+                $doc_input = [
+                    'documents_id'      => $docid,
+                    'itemtype'          => $itemtype,
+                    'items_id'          => $data['id'],
+                    'timeline_position' => in_array($itemtype, ['Change', 'Problem', 'Ticket']) ? -1 : 0,
+                    'users_id'          => $data[$user_field],
+                    'entities_id'       => $entities_id,
+                    'date_creation'     => $now,
+                    'date_mod'          => $now,
                 ];
+
+                $docs_input[] = $doc_input;
             }
         }
     }
 
-    $ditem = new Document_Item();
     foreach ($docs_input as $doc_input) {
-        if (!$ditem->alreadyExists($doc_input)) {
-            $ditem->add($doc_input);
+        $unicity_fields = [
+            'documents_id'      => $doc_input['documents_id'],
+            'itemtype'          => $doc_input['itemtype'],
+            'items_id'          => $doc_input['items_id'],
+            'timeline_position' => $doc_input['timeline_position'],
+        ];
+        if (countElementsInTable('glpi_documents_items', $unicity_fields) > 0) {
+            continue; // Already declared in DB
         }
+        $DB->insertOrDie('glpi_documents_items', $doc_input);
     }
-   /* /Fix document_item migration */
+    /* /Fix document_item migration */
 
    /* Register missing DomainAlert crontask */
     CronTask::Register(
