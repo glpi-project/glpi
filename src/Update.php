@@ -261,9 +261,24 @@ class Update
         }
 
         $migrations = $this->getMigrationsToDo($current_version, $force_latest);
-        foreach ($migrations as $file => $function) {
-            include_once($file);
-            $function();
+        foreach ($migrations as $key => $migration_specs) {
+            include_once($migration_specs['file']);
+            $migration_specs['function']();
+
+            if ($key !== array_key_last($migrations)) {
+                // Set current version to target version to ensure complete migrations to not be replayed if one
+                // of remaining migrations fails.
+                //
+                // /!\ Do not dot this for last migration:
+                // 1. This should be done at the end of the whole update process.
+                // 2. Last migration target version value may be higher than GLPI_VERSION, when GLPI_VERSION uses a pre-release suffix.
+                Config::setConfigurationValues(
+                    'core',
+                    [
+                        'version' => $migration_specs['target_version']
+                    ]
+                );
+            }
         }
 
         // Initalize rules
@@ -419,17 +434,21 @@ class Update
                 $force_migration = true;
             }
             if (version_compare($versions_matches['target_version'], $current_version, '>') || $force_migration) {
-                $migrations[$file->getPathname()] = preg_replace(
-                    '/^update_(\d+)\.(\d+)\.(\d+|x)_to_(\d+)\.(\d+)\.(\d+|x)\.php$/',
-                    'update$1$2$3to$4$5$6',
-                    $file->getBasename()
-                );
+                $migrations[$file->getPathname()] = [
+                    'file'           => $file->getPathname(),
+                    'function'       => preg_replace(
+                        '/^update_(\d+)\.(\d+)\.(\d+|x)_to_(\d+)\.(\d+)\.(\d+|x)\.php$/',
+                        'update$1$2$3to$4$5$6',
+                        $file->getBasename()
+                    ),
+                    'target_version' => $versions_matches['target_version'],
+                ];
             }
         }
 
         ksort($migrations, SORT_NATURAL);
 
-        return $migrations;
+        return array_values($migrations);
     }
 
     /**
