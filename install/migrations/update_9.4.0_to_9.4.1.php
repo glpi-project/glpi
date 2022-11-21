@@ -49,39 +49,42 @@ function update940to941()
     $migration->setVersion('9.4.1');
 
     /** Add a search option for profile id */
-    $migration->addPostQuery($DB->buildUpdate(
-        'glpi_displaypreferences',
-        [
-            'num' => '5'
-        ],
-        [
-            'num' => '2',
-            'itemtype' => 'Profile'
-        ]
-    ));
-
-   // Manually add using addPostQuery to be sure it will be added before num 2->5 update request
-    $rank_result = $DB->request(
-        [
-            'SELECT' => ['MAX' => 'rank AS maxrank'],
-            'FROM'   => 'glpi_displaypreferences',
-            'WHERE'  => [
-                'itemtype'  => 'Profile',
-                'users_id'  => '0',
-            ]
-        ]
-    )->current();
-    $migration->addPostQuery(
-        $DB->buildInsert(
+    if (countElementsInTable('glpi_displaypreferences', ['num' => '2', 'itemtype' => 'Profile'])) {
+        // First, update SO ID of 'interface' field display preference
+        $migration->addPostQuery($DB->buildUpdate(
             'glpi_displaypreferences',
             [
-                'num'      => '2',
-                'itemtype' => 'Profile',
-                'users_id' => '0',
-                'rank'     => $rank_result['maxrank'] + 1,
+                'num' => '5'
+            ],
+            [
+                'num' => '2',
+                'itemtype' => 'Profile'
             ]
-        )
-    );
+        ));
+
+        // Then add 'id' field display preference
+        $rank_result = $DB->request(
+            [
+                'SELECT' => ['MAX' => 'rank AS maxrank'],
+                'FROM'   => 'glpi_displaypreferences',
+                'WHERE'  => [
+                    'itemtype'  => 'Profile',
+                    'users_id'  => '0',
+                ]
+            ]
+        )->current();
+        $migration->addPostQuery(
+            $DB->buildInsert(
+                'glpi_displaypreferences',
+                [
+                    'num'      => '2',
+                    'itemtype' => 'Profile',
+                    'users_id' => '0',
+                    'rank'     => $rank_result['maxrank'] + 1,
+                ]
+            )
+        );
+    }
     /** /Add a search option for profile id */
 
     /** Fix URL of images inside ITIL objects contents */
