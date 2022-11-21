@@ -2202,14 +2202,15 @@ class MailCollector extends CommonDBTM
        // old format without related item:  GLPI.{$time}.{$rand}@{$uname}
        // old format with related item:     GLPI-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
        // new format without related item:  GLPI_{$uuid}.{$time}.{$rand}@{$uname}
-       // new format with related item:     GLPI_{$uuid}-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
+       // new format with related item:     GLPI_{$uuid}-{$itemtype}-{$items_id}.{$time}.{$rand}/{eventname}@{$uname}
 
         return '/GLPI'
          . '(_(?<uuid>[a-z0-9]+))?' // uuid was not be present in old format
          . '(-(?<itemtype>[a-z]+))?' // itemtype is not present if notification is not related to any object and was not present in old format
          . '(-(?<items_id>[0-9]+))?' // items_id is not present if notification is not related to any object
-         . '\.[0-9]+' // time()
-         . '\.[0-9]+' // rand()
+         . '(\.[0-9]+)?' // time()
+         . '(\.[0-9]+)?' // rand()
+         . '(\/\w+)?' // eventname
          . '@\w*' // uname
          . '/i'; // insensitive
     }
