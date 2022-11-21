@@ -215,6 +215,20 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             }
         }
 
+        if (array_key_exists('satisfaction', $input) && $input['satisfaction'] >= 0) {
+            $item = static::getItemtype();
+            $item = new $item();
+            $fkey = static::getIndexName();
+            if ($item->getFromDB($this->fields[$fkey] ?? $this->fields[$fkey])) {
+                $max_rate = Entity::getUsedConfig(
+                    'inquest_config',
+                    $item->fields['entities_id'],
+                    'inquest_max_rate' . static::getConfigSufix()
+                );
+                $input['satisfaction_scaled_to_5'] = $input['satisfaction'] / ($max_rate / 5);
+            }
+        }
+
         return $input;
     }
 
@@ -251,7 +265,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param int $value Between 0 and 10
      **/
-    public static function displaySatisfaction($value, $entities_id)
+    public static function displaySatisfaction($value, $entities_id, $use_js = true)
     {
         if (is_null($value)) {
             return "";
@@ -270,19 +284,21 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $value = $max_rate;
         }
 
-        $rand = mt_rand();
-        $out = "<input type='hidden' id='backing_$rand'>";
-        $out .= "<div id='rateit_$rand' class='rateit'></div>";
-        $out .= Html::scriptBlock("
-            $(function () {
-                $('#rateit_$rand').rateit({
-                    max: $max_rate,
-                    resetable: false,
-                    value: $value,
-                    readonly: true,
+        if ($use_js) {
+            $rand = mt_rand();
+            $out = "<input type='hidden' id='backing_$rand'>";
+            $out .= "<div id='rateit_$rand' class='rateit'></div>";
+            $out .= Html::scriptBlock("
+                $(function () {
+                    $('#rateit_$rand').rateit({
+                        max: $max_rate,
+                        resetable: false,
+                        value: $value,
+                        readonly: true,
+                    });
                 });
-            });
-        ");
+            ");
+        }
 
         return $out;
     }
@@ -412,7 +428,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
-            ]
+            ],
         ];
 
         $tab[] = [
