@@ -148,8 +148,8 @@ class NotificationEventMailing extends NotificationEventAbstract
                 }
             }
 
-           // Add custom header for mail grouping in reader
-           $thread_id = str_replace(
+            // Add custom header for mail grouping in reader
+            $thread_id = str_replace(
                 [
                     '%uuid',
                     '%itemtype',
