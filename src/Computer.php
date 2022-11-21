@@ -196,13 +196,14 @@ class Computer extends CommonDBTM
 
         if (count($changes)) {
             //propage is_dynamic value if needed to prevent locked fields
-            if (isset($input['is_dynamic'])) {
-                $changes['is_dynamic'] = $input['is_dynamic'];
+            //check from $this->input instaed of $input['is_dynamic'] which contain reloadded data from DB
+            if (isset($this->input['is_dynamic'])) {
+                $changes['is_dynamic'] = $this->input['is_dynamic'];
             }
 
             $update_done = false;
 
-           // Propagates the changes to linked items
+            // Propagates the changes to linked items
             foreach ($CFG_GLPI['directconnect_types'] as $type) {
                 $items_result = $DB->request(
                     [
