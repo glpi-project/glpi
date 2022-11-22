@@ -918,10 +918,11 @@ class Migration
      *
      * @param array $toadd items to add : itemtype => array of values
      * @param array $todel items to del : itemtype => array of values
+     * @param bool $only_default : add the display pref only on global view
      *
      * @return void
      **/
-    public function updateDisplayPrefs($toadd = [], $todel = [])
+    public function updateDisplayPrefs($toadd = [], $todel = [], $only_default = false)
     {
         global $DB;
 
@@ -936,7 +937,7 @@ class Migration
                     'WHERE'           => ['itemtype' => $type]
                 ]);
 
-                if (count($iterator) > 0) {
+                if (count($iterator) > 0 && !$only_default) {
                     foreach ($iterator as $data) {
                         $query = "SELECT MAX(`rank`)
                               FROM `glpi_displaypreferences`
