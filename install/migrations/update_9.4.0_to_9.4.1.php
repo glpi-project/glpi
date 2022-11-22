@@ -61,7 +61,6 @@ function update940to941()
                 'itemtype' => 'Profile'
             ]
         ));
-    );
 
         // Then add 'id' field display preference
         $rank_result = $DB->request(

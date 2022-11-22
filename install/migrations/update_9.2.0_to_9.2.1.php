@@ -446,9 +446,11 @@ function update920to921()
                     ['license_number' => null],
                     ['license_number' => ""]
                 ]
+            ],
             ['OR' => [
                 ['license_id' => null],
                 ['license_id' => ""]
+            ]
             ]
         ])
     );

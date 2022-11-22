@@ -219,7 +219,6 @@ function update91xto920()
     $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => true]);
     $migration->migrationOneTable("glpi_documents_items");
     $migration->addKey("glpi_documents_items", "users_id");
-    // TODO : can be improved when DBmysql->buildUpdate() support joins
     $migration->addPostQuery(
         $DB->buildUpdate(
             'glpi_documents_items', [
