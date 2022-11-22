@@ -7,6 +7,8 @@ body:
 
         Dear GLPI user.
 
+        **⚠️ Please never use standard issues to report security problems. See [security policy](https://github.com/glpi-project/glpi/security/policy) for more details. ⚠️**
+
         BEFORE SUBMITTING YOUR ISSUE, please make sure to read and follow these steps:
 
         * We do not support community plugins. Contact directly their authors, or use [the community forum](https://forum.glpi-project.org).
