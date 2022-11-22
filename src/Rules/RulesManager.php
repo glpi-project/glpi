@@ -72,7 +72,7 @@ final class RulesManager
 
             // Mark collection as already initialized, to not reinitialize it on next update
             // if admin remove all corresponding rules.
-            $initialized_collections[] = $rulecollection;
+            $initialized_collections[] = get_class($rulecollection);
             Config::setConfigurationValues(
                 'core',
                 ['initialized_rules_collections', json_encode($initialized_collections)]
