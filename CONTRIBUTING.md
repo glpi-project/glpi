@@ -6,6 +6,10 @@ Please note that current repository is about GLPI core only. All related plugins
 
 **Please write only in English!**
 
+## Security
+
+**⚠️ Please never use standard issues to report security problems. See [security policy](https://github.com/glpi-project/glpi/security/policy) for more details. ⚠️**
+
 ## Bugs
 
 Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesional services](http://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).
