@@ -60,7 +60,7 @@ final class RulesManager
             $ruleclass = $rulecollection instanceof RuleCollection ? $rulecollection->getRuleClass() : null;
 
             if (
-                in_array($rulecollection, $initialized_collections)
+                in_array(get_class($rulecollection), $initialized_collections)
                 || !is_a($ruleclass, Rule::class, true) || !method_exists($ruleclass, 'initRules')
             ) {
                 continue;
