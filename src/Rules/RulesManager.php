@@ -35,6 +35,7 @@
 
 namespace Glpi\Rules;
 
+use Config;
 use Rule;
 use RuleCollection;
 
@@ -47,22 +48,35 @@ final class RulesManager
     {
         global $CFG_GLPI;
 
-        $itemtypes = array_unique(array_merge($CFG_GLPI['rulecollections_types'], $CFG_GLPI['dictionnary_types']));
+        $itemtypes = array_merge($CFG_GLPI['rulecollections_types'], $CFG_GLPI['dictionnary_types']);
+
+        $initialized_collections = json_decode(
+            Config::getConfigurationValue('core', 'initialized_rules_collections'),
+            true
+        );
 
         foreach ($itemtypes as $itemtype) {
             $rulecollection = RuleCollection::getClassByType($itemtype);
-            if (!($rulecollection instanceof RuleCollection)) {
+            $ruleclass = $rulecollection instanceof RuleCollection ? $rulecollection->getRuleClass() : null;
+
+            if (
+                in_array($rulecollection, $initialized_collections)
+                || !is_a($ruleclass, Rule::class, true) || !method_exists($ruleclass, 'initRules')
+            ) {
                 continue;
-            }
-            $ruleclass = $rulecollection->getRuleClass();
-            if (!is_a($ruleclass, Rule::class, true) || !method_exists($ruleclass, 'initRules')) {
-                continue;
-            }
-            if (countElementsInTable(Rule::getTable(), ['sub_type' => $ruleclass]) > 0) {
-                continue; // Skip collections that already contains rules
             }
 
-            $ruleclass::initRules(false, false, false);
+            if (countElementsInTable(Rule::getTable(), ['sub_type' => $ruleclass]) === 0) {
+                $ruleclass::initRules(false, false, false);
+            }
+
+            // Mark collection as already initialized, to not reinitialize it on next update
+            // if admin remove all corresponding rules.
+            $initialized_collections[] = $rulecollection;
+            Config::setConfigurationValues(
+                'core',
+                ['initialized_rules_collections', json_encode($initialized_collections)]
+            );
         }
     }
 }
