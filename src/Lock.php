@@ -222,7 +222,6 @@ class Lock extends CommonGLPI
                     //get real type name from CommonDBRelation
                     // ex: get 'Operating System' instead of 'Item operating systems'
                     } elseif (get_parent_class($row['itemtype']) == CommonDBRelation::class) {
-
                         //For CommonDBRelation
                         // $itemtype_1 / $items_id_1 and $itemtype_2 / $items_id_2 can be inverted
 
