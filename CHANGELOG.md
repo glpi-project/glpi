@@ -36,6 +36,7 @@ The present file will list all changes made to the project; according to the
 - `codemirror` library has been upgraded to version 6.x.
 - `photoswipe` library has been upgraded to version 5.x.
 - `phpmailer/phpmailer` library has been replaced by `symfony/mailer`.
+- `true/punycode` library has been removed.
 - `Symfony` libraries have been upgraded to version 6.0.
 - `users_id_validate` field in `CommonITILValidation` will now have a `0` value until someone approves or refuses the validation.
   Approval targets (who the approval is for) is now indicated by `itemtype_target` and `items_id_target` fields.
