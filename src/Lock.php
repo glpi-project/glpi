@@ -136,8 +136,19 @@ class Lock extends CommonGLPI
                         continue;
                     }
                     $query['WHERE'][] = $connexity_criteria['WHERE'];
+                } else { //is CommonDBTM (ie : Monitor / DatabaseInstance)
+                    //we need to restrict scope with Computer_Item to prevent loading of all lockedfield
+                    $query['LEFT JOIN'][getTableForItemType(Computer_Item::class)] =
+                    [
+                        'FKEY'   => [
+                            getTableForItemType(Computer_Item::class)  => 'items_id',
+                            getTableForItemType($lockable_itemtype)   => 'id'
+                        ]
+                    ];
+                    $query['WHERE'][] = [
+                        getTableForItemType(Computer_Item::class) . '.computers_id'  => $ID
+                    ];
                 }
-
                 $subquery[] = new \QuerySubQuery($query);
             }
 
