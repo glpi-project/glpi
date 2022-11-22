@@ -2679,7 +2679,7 @@ class Toolbox
      *
      * @return string                the $content_text param after parsing
      **/
-    public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [])
+    public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [], bool $add_link = true)
     {
         global $CFG_GLPI;
 
@@ -2760,7 +2760,7 @@ class Toolbox
                                 $id,
                                 $width,
                                 $height,
-                                true,
+                                $add_link,
                                 $object_url_param
                             );
                             if (empty($new_image)) {
