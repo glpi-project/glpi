@@ -36,6 +36,7 @@
 use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
+use Glpi\Rules\RulesManager;
 use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\VersionParser;
 use Laminas\Mail\Storage\AbstractStorage;
@@ -2393,11 +2394,8 @@ class Toolbox
                 }
             }
 
-            //rules
-            RuleImportAsset::initRules();
-            RuleDictionnaryOperatingSystemVersion::initRules();
-            RuleDictionnaryOperatingSystemEdition::initRules();
-            RuleDictionnaryOperatingSystem::initRules();
+            // Initalize rules
+            RulesManager::initializeRules();
 
            // update default language
             Config::setConfigurationValues(

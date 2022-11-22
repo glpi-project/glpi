@@ -158,12 +158,6 @@ if (!$DB->tableExists('glpi_rulematchedlogs')) {
     $migration->addKey('glpi_rulematchedlogs', 'rules_id');
 }
 
-
-if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) === 0) {
-    //default rules.
-    RuleImportAsset::initRules(false, false, true);
-}
-
 //locked fields
 if (!$DB->tableExists('glpi_lockedfields')) {
     $query = "CREATE TABLE `glpi_lockedfields` (

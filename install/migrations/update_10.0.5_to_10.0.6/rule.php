@@ -85,11 +85,3 @@ foreach ($result as $data) {
                WHERE `id` = " . $data['criteria_id'];
     $DB->queryOrDie($query, "10.0.6 change crtieria name");
 }
-
-//create default dictionnaries if needed
-foreach (array_values($subType) as $ruleDictionnaryType) {
-    if (method_exists($ruleDictionnaryType, 'initRules') && countElementsInTable(Rule::getTable(), ['sub_type' => $ruleDictionnaryType]) === 0) {
-        //default rules.
-        $ruleDictionnaryType::initRules(false, false, true);
-    }
-}
