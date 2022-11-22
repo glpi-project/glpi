@@ -57,12 +57,15 @@ final class RulesManager
 
         foreach ($itemtypes as $itemtype) {
             $rulecollection = RuleCollection::getClassByType($itemtype);
-            $ruleclass = $rulecollection instanceof RuleCollection ? $rulecollection->getRuleClass() : null;
-
             if (
-                in_array(get_class($rulecollection), $initialized_collections)
-                || !is_a($ruleclass, Rule::class, true) || !method_exists($ruleclass, 'initRules')
+                !($rulecollection instanceof RuleCollection)
+                || in_array(get_class($rulecollection), $initialized_collections)
             ) {
+                continue;
+            }
+
+            $ruleclass = $rulecollection instanceof RuleCollection ? $rulecollection->getRuleClassName() : null;
+            if (!is_a($ruleclass, Rule::class, true) || !method_exists($ruleclass, 'initRules')) {
                 continue;
             }
 
