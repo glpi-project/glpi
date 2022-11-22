@@ -2289,9 +2289,6 @@ HTML;
             [ 'name'    => 'michelf/php-markdown',
                 'check'   => 'Michelf\\Markdown'
             ],
-            [ 'name'    => 'true/punycode',
-                'check'   => 'TrueBV\\Punycode'
-            ],
             [ 'name'    => 'iamcal/lib_autolink',
                 'check'   => 'autolink'
             ],
