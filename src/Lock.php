@@ -222,9 +222,29 @@ class Lock extends CommonGLPI
                     //get real type name from CommonDBRelation
                     // ex: get 'Operating System' instead of 'Item operating systems'
                     } elseif (get_parent_class($row['itemtype']) == CommonDBRelation::class) {
-                        $default_itemtype =  $row['itemtype']::$itemtype_1;
-                        $default_items_id =  $row['itemtype']::$items_id_1;
-                        $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
+
+                        //For CommonDBRelation
+                        // $itemtype_1 / $items_id_1 and $itemtype_2 / $items_id_2 can be inverted
+
+                        //ex: Item_Software have
+                        // $itemtype_1 = 'itemtype';
+                        // $items_id_1 = 'items_id';
+                        // $itemtype_2 = 'SoftwareVersion';
+                        // $items_id_2 = 'softwareversions_id';
+                        if (preg_match('/^itemtype/', $row['itemtype']::$itemtype_1)) {
+                            $default_itemtype =  $row['itemtype']::$itemtype_2;
+                            $default_items_id =  $row['itemtype']::$items_id_2;
+                            $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
+                        } else {
+                            //ex: Item_OperatingSystem have
+                            // $itemtype_1 = 'OperatingSystem';
+                            // $items_id_1 = 'operatingsystems_id';
+                            // $itemtype_2 = 'itemtype';
+                            // $items_id_2 = 'items_id';
+                            $default_itemtype =  $row['itemtype']::$itemtype_1;
+                            $default_items_id =  $row['itemtype']::$items_id_1;
+                            $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
+                        }
                     }
 
                     // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)
