@@ -745,26 +745,18 @@ class Computer extends AbstractInventoryAsset
         <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
         <QUERY>INVENTORY</QUERY>
         </REQUEST>";
-        //per default, do not change states_id
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->boolean(
-            $conf->saveConf([
-                'entities_id_default' => 0
-            ])
-        )->isTrue();
-        $this->logout();
 
         $inventory = $this->doInventory($xml_source, true);
         $computers_id = $inventory->getItem()->fields['id'];
         $this->integer($computers_id)->isGreaterThan(0);
 
-        //load computer and check entities_id
+        //load computer and check entities_id (0 by default)
         $computer->getFromDB($computers_id);
         $this->integer($computer->fields['entities_id'])->isEqualTo(0);
 
 
-        //per default, use entities_id 1
+        //per default, use entities_id 0
+        //so change entities_id to 1
         $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->boolean(
