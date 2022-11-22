@@ -75,7 +75,7 @@ final class RulesManager
             $initialized_collections[] = get_class($rulecollection);
             Config::setConfigurationValues(
                 'core',
-                ['initialized_rules_collections', json_encode($initialized_collections)]
+                ['initialized_rules_collections' => json_encode($initialized_collections)]
             );
         }
     }
