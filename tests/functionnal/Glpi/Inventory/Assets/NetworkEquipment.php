@@ -289,6 +289,120 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         }
     }
 
+    /**
+     * Test stacked Dell S50 switch
+     *
+     * Note: all ports have the same MAC
+     */
+    public function testStackedDellSwitch()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <COMPONENTS>
+        <COMPONENT>
+          <CONTAINEDININDEX>0</CONTAINEDININDEX>
+          <INDEX>-1</INDEX>
+          <NAME>Force10 S-series Stack</NAME>
+          <TYPE>stack</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>-1</CONTAINEDININDEX>
+          <DESCRIPTION>48-port E/FE/GE (SB)</DESCRIPTION>
+          <FIRMWARE>8.4.2.7</FIRMWARE>
+          <INDEX>1</INDEX>
+          <MODEL>S50-01-GE-48T-AC</MODEL>
+          <NAME>0</NAME>
+          <SERIAL>DL253300100</SERIAL>
+          <TYPE>chassis</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>-1</CONTAINEDININDEX>
+          <DESCRIPTION>48-port E/FE/GE (SB)</DESCRIPTION>
+          <FIRMWARE>8.4.2.7</FIRMWARE>
+          <INDEX>2</INDEX>
+          <MODEL>S50-01-GE-48T-AC</MODEL>
+          <NAME>1</NAME>
+          <SERIAL>DL253300200</SERIAL>
+          <TYPE>chassis</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <INDEX>177783810</INDEX>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <INDEX>242009090</INDEX>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+      </COMPONENTS>
+      <INFO>
+        <MAC>00:01:e8:d7:c9:1d</MAC>
+        <NAME>sw-s50</NAME>
+        <SERIAL>DL253300100</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <IFDESCR>GigabitEthernet 0/1</IFDESCR>
+          <IFNAME>GigabitEthernet 0/1</IFNAME>
+          <IFNUMBER>177783810</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>00:01:e8:d7:c9:1d</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>GigabitEthernet 1/1</IFDESCR>
+          <IFNAME>GigabitEthernet 1/1</IFNAME>
+          <IFNUMBER>242009090</IFNUMBER>
+          <IFTYPE>6</IFTYPE>
+          <MAC>00:01:e8:d7:c9:1d</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $this->integer(countElementsInTable($networkPort->getTable()))->isIdenticalTo(2, 'Must have two ports');
+
+        foreach ([['DL253300100', 177783810], ['DL253300200', 242009090]] as list($serial, $logical_number)) {
+            $this->boolean(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial])
+            )->isTrue("Switch s/n $serial doesn't exist");
+
+            $this->boolean(
+                $networkPort->getFromDBByCrit([
+                    'itemtype' => $networkEquipment->getType(),
+                    'items_id' => $networkEquipment->getID(),
+                    'logical_number' => $logical_number
+                ])
+            )->isTrue(sprintf("Switch \"%s\" doesn't have port with ifindex %d", $networkEquipment->fields['name'], $logical_number));
+        }
+    }
+
     public function testHandle()
     {
         $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_2.json');

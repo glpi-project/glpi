@@ -772,14 +772,21 @@ class NetworkPort extends InventoryAsset
         //handle ports for stacked switches
         if ($mainasset->isStackedSwitch()) {
             $bkp_ports = $this->ports;
+            $portid_to_chassisid = $mainasset->getStackedPortsMap();
+            $stack_id = $mainasset->getStackId();
             foreach ($this->ports as $k => $val) {
                 $matches = [];
-                if (preg_match('@[\w-]+(\d+)/\d+/\d+@', $val->name, $matches)) {
-                    if ($matches[1] != $mainasset->getStackId()) {
-                        //port attached to another stack entry, remove from here
-                        unset($this->ports[$k]);
-                        continue;
-                    }
+                if (
+                    (property_exists($val, 'ifnumber')
+                    && isset($portid_to_chassisid[$val->ifnumber])
+                    && $portid_to_chassisid[$val->ifnumber] != $stack_id)
+                        ||
+                    (preg_match('@[\w-]+(\d+)/\d+/\d+@', $val->name, $matches)
+                    && $matches[1] != $stack_id)
+                ) {
+                    //port attached to another stack entry, remove from here
+                    unset($this->ports[$k]);
+                    continue;
                 }
             }
         }
