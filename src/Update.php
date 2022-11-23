@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 
@@ -264,6 +265,10 @@ class Update
             include_once($file);
             $function();
         }
+
+        // Initalize rules
+        $this->migration->displayTitle(__('Initializing rules...'));
+        RulesManager::initializeRules();
 
         if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
             $message = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)

@@ -577,24 +577,13 @@ class Entity extends CommonTreeDropdown
 
     public function post_getFromDB()
     {
-        // Copy config "strategy" fields in corresponding "id" field.
-        if (($this->fields['calendars_strategy'] ?? 0) < 0) {
-            $this->fields['calendars_id'] = $this->fields['calendars_strategy'];
-        }
-        if (($this->fields['changetemplates_strategy'] ?? 0) < 0) {
-            $this->fields['changetemplates_id'] = $this->fields['changetemplates_strategy'];
-        }
-        if (($this->fields['contracts_strategy_default'] ?? 0) < 0) {
-            $this->fields['contracts_id_default'] = $this->fields['contracts_strategy_default'];
-        }
-        if (($this->fields['entities_strategy_software'] ?? 0) < 0) {
-            $this->fields['entities_id_software'] = $this->fields['entities_strategy_software'];
-        }
-        if (($this->fields['problemtemplates_strategy'] ?? 0) < 0) {
-            $this->fields['problemtemplates_id'] = $this->fields['problemtemplates_strategy'];
-        }
-        if (($this->fields['tickettemplates_strategy'] ?? 0) < 0) {
-            $this->fields['tickettemplates_id'] = $this->fields['tickettemplates_strategy'];
+        // Copy config "strategy" fields in corresponding "id" field
+        // when "strategy" is < 0.
+        foreach ($this->fields as $field_key => $value) {
+            if (preg_match('/_strategy(_.+)?/', $field_key) === 1 && $value < 0) {
+                $id_field_key = str_replace('_strategy', '_id', $field_key);
+                $this->fields[$id_field_key] = $this->fields[$field_key];
+            }
         }
     }
 
@@ -1960,6 +1949,13 @@ class Entity extends CommonTreeDropdown
             $params['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
         }
         Dropdown::show('Transfer', $params);
+        if ($entity->fields['transfers_strategy'] == self::CONFIG_PARENT) {
+            $inherited_strategy = self::getUsedConfig('transfers_strategy', $entity->fields['entities_id']);
+            $inherited_value    = $inherited_strategy === 0
+                ? self::getUsedConfig('transfers_strategy', $entity->fields['entities_id'], 'transfers_id')
+                : $inherited_strategy;
+            self::inheritedValue(self::getSpecificValueToDisplay('transfers_id', $inherited_value));
+        }
         echo "</td>";
         echo "</td><td colspan='2'></td></tr>";
 
@@ -3824,6 +3820,17 @@ class Entity extends CommonTreeDropdown
                     return __('24/7');
                 }
                 return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
+
+            case 'transfers_id':
+                $strategy = $values['transfers_strategy'] ?? $values[$field];
+                if ($strategy == self::CONFIG_NEVER) {
+                }
+                if ($strategy == self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                } elseif ($values[$field] == 0) {
+                    return __('No automatic transfer');
+                }
+                return Dropdown::getDropdownName('glpi_transfers', $values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

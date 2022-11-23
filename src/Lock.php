@@ -137,8 +137,24 @@ class Lock extends CommonGLPI
                         continue;
                     }
                     $query['WHERE'][] = $connexity_criteria['WHERE'];
+                } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'])) {
+                    //we need to restrict scope with Computer_Item to prevent loading of all lockedfield
+                    $query['LEFT JOIN'][Computer_Item::getTable()] =
+                    [
+                        'FKEY'   => [
+                            Computer_Item::getTable()  => 'items_id',
+                            $lockable_itemtype::getTable()   => 'id'
+                        ]
+                    ];
+                    $query['WHERE'][] = [
+                        Computer_Item::getTable() . '.computers_id'  => $ID
+                    ];
+                } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
+                    $query['WHERE'][] = [
+                        $lockable_itemtype::getTable() . '.itemtype'  => $itemtype,
+                        $lockable_itemtype::getTable() . '.items_id'  => $ID
+                    ];
                 }
-
                 $subquery[] = new \QuerySubQuery($query);
             }
 
@@ -223,9 +239,28 @@ class Lock extends CommonGLPI
                     //get real type name from CommonDBRelation
                     // ex: get 'Operating System' instead of 'Item operating systems'
                     } elseif (get_parent_class($row['itemtype']) == CommonDBRelation::class) {
-                        $default_itemtype =  $row['itemtype']::$itemtype_1;
-                        $default_items_id =  $row['itemtype']::$items_id_1;
-                        $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
+                        //For CommonDBRelation
+                        // $itemtype_1 / $items_id_1 and $itemtype_2 / $items_id_2 can be inverted
+
+                        //ex: Item_Software have
+                        // $itemtype_1 = 'itemtype';
+                        // $items_id_1 = 'items_id';
+                        // $itemtype_2 = 'SoftwareVersion';
+                        // $items_id_2 = 'softwareversions_id';
+                        if (preg_match('/^itemtype/', $row['itemtype']::$itemtype_1)) {
+                            $default_itemtype =  $row['itemtype']::$itemtype_2;
+                            $default_items_id =  $row['itemtype']::$items_id_2;
+                            $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
+                        } else {
+                            //ex: Item_OperatingSystem have
+                            // $itemtype_1 = 'OperatingSystem';
+                            // $items_id_1 = 'operatingsystems_id';
+                            // $itemtype_2 = 'itemtype';
+                            // $items_id_2 = 'items_id';
+                            $default_itemtype =  $row['itemtype']::$itemtype_1;
+                            $default_items_id =  $row['itemtype']::$items_id_1;
+                            $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
+                        }
                     }
 
                     // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)

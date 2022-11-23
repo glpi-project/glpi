@@ -5553,7 +5553,8 @@ class CommonDBTM extends CommonGLPI
             $input[$options['content_field']] = Toolbox::convertTagToImage(
                 $input[$options['content_field']],
                 $this,
-                $docadded
+                $docadded,
+                $options['_add_link'] ?? true,
             );
 
             if (isset($this->input['_forcenotif'])) {

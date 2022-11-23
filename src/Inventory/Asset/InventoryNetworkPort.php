@@ -339,8 +339,9 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus'];
         $iterator = $DB->request([
-            'SELECT' => ['id', 'name', 'mac', 'instantiation_type', 'logical_number'],
+            'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
             'WHERE'  => [
                 'items_id'     => $this->items_id,
@@ -370,13 +371,11 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $key => $data) {
             foreach ($db_ports as $keydb => $datadb) {
-                //keep trace of logical number from db
-                $db_lnumber = $datadb['logical_number'];
-                unset($datadb['logical_number']);
-
-                //keep trace of instantiation_type from db
-                $db_instantiation_type = $datadb['instantiation_type'];
-                unset($datadb['instantiation_type']);
+                $dbdata_copy = [];
+                foreach (array_merge(['instantiation_type'], $np_dyn_props) as $k) {
+                    $dbdata_copy[$k] = $datadb[$k];
+                    unset($datadb[$k]);
+                }
 
                 $comp_data = [];
                 foreach (['name', 'mac'] as $field) {
@@ -392,17 +391,24 @@ trait InventoryNetworkPort
                     continue;
                 }
 
-                if (property_exists($data, 'logical_number') && $data->logical_number != $db_lnumber) {
-                    $networkport->update(
-                        Sanitizer::sanitize([
-                            'id'              => $keydb,
-                            'logical_number'  => $data->logical_number
-                        ])
-                    );
+                $criteria = [];
+                foreach ($np_dyn_props as $k) {
+                    if (property_exists($data, $k) && $data->$k != $dbdata_copy[$k]) {
+                        $criteria[$k] = $data->$k;
+                    }
+                }
+
+                if (count($criteria)) {
+                    $criteria['id'] = $keydb;
+                    $criteria['is_dynamic'] = 1;
+                    $networkport->update(Sanitizer::sanitize($criteria));
                 }
 
                 //check for instantiation_type switch for NetworkPort
-                if (property_exists($data, 'instantiation_type') && $data->instantiation_type != $db_instantiation_type) {
+                if (
+                    property_exists($data, 'instantiation_type')
+                    && $data->instantiation_type != $dbdata_copy['instantiation_type']
+                ) {
                     $networkport->getFromDB($keydb);
                     $networkport->switchInstantiationType($data->instantiation_type);
                 }

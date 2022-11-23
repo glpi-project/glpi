@@ -88,6 +88,26 @@ class NetworkCard extends Device
                 }
             }
 
+            if (property_exists($val, 'status')) {
+                switch ($val->status) {
+                    case 'up':
+                        $val_port->ifinternalstatus = '1';
+                        break;
+                    case 'down':
+                        $val_port->ifinternalstatus = '2';
+                        break;
+                    default:
+                        $val_port->ifinternalstatus = null;
+                }
+            }
+            if (property_exists($val, 'speed')) {
+                if ((int)$val->speed > 0) {
+                    $val_port->ifstatus = '1';  //up
+                } else {
+                    $val_port->ifstatus = '2';  //down
+                }
+            }
+
             if (isset($this->extra_data['controllers'])) {
                 $found_controller = false;
                // Search in controller if find NAME = CONTROLLER TYPE

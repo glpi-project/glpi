@@ -309,7 +309,8 @@ class NotificationTemplateTranslation extends CommonDBChild
         $this->input = $this->addFiles($this->input, [
             'force_update' => true,
             'name' => 'content_html',
-            'content_field' => 'content_html'
+            'content_field' => 'content_html',
+            '_add_link' => false
         ]);
 
         parent::post_addItem($history);
@@ -322,7 +323,8 @@ class NotificationTemplateTranslation extends CommonDBChild
         $this->input = $this->addFiles($this->input, [
             'force_update' => true,
             'name' => 'content_html',
-            'content_field' => 'content_html'
+            'content_field' => 'content_html',
+            '_add_link' => false
         ]);
 
         parent::post_updateItem($history);

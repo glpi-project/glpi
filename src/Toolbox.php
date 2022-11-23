@@ -36,6 +36,7 @@
 use Glpi\Console\Application;
 use Glpi\Event;
 use Glpi\Mail\Protocol\ProtocolInterface;
+use Glpi\Rules\RulesManager;
 use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\VersionParser;
 use Laminas\Mail\Storage\AbstractStorage;
@@ -2396,11 +2397,8 @@ class Toolbox
                 }
             }
 
-            //rules
-            RuleImportAsset::initRules();
-            RuleDictionnaryOperatingSystemVersion::initRules();
-            RuleDictionnaryOperatingSystemEdition::initRules();
-            RuleDictionnaryOperatingSystem::initRules();
+            // Initalize rules
+            RulesManager::initializeRules();
 
            // update default language
             Config::setConfigurationValues(
@@ -2688,7 +2686,7 @@ class Toolbox
      *
      * @return string                the $content_text param after parsing
      **/
-    public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [])
+    public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [], bool $add_link = true)
     {
         global $CFG_GLPI;
 
@@ -2769,7 +2767,7 @@ class Toolbox
                                 $id,
                                 $width,
                                 $height,
-                                true,
+                                $add_link,
                                 $object_url_param
                             );
                             if (empty($new_image)) {

@@ -192,6 +192,7 @@ HTML,
   Legit text
   <![CDATA[Some CDATA]]>
 </p>
+<P>Uppercase tag will be normalized to lowercase tag</P>
 
 <h1>Legit elements should be preserved</h1>
 <h2>All</h2>
@@ -279,6 +280,7 @@ HTML,
   Legit text
   
 </p>
+<p>Uppercase tag will be normalized to lowercase tag</p>
 
 <h1>Legit elements should be preserved</h1>
 <h2>All</h2>
@@ -524,6 +526,13 @@ HTML,
         yield [
             'content'                => <<<HTML
 <p>Some HTML text</p>
+HTML,
+            'expected_result'        => true,
+        ];
+
+        yield [
+            'content'                => <<<HTML
+<DIV>Uppercase HTML tag</DIV>
 HTML,
             'expected_result'        => true,
         ];
