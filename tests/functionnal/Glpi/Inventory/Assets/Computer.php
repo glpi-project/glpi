@@ -888,7 +888,7 @@ class Computer extends AbstractInventoryAsset
         $transfer->getFromDB($doTransfer);
 
         //update tranfer model to disable locked field
-        $transfer->fields["locked_field"] = 1;
+        $transfer->fields["locked_field"] = 0;
 
         $item_to_transfer = ["Computer" => [$computers_id => $computers_id]];
         $transfer->moveItems($item_to_transfer, 1, $transfer->fields);
