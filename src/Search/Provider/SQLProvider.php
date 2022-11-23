@@ -113,7 +113,7 @@ final class SQLProvider implements SearchProviderInterface
                 if ($plug = isPluginItemType($itemtype)) {
                     $default_select = \Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype);
                     if ($default_select !== "") {
-                        $ret[] = new QueryExpression($default_select);
+                        $ret[] = new QueryExpression(rtrim($default_select, ' ,'));
                     }
                 }
         }
