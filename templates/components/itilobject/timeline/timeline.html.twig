@@ -152,7 +152,7 @@
                {% endif %}
             </div>
             <div class="col-12 col-sm d-flex flex-column content-part">
-               <span class="mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
+               <div class="mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
                   <div class="card-body px-1 px-xxl-3">
                      {{ include('components/itilobject/timeline/timeline_item_header.html.twig') }}
 
@@ -173,7 +173,7 @@
                         <div class="ajax-content"></div>
                      </div>
                   </div>
-               </span>
+               </div>
 
                {% if entry['documents'] is defined %}
                   {{ include('components/itilobject/timeline/sub_documents.html.twig', {
