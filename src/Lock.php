@@ -136,8 +136,24 @@ class Lock extends CommonGLPI
                         continue;
                     }
                     $query['WHERE'][] = $connexity_criteria['WHERE'];
+                } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'])) {
+                    //we need to restrict scope with Computer_Item to prevent loading of all lockedfield
+                    $query['LEFT JOIN'][Computer_Item::getTable()] =
+                    [
+                        'FKEY'   => [
+                            Computer_Item::getTable()  => 'items_id',
+                            $lockable_itemtype::getTable()   => 'id'
+                        ]
+                    ];
+                    $query['WHERE'][] = [
+                        Computer_Item::getTable() . '.computers_id'  => $ID
+                    ];
+                } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
+                    $query['WHERE'][] = [
+                        $lockable_itemtype::getTable() . '.itemtype'  => $itemtype,
+                        $lockable_itemtype::getTable() . '.items_id'  => $ID
+                    ];
                 }
-
                 $subquery[] = new \QuerySubQuery($query);
             }
 
