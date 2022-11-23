@@ -212,7 +212,9 @@ class Transfer extends CommonDBTM
             'keep_consumable'     => 0,
 
             'keep_certificate'    => 0,
-            'clean_certificate'   => 0
+            'clean_certificate'   => 0,
+
+            'disable_locked_field' => 0
         ];
 
         if ($to >= 0) {
@@ -1300,7 +1302,8 @@ class Transfer extends CommonDBTM
                 $input = [
                     'id'          => $newID,
                     'entities_id' => $this->to,
-                    '_transfer'   => 1
+                    '_transfer'   => 1,
+                    '_disable_locked_field'   => $this->options['disable_locked_field']
                 ];
 
                // Manage Location dropdown
@@ -3985,6 +3988,12 @@ class Transfer extends CommonDBTM
         $params['value'] = $this->fields['keep_disk'];
         Dropdown::showFromArray('keep_disk', $keep, $params);
         echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Disable locked field during transfer') . "</td><td>";
+        Dropdown::showYesNo('disable_locked_field', $this->fields['disable_locked_field']);
+        echo "</td>";
+        echo "<td></td></tr>";
 
         echo "<tr class='tab_bg_2'>";
         echo "<td colspan='4' class='center b'>" . __('Direct connections') . "</td></tr>";

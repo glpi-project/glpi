@@ -1755,7 +1755,10 @@ class CommonDBTM extends CommonGLPI
     protected function cleanLockeds()
     {
         if (
-            !isset($this->input['_transfer']) //do not managed lock from transfer
+            (
+                isset($this->input['_transfer']) //do not managed lock from transfer if needed
+                && !$this->input['_disable_locked_field']
+            )
             && $this->isDynamic()
             && (in_array('is_dynamic', $this->updates) || isset($this->input['is_dynamic'])
             && $this->input['is_dynamic'] == true)
@@ -1787,7 +1790,10 @@ class CommonDBTM extends CommonGLPI
 
         $lockedfield = new Lockedfield();
         if (
-            !isset($this->input['_transfer']) //do not managed lock from transfer
+            (
+                isset($this->input['_transfer']) //do not managed lock from transfer if needed
+                && !$this->input['_disable_locked_field']
+            )
             && $lockedfield->isHandled($this)
             && (!isset($this->input['is_dynamic']) || $this->input['is_dynamic'] == false)
         ) {
