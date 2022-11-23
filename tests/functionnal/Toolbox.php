@@ -1516,4 +1516,91 @@ class Toolbox extends DbTestCase
         }
         $this->boolean(call_user_func_array('Toolbox::isUrlSafe', $params))->isEqualTo($expected);
     }
+
+
+    protected function prepareDateForSafeTransliterate(): iterable
+    {
+        return [
+            [
+                //Maïthili
+                'string'     => 'आविष्कारक मूल निवासी glpi',
+                'expected'  => 'aviskaraka-mula-nivasi-glpi',
+            ],
+            [
+                //odia
+                'string'     => 'नेटिभ GLPI सूची',
+                'expected'  => 'netibha-glpi-suci',
+            ],
+            [
+                //nepal
+                'string'     => 'ଦେଶୀ GLPI ଭଣ୍ଡାର |',
+                'expected'  => 'desi-glpi-bhandara',
+            ],
+            [
+                //cambodian
+                'string'     => 'ភាសាខ្មែរ កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង',
+                'expected'  => 'ភាសាខ្មែរ-កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង',
+            ],
+            [
+                //thaï
+                'string'     => 'สินค้าคงคลัง GLPI ดั้งเดิม',
+                'expected'  => 'sinkha-khngkhlang-glpi-dangdeim',
+            ],
+            [
+                //tigrina
+                'string'     => 'ተወላዲ GLPI ዝርዝር ኣቑሑት።',
+                'expected'  => 'teweladi-glpi-riri-aqhuhhuti',
+            ],
+            [
+                //latin
+                'string'     => 'Adobe Photoshop',
+                'expected'  => 'adobe-photoshop',
+            ],
+            [
+                //cyrillic
+                'string'     => 'Песня про надежду',
+                'expected'  => 'pesna-pro-nadezdu',
+            ],
+            [
+                //korean
+                'string' => '저는 7년 동안 한국에서 살았어요',
+                'expected'  => 'jeoneun-7nyeon-dong-an-hangug-eseo-sal-ass-eoyo'
+            ],
+            [
+                //japan
+                'string' => 'グルピ ネイティブ インベントリ',
+                "expected" => "gurupi-neitibu-inbentori"
+            ],
+            [
+                //ukrainian
+                'string' => 'інвентаризація нативного фонду GLPI',
+                "expected" => "inventarizacia-nativnogo-fondu-glpi"
+            ],
+            [
+                //estonian
+                'string' => 'glpi algupärane inventuur',
+                "expected" => "glpi-alguparane-inventuur"
+            ],
+            [
+                //kazakh
+                'string' => 'GLPI жергілікті түгендеу',
+                "expected" => "glpi-zergilikti-tgendeu"
+            ],
+            [
+                //kurd
+                'string' => 'Envantera GLPI ya xwecihî',
+                "expected" => "envantera-glpi-ya-xwecihi"
+            ]
+        ];
+    }
+
+
+    /**
+     * @dataProvider prepareDateForSafeTransliterate
+     */
+    public function testPrepareDateForSafeTransliterate(string $string, string $expected): void
+    {
+        $this->string(\Toolbox::slugify($string))->isEqualTo($expected);
+    }
+
 }
