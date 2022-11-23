@@ -294,15 +294,6 @@ function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
  */
 function glpi_autoload($classname)
 {
-
-    if (
-        $classname === 'phpCAS'
-        && file_exists(stream_resolve_include_path("CAS.php"))
-    ) {
-        include_once('CAS.php');
-        return true;
-    }
-
     // Deprecation warn for RuleImportComputer* classes
     if (in_array($classname, ['RuleImportComputer', 'RuleImportComputerCollection'])) {
         Toolbox::deprecated(

@@ -491,31 +491,14 @@ class Auth extends CommonGLPI
 
         switch ($authtype) {
             case self::CAS:
-                if (!Toolbox::canUseCAS()) {
-                    trigger_error("CAS lib not installed", E_USER_WARNING);
-                    return false;
-                }
-
-                if (version_compare(phpCAS::getVersion(), '1.6.0', '<')) {
-                    // Prior to version 1.6.0, 5th argument was `$changeSessionID`.
-                    phpCAS::client(
-                        constant($CFG_GLPI["cas_version"]),
-                        $CFG_GLPI["cas_host"],
-                        intval($CFG_GLPI["cas_port"]),
-                        $CFG_GLPI["cas_uri"],
-                        false
-                    );
-                } else {
-                    // Starting from version 1.6.0, 5th argument is `$service_base_url`.
-                    phpCAS::client(
-                        constant($CFG_GLPI["cas_version"]),
-                        $CFG_GLPI["cas_host"],
-                        intval($CFG_GLPI["cas_port"]),
-                        $CFG_GLPI["cas_uri"],
-                        $CFG_GLPI["url_base"],
-                        false
-                    );
-                }
+                phpCAS::client(
+                    constant($CFG_GLPI["cas_version"]),
+                    $CFG_GLPI["cas_host"],
+                    intval($CFG_GLPI["cas_port"]),
+                    $CFG_GLPI["cas_uri"],
+                    $CFG_GLPI["url_base"],
+                    false
+                );
 
                 // no SSL validation for the CAS server
                 phpCAS::setNoCasServerValidation();
@@ -526,7 +509,7 @@ class Auth extends CommonGLPI
 
                 // extract e-mail information
                 if (phpCAS::hasAttribute("mail")) {
-                      $this->user->fields['_useremails'] = [phpCAS::getAttribute("mail")];
+                    $this->user->fields['_useremails'] = [phpCAS::getAttribute("mail")];
                 }
 
                 return true;
@@ -1575,51 +1558,33 @@ class Auth extends CommonGLPI
         echo "<div class='card'>";
         echo "<table class='tab_cadre_fixe'>";
 
-       // CAS config
+        // CAS config
         echo "<tr><th>" . __('CAS authentication') . '</th><th>';
         if (!empty($CFG_GLPI["cas_host"])) {
             echo _x('authentication', 'Enabled');
         }
         echo "</th></tr>";
 
-        if (
-            function_exists('curl_init')
-            && Toolbox::canUseCAS()
-        ) {
-           //TRANS: for CAS SSO system
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Host') . "</td>";
-            echo "<td><input type='text' class='form-control' name='cas_host' value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
-           //TRANS: for CAS SSO system
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Version') . "</td>";
-            echo "<td>";
-            Auth::dropdownCasVersion($CFG_GLPI["cas_version"] ?? null);
-            echo "</td>";
-            echo "</tr>";
-           //TRANS: for CAS SSO system
-            echo "<tr class='tab_bg_2'><td class='center'>" . _n('Port', 'Ports', 1) . "</td>";
-            echo "<td><input type='text' class='form-control' name='cas_port' value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
-           //TRANS: for CAS SSO system
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)') . "</td>";
-            echo "<td><input type='text' class='form-control' name='cas_uri' value=\"" . $CFG_GLPI["cas_uri"] . "\"></td></tr>";
-           //TRANS: for CAS SSO system
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('Log out fallback URL') . "</td>";
-            echo "<td><input type='text' class='form-control' name='cas_logout' value=\"" . $CFG_GLPI["cas_logout"] . "\"></td>" .
-              "</tr>";
-        } else {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            if (!function_exists('curl_init')) {
-                echo "<p class='red'>" . __("The CURL extension for your PHP parser isn't installed");
-                echo "</p>";
-            }
-            if (!Toolbox::canUseCAS()) {
-                echo "<p class='red'>" . __("The CAS lib isn't available, GLPI doesn't package it anymore for license compatibility issue.");
-                echo "</p>";
-            }
-            echo "<p>" . __('Impossible to use CAS as external source of connection') . "</p>";
-            echo "<p><strong>" . GLPINetwork::getSupportPromoteMessage() . "</strong></p>";
+        //TRANS: for CAS SSO system
+        echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Host') . "</td>";
+        echo "<td><input type='text' class='form-control' name='cas_host' value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
+        //TRANS: for CAS SSO system
+        echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Version') . "</td>";
+        echo "<td>";
+        Auth::dropdownCasVersion($CFG_GLPI["cas_version"] ?? null);
+        echo "</td>";
+        echo "</tr>";
+        //TRANS: for CAS SSO system
+        echo "<tr class='tab_bg_2'><td class='center'>" . _n('Port', 'Ports', 1) . "</td>";
+        echo "<td><input type='text' class='form-control' name='cas_port' value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
+        //TRANS: for CAS SSO system
+        echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)') . "</td>";
+        echo "<td><input type='text' class='form-control' name='cas_uri' value=\"" . $CFG_GLPI["cas_uri"] . "\"></td></tr>";
+        //TRANS: for CAS SSO system
+        echo "<tr class='tab_bg_2'><td class='center'>" . __('Log out fallback URL') . "</td>";
+        echo "<td><input type='text' class='form-control' name='cas_logout' value=\"" . $CFG_GLPI["cas_logout"] . "\"></td>" .
+          "</tr>";
 
-            echo "</td></tr>";
-        }
        // X509 config
         echo "<tr><th>" . __('x509 certificate authentication') . "</th><th>";
         if (!empty($CFG_GLPI["x509_email_field"])) {

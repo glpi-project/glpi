@@ -30,6 +30,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
 
 #### Changes
 - `chartist` library has been replaced by `echarts`.
@@ -94,6 +95,7 @@ The present file will list all changes made to the project; according to the
 - `Search::getMetaReferenceItemtype()`
 - `Search::outputData()`
 - `Search::sylk_clean()`
+- `Toolbox::canUseCas()`
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 
 ## [10.0.6] unreleased
