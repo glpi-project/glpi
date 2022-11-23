@@ -103,12 +103,12 @@ class Software extends InventoryAsset
 
             if (
                 !property_exists($val, 'name')
-                || ($val->name == ''
-                || str_starts_with(Toolbox::slugify($val->name), 'nok_')
-                )
+                || empty($val->name)
             ) {
                 if (property_exists($val, 'guid') && $val->guid != '') {
                     $val->name = $val->guid;
+                } elseif (property_exists($val, 'comments') && $val->comments != '') {
+                    $val->name = $val->comments;
                 }
             }
 
