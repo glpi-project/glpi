@@ -48,23 +48,30 @@ final class RulesManager
     {
         global $CFG_GLPI;
 
-        $itemtypes = array_merge($CFG_GLPI['rulecollections_types'], $CFG_GLPI['dictionnary_types']);
+        $rulecollections_types = $CFG_GLPI['rulecollections_types'];
+
+        foreach ($CFG_GLPI['dictionnary_types'] as $itemtype) {
+            $rulecollection = RuleCollection::getClassByType($itemtype);
+            if ($rulecollection instanceof RuleCollection) {
+                $rulecollections_types[] = get_class($rulecollection);
+            }
+        }
 
         $initialized_collections = json_decode(
             Config::getConfigurationValue('core', 'initialized_rules_collections'),
             true
         );
 
-        foreach ($itemtypes as $itemtype) {
-            $rulecollection = RuleCollection::getClassByType($itemtype);
+        foreach ($rulecollections_types as $rulecollection_type) {
             if (
-                !($rulecollection instanceof RuleCollection)
-                || in_array(get_class($rulecollection), $initialized_collections)
+                !is_a($rulecollection_type, RuleCollection::class, true)
+                || in_array($rulecollection_type, $initialized_collections)
             ) {
                 continue;
             }
 
-            $ruleclass = $rulecollection instanceof RuleCollection ? $rulecollection->getRuleClassName() : null;
+            $rulecollection = new $rulecollection_type();
+            $ruleclass = $rulecollection->getRuleClassName();
             if (!is_a($ruleclass, Rule::class, true) || !method_exists($ruleclass, 'initRules')) {
                 continue;
             }
