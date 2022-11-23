@@ -1323,21 +1323,21 @@ var GLPIImpact = {
             {
                 id             : 'goTo',
                 content        : '<i class="fas fa-link"></i>' + __("Go to"),
-                tooltipText    : __("Open this element in a new tab"),
+                tooltipText    : _.unescape(__("Open this element in a new tab")),
                 selector       : 'node[link]',
                 onClickFunction: this.menuOnGoTo
             },
             {
                 id             : 'showOngoing',
                 content        : '<i class="fas fa-list"></i>' + __("Show ongoing tickets"),
-                tooltipText    :  __("Show ongoing tickets for this item"),
+                tooltipText    :  _.unescape(__("Show ongoing tickets for this item")),
                 selector       : 'node[hasITILObjects=1]',
                 onClickFunction: this.menuOnShowOngoing
             },
             {
                 id             : 'editCompound',
                 content        : '<i class="fas fa-edit"></i>' + __("Group properties..."),
-                tooltipText    : __("Set name and/or color for this group"),
+                tooltipText    : _.unescape(__("Set name and/or color for this group")),
                 selector       : 'node:parent',
                 onClickFunction: this.menuOnEditCompound,
                 show           : !this.readonly,
@@ -1345,7 +1345,7 @@ var GLPIImpact = {
             {
                 id             : 'removeFromCompound',
                 content        : '<i class="fas fa-external-link-alt"></i>' + __("Remove from group"),
-                tooltipText    : __("Remove this asset from the group"),
+                tooltipText    : _.unescape(__("Remove this asset from the group")),
                 selector       : 'node:child',
                 onClickFunction: this.menuOnRemoveFromCompound,
                 show           : !this.readonly,
@@ -1353,7 +1353,7 @@ var GLPIImpact = {
             {
                 id             : 'delete',
                 content        : '<i class="fas fa-trash"></i>' + __("Delete"),
-                tooltipText    : __("Delete element"),
+                tooltipText    : _.unescape(__("Delete element")),
                 selector       : 'node, edge',
                 onClickFunction: this.menuOnDelete,
                 show           : !this.readonly,
