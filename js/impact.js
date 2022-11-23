@@ -1322,21 +1322,21 @@ var GLPIImpact = {
         return [
             {
                 id             : 'goTo',
-                content        : '<i class="fas fa-link"></i>' + __("Go to"),
+                content        : '<i class="fas fa-link me-2"></i>' + __("Go to"),
                 tooltipText    : _.unescape(__("Open this element in a new tab")),
                 selector       : 'node[link]',
                 onClickFunction: this.menuOnGoTo
             },
             {
                 id             : 'showOngoing',
-                content        : '<i class="fas fa-list"></i>' + __("Show ongoing tickets"),
-                tooltipText    :  _.unescape(__("Show ongoing tickets for this item")),
+                content        : '<i class="fas fa-list me-2"></i>' + __("Show ongoing tickets"),
+                tooltipText    : _.unescape(__("Show ongoing tickets for this item")),
                 selector       : 'node[hasITILObjects=1]',
                 onClickFunction: this.menuOnShowOngoing
             },
             {
                 id             : 'editCompound',
-                content        : '<i class="fas fa-edit"></i>' + __("Group properties..."),
+                content        : '<i class="fas fa-edit me-2"></i>' + __("Group properties..."),
                 tooltipText    : _.unescape(__("Set name and/or color for this group")),
                 selector       : 'node:parent',
                 onClickFunction: this.menuOnEditCompound,
@@ -1344,7 +1344,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'removeFromCompound',
-                content        : '<i class="fas fa-external-link-alt"></i>' + __("Remove from group"),
+                content        : '<i class="fas fa-external-link-alt me-2"></i>' + __("Remove from group"),
                 tooltipText    : _.unescape(__("Remove this asset from the group")),
                 selector       : 'node:child',
                 onClickFunction: this.menuOnRemoveFromCompound,
@@ -1352,7 +1352,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'delete',
-                content        : '<i class="fas fa-trash"></i>' + __("Delete"),
+                content        : '<i class="fas fa-trash me-2"></i>' + __("Delete"),
                 tooltipText    : _.unescape(__("Delete element")),
                 selector       : 'node, edge',
                 onClickFunction: this.menuOnDelete,
