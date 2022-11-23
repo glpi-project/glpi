@@ -177,7 +177,7 @@ class Dropdown
         }
 
         if ($params['readonly']) {
-            return '<span class="form-control" readonly>'
+            return '<span class="form-control" readonly style="width: ' . $params["width"] . '">'
                 . ($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
         }
@@ -2127,7 +2127,7 @@ JAVASCRIPT;
                     $to_display[] = $elements[$value];
                 }
             }
-            $output .= '<span class="form-control" readonly>' . implode(', ', $to_display) . '</span>';
+            $output .= '<span class="form-control" readonly style="width: ' . $param["width"] . '">' . implode(', ', $to_display) . '</span>';
         } else {
             $output  .= "<select name='$field_name' id='$field_id'";
 
