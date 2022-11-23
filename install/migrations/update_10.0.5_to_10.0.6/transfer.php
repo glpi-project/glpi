@@ -39,4 +39,4 @@
  */
 
 
-$migration->addField('glpi_transfers', 'disable_locked_field', "int", ['value' => '0']);
+$migration->addField('glpi_transfers', 'locked_field', "int", ['value' => '0']);

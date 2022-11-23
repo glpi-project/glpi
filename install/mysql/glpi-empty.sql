@@ -7485,7 +7485,7 @@ CREATE TABLE `glpi_transfers` (
   `keep_disk` int NOT NULL DEFAULT '0',
   `keep_certificate` int NOT NULL DEFAULT '0',
   `clean_certificate` int NOT NULL DEFAULT '0',
-  `disable_locked_field` int NOT NULL DEFAULT '0',
+  `locked_field` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
