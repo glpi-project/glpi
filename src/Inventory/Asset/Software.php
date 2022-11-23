@@ -447,7 +447,7 @@ class Software extends InventoryAsset
      */
     protected function getSoftwareKey($name, $manufacturers_id): string
     {
-        return $this->getCompareKey([Toolbox::slugify($name), $manufacturers_id]);
+        return $this->getCompareKey([Toolbox::slugify($name, 'slug_', true), $manufacturers_id]);
     }
 
     /**

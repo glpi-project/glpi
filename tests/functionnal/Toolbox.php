@@ -66,15 +66,109 @@ class Toolbox extends DbTestCase
     {
         return [
             [
+                'string'   => '10-a-valid-one-with-number',
+                'expected' => 'slug_10-a-valid-one-with-number',
+                'allow_special_char' => false
+            ],
+            [
                 'string'   => 'My - string èé  Ê À ß',
-                'expected' => 'my-string-ee-e-a-ss'
-            ], [
+                'expected' => 'my-string-ee-e-a-ss',
+                'allow_special_char' => false
+            ],
+            [
             //https://github.com/glpi-project/glpi/issues/2946
                 'string'   => 'Έρευνα ικανοποίησης - Αιτήματα',
-                'expected' => 'ereuna-ikanopoieses-aitemata'
-            ], [
+                'expected' => 'ereuna-ikanopoieses-aitemata',
+                'allow_special_char' => false
+            ],
+            [
                 'string'   => 'a-valid-one',
                 'expected' => 'a-valid-one',
+                'allow_special_char' => false
+            ],
+            [
+                //Maïthili
+                'string'     => 'आविष्कारक मूल निवासी glpi',
+                'expected'  => 'aviskaraka-mula-nivasi-glpi',
+                'allow_special_char' => false
+            ],
+            [
+                //odia
+                'string'     => 'नेटिभ GLPI सूची',
+                'expected'  => 'netibha-glpi-suci',
+                'allow_special_char' => false
+            ],
+            [
+                //nepal
+                'string'     => 'ଦେଶୀ GLPI ଭଣ୍ଡାର |',
+                'expected'  => 'desi-glpi-bhandara',
+                'allow_special_char' => false
+            ],
+            [
+                //cambodian
+                'string'     => 'ភាសាខ្មែរ កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង',
+                'expected'  => 'ភាសាខ្មែរ-កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង',
+                'allow_special_char' => true
+            ],
+            [
+                //thaï
+                'string'     => 'สินค้าคงคลัง GLPI ดั้งเดิม',
+                'expected'  => 'sinkha-khngkhlang-glpi-dangdeim',
+                'allow_special_char' => false
+            ],
+            [
+                //tigrina
+                'string'     => 'ተወላዲ GLPI ዝርዝር ኣቑሑት።',
+                'expected'  => 'teweladi-glpi-riri-aqhuhhuti',
+                'allow_special_char' => false
+            ],
+            [
+                //latin
+                'string'     => 'Adobe Photoshop',
+                'expected'  => 'adobe-photoshop',
+                'allow_special_char' => false
+            ],
+            [
+                //cyrillic
+                'string'     => 'Песня про надежду',
+                'expected'  => 'pesna-pro-nadezdu',
+                'allow_special_char' => false
+            ],
+            [
+                //korean
+                'string' => '저는 7년 동안 한국에서 살았어요',
+                'expected'  => 'jeoneun-7nyeon-dong-an-hangug-eseo-sal-ass-eoyo',
+                'allow_special_char' => false
+            ],
+            [
+                //japan
+                'string' => 'グルピ ネイティブ インベントリ',
+                "expected" => "gurupi-neitibu-inbentori",
+                'allow_special_char' => false
+            ],
+            [
+                //ukrainian
+                'string' => 'інвентаризація нативного фонду GLPI',
+                "expected" => "inventarizacia-nativnogo-fondu-glpi",
+                'allow_special_char' => false
+            ],
+            [
+                //estonian
+                'string' => 'glpi algupärane inventuur',
+                "expected" => "glpi-alguparane-inventuur",
+                'allow_special_char' => false
+            ],
+            [
+                //kazakh
+                'string' => 'GLPI жергілікті түгендеу',
+                "expected" => "glpi-zergilikti-tgendeu",
+                'allow_special_char' => false
+            ],
+            [
+                //kurd
+                'string' => 'Envantera GLPI ya xwecihî',
+                "expected" => "envantera-glpi-ya-xwecihi",
+                'allow_special_char' => false
             ]
         ];
     }
@@ -82,9 +176,9 @@ class Toolbox extends DbTestCase
     /**
      * @dataProvider slugifyProvider
      */
-    public function testSlugify($string, $expected)
+    public function testSlugify($string, $expected, $allow_special_char)
     {
-        $this->string(\Toolbox::slugify($string))->isIdenticalTo($expected);
+        $this->string(\Toolbox::slugify($string, 'slug_', $allow_special_char))->isIdenticalTo($expected);
     }
 
     protected function filenameProvider()
@@ -1516,91 +1610,4 @@ class Toolbox extends DbTestCase
         }
         $this->boolean(call_user_func_array('Toolbox::isUrlSafe', $params))->isEqualTo($expected);
     }
-
-
-    protected function prepareDateForSafeTransliterate(): iterable
-    {
-        return [
-            [
-                //Maïthili
-                'string'     => 'आविष्कारक मूल निवासी glpi',
-                'expected'  => 'aviskaraka-mula-nivasi-glpi',
-            ],
-            [
-                //odia
-                'string'     => 'नेटिभ GLPI सूची',
-                'expected'  => 'netibha-glpi-suci',
-            ],
-            [
-                //nepal
-                'string'     => 'ଦେଶୀ GLPI ଭଣ୍ଡାର |',
-                'expected'  => 'desi-glpi-bhandara',
-            ],
-            [
-                //cambodian
-                'string'     => 'ភាសាខ្មែរ កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង',
-                'expected'  => 'ភាសាខ្មែរ-កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង',
-            ],
-            [
-                //thaï
-                'string'     => 'สินค้าคงคลัง GLPI ดั้งเดิม',
-                'expected'  => 'sinkha-khngkhlang-glpi-dangdeim',
-            ],
-            [
-                //tigrina
-                'string'     => 'ተወላዲ GLPI ዝርዝር ኣቑሑት።',
-                'expected'  => 'teweladi-glpi-riri-aqhuhhuti',
-            ],
-            [
-                //latin
-                'string'     => 'Adobe Photoshop',
-                'expected'  => 'adobe-photoshop',
-            ],
-            [
-                //cyrillic
-                'string'     => 'Песня про надежду',
-                'expected'  => 'pesna-pro-nadezdu',
-            ],
-            [
-                //korean
-                'string' => '저는 7년 동안 한국에서 살았어요',
-                'expected'  => 'jeoneun-7nyeon-dong-an-hangug-eseo-sal-ass-eoyo'
-            ],
-            [
-                //japan
-                'string' => 'グルピ ネイティブ インベントリ',
-                "expected" => "gurupi-neitibu-inbentori"
-            ],
-            [
-                //ukrainian
-                'string' => 'інвентаризація нативного фонду GLPI',
-                "expected" => "inventarizacia-nativnogo-fondu-glpi"
-            ],
-            [
-                //estonian
-                'string' => 'glpi algupärane inventuur',
-                "expected" => "glpi-alguparane-inventuur"
-            ],
-            [
-                //kazakh
-                'string' => 'GLPI жергілікті түгендеу',
-                "expected" => "glpi-zergilikti-tgendeu"
-            ],
-            [
-                //kurd
-                'string' => 'Envantera GLPI ya xwecihî',
-                "expected" => "envantera-glpi-ya-xwecihi"
-            ]
-        ];
-    }
-
-
-    /**
-     * @dataProvider prepareDateForSafeTransliterate
-     */
-    public function testPrepareDateForSafeTransliterate(string $string, string $expected): void
-    {
-        $this->string(\Toolbox::slugify($string))->isEqualTo($expected);
-    }
-
 }

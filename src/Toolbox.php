@@ -2627,15 +2627,18 @@ class Toolbox
      *
      * @return string
      */
-    public static function slugify($str, $prefix = 'slug_')
+    public static function slugify($str, $prefix = 'slug_', $allow_special_chars = false)
     {
         $string = transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $str);
         //if langage are no supported and return empty string
         //replace it by original string
-        if (empty(trim($string))) {
+        if (empty(trim($string)) && $allow_special_chars) {
             $string = $str;
         }
         $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
+        if (!$allow_special_chars) {
+            $string = preg_replace('~[^0-9a-z_\.]+~i', '-', $string);
+        }
         $string = trim($string, '-');
         if ($string == '') {
            //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
