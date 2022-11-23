@@ -1757,7 +1757,7 @@ class CommonDBTM extends CommonGLPI
         if (
             (
                 isset($this->input['_transfer']) //do not managed lock from transfer if needed
-                && $this->input['_locked_field']
+                && isset($this->input['_locked_field'])
             )
             && $this->isDynamic()
             && (in_array('is_dynamic', $this->updates) || isset($this->input['is_dynamic'])
@@ -1792,7 +1792,7 @@ class CommonDBTM extends CommonGLPI
         if (
             (
                 isset($this->input['_transfer']) //do not managed lock from transfer if needed
-                && $this->input['_locked_field']
+                && isset($this->input['_locked_field'])
             )
             && $lockedfield->isHandled($this)
             && (!isset($this->input['is_dynamic']) || $this->input['is_dynamic'] == false)
