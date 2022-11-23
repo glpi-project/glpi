@@ -2423,14 +2423,11 @@ HTML;
                 'name'    => 'symfony/mime',
                 'check'   => 'Symfony\\Mime\\Message'
             ],
+            [
+                'name'  => 'jasig/phpcas',
+                'check' => 'phpCAS'
+            ],
         ];
-        if (Toolbox::canUseCAS()) {
-            $deps[] = [
-                'name'    => 'phpCas',
-                'version' => phpCAS::getVersion(),
-                'check'   => 'phpCAS'
-            ];
-        }
         return $deps;
     }
 

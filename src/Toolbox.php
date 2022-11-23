@@ -1173,19 +1173,6 @@ class Toolbox
 
 
     /**
-     * Determine if CAS auth is usable checking lib existence
-     *
-     * @since 9.3
-     *
-     * @return boolean
-     **/
-    public static function canUseCas()
-    {
-        return class_exists('phpCAS');
-    }
-
-
-    /**
      * Check Write Access to a directory
      *
      * @param string $dir  directory to check

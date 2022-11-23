@@ -11,7 +11,6 @@ parameters:
     stubFiles:
         - stubs/glpi_constants.php
     ignoreErrors:
-        - '/Call to static method \w+\(\) on an unknown class phpCAS/'
         - '/Class Ldap\\Connection not found/'
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
