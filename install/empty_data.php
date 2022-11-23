@@ -347,6 +347,7 @@ $empty_data_builder = new class
             'planning_work_days' => exportArrayToDB([0, 1, 2, 3, 4, 5, 6]),
             'system_user' => 6,
             'support_legacy_data' => 0, // New installation should not support legacy data
+            'initialized_rules_collections' => '[]',
         ];
 
         $tables['glpi_configs'] = [];
