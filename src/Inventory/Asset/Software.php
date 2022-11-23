@@ -103,9 +103,7 @@ class Software extends InventoryAsset
 
             if (
                 !property_exists($val, 'name')
-                || ($val->name == ''
-                || str_starts_with(Toolbox::slugify($val->name), 'nok_')
-                )
+                || $val->name == ''
             ) {
                 if (property_exists($val, 'guid') && $val->guid != '') {
                     $val->name = $val->guid;
@@ -447,7 +445,7 @@ class Software extends InventoryAsset
      */
     protected function getSoftwareKey($name, $manufacturers_id): string
     {
-        return $this->getCompareKey([Toolbox::slugify($name), $manufacturers_id]);
+        return $this->getCompareKey([sha1($name), $manufacturers_id]);
     }
 
     /**
@@ -478,7 +476,7 @@ class Software extends InventoryAsset
     protected function getFullCompareKey(\stdClass $val, bool $with_version = true): string
     {
         return $this->getCompareKey([
-            Toolbox::slugify($val->name),
+            sha1($val->name),
             $with_version ? strtolower($val->version) : '',
             strtolower($val->arch ?? ''),
             $val->manufacturers_id,
@@ -498,7 +496,7 @@ class Software extends InventoryAsset
     protected function getSimpleCompareKey(\stdClass $val): string
     {
         return $this->getCompareKey([
-            Toolbox::slugify($val->name),
+            sha1($val->name),
             strtolower($val->version),
             strtolower($val->arch ?? ''),
             $val->entities_id ?? 0,
