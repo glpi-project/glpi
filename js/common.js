@@ -1503,3 +1503,58 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     }
     hideDisclosablePasswordField(item);
 }
+
+/**
+ * Convert an HTML table with static content to a basic sortable table
+ * @param element_id The ID of the table to be converted
+ */
+function initSortableTable(element_id) {
+    const element = $(`#${element_id}`);
+    const sort_table = (column_index) => {
+        const current_sort = element.data('sort');
+        element.data('sort', column_index);
+        const current_order = element.data('order');
+        const new_order = current_sort === column_index && current_order === 'asc' ? 'desc' : 'asc';
+        element.data('order', new_order);
+        const col = element.find('thead').first().find('th').eq(column_index);
+
+        const sort_icon = col.find('i');
+        if (sort_icon.length === 0) {
+            // Add sort icon
+            col.eq(0).append(`<i class="fas fa-sort-${new_order}"></i>`);
+        } else {
+            sort_icon.removeClass('fa-sort fa-sort-asc fa-sort-desc');
+            sort_icon.addClass(new_order === 'asc' ? 'fa-sort-asc' : 'fa-sort-desc');
+        }
+
+        const rows = element.find('tbody tr');
+        const sorted_rows = rows.sort((a, b) => {
+            let a_value = $(a).find('td').eq(column_index).text();
+            let b_value = $(b).find('td').eq(column_index).text();
+            // if the values are numberic, cast them to numbers to sort them correctly
+            if (!isNaN(a_value) && !isNaN(b_value)) {
+                a_value = Number(a_value);
+                b_value = Number(b_value);
+            }
+
+            if (a_value === b_value) {
+                return 0;
+            }
+            if (new_order === 'asc') {
+                return a_value < b_value ? -1 : 1;
+            }
+            return a_value > b_value ? -1 : 1;
+        });
+        element.find('tbody').html(sorted_rows);
+    };
+
+    // Make all th in thead appear clickable and bold
+    element.find('thead th').css('cursor', 'pointer');
+    element.find('thead th').css('font-weight', 'bold');
+
+    element.find('thead th').each((index, header) => {
+        $(header).on('click', () => {
+            sort_table(index);
+        });
+    });
+}

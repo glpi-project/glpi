@@ -1,0 +1,188 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = rand|default(random()) %}
+
+{% macro print_clean_array(data, pad = 0, js_expand = false) %}
+   {% if data|length > 0 %}
+      <table class="array-debug table table-striped">
+         <tr>
+            <th>KEY</th>
+            <th>=></th>
+            <th>VALUE</th>
+         </tr>
+         {% for key,value in data %}
+            {% set row_rand = random() %}
+            <tr>
+               <td>{{ key }}</td>
+               <td>
+                  {% if js_expand and val is array %}
+                     <a href="javascript:showHideDiv('content{{ key ~ row_rand}}', '', '', '')">=></a>
+                  {% else %}
+                     =>
+                  {% endif %}
+               </td>
+               <td>
+                  {% if val is array %}
+                     <div id="content{{ key ~ row_rand}}" {{ js_expand ? 'style="display: none"' : '' }}>
+                        {{ _self.print_clean_array(value, pad + 1) }}
+                     </div>
+                  {% else %}
+                     {% if val is same as(true) or val is same as(false) %}
+                        {{ val ? 'true' : 'false' }}
+                     {% elseif val is object %}
+                        {{ call([val, '__toString'])|default('(object) ' ~ get_class(val)) }}
+                     {% else %}
+                        {{ val }}
+                     {% endif %}
+                  {% endif %}
+               </td>
+            </tr>
+         {% endfor %}
+      </table>
+   {% else %}
+      {{ __('Empty array') }}
+   {% endif %}
+{% endmacro %}
+
+<div id="debugpanel{{ rand }}" class="container-fluid card debug-panel {{ ajax ? "debug_ajax" : "" }}">
+   <ul class="nav nav-tabs" data-bs-toggle="tabs">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#debugsummary{{ rand }}">SUMMARY</a></li>
+      {% if debug_sql %}
+         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugsql{{ rand }}">SQL REQUEST</a></li>
+      {% endif %}
+      {% if debug_vars %}
+         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugpost{{ rand }}">POST VARIABLE</a></li>
+         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugget{{ rand }}">GET VARIABLE</a></li>
+         {% if with_session %}
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugsession{{ rand }}">SESSION VARIABLE</a></li>
+         {% endif %}
+         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugserver{{ rand }}">SERVER VARIABLE</a></li>
+      {% endif %}
+      {% for tab_id,tab_info in plugin_tabs %}
+         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debug{{ tab_id ~ rand }}">{{ tab_info['title'] }}</a></li>
+      {% endfor %}
+      <li class="nav-item ms-auto">
+         <a id="close_debug{{ rand }}" class="nav-link" href="#">
+            <i class="fas fa-2x fa-times"></i>
+            <span class="sr-only">{{ __('Close') }}</span>
+         </a>
+         <script>
+            $('#close_debug{{ rand }}').on('click', function() {
+               $('#debugpanel{{ rand }}').css('display', 'none');
+            });
+         </script>
+      </li>
+   </ul>
+
+   <div class="card-body">
+      <div class="tab-content">
+         <div id="debugsummary{{ rand }}" class="tab-pane active">
+            <dl class="row">
+               <dt class="col-sm-3">Execution time</dt>
+               <dd class="col-sm-9">{{ summary['execution_time'] }}</dd>
+               <dt class="col-sm-3">Memory usage</dt>
+               <dd class="col-sm-9">{{ summary['memory_usage'] }}</dd>
+               {% if debug_sql %}
+                  <dt class="col-sm-3">SQL queries count</dt>
+                  <dd class="col-sm-9">{{ summary['sql_queries_count'] }}</dd>
+                  <dt class="col-sm-3">SQL queries duration</dt>
+                  <dd class="col-sm-9">{{ summary['sql_queries_duration'] }}</dd>
+               {% endif %}
+            </dl>
+         </div>
+
+         {% if debug_sql %}
+            <div id="debugsql{{ rand }}" class="tab-pane">
+               <h1>{{ sql_info['total_requests'] }} Queries took {{ sql_info['total_duration'] }}</h1>
+               <table id="debugsql{{ rand }}_table" class="table">
+                  <thead>
+                     <tr>
+                        <th>N°</th>
+                        <th>Query</th>
+                        <th>Time</th>
+                        <th>Rows</th>
+                        <th>Warnings</th>
+                        <th>Errors</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for query in sql_info['queries'] %}
+                        <tr>
+                           <td>{{ query['num'] }}</td>
+                           <td>{{ query['query'] }}</td>
+                           <td>{{ query['time'] }}</td>
+                           <td>{{ query['rows'] }}</td>
+                           <td>{{ query['warnings'] }}</td>
+                           <td>{{ query['errors'] }}</td>
+                        </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+               <script>
+                  initSortableTable('debugsql{{ rand }}_table');
+               </script>
+            </div>
+         {% endif %}
+
+         {% if debug_vars %}
+            <div id="debugpost{{ rand }}" class="tab-pane">
+               {{ _self.print_clean_array(vars_info['post'], 0, true) }}
+            </div>
+            <div id="debugget{{ rand }}" class="tab-pane">
+               {{ _self.print_clean_array(vars_info['get'], 0, true) }}
+            </div>
+            {% if with_session %}
+               <div id="debugsession{{ rand }}" class="tab-pane">
+                  {{ _self.print_clean_array(vars_info['session'], 0, true) }}
+               </div>
+            {% endif %}
+            <div id="debugserver{{ rand }}" class="tab-pane">
+               {{ _self.print_clean_array(vars_info['server'], 0, true) }}
+            </div>
+         {% endif %}
+
+         {% for tab_id,tab_info in plugin_tabs %}
+            {% if tab_info['display_callable'] is defined %}
+               <div id="debug{{ tab_id ~ rand }}" class="tab-pane">
+                  {{ call(tab_info['display_callable'], {
+                     'with_session': with_session,
+                     'ajax': ajax,
+                     'rand': rand,
+                  }) }}
+               </div>
+            {% endif %}
+         {% endfor %}
+      </div>
+   </div>
+</div>
