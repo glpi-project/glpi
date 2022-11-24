@@ -709,6 +709,7 @@ class MailCollector extends DbTestCase
                     '33 - HTML message with unwanted tags inside body tag',
                     '34 - Message with no MessageID header',
                     '35 - Message with some invalid headers',
+                    '36 - Microsoft specific code',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -766,6 +767,40 @@ HTML,
             '35 - Message with some invalid headers' => <<<PLAINTEXT
 This message has some invalid headers, but it should collected anyways.
 PLAINTEXT,
+            '36 - Microsoft specific code' => <<<HTML
+<div class=WordSection1>
+      <p class=MsoNormal>
+        <span style='font-family:Roboto'>First Line</span>
+      </p>
+      <p class=MsoNormal>
+        <span style='font-family:Roboto'></span>
+      </p>
+      <p class=MsoListParagraph style='text-indent:-18.0pt;mso-list:l0 level1 lfo1'>
+        <span style='font-family:Roboto'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>
+        <span style='font-family:Roboto'>First hyphen</span>
+      </p>
+      <p class=MsoListParagraph style='text-indent:-18.0pt;mso-list:l0 level1 lfo1'>
+        <span style='font-family:Roboto'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>
+        <span style='font-family:Roboto'>Second hyphen</span>
+      </p>
+      <p class=MsoListParagraph style='text-indent:-18.0pt;mso-list:l0 level1 lfo1'>
+        <span style='font-family:Roboto'><span style='mso-list:Ignore'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>
+        <span style='font-family:Roboto'>Third hyphen</span>
+      </p>
+      <p class=MsoListParagraph style='margin-left:72.0pt;text-indent:-18.0pt;mso-list:l0 level2 lfo1'>
+        <span style='font-family:"Courier New"'><span style='mso-list:Ignore'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; </span></span></span>
+        <span style='font-family:Roboto'>Next tab hyphen</span>
+      </p>
+      <p class=MsoListParagraph style='margin-left:108.0pt;text-indent:-18.0pt;mso-list:l0 level3 lfo1'>
+        <span style='font-family:Wingdings'><span style='mso-list:Ignore'>▪<span style='font:7.0pt "Times New Roman"'>&nbsp; </span></span></span>
+        <span style='font-family:Roboto'>Next next tab hypen</span>
+      </p>
+      <p class=MsoNormal>
+        <span style='font-family:Roboto'></span>
+      </p>
+      
+    </div>
+HTML,
         ];
 
         foreach ($actors_specs as $actor_specs) {
