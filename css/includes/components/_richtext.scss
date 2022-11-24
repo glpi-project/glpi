@@ -49,6 +49,7 @@ body.mce-content-body {
 
 .tox.tox-tinymce {
     border: $input-border-width solid $input-border-color;
+
     @include border-radius($input-border-radius, 0);
 }
 
