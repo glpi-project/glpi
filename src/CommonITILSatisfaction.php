@@ -265,7 +265,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param int $value Between 0 and 10
      **/
-    public static function displaySatisfaction($value, $entities_id, $use_js = true)
+    public static function displaySatisfaction($value, $entities_id)
     {
         if (is_null($value)) {
             return "";
