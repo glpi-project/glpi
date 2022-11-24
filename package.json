@@ -5,8 +5,8 @@
     "description": "GLPI dependencies",
     "license": "GPL-3.0-or-later",
     "engines": {
-        "node": ">= 16.0",
-        "npm": ">= 7.0"
+        "node": ">= 16.11",
+        "npm": ">= 8.0"
     },
     "dependencies": {
         "@fontsource/inter": "^4.5.4",
