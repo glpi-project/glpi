@@ -856,7 +856,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                     'title'     => $item->get_title(),
                     'link'      => URL::sanitizeURL($item->get_permalink()),
                     'timestamp' => Html::convDateTime($item->get_date('Y-m-d H:i:s')),
-                    'content'   => $item->get_content()
+                    'content'   => RichText::getSafeHtml($item->get_content()),
                 ];
             }
         } else {
