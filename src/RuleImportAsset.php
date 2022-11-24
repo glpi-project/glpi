@@ -538,9 +538,9 @@ class RuleImportAsset extends Rule
             $result_glpi = $DB->request($it_criteria);
 
             if (count($result_glpi)) {
+                $this->criterias_results['found_port'] = [];
                 foreach ($result_glpi as $data) {
                     $this->criterias_results['found_inventories'][$itemtype][] = $data['id'];
-                    $this->criterias_results['found_port'] = 0;
                     foreach ($data as $alias => $value) {
                         if (
                             strstr($alias, "portid")
@@ -548,7 +548,7 @@ class RuleImportAsset extends Rule
                             && is_numeric($value)
                             && $value > 0
                         ) {
-                            $this->criterias_results['found_port'] = $value;
+                            $this->criterias_results['found_port'][] = $value;
                         }
                     }
                 }
