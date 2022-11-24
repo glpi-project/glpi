@@ -617,6 +617,5 @@ class Software extends AbstractInventoryAsset
         $version = new SoftwareVersion();
         $this->boolean($version->getFromDB($first_computer_soft['softwareversions_id']))->isTrue();
         $this->string($version->fields['name'])->isEqualTo("1.4");
-
     }
 }
