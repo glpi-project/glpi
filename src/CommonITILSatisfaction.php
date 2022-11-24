@@ -284,21 +284,19 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $value = $max_rate;
         }
 
-        if ($use_js) {
-            $rand = mt_rand();
-            $out = "<input type='hidden' id='backing_$rand'>";
-            $out .= "<div id='rateit_$rand' class='rateit'></div>";
-            $out .= Html::scriptBlock("
-                $(function () {
-                    $('#rateit_$rand').rateit({
-                        max: $max_rate,
-                        resetable: false,
-                        value: $value,
-                        readonly: true,
-                    });
+        $rand = mt_rand();
+        $out = "<input type='hidden' id='backing_$rand'>";
+        $out .= "<div id='rateit_$rand' class='rateit'></div>";
+        $out .= Html::scriptBlock("
+            $(function () {
+                $('#rateit_$rand').rateit({
+                    max: $max_rate,
+                    resetable: false,
+                    value: $value,
+                    readonly: true,
                 });
-            ");
-        }
+            });
+        ");
 
         return $out;
     }
