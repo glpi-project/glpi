@@ -41,20 +41,20 @@
             <th>=></th>
             <th>VALUE</th>
          </tr>
-         {% for key,value in data %}
+         {% for key, value in data %}
             {% set row_rand = random() %}
             <tr>
                <td>{{ key }}</td>
                <td>
                   {% if js_expand and val is array %}
-                     <a href="javascript:showHideDiv('content{{ key ~ row_rand}}', '', '', '')">=></a>
+                     <a href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">=></a>
                   {% else %}
                      =>
                   {% endif %}
                </td>
                <td>
                   {% if val is array %}
-                     <div id="content{{ key ~ row_rand}}" {{ js_expand ? 'style="display: none"' : '' }}>
+                     <div id="content{{ key ~ row_rand }}" {{ js_expand ? 'style="display: none"' : '' }}>
                         {{ _self.print_clean_array(value, pad + 1) }}
                      </div>
                   {% else %}
@@ -89,7 +89,7 @@
          {% endif %}
          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debugserver{{ rand }}">SERVER VARIABLE</a></li>
       {% endif %}
-      {% for tab_id,tab_info in plugin_tabs %}
+      {% for tab_id, tab_info in plugin_tabs %}
          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#debug{{ tab_id ~ rand }}">{{ tab_info['title'] }}</a></li>
       {% endfor %}
       <li class="nav-item ms-auto">
@@ -172,7 +172,7 @@
             </div>
          {% endif %}
 
-         {% for tab_id,tab_info in plugin_tabs %}
+         {% for tab_id, tab_info in plugin_tabs %}
             {% if tab_info['display_callable'] is defined %}
                <div id="debug{{ tab_id ~ rand }}" class="tab-pane">
                   {{ call(tab_info['display_callable'], {
