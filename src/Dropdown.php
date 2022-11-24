@@ -177,7 +177,8 @@ class Dropdown
         }
 
         if ($params['readonly']) {
-            return '<span class="form-control" readonly style="width: ' . $params["width"] . '">'
+            return '<span class="form-control" readonly'
+                . ($params['width'] ? 'style="width: ' . $params["width"] . '"' : ''). '>'
                 . ($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
         }
