@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use SoftwareVersion;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/computer.class.php */
@@ -505,5 +507,115 @@ class Software extends AbstractInventoryAsset
         $first_soft = array_pop($softs);
         $this->integer($first_soft['entities_id'])->isIdenticalTo($entity_2_id);
         $this->integer($first_soft['is_recursive'])->isIdenticalTo(0);
+    }
+
+    public function testSoftwareWithSpecialChar()
+    {
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <SOFTWARES>
+            <ARCH>x86_64</ARCH>
+            <COMMENTS>Soft with special langage</COMMENTS>
+            <FILESIZE>67382735</FILESIZE>
+            <FROM>rpm</FROM>
+            <INSTALLDATE>03/09/2018</INSTALLDATE>
+            <NAME>ភាសាខ្មែរ កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង</NAME>
+            <PUBLISHER>Other</PUBLISHER>
+            <SYSTEM_CATEGORY>Application</SYSTEM_CATEGORY>
+            <VERSION>1.1</VERSION>
+          </SOFTWARES>
+          <HARDWARE>
+            <NAME>pc_test_entity</NAME>
+          </HARDWARE>
+          <BIOS>
+            <SSN>ssnexample</SSN>
+          </BIOS>
+          <VERSIONCLIENT>test-agent</VERSIONCLIENT>
+          <ACCOUNTINFO>
+            <KEYNAME>TAG</KEYNAME>
+            <KEYVALUE>testtag_2</KEYVALUE>
+          </ACCOUNTINFO>
+        </CONTENT>
+        <DEVICEID>pc_test_entity</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $found_computers = $computer->find(['name' => "pc_test_entity"]);
+        $this->integer(count($found_computers))->isIdenticalTo(1);
+        $first_computer = array_pop($found_computers);
+
+        $soft = new \Software();
+        $softs = $soft->find(['name' => "ភាសាខ្មែរ កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង"]);
+        $this->integer(count($softs))->isIdenticalTo(1);
+
+        $computer_softversion = new \Item_SoftwareVersion();
+        $computer_softversions = $computer_softversion->find([
+            'itemtype' => "Computer",
+            'items_id' => $first_computer['id']
+        ]);
+        $this->integer(count($computer_softversions))->isIdenticalTo(1);
+        $first_computer_soft = array_pop($computer_softversions);
+
+        $version = new SoftwareVersion();
+        $this->boolean($version->getFromDB($first_computer_soft['softwareversions_id']))->isTrue();
+        $this->string($version->fields['name'])->isEqualTo("1.1");
+
+        //update software version
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <SOFTWARES>
+            <ARCH>x86_64</ARCH>
+            <COMMENTS>Soft with special langage</COMMENTS>
+            <FILESIZE>67382735</FILESIZE>
+            <FROM>rpm</FROM>
+            <INSTALLDATE>03/09/2018</INSTALLDATE>
+            <NAME>ភាសាខ្មែរ កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង</NAME>
+            <PUBLISHER>Other</PUBLISHER>
+            <SYSTEM_CATEGORY>Application</SYSTEM_CATEGORY>
+            <VERSION>1.4</VERSION>
+          </SOFTWARES>
+          <HARDWARE>
+            <NAME>pc_test_entity</NAME>
+          </HARDWARE>
+          <BIOS>
+            <SSN>ssnexample</SSN>
+          </BIOS>
+          <VERSIONCLIENT>test-agent</VERSIONCLIENT>
+          <ACCOUNTINFO>
+            <KEYNAME>TAG</KEYNAME>
+            <KEYVALUE>testtag_2</KEYVALUE>
+          </ACCOUNTINFO>
+        </CONTENT>
+        <DEVICEID>pc_test_entity</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $found_computers = $computer->find(['name' => "pc_test_entity"]);
+        $this->integer(count($found_computers))->isIdenticalTo(1);
+        $first_computer = array_pop($found_computers);
+
+        $soft = new \Software();
+        $softs = $soft->find(['name' => "ភាសាខ្មែរ កញ្ចប់បទពិសោធន៍ផ្ទៃក្នុង"]);
+        $this->integer(count($softs))->isIdenticalTo(1);
+
+        $computer_softversion = new \Item_SoftwareVersion();
+        $computer_softversions = $computer_softversion->find([
+            'itemtype' => "Computer",
+            'items_id' => $first_computer['id']
+        ]);
+        $this->integer(count($computer_softversions))->isIdenticalTo(1);
+        $first_computer_soft = array_pop($computer_softversions);
+
+        $version = new SoftwareVersion();
+        $this->boolean($version->getFromDB($first_computer_soft['softwareversions_id']))->isTrue();
+        $this->string($version->fields['name'])->isEqualTo("1.4");
     }
 }
