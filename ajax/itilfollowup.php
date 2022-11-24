@@ -90,13 +90,11 @@ $template->fields['content'] = $template->getRenderedContent($parent);
 //need when template is used and when GLPI preselected type if defined
 $template->fields['requesttypes_name'] = "";
 if ($template->fields['requesttypes_id']) {
-    $entityRestrict = getEntitiesRestrictCriteria(getTableForItemType(RequestType::getType()), "", $parent->fields['entities_id'], true);
-
     $requesttype = new RequestType();
     if (
         $requesttype->getFromDBByCrit([
             "id" => $template->fields['requesttypes_id'],
-        ] + $entityRestrict)
+        ])
     ) {
         $template->fields['requesttypes_name'] = Dropdown::getDropdownName(
             getTableForItemType(RequestType::getType()),

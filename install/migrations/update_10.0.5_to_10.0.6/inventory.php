@@ -37,7 +37,4 @@
  * @var DB $DB
  * @var Migration $migration
  */
-
-
-$conf = new \Glpi\Inventory\Conf();
-$conf->saveConf(['entities_id_default' => 0]);
+$migration->addConfig(["entities_id_default" => 0], 'inventory');

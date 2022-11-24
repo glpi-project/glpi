@@ -205,6 +205,9 @@ class Document_Item extends CommonDBRelation
     }
 
 
+    /**
+     * @TODO Remove `_do_update_ticket` handling in GLPI 10.1, it is not used anymore.
+     */
     public function post_addItem()
     {
 

@@ -47,6 +47,12 @@ body.mce-content-body {
     border-top: transparent;
 }
 
+.tox.tox-tinymce {
+    border: $input-border-width solid $input-border-color;
+
+    @include border-radius($input-border-radius, 0);
+}
+
 .rich_text_container {
     thead,
     tbody,

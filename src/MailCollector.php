@@ -1795,6 +1795,17 @@ class MailCollector extends CommonDBTM
                     $content
                 );
 
+                // Strip IE/Outlook conditional code.
+                // Strip commented conditional code (`<!--[if lte mso 9]>...<![endif]-->`) contents that
+                // is not supposed to be visible outside Outlook/IE context.
+                $content = preg_replace('/<!--\[if\s+[^\]]+\]>.*?<!\[endif\]-->/s', '', $content);
+                // Preserve uncommented conditional code (`<![if !supportLists]>...<![endif]>`) contents that
+                // is supposed to be visible outside Outlook/IE context.
+                $content = preg_replace('/<!\[if\s+[^\]]+\]>(.*?)<!\[endif\]>/s', '$1', $content);
+
+                // Strip namespaced tags.
+                $content = preg_replace('/<\w+:\w+>.*?<\/\w+:\w+>/s', '', $content);
+
                 // do not check for text part if we found html one.
                 break;
             }
