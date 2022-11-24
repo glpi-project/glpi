@@ -186,19 +186,11 @@
         })
     ) }}
 
-    {% set allow_search_view_options = inline_field_options %}
-    {% if not config['allow_search_view'] %}
-        {% set allow_search_view_options = allow_search_view_options|merge({
-            'readonly': true,
-            'disabled': true,
-        }) %}
-    {% endif %}
-
     {{ fields.dropdownYesNo(
         'allow_search_global',
         config['allow_search_global'],
         __('Global search'),
-        allow_search_view_options|merge({
+        inline_field_options|merge({
             'width': 'auto',
         })
     ) }}
