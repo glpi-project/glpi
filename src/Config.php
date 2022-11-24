@@ -179,11 +179,6 @@ class Config extends CommonDBTM
             }
         }
 
-        if (isset($input['allow_search_view']) && !$input['allow_search_view']) {
-           // Global search need "view"
-            $input['allow_search_global'] = 0;
-        }
-
         if (isset($input["smtp_passwd"]) && empty($input["smtp_passwd"])) {
             unset($input["smtp_passwd"]);
         }
