@@ -1549,8 +1549,8 @@ function initSortableTable(element_id) {
     };
 
     // Make all th in thead appear clickable and bold
-    element.find('thead th').css('cursor', 'pointer');
-    element.find('thead th').css('font-weight', 'bold');
+    element.find('thead th').attr('role', 'button');
+    element.find('thead th').addClass('fw-bold');
 
     element.find('thead th').each((index, header) => {
         $(header).on('click', () => {
