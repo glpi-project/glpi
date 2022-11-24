@@ -248,17 +248,22 @@
 
 <div class="row ps-4">
 
+    {% set locks_rand = random() %}
+    {% set id_lock_use_lock_item = 'lock_use_lock_item_' ~ locks_rand %}
+    {% set id_lock_lockprofile_id = 'dropdown_lock_lockprofile_id' ~ locks_rand %}
+    {% set id_lock_item_list_id = 'dropdown_lock_item_list' ~ locks_rand %}
     {{ fields.checkboxField(
         'lock_use_lock_item',
         config['lock_use_lock_item'],
         __('Use locks'),
-        inline_field_options
+        inline_field_options|merge({
+            'id': id_lock_use_lock_item,
+        })
     ) }}
 
     {% set lock_options = field_options %}
     {% if not config['lock_use_lock_item'] %}
         {% set lock_options = lock_options|merge({
-            'readonly': true,
             'disabled': true,
         }) %}
     {% endif %}
@@ -270,6 +275,7 @@
         __('Profile to be used when locking items'),
         inline_field_options|merge(lock_options)|merge({
             'width': 'auto',
+            'rand': locks_rand,
         })
     ) }}
 
@@ -281,8 +287,19 @@
         lock_options|merge({
             'multiple': true,
             'values': config['lock_item_list'],
+            'rand': locks_rand,
         })
     ) }}
+
+    <script>
+    $(function(ready){
+        $('#{{ id_lock_use_lock_item }}').change(function(){
+            var enabled = this.checked;
+            $('#{{ id_lock_lockprofile_id }}').prop('disabled', !enabled);
+            $('#{{ id_lock_item_list_id }}').prop('disabled', !enabled);
+        });
+    });
+    </script>
 </div>
 
 <div class="hr-text">
