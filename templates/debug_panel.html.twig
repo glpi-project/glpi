@@ -46,24 +46,24 @@
             <tr>
                <td>{{ key }}</td>
                <td>
-                  {% if js_expand and val is array %}
+                  {% if js_expand and value is array %}
                      <a href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">=></a>
                   {% else %}
                      =>
                   {% endif %}
                </td>
                <td>
-                  {% if val is array %}
+                  {% if value is array %}
                      <div id="content{{ key ~ row_rand }}" {{ js_expand ? 'style="display: none"' : '' }}>
                         {{ _self.print_clean_array(value, pad + 1) }}
                      </div>
                   {% else %}
-                     {% if val is same as(true) or val is same as(false) %}
-                        {{ val ? 'true' : 'false' }}
-                     {% elseif val is object %}
-                        {{ call([val, '__toString'])|default('(object) ' ~ get_class(val)) }}
+                     {% if value is same as(true) or value is same as(false) %}
+                        {{ value ? 'true' : 'false' }}
+                     {% elseif value is object %}
+                        {{ call([value, '__toString'])|default('(object) ' ~ get_class(value)) }}
                      {% else %}
-                        {{ val }}
+                        {{ value }}
                      {% endif %}
                   {% endif %}
                </td>
