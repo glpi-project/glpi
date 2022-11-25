@@ -113,6 +113,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
+- Usage of `planning_scheduler_key` plugins hook.
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
 - `Search::computeTitle()`
