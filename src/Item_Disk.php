@@ -55,6 +55,11 @@ class Item_Disk extends CommonDBChild
         return _n('Volume', 'Volumes', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'fas fa-hdd';
+    }
+
     public function post_getEmpty()
     {
 

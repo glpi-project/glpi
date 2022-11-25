@@ -56,6 +56,10 @@ class Notepad extends CommonDBChild
         return _n('Note', 'Notes', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-notes';
+    }
 
     public function getLogTypeID()
     {

@@ -350,7 +350,7 @@ class CommonGLPI implements CommonGLPIInterface
               || Infocom::canApplyOn($class)
               || in_array($class, $CFG_GLPI["reservation_types"]))
         ) {
-            $onglets[-2] = __('Debug');
+            $onglets[-2] = static::createTabEntry(__('Debug'), 1, 'ti ti-bug');
         }
         return $onglets;
     }
@@ -426,8 +426,12 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function addDefaultFormTab(array &$ong)
     {
-
-        $ong[$this->getType() . '$main'] = $this->getTypeName(1);
+        $icon = '';
+        if (method_exists(static::class, 'getIcon')) {
+            $icon = static::getIcon();
+        }
+        $icon = $icon ? "<i class='$icon me-2'></i>" : '';
+        $ong[static::getType() . '$main'] = '<span>' . $icon . static::getTypeName(1) . '</span>';
         return $this;
     }
 
@@ -696,6 +700,24 @@ class CommonGLPI implements CommonGLPIInterface
         return false;
     }
 
+    private static function getTabIconClass()
+    {
+        $icon = '';
+        $tab_itemtype = static::class;
+        $itemtype = $tab_itemtype;
+        if (is_subclass_of($tab_itemtype, CommonDBRelation::class)) {
+            // Get opposite itemtype than this
+            if ($tab_itemtype::$itemtype_1 === $itemtype || ($tab_itemtype::$itemtype_1 === 'itemtype' && $tab_itemtype::$itemtype_2 !== null)) {
+                $itemtype = $tab_itemtype::$itemtype_2;
+            } else if ($tab_itemtype::$itemtype_2 === $itemtype || ($tab_itemtype::$itemtype_2 === 'itemtype' && $tab_itemtype::$itemtype_1 !== null)) {
+                $itemtype = $tab_itemtype::$itemtype_1;
+            }
+        }
+        if (method_exists($itemtype, 'getIcon')) {
+            $icon = $itemtype::getIcon();
+        }
+        return $icon;
+    }
 
     /**
      * create tab text entry
@@ -705,9 +727,18 @@ class CommonGLPI implements CommonGLPIInterface
      *
      *  @return array array containing the onglets
      **/
-    public static function createTabEntry($text, $nb = 0)
+    public static function createTabEntry($text, $nb = 0, string $icon = '')
     {
-
+        if (empty($icon)) {
+            $icon = self::getTabIconClass();
+        }
+        if (str_contains($icon, 'fa-empty-icon')) {
+            $icon = '';
+        }
+        $icon = !empty($icon) ? "<i class='$icon me-2'></i>" : '';
+        if (!empty($icon)) {
+            $text = '<span>' . $icon . $text . '</span>';
+        }
         if ($nb) {
            //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
             $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge'>$nb</span>");

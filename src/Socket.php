@@ -68,6 +68,11 @@ class Socket extends CommonDBChild
     const FRONT   = 2;
     const BOTH    = 3;
 
+    public static function getIcon()
+    {
+        return NetworkPort::getIcon();
+    }
+
     public function canCreateItem()
     {
         return Session::haveRight(static::$rightname, CREATE);

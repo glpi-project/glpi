@@ -68,6 +68,11 @@ class Impact extends CommonGLPI
         return __('Impact analysis');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-chart-dots-3';
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         global $DB;

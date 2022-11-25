@@ -61,6 +61,10 @@ class RuleMatchedLog extends CommonDBTM
         return __('Matched rules');
     }
 
+    public static function getIcon()
+    {
+        return Rule::getIcon();
+    }
 
     /**
      * Count number of elements

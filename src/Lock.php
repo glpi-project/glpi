@@ -55,6 +55,10 @@ class Lock extends CommonGLPI
         return _n('Lock', 'Locks', $nb);
     }
 
+    public static function getIcon()
+    {
+        return "ti ti-lock";
+    }
 
     /**
      * Display form to unlock fields and links
@@ -871,7 +875,7 @@ class Lock extends CommonGLPI
     {
 
         if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
-            return Lock::getTypeName(Session::getPluralNumber());
+            return self::createTabEntry(Lock::getTypeName(Session::getPluralNumber()));
         }
         return '';
     }

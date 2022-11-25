@@ -53,6 +53,11 @@ class SoftwareVersion extends CommonDBChild
         return _n('Version', 'Versions', $nb);
     }
 
+    public static function getIcon()
+    {
+        return Software::getIcon();
+    }
+
 
     public function cleanDBonPurge()
     {

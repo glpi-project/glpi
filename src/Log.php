@@ -85,6 +85,10 @@ class Log extends CommonDBTM
         return __('Historical');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-history';
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
