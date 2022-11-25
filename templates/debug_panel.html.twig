@@ -140,7 +140,7 @@
                      {% for query in sql_info['queries'] %}
                         <tr>
                            <td>{{ query['num'] }}</td>
-                           <td>{{ query['query'] }}</td>
+                           <td>{{ query['query']|raw }}</td>
                            <td>{{ query['time'] }}</td>
                            <td>{{ query['rows'] }}</td>
                            <td>{{ query['warnings'] }}</td>
