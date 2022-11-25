@@ -11,6 +11,19 @@ The present file will list all changes made to the project; according to the
 - `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
 - Group approval requests (any user from group can approve).
 - Satisfaction surveys for Changes
+- New right for assigning service levels to ITIL Objects (UPDATE right also still allows this).
+- New right for impersonation of users with less rights (Config UPDATE right also still allows this globally).
+- Marketplace availability configuration.
+- Toast popup message location configuration.
+- Datacenter room grid size configuration (per room).
+- Approval reminder automatic action.
+- Reservation massive actions.
+- `alias` and `code` fields for Locations.
+- Profile cloning.
+- Associated elements for recurring ITIL Objects.
+- Processes and Environment Variable tabs for automatically inventoried assets.
+- Log viewer for logs in `files/_log` directory.
+- Custom palette/theme support (uses `files/_themes` directory by default).
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
@@ -19,6 +32,20 @@ The present file will list all changes made to the project; according to the
 - The ticket business rule action `Ticket category from code` was renamed to `ITIL category from code`.
 - The ticket business rule criteria `Code representing the ticket category` was renamed to `Code representing the ITIL category`.
 - The ticket business rule criteria `Ticket location` was renamed to `Location`.
+- ITIL Templates can now restrict available statuses.
+- Improved offline mode for marketplace.
+- Lines can be assigned directly to assets without needing a SIM card.
+- Planning event occurances can be detached from a series.
+- Locations are now displayed in Datacenter breadcrumbs.
+- Marketplace CLI download command now supports downloading specific versions of plugins.
+- Browse tab of Knowledgebase now uses the Search Engine.
+- Satisfaction surveys can now be configured with a custom maximum score, default score, and if a comment is required.
+- LDAP TLS version can now be specified.
+- Kanabn view state can be reset from the Kanban if the user has the right to modify the view.
+- Personal reminders in central view now include only non-public reminders created by the user.
+- Public reminders in central view now include public reminders regardless of who created them.
+- Project description field is now a rich text field.
+- Entity, profile, debug mode flag, and language are restored after ending impersonation.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -26,6 +53,7 @@ The present file will list all changes made to the project; according to the
 ### Removed
 - `Link tickets` massive action for Tickets (Use `Link ITIL Object` instead).
 - `Link to a problem` massive action for Tickets (Use `Link ITIL Object` instead).
+- Manage tab for Knowledgebase (Unpublished is now a toggle in the browse tab)
 
 ### API changes
 
