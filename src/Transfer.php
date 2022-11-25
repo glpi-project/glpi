@@ -3990,8 +3990,8 @@ class Transfer extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Disable locked field during transfer') . "</td><td>";
-        Dropdown::showYesNo('locked_field', $this->fields['locked_field']);
+        echo "<td>" . __('Lock fields updated during transfer') . "</td><td>";
+        Dropdown::showYesNo('lock_updated_fields', $this->fields['lock_updated_fields']);
         echo "</td>";
         echo "<td></td></tr>";
 
