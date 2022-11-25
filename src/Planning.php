@@ -643,12 +643,6 @@ class Planning extends CommonGLPI
 
         self::initSessionForCurrentUser();
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
-        $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
-
         echo "<div" . ($fullview ? " id='planning_container'" : "") . " class='d-flex flex-wrap flex-sm-nowrap'>";
 
        // define options for current page
@@ -659,7 +653,6 @@ class Planning extends CommonGLPI
             $options = [
                 'full_view'    => true,
                 'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
-                'license_key'  => $scheduler_key,
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),

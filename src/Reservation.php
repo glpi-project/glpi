@@ -408,12 +408,6 @@ class Reservation extends CommonDBChild
 
         $rand = mt_rand();
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
-        $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
-
         $is_all = $ID === 0 ? "true" : "false";
         if ($ID > 0) {
             $m = new ReservationItem();
@@ -462,7 +456,6 @@ class Reservation extends CommonDBChild
             id: $ID,
             is_all: $is_all,
             rand: $rand,
-            license_key: '$scheduler_key',
          });
          reservation.displayPlanning();
       });
@@ -998,12 +991,6 @@ JAVASCRIPT;
             return false;
         }
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
-        $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
-
         echo "<div class='firstbloc'>";
         ReservationItem::showActivationFormForItem($item);
 
@@ -1034,7 +1021,6 @@ JAVASCRIPT;
             rand: $rand,
             currentv: 'listFull',
             defaultDate: '$defaultDate',
-            license_key: '$scheduler_key',
          });
          reservation.displayPlanning();
       });
