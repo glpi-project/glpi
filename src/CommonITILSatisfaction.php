@@ -219,7 +219,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $item = static::getItemtype();
             $item = new $item();
             $fkey = static::getIndexName();
-            if ($item->getFromDB($this->fields[$fkey] ?? $this->fields[$fkey])) {
+            if ($item->getFromDB($input[$fkey] ?? $this->fields[$fkey])) {
                 $max_rate = Entity::getUsedConfig(
                     'inquest_config',
                     $item->fields['entities_id'],
@@ -285,8 +285,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
 
         $rand = mt_rand();
-        $out = "<input type='hidden' id='backing_$rand'>";
-        $out .= "<div id='rateit_$rand' class='rateit'></div>";
+        $out = "<div id='rateit_$rand' class='rateit'></div>";
         $out .= Html::scriptBlock("
             $(function () {
                 $('#rateit_$rand').rateit({
