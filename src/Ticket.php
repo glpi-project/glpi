@@ -3109,72 +3109,7 @@ JAVASCRIPT;
         }
         $tab = array_merge($tab, $validation_options);
 
-        $tab[] = [
-            'id'                 => 'satisfaction',
-            'name'               => __('Satisfaction survey')
-        ];
-
-        $tab[] = [
-            'id'                 => '31',
-            'table'              => 'glpi_ticketsatisfactions',
-            'field'              => 'type',
-            'name'               => _n('Type', 'Types', 1),
-            'massiveaction'      => false,
-            'searchtype'         => ['equals', 'notequals'],
-            'searchequalsonfield' => true,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ],
-            'datatype'           => 'specific'
-        ];
-
-        $tab[] = [
-            'id'                 => '60',
-            'table'              => 'glpi_ticketsatisfactions',
-            'field'              => 'date_begin',
-            'name'               => __('Creation date'),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '61',
-            'table'              => 'glpi_ticketsatisfactions',
-            'field'              => 'date_answered',
-            'name'               => __('Response date'),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '62',
-            'table'              => 'glpi_ticketsatisfactions',
-            'field'              => 'satisfaction',
-            'name'               => __('Satisfaction'),
-            'datatype'           => 'number',
-            'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '63',
-            'table'              => 'glpi_ticketsatisfactions',
-            'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text',
-            'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'           => 'child'
-            ]
-        ];
+        $tab = array_merge($tab, TicketSatisfaction::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd());
 

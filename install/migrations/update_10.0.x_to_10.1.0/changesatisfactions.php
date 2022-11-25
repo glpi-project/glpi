@@ -144,3 +144,17 @@ $DB->updateOrDie(
     ],
     'Replace old TICKETCATEGORY tags in Entity inquest_URL field with ITILCATEGORY'
 );
+
+// Keep track of satisfaction on a fixed scale (for stats)
+foreach (['glpi_changesatisfactions', 'glpi_ticketsatisfactions'] as $table) {
+    if (!$DB->fieldExists($table, 'satisfaction_scaled_to_5')) {
+        $migration->addField($table, 'satisfaction_scaled_to_5', 'float DEFAULT NULL', [
+            'after' => 'satisfaction',
+        ]);
+        $migration->addPostQuery(
+            $DB->buildUpdate($table, [
+                'satisfaction_scaled_to_5' => new QueryExpression($DB->quoteName('satisfaction'))
+            ], [1])
+        );
+    }
+}

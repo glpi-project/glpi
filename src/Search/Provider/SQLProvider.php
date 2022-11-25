@@ -206,18 +206,24 @@ final class SQLProvider implements SearchProviderInterface
             && count($opt["additionalfields"])
         ) {
             foreach ($opt["additionalfields"] as $key) {
+                if (preg_match('/^TABLE\./', $key) === 1) {
+                    $key = preg_replace('/^TABLE\./', '', $key);
+                    $additionalfield_field = $DB->quoteName($orig_table . '.' . $key);
+                } else {
+                    $additionalfield_field = $DB->quoteName($table . $addtable . '.' . $key);
+                }
                 if ($meta || $opt->isForceGroupBy()) {
                     $ADDITONALFIELDS[] = new QueryExpression("
                         IFNULL(
                             GROUP_CONCAT(
                                 DISTINCT CONCAT(
-                                    IFNULL(`$table$addtable`.`$key`, '" . \Search::NULLVALUE . "'),
+                                    IFNULL($additionalfield_field, '" . \Search::NULLVALUE . "'),
                                     '" . \Search::SHORTSEP . "', $tocomputeid
                                 ) ORDER BY $tocomputeid SEPARATOR '" . \Search::LONGSEP . "'
                             ), '" . \Search::NULLVALUE . \Search::SHORTSEP . "'
                         ) AS `{$NAME}_$key`");
                 } else {
-                    $ADDITONALFIELDS[] = "`$table$addtable`.`$key` AS `" . $NAME . "_$key`";
+                    $ADDITONALFIELDS[] = "$additionalfield_field AS `" . $NAME . "_$key`";
                 }
             }
         }
@@ -5297,7 +5303,19 @@ final class SQLProvider implements SearchProviderInterface
 
                 case 'glpi_ticketsatisfactions.satisfaction':
                     if ($html_output) {
-                        return \TicketSatisfaction::displaySatisfaction($data[$ID][0]['name']);
+                        return \TicketSatisfaction::displaySatisfaction(
+                            $data[$ID][0]['name'],
+                            $data['raw']['ITEM_Ticket_62_entities_id']
+                        );
+                    }
+                    break;
+
+                case 'glpi_changesatisfactions.satisfaction':
+                    if ($html_output) {
+                        return \ChangeSatisfaction::displaySatisfaction(
+                            $data[$ID][0]['name'],
+                            $data['raw']['ITEM_Change_262_entities_id']
+                        );
                     }
                     break;
 

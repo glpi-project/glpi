@@ -7301,6 +7301,7 @@ CREATE TABLE `glpi_ticketsatisfactions` (
   `date_begin` timestamp NULL DEFAULT NULL,
   `date_answered` timestamp NULL DEFAULT NULL,
   `satisfaction` int DEFAULT NULL,
+  `satisfaction_scaled_to_5` float DEFAULT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tickets_id` (`tickets_id`)
@@ -9371,6 +9372,7 @@ CREATE TABLE `glpi_changesatisfactions` (
    `date_begin` timestamp NULL DEFAULT NULL,
    `date_answered` timestamp NULL DEFAULT NULL,
    `satisfaction` int DEFAULT NULL,
+   `satisfaction_scaled_to_5` float DEFAULT NULL,
    `comment` text,
    PRIMARY KEY (`id`),
    UNIQUE KEY `changes_id` (`changes_id`)

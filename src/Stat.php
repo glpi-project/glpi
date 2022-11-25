@@ -736,7 +736,18 @@ class Stat extends CommonGLPI
                     if ($nb_answersatisfaction > 0) {
                         $avgsatisfaction = round(array_sum($satisfaction) / $nb_answersatisfaction, 1);
                         if ($output_type == Search::HTML_OUTPUT) {
-                            $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
+                            // Display using the max number of stars defined in the root entity
+                            $max_rate = Entity::getUsedConfig(
+                                'inquest_config',
+                                0,
+                                'inquest_max_rate' . TicketSatisfaction::getConfigSufix()
+                            );
+                            if (!$max_rate) {
+                                $max_rate = 5;
+                            }
+                            // Scale satisfaction accordingly
+                            $avgsatisfaction = $avgsatisfaction * ($max_rate / 5);
+                            $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction, 0);
                         }
                     } else {
                         $avgsatisfaction = '&nbsp;';
@@ -1490,7 +1501,7 @@ class Stat extends CommonGLPI
                 $criteria = [
                     'SELECT'    => [
                         $date_unix,
-                        'AVG'  => "glpi_ticketsatisfactions.satisfaction AS total_visites"
+                        'AVG'  => "glpi_ticketsatisfactions.satisfaction_scaled_to_5 AS total_visites"
                     ],
                     'FROM'      => $table,
                     'WHERE'     => $WHERE,
