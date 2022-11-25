@@ -35,7 +35,7 @@
 
 {% macro print_clean_array(data, pad = 0, js_expand = false) %}
    {% if data|length > 0 %}
-      <table class="array-debug table table-striped">
+      <table class="array-debug table table-striped card-table">
          <tr>
             <th>KEY</th>
             <th>=></th>
@@ -47,7 +47,7 @@
                <td>{{ key }}</td>
                <td>
                   {% if js_expand and value is array %}
-                     <a href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">=></a>
+                     <a class="fw-bold" href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">=></a>
                   {% else %}
                      =>
                   {% endif %}
@@ -75,7 +75,7 @@
    {% endif %}
 {% endmacro %}
 
-<div id="debugpanel{{ rand }}" class="container-fluid card debug-panel {{ ajax ? "debug_ajax" : "" }}">
+<div id="debugpanel{{ rand }}" class="container-fluid card debug-panel {{ ajax ? "debug_ajax" : "" }} p-0 position-sticky bottom-0">
    <ul class="nav nav-tabs" data-bs-toggle="tabs">
       <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#debugsummary{{ rand }}">SUMMARY</a></li>
       {% if debug_sql %}
@@ -105,7 +105,7 @@
       </li>
    </ul>
 
-   <div class="card-body">
+   <div class="card-body overflow-auto" style="height: 300px">
       <div class="tab-content">
          <div id="debugsummary{{ rand }}" class="tab-pane active">
             <dl class="row">
@@ -125,7 +125,7 @@
          {% if debug_sql %}
             <div id="debugsql{{ rand }}" class="tab-pane">
                <h1>{{ sql_info['total_requests'] }} Queries took {{ sql_info['total_duration'] }}</h1>
-               <table id="debugsql{{ rand }}_table" class="table">
+               <table id="debugsql{{ rand }}_table" class="table card-table">
                   <thead>
                      <tr>
                         <th>N°</th>
