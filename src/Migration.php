@@ -967,15 +967,15 @@ class Migration
                         ) > 0;
 
                         if (!$exists) {
-                           $DB->insert(
-                               'glpi_displaypreferences',
-                               [
-                                   'itemtype'  => $itemtype,
-                                   'num'       => $searchoption_id,
-                                   'rank'      => $rank++,
-                                   'users_id'  => $data['users_id']
-                               ]
-                           );
+                            $DB->insert(
+                                'glpi_displaypreferences',
+                                [
+                                    'itemtype'  => $itemtype,
+                                    'num'       => $searchoption_id,
+                                    'rank'      => $rank++,
+                                    'users_id'  => $data['users_id']
+                                ]
+                            );
                         }
                     }
                 }
