@@ -38,9 +38,5 @@
  * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
- // Add display preferences
-$migration->updateDisplayPrefs(
-    [
-        'NetworkPort' => [6],
-    ]
-);
+// Add display preferences
+$ADDTODISPLAYPREF['NetworkPort'] = [6];
