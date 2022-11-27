@@ -6625,7 +6625,7 @@ JAVASCRIPT;
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'password_forget_token'       => $token,
-                new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', ' . $CFG_GLPI['password_init_token_delay'] . ')')
+                new \QueryExpression('NOW() < ADDDATE(' . $DB::quoteName('password_forget_token_date') . ', INTERVAL ' . $CFG_GLPI['password_init_token_delay'] . ' SECOND)')
             ]
         ]);
 
