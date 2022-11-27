@@ -1242,4 +1242,28 @@ class User extends \DbTestCase
         $output = $instance->isSubstituteOf($users_id_delegator, $use_date_range);
         $this->boolean($output)->isEqualTo($expected);
     }
+
+    public function testGetUserByForgottenPasswordToken()
+    {
+        global $CFG_GLPI;
+
+        $user = new \User();
+        // Set the password_forget_token of TU_USER to some random hex string and set the password_forget_token_date to now - 5 days
+        $token = bin2hex(random_bytes(16));
+        $this->boolean($user->update([
+            'id' => getItemByTypeName('User', TU_USER, true),
+            'password_forget_token' => $token,
+            'password_forget_token_date' => date('Y-m-d H:i:s', strtotime('-5 days')),
+        ]))->isTrue();
+
+        // Set password_init_token_delay config option to 1 day
+        $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP;
+
+        $this->variable(\User::getUserByForgottenPasswordToken($token))->isNull();
+
+        // Set password_init_token_delay config option to 10 days
+        $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP * 10;
+
+        $this->variable(\User::getUserByForgottenPasswordToken($token))->isNotNull();
+    }
 }
