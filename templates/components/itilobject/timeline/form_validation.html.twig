@@ -201,12 +201,16 @@
                     'input_class': 'col-xxl-8 flex-wrap',
                     'add_field_html': '<span id="show_validator_field' ~ rand ~ '" class="flex-grow-1">&nbsp;</span>',
                     }) }}
+                    {% set right = 'validate' %}
+                    {% if (item.getType() is same as 'Ticket') %}
+                        {% set right = item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' %}
+                    {% endif %}
                     {% if subitem.fields['validatortype'] is not null %}
                     <script type="application/javascript">
                         $('#show_validator_field{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
                             id: {{ subitem.fields['id'] }},
                             entity: {{ item.fields['entities_id'] }},
-                            right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
+                            right: '{{ right }}',
                             validatortype: "{{ subitem.fields['users_id_validate']['groups_id'] is defined ? 'Group' : (subitem.fields['users_id_validate'] is not empty ? 'User' : '') }}"
                         });
                     </script>
@@ -216,7 +220,7 @@
                             CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
                                 id: 0,
                                 entity: {{ item.fields['entities_id'] }},
-                                right: "{{ item.getType() is same as 'Ticket' and item.fields['type'] == 2 ? 'validate_request' : 'validate_incident' }}",
+                                right: '{{ right }}',
                                 validatortype: '__VALUE__',
                                 groups_id: 0
                             });
