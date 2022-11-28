@@ -6977,6 +6977,8 @@ CSS;
         if (!ctype_digit($ts)) {
             $ts = strtotime($ts);
         }
+        $ts_date = new DateTime();
+        $ts_date->setTimestamp($ts);
 
         $diff = time() - $ts;
         if ($diff == 0) {
@@ -7007,7 +7009,7 @@ CSS;
                 return __('Last month');
             }
 
-            return date('F Y', $ts);
+            return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
         } else {
             $diff     = abs($diff);
             $day_diff = floor($diff / 86400);
@@ -7040,7 +7042,8 @@ CSS;
             if (date('n', $ts) == date('n') + 1) {
                 return __('next month');
             }
-            return date('F Y', $ts);
+
+            return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
         }
 
         return "";
