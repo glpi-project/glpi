@@ -55,8 +55,16 @@ class Auth extends CommonGLPI
     public $auth_succeded = 0;
     /** @var int Indicates if the user is already present in database */
     public $user_present = 0;
+    /** @var bool Indicates is we need to set remember me cookie */
+    public $remember_me = false;
     /** @var int Indicates if the user password expired */
     public $password_expired = false;
+
+    private $login_name = "";
+    private $login_password = "";
+    private $noautologin = false;
+    private $user_deleted_ldap = false;
+    private $ip = "";
 
     /**
      * Indicated if user was found in the directory.
@@ -91,6 +99,16 @@ class Auth extends CommonGLPI
     public function __construct()
     {
         $this->user = new User();
+        $this->getAuthMethods();
+        $this->getDistantIP();
+    }
+
+
+    private function getDistantIP()
+    {
+        $this->ip = getenv("HTTP_X_FORWARDED_FOR")
+            ? Sanitizer::encodeHtmlSpecialChars(getenv("HTTP_X_FORWARDED_FOR"))
+            : getenv("REMOTE_ADDR");
     }
 
 
@@ -357,6 +375,24 @@ class Auth extends CommonGLPI
         return password_hash($pass, PASSWORD_DEFAULT);
     }
 
+
+    /**
+     *  Try to connect User from an external source
+     *
+     * @since 10.1.0
+     */
+    private function connection_sso()
+    {
+        $this->getAlternateAuthSystemsUserLogin($this->user->fields['authtype']);
+
+        // user has been authenticated by an external service
+        if (!empty($this->user->fields['name'])) {
+            $this->auth_succeded = true;
+            $this->extauth = 1;
+            $this->user->getFromDBbyName(addslashes($this->user->fields['name']));
+        }
+    }
+
     /**
      * Find a user in the GLPI DB
      *
@@ -470,6 +506,8 @@ class Auth extends CommonGLPI
                 $this->user->fields = $result + [
                     '_ruleright_process' => true,
                 ];
+
+                $this->auth_succeded = true;
 
                 return true;
             }
@@ -716,36 +754,113 @@ class Auth extends CommonGLPI
      *
      * @return boolean (success)
      */
-    public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '')
+    public function login($login_name, $login_password, $noautologin = false, $remember_me = false, $login_auth = '')
     {
-        global $DB, $CFG_GLPI;
+        $this->login_name     = trim($login_name); // Trim login_name : avoid LDAP search errors
+        $this->login_password = $login_password;
+        $this->noautologin    = $noautologin;
+        $this->remember_me    = $remember_me;
+        $this->login_auth     = $login_auth;
 
-        $this->getAuthMethods();
-        $this->user_present  = 1;
-        $this->auth_succeded = false;
-       //In case the user was deleted in the LDAP directory
-        $user_deleted_ldap   = false;
+        // reset data
+        $this->user_present      = 1;
+        $this->auth_succeded     = false;
+        $this->user_deleted_ldap = false;
 
-       // Trim login_name : avoid LDAP search errors
-        $login_name = trim($login_name);
+        // get the auth source of the user account
+        $this->detectAuthtype();
 
-       // manage the $login_auth (force the auth source of the user account)
-        $this->user->fields["auths_id"] = 0;
-        if ($login_auth == 'local') {
-            $authtype = self::DB_GLPI;
-            $this->user->fields["authtype"] = self::DB_GLPI;
-        } else if (preg_match('/^(?<type>ldap|mail|external)-(?<id>\d+)$/', $login_auth, $auth_matches)) {
-            $this->user->fields["auths_id"] = (int)$auth_matches['id'];
-            if ($auth_matches['type'] == 'ldap') {
-                $authtype = self::LDAP;
-            } else if ($auth_matches['type'] == 'mail') {
-                $authtype = self::MAIL;
-            } else if ($auth_matches['type'] == 'external') {
-                $authtype = self::EXTERNAL;
+        // try auto-login with external services (cas, x509, ...)
+        $force_ldap_sync = false;
+        if (!$this->noautologin) {
+            $this->connection_sso();
+
+            if ($this->auth_succeded) {
+                // as user has been authenticated by an external service
+                // we may want to update its data from LDAP
+                $force_ldap_sync = true;
             }
-            $this->user->fields['authtype'] = $authtype;
         }
-        if (!$noauto && ($authtype = self::checkAlternateAuthSystems())) {
+
+        // No sucessfull SSO login
+        // check for empty login/password
+        if (!$this->auth_succeded
+            && (
+                empty($this->login_name)
+                || strstr($this->login_name, "\0")
+                || empty($this->login_password)
+                || strstr($this->login_password, "\0")
+            )
+        ) {
+            $this->addToError(__('Empty login or password'));
+            return false;
+        }
+
+        // try login directly on GLPI DB
+        if (!$this->auth_succeded
+            && (empty($login_auth)
+                || $this->user->fields["authtype"] == $this::DB_GLPI
+            )
+        ) {
+            $this->connection_db(
+                addslashes($this->login_name),
+                $this->login_password
+            );
+        }
+
+        // try login on LDAP directories
+        if ($force_ldap_sync
+            || (!$this->auth_succeded
+                && (empty($login_auth)
+                    || $this->user->fields["authtype"] == $this::CAS
+                    || $this->user->fields["authtype"] == $this::EXTERNAL
+                    || $this->user->fields["authtype"] == $this::LDAP
+                )
+            )
+        ) {
+            AuthLDAP::try(
+                $this,
+                $this->login_name,
+                $this->login_password,
+                $this->user->fields["auths_id"]
+            );
+
+            // TODO user has been deleted in LDAP directory
+            if ($this->user_deleted_ldap) {
+                User::manageDeletedUserInLdap($this->user->fields["id"]);
+                $this->auth_succeded = false;
+            }
+        }
+
+        // TODO user->getFromSSO
+
+        // try login on IMAP servers
+        if (!$this->auth_succeded
+            && (empty($login_auth)
+                || $this->user->fields["authtype"] == $this::MAIL
+            )
+        ) {
+            AuthMail::try(
+                $this,
+                $this->login_name,
+                $this->login_password,
+                $this->user->fields["auths_id"]
+            );
+        }
+
+        // manage post login actions
+        if ($this->auth_succeded) {
+           $this->successfulAuth();
+        } else {
+            $this->failedAuth();
+        }
+
+        return $this->auth_succeded;
+
+
+
+        // TODO clean below
+        if (!$noautologin && ($authtype = self::checkAlternateAuthSystems())) {
             if (
                 $this->getAlternateAuthSystemsUserLogin($authtype)
                 && !empty($this->user->fields['name'])
@@ -937,119 +1052,143 @@ class Auth extends CommonGLPI
                 }
             }
         }
+    }
 
-        if ($user_deleted_ldap) {
-            User::manageDeletedUserInLdap($this->user->fields["id"]);
-            $this->auth_succeded = false;
-        }
-       // Ok, we have gathered sufficient data, if the first return false the user
-       // is not present on the DB, so we add him.
-       // if not, we update him.
-        if ($this->auth_succeded) {
-           //Set user an not deleted from LDAP
-            $this->user->fields['is_deleted_ldap'] = 0;
 
-           // Prepare data
-            $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
-            if ($this->extauth) {
-                $this->user->fields["_extauth"] = 1;
+    /**
+     * set (and return) the user's authentication method from the auth string
+     *
+     * @return int authentication method
+     */
+    private function detectAuthtype(): int
+    {
+        $this->user->fields["authtype"] = 0;
+        $this->user->fields["auths_id"] = 0;
+
+        if ($this->login_auth == 'local') {
+            $this->user->fields["authtype"] = self::DB_GLPI;
+        } else if (preg_match('/^(?<type>ldap|mail|external)-(?<id>\d+)$/', $this->login_auth, $auth_matches)) {
+            $this->user->fields["auths_id"] = (int)$auth_matches['id'];
+            if ($auth_matches['type'] == 'ldap') {
+                $this->user->fields['authtype'] = self::LDAP;
+            } else if ($auth_matches['type'] == 'mail') {
+                $this->user->fields['authtype'] = self::MAIL;
+            } else if ($auth_matches['type'] == 'external') {
+                $this->user->fields['authtype'] = self::EXTERNAL;
             }
+        }
 
-            if ($DB->isSlave()) {
-                if (!$this->user_present) { // Can't add in slave mode
-                    $this->addToError(__('User not authorized to connect in GLPI'));
-                    $this->auth_succeded = false;
+        if (!$this->noautologin) {
+            $this->user->fields['authtype'] = self::checkAlternateAuthSystems();
+        }
+
+        return $this->user->fields["authtype"];
+    }
+
+
+    /**
+     * User has been successfully authenticated
+     * if user is not present on the DB, update its data and set session variables
+     * otherwise add him to the DB if auto_add option is set
+     */
+    private function successfulAuth()
+    {
+        global $DB, $CFG_GLPI;
+
+        //Set user an not deleted from LDAP
+        $this->user->fields['is_deleted_ldap'] = 0;
+
+        // Prepare data
+        $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
+        if ($this->extauth) {
+            $this->user->fields["_extauth"] = 1;
+        }
+
+        if ($DB->isSlave()) {
+            if (!$this->user_present) { // Can't add in slave mode
+                $this->addToError(__('User not authorized to connect in GLPI'));
+                $this->auth_succeded = false;
+            }
+        } else {
+            if ($this->user_present) {
+                // Add the user e-mail if present
+                if (isset($email)) {
+                    $this->user->fields['_useremails'] = $email;
                 }
+                $this->user->update(Sanitizer::sanitize($this->user->fields));
+            } else if ($CFG_GLPI["is_users_auto_add"]) {
+                // Auto add user
+                $input = $this->user->fields;
+                unset($this->user->fields);
+                if ($authtype == self::EXTERNAL && !isset($input["authtype"])) {
+                    $input["authtype"] = $authtype;
+                }
+                $this->user->add(Sanitizer::sanitize($input));
             } else {
-                if ($this->user_present) {
-                   // Add the user e-mail if present
-                    if (isset($email)) {
-                         $this->user->fields['_useremails'] = $email;
-                    }
-                    $this->user->update(Sanitizer::sanitize($this->user->fields));
-                } else if ($CFG_GLPI["is_users_auto_add"]) {
-                   // Auto add user
-                    $input = $this->user->fields;
-                    unset($this->user->fields);
-                    if ($authtype == self::EXTERNAL && !isset($input["authtype"])) {
-                        $input["authtype"] = $authtype;
-                    }
-                    $this->user->add(Sanitizer::sanitize($input));
-                } else {
-                   // Auto add not enable so auth failed
-                    $this->addToError(__('User not authorized to connect in GLPI'));
-                    $this->auth_succeded = false;
-                }
+                // Auto add not enable so auth failed
+                $this->addToError(__('User not authorized to connect in GLPI'));
+                $this->auth_succeded = false;
+
+                return;
             }
         }
 
-       // Log Event (if possible)
-        if (!$DB->isSlave()) {
-           // GET THE IP OF THE CLIENT
-            $ip = getenv("HTTP_X_FORWARDED_FOR") ?
-            Sanitizer::encodeHtmlSpecialChars(getenv("HTTP_X_FORWARDED_FOR")) :
-            getenv("REMOTE_ADDR");
-
-            if ($this->auth_succeded) {
-                if (GLPI_DEMO_MODE) {
-                    // not translation in GLPI_DEMO_MODE
-                    Event::log(0, "system", 3, "login", $login_name . " log in from " . $ip);
-                } else {
-                   //TRANS: %1$s is the login of the user and %2$s its IP address
-                    Event::log(0, "system", 3, "login", sprintf(
-                        __('%1$s log in from IP %2$s'),
-                        $login_name,
-                        $ip
-                    ));
-                }
-            } else {
-                if (GLPI_DEMO_MODE) {
-                    Event::log(
-                        0,
-                        "system",
-                        3,
-                        "login",
-                        "login",
-                        "Connection failed for " . $login_name . " ($ip)"
-                    );
-                } else {
-                   //TRANS: %1$s is the login of the user and %2$s its IP address
-                    Event::log(0, "system", 3, "login", sprintf(
-                        __('Failed login for %1$s from IP %2$s'),
-                        $login_name,
-                        $ip
-                    ));
-                }
-            }
-        }
-
-        Session::init($this);
-
-        if ($noauto) {
+        // Set session variables
+        if ($this->noautologin) {
             $_SESSION["noAUTO"] = 1;
         }
 
-        if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
-            $token = $this->user->getAuthToken('cookie_token', true);
+        // init the user session
+        Session::init($this);
 
-            if ($token) {
-                $data = json_encode([
-                    $this->user->fields['id'],
-                    $token,
-                ]);
-
-               //Send cookie to browser
-                Auth::setRememberMeCookie($data);
-            }
+        //Send cookie to browser
+        if ($CFG_GLPI['login_remember_time'] > 0 && $this->remember_me
+            && ($token = $this->user->getAuthToken('cookie_token', true))) {
+            Auth::setRememberMeCookie(json_encode([
+                $this->user->fields['id'],
+                $token,
+            ]));
         }
 
-        if ($this->auth_succeded && !empty($this->user->fields['timezone']) && 'null' !== strtolower($this->user->fields['timezone'])) {
-           //set user timezone, if any
+        //set user timezone, if any
+        if (!empty($this->user->fields['timezone']) && 'null' !== strtolower($this->user->fields['timezone'])) {
             $_SESSION['glpi_tz'] = $this->user->fields['timezone'];
             $DB->setTimezone($this->user->fields['timezone']);
         }
 
-        return $this->auth_succeded;
+        // Log Event (if possible)
+        if (!$DB->isSlave()) {
+            if ($this->auth_succeded) {
+                $message = GLPI_DEMO_MODE
+                    // not translation in GLPI_DEMO_MODE
+                    ? $this->login_name . " log in from " . $this->ip
+                    : sprintf(
+                        __('%1$s log in from IP %2$s'),
+                        $this->login_name,
+                        $this->ip
+                    );
+                Event::log(0, "system", 3, "login", $message);
+
+            }
+        }
+    }
+
+
+    private function failedAuth()
+    {
+        global $DB;
+
+        if (!$DB->isSlave()) {
+            $message = GLPI_DEMO_MODE
+                // not translation in GLPI_DEMO_MODE
+                ? "Connection failed for " . $this->login_name . " ({$this->ip})"
+                : sprintf(
+                    __('Failed login for %1$s from IP %2$s'),
+                    $this->login_name,
+                    $this->ip
+                );
+            Event::log(0, "system", 3, "login", $message);
+        }
     }
 
     /**

@@ -3172,7 +3172,6 @@ class AuthLDAP extends CommonDBTM
 
        //If the user does not exists
         if ($auth->user_present == 0) {
-            $auth->getAuthMethods();
             $ldap_methods = $auth->authtypes["ldap"];
 
             foreach ($ldap_methods as $ldap_method) {
@@ -3257,6 +3256,16 @@ class AuthLDAP extends CommonDBTM
     }
 
 
+
+    /**
+     * @deprecated 10.1.0
+     */
+    public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
+    {
+        Toolbox::deprecated('Use AuthLDAP::tryAuth() instead');
+        return self::try($auth, $login, $password, $auths_id, $user_dn, $break, true);
+    }
+
     /**
      * Try to authentify a user by checking all the directories
      *
@@ -3270,11 +3279,15 @@ class AuthLDAP extends CommonDBTM
      *
      * @return object identification object
      */
-    public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
+    public static function try($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
     {
         global $DB;
 
-       //If no specific source is given, test all ldap directories
+        if (!Toolbox::canUseLdap()) {
+            return $auth;
+        }
+
+        //If no specific source is given, test all ldap directories
         if ($auths_id <= 0) {
             $user_found = false;
 
