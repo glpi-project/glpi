@@ -6603,7 +6603,7 @@ JAVASCRIPT;
 
     /**
      * Find one user which match the given token and asked for a password reset
-     * less than one day ago
+     * less than `password_init_token_delay` (config option) days ago
      *
      * @param string $token password_forget_token
      *
@@ -6619,13 +6619,13 @@ JAVASCRIPT;
         }
 
         // Find users which match the given token and asked for a password reset
-        // less than one day ago
+        // less than `password_init_token_delay` days ago
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'password_forget_token'       => $token,
-                new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', ' . $CFG_GLPI['password_init_token_delay'] . ')')
+                new \QueryExpression('NOW() < ADDDATE(' . $DB::quoteName('password_forget_token_date') . ', INTERVAL ' . $CFG_GLPI['password_init_token_delay'] . ' SECOND)')
             ]
         ]);
 
