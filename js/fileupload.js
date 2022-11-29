@@ -427,22 +427,6 @@ if (typeof tinyMCE != 'undefined') {
             // Update HTML to paste to include "data-upload_id" attributes on images.
             event.content = fragment.html();
         });
-
-        $(editor.formElement).on('submit', function() {
-            // Remove base64 src from images that were handled by upload process.
-            // This will prevent sending too many data on server and will also prevent issues with
-            // regex that are not correctly handling huge strings (see #8044).
-            var fragment = $('<div></div>');
-            fragment.append($(editor.targetElm).val());
-            fragment.find('img').each(function () {
-                const image = $(this);
-                const upload_id = image.attr('data-upload_id');
-                if (upload_id !== undefined) {
-                    image.removeAttr('src');
-                }
-            });
-            $(editor.targetElm).val(fragment.html());
-        });
     });
 }
 
