@@ -3256,16 +3256,6 @@ class AuthLDAP extends CommonDBTM
     }
 
 
-
-    /**
-     * @deprecated 10.1.0
-     */
-    public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
-    {
-        Toolbox::deprecated('Use AuthLDAP::tryAuth() instead');
-        return self::try($auth, $login, $password, $auths_id, $user_dn, $break, true);
-    }
-
     /**
      * Try to authentify a user by checking all the directories
      *
@@ -3279,7 +3269,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return object identification object
      */
-    public static function try($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
+    public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
     {
         global $DB;
 

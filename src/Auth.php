@@ -818,7 +818,7 @@ class Auth extends CommonGLPI
                 )
             )
         ) {
-            AuthLDAP::try(
+            AuthLDAP::tryLdapAuth(
                 $this,
                 $this->login_name,
                 $this->login_password,
@@ -840,7 +840,7 @@ class Auth extends CommonGLPI
                 || $this->user->fields["authtype"] == $this::MAIL
             )
         ) {
-            AuthMail::try(
+            AuthMail::tryMailAuth(
                 $this,
                 $this->login_name,
                 $this->login_password,

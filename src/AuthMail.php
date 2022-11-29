@@ -310,14 +310,6 @@ class AuthMail extends CommonDBTM
 
 
     /**
-     * @deprecated 10.1.0
-     */
-    public static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true)
-    {
-        Toolbox::deprecated('Use AuthMail::try() instead');
-        return self::try($auth, $login, $password, $auths_id, $break);
-    }
-    /**
      * Try to authenticate a user by checking all the mail server
      *
      * @param object  $auth     identification object
@@ -329,7 +321,7 @@ class AuthMail extends CommonDBTM
      *
      * @return object identification object
      */
-    public static function try($auth, $login, $password, $auths_id = 0, $break = true)
+    public static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true)
     {
         if ($auths_id <= 0) {
             foreach ($auth->authtypes["mail"] as $mail_method) {
