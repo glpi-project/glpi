@@ -64,7 +64,6 @@ class Auth extends CommonGLPI
     private $login_password = "";
     private $noautologin = false;
     private $user_deleted_ldap = false;
-    private $ip = "";
 
     /**
      * Indicated if user was found in the directory.
@@ -100,15 +99,6 @@ class Auth extends CommonGLPI
     {
         $this->user = new User();
         $this->getAuthMethods();
-        $this->getDistantIP();
-    }
-
-
-    private function getDistantIP()
-    {
-        $this->ip = getenv("HTTP_X_FORWARDED_FOR")
-            ? Sanitizer::encodeHtmlSpecialChars(getenv("HTTP_X_FORWARDED_FOR"))
-            : getenv("REMOTE_ADDR");
     }
 
 
@@ -1158,13 +1148,14 @@ class Auth extends CommonGLPI
 
         // Log Event (if possible)
         if ($this->auth_succeded) {
+            $ip = Toolbox::getRemoteIpAddress();
             $message = GLPI_DEMO_MODE
                 // not translation in GLPI_DEMO_MODE
-                ? $this->login_name . " log in from " . $this->ip
+                ? $this->login_name . " log in from " . $ip
                 : sprintf(
                     __('%1$s log in from IP %2$s'),
                     $this->login_name,
-                    $this->ip
+                    $ip
                 );
             Event::log(0, "system", 3, "login", $message);
 
@@ -1174,13 +1165,14 @@ class Auth extends CommonGLPI
 
     private function loginFailed()
     {
+        $ip = Toolbox::getRemoteIpAddress();
         $message = GLPI_DEMO_MODE
             // not translation in GLPI_DEMO_MODE
-            ? "Connection failed for " . $this->login_name . " ({$this->ip})"
+            ? "Connection failed for " . $this->login_name . " ({$ip})"
             : sprintf(
                 __('Failed login for %1$s from IP %2$s'),
                 $this->login_name,
-                $this->ip
+                $ip
             );
         Event::log(0, "system", 3, "login", $message);
     }
