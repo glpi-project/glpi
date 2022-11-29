@@ -104,7 +104,7 @@ var Dashboard = {
                 'cancel': 'textarea' // avoid draggable on some child elements
             },
             'minWidth': 768 -  width_offset, // breakpoint of one column mode (based on the dashboard container width), trying to reduce to match the `-md` breakpoint of bootstrap (this last is based on viewport width)
-        });
+        }, "#grid-stack-" + options.rand);
 
         // set grid in static to prevent edition (unless user click on edit button)
         // previously in option, but current version of gridstack has a bug with one column mode (responsive)
@@ -275,7 +275,7 @@ var Dashboard = {
 
             // resize also chart if exists
             var chart = $(elem).find('.ct-chart');
-            if (chart.length > 0)  {
+            if (chart.length > 0 && chart[0].__chartist__ != undefined)  {
                 chart[0].__chartist__.update();
             }
 
