@@ -922,9 +922,6 @@ class Auth extends CommonGLPI
                 // Auto add user
                 $input = $this->user->fields;
                 unset($this->user->fields);
-                if ($authtype == self::EXTERNAL && !isset($input["authtype"])) {
-                    $input["authtype"] = $authtype;
-                }
                 $this->user->add(Sanitizer::sanitize($input));
             } else {
                 // Auto add not enable so auth failed
