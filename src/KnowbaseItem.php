@@ -1530,14 +1530,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             ];
         }
 
+        $criteria['LEFT JOIN'][KnowbaseItem_KnowbaseItemCategory::getTable()] = [
+            'FKEY' => [
+                KnowbaseItem_KnowbaseItemCategory::getTable() => KnowbaseItem::getForeignKeyField(),
+                KnowbaseItem::getTable() => 'id',
+            ],
+        ];
         if ($params['knowbaseitemcategories_id'] > 0) {
-            $criteria['LEFT JOIN'][KnowbaseItem_KnowbaseItemCategory::getTable()] = [
-                'FKEY' => [
-                    KnowbaseItem_KnowbaseItemCategory::getTable() => KnowbaseItem::getForeignKeyField(),
-                    KnowbaseItem::getTable() => 'id',
-                ],
-            ];
             $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = $params['knowbaseitemcategories_id'];
+        } else {
+            $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = null;
         }
 
         if (
