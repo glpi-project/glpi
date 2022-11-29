@@ -6999,11 +6999,11 @@ CSS;
             if ($day_diff == 1) {
                 return __('Yesterday');
             }
-            if ($day_diff < 7) {
+            if ($day_diff < 14) {
                 return sprintf(__('%s days ago'), $day_diff);
             }
             if ($day_diff < 31) {
-                return sprintf(__('%s weeks ago'), round($day_diff / 7));
+                return sprintf(__('%s weeks ago'), floor($day_diff / 7));
             }
             if ($day_diff < 60) {
                 return __('Last month');
