@@ -850,9 +850,9 @@ class Auth extends CommonGLPI
 
         // manage post login actions
         if ($this->auth_succeded) {
-           $this->successfulAuth();
+           $this->loginSuccess();
         } else {
-            $this->failedAuth();
+            $this->loginFailed();
         }
 
         return $this->auth_succeded;
@@ -1091,7 +1091,7 @@ class Auth extends CommonGLPI
      * if user is not present on the DB, update its data and set session variables
      * otherwise add him to the DB if auto_add option is set
      */
-    private function successfulAuth()
+    private function loginSuccess()
     {
         global $DB, $CFG_GLPI;
 
@@ -1157,38 +1157,32 @@ class Auth extends CommonGLPI
         }
 
         // Log Event (if possible)
-        if (!$DB->isSlave()) {
-            if ($this->auth_succeded) {
-                $message = GLPI_DEMO_MODE
-                    // not translation in GLPI_DEMO_MODE
-                    ? $this->login_name . " log in from " . $this->ip
-                    : sprintf(
-                        __('%1$s log in from IP %2$s'),
-                        $this->login_name,
-                        $this->ip
-                    );
-                Event::log(0, "system", 3, "login", $message);
-
-            }
-        }
-    }
-
-
-    private function failedAuth()
-    {
-        global $DB;
-
-        if (!$DB->isSlave()) {
+        if ($this->auth_succeded) {
             $message = GLPI_DEMO_MODE
                 // not translation in GLPI_DEMO_MODE
-                ? "Connection failed for " . $this->login_name . " ({$this->ip})"
+                ? $this->login_name . " log in from " . $this->ip
                 : sprintf(
-                    __('Failed login for %1$s from IP %2$s'),
+                    __('%1$s log in from IP %2$s'),
                     $this->login_name,
                     $this->ip
                 );
             Event::log(0, "system", 3, "login", $message);
+
         }
+    }
+
+
+    private function loginFailed()
+    {
+        $message = GLPI_DEMO_MODE
+            // not translation in GLPI_DEMO_MODE
+            ? "Connection failed for " . $this->login_name . " ({$this->ip})"
+            : sprintf(
+                __('Failed login for %1$s from IP %2$s'),
+                $this->login_name,
+                $this->ip
+            );
+        Event::log(0, "system", 3, "login", $message);
     }
 
     /**
