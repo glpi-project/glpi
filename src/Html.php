@@ -7032,17 +7032,14 @@ CSS;
             if ($day_diff == 1) {
                 return __('Tomorrow');
             }
-            if ($day_diff < 4) {
-                return date('l', $ts);
+            if ($day_diff < 14) {
+                return sprintf(__('In %s days'), $day_diff);
             }
-            if ($day_diff < 7 + (7 - date('w'))) {
-                return __('next week');
-            }
-            if (floor($day_diff / 7) < 4) {
+            if ($day_diff < 31) {
                 return sprintf(__('In %s weeks'), floor($day_diff / 7));
             }
-            if (date('n', $ts) == date('n') + 1) {
-                return __('next month');
+            if ($day_diff < 60) {
+                return __('Next month');
             }
             return date('F Y', $ts);
         }
