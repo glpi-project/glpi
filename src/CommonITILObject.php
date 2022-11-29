@@ -9139,23 +9139,20 @@ abstract class CommonITILObject extends CommonDBTM
                     }
 
                     if ($actor_itemtype !== Group::class) {
-                        if (
-                            !array_key_exists($notif_key, $input)
-                            || !is_array($input[$notif_key])
-                            || (
-                                !array_key_exists('use_notification', $input[$notif_key])
-                                && !array_key_exists('alternative_email', $input[$notif_key])
-                            )
-                        ) {
+                        if (!array_key_exists($notif_key, $input) || !is_array($input[$notif_key])) {
                             $input[$notif_key] = [
                                 'use_notification'  => [],
                                 'alternative_email' => [],
                             ];
-                        } else {
-                            foreach (['use_notification', 'alternative_email'] as $param_key) {
-                                if (!is_array($input[$notif_key][$param_key])) {
-                                    $input[$notif_key][$param_key] = !empty($input[$notif_key][$param_key]) ? [$input[$notif_key][$param_key]] : [];
-                                }
+                        }
+                        foreach (['use_notification', 'alternative_email'] as $param_key) {
+                            if (
+                                !array_key_exists($param_key, $input[$notif_key])
+                                || $input[$notif_key][$param_key] === ''
+                            ) {
+                                $input[$notif_key][$param_key] = [];
+                            } elseif (!is_array($input[$notif_key][$param_key])) {
+                                $input[$notif_key][$param_key] = [$input[$notif_key][$param_key]];
                             }
                         }
                     }
