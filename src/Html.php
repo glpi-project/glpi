@@ -7012,7 +7012,9 @@ CSS;
             return date('F Y', $ts);
         } else {
             $diff     = abs($diff);
-            $day_diff = floor($diff / 86400);
+            $today = new DateTime('today');
+            $date = new DateTime(date('Y-m-d', $ts));
+            $day_diff = $today->diff($date)->days;
             if ($day_diff == 0) {
                 if ($diff < 120) {
                     return __('In a minute');
@@ -7036,8 +7038,8 @@ CSS;
             if ($day_diff < 7 + (7 - date('w'))) {
                 return __('next week');
             }
-            if (ceil($day_diff / 7) < 4) {
-                return sprintf(__('In %s weeks'), ceil($day_diff / 7));
+            if (floor($day_diff / 7) < 4) {
+                return sprintf(__('In %s weeks'), floor($day_diff / 7));
             }
             if (date('n', $ts) == date('n') + 1) {
                 return __('next month');
