@@ -6984,7 +6984,9 @@ CSS;
         if ($diff == 0) {
             return __('Now');
         } else if ($diff > 0) {
-            $day_diff = floor($diff / 86400);
+            $date = new DateTime(date('Y-m-d', $ts));
+            $today = new DateTime('today');
+            $day_diff = $date->diff($today)->days;
             if ($day_diff == 0) {
                 if ($diff < 60) {
                     return __('Just now');
@@ -6999,11 +7001,11 @@ CSS;
             if ($day_diff == 1) {
                 return __('Yesterday');
             }
-            if ($day_diff < 7) {
+            if ($day_diff < 14) {
                 return sprintf(__('%s days ago'), $day_diff);
             }
             if ($day_diff < 31) {
-                return sprintf(__('%s weeks ago'), ceil($day_diff / 7));
+                return sprintf(__('%s weeks ago'), floor($day_diff / 7));
             }
             if ($day_diff < 60) {
                 return __('Last month');
@@ -7012,7 +7014,9 @@ CSS;
             return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
         } else {
             $diff     = abs($diff);
-            $day_diff = floor($diff / 86400);
+            $today = new DateTime('today');
+            $date = new DateTime(date('Y-m-d', $ts));
+            $day_diff = $today->diff($date)->days;
             if ($day_diff == 0) {
                 if ($diff < 120) {
                     return __('In a minute');
@@ -7030,17 +7034,14 @@ CSS;
             if ($day_diff == 1) {
                 return __('Tomorrow');
             }
-            if ($day_diff < 4) {
-                return date('l', $ts);
+            if ($day_diff < 14) {
+                return sprintf(__('In %s days'), $day_diff);
             }
-            if ($day_diff < 7 + (7 - date('w'))) {
-                return __('next week');
+            if ($day_diff < 31) {
+                return sprintf(__('In %s weeks'), floor($day_diff / 7));
             }
-            if (ceil($day_diff / 7) < 4) {
-                return sprintf(__('In %s weeks'), ceil($day_diff / 7));
-            }
-            if (date('n', $ts) == date('n') + 1) {
-                return __('next month');
+            if ($day_diff < 60) {
+                return __('Next month');
             }
 
             return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
