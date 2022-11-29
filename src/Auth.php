@@ -63,7 +63,6 @@ class Auth extends CommonGLPI
     private $login_name = "";
     private $login_password = "";
     private $noautologin = false;
-    private $user_deleted_ldap = false;
 
     /**
      * Indicated if user was found in the directory.
@@ -753,9 +752,9 @@ class Auth extends CommonGLPI
         $this->login_auth     = $login_auth;
 
         // reset data
-        $this->user_present      = 1;
-        $this->auth_succeded     = false;
-        $this->user_deleted_ldap = false;
+        $this->user_present  = 1;
+        $this->auth_succeded = false;
+        $this->user_found    = false;
 
         // get the auth source of the user account
         $this->detectAuthtype();
@@ -766,9 +765,15 @@ class Auth extends CommonGLPI
             $this->connection_sso();
 
             if ($this->auth_succeded) {
-                // as user has been authenticated by an external service
-                // we may want to update its data from LDAP
-                $force_ldap_sync = true;
+                if (count($this->authtypes['ldap']) == 0) {
+                    // Case of using external auth and no LDAP servers,
+                    // so get data directly from external auth
+                    $this->user->getFromSSO();
+                } else {
+                    // user has been authenticated by an external service
+                    // we also have ldap accounts, so we may need to sync the user
+                    $force_ldap_sync = true;
+                }
             }
         }
 
@@ -815,14 +820,17 @@ class Auth extends CommonGLPI
                 $this->user->fields["auths_id"]
             );
 
-            // TODO user has been deleted in LDAP directory
-            if ($this->user_deleted_ldap) {
+            // user has been found in database but not in a LDAP directory
+            if (!$this->user_found) {
                 User::manageDeletedUserInLdap($this->user->fields["id"]);
                 $this->auth_succeded = false;
+                $this->addToError(_n(
+                    'User not found in LDAP directory',
+                    'User not found in LDAP directories',
+                    count($this->authtypes['ldap'])
+                ));
             }
         }
-
-        // TODO user->getFromSSO
 
         // try login on IMAP servers
         if (!$this->auth_succeded
