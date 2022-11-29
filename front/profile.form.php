@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+
 include('../inc/includes.php');
 
 Session::checkRight("profile", READ);
@@ -45,13 +47,31 @@ $prof = new Profile();
 
 if (isset($_POST["add"])) {
     $prof->check(-1, CREATE, $_POST);
-    $ID = $prof->add($_POST);
-
-   // We need to redirect to form to enter rights
-    Html::redirect($prof->getFormURLWithID($ID));
+    if ($newID = $prof->add($_POST)) {
+        Event::log(
+            $newID,
+            "profiles",
+            4,
+            "setup",
+            //TRANS: %1$s is the user login, %2$s is the name of the item
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
+        );
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($prof->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
     $prof->check($_POST['id'], PURGE);
     if ($prof->delete($_POST, 1)) {
+        Event::log(
+            $_POST['id'],
+            "profiles",
+            4,
+            "setup",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
+        );
         $prof->redirectToList();
     } else {
         Html::back();
@@ -63,6 +83,14 @@ if (isset($_POST["add"])) {
     $prof->check($_POST['id'], UPDATE);
 
     $prof->update($_POST);
+    Event::log(
+        $_POST['id'],
+        "profiles",
+        4,
+        "setup",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
     Html::back();
 }
 
