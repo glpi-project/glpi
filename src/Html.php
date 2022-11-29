@@ -6982,7 +6982,9 @@ CSS;
         if ($diff == 0) {
             return __('Now');
         } else if ($diff > 0) {
-            $day_diff = floor($diff / 86400);
+            $date = new DateTime(date('Y-m-d', $ts));
+            $today = new DateTime('today');
+            $day_diff = $date->diff($today)->days;
             if ($day_diff == 0) {
                 if ($diff < 60) {
                     return __('Just now');
@@ -7001,7 +7003,7 @@ CSS;
                 return sprintf(__('%s days ago'), $day_diff);
             }
             if ($day_diff < 31) {
-                return sprintf(__('%s weeks ago'), ceil($day_diff / 7));
+                return sprintf(__('%s weeks ago'), round($day_diff / 7));
             }
             if ($day_diff < 60) {
                 return __('Last month');
