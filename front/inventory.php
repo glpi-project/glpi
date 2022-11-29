@@ -95,6 +95,8 @@ if ($handle === true) {
     }
 }
 
+$inventory_request->handleMessages();
+
 if (isset($_GET['refused'])) {
     $redirect_url = $refused->handleInventoryRequest($inventory_request);
     Html::redirect($redirect_url);
