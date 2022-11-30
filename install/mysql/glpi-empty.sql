@@ -9378,8 +9378,6 @@ CREATE TABLE `glpi_changesatisfactions` (
    UNIQUE KEY `changes_id` (`changes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-SET FOREIGN_KEY_CHECKS=1;
-
 DROP TABLE IF EXISTS `glpi_validatorsubstitutes`;
 CREATE TABLE `glpi_validatorsubstitutes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -9389,3 +9387,5 @@ CREATE TABLE `glpi_validatorsubstitutes` (
   UNIQUE KEY `users_id_users_id_substitute` (`users_id`, `users_id_substitute`),
   KEY `users_id_substitute` (`users_id_substitute`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+SET FOREIGN_KEY_CHECKS=1;
