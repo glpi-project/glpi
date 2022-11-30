@@ -245,50 +245,63 @@ JAVASCRIPT;
     {
         global $DB;
 
-        $agent = new Agent();
-        $iterator = $DB->request([
-            'SELECT'    => ['id'],
-            'FROM'      => Agent::getTable(),
-            'WHERE'     => [
-                'itemtype' => $this->getType(),
-                'items_id' => $this->fields['id']
-            ],
-            'ORDERBY'   => ['last_contact DESC'],
-            'LIMIT'     => 1
+        $get_most_recent_agent = static function (array $conditions) use ($DB): ?Agent {
+            $iterator = $DB->request([
+                'SELECT'    => ['id'],
+                'FROM'      => Agent::getTable(),
+                'WHERE'     => $conditions,
+                'ORDERBY'   => ['last_contact DESC'],
+                'LIMIT'     => 1
+            ]);
+            if (count($iterator) === 0) {
+                return null;
+            }
+
+            $agent = new Agent();
+            $agent->getFromDB($iterator->current()['id']);
+            return $agent;
+        };
+
+        $agent = $get_most_recent_agent([
+            'itemtype' => $this->getType(),
+            'items_id' => $this->getID(),
         ]);
 
-        $has_agent = false;
-        if (count($iterator)) {
-            $has_agent = true;
-            $agent->getFromDB($iterator->current()['id']);
-        }
-
-       //if no agent has been found, check if there is a linked item for databases
-        if (!$has_agent && $this instanceof DatabaseInstance) {
-            if (!empty($this->fields['itemtype'] && !empty($this->fields['items_id']))) {
-                $has_agent = $agent->getFromDBByCrit([
-                    'itemtype' => $this->fields['itemtype'],
-                    'items_id' => $this->fields['items_id']
-                ]);
-            }
-        }
-
-       //if no agent has been found, check if there is a linked item, and find its agent
-        if (!$has_agent && $this instanceof Computer) {
-            $citem = new Computer_Item();
-            $has_relation = $citem->getFromDBByCrit([
-                'itemtype' => $this->getType(),
-                'items_id' => $this->fields['id']
+        if (
+            $agent === null
+            && $this instanceof DatabaseInstance
+            && !empty($this->fields['itemtype'])
+            && !empty($this->fields['items_id'])
+        ) {
+            // if no agent has been found, check if there is an agent linked to database host asset
+            $agent = $get_most_recent_agent([
+                'itemtype' => $this->fields['itemtype'],
+                'items_id' => $this->fields['items_id'],
             ]);
-            if ($has_relation) {
-                $has_agent = $agent->getFromDBByCrit([
-                    'itemtype' => Computer::getType(),
-                    'items_id' => $citem->fields['computers_id']
-                ]);
+        } elseif (
+            $agent === null
+            && $this instanceof Computer
+        ) {
+            // if no agent has been found, check if there is are linked items, and find most recent agent
+            $relations_iterator = $DB->request(
+                [
+                    'SELECT' => ['itemtype', 'items_id'],
+                    'FROM'   => Computer_Item::getTable(),
+                ]
+            );
+            if (count($relations_iterator) > 0) {
+                $conditions = ['OR' => []];
+                foreach ($relations_iterator as $relation_data) {
+                    $conditions['OR'][] = [
+                        'itemtype' => $relation_data['itemtype'],
+                        'items_id' => $relation_data['items_id'],
+                    ];
+                }
+                $agent = $get_most_recent_agent($conditions);
             }
         }
 
-        if ($has_agent) {
+        if ($agent !== null) {
             $this->agent = $agent;
         }
         return $this->agent;
