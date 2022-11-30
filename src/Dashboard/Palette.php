@@ -38,7 +38,7 @@ namespace Glpi\Dashboard;
 use Glpi\Plugin\Hooks;
 use Plugin;
 
-class Palette
+final class Palette
 {
     private $current = '';
     private $colors = [];
@@ -317,12 +317,12 @@ class Palette
     }
 
 
-    public function __construct(string $palette_name = '')
+    public function __construct(string $palette_name)
     {
         $palettes = self::getAllPalettes();
         $this->current = array_key_exists($palette_name, $palettes)
             ? $palette_name
-            : self::DEFAULT;
+            : self::DEFAULT; // Palette not exists (was probably defined by a plugin). Fallback to default palette.
         $this->colors = $palettes[$this->current];
     }
 
