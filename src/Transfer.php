@@ -214,7 +214,7 @@ class Transfer extends CommonDBTM
             'keep_certificate'    => 0,
             'clean_certificate'   => 0,
 
-            'locked_field' => 0
+            'lock_updated_fields' => 0
         ];
 
         if ($to >= 0) {
@@ -1300,10 +1300,10 @@ class Transfer extends CommonDBTM
 
                // Transfer Item
                 $input = [
-                    'id'          => $newID,
-                    'entities_id' => $this->to,
-                    '_transfer'   => 1,
-                    '_locked_field'   => $this->options['locked_field']
+                    'id'                   => $newID,
+                    'entities_id'          => $this->to,
+                    '_transfer'            => 1,
+                    '_lock_updated_fields' => $this->options['lock_updated_fields']
                 ];
 
                // Manage Location dropdown
