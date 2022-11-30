@@ -1,0 +1,346 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2022 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+
+
+{% set field_options = {
+    'field_class': 'col-12 col-xxl-6 col-sm-6',
+    'label_class': 'col-xxl-8',
+    'input_class': 'col-xxl-4',
+} %}
+
+{% set field_options = {
+    'field_class': 'col-12 col-xxl-6 col-sm-6',
+    'full_width': true,
+} %}
+
+{% set inline_field_options = field_options|merge({
+    'input_addclass': 'w-auto'
+}) %}
+
+{% block config_fields %}
+
+<div class="row ps-4">
+
+    {{ fields.textField(
+        'url_base',
+        config['url_base'],
+        __('URL of the application'),
+        field_options
+    ) }}
+
+    {{ fields.textareaField(
+        'text_login',
+        config['text_login'],
+        __('Text in the login box'),
+        field_options|merge({
+            'enable_richtext': true,
+            'enable_images': false,
+        })
+    ) }}
+
+    {{ fields.textField(
+        'helpdesk_doc_url',
+        config['helpdesk_doc_url'],
+        __('Simplified interface help link'),
+        field_options
+    ) }}
+
+    {{ fields.textField(
+        'central_doc_url',
+        config['central_doc_url'],
+        __('Standard interface help link'),
+        field_options
+    ) }}
+
+    {{ fields.numberField(
+        'decimal_number',
+        config['decimal_number'],
+        __('Default decimals limit'),
+        inline_field_options|merge({
+            'min': 1,
+            'max': 4,
+        })
+    ) }}
+
+    {{ fields.checkboxField(
+        'use_public_faq',
+        config['use_public_faq'],
+        __('Allow FAQ anonymous access'),
+        field_options
+    ) }}
+
+</div>
+
+<div class="hr-text">
+    <i class="ti ti-language"></i>
+    <span>{{ __('Translations') }}</span>
+</div>
+
+<div class="row ps-4">
+
+    {{ fields.checkboxField(
+        'translate_dropdowns',
+        config['translate_dropdowns'],
+        __("Translation of dropdowns"),
+        field_options
+    ) }}
+
+    {{ fields.checkboxField(
+        'translate_kb',
+        config['translate_kb'],
+        __("Knowledge base translation"),
+        field_options
+    ) }}
+
+    {{ fields.checkboxField(
+        'translate_reminders',
+        config['translate_reminders'],
+        __("Translation of reminders"),
+        field_options
+    ) }}
+
+</div>
+
+<div class="hr-text">
+    <i class="ti ti-list"></i>
+    <span>{{ __('Dynamic display') }}</span>
+</div>
+
+<div class="row ps-4">
+
+    {{ fields.numberField(
+        'dropdown_max',
+        config['dropdown_max'],
+        __('Page size for dropdown (paging using scroll)'),
+        inline_field_options|merge({
+            'min': 1,
+            'max': 200,
+        })
+    ) }}
+
+    {{ fields.dropdownNumberField(
+        'ajax_limit_count',
+        config['ajax_limit_count'],
+        __("Don't show search engine in dropdowns if the number of items is less than"),
+        inline_field_options|merge({
+            'min': 1,
+            'max': 200,
+            'toadd': {'0': __('Never')},
+            'width': 'auto',
+        })
+    ) }}
+</div>
+
+<div class="hr-text">
+    <i class="ti ti-search"></i>
+    <span>{{ __('Search engine') }}</span>
+</div>
+
+<div class="row ps-4">
+
+    {{ fields.dropdownArrayField(
+        'allow_search_view',
+        config['allow_search_view'],
+        [
+            __('No'),
+            __('%1$s (%2$s)')|format(__('Yes'), __('last criterion')),
+            __('%1$s (%2$s)')|format(__('Yes'), __('default criterion'))
+        ],
+        __('Items seen'),
+        inline_field_options|merge({
+            'width': 'auto',
+        })
+    ) }}
+
+    {{ fields.dropdownYesNo(
+        'allow_search_global',
+        config['allow_search_global'],
+        __('Global search'),
+        inline_field_options|merge({
+            'width': 'auto',
+        })
+    ) }}
+
+    {{ fields.dropdownArrayField(
+        'allow_search_all',
+        config['allow_search_all'],
+        [
+            __('No'),
+            __('%1$s (%2$s)')|format(__('Yes'), __('last criterion')),
+        ],
+        __('All'),
+        inline_field_options|merge({
+            'width': 'auto',
+        })
+    ) }}
+
+    {{ fields.numberField(
+        'list_limit_max',
+        config['list_limit_max'],
+        __('Default search results limit (page)'),
+        inline_field_options|merge({
+            'min': 5,
+            'max': 200,
+            'step': 5,
+        })
+    ) }}
+
+    {{ fields.numberField(
+        'cut',
+        config['cut'],
+        __('Default characters limit (summary text boxes)'),
+        inline_field_options|merge({
+            'step': 50,
+        })
+    ) }}
+
+    {{ fields.numberField(
+        'url_maxlength',
+        config['url_maxlength'],
+        __('Default url length limit'),
+        inline_field_options|merge({
+            'min': 20,
+            'max': 80,
+            'step': 5,
+        })
+    ) }}
+
+</div>
+
+<div class="hr-text">
+    <i class="ti ti-lock"></i>
+    <span>{{ __('Item locks') }}</span>
+</div>
+
+<div class="row ps-4">
+
+    {% set locks_rand = random() %}
+    {% set id_lock_use_lock_item = 'lock_use_lock_item_' ~ locks_rand %}
+    {% set id_lock_lockprofile_id = 'dropdown_lock_lockprofile_id' ~ locks_rand %}
+    {% set id_lock_item_list_id = 'dropdown_lock_item_list' ~ locks_rand %}
+    {{ fields.checkboxField(
+        'lock_use_lock_item',
+        config['lock_use_lock_item'],
+        __('Use locks'),
+        inline_field_options|merge({
+            'id': id_lock_use_lock_item,
+        })
+    ) }}
+
+    {% set lock_options = field_options %}
+    {% if not config['lock_use_lock_item'] %}
+        {% set lock_options = lock_options|merge({
+            'disabled': true,
+        }) %}
+    {% endif %}
+
+    {{ fields.dropdownField(
+        'Profile',
+        'lock_lockprofile_id',
+        config['lock_lockprofile_id'],
+        __('Profile to be used when locking items'),
+        inline_field_options|merge(lock_options)|merge({
+            'width': 'auto',
+            'rand': locks_rand,
+        })
+    ) }}
+
+    {{ fields.dropdownArrayField(
+        'lock_item_list',
+        '',
+        call("ObjectLock::getLockableObjects"),
+        __('List of items to lock'),
+        lock_options|merge({
+            'multiple': true,
+            'values': config['lock_item_list'],
+            'rand': locks_rand,
+        })
+    ) }}
+
+    <script>
+    $(function(ready){
+        $('#{{ id_lock_use_lock_item }}').change(function(){
+            var enabled = this.checked;
+            $('#{{ id_lock_lockprofile_id }}').prop('disabled', !enabled);
+            $('#{{ id_lock_item_list_id }}').prop('disabled', !enabled);
+        });
+    });
+    </script>
+</div>
+
+<div class="hr-text">
+    <i class="ti ti-login"></i>
+    <span>{{ __('Auto Login') }}</span>
+</div>
+
+<div class="row ps-4">
+
+    {{ fields.dropdownTimestampField(
+        'login_remember_time',
+        config['login_remember_time'],
+        __('Time to allow "Remember Me"'),
+        inline_field_options|merge({
+            'emptylabel': __('Disabled'),
+            'min': 0,
+            'max': constant('MONTH_TIMESTAMP') * 2,
+            'step': constant('DAY_TIMESTAMP'),
+            'toadd': [
+                constant('HOUR_TIMESTAMP'),
+                constant('HOUR_TIMESTAMP') * 2,
+                constant('HOUR_TIMESTAMP') * 6,
+                constant('HOUR_TIMESTAMP') * 12
+            ],
+            'width': 'auto',
+        })
+    ) }}
+
+    {{ fields.checkboxField(
+        'login_remember_default',
+        config['login_remember_default'],
+        __("Default state of checkbox"),
+        inline_field_options
+    ) }}
+
+    {{ fields.checkboxField(
+        'display_login_source',
+        config['display_login_source'],
+        __('Display source dropdown on login page'),
+        inline_field_options
+    ) }}
+</div>
+
+{% endblock %}

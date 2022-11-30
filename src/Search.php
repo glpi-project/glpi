@@ -555,7 +555,7 @@ class Search
                 }
             }
         }
-        if (!$CFG_GLPI['allow_search_view']) {
+        if (!$CFG_GLPI['allow_search_view'] && !array_key_exists('globalsearch', $p)) {
             foreach ($p['criteria'] as $val) {
                 if (isset($val['field']) && $val['field'] == 'view') {
                     Html::displayRightError();
