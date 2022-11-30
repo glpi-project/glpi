@@ -118,7 +118,7 @@
                     const palettes = {{ palettes|json_encode|raw }};
                     const palette_template = function(option) {
                         const palette_codes = palettes[option.id] ?? [];
-                        let html = '<span class="palette_preview d-flex rounded overflow-hidden m-1" \
+                        let html = '<span class="palette_preview d-inline-flex rounded overflow-hidden m-1" \
                             style="direction: ltr;">';
                         for (const code of palette_codes) {
                             html += '<span class="palette_preview_color flex-fill" \

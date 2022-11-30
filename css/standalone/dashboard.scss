@@ -1249,6 +1249,10 @@ $break_tablet: 1400px;
     padding: 5px 10px;
 }
 
+.palette_preview {
+    width: calc(100% - 10px);
+}
+
 .widgettype_field {
     .widget-list {
         max-width: 400px;
