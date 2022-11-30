@@ -40,7 +40,6 @@ use Plugin;
 
 final class Palette
 {
-    private $current = '';
     private $colors = [];
 
     private const DEFAULT = "tab10";
@@ -320,14 +319,14 @@ final class Palette
     public function __construct(string $palette_name)
     {
         $palettes = self::getAllPalettes();
-        $this->current = array_key_exists($palette_name, $palettes)
+        $current = array_key_exists($palette_name, $palettes)
             ? $palette_name
             : self::DEFAULT; // Palette not exists (was probably defined by a plugin). Fallback to default palette.
-        $this->colors = $palettes[$this->current];
+        $this->colors = $palettes[$current];
     }
 
 
-    public function get(int $nb_series = 10): array
+    public function getColors(int $nb_series = 10): array
     {
         $palette = [];
         while (count($palette) < $nb_series) {

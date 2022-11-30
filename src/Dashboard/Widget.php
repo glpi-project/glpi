@@ -1837,7 +1837,7 @@ JAVASCRIPT;
     public static function getPalette(string $palette_name, int $nb_series = 0): array
     {
         $palette_obj = new Palette($palette_name);
-        return $palette_obj->get($nb_series);
+        return $palette_obj->getColors($nb_series);
     }
 
 
