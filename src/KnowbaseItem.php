@@ -675,7 +675,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 $where[Entity_KnowbaseItem::getTableField('is_recursive')] = 1;
             }
         } else {
-            $where = self::getVisibilityCriteriaKB_Entity();
+            $where = self::getVisibilityCriteriaKB();
             $where['is_faq'] = 1;
         }
 
