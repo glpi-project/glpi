@@ -654,6 +654,15 @@ class NetworkPort extends CommonDBChild
         $itemtype = $item->getType();
         $items_id = $item->getField('id');
 
+        //from dynamic asset, deleted items are displayed from lock tab
+        //from manual asset, deleted items are always displayed (with is_deleted column)
+        $deleted_criteria = [];
+        if ($item->isDynamic()) {
+            $deleted_criteria = [
+                "is_deleted" => 0
+            ];
+        }
+
         if (
             !NetworkEquipment::canView()
             || !$item->can($items_id, READ)
@@ -704,7 +713,7 @@ class NetworkPort extends CommonDBChild
                         ['name' => null]
                     ]
                 ]
-            ]
+            ] + $deleted_criteria
         ];
 
         $ports_iterator = $DB->request($criteria);
@@ -880,7 +889,7 @@ class NetworkPort extends CommonDBChild
                 'items_id'  => $item->getID(),
                 'itemtype'  => $item->getType(),
                 'name'      => 'Management'
-            ]
+            ] + $deleted_criteria
         ];
 
         $mports_iterator = $DB->request($criteria);
@@ -975,6 +984,9 @@ class NetworkPort extends CommonDBChild
             foreach ($so as $option) {
                 if ($option['id'] == $dpref) {
                     switch ($dpref) {
+                        case 6:
+                            $output .= Dropdown::getYesNo($port['is_deleted']);
+                            break;
                         case 1:
                             if ($agg === true) {
                                 $td_class = 'aggregated';
@@ -1466,15 +1478,54 @@ class NetworkPort extends CommonDBChild
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = $checkitem !== null && $checkitem->canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
+
+        //add purge action if main item is not dynamic
+        //NetworkPort delete / purge are handled a different way on dynamic asset (lock)
+        if (!$checkitem->isDynamic()) {
+            $actions['NetworkPort' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge']    = __('Delete permanently');
+        }
+
         if ($isadmin) {
             $vlan_prefix                    = 'NetworkPort_Vlan' . MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$vlan_prefix . 'add']    = __('Associate a VLAN');
             $actions[$vlan_prefix . 'remove'] = __('Dissociate a VLAN');
         }
         return $actions;
+    }
+
+
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+        switch ($ma->getAction()) {
+            case 'purge':
+                foreach ($ids as $id) {
+                    if ($item->can($id, PURGE)) {
+                        // Only mark deletion for
+                        if (!$item->isDeleted()) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage(sprintf(__('%1$s: %2$s'), $item->getLink(), __('Item need to be deleted first')));
+                        } else {
+                            $delete_array = ['id' => $id];
+
+                            if ($item->delete($delete_array, true)) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    }
+                }
+                return;
+        }
     }
 
 
@@ -1529,6 +1580,15 @@ class NetworkPort extends CommonDBChild
             'name'               => NetworkPortType::getTypeName(1),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'networkport_instantiations',
+            'massiveaction'      => false
+        ];
+
+        $tab[] = [
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'is_deleted',
+            'name'               => __('Deleted'),
+            'datatype'           => 'bool',
             'massiveaction'      => false
         ];
 
