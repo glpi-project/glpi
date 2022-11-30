@@ -804,7 +804,7 @@ class Computer extends AbstractInventoryAsset
         $this->integer($computer->fields['entities_id'])->isEqualTo(1);
     }
 
-    public function testTransferWithoutLockedField()
+    public function testTransferWithLockedField()
     {
         $computer = new \Computer();
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -836,6 +836,59 @@ class Computer extends AbstractInventoryAsset
         $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
         $transfer = new \Transfer();
         $transfer->getFromDB($doTransfer);
+
+        //update tranfer model to enable locked field
+        $transfer->fields["lock_updated_fields"] = 1;
+
+        $item_to_transfer = ["Computer" => [$computers_id => $computers_id]];
+        $transfer->moveItems($item_to_transfer, 1, $transfer->fields);
+
+        //reload computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        //test entities_id
+        $this->integer($computer->fields['entities_id'])->isEqualTo(1);
+
+        //one lock for entities_id
+        $lockedfield = new \Lockedfield();
+        $locks = $lockedfield->find(['itemtype' => 'Computer', 'items_id' => $computers_id, "field" => "entities_id"]);
+        $this->integer(count($locks))->isIdenticalTo(1);
+    }
+
+    public function testTransferWithoutLockedField()
+    {
+        $computer = new \Computer();
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>5BCB-25C1BB60B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        //test entities_id
+        $this->integer($computer->fields['entities_id'])->isEqualTo(0);
+
+        //transer to another entity
+        $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
+        $transfer = new \Transfer();
+        $transfer->getFromDB($doTransfer);
+
+        //update tranfer model to disable locked field
+        $transfer->fields["lock_updated_fields"] = 0;
 
         $item_to_transfer = ["Computer" => [$computers_id => $computers_id]];
         $transfer->moveItems($item_to_transfer, 1, $transfer->fields);

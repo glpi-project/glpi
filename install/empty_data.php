@@ -8623,6 +8623,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'keep_disk' => 1,
                 'keep_certificate' => 1,
                 'clean_certificate' => 1,
+                'lock_updated_fields' => 0,
             ],
         ];
 
