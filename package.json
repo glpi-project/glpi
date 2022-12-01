@@ -11,7 +11,7 @@
     "dependencies": {
         "@codemirror/lang-css": "^6.0.1",
         "@fontsource/inter": "^4.5.4",
-        "@fortawesome/fontawesome-free": "^6.0.0",
+        "@fortawesome/fontawesome-free": "^6.2.1",
         "@fullcalendar/bootstrap": "^4.4.0",
         "@fullcalendar/core": "^4.4.0",
         "@fullcalendar/daygrid": "^4.4.0",
