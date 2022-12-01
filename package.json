@@ -61,7 +61,7 @@
         "select2": "^4.0.13",
         "spectrum-colorpicker2": "^2.0.9",
         "spin.js": "^4.1.0",
-        "tinymce": "^6.0.2",
+        "tinymce": "^6.3.0",
         "tinymce-i18n": "^22.5.2"
     },
     "scripts": {
