@@ -72,7 +72,7 @@
         "test": "jest --colors --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
-        "@babel/core": "^7.19.6",
+        "@babel/core": "^7.20.5",
         "@babel/plugin-transform-modules-commonjs": "^7.19.6",
         "@babel/plugin-transform-runtime": "^7.19.6",
         "@babel/preset-env": "^7.19.4",
