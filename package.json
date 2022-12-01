@@ -19,7 +19,7 @@
         "@fullcalendar/list": "^4.4.0",
         "@fullcalendar/rrule": "^4.4.0",
         "@fullcalendar/timegrid": "^4.4.0",
-        "@tabler/core": "^1.0.0-beta13",
+        "@tabler/core": "^1.0.0-beta16",
         "@tabler/icons": "^1.114.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.2.1",
