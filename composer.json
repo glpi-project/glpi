@@ -44,7 +44,7 @@
         "monolog/monolog": "^2.8",
         "paragonie/sodium_compat": "^1.17",
         "psr/cache": "^3.0",
-        "psr/log": "^2.0",
+        "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
         "ramsey/uuid": "^4.6",
         "rlanvin/php-rrule": "^2.3",
