@@ -213,6 +213,7 @@ class VirtualMachine extends InventoryAsset
     {
         $value = $this->data;
         $computerVirtualmachine = new ComputerVirtualMachine();
+        $computer = new Computer();
 
         $db_vms = $this->getExisting();
 
@@ -247,6 +248,17 @@ class VirtualMachine extends InventoryAsset
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
            // Delete virtual machines links in DB
             foreach ($db_vms as $idtmp => $data) {
+                if (isset($data['uuid']) && $data['uuid'] != '') {
+                    $vm = new \stdClass();
+                    $vm->uuid = $data['uuid'];
+                    $computers_vm_id = $this->getExistingVMAsComputer($vm);
+                    if ($computers_vm_id) {
+                        $computer->getFromDB($computers_vm_id);
+                        if ($computer->fields['is_dynamic'] == 1) {
+                            $computer->delete(['id' => $computers_vm_id], false);
+                        }
+                    }
+                }
                 $computerVirtualmachine->delete(['id' => $idtmp], true);
             }
         }
@@ -289,20 +301,7 @@ class VirtualMachine extends InventoryAsset
             }
 
             if (property_exists($vm, 'uuid') && $vm->uuid != '') {
-                $iterator = $DB->request([
-                    'SELECT' => 'id',
-                    'FROM'   => 'glpi_computers',
-                    'WHERE'  => [
-                        'RAW' => [
-                            'LOWER(uuid)'  => ComputerVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
-                        ]
-                    ],
-                    'LIMIT'  => 1
-                ]);
-                $computers_vm_id = 0;
-                foreach ($iterator as $data) {
-                     $computers_vm_id = $data['id'];
-                }
+                $computers_vm_id = $this->getExistingVMAsComputer($vm);
                 if ($computers_vm_id == 0) {
                     //call rules on current collected data to find item
                     //a callback on rulepassed() will be done if one is found.
@@ -357,6 +356,29 @@ class VirtualMachine extends InventoryAsset
                 }
             }
         }
+    }
+
+    public function getExistingVMAsComputer(\stdClass $vm): int
+    {
+        global $DB;
+
+        $computers_vm_id = 0;
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_computers',
+            'WHERE'  => [
+                'RAW' => [
+                    'LOWER(uuid)'  => ComputerVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
+                ]
+            ],
+            'LIMIT'  => 1
+        ]);
+
+        foreach ($iterator as $data) {
+            $computers_vm_id = $data['id'];
+        }
+
+        return $computers_vm_id;
     }
 
     public function checkConf(Conf $conf): bool
