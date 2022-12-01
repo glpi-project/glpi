@@ -1680,8 +1680,10 @@ class MailCollector extends CommonDBTM
             $contents = $this->getDecodedContent($part);
             if (file_put_contents($path . $filename, $contents)) {
                 $this->files[$filename] = $filename;
-               // If embeded image, we add a tag
-                if (preg_match('@image/.+@', $content_type)) {
+
+                // If embeded image, we add a tag
+                $mime = Toolbox::getMime($path . $filename);
+                if (preg_match('@image/.+@', $mime)) {
                     end($this->files);
                     $tag = Rule::getUuid();
                     $this->tags[$filename]  = $tag;

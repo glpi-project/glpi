@@ -710,6 +710,7 @@ class MailCollector extends DbTestCase
                     '34 - Message with no MessageID header',
                     '35 - Message with some invalid headers',
                     '36 - Microsoft specific code',
+                    '37 - Image using application/octet-steam content-type',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -841,25 +842,26 @@ HTML,
 
        // Check creation of expected documents
         $expected_docs = [
-            '00-logoteclib.png',
+            '00-logoteclib.png' => 'image/png',
          // Space is missing between "France" and "très" due to a bug in laminas-mail
-            '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
-            '01-test.JPG',
-            '15-image001.png',
-            '18-blank.gif',
-            '19-secl-chas.gif',
-            '20-special-chars.gif',
-            '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt',
-            '24.2-zhong-guo-zi-fu.txt',
-            '25-new-text-document.txt',
-            '1234567890',
-            '1234567890_2',
-            '1234567890_3',
+            '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png' => 'image/png',
+            '01-test.JPG' => 'image/jpeg',
+            '15-image001.png' => 'image/png',
+            '18-blank.gif' => 'image/gif',
+            '19-secl-chas.gif' => 'image/gif',
+            '20-special-chars.gif' => 'image/gif',
+            '24.1-zhang-wen-jian-ming-jiang-dao-zhi-nei-rong-chu-zhi-biao-tou-zhong-de-lian-xu-xing.txt' => 'text/plain',
+            '24.2-zhong-guo-zi-fu.txt' => 'text/plain',
+            '25-new-text-document.txt' => 'text/plain',
+            '1234567890' => 'text/plain',
+            '1234567890_2' => 'text/plain',
+            '1234567890_3' => 'text/plain',
+            '37-red-dot.png' => 'image/png',
         ];
 
         $iterator = $DB->request(
             [
-                'SELECT' => ['d.filename'],
+                'SELECT' => ['d.filename', 'd.mime'],
                 'FROM'   => \Document::getTable() . " AS d",
                 'INNER JOIN'   => [
                     \Document_Item::getTable() . " AS d_item"  => [
@@ -880,7 +882,7 @@ HTML,
 
         $filenames = [];
         foreach ($iterator as $data) {
-            $filenames[] = $data['filename'];
+            $filenames[$data['filename']] = $data['mime'];
         }
         $this->array($filenames)->isIdenticalTo($expected_docs);
 
