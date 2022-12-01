@@ -46,7 +46,7 @@
         "psr/cache": "^3.0",
         "psr/log": "^2.0",
         "psr/simple-cache": "^3.0",
-        "ramsey/uuid": "^4.2",
+        "ramsey/uuid": "^4.6",
         "rlanvin/php-rrule": "^2.3",
         "sabre/dav": "^4.4",
         "sabre/http": "^5.1",
