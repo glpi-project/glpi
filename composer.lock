@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e45af0f7ea4d6882a90299a98df475af",
+    "content-hash": "ae0c45f19b4f420eefef886c3cf9bfc8",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -4693,16 +4693,16 @@
         },
         {
             "name": "symfony/polyfill-php82",
-            "version": "v1.26.0",
+            "version": "v1.27.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php82.git",
-                "reference": "a88014fcea4120c9f77b4fefd48942ce38e412e7"
+                "reference": "80ddf7bfa17ef7b06db4e6d007a95bf584e07b44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php82/zipball/a88014fcea4120c9f77b4fefd48942ce38e412e7",
-                "reference": "a88014fcea4120c9f77b4fefd48942ce38e412e7",
+                "url": "https://api.github.com/repos/symfony/polyfill-php82/zipball/80ddf7bfa17ef7b06db4e6d007a95bf584e07b44",
+                "reference": "80ddf7bfa17ef7b06db4e6d007a95bf584e07b44",
                 "shasum": ""
             },
             "require": {
@@ -4711,7 +4711,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.26-dev"
+                    "dev-main": "1.27-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -4752,7 +4752,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php82/tree/v1.26.0"
+                "source": "https://github.com/symfony/polyfill-php82/tree/v1.27.0"
             },
             "funding": [
                 {
@@ -4768,7 +4768,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-24T09:13:51+00:00"
+            "time": "2022-11-10T10:10:54+00:00"
         },
         {
             "name": "symfony/service-contracts",
