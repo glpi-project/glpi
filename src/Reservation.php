@@ -540,7 +540,7 @@ JAVASCRIPT;
 
             if ($canedit_admin || $my_item) {
                 $user->getFromDB($data['users_id']);
-                $username = $user->getFriendlyName();
+                $data['comment'] .= '<br />' . sprintf(__("Reserved by %s"), $user->getFriendlyName());
             }
 
             $name = $item->getName([
@@ -554,10 +554,7 @@ JAVASCRIPT;
                 'resourceId'  => $data['itemtype'] . "-" . $data['items_id'],
                 'start'       => $data['begin'],
                 'end'         => $data['end'],
-                'comment'     => $data['comment'] .
-                             $canedit_admin || $my_item
-                              ? "\n" . sprintf(__("Reserved by %s"), $username)
-                              : "",
+                'comment'     => $canedit_admin || $my_item ? $data['comment'] : '',
                 'title'       => $params['reservationitems_id'] ? "" : $name,
                 'icon'        => $item->getIcon(),
                 'description' => $item->getTypeName(),

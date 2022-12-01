@@ -918,84 +918,95 @@ class Migration
      *
      * @param array $toadd items to add : itemtype => array of values
      * @param array $todel items to del : itemtype => array of values
+     * @param bool $only_default : add the display pref only on global view
      *
      * @return void
      **/
-    public function updateDisplayPrefs($toadd = [], $todel = [])
+    public function updateDisplayPrefs($toadd = [], $todel = [], bool $only_default = false)
     {
         global $DB;
 
-       //TRANS: %s is the table or item to migrate
+        //TRANS: %s is the table or item to migrate
         $this->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
-        if (count($toadd)) {
-            foreach ($toadd as $type => $tab) {
-                $iterator = $DB->request([
-                    'SELECT'          => 'users_id',
-                    'DISTINCT'        => true,
-                    'FROM'            => 'glpi_displaypreferences',
-                    'WHERE'           => ['itemtype' => $type]
-                ]);
+        foreach ($toadd as $itemtype => $searchoptions_ids) {
+            $criteria = [
+                'SELECT'   => 'users_id',
+                'DISTINCT' => true,
+                'FROM'     => 'glpi_displaypreferences',
+                'WHERE'    => ['itemtype' => $itemtype]
+            ];
+            if ($only_default) {
+                $criteria['WHERE']['users_id'] = 0;
+            }
 
-                if (count($iterator) > 0) {
-                    foreach ($iterator as $data) {
-                        $query = "SELECT MAX(`rank`)
-                              FROM `glpi_displaypreferences`
-                              WHERE `users_id` = '" . $data['users_id'] . "'
-                                    AND `itemtype` = '$type'";
-                        $result = $DB->query($query);
-                        $rank   = $DB->result($result, 0, 0);
-                        $rank++;
+            $iterator = $DB->request($criteria);
 
-                        foreach ($tab as $newval) {
-                             $query = "SELECT *
-                                 FROM `glpi_displaypreferences`
-                                 WHERE `users_id` = '" . $data['users_id'] . "'
-                                       AND `num` = '$newval'
-                                       AND `itemtype` = '$type'";
-                            if ($result2 = $DB->query($query)) {
-                                if ($DB->numrows($result2) == 0) {
-                                       $DB->insert(
-                                           'glpi_displaypreferences',
-                                           [
-                                               'itemtype'  => $type,
-                                               'num'       => $newval,
-                                               'rank'      => $rank++,
-                                               'users_id'  => $data['users_id']
-                                           ]
-                                       );
-                                }
-                            }
-                        }
-                    }
-                } else { // Add for default user
-                    $rank = 1;
-                    foreach ($tab as $newval) {
-                        $DB->insert(
+            if (count($iterator) > 0) {
+                // There are already existing display preferences for this itemtype.
+                // Add new search options with an higher rank.
+                foreach ($iterator as $data) {
+                    $max_rank = $DB->request([
+                        'SELECT' => ['MAX' => 'rank AS max_rank'],
+                        'FROM'   => 'glpi_displaypreferences',
+                        'WHERE'  => [
+                            'users_id' => $data['users_id'],
+                            'itemtype' => $itemtype,
+                        ]
+                    ])->current()['max_rank'];
+
+                    $rank = $max_rank + 1;
+
+                    foreach ($searchoptions_ids as $searchoption_id) {
+                        $exists = countElementsInTable(
                             'glpi_displaypreferences',
                             [
-                                'itemtype'  => $type,
-                                'num'       => $newval,
-                                'rank'      => $rank++,
-                                'users_id'  => 0
+                                'users_id' => $data['users_id'],
+                                'itemtype' => $itemtype,
+                                'num'      => $searchoption_id,
                             ]
-                        );
+                        ) > 0;
+
+                        if (!$exists) {
+                            $DB->insert(
+                                'glpi_displaypreferences',
+                                [
+                                    'itemtype'  => $itemtype,
+                                    'num'       => $searchoption_id,
+                                    'rank'      => $rank++,
+                                    'users_id'  => $data['users_id']
+                                ]
+                            );
+                        }
                     }
+                }
+            } else {
+                // There are not yet any display preference for this itemtype.
+                // Add new search options with a rank starting to 1.
+                $rank = 1;
+                foreach ($searchoptions_ids as $searchoption_id) {
+                    $DB->insert(
+                        'glpi_displaypreferences',
+                        [
+                            'itemtype'  => $itemtype,
+                            'num'       => $searchoption_id,
+                            'rank'      => $rank++,
+                            'users_id'  => 0
+                        ]
+                    );
                 }
             }
         }
 
-        if (count($todel)) {
-           // delete display preferences
-            foreach ($todel as $type => $tab) {
-                if (count($tab)) {
-                    $DB->delete(
-                        'glpi_displaypreferences',
-                        [
-                            'itemtype'  => $type,
-                            'num'       => $tab
-                        ]
-                    );
-                }
+        // delete display preferences
+        foreach ($todel as $itemtype => $searchoptions_ids) {
+            if (count($searchoptions_ids) > 0) {
+                $DB->delete(
+                    'glpi_displaypreferences',
+                    [
+                        'itemtype'  => $itemtype,
+                        'num'       => $searchoptions_ids
+                    ]
+                );
             }
         }
     }

@@ -31,35 +31,25 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if grid_item_class is not defined %}
-   {% set grid_item_class = 'col-xl-6 col-xxl-4' %}
+{% if canedit %}
+    <form name="form"
+          action="{{ 'Config'|itemtype_form_path }}"
+          method="post"
+          data-track-changes="true">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 {% endif %}
 
-{% set rand = random() %}
-<div id="grid_{{ rand }}" class="masonry_grid row row-cards mb-5">
-   {% for item in grid_items %}
-      {% if item is not empty %}
-         <div class="grid-item {{ grid_item_class }}">
-            {{ item|raw }}
-         </div>
-      {% endif %}
-   {% endfor %}
+<div class="row">
+    {% block config_fields %}
+    {% endblock %}
 </div>
 
-<script type="text/javascript">
-$(function() {
-   window.msnry_grid_{{ rand }} = new Masonry('#grid_{{ rand }}', {
-      "percentPosition": true,
-      "horizontalOrder": true,
-   });
-
-   $('#grid_{{ rand }}').on("layout:refresh", function() {
-       window.msnry_grid_{{ rand }}.layout();
-   });
-
-   $(document).on('masonry_grid:layout', function() {
-       window.msnry_grid_{{ rand }}.layout();
-   })
-
-});
-</script>
+{% if canedit %}
+        <div class="card-footer mx-n2 d-flex">
+            <button type="submit" name="update" value="1" class="ms-auto btn btn-primary">
+                <i class="ti ti-device-floppy"></i>
+                <span>{{ _x('button', 'Save') }}</span>
+            </button>
+        </div>
+    </form>
+{% endif %}

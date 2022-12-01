@@ -801,8 +801,8 @@ class Session
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
               && (
-                  strpos($_SERVER['PHP_SELF'], '/inventory.php')
-                  || strpos($_SERVER['PHP_SELF'], '/index.php')
+                  strpos($_SERVER['PHP_SELF'], '/inventory.php') !== false
+                  || strpos($_SERVER['PHP_SELF'], '/index.php') !== false
                   || defined('TU_USER')
               )
         );

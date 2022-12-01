@@ -103,8 +103,8 @@ var Dashboard = {
             draggable: { // override jquery ui draggable options
                 'cancel': 'textarea' // avoid draggable on some child elements
             },
-            oneColumnSize: 768 - width_offset, // breakpoint of one column mode (based on the dashboard container width), trying to reduce to match the `-md` breakpoint of bootstrap (this last is based on viewport width)
-        });
+            oneColumnSize: 768 - width_offset, // breakpoint of one column mode (based on the dashboard container width), trying to reduce to match the `-md` breakpoint of bootstrap (this last is based on viewport width)>
+        }, "#grid-stack-" + options.rand);
 
         // set grid in static to prevent edition (unless user click on edit button)
         // previously in option, but current version of gridstack has a bug with one column mode (responsive)

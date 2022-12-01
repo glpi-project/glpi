@@ -347,7 +347,7 @@ $empty_data_builder = new class
             // Default size corresponds to the 'upload_max_filesize' directive in Mio (rounded down) or 1 Mio if 'upload_max_filesize' is too low.
             'document_max_size' => max(1, floor(Toolbox::return_bytes_from_ini_vars(ini_get('upload_max_filesize')) / 1024 / 1024)),
             'planning_work_days' => exportArrayToDB([0, 1, 2, 3, 4, 5, 6]),
-            'system_user' => 6,
+            'system_user' => self::USER_SYSTEM,
             'support_legacy_data' => 0, // New installation should not support legacy data
             'toast_location' => 'bottom-right',
             'initialized_rules_collections' => '[]',
@@ -1844,7 +1844,7 @@ $empty_data_builder = new class
         $ADDTODISPLAYPREF['Lockedfield'] = [3, 13, 5];
         $ADDTODISPLAYPREF['Unmanaged'] = [2, 4, 3, 5, 7, 10, 18, 14, 15, 9];
         $ADDTODISPLAYPREF['NetworkPortType'] = [10, 11, 12];
-        $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40];
+        $ADDTODISPLAYPREF['NetworkPort'] = [3, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40, 6];
         $ADDTODISPLAYPREF['USBVendor'] = [10, 11];
         $ADDTODISPLAYPREF['PCIVendor'] = [10, 11];
         $ADDTODISPLAYPREF['Agent'] = [2, 4, 10, 8, 11, 6, 15];
@@ -8781,6 +8781,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'keep_disk' => 1,
                 'keep_certificate' => 1,
                 'clean_certificate' => 1,
+                'lock_updated_fields' => 0,
             ],
         ];
 

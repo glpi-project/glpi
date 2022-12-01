@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Agent\Communication\AbstractRequest;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\PasswordTooWeakException;
@@ -176,11 +178,6 @@ class Config extends CommonDBTM
                 Session::addMessageAfterRedirect(__('Invalid API base URL!'), false, ERROR);
                 return false;
             }
-        }
-
-        if (isset($input['allow_search_view']) && !$input['allow_search_view']) {
-           // Global search need "view"
-            $input['allow_search_global'] = 0;
         }
 
         if (array_key_exists('smtp_mode', $input) && $input['smtp_mode'] === MAIL_SMTPTLS) {
@@ -330,215 +327,10 @@ class Config extends CommonDBTM
             return;
         }
 
-        $rand = mt_rand();
-        $canedit = Session::haveRight(self::$rightname, UPDATE);
-
-        if ($canedit) {
-            echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(__CLASS__) . "\" method='post' data-track-changes='true'>";
-        }
-        echo "<div class='center' id='tabsbody'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='url_base'>" . __('URL of the application') . "</label></td>";
-        echo "<td colspan='3'><input type='url' name='url_base' id='url_base' value='" . $CFG_GLPI["url_base"] . "' class='form-control'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='text_login'>" . __('Text in the login box (HTML tags supported)') . "</label></td>";
-        echo "<td colspan='3'>";
-        echo "<textarea class='form-control' name='text_login' id='text_login'>" . $CFG_GLPI["text_login"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td width='30%'><label for='dropdown_use_public_faq$rand'>" . __('Allow FAQ anonymous access') . "</label></td><td  width='20%'>";
-        Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"], -1, ['rand' => $rand]);
-        echo "</td><td width='30%'><label for='helpdesk_doc_url'>" . __('Simplified interface help link') . "</label></td>";
-        echo "<td><input size='22' type='text' name='helpdesk_doc_url' id='helpdesk_doc_url' value='" .
-                 $CFG_GLPI["helpdesk_doc_url"] . "' class='form-control'></td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_list_limit_max$rand'>" . __('Default search results limit (page)') . "</td><td>";
-        Dropdown::showNumber("list_limit_max", ['value' => $CFG_GLPI["list_limit_max"],
-            'min'   => 5,
-            'max'   => 200,
-            'step'  => 5,
-            'rand'  => $rand
+        TemplateRenderer::getInstance()->display('pages/setup/general/general_setup.html.twig', [
+            'canedit' => Session::haveRight(self::$rightname, UPDATE),
+            'config'  => $CFG_GLPI,
         ]);
-        echo "</td><td><label for='central_doc_url'>" . __('Standard interface help link') . "</label></td>";
-        echo "<td><input size='22' type='text' name='central_doc_url' id='central_doc_url' value='" .
-                 $CFG_GLPI["central_doc_url"] . "' class='form-control'></td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='cut$rand'>" . __('Default characters limit (summary text boxes)') . "</label></td><td>";
-        echo Html::input('cut', [
-            'value' => $CFG_GLPI["cut"],
-            'id'    => "cut$rand"
-        ]);
-        echo "</td><td><label for='dropdown_url_maxlength$rand'>" . __('Default url length limit') . "</td><td>";
-        Dropdown::showNumber('url_maxlength', ['value' => $CFG_GLPI["url_maxlength"],
-            'min'   => 20,
-            'max'   => 80,
-            'step'  => 5,
-            'rand'  => $rand
-        ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'><td><label for='dropdown_decimal_number$rand'>" . __('Default decimals limit') . "</label></td><td>";
-        Dropdown::showNumber("decimal_number", ['value' => $CFG_GLPI["decimal_number"],
-            'min'   => 1,
-            'max'   => 4,
-            'rand'  => $rand
-        ]);
-        echo "</td>";
-        echo "<td colspan='2'></td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_translate_dropdowns$rand'>" . __("Translation of dropdowns") . "</label></td><td>";
-        Dropdown::showYesNo("translate_dropdowns", $CFG_GLPI["translate_dropdowns"], -1, ['rand' => $rand]);
-        echo "</td>";
-        echo "<td><label for='dropdown_translate_kb$rand'>" . __("Knowledge base translation") . "</label></td><td>";
-        Dropdown::showYesNo("translate_kb", $CFG_GLPI["translate_kb"], -1, ['rand' => $rand]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='reminder_translate_dropdowns$rand'>" . __("Translation of reminders") . "</label></td><td>";
-        Dropdown::showYesNo("translate_reminders", $CFG_GLPI["translate_reminders"], -1, ['rand' => $rand]);
-        echo "</td>";
-        echo "<td colspan='2'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>" . __('Dynamic display') .
-           "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_dropdown_max$rand'>" .
-            __('Page size for dropdown (paging using scroll)') .
-            "</label></td><td>";
-        Dropdown::showNumber('dropdown_max', ['value' => $CFG_GLPI["dropdown_max"],
-            'min'   => 1,
-            'max'   => 200,
-            'rand'  => $rand
-        ]);
-        echo "</td>";
-        echo "<td colspan='2'></td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_ajax_limit_count$rand'>" . __("Don't show search engine in dropdowns if the number of items is less than") .
-           "</label></td><td>";
-        Dropdown::showNumber('ajax_limit_count', ['value' => $CFG_GLPI["ajax_limit_count"],
-            'min'   => 1,
-            'max'   => 200,
-            'step'  => 1,
-            'toadd' => [0 => __('Never')],
-            'rand'  => $rand
-        ]);
-        echo "<td colspan='2'></td>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>" . __('Search engine') . "</td></tr>";
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_allow_search_view$rand'>" . __('Items seen') . "</label></td><td>";
-        $values = [0 => __('No'),
-            1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion')),
-            2 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('default criterion'))
-        ];
-        Dropdown::showFromArray(
-            'allow_search_view',
-            $values,
-            ['value' => $CFG_GLPI['allow_search_view'], 'rand' => $rand]
-        );
-        echo "</td><td><label for='dropdown_allow_search_global$rand'>" . __('Global search') . "</label></td><td>";
-        if ($CFG_GLPI['allow_search_view']) {
-            Dropdown::showYesNo('allow_search_global', $CFG_GLPI['allow_search_global'], -1, ['rand' => $rand]);
-        } else {
-            echo Dropdown::getYesNo(0);
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_allow_search_all$rand'>" . __('All') . "</label></td><td>";
-        $values = [0 => __('No'),
-            1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion'))
-        ];
-        Dropdown::showFromArray(
-            'allow_search_all',
-            $values,
-            ['value' => $CFG_GLPI['allow_search_all'], 'rand' => $rand]
-        );
-        echo "</td><td colspan='2'></td></tr>";
-
-        echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>" . __('Item locks') . "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_lock_use_lock_item$rand'>" . __('Use locks') . "</label></td><td>";
-        Dropdown::showYesNo("lock_use_lock_item", $CFG_GLPI["lock_use_lock_item"], -1, ['rand' => $rand]);
-        echo "</td><td><label for='dropdown_lock_lockprofile_id$rand'>" . __('Profile to be used when locking items') . "</label></td><td>";
-        if ($CFG_GLPI["lock_use_lock_item"]) {
-            Profile::dropdown(['name'                  => 'lock_lockprofile_id',
-                'display_emptychoice'   => true,
-                'value'                 => $CFG_GLPI['lock_lockprofile_id'],
-                'rand'                  => $rand
-            ]);
-        } else {
-            echo Dropdown::getDropdownName(Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']);
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_lock_item_list$rand'>" . __('List of items to lock') . "</label></td>";
-        echo "<td colspan=3>";
-        Dropdown::showFromArray(
-            'lock_item_list',
-            ObjectLock::getLockableObjects(),
-            ['values'   => $CFG_GLPI['lock_item_list'],
-                'width'    => '100%',
-                'multiple' => true,
-                'readonly' => !$CFG_GLPI["lock_use_lock_item"],
-                'rand'     => $rand
-            ]
-        );
-
-        echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>" . __('Auto Login') .
-           "</td></tr>";
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_login_remember_time$rand'>" . __('Time to allow "Remember Me"') .
-           "</label></td><td>";
-        Dropdown::showTimeStamp('login_remember_time', ['value' => $CFG_GLPI["login_remember_time"],
-            'emptylabel'   => __('Disabled'),
-            'min'   => 0,
-            'max'   => MONTH_TIMESTAMP * 2,
-            'step'  => DAY_TIMESTAMP,
-            'toadd' => [HOUR_TIMESTAMP, HOUR_TIMESTAMP * 2, HOUR_TIMESTAMP * 6, HOUR_TIMESTAMP * 12],
-            'rand'  => $rand
-        ]);
-        echo "<td><label for='dropdown_login_remember_default$rand'>" . __("Default state of checkbox") . "</label></td><td>";
-        Dropdown::showYesNo("login_remember_default", $CFG_GLPI["login_remember_default"], -1, ['rand' => $rand]);
-        echo "</td>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='dropdown_display_login_source$rand'>" .
-         __('Display source dropdown on login page') .
-         "</label></td><td>";
-        Dropdown::showYesNo("display_login_source", $CFG_GLPI["display_login_source"], -1, ['rand' => $rand]);
-        echo "</td><td colspan='2'></td></tr>";
-
-        if ($canedit) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='4' class='center'>";
-            echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . _sx('button', 'Save') . "\">";
-            echo "</td></tr>";
-        }
-
-        echo "</table></div>";
-        Html::closeForm();
     }
 
 

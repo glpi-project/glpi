@@ -250,6 +250,8 @@ final class RichText
 
         if ($enhanced_html) {
             // URLs have to be transformed into <a> tags.
+            global $autolink_options;
+            $autolink_options['strip_protocols'] = false;
             $content = autolink($content, false, ' target="_blank"');
         }
 

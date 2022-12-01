@@ -668,4 +668,24 @@ abstract class AbstractRequest
     {
         return $this->deviceid;
     }
+
+    /**
+     * Handle GLPI framework messages
+     *
+     * @return void
+     */
+    public function handleMessages(): void
+    {
+        if (count($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
+            $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'];
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+            foreach ($messages as $code => $all_messages) {
+                if ($code != INFO) {
+                    foreach ($all_messages as $message) {
+                        $this->addError($message, 500);
+                    }
+                }
+            }
+        }
+    }
 }

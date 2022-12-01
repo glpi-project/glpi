@@ -980,8 +980,6 @@ class Contract extends CommonDBTM
         $options['criteria'][0]['value'] = '>0';
         $options['criteria'][1]['field'] = 13;
         $options['criteria'][1]['value'] = '<7';
-        $options['criteria'][0]['value'] = '>6';
-        $options['criteria'][1]['value'] = '<30';
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/contract.php?" . Toolbox::append_params($options),
             'text'   => __('Contracts where notice begins in less than 7 days'),
