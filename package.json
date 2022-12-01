@@ -75,7 +75,7 @@
         "@babel/core": "^7.20.5",
         "@babel/plugin-transform-modules-commonjs": "^7.19.6",
         "@babel/plugin-transform-runtime": "^7.19.6",
-        "@babel/preset-env": "^7.19.4",
+        "@babel/preset-env": "^7.20.2",
         "@testing-library/jest-dom": "^5.16.5",
         "babel-jest": "^29.2.2",
         "clean-webpack-plugin": "^4.0.0",
