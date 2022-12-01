@@ -18,6 +18,7 @@ updates:
     open-pull-requests-limit: 100
     target-branch: "10.0/bugfixes"
     versioning-strategy: "increase"
+    rebase-strategy: "disabled"
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
@@ -27,6 +28,7 @@ updates:
     open-pull-requests-limit: 100
     target-branch: "10.0/bugfixes"
     versioning-strategy: "increase"
+    rebase-strategy: "disabled"
 
 
   # Update production dependencies on future release branch (main).
@@ -39,6 +41,7 @@ updates:
     open-pull-requests-limit: 100
     target-branch: "main"
     versioning-strategy: "increase"
+    rebase-strategy: "disabled"
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
@@ -48,3 +51,4 @@ updates:
     open-pull-requests-limit: 100
     target-branch: "main"
     versioning-strategy: "increase"
+    rebase-strategy: "disabled"
