@@ -5310,16 +5310,16 @@
         },
         {
             "name": "wapmorgan/unified-archive",
-            "version": "1.1.7",
+            "version": "1.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wapmorgan/UnifiedArchive.git",
-                "reference": "876ab148b4a56e266266bec506301fa1263e0c0d"
+                "reference": "1079c5733f090f7db61efa2629d8859a2b1c9a75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/876ab148b4a56e266266bec506301fa1263e0c0d",
-                "reference": "876ab148b4a56e266266bec506301fa1263e0c0d",
+                "url": "https://api.github.com/repos/wapmorgan/UnifiedArchive/zipball/1079c5733f090f7db61efa2629d8859a2b1c9a75",
+                "reference": "1079c5733f090f7db61efa2629d8859a2b1c9a75",
                 "shasum": ""
             },
             "require": {
@@ -5344,10 +5344,12 @@
                 "ext-zip": "[extension] ZIP support",
                 "ext-zlib": "[extension] GZ (GZIP) support",
                 "gemorroj/archive7z": "[utility + bridge] 7ZIP (and a lot of other formats) support via console program",
-                "pear/archive_tar": "[pure php] another TAR support",
-                "phpclasses/php-iso-file": "[pure php] ISO support",
+                "nelexa/zip": "[pure] ZIP native support",
+                "pear/archive_tar": "[pure] another native TAR support",
+                "phpclasses/php-iso-file": "[pure] native ISO support",
+                "splitbrain/php-archive": "[pure] ZIP/TAR (tgz/tbz2) native support",
                 "symfony/console": "Requirement for cam (Console Archive Manager)",
-                "wapmorgan/cab-archive": "[pure php] CAB support"
+                "wapmorgan/cab-archive": "[pure] native CAB support"
             },
             "bin": [
                 "bin/cam"
@@ -5403,9 +5405,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wapmorgan/UnifiedArchive/issues",
-                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.7"
+                "source": "https://github.com/wapmorgan/UnifiedArchive/tree/1.1.8"
             },
-            "time": "2022-07-30T23:26:11+00:00"
+            "time": "2022-11-20T12:49:12+00:00"
         },
         {
             "name": "webmozart/assert",
