@@ -61,6 +61,12 @@ final class RulesManager
             Config::getConfigurationValue('core', 'initialized_rules_collections'),
             true
         );
+        if (!is_array($initialized_collections)) {
+            // Reinitialize configuration value if stored value does not exists or is corrupted.
+            // It can happen either if migration did not worked as expected, either if value
+            // in database was corrupted/deleted.
+            $initialized_collections = [];
+        }
 
         foreach ($rulecollections_types as $rulecollection_type) {
             if (
