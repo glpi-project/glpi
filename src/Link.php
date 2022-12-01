@@ -665,7 +665,7 @@ class Link extends CommonDBTM
             foreach ($links as $key => $val) {
                 $name    = (isset($names[$key]) ? $names[$key] : reset($names));
                 $url     = $val;
-                $newlink = "<a href='$url'";
+                $newlink = '<a href="' . htmlspecialchars($url) . '"';
                 if ($params['open_window']) {
                     $newlink .= " target='_blank'";
                 }
@@ -691,9 +691,9 @@ class Link extends CommonDBTM
                     $file = reset($files);
                 }
                 $url             = $CFG_GLPI["root_doc"] . "/front/link.send.php?lID=" . $params['id'] .
-                                 "&amp;itemtype=" . $item->getType() .
-                                 "&amp;id=" . $item->getID() . "&amp;rank=$key";
-                $newlink         = "<a href='$url' target='_blank'>";
+                                 "&itemtype=" . $item->getType() .
+                                 "&id=" . $item->getID() . "&rank=$key";
+                $newlink         = '<a href="' . htmlspecialchars($url) . '" target="_blank">';
                 $newlink        .= "<i class='fa-lg fa-fw fas fa-link'></i>&nbsp;";
                 $linkname        = sprintf(__('%1$s #%2$s'), $name, $i);
                 $newlink        .= sprintf(__('%1$s: %2$s'), $linkname, $val);
