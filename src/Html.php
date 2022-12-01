@@ -1292,6 +1292,14 @@ HTML;
             if (in_array('dashboard', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/dashboard.scss'];
                 Html::requireJs('dashboard');
+
+                // include more js libs
+                $jslibs = array_merge($jslibs, [
+                    'gridstack',
+                    'charts',
+                    'clipboard',
+                    'sortable'
+                ]);
             }
 
             if (in_array('marketplace', $jslibs)) {
