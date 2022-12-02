@@ -220,7 +220,7 @@ class Conf extends CommonGLPI
         }
 
        //process archive
-        $files = $archive->getFileNames();
+        $files = $archive->getFiles();
         foreach ($files as $file) {
             if ($this->isInventoryFile($file)) {
                 $contents = $archive->getFileContent($file);
