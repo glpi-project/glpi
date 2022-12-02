@@ -1201,7 +1201,8 @@ class SoftwareLicense extends CommonTreeDropdown
                     }
                     return self::createTabEntry(
                         self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;')
+                        (($nb >= 0) ? $nb : '&infin;'),
+                        $item::getType()
                     );
                 break;
                 case 'SoftwareLicense':
@@ -1216,7 +1217,8 @@ class SoftwareLicense extends CommonTreeDropdown
                     }
                     return self::createTabEntry(
                         self::getTypeName(Session::getPluralNumber()),
-                        (($nb >= 0) ? $nb : '&infin;')
+                        (($nb >= 0) ? $nb : '&infin;'),
+                        $item::getType()
                     );
                 break;
             }

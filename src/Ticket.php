@@ -826,7 +826,7 @@ class Ticket extends CommonITILObject
             }
            // Not for Ticket class
             if ($item->getType() != __CLASS__) {
-                return self::createTabEntry($title, $nb);
+                return self::createTabEntry($title, $nb, $item::getType());
             }
         }
 

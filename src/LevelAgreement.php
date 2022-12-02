@@ -567,7 +567,7 @@ abstract class LevelAgreement extends CommonDBChild
                             ['slms_id' => $item->getField('id')]
                         );
                     }
-                    return self::createTabEntry(static::getTypeName($nb), $nb);
+                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::getType());
             }
         }
         return '';

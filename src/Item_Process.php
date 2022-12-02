@@ -70,7 +70,7 @@ class Item_Process extends CommonDBChild
             if (!$_SESSION['glpishow_count_on_tabs']) {
                 $nb = 0;
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
 
         return '';

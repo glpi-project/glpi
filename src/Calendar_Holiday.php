@@ -201,7 +201,8 @@ class Calendar_Holiday extends CommonDBRelation
                     }
                     return self::createTabEntry(
                         _n('Close time', 'Close times', Session::getPluralNumber()),
-                        $nb
+                        $nb,
+                        $item::getType()
                     );
             }
         }

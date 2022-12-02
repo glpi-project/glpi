@@ -102,7 +102,7 @@ class Log extends CommonDBTM
                 ]
             );
         }
-        return self::createTabEntry(self::getTypeName(1), $nb);
+        return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
     }
 
 

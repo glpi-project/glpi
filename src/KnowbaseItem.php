@@ -253,7 +253,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                         }
                         $ong[2] = self::createTabEntry(
                             _n('Target', 'Targets', Session::getPluralNumber()),
-                            $nb
+                            $nb,
+                            $item::getType()
                         );
                         $ong[3] = __('Edit');
                     }

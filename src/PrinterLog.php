@@ -71,7 +71,7 @@ class PrinterLog extends CommonDBChild
 
         if ($item->getType() == 'Printer') {
             $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
-            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt);
+            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
         }
         return $array_ret;
     }

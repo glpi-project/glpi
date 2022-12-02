@@ -1602,7 +1602,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSoftware($item->getID());
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 }
                 break;
 
@@ -1614,7 +1614,8 @@ class Item_SoftwareVersion extends CommonDBRelation
                     return [1 => __('Summary'),
                         2 => self::createTabEntry(
                             self::getTypeName(Session::getPluralNumber()),
-                            $nb
+                            $nb,
+                            $item::getType()
                         )
                     ];
                 }
@@ -1626,7 +1627,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 }
                 break;
         }

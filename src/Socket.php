@@ -631,7 +631,7 @@ class Socket extends CommonDBChild
                             ['locations_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 default:
                     if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -642,7 +642,7 @@ class Socket extends CommonDBChild
                                   ]
                               );
                         }
-                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
             }
         }

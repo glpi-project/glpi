@@ -66,7 +66,7 @@ class Domain_Item extends CommonDBRelation
             && count(Domain::getTypes(false))
         ) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), self::countForDomain($item));
+                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), self::countForDomain($item), $item::getType());
             }
             return _n('Associated item', 'Associated items', Session::getPluralNumber());
         } else if (
@@ -74,7 +74,7 @@ class Domain_Item extends CommonDBRelation
                   && Session::haveRight('domain', READ)
         ) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), self::countForItem($item));
+                return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), self::countForItem($item), $item::getType());
             }
             return Domain::getTypeName(2);
         }

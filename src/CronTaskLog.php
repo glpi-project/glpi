@@ -88,7 +88,7 @@ class CronTaskLog extends CommonDBTM
                             ]
                         );
                     }
-                    $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb);
+                    $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::getType());
                     return $ong;
             }
         }

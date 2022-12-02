@@ -218,7 +218,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 }
                 $nb = countElementsInTable($this->getTable(), $restrict);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

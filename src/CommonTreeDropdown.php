@@ -91,7 +91,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     [$this->getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }

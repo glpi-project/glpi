@@ -145,7 +145,7 @@ class Infocom extends CommonDBChild
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
 
                 default:
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -156,7 +156,7 @@ class Infocom extends CommonDBChild
                             ]
                         );
                     }
-                    return self::createTabEntry(__('Management'), $nb);
+                    return self::createTabEntry(__('Management'), $nb, $item::getType());
             }
         }
         return '';
@@ -1892,6 +1892,6 @@ class Infocom extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-wallet";
+        return "ti ti-wallet";
     }
 }

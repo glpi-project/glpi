@@ -1011,7 +1011,8 @@ JAVASCRIPT;
                     return [1 => __('Summary'),
                         2 => self::createTabEntry(
                             _n('Item', 'Items', Session::getPluralNumber()),
-                            $nb
+                            $nb,
+                            $item::getType()
                         )
                     ];
                 }

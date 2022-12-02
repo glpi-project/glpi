@@ -433,7 +433,7 @@ class CalendarSegment extends CommonDBChild
                             ['calendars_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

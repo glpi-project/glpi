@@ -64,14 +64,14 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                         $problems = self::getTicketProblemsData($item->getID());
                         $nb = count($problems);
                     }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'Problem':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $tickets = self::getProblemTicketsData($item->getID());
                         $nb = count($tickets);
                     }
-                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

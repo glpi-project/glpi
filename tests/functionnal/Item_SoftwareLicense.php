@@ -234,7 +234,8 @@ class Item_SoftwareLicense extends DbTestCase
         $expected = [1 => __('Summary'),
             2 => \Item_SoftwareLicense::createTabEntry(
                 _n('Item', 'Items', \Session::getPluralNumber()),
-                2
+                2,
+                $license::getType()
             )
         ];
         $this->array($cSoftwareLicense->getTabNameForItem($license, 0))->isIdenticalTo($expected);

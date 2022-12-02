@@ -75,7 +75,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
                             ['notifications_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 break;
                 case NotificationTemplate::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -84,7 +84,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
                             ['notificationtemplates_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 break;
             }
         }

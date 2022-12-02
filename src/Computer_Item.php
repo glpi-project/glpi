@@ -57,6 +57,10 @@ class Computer_Item extends CommonDBRelation
         return $forbidden;
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-sitemap';
+    }
 
     /**
      * Count connection for a Computer and an itemtype
@@ -799,7 +803,8 @@ class Computer_Item extends CommonDBRelation
             if ($canview) {
                 return self::createTabEntry(
                     _n('Connection', 'Connections', Session::getPluralNumber()),
-                    $nb
+                    $nb,
+                    $item::getType()
                 );
             }
         }

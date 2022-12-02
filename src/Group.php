@@ -127,7 +127,7 @@ class Group extends CommonTreeDropdown
                             ['groups_id' => $item->getID()]
                         );
                     }
-                    $ong[4] = self::createTabEntry(__('Child groups'), $nb);
+                    $ong[4] = self::createTabEntry(__('Child groups'), $nb, $item::getType());
 
                     if ($item->getField('is_itemgroup')) {
                         $ong[1] = __('Used items');

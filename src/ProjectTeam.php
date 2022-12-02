@@ -96,7 +96,7 @@ class ProjectTeam extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = $item->getTeamCount();
                     }
-                    return self::createTabEntry(self::getTypeName(1), $nb);
+                    return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
             }
         }
         return '';

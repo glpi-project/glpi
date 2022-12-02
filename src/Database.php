@@ -391,7 +391,7 @@ class Database extends CommonDBChild
                     ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(), $nb);
+            return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
         }
         return '';
     }

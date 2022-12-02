@@ -1413,7 +1413,8 @@ class NotificationTarget extends CommonDBChild
                     }
                     return self::createTabEntry(
                         Notification::getTypeName(Session::getPluralNumber()),
-                        $nb
+                        $nb,
+                        $item::getType()
                     );
 
                 case 'Notification':
@@ -1423,7 +1424,7 @@ class NotificationTarget extends CommonDBChild
                             ['notifications_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

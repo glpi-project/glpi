@@ -350,7 +350,7 @@ class CommonGLPI implements CommonGLPIInterface
               || Infocom::canApplyOn($class)
               || in_array($class, $CFG_GLPI["reservation_types"]))
         ) {
-            $onglets[-2] = static::createTabEntry(__('Debug'), 1, 'ti ti-bug');
+            $onglets[-2] = static::createTabEntry(__('Debug'), 0, null, 'ti ti-bug');
         }
         return $onglets;
     }
@@ -700,18 +700,25 @@ class CommonGLPI implements CommonGLPIInterface
         return false;
     }
 
-    private static function getTabIconClass()
+    /**
+     * @param class-string<CommonGLPI>|null $form_itemtype
+     * @return string
+     */
+    private static function getTabIconClass(?string $form_itemtype = null): string
     {
         $icon = '';
         $tab_itemtype = static::class;
         $itemtype = $tab_itemtype;
         if (is_subclass_of($tab_itemtype, CommonDBRelation::class)) {
             // Get opposite itemtype than this
-            if ($tab_itemtype::$itemtype_1 === $itemtype || ($tab_itemtype::$itemtype_1 === 'itemtype' && $tab_itemtype::$itemtype_2 !== null)) {
+            if ($tab_itemtype::$itemtype_1 === $form_itemtype || ($tab_itemtype::$itemtype_1 === 'itemtype' && $tab_itemtype::$itemtype_2 !== null)) {
                 $itemtype = $tab_itemtype::$itemtype_2;
-            } else if ($tab_itemtype::$itemtype_2 === $itemtype || ($tab_itemtype::$itemtype_2 === 'itemtype' && $tab_itemtype::$itemtype_1 !== null)) {
+            } else if ($tab_itemtype::$itemtype_2 === $form_itemtype || ($tab_itemtype::$itemtype_2 === 'itemtype' && $tab_itemtype::$itemtype_1 !== null)) {
                 $itemtype = $tab_itemtype::$itemtype_1;
             }
+        }
+        if (!class_exists($itemtype)) {
+            $itemtype = $tab_itemtype;
         }
         if (method_exists($itemtype, 'getIcon')) {
             $icon = $itemtype::getIcon();
@@ -720,17 +727,22 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
-     * create tab text entry
+     * Create tab text entry.
+     *
+     * This should be called on the itemtype whose form is being displayed and not on the tab itemtype for the correct
+     * icon to be displayed, unless you manually specify the icon.
      *
      * @param string  $text text to display
      * @param integer $nb   number of items (default 0)
+     * @param class-string<CommonGLPI>|null $form_itemtype
+     * @param string $icon
      *
-     *  @return array array containing the onglets
+     *  @return string The tab text (including icon and counter if applicable)
      **/
-    public static function createTabEntry($text, $nb = 0, string $icon = '')
+    public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '')
     {
         if (empty($icon)) {
-            $icon = self::getTabIconClass();
+            $icon = static::getTabIconClass($form_itemtype);
         }
         if (str_contains($icon, 'fa-empty-icon')) {
             $icon = '';
@@ -942,7 +954,7 @@ class CommonGLPI implements CommonGLPIInterface
                 && empty($withtemplate)
                 && (count($tabs) > 1)
             ) {
-                $tabs[-1] = ['title'  => __('All'),
+                $tabs[-1] = ['title'  => static::createTabEntry(__('All'), 0, null, 'ti ti-layout-list'),
                     'url'    => $tabpage,
                     'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml"

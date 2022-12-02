@@ -312,7 +312,8 @@ class Rack extends CommonDBTM
                 }
                 return self::createTabEntry(
                     self::getTypeName(Session::getPluralNumber()),
-                    $nb
+                    $nb,
+                    $item::getType()
                 );
              break;
         }

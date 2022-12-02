@@ -515,7 +515,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                 ]
                             );
                         }
-                        return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                        return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
                     }
             }
         }

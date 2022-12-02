@@ -3442,7 +3442,7 @@ class Rule extends CommonDBTM
                              );
                         }
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'SLA':
                 case 'OLA':
@@ -3454,7 +3454,7 @@ class Rule extends CommonDBTM
                             ]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName($nb), $nb);
+                    return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
 
                 default:
                     if ($item instanceof Rule) {
@@ -3474,11 +3474,13 @@ class Rule extends CommonDBTM
 
                         $ong[1] = self::createTabEntry(
                             RuleCriteria::getTypeName(Session::getPluralNumber()),
-                            $nbcriteria
+                            $nbcriteria,
+                            $item::getType()
                         );
                         $ong[2] = self::createTabEntry(
                             RuleAction::getTypeName(Session::getPluralNumber()),
-                            $nbaction
+                            $nbaction,
+                            $item::getType()
                         );
                         return $ong;
                     }

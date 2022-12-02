@@ -1079,7 +1079,7 @@ class Profile_User extends CommonDBRelation
                             ])->current();
                             $nb        = $count['cpt'];
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
                     break;
 
@@ -1088,7 +1088,7 @@ class Profile_User extends CommonDBRelation
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
                     break;
 
@@ -1100,7 +1100,7 @@ class Profile_User extends CommonDBRelation
                         'Authorization',
                         'Authorizations',
                         Session::getPluralNumber()
-                    ), $nb);
+                    ), $nb, $item::getType());
             }
         }
         return '';
