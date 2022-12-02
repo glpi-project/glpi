@@ -1265,6 +1265,14 @@ HTML;
                 }
             }
 
+            // include more js libs for dashboard case
+            $jslibs = array_merge($jslibs, [
+                'gridstack',
+                'charts',
+                'clipboard',
+                'sortable'
+            ]);
+
             if (in_array('planning', $jslibs)) {
                 Html::requireJs('planning');
             }
@@ -1292,14 +1300,6 @@ HTML;
             if (in_array('dashboard', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/dashboard.scss'];
                 Html::requireJs('dashboard');
-
-                // include more js libs
-                $jslibs = array_merge($jslibs, [
-                    'gridstack',
-                    'charts',
-                    'clipboard',
-                    'sortable'
-                ]);
             }
 
             if (in_array('marketplace', $jslibs)) {
