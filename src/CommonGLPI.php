@@ -706,10 +706,17 @@ class CommonGLPI implements CommonGLPIInterface
      */
     private static function getTabIconClass(?string $form_itemtype = null): string
     {
-        $icon = '';
+        $default_icon = CommonDBTM::getIcon();
+        $icon = $default_icon;
         $tab_itemtype = static::class;
         $itemtype = $tab_itemtype;
-        if (is_subclass_of($tab_itemtype, CommonDBRelation::class)) {
+
+        // Try using the icon from the tab itemtype first
+        if (is_subclass_of($tab_itemtype, CommonDBTM::class)) {
+            $icon = $tab_itemtype::getIcon();
+        }
+
+        if ($icon === $default_icon && is_subclass_of($tab_itemtype, CommonDBRelation::class)) {
             // Get opposite itemtype than this
             if ($tab_itemtype::$itemtype_1 === $form_itemtype || ($tab_itemtype::$itemtype_1 === 'itemtype' && $tab_itemtype::$itemtype_2 !== null)) {
                 $itemtype = $tab_itemtype::$itemtype_2;
@@ -717,10 +724,10 @@ class CommonGLPI implements CommonGLPIInterface
                 $itemtype = $tab_itemtype::$itemtype_1;
             }
         }
-        if (!class_exists($itemtype)) {
+        if ($icon === $default_icon && !class_exists($itemtype)) {
             $itemtype = $tab_itemtype;
         }
-        if (method_exists($itemtype, 'getIcon')) {
+        if ($icon === $default_icon && method_exists($itemtype, 'getIcon')) {
             $icon = $itemtype::getIcon();
         }
         return $icon;
