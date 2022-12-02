@@ -536,11 +536,6 @@ $CFG_GLPI['databaseinstance_types'] = ['Computer'];
 
 $CFG_GLPI['agent_types'] = ['Computer', 'Phone'];
 
-$dashboard_libs = [
-    'dashboard', 'gridstack',
-    'charts', 'clipboard', 'sortable'
-];
-
 $reservations_libs = ['fullcalendar', 'reservations'];
 
 $CFG_GLPI['javascript'] = [
