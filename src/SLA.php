@@ -55,6 +55,11 @@ class SLA extends LevelAgreement
         return __('SLA');
     }
 
+    public static function getIcon()
+    {
+        return SLM::getIcon();
+    }
+
     public function showFormWarning()
     {
     }

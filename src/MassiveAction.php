@@ -770,7 +770,7 @@ class MassiveAction
                 $actions[$self_pref . 'update'] = _x('button', 'Update');
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
-                    $actions[$self_pref . 'clone'] = "<i class='fa-fw far fa-clone'></i>" . _x('button', 'Clone');
+                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _x('button', 'Clone');
                 }
             }
 

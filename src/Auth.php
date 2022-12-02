@@ -1514,7 +1514,7 @@ class Auth extends CommonGLPI
             switch ($item->getType()) {
                 case 'User':
                     if (Session::haveRight("user", User::UPDATEAUTHENT)) {
-                        return __('Synchronization');
+                        return self::createTabEntry(__('Synchronization'), 0, $item::getType(), 'ti ti-refresh');
                     }
                     break;
             }

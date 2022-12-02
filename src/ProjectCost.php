@@ -48,6 +48,10 @@ class ProjectCost extends CommonDBChild
         return _n('Cost', 'Costs', $nb);
     }
 
+    public static function getIcon()
+    {
+        return Infocom::getIcon();
+    }
 
     /**
      * @see CommonDBChild::prepareInputForAdd()

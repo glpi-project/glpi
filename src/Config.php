@@ -2444,37 +2444,37 @@ HTML;
                     User::canUpdate()
                     && $item->currentUserHaveMoreRightThan($item->getID())
                 ) {
-                    return __('Settings');
+                    return self::createTabEntry(__('Settings'));
                 }
                 break;
 
             case __CLASS__:
                 $tabs = [
-                    1 => __('General setup'),  // Display
-                    2 => __('Default values'), // Prefs
-                    3 => _n('Asset', 'Assets', Session::getPluralNumber()),
-                    4 => __('Assistance'),
-                    12 => __('Management'),
+                    1 => self::createTabEntry(__('General setup')),  // Display
+                    2 => self::createTabEntry(__('Default values')), // Prefs
+                    3 => self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
+                    4 => self::createTabEntry(__('Assistance'), 0, $item::getType(), 'ti ti-headset'),
+                    12 => self::createTabEntry(__('Management'), 0, $item::getType(), 'ti ti-wallet'),
                 ];
                 if (Config::canUpdate()) {
-                    $tabs[9]  = __('Logs purge');
-                    $tabs[5]  = __('System');
-                    $tabs[10] = __('Security');
-                    $tabs[7]  = __('Performance');
-                    $tabs[8]  = __('API');
-                    $tabs[11] = Impact::getTypeName();
+                    $tabs[9]  = self::createTabEntry(__('Logs purge'), 0, $item::getType(), Glpi\Event::getIcon());
+                    $tabs[5]  = self::createTabEntry(__('System'));
+                    $tabs[10] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
+                    $tabs[7]  = self::createTabEntry(__('Performance'), 0, $item::getType(), 'ti ti-dashboard');
+                    $tabs[8]  = self::createTabEntry(__('API'), 0, $item::getType(), 'ti ti-api-app');
+                    $tabs[11] = self::createTabEntry(Impact::getTypeName(), 0, $item::getType(), Impact::getIcon());
                 }
 
                 if (
                     DBConnection::isDBSlaveActive()
                     && Config::canUpdate()
                 ) {
-                    $tabs[6]  = _n('SQL replica', 'SQL replicas', Session::getPluralNumber());  // Slave
+                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-database');  // Slave
                 }
                 return $tabs;
 
             case 'GLPINetwork':
-                return 'GLPI Network';
+                return self::createTabEntry(GLPINetwork::getTypeName(), 0, $item::getType(), GLPINetwork::getIcon());
 
             case Impact::getType():
                 return Impact::getTypeName();

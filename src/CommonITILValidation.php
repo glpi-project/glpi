@@ -59,7 +59,10 @@ abstract class CommonITILValidation extends CommonDBChild
     const ACCEPTED  = 3; // accepted
     const REFUSED   = 4; // rejected
 
-
+    public static function getIcon()
+    {
+        return 'ti ti-thumb-up';
+    }
 
     public function getItilObjectItemType()
     {

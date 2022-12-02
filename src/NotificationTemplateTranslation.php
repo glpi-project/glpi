@@ -53,6 +53,11 @@ class NotificationTemplateTranslation extends CommonDBChild
         return _n('Template translation', 'Template translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
+
     public static function getNameField()
     {
         return 'id';

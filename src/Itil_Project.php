@@ -89,7 +89,8 @@ class Itil_Project extends CommonDBRelation
                     $label = self::createTabEntry(
                         _n('Itil item', 'Itil items', Session::getPluralNumber()),
                         $nb,
-                        $item::getType()
+                        $item::getType(),
+                        Ticket::getIcon()
                     );
                     break;
             }

@@ -57,6 +57,11 @@ class PrinterLog extends CommonDBChild
         return __('Page counters');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-chart-line';
+    }
+
     /**
      * Get the tab name used for item
      *

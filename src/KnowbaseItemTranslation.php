@@ -57,6 +57,10 @@ class KnowbaseItemTranslation extends CommonDBChild
         return _n('Translation', 'Translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
 
     public function defineTabs($options = [])
     {

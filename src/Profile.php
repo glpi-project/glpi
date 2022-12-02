@@ -153,18 +153,18 @@ class Profile extends CommonDBTM
             switch ($item->getType()) {
                 case __CLASS__:
                     if ($item->fields['interface'] == 'helpdesk') {
-                        $ong[3] = __('Assistance'); // Helpdesk
-                        $ong[4] = __('Life cycles');
-                        $ong[6] = __('Tools');
-                        $ong[8] = __('Setup');
+                        $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::getType(), 'ti ti-headset'); // Helpdesk
+                        $ong[4] = self::createTabEntry(__('Life cycles'));
+                        $ong[6] = self::createTabEntry(__('Tools'), 0, $item::getType(), 'ti ti-briefcase');
+                        $ong[8] = self::createTabEntry(__('Setup'), 0, $item::getType(), 'ti ti-cog');
                     } else {
-                        $ong[2] = _n('Asset', 'Assets', Session::getPluralNumber());
-                        $ong[3] = __('Assistance');
-                        $ong[4] = __('Life cycles');
-                        $ong[5] = __('Management');
-                        $ong[6] = __('Tools');
-                        $ong[7] = __('Administration');
-                        $ong[8] = __('Setup');
+                        $ong[2] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package');
+                        $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::getType(), 'ti ti-headset');
+                        $ong[4] = self::createTabEntry(__('Life cycles'));
+                        $ong[5] = self::createTabEntry(__('Management'), 0, $item::getType(), 'ti ti-wallet');
+                        $ong[6] = self::createTabEntry(__('Tools'), 0, $item::getType(), 'ti ti-briefcase');
+                        $ong[7] = self::createTabEntry(__('Administration'), 0, $item::getType(), 'ti ti-shield-check');
+                        $ong[8] = self::createTabEntry(__('Setup'), 0, $item::getType(), 'ti ti-settings');
                     }
                     return $ong;
             }

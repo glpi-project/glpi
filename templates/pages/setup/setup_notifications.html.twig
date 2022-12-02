@@ -98,14 +98,14 @@
             <div class="list-group list-group-flush">
                {% if has_profile_right('config', constant('READ')) %}
                   <a href="{{ path('front/notificationtemplate.php') }}" class="list-group-item list-group-item-action">
-                     <i class="fa-fw ti ti-template"></i>
+                     <i class="{{ 'NotificationTemplate'|itemtype_icon }}"></i>
                      <span>{{ _n('Notification template', 'Notification templates', get_plural_number()) }}</span>
                   </a>
                {% endif %}
 
                {% if has_profile_right('notification', constant('READ')) %}
                   <a href="{{ path('front/notification.php') }}" class="list-group-item list-group-item-action">
-                     <i class="fa-fw ti ti-bell "></i>
+                     <i class="{{ 'Notification'|itemtype_icon }}"></i>
                      <span>{{ _n('Notification', 'Notifications', get_plural_number()) }}</span>
                   </a>
                {% else %}

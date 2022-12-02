@@ -54,7 +54,6 @@ class Link extends CommonDBTM
         return _n('External link', 'External links', $nb);
     }
 
-
     /**
      * For plugins, add a tag to the links tags
      *

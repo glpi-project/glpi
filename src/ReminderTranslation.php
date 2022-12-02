@@ -49,13 +49,15 @@ class ReminderTranslation extends CommonDBChild
 
     public static $rightname       = 'reminder_public';
 
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Translation', 'Translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
 
     public function getForbiddenStandardMassiveAction()
     {

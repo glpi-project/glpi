@@ -67,12 +67,15 @@ class ProjectTeam extends CommonDBRelation
         return 'id';
     }
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('Project team', 'Project teams', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-users';
+    }
 
     public function getForbiddenStandardMassiveAction()
     {

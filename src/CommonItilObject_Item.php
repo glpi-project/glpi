@@ -42,6 +42,11 @@ use Glpi\Application\View\TemplateRenderer;
 
 abstract class CommonItilObject_Item extends CommonDBRelation
 {
+    public static function getIcon()
+    {
+        return 'ti ti-package';
+    }
+
     public function getForbiddenStandardMassiveAction()
     {
 

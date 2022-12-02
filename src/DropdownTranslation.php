@@ -53,6 +53,10 @@ class DropdownTranslation extends CommonDBChild
         return _n('Translation', 'Translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
 
     /**
      * Forbidden massives actions

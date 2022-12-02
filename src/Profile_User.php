@@ -1079,7 +1079,7 @@ class Profile_User extends CommonDBRelation
                             ])->current();
                             $nb        = $count['cpt'];
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), User::getIcon());
                     }
                     break;
 

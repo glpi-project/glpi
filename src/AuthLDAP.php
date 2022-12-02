@@ -4200,13 +4200,13 @@ class AuthLDAP extends CommonDBTM
             && $item->can($item->getField('id'), READ)
         ) {
             $ong     = [];
-            $ong[1]  = _sx('button', 'Test');                     // test connexion
-            $ong[2]  = User::getTypeName(Session::getPluralNumber());
-            $ong[3]  = Group::getTypeName(Session::getPluralNumber());
+            $ong[1]  = self::createTabEntry(_sx('button', 'Test'));                     // test connexion
+            $ong[2]  = self::createTabEntry(User::getTypeName(Session::getPluralNumber()), 0, $item::getType(), User::getIcon());
+            $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::getType(), User::getIcon());
            // TODO clean fields entity_XXX if not used
            // $ong[4]  = Entity::getTypeName(1);                  // params for entity config
-            $ong[5]  = __('Advanced information');   // params for entity advanced config
-            $ong[6]  = _n('Replicate', 'Replicates', Session::getPluralNumber());
+            $ong[5]  = self::createTabEntry(__('Advanced information'));   // params for entity advanced config
+            $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()));
 
             return $ong;
         }

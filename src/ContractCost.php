@@ -48,6 +48,10 @@ class ContractCost extends CommonDBChild
         return _n('Cost', 'Costs', $nb);
     }
 
+    public static function getIcon()
+    {
+        return Infocom::getIcon();
+    }
 
     public function prepareInputForAdd($input)
     {

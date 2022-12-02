@@ -44,6 +44,10 @@ class CronTaskLog extends CommonDBTM
     const STATE_STOP  = 2;
     const STATE_ERROR = 3;
 
+    public static function getIcon()
+    {
+        return CronTask::getIcon();
+    }
 
     /**
      * Clean old event for a task
@@ -79,7 +83,7 @@ class CronTaskLog extends CommonDBTM
             switch ($item->getType()) {
                 case 'CronTask':
                     $ong    = [];
-                    $ong[1] = __('Statistics');
+                    $ong[1] = self::createTabEntry(__('Statistics'));
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb =  countElementsInTable(
                             $this->getTable(),

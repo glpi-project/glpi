@@ -177,7 +177,7 @@ class Problem extends CommonITILObject
             switch ($item->getType()) {
                 case __CLASS__:
                     if ($item->canUpdate()) {
-                        $ong[1] = __('Statistics');
+                        $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
                     }
 
                     return $ong;

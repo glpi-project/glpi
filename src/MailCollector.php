@@ -202,7 +202,7 @@ class MailCollector extends CommonDBTM
         if (!$withtemplate) {
             switch ($item->getType()) {
                 case __CLASS__:
-                    return _n('Action', 'Actions', Session::getPluralNumber());
+                    return self::createTabEntry(_n('Action', 'Actions', Session::getPluralNumber()));
             }
         }
         return '';
