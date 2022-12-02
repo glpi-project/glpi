@@ -59,8 +59,8 @@ class OperatingSystemKernel extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystemKernel$main'  => 'Kernel',
-            'Log$1'                       => 'Historical'
+            'OperatingSystemKernel$main'  => "<span><i class='ti ti-edit me-2'></i>Kernel</span>",
+            'Log$1'                       => "<span><i class='ti ti-history me-2'></i>Historical</span>"
         ];
     }
 

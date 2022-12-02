@@ -42,10 +42,10 @@ class Appliance extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Appliance$main'     => 'Appliance',
-            'Impact$1'           => 'Impact analysis',
-            'ManualLink$1'       => 'Links',
-            'Log$1'              => 'Historical',
+            'Appliance$main'     => "<span><i class='ti ti-versions me-2'></i>Appliance</span>",
+            'Impact$1'           => "<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span>",
+            'ManualLink$1'       => "<span><i class='fas fa-link me-2'></i>Links</span>",
+            'Log$1'              => "<span><i class='ti ti-history me-2'></i>Historical</span>",
         ];
         $this
          ->given($this->newTestedInstance)
