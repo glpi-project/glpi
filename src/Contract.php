@@ -353,9 +353,9 @@ class Contract extends CommonDBTM
             'datatype'           => 'decimal',
             'massiveaction'      => false,
             'joinparams'         => $joinparamscost,
-            'computation'        => '(' . QueryFunction::sum($DB::quoteName('TABLE.cost')) . ' / ' .
+            'computation'        => new QueryExpression('(' . QueryFunction::sum($DB::quoteName('TABLE.cost')) . ' / ' .
                 QueryFunction::count($DB::quoteName('TABLE.id')) . ') * ' .
-                QueryFunction::count($DB::quoteName('TABLE.id'), distinct: true),
+                QueryFunction::count($DB::quoteName('TABLE.id'), distinct: true)),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -763,9 +763,9 @@ class Contract extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child'
             ],
-            'computation'        => '(' . QueryFunction::sum($DB::quoteName('TABLE.cost')) . ' / ' .
+            'computation'        => new QueryExpression('(' . QueryFunction::sum($DB::quoteName('TABLE.cost')) . ' / ' .
                 QueryFunction::count($DB::quoteName('TABLE.id')) . ') * ' .
-                QueryFunction::count($DB::quoteName('TABLE.id'), distinct: true),
+                QueryFunction::count($DB::quoteName('TABLE.id'), distinct: true)),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 

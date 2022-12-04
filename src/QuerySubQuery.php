@@ -40,13 +40,15 @@ class QuerySubQuery extends AbstractQuery
 {
     private $dbiterator;
 
+    private $sql;
+
     /**
      * Create a sub query
      *
-     * @param array  $crit      Array of query criteria. Any valid DBmysqlIterator parameters are valid.
+     * @param array|QueryExpression  $crit      Array of query criteria. Any valid DBmysqlIterator parameters are valid.
      * @param string $alias     Alias for the whole subquery
      */
-    public function __construct(array $crit, $alias = null)
+    public function __construct(array|QueryExpression $crit, $alias = null)
     {
         global $DB;
 
@@ -55,8 +57,13 @@ class QuerySubQuery extends AbstractQuery
             throw new \RuntimeException('Cannot build an empty subquery');
         }
 
-        $this->dbiterator = new DBmysqlIterator($DB);
-        $this->dbiterator->buildQuery($crit);
+        if ($crit instanceof QueryExpression) {
+            $this->sql = $crit;
+        } else {
+            $this->dbiterator = new DBmysqlIterator($DB);
+            $this->dbiterator->buildQuery($crit);
+            $this->sql = $this->dbiterator->getSql();
+        }
     }
 
     /**
@@ -69,10 +76,10 @@ class QuerySubQuery extends AbstractQuery
     {
         global $DB;
 
-        $sql = "(" . $this->dbiterator->getSql() . ")";
+        $sql = "(" . $this->sql . ")";
 
         if ($this->alias !== null) {
-            $sql .= ' AS ' . $DB->quoteName($this->alias);
+            $sql .= ' AS ' . $DB::quoteName($this->alias);
         }
         return $sql;
     }

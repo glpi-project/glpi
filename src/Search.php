@@ -163,6 +163,27 @@ class Search
     public static $search = [];
 
     /**
+     * Convert a SELECT criteria array to a raw SELECT string (without SELECT keyword)
+     *
+     * For legacy reasons, the trailing comma is not removed.
+     * This method is only used for BC.
+     * @param array $select
+     * @return string
+     */
+    private static function selectCriteriaToString(array $select): string
+    {
+        $select_string = '';
+        foreach ($select as $field) {
+            if (is_a($field, QueryExpression::class)) {
+                $select_string .= $field->getValue() . ', ';
+            } else {
+                $select_string .= $field . ', ';
+            }
+        }
+        return $select_string;
+    }
+
+    /**
      * Display search engine for an type
      *
      * @param string  $itemtype Item type to manage
@@ -173,7 +194,6 @@ class Search
     {
         SearchEngine::show($itemtype, []);
     }
-
 
     /**
      * Display result table for search engine for an type
@@ -310,7 +330,22 @@ class Search
         &$already_link_tables = [],
         &$data = []
     ) {
-        SQLProvider::constructAdditionalSqlForMetacriteria($criteria, $SELECT, $FROM, $already_link_tables, $data);
+        global $DB;
+
+        $additional_criteria = SQLProvider::getAdditionalCriteriaForMetacriteria($criteria, $already_link_tables, $data);
+
+        $iterator = new DBmysqlIterator($DB);
+        $iterator->buildQuery([
+            'FROM' => 'table',
+            'LEFT JOIN' => $additional_criteria['LEFT JOIN'],
+        ]);
+        $sql = $iterator->getSql();
+        // Remove FROM $table clause and everything before it
+        $prefix = 'SELECT * FROM `table` ';
+        $join_string = substr($sql, strlen($prefix)) . ' ';
+
+        $SELECT .= self::selectCriteriaToString($additional_criteria['SELECT']);
+        $FROM .= $join_string;
     }
 
 
@@ -548,15 +583,7 @@ class Search
     public static function addDefaultSelect($itemtype)
     {
         $select_criteria = SQLProvider::getDefaultSelectCriteria($itemtype);
-        $select_string = '';
-        foreach ($select_criteria as $criteria) {
-            if (is_a($criteria, QueryExpression::class)) {
-                $select_string .= $criteria->getValue() . ', ';
-            } else {
-                $select_string .= $criteria . ', ';
-            }
-        }
-        return $select_string;
+        return self::selectCriteriaToString($select_criteria);
     }
 
 
@@ -578,15 +605,7 @@ class Search
             $meta_type = '';
         }
         $select_criteria = SQLProvider::getSelectCriteria((string) $itemtype, (int) $ID, (bool) $meta, (string) $meta_type);
-        $select_string = '';
-        foreach ($select_criteria as $criteria) {
-            if (is_a($criteria, QueryExpression::class)) {
-                $select_string .= $criteria->getValue() . ', ';
-            } else {
-                $select_string .= $criteria . ', ';
-            }
-        }
-        return $select_string;
+        return self::selectCriteriaToString($select_criteria);
     }
 
 
@@ -1130,7 +1149,12 @@ class Search
      */
     public static function joinDropdownTranslations($alias, $table, $itemtype, $field)
     {
-        return SQLProvider::joinDropdownTranslations($alias, $table, $itemtype, $field);
+        return "LEFT JOIN `glpi_dropdowntranslations` AS `$alias`
+                  ON (`$alias`.`itemtype` = '$itemtype'
+                        AND `$alias`.`items_id` = `$table`.`id`
+                        AND `$alias`.`language` = '" .
+        $_SESSION['glpilanguage'] . "'
+                        AND `$alias`.`field` = '$field')";
     }
 
     /**

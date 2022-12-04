@@ -278,12 +278,11 @@ class TicketTask extends CommonITILTask
     }
 
     /**
-     * Build parent condition for search
-     *
-     * @return string
+     * Get parent criteria for search
+     * @return array
      */
-    public static function buildParentCondition()
+    public static function getParentCriteria(): array
     {
-        return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
+        return Ticket::getCanViewCriteria('tickets_id');
     }
 }

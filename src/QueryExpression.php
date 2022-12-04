@@ -38,6 +38,9 @@
  **/
 class QueryExpression
 {
+    private const ALWAYS_FALSE = '1 = 0';
+    private const ALWAYS_TRUE = '1 = 1';
+
     private $expression;
 
     /**
@@ -63,9 +66,50 @@ class QueryExpression
         return $this->expression;
     }
 
-
     public function __toString()
     {
         return $this->getValue();
+    }
+
+    /**
+     * Create a criteria expression that will resolve to false
+     * @return QueryExpression
+     */
+    public static function alwaysFalse()
+    {
+        return new self(self::ALWAYS_FALSE);
+    }
+
+    /**
+     * Create a criteria expression that will resolve to true
+     * @return QueryExpression
+     */
+    public static function alwaysTrue()
+    {
+        return new self(self::ALWAYS_TRUE);
+    }
+
+    /**
+     * Check if this expression is always false (Represents {@link self::ALWAYS_FALSE})
+     *
+     * This could be used to optimize queries
+     * @param $expression
+     * @return bool
+     */
+    public static function isAlwaysFalse($expression)
+    {
+        return $expression === self::ALWAYS_FALSE;
+    }
+
+    /**
+     * Check if this expression is always true (Represents {@link self::ALWAYS_TRUE})
+     *
+     * This could be used to optimize queries
+     * @param $expression
+     * @return bool
+     */
+    public static function isAlwaysTrue($expression)
+    {
+        return $expression === self::ALWAYS_TRUE;
     }
 }

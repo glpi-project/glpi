@@ -430,11 +430,19 @@ class DBConnection extends CommonDBTM
             && self::isDBSlaveActive()
         ) {
             include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+            /** @var DBmysql $DBread */
             $DBread = new DBSlave();
 
             if ($DBread->connected) {
-                $sql = "SELECT MAX(`id`) AS maxid
-                    FROM `glpi_logs`";
+                $sql = [
+                    'SELECT' => [
+                        QueryFunction::max(
+                            expression: $DB::quoteName('id'),
+                            alias: $DB::quoteName('maxid')
+                        )
+                    ],
+                    'FROM'   => 'glpi_logs'
+                ];
 
                 switch ($CFG_GLPI['use_slave_for_search']) {
                     case 3: // If synced or read-only account
@@ -566,10 +574,19 @@ class DBConnection extends CommonDBTM
     {
 
         if ($DBconnection->connected) {
-            $result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date
-                                         FROM `glpi_logs`");
-            if ($DBconnection->numrows($result) > 0) {
-                 return $DBconnection->result($result, 0, "max_date");
+            $result = $DBconnection->request([
+                'SELECT' => [
+                    QueryFunction::unixTimestamp(
+                        expression: QueryFunction::max(
+                            expression: $DBconnection::quoteName('date_mod')
+                        ),
+                        alias: $DBconnection::quoteName('maxdate')
+                    )
+                ],
+                'FROM'   => 'glpi_logs'
+            ]);
+            if (count($result) > 0) {
+                 return $result->current()['maxdate'];
             }
         }
         return 0;

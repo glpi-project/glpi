@@ -871,83 +871,93 @@ class ITILFollowup extends CommonDBChild
     }
 
     /**
-     * Build parent condition for ITILFollowup, used in addDefaultWhere
-     *
-     * @param string $itemtype
+     * Get parent criteria for ITILFollowup, used in addDefaultWhere
+     * @param class-string<CommonITILObject> $itemtype
      * @param string $target
      * @param string $user_table
-     * @param string $group_table keys
-     *
-     * @return string
-     *
-     * @throws InvalidArgumentException
+     * @param string $group_table
+     * @return array
      */
-    public static function buildParentCondition(
-        $itemtype,
-        $target = "",
-        $user_table = "",
-        $group_table = ""
-    ) {
+    public static function getParentCriteria(string $itemtype, string $target = '', string $user_table = '', string $group_table = ''): array
+    {
+        global $DB;
+
         $itilfup_table = static::getTable();
-
-       // An ITILFollowup parent can only by a CommonItilObject
-        if (!is_a($itemtype, "CommonITILObject", true)) {
-            throw new \InvalidArgumentException(
-                "'$itemtype' is not a CommonITILObject"
-            );
+        // An ITILFollowup parent can only by a CommonItilObject
+        if (!is_a($itemtype, CommonITILObject::class, true)) {
+            throw new \InvalidArgumentException("'$itemtype' is not a CommonITILObject");
         }
-
         $rightname = $itemtype::$rightname;
-       // Can see all items, no need to go further
-        if (Session::haveRight($rightname, $itemtype::READALL)) {
-            return "(`$itilfup_table`.`itemtype` = '$itemtype') ";
+
+        // Can see all items, no need to go further
+        if (property_exists($itemtype, 'READALL') && Session::haveRight($rightname, $itemtype::READALL)) {
+            return [
+                $DB::quoteName("$itilfup_table.itemtype") => $DB::quoteValue($itemtype),
+            ];
         }
 
         $user   = Session::getLoginUserID();
-        $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+        $groups = $_SESSION['glpigroups'];
         $table = getTableNameForForeignKeyField(
             getForeignKeyFieldForItemType($itemtype)
         );
 
-       // Avoid empty IN ()
-        if ($groups == "''") {
-            $groups = '-1';
+        // We need to do some specific checks for tickets
+        if ($itemtype === Ticket::class) {
+            // Default condition
+            return [
+                'AND' => [
+                    'itemtype' => $itemtype,
+                ] + Ticket::getCanViewCriteria('items_id')
+            ];
         }
 
-       // We need to do some specific checks for tickets
-        if ($itemtype == "Ticket") {
-           // Default condition
-            $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
-            return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
-        } else {
-            if (Session::haveRight($rightname, $itemtype::READMY)) {
-               // Subquery for affected/assigned/observer user
-                $user_query = "SELECT `$target`
-               FROM `$user_table`
-               WHERE `users_id` = '$user'";
+        // Check READ for non-Ticket items
+        if (Session::haveRight($rightname, READ)) {
+            $criteria = [
+                "$itilfup_table.itemtype" => $itemtype,
+                'OR' => []
+            ];
+            // Subquery for affected/assigned/observer user
+            $criteria['OR'][] = [
+                "$itilfup_table.items_id" => new QuerySubQuery([
+                    'SELECT' => [$target],
+                    'FROM'   => $user_table,
+                    'WHERE'  => [
+                        'users_id' => $user
+                    ]
+                ])
+            ];
 
-               // Subquery for affected/assigned/observer group
-                $group_query = "SELECT `$target`
-               FROM `$group_table`
-               WHERE `groups_id` IN ($groups)";
-
-               // Subquery for recipient
-                $recipient_query = "SELECT `id`
-               FROM `$table`
-               WHERE `users_id_recipient` = '$user'";
-
-                return "(
-               `$itilfup_table`.`itemtype` = '$itemtype' AND (
-                  `$itilfup_table`.`items_id` IN ($user_query) OR
-                  `$itilfup_table`.`items_id` IN ($group_query) OR
-                  `$itilfup_table`.`items_id` IN ($recipient_query)
-               )
-            ) ";
-            } else {
-               // Can't see any items
-                return "(`$itilfup_table`.`itemtype` = '$itemtype' AND 0 = 1) ";
+            if (count($groups)) {
+                // Subquery for affected/assigned/observer group
+                $criteria['OR'][] = [
+                    "$itilfup_table.items_id" => new QuerySubQuery([
+                        'SELECT' => [$target],
+                        'FROM'   => $group_table,
+                        'WHERE'  => [
+                            'groups_id' => $groups
+                        ]
+                    ])
+                ];
             }
+
+            // Subquery for recipient
+            $criteria['OR'][] = [
+                "$itilfup_table.items_id" => new QuerySubQuery([
+                    'SELECT' => ['id'],
+                    'FROM'   => $table,
+                    'WHERE'  => [
+                        'users_id_recipient' => $user
+                    ]
+                ])
+            ];
+
+            return $criteria;
         }
+
+        // Can't see any items
+        return [QueryExpression::alwaysFalse()];
     }
 
     public static function getNameField()

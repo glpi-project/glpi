@@ -6010,98 +6010,146 @@ JAVASCRIPT;
 
     /**
      * Build parent condition for search
-     *
      * @param string $fieldID field used in the condition: tickets_id, items_id
-     *
-     * @return string
+     * @return array
      */
-    public static function buildCanViewCondition($fieldID)
+    public static function getCanViewCriteria(string $fieldID): array
     {
-
-        $condition = "";
-        $user   = Session::getLoginUserID();
-        $groups = "'" . implode("','", $_SESSION['glpigroups']) . "'";
+        $criteria = [
+            'OR' => []
+        ];
+        $user = Session::getLoginUserID();
+        $groups = $_SESSION['glpigroups'];
 
         $requester = CommonITILActor::REQUESTER;
         $assign    = CommonITILActor::ASSIGN;
         $obs       = CommonITILActor::OBSERVER;
 
-       // Avoid empty IN ()
-        if ($groups == "''") {
-            $groups = '-1';
+        if (Session::haveRight(self::$rightname, self::READMY)) {
+            // Add tickets where the users is requester, observer or recipient
+            // Subquery for requester/observer user
+            $criteria['OR'][] = [
+                $fieldID => new QuerySubQuery([
+                    'SELECT' => ['tickets_id'],
+                    'FROM'   => 'glpi_tickets_users',
+                    'WHERE'  => [
+                        'users_id' => $user,
+                        'type'     => [$requester, $obs]
+                    ]
+                ])
+            ];
+
+            // Subquery for recipient
+            $criteria['OR'][] = [
+                $fieldID => new QuerySubQuery([
+                    'SELECT' => ['id'],
+                    'FROM'   => 'glpi_tickets',
+                    'WHERE'  => [
+                        'users_id_recipient' => $user
+                    ]
+                ])
+            ];
         }
 
-        if (Session::haveRight("ticket", Ticket::READMY)) {
-           // Add tickets where the users is requester, observer or recipient
-           // Subquery for requester/observer user
-            $user_query = "SELECT `tickets_id`
-            FROM `glpi_tickets_users`
-            WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
-            $condition .= "OR `$fieldID` IN ($user_query) ";
-
-           // Subquery for recipient
-            $recipient_query = "SELECT `id`
-            FROM `glpi_tickets`
-            WHERE `users_id_recipient` = '$user'";
-            $condition .= "OR `$fieldID` IN ($recipient_query) ";
-        }
-
-        if (Session::haveRight("ticket", Ticket::READGROUP)) {
-           // Add tickets where the users is in a requester or observer group
-           // Subquery for requester/observer group
-            $group_query = "SELECT `tickets_id`
-            FROM `glpi_groups_tickets`
-            WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
-            $condition .= "OR `$fieldID` IN ($group_query) ";
+        if (count($groups) && Session::haveRight(self::$rightname, self::READGROUP)) {
+            // Add tickets where the users is in a requester or observer group
+            // Subquery for requester/observer group
+            $criteria['OR'][] = [
+                $fieldID => new QuerySubQuery([
+                    'SELECT' => ['tickets_id'],
+                    'FROM'   => 'glpi_groups_tickets',
+                    'WHERE'  => [
+                        'groups_id' => $groups,
+                        'type'      => [$requester, $obs]
+                    ]
+                ])
+            ];
         }
 
         if (
-            Session::haveRightsOr("ticket", [
-                Ticket::OWN,
-                Ticket::READASSIGN
+            Session::haveRightsOr(self::$rightname, [
+                self::OWN,
+                self::READASSIGN
             ])
         ) {
-           // Add tickets where the users is assigned
-           // Subquery for assigned user
-            $user_query = "SELECT `tickets_id`
-            FROM `glpi_tickets_users`
-            WHERE `users_id` = '$user' AND type = $assign";
-            $condition .= "OR `$fieldID` IN ($user_query) ";
+            // Add tickets where the users is assigned
+            // Subquery for assigned user
+            $criteria['OR'][] = [
+                $fieldID => new QuerySubQuery([
+                    'SELECT' => ['tickets_id'],
+                    'FROM'   => 'glpi_tickets_users',
+                    'WHERE'  => [
+                        'users_id'  => $user,
+                        'type'      => $assign
+                    ]
+                ])
+            ];
         }
 
-        if (Session::haveRight("ticket", Ticket::READASSIGN)) {
-           // Add tickets where the users is part of an assigned group
-           // Subquery for assigned group
-            $group_query = "SELECT `tickets_id`
-            FROM `glpi_groups_tickets`
-            WHERE `groups_id` IN ($groups) AND type = $assign";
-            $condition .= "OR `$fieldID` IN ($group_query) ";
+        if (Session::haveRight(self::$rightname, self::READASSIGN)) {
+            // Add tickets where the users is part of an assigned group
+            // Subquery for assigned group
+            if (count($groups)) {
+                $criteria['OR'][] = [
+                    $fieldID => new QuerySubQuery([
+                        'SELECT' => ['tickets_id'],
+                        'FROM'   => 'glpi_groups_tickets',
+                        'WHERE'  => [
+                            'groups_id' => $groups,
+                            'type'      => $assign
+                        ]
+                    ])
+                ];
+            }
 
-            if (Session::haveRight('ticket', Ticket::ASSIGN)) {
-               // Add new tickets
-                $tickets_query = "SELECT `id`
-               FROM `glpi_tickets`
-               WHERE `status` = '" . CommonITILObject::INCOMING . "'";
-                $condition .= "OR `$fieldID` IN ($tickets_query) ";
+            if (Session::haveRight(self::$rightname, self::ASSIGN)) {
+                // Add new tickets
+                $criteria['OR'][] = [
+                    $fieldID => new QuerySubQuery([
+                        'SELECT' => ['id'],
+                        'FROM'   => 'glpi_tickets',
+                        'WHERE'  => [
+                            'status' => CommonITILObject::INCOMING,
+                        ]
+                    ])
+                ];
             }
         }
 
         if (
-            Session::haveRightsOr('ticketvalidation', [
+            Session::haveRightsOr(TicketValidation::$rightname, [
                 TicketValidation::VALIDATEINCIDENT,
                 TicketValidation::VALIDATEREQUEST
             ])
         ) {
-           // Add tickets where the users is the validator
-           // Subquery for validator
-            $validation_query = "SELECT `tickets_id`
-            FROM `glpi_ticketvalidations`
-            WHERE (`itemtype_target` = 'User' AND `items_id_target` = '$user')
-                OR (`itemtype_target` = 'Group' AND `items_id_target` IN (SELECT `glpi_groups_users`.`groups_id` FROM `glpi_groups_users` WHERE `glpi_groups_users`.`users_id` = '$user'))";
-            $condition .= "OR `$fieldID` IN ($validation_query) ";
+            // Add tickets where the users is the validator
+            // Subquery for validator
+            $sub_criteria = [
+                'OR' => []
+            ];
+
+            $sub_criteria['OR'][] = [
+                'itemtype_target' => 'User',
+                'items_id_target' => $user
+            ];
+
+            if (count($groups)) {
+                $sub_criteria['OR'][] = [
+                    'itemtype_target' => 'Group',
+                    'items_id_target' => $groups
+                ];
+            }
+
+            $criteria['OR'][] = [
+                $fieldID => new QuerySubQuery([
+                    'SELECT' => ['tickets_id'],
+                    'FROM'   => 'glpi_ticketvalidations',
+                    'WHERE'  => $sub_criteria
+                ])
+            ];
         }
 
-        return $condition;
+        return $criteria;
     }
 
     public function getForbiddenSingleMassiveActions()

@@ -67,25 +67,6 @@ final class SQLProvider implements SearchProviderInterface
         return $data;
     }
 
-    private static function buildSelect(array $data, string $itemtable): string
-    {
-        // request currentuser for SQL supervision, not displayed
-        $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . \Toolbox::addslashes_deep($_SESSION['glpiname'] ?? '') . "' AS currentuser,
-                        " . \Search::addDefaultSelect($data['itemtype']);
-
-        // Add select for all toview item
-        foreach ($data['toview'] as $val) {
-            $SELECT .= \Search::addSelect($data['itemtype'], $val);
-        }
-
-        $as_map = isset($data['search']['as_map']) && (int)$data['search']['as_map'] === 1;
-        if ($as_map && $data['itemtype'] !== 'Entity') {
-            $SELECT .= ' `glpi_locations`.`id` AS loc_id, ';
-        }
-
-        return $SELECT;
-    }
-
     /**
      * Generic function to get the default SELECT criteria for an item type
      * @param class-string<CommonDBTM> $itemtype
@@ -105,7 +86,7 @@ final class SQLProvider implements SearchProviderInterface
         $ret = [];
         switch ($itemtype) {
             case 'FieldUnicity':
-                $ret[] = "`glpi_fieldunicities`.`itemtype` AS ITEMTYPE";
+                $ret[] = $DB::quoteName("glpi_fieldunicities.itemtype AS ITEMTYPE");
                 break;
 
             default:
@@ -118,8 +99,8 @@ final class SQLProvider implements SearchProviderInterface
                 }
         }
         if ($itemtable === 'glpi_entities') {
-            $ret[] = "`$itemtable`.`id` AS entities_id";
-            $ret[] = "'1' AS is_recursive";
+            $ret[] = "$itemtable.id AS entities_id";
+            $ret[] = new QueryExpression($DB::quoteValue(1) . " AS is_recursive");
         } else if ($mayberecursive) {
             if ($item->isField('entities_id')) {
                 $ret[] = $DB::quoteName("$itemtable.entities_id");
@@ -192,7 +173,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($plug = isPluginItemType($itemtype)) {
             $out = \Plugin::doOneHook($plug['plugin'], 'addSelect', $itemtype, $ID, "{$itemtype}_{$ID}");
             if (!empty($out)) {
-                return new QueryExpression($out);
+                return [new QueryExpression($out)];
             }
         }
 
@@ -309,19 +290,16 @@ final class SQLProvider implements SearchProviderInterface
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.entities_id"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            distinct: true,
                             alias: $DB::quoteName("{$NAME}_entities_id")
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_recursive"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            distinct: true,
                             alias: $DB::quoteName("{$NAME}_is_recursive")
                         ),
                         QueryFunction::groupConcat(
                             expression: $DB::quoteName("glpi_profiles_users{$addtable2}.is_dynamic"),
                             separator: $DB::quoteValue(\Search::LONGSEP),
-                            distinct: true,
                             alias: $DB::quoteName("{$NAME}_is_dynamic")
                         ),
                     ];
@@ -487,8 +465,12 @@ final class SQLProvider implements SearchProviderInterface
 
         if (isset($opt["computation"])) {
             $tocompute = $opt["computation"];
+            $is_expression = $tocompute instanceof QueryExpression;
             $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
             $tocompute = str_replace("TABLE", $DB::quoteName("$table$addtable"), $tocompute);
+            if ($is_expression) {
+                $tocompute = new QueryExpression($tocompute);
+            }
         }
         // Preformat items
         if (isset($opt["datatype"])) {
@@ -612,18 +594,16 @@ final class SQLProvider implements SearchProviderInterface
             }
             return array_merge($SELECT, $ADDITONALFIELDS);
         }
-        $SELECT = [
-            "$tocompute AS " . $DB::quoteName($NAME),
-        ];
+        if ($tocompute instanceof QueryExpression) {
+            $tocompute = new QueryExpression($tocompute . ' AS ' . $DB::quoteName($NAME));
+        } else {
+            $tocompute .= ' AS ' . $DB::quoteName($NAME);
+        }
+        $SELECT = [$tocompute];
         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $SELECT[] = "$tocomputetrans AS " . $DB::quoteName("{$NAME}_trans_{$field}");
         }
         return array_merge($SELECT, $ADDITONALFIELDS);
-    }
-
-    private static function buildFrom(string $itemtable): string
-    {
-        return " FROM `$itemtable`";
     }
 
     /**
@@ -719,33 +699,31 @@ final class SQLProvider implements SearchProviderInterface
                     $searchopt
                         = SearchOption::getOptionsForItemtype($itemtype);
                     $requester_table
-                        = '`glpi_tickets_users_' .
+                        = $DB::quoteName('glpi_tickets_users_' .
                         self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
+                        ['joinparams']));
                     $requestergroup_table
-                        = '`glpi_groups_tickets_' .
+                        = $DB::quoteName('glpi_groups_tickets_' .
                         self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
+                        ['joinparams']));
 
                     $assign_table
-                        = '`glpi_tickets_users_' .
+                        = $DB::quoteName('`glpi_tickets_users_' .
                         self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
                     $assigngroup_table
-                        = '`glpi_groups_tickets_' .
+                        = $DB::quoteName('`glpi_groups_tickets_' .
                         self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
+                        ['joinparams']));
 
                     $observer_table
-                        = '`glpi_tickets_users_' .
+                        = $DB::quoteName('`glpi_tickets_users_' .
                         self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
+                        ['joinparams']));
                     $observergroup_table
-                        = '`glpi_groups_tickets_' .
+                        = $DB::quoteName('`glpi_groups_tickets_' .
                         self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
-
-                    $condition = "(";
+                        ['joinparams']));
 
                     $criteria = [
                         'OR' => []
@@ -807,15 +785,15 @@ final class SQLProvider implements SearchProviderInterface
                     ) {
                         $criteria['OR'][] = [
                             'AND' => [
-                                "`glpi_ticketvalidations`.`itemtype_target`" => User::class,
-                                "`glpi_ticketvalidations`.`items_id_target`" => Session::getLoginUserID()
+                                $DB::quoteName("glpi_ticketvalidations.itemtype_target") => User::class,
+                                $DB::quoteName("glpi_ticketvalidations.items_id_target") => Session::getLoginUserID()
                             ]
                         ];
                         if (count($_SESSION['glpigroups'])) {
                             $criteria['OR'][] = [
                                 'AND' => [
-                                    "`glpi_ticketvalidations`.`itemtype_target`" => Group::class,
-                                    "`glpi_ticketvalidations`.`items_id_target`" => $_SESSION['glpigroups']
+                                    $DB::quoteName("glpi_ticketvalidations.itemtype_target") => Group::class,
+                                    $DB::quoteName("glpi_ticketvalidations.items_id_target") => $_SESSION['glpigroups']
                                 ]
                             ];
                         }
@@ -929,9 +907,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Check for parent item visibility unless the user can see all the
                 // possible parents
                 if (!Session::haveRight('ticket', \Ticket::READALL)) {
-                    $criteria[] = [
-                        new QueryExpression(\TicketTask::buildParentCondition())
-                    ];
+                    $criteria[] = \TicketTask::getParentCriteria();
                 }
 
                 break;
@@ -949,30 +925,28 @@ final class SQLProvider implements SearchProviderInterface
                 // If the user can't see public and private
                 if (!count($allowed_is_private)) {
                     $criteria = [
-                        '0' => '1'
+                        QueryExpression::alwaysFalse()
                     ];
                     break;
                 }
 
-                $in = "IN ('" . implode("','", $allowed_is_private) . "')";
                 $criteria = [
                     'glpi_itilfollowups.is_private' => $allowed_is_private,
-                    'OR' => [
-                        new QueryExpression(ITILFollowup::buildParentCondition(Ticket::getType())),
-                        new QueryExpression(ITILFollowup::buildParentCondition(
-                            Change::getType(),
-                            'changes_id',
-                            "glpi_changes_users",
-                            "glpi_changes_groups"
-                        )),
-                        new QueryExpression(ITILFollowup::buildParentCondition(
-                            Problem::getType(),
-                            'problems_id',
-                            "glpi_problems_users",
-                            "glpi_problems_groups"
-                        )),
-                    ]
+                    'OR' => []
                 ];
+                $criteria['OR'][] = ITILFollowup::getParentCriteria(Ticket::class);
+                $criteria['OR'][] = ITILFollowup::getParentCriteria(
+                    itemtype: Change::class,
+                    target: 'changes_id',
+                    user_table: 'glpi_changes_users',
+                    group_table: 'glpi_changes_groups'
+                );
+                $criteria['OR'][] = ITILFollowup::getParentCriteria(
+                    itemtype: Problem::class,
+                    target: 'problems_id',
+                    user_table: 'glpi_problems_users',
+                    group_table: 'glpi_problems_groups'
+                );
 
                 break;
 
@@ -3146,26 +3120,6 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * Add join for dropdown translations
-     *
-     * @param string $alias    Alias for translation table
-     * @param string $table    Table to join on
-     * @param string $itemtype Item type
-     * @param string $field    Field name
-     *
-     * @return string
-     */
-    public static function joinDropdownTranslations($alias, $table, $itemtype, $field): string
-    {
-        return "LEFT JOIN `glpi_dropdowntranslations` AS `$alias`
-                  ON (`$alias`.`itemtype` = '$itemtype'
-                        AND `$alias`.`items_id` = `$table`.`id`
-                        AND `$alias`.`language` = '" .
-            $_SESSION['glpilanguage'] . "'
-                        AND `$alias`.`field` = '$field')";
-    }
-
-    /**
      * Generic Function to add GROUP BY to a request
      *
      * @param string  $LINK           link to use
@@ -3324,7 +3278,6 @@ final class SQLProvider implements SearchProviderInterface
 
         return [new QueryExpression(self::makeTextCriteria("`$NAME`", $val, $NOT, ''))];
     }
-
 
     /**
      * Generic Function to add ORDER BY to a request
@@ -3536,37 +3489,59 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         // Construct the request
+        $criteria = [
+            'SELECT' => [],
+            'DISTINCT' => true,
+            'FROM'   => $itemtable,
+            'LEFT JOIN' => [],
+            'WHERE' => []
+        ];
 
-        //// 1 - SELECT
-        // request currentuser for SQL supervision, not displayed
-        $SELECT = self::buildSelect($data, $itemtable);
+        $select = [
+            "$itemtable.id AS id",
+            // request currentuser for SQL supervision, not displayed
+            new QueryExpression($DB::quoteValue(\Toolbox::addslashes_deep($_SESSION['glpiname'] ?? '')) . ' AS currentuser'),
+        ];
+        $select = array_merge($select, self::getDefaultSelectCriteria($data['itemtype']));
 
-        //// 2 - FROM AND LEFT JOIN
-        // Set reference table
-        $FROM = self::buildFrom($itemtable);
+        foreach ($data['toview'] as $val) {
+            $select = array_merge($select, self::getSelectCriteria($data['itemtype'], $val));
+        }
+
+        $as_map = isset($data['search']['as_map']) && (int)$data['search']['as_map'] === 1;
+        if ($as_map && $data['itemtype'] !== 'Entity') {
+            $select[] = 'glpi_locations.id AS loc_id';
+        }
 
         // Init already linked tables array in order not to link a table several times
         // Put reference table
         $already_link_tables = [$itemtable];
 
         // Add default join
-        $COMMONLEFTJOIN = \Search::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
-        $FROM          .= $COMMONLEFTJOIN;
+        $default_join = self::getDefaultJoinCriteria($data['itemtype'], $itemtable, $already_link_tables);
+        $common_join = $default_join;
+
+        if (!empty($common_join)) {
+            $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'], $common_join['LEFT JOIN']);
+        }
 
         // Add all table for toview items
         foreach ($data['tocompute'] as $val) {
-            if (!in_array($searchopt[$val]["table"], $blacklist_tables)) {
-                $FROM .= \Search::addLeftJoin(
-                    $data['itemtype'],
-                    $itemtable,
-                    $already_link_tables,
-                    $searchopt[$val]["table"],
-                    $searchopt[$val]["linkfield"],
-                    0,
-                    0,
-                    $searchopt[$val]["joinparams"],
-                    $searchopt[$val]["field"]
+            if (!in_array($searchopt[$val]['table'], $blacklist_tables, true)) {
+                $join = self::getLeftJoinCriteria(
+                    itemtype: $data['itemtype'],
+                    ref_table: $itemtable,
+                    already_link_tables: $already_link_tables,
+                    new_table: $searchopt[$val]['table'],
+                    linkfield: $searchopt[$val]['linkfield'],
+                    meta: 0,
+                    meta_type: 0,
+                    joinparams: $searchopt[$val]['joinparams'],
+                    field: $searchopt[$val]['field']
                 );
+                if (!empty($join)) {
+                    $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'], $join['LEFT JOIN']);
+                }
             }
         }
 
@@ -3575,18 +3550,21 @@ final class SQLProvider implements SearchProviderInterface
             foreach ($searchopt as $key => $val) {
                 // Do not search on Group Name
                 if (is_array($val) && isset($val['table'])) {
-                    if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
-                        $FROM .= \Search::addLeftJoin(
-                            $data['itemtype'],
-                            $itemtable,
-                            $already_link_tables,
-                            $searchopt[$key]["table"],
-                            $searchopt[$key]["linkfield"],
-                            0,
-                            0,
-                            $searchopt[$key]["joinparams"],
-                            $searchopt[$key]["field"]
+                    if (!in_array($searchopt[$key]['table'], $blacklist_tables, true)) {
+                        $join = self::getLeftJoinCriteria(
+                            itemtype: $data['itemtype'],
+                            ref_table: $itemtable,
+                            already_link_tables: $already_link_tables,
+                            new_table: $val['table'],
+                            linkfield: $val['linkfield'],
+                            meta: 0,
+                            meta_type: 0,
+                            joinparams: $val['joinparams'],
+                            field: $val['field']
                         );
+                        if (!empty($join)) {
+                            $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'], $join['LEFT JOIN']);
+                        }
                     }
                 }
             }
@@ -3595,67 +3573,60 @@ final class SQLProvider implements SearchProviderInterface
         //// 3 - WHERE
 
         // default string
-        $COMMONWHERE = \Search::addDefaultWhere($data['itemtype']);
-        $first       = empty($COMMONWHERE);
+        $default_where = self::getDefaultWhereCriteria($data['itemtype']);
+        $common_where = $default_where;
 
         // Add deleted if item have it
         if ($data['item'] && $data['item']->maybeDeleted()) {
-            $LINK = " AND ";
-            if ($first) {
-                $LINK  = " ";
-                $first = false;
-            }
-            $COMMONWHERE .= $LINK . "`$itemtable`.`is_deleted` = " . (int)$data['search']['is_deleted'] . " ";
+            $common_where[] = [
+                "$itemtable.is_deleted" => (int) $data['search']['is_deleted']
+            ];
         }
 
         // Remove template items
         if ($data['item'] && $data['item']->maybeTemplate()) {
-            $LINK = " AND ";
-            if ($first) {
-                $LINK  = " ";
-                $first = false;
-            }
-            $COMMONWHERE .= $LINK . "`$itemtable`.`is_template` = 0 ";
+            $common_where[] = [
+                "$itemtable.is_template" => 0
+            ];
         }
 
         // Add Restrict to current entities
         if ($entity_restrict) {
-            $LINK = " AND ";
-            if ($first) {
-                $LINK  = " ";
-                $first = false;
-            }
-
-            if ($data['itemtype'] == 'Entity') {
-                $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
+            if ($data['itemtype'] === 'Entity') {
+                $entity_criteria = getEntitiesRestrictCriteria($itemtable);
+                if (!empty($entity_criteria)) {
+                    $common_where[] = $entity_criteria;
+                }
             } else if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                 // Will be replace below in Union/Recursivity Hack
-                $COMMONWHERE .= $LINK . " ENTITYRESTRICT ";
+                $common_where[] = new QueryExpression("ENTITYRESTRICT");
             } else {
-                $COMMONWHERE .= getEntitiesRestrictRequest(
-                    $LINK,
-                    $itemtable,
-                    '',
-                    '',
-                    $data['item']->maybeRecursive() && $data['item']->isField('is_recursive')
+                $entity_criteria = getEntitiesRestrictCriteria(
+                    table: $itemtable,
+                    is_recursive: $data['item']->maybeRecursive() && $data['item']->isField('is_recursive')
                 );
+                if (!empty($entity_criteria)) {
+                    $common_where[] = $entity_criteria;
+                }
             }
         }
-        $WHERE  = "";
-        $HAVING = "";
+        $where = [];
+        $having = [];
 
         // Add search conditions
         // If there is search items
         if (count($data['search']['criteria'])) {
-            $WHERE  = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
-            $HAVING = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
+            $where  = self::getCriteriaSQL($data['search']['criteria'], $data, $searchopt);
+            $having = self::getCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
 
             // if criteria (with meta flag) need additional join/from sql
-            self::constructAdditionalSqlForMetacriteria($data['search']['criteria'], $SELECT, $FROM, $already_link_tables, $data);
+            $additional_criteria = self::getAdditionalCriteriaForMetacriteria($data['search']['criteria'], $already_link_tables, $data);
+            $select = array_merge($select, $additional_criteria['SELECT']);
+            $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'], $additional_criteria['LEFT JOIN']);
         }
 
         //// 4 - ORDER
-        $ORDER = " ORDER BY `id` ";
+        $order = ['id'];
         $sort_fields = [];
         $sort_count = count($data['search']['sort']);
         for ($i = 0; $i < $sort_count; $i++) {
@@ -3669,190 +3640,109 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
         if (count($sort_fields)) {
-            $ORDER = \Search::addOrderBy($data['itemtype'], $sort_fields);
+            $order = self::getOrderByCriteria($data['itemtype'], $sort_fields);
         }
 
-        $SELECT = rtrim(trim($SELECT), ',');
-
         //// 7 - Manage GROUP BY
-        $GROUPBY = "";
+        $group_by = [];
         // Meta Search / Search All / Count tickets
-        $criteria_with_meta = array_filter($data['search']['criteria'], function ($criterion) {
-            return isset($criterion['meta'])
-                && $criterion['meta'];
+        $criteria_with_meta = array_filter($data['search']['criteria'], static function ($criterion) {
+            return isset($criterion['meta']) && $criterion['meta'];
         });
         if (
             (count($data['search']['metacriteria']))
             || count($criteria_with_meta)
-            || !empty($HAVING)
+            || !empty($having)
             || $data['search']['all_search']
         ) {
-            $GROUPBY = " GROUP BY `$itemtable`.`id`";
+            $group_by = ["$itemtable.id"];
         }
 
-        if (empty($GROUPBY)) {
+        if (empty($group_by)) {
             foreach ($data['toview'] as $val2) {
-                if (!empty($GROUPBY)) {
+                if (!empty($group_by)) {
                     break;
                 }
                 if (isset($searchopt[$val2]["forcegroupby"])) {
-                    $GROUPBY = " GROUP BY `$itemtable`.`id`";
+                    $group_by = ["$itemtable.id"];
                 }
             }
         }
 
-        $LIMIT   = "";
         $numrows = 0;
+        $start = (int) $data['search']['start'];
+        $limit = (int) $data['search']['list_limit'];
+
         //No search : count number of items using a simple count(ID) request and LIMIT search
         if ($data['search']['no_search']) {
-            $LIMIT = " LIMIT " . (int)$data['search']['start'] . ", " . (int)$data['search']['list_limit'];
-
-            $count = "count(DISTINCT `$itemtable`.`id`)";
-            // request currentuser for SQL supervision, not displayed
-            $query_num = "SELECT $count,
-                              '" . \Toolbox::addslashes_deep($_SESSION['glpiname']) . "' AS currentuser
-                       FROM `$itemtable`" .
-                $COMMONLEFTJOIN;
-
-            $first     = true;
-
-            if (!empty($COMMONWHERE)) {
-                $LINK = " AND ";
-                if ($first) {
-                    $LINK  = " WHERE ";
-                    $first = false;
-                }
-                $query_num .= $LINK . $COMMONWHERE;
-            }
-            // Union Search :
-            if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-                $tmpquery = $query_num;
-
-                foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
-                    $ctable = $ctype::getTable();
-                    if (
-                        ($citem = getItemForItemtype($ctype))
-                        && $citem->canView()
-                    ) {
-                        // State case
-                        if ($data['itemtype'] == \AllAssets::getType()) {
-                            $query_num  = str_replace(
-                                $CFG_GLPI["union_search_type"][$data['itemtype']],
-                                $ctable,
-                                $tmpquery
-                            );
-                            $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
-                            $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
-
-                            // Add deleted if item have it
-                            if ($citem && $citem->maybeDeleted()) {
-                                $query_num .= " AND `$ctable`.`is_deleted` = 0 ";
-                            }
-
-                            // Remove template items
-                            if ($citem && $citem->maybeTemplate()) {
-                                $query_num .= " AND `$ctable`.`is_template` = 0 ";
-                            }
-                        } else {// Ref table case
-                            $reftable = $data['itemtype']::getTable();
-                            if ($data['item'] && $data['item']->maybeDeleted()) {
-                                $tmpquery = str_replace(
-                                    "`" . $CFG_GLPI["union_search_type"][$data['itemtype']] . "`.
-                                                   `is_deleted`",
-                                    "`$reftable`.`is_deleted`",
-                                    $tmpquery
-                                );
-                            }
-                            $replace  = "FROM `$reftable`
-                                  INNER JOIN `$ctable`
-                                       ON (`$reftable`.`items_id` =`$ctable`.`id`
-                                           AND `$reftable`.`itemtype` = '$ctype')";
-
-                            $query_num = str_replace(
-                                "FROM `" .
-                                $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
-                                $replace,
-                                $tmpquery
-                            );
-                            $query_num = str_replace(
-                                $CFG_GLPI["union_search_type"][$data['itemtype']],
-                                $ctable,
-                                $query_num
-                            );
-                        }
-                        $query_num = str_replace(
-                            "ENTITYRESTRICT",
-                            getEntitiesRestrictRequest(
-                                '',
-                                $ctable,
-                                '',
-                                '',
-                                $citem->maybeRecursive()
-                            ),
-                            $query_num
-                        );
-                        $data['sql']['count'][] = $query_num;
-                    }
-                }
-            } else {
-                $data['sql']['count'][] = $query_num;
-            }
+            self::handleCountOnlyQuery($itemtable, $common_join, $common_where, $data);
         }
 
         // If export_all reset LIMIT condition
         if ($data['search']['export_all']) {
-            $LIMIT = "";
+            $start = null;
+            $limit = null;
         }
 
-        if (!empty($WHERE) || !empty($COMMONWHERE)) {
-            if (!empty($COMMONWHERE)) {
-                $WHERE = ' WHERE ' . $COMMONWHERE . (!empty($WHERE) ? ' AND ( ' . $WHERE . ' )' : '');
+        if (!empty($where)) {
+            if (!empty($common_where)) {
+                $criteria['WHERE'] = [
+                    $common_where,
+                    [
+                        $where
+                    ]
+                ];
             } else {
-                $WHERE = ' WHERE ' . $WHERE . ' ';
+                $criteria['WHERE'] = $where;
             }
-            $first = false;
         }
 
-        if (!empty($HAVING)) {
-            $HAVING = ' HAVING ' . $HAVING;
+        if (!empty($having)) {
+            $criteria['HAVING'] = $having;
         }
 
         // Create QUERY
         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-            $first = true;
-            $QUERY = "";
+            $queries = [];
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
                 $ctable = $ctype::getTable();
                 if (
                     ($citem = getItemForItemtype($ctype))
-                    && $citem->canView()
+                    && $citem::canView()
                 ) {
-                    if ($first) {
-                        $first = false;
-                    } else {
-                        $QUERY .= " UNION ";
-                    }
-                    $tmpquery = "";
                     // AllAssets case
                     if ($data['itemtype'] == \AllAssets::getType()) {
-                        $tmpquery = $SELECT . ", '$ctype' AS TYPE " .
-                            $FROM .
-                            $WHERE;
+                        $sub_query = [
+                            'SELECT' => array_merge($select, [new QueryExpression($DB::quoteValue($ctype) . " AS TYPE")]),
+                            'FROM'   => $ctable,
+                            'LEFT JOIN' => $criteria['LEFT JOIN'],
+                            'WHERE'  => $where,
+                        ];
 
-                        $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
+                        $sub_query['WHERE'][] = [
+                            'NOT' => ["$ctable.id" => null]
+                        ];
 
                         // Add deleted if item have it
                         if ($citem && $citem->maybeDeleted()) {
-                            $tmpquery .= " AND `$ctable`.`is_deleted` = 0 ";
+                            $sub_query['WHERE'][] = [
+                                "$ctable.is_deleted" => 0
+                            ];
                         }
 
                         // Remove template items
                         if ($citem && $citem->maybeTemplate()) {
-                            $tmpquery .= " AND `$ctable`.`is_template` = 0 ";
+                            $sub_query['WHERE'][] = [
+                                "$ctable.is_template" => 0
+                            ];
                         }
 
-                        $tmpquery .= $GROUPBY .
-                            $HAVING;
+                        $sub_query['GROUPBY'] = $group_by;
+                        $sub_query['HAVING'] = $having;
+
+                        $it = new DBmysqlIterator(null);
+                        $it->buildQuery($sub_query);
+                        $tmpquery = $it->getSql();
 
                         // Replace 'asset_types' by itemtype table name
                         $tmpquery = str_replace(
@@ -3870,11 +3760,20 @@ final class SQLProvider implements SearchProviderInterface
                     } else {// Ref table case
                         $reftable = $data['itemtype']::getTable();
 
-                        $tmpquery = $SELECT . ", '$ctype' AS TYPE,
-                                      `$reftable`.`id` AS refID, " . "
-                                      `$ctable`.`entities_id` AS ENTITY " .
-                            $FROM .
-                            $WHERE;
+                        $sub_query = [
+                            'SELECT' => array_merge($select, [
+                                new QueryExpression($DB::quoteValue($ctype) . " AS TYPE"),
+                                "$reftable.id AS refID",
+                                "$ctable.entities_id AS ENTITY"
+                            ]),
+                            'FROM'   => $ctable,
+                            'LEFT JOIN' => $criteria['LEFT JOIN'],
+                            'WHERE'  => $where,
+                        ];
+                        $it = new DBmysqlIterator(null);
+                        $it->buildQuery($sub_query);
+                        $tmpquery = $it->getSql();
+
                         if ($data['item']->maybeDeleted()) {
                             $tmpquery = str_replace(
                                 "`" . $CFG_GLPI["union_search_type"][$data['itemtype']] . "`.
@@ -3919,34 +3818,266 @@ final class SQLProvider implements SearchProviderInterface
                         $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
                         $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
                     }
-                    $QUERY .= $tmpquery;
+                    $queries[] = new \QuerySubQuery(new QueryExpression($tmpquery));
                 }
             }
-            if (empty($QUERY)) {
+            if (empty($queries)) {
                 echo \Search::showError($data['display_type']);
                 return;
             }
-            $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']] . ".", "", $ORDER) .
-                $LIMIT;
-        } else {
-            $data['sql']['raw'] = [
-                'SELECT' => $SELECT,
-                'FROM' => $FROM,
-                'WHERE' => $WHERE,
-                'GROUPBY' => $GROUPBY,
-                'HAVING' => $HAVING,
-                'ORDER' => $ORDER,
-                'LIMIT' => $LIMIT
+            $data['sql']['search'] = [
+                'FROM' => new \QueryUnion($queries)
             ];
-            $QUERY = $SELECT .
-                $FROM .
-                $WHERE .
-                $GROUPBY .
-                $HAVING .
-                $ORDER .
-                $LIMIT;
+        } else {
+            $criteria['SELECT'] = $select;
+            $criteria['ORDER'] = $order;
+            if (!empty($group_by)) {
+                $criteria['GROUPBY'] = $group_by;
+            }
+            $criteria['HAVING'] = $having;
+            $criteria['START'] = $start;
+            $criteria['LIMIT'] = $limit;
+            $data['sql']['raw'] = $criteria;
+            $data['sql']['search'] = $criteria;
         }
-        $data['sql']['search'] = $QUERY;
+    }
+
+    private static function handleCountOnlyQuery(string $itemtable, array $common_join, array $common_where, array &$data)
+    {
+        global $DB, $CFG_GLPI;
+
+        $count = QueryFunction::count(
+            expression: $DB::quoteName("$itemtable.id"),
+            distinct: true
+        );
+        // request currentuser for SQL supervision, not displayed
+        $query_num = [
+            'SELECT' => [
+                $count,
+                new QueryExpression($DB::quoteValue(\Toolbox::addslashes_deep($_SESSION['glpiname'])) . ' AS currentuser')
+            ],
+            'FROM'   => $itemtable,
+        ] + $common_join;
+
+        if (!empty($common_where)) {
+            $query_num['WHERE'] = $common_where;
+        }
+        // Union Search :
+        if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+            $it = new DBmysqlIterator(null);
+            $it->buildQuery($query_num);
+            $tmpquery = $it->getSql();
+
+            $cfg_key = $CFG_GLPI["union_search_type"][$data['itemtype']];
+            foreach ($CFG_GLPI[$cfg_key] as $ctype) {
+                $ctable = $ctype::getTable();
+                if (
+                    ($citem = getItemForItemtype($ctype))
+                    && $citem::canView()
+                ) {
+                    // State case
+                    if ($data['itemtype'] == \AllAssets::getType()) {
+                        $new_query  = str_replace(
+                            $CFG_GLPI["union_search_type"][$data['itemtype']],
+                            $ctable,
+                            $tmpquery
+                        );
+                        $new_query  = str_replace($data['itemtype'], $ctype, $new_query);
+                        $new_query .= " AND `$ctable`.`id` IS NOT NULL ";
+
+                        // Add deleted if item have it
+                        if ($citem && $citem->maybeDeleted()) {
+                            $new_query .= " AND `$ctable`.`is_deleted` = 0 ";
+                        }
+
+                        // Remove template items
+                        if ($citem && $citem->maybeTemplate()) {
+                            $new_query .= " AND `$ctable`.`is_template` = 0 ";
+                        }
+                        $query_num = new QueryExpression($new_query);
+                    } else {// Ref table case
+                        $reftable = $data['itemtype']::getTable();
+                        if ($data['item'] && $data['item']->maybeDeleted()) {
+                            $tmpquery = str_replace(
+                                "`" . $CFG_GLPI["union_search_type"][$data['itemtype']] . "`.
+                                                   `is_deleted`",
+                                "`$reftable`.`is_deleted`",
+                                $tmpquery
+                            );
+                        }
+                        $replace  = "FROM `$reftable`
+                                  INNER JOIN `$ctable`
+                                       ON (`$reftable`.`items_id` =`$ctable`.`id`
+                                           AND `$reftable`.`itemtype` = '$ctype')";
+
+                        $new_query = str_replace(
+                            "FROM `" .
+                            $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
+                            $replace,
+                            $tmpquery
+                        );
+                        $new_query = str_replace(
+                            $CFG_GLPI["union_search_type"][$data['itemtype']],
+                            $ctable,
+                            $new_query
+                        );
+                    }
+                    $new_query = str_replace(
+                        "ENTITYRESTRICT",
+                        getEntitiesRestrictRequest(
+                            '',
+                            $ctable,
+                            '',
+                            '',
+                            $citem->maybeRecursive()
+                        ),
+                        $new_query
+                    );
+                    $data['sql']['count'][] = new QueryExpression($new_query);
+                }
+            }
+        } else {
+            $data['sql']['count'][] = $query_num;
+        }
+    }
+
+    /**
+     * @param array $criteria Array of search criterion
+     * @phpstan-param array{link?: string, field: int|string, searchtype: string, value: mixed, criteria?: array}[] $criteria
+     * @param array $data Search data
+     * @param array $searchopt
+     * @param bool $is_having Do we construct sql WHERE or HAVING part
+     * @return array
+     */
+    public static function getCriteriaSQL(array $criteria = [], array $data = [], array $searchopt = [], bool $is_having = false): array
+    {
+        $sql_criteria = [];
+
+        foreach ($criteria as $criterion) {
+            $sub_criteria = $criterion['criteria'] ?? [];
+            $value = $criterion['value'] ?? '';
+
+            if (empty($sub_criteria) && empty($value)) {
+                continue;
+            }
+
+            $criterion_link = trim($criterion['link'] ?? 'AND');
+            if (!array_key_exists($criterion_link, SearchEngine::getLogicalOperators())) {
+                $criterion_link = 'AND';
+            }
+            $NOT     = str_contains($criterion_link, 'NOT');
+            $criterion_link = trim(str_replace('NOT', '', $criterion_link));
+            $itemtype = $criterion['itemtype'] ?? $data['itemtype'];
+            $meta = isset($criterion['meta'], $criterion['itemtype']) && $criterion['meta'];
+            $meta_searchopt = $meta ? SearchOption::getOptionsForItemtype($itemtype) : $searchopt;
+            $field = $criterion['field'] ?? null;
+            $searchtype = $criterion['searchtype'];
+
+            $fn_append_criteria = static function (array $to_append, array &$target, string $link, bool $not) {
+                if (!empty($to_append)) {
+                    if ($not) {
+                        $to_append = ['NOT' => $to_append];
+                    }
+                    if ($link === 'OR') {
+                        // If there is a top-level 'OR', we can just append this criteria
+                        // Otherwise, we need to wrap the target and to_append in a new OR
+                        if (array_key_exists('OR', $target)) {
+                            $target['OR'][] = $to_append;
+                        } else {
+                            if (empty($target)) {
+                                $target = ['OR' => [$to_append]];
+                            } else {
+                                $target = ['OR' => [$target, $to_append]];
+                            }
+                        }
+                    } else {
+                        $target[] = $to_append;
+                    }
+                }
+            };
+
+            // common search
+            if ($field !== "all" && $field !== "view") {
+                $LINK    = " ";
+
+                if (count($sub_criteria)) {
+                    $sub_sql_criteria = self::getCriteriaSQL($sub_criteria, $data, $meta_searchopt, $is_having);
+
+                    $fn_append_criteria($sub_sql_criteria, $sql_criteria, $criterion_link, $NOT);
+                } else if (
+                    isset($meta_searchopt[$field]["usehaving"])
+                    || ($meta && $NOT && $criterion_link === 'AND')
+                ) {
+                    if (!$is_having) {
+                        // the having part will be managed in a second pass
+                        continue;
+                    }
+
+                    $new_having = self::getHavingCriteria(
+                        $LINK,
+                        $NOT,
+                        $itemtype,
+                        $field,
+                        $searchtype,
+                        $value
+                    );
+                    $fn_append_criteria($new_having, $sql_criteria, $criterion_link, $NOT);
+                } else {
+                    if ($is_having) {
+                        // the having part has been already managed in the first pass
+                        continue;
+                    }
+
+                    $new_where = self::getWhereCriteria(
+                        $NOT,
+                        $itemtype,
+                        $field,
+                        $searchtype,
+                        $value,
+                        $meta
+                    );
+                    $fn_append_criteria($new_where, $sql_criteria, $criterion_link, $NOT);
+                }
+            } else if (!empty($value)) { // view and all search
+                $globallink = $criterion_link;
+                $LINK = $NOT ? 'AND' : 'OR';
+
+                $items = [];
+                if ($field === "all") {
+                    $items = $searchopt;
+                } else { // toview case : populate toview
+                    foreach ($data['toview'] as $key2 => $val2) {
+                        $items[$val2] = $searchopt[$val2];
+                    }
+                }
+                $sub_where = [];
+                foreach ($items as $key2 => $val2) {
+                    if (isset($val2['nosearch']) && $val2['nosearch']) {
+                        continue;
+                    }
+                    if (is_array($val2)) {
+                        // Add Where clause if not to be done in HAVING CLAUSE
+                        if (!$is_having && !isset($val2["usehaving"])) {
+
+                            $new_where = self::getWhereCriteria(
+                                $NOT,
+                                $itemtype,
+                                $key2,
+                                $criterion['searchtype'],
+                                $criterion['value'],
+                                $meta
+                            );
+                            if (!empty($new_where)) {
+                                $fn_append_criteria($new_where, $sub_where, $LINK, $NOT);
+                            }
+                        }
+                    }
+                }
+                $fn_append_criteria($sub_where, $sql_criteria, $globallink, $NOT);
+            }
+        }
+
+        return $sql_criteria;
     }
 
     /**
@@ -4152,6 +4283,99 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
+     * Get array of additional SQL criteria for Search meta-criteria
+     *
+     * @param array $criteria Search criteria
+     * @param array &$already_link_tables Array of tables already joined
+     * @param array &$data Search options
+     * @return array
+     * @phpstan-return array{"SELECT": array, "LEFT JOIN": array}
+     */
+    public static function getAdditionalCriteriaForMetacriteria(array $criteria = [], array &$already_link_tables = [], array &$data = []): array
+    {
+        $data['meta_toview'] = [];
+
+        $additional_criteria = [
+            'SELECT' => [],
+            'LEFT JOIN' => []
+        ];
+
+        foreach ($criteria as $criterion) {
+            // manage sub criteria
+            if (isset($criterion['criteria'])) {
+                self::getAdditionalCriteriaForMetacriteria(
+                    $criterion['criteria'],
+                    $already_link_tables,
+                    $data
+                );
+                continue;
+            }
+
+            // parse only criterion with meta flag
+            if (
+                !isset($criterion['itemtype'])
+                || empty($criterion['itemtype'])
+                || !isset($criterion['meta'])
+                || !$criterion['meta']
+                || !isset($criterion['value'])
+                || strlen($criterion['value']) <= 0
+            ) {
+                continue;
+            }
+
+            $m_itemtype = $criterion['itemtype'];
+            $metaopt = SearchOption::getOptionsForItemtype($m_itemtype);
+            $sopt    = $metaopt[$criterion['field']];
+
+            //add toview for meta criterion
+            $data['meta_toview'][$m_itemtype][] = $criterion['field'];
+
+            $additional_criteria['SELECT'] = array_merge(
+                $additional_criteria['SELECT'],
+                self::getSelectCriteria(
+                    itemtype: $m_itemtype,
+                    ID: $criterion['field'],
+                    meta: true,
+                    meta_type: $m_itemtype
+                )
+            );
+
+            $meta_join = self::getMetaLeftJoinCriteria(
+                from_type: $data['itemtype'],
+                to_type: $m_itemtype,
+                already_link_tables2: $already_link_tables,
+                joinparams: $sopt['joinparams']
+            );
+            if (array_key_exists('LEFT JOIN', $meta_join)) {
+                $additional_criteria['LEFT JOIN'] = array_merge(
+                    $additional_criteria['LEFT JOIN'],
+                    $meta_join['LEFT JOIN']
+                );
+            }
+
+            $join = self::getLeftJoinCriteria(
+                itemtype: $m_itemtype,
+                ref_table: $m_itemtype::getTable(),
+                already_link_tables: $already_link_tables,
+                new_table: $sopt["table"],
+                linkfield: $sopt["linkfield"],
+                meta: 1,
+                meta_type: $m_itemtype,
+                joinparams: $sopt["joinparams"],
+                field: $sopt["field"]
+            );
+            if (array_key_exists('LEFT JOIN', $join)) {
+                $additional_criteria['LEFT JOIN'] = array_merge(
+                    $additional_criteria['LEFT JOIN'],
+                    $join['LEFT JOIN']
+                );
+            }
+        }
+
+        return $additional_criteria;
+    }
+
+    /**
      * Construct aditionnal SQL (select, joins, etc) for meta-criteria
      **
      * @param  array  $criteria             list of search criterion
@@ -4254,7 +4478,7 @@ final class SQLProvider implements SearchProviderInterface
         $DBread->query("SET SESSION group_concat_max_len = 8194304;");
 
         $DBread->execution_time = true;
-        $result = $DBread->query($data['sql']['search']);
+        $result = $DBread->request($data['sql']['search']);
 
         if ($result) {
             $data['data']['execution_time'] = $DBread->execution_time;
@@ -4266,23 +4490,40 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $data['data']['totalcount'] = 0;
-            // if real search or complete export : get numrows from request
-            if (
-                !$data['search']['no_search']
-                || $data['search']['export_all']
-            ) {
-                $data['data']['totalcount'] = $DBread->numrows($result);
-            } else {
-                if (
-                    !isset($data['sql']['count'])
-                    || (count($data['sql']['count']) == 0)
-                ) {
-                    $data['data']['totalcount'] = $DBread->numrows($result);
+            if (!$data['search']['no_search']) {
+                // "Real" search (paginated)
+                // Need to make a second request to get the total number of rows without the start and limit
+                $count_criteria = $data['sql']['search'];
+                $use_having = !empty($count_criteria['HAVING']);
+                unset($count_criteria['START'], $count_criteria['LIMIT'], $count_criteria['ORDER']);
+                $count_function = QueryFunction::count(
+                    expression: $DBread::quoteName($count_criteria['FROM'] . '.id'),
+                    distinct: true,
+                    alias: 'cpt'
+                );
+                if ($use_having) {
+                    $count_result = $DBread->request($count_criteria);
+                    $data['data']['totalcount'] = count($count_result);
                 } else {
-                    foreach ($data['sql']['count'] as $sqlcount) {
-                        $result_num = $DBread->query($sqlcount);
-                        $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
+                    $count_criteria['SELECT'] = [$count_function];
+                    unset($count_criteria['GROUPBY'], $count_criteria['HAVING']);
+                    $count_result = $DBread->request($count_criteria);
+                    if ($count_result) {
+                        $data['data']['totalcount'] = $count_result->current()['cpt'];
                     }
+                }
+            } else if ($data['search']['export_all'] ||
+                (!isset($data['sql']['count']) || count($data['sql']['count']) === 0)) {
+                // Complete export or missing count. Use the result count as total count
+                $data['data']['totalcount'] = count($result);
+            } else {
+                // This is a count only request
+                foreach ($data['sql']['count'] as $sqlcount) {
+                    if (!is_array($sqlcount)) {
+                        $sqlcount = (string) $sqlcount;
+                    }
+                    $result_num = $DBread->request($sqlcount);
+                    $data['data']['totalcount'] += array_values($result_num->current())[0];
                 }
             }
 
@@ -4411,7 +4652,7 @@ final class SQLProvider implements SearchProviderInterface
 
             // if real search seek to begin of items to display (because of complete search)
             if (!$data['search']['no_search']) {
-                $DBread->dataSeek($result, $data['search']['start']);
+                //$DBread->dataSeek($result, $data['search']['start']);
             }
 
             $i = $data['data']['begin'];
@@ -4423,8 +4664,9 @@ final class SQLProvider implements SearchProviderInterface
 
             \Search::$output_type = $data['display_type'];
 
-            while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
-                $row = $DBread->fetchAssoc($result);
+            foreach ($result as $row) {
+                //$row = $DBread->fetchAssoc($result);
+                //$row = $result->current();
                 $newrow        = [];
                 $newrow['raw'] = $row;
 
@@ -4510,6 +4752,7 @@ final class SQLProvider implements SearchProviderInterface
                 }
 
                 $data['data']['rows'][$i] = $newrow;
+                //$result->next();
                 $i++;
             }
 
@@ -4532,7 +4775,7 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Create SQL search condition
      *
-     * @param string  $field  Nname (should be ` protected)
+     * @param string  $field  Name (should be ` protected)
      * @param string  $val    Value to search
      * @param boolean $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
@@ -4846,6 +5089,9 @@ final class SQLProvider implements SearchProviderInterface
                         $count_display = 0;
                         $added         = [];
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
+                            if (!isset($data[$ID][$k]['entities_id'])) {
+                                $t = '';
+                            }
                             if (
                                 strlen(trim($data[$ID][$k]['name'])) > 0
                                 && !in_array(
