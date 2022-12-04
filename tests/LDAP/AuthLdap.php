@@ -248,8 +248,9 @@ class AuthLDAP extends DbTestCase
     {
         $ldap     = new \AuthLDAP();
         $tabs     = $ldap->defineTabs();
-        $expected = ['AuthLDAP$main' => 'LDAP directory',
-            'Log$1'         => 'Historical'
+        $expected = [
+            'AuthLDAP$main' => "<span><i class='far fa-address-book me-2'></i>LDAP directory</span>",
+            'Log$1'         => "<span><i class='ti ti-history me-2'></i>Historical</span>"
         ];
         $this->array($tabs)->isIdenticalTo($expected);
     }
@@ -538,11 +539,12 @@ class AuthLDAP extends DbTestCase
 
         $ldap   = getItemByTypeName('AuthLDAP', 'LDAP1');
         $result = $ldap->getTabNameForItem($ldap);
-        $expected = [1 => 'Test',
-            2 => 'Users',
-            3 => 'Groups',
-            5 => 'Advanced information',
-            6 => 'Replicates'
+        $expected = [
+            1 => "<span><i class='far fa-address-book me-2'></i>Test</span>",
+            2 => "<span><i class='ti ti-user me-2'></i>Users</span>",
+            3 => "<span><i class='ti ti-user me-2'></i>Groups</span>",
+            5 => "<span><i class='far fa-address-book me-2'></i>Advanced information</span>",
+            6 => "<span><i class='far fa-address-book me-2'></i>Replicates</span>"
         ];
         $this->array($result)->isIdenticalTo($expected);
 
