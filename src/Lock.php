@@ -146,7 +146,8 @@ class Lock extends CommonGLPI
                         ]
                     ];
                     $query['WHERE'][] = [
-                        Computer_Item::getTable() . '.computers_id'  => $ID
+                        Computer_Item::getTable() . '.computers_id'  => $ID,
+                        Computer_Item::getTable() . '.is_deleted' => 0
                     ];
                 } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
                     $query['WHERE'][] = [
