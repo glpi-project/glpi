@@ -3656,14 +3656,11 @@ HTML;
         echo '</label>';
         echo '</td>';
         echo '<td>';
-        Dropdown::showNumber(
-            'document_max_size',
-            [
-                'value' => $CFG_GLPI['document_max_size'],
-                'min'   => 1,
-                'rand'  => $rand,
-            ]
-        );
+        echo Html::input('document_max_size', [
+            'type' => 'number',
+            'min'  => 1,
+            'value' => $CFG_GLPI['document_max_size'],
+        ]);
         echo '</td>';
         echo '<td colspan="2"></td>';
         echo '</tr>';
