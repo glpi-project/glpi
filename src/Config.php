@@ -3781,6 +3781,15 @@ HTML;
                     'email' => $entity_sender_email,
                     'name'  => $entity_sender_name,
                 ];
+            } elseif ($entity_sender_email !== '') {
+                trigger_error(
+                    sprintf(
+                        'Invalid email address "%s" configured for entity "%s". Default administrator email will be used.',
+                        $entity_sender_email,
+                        $entities_id
+                    ),
+                    E_USER_WARNING
+                );
             }
         }
 
@@ -3793,6 +3802,11 @@ HTML;
                 'email' => $global_sender_email,
                 'name'  => $global_sender_name,
             ];
+        } elseif ($global_sender_email !== '') {
+            trigger_error(
+                sprintf('Invalid email address "%s" configured in "%s".', $global_sender_email, $config_name),
+                E_USER_WARNING
+            );
         }
 
         // No valid values found
