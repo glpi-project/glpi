@@ -3661,7 +3661,6 @@ HTML;
             [
                 'value' => $CFG_GLPI['document_max_size'],
                 'min'   => 1,
-                'max'   => 250,
                 'rand'  => $rand,
             ]
         );
