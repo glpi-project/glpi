@@ -245,24 +245,7 @@ JAVASCRIPT;
     {
         global $DB;
 
-        $get_most_recent_agent = static function (array $conditions) use ($DB): ?Agent {
-            $iterator = $DB->request([
-                'SELECT'    => ['id'],
-                'FROM'      => Agent::getTable(),
-                'WHERE'     => $conditions,
-                'ORDERBY'   => ['last_contact DESC'],
-                'LIMIT'     => 1
-            ]);
-            if (count($iterator) === 0) {
-                return null;
-            }
-
-            $agent = new Agent();
-            $agent->getFromDB($iterator->current()['id']);
-            return $agent;
-        };
-
-        $agent = $get_most_recent_agent([
+        $agent = $this->getMostRecentAgent([
             'itemtype' => $this->getType(),
             'items_id' => $this->getID(),
         ]);
@@ -274,7 +257,7 @@ JAVASCRIPT;
             && !empty($this->fields['items_id'])
         ) {
             // if no agent has been found, check if there is an agent linked to database host asset
-            $agent = $get_most_recent_agent([
+            $agent = $this->getMostRecentAgent([
                 'itemtype' => $this->fields['itemtype'],
                 'items_id' => $this->fields['items_id'],
             ]);
@@ -297,13 +280,39 @@ JAVASCRIPT;
                         'items_id' => $relation_data['items_id'],
                     ];
                 }
-                $agent = $get_most_recent_agent($conditions);
+                $agent = $this->getMostRecentAgent($conditions);
             }
         }
 
-        if ($agent !== null) {
-            $this->agent = $agent;
-        }
+        $this->agent = $agent;
+
         return $this->agent;
+    }
+
+    /**
+     * Get most recent agent corresponding to given conditions.
+     *
+     * @param array $conditions
+     *
+     * @return Agent|null
+     */
+    private function getMostRecentAgent(array $conditions): ?Agent
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT'    => ['id'],
+            'FROM'      => Agent::getTable(),
+            'WHERE'     => $conditions,
+            'ORDERBY'   => ['last_contact DESC'],
+            'LIMIT'     => 1
+        ]);
+        if (count($iterator) === 0) {
+            return null;
+        }
+
+        $agent = new Agent();
+        $agent->getFromDB($iterator->current()['id']);
+        return $agent;
     }
 }

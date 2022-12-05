@@ -48,7 +48,7 @@ class Computer extends DbTestCase
         return $string;
     }
 
-    private function getNewComputer()
+    private function getNewComputer(): \Computer
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $fields   = $computer->fields;
@@ -718,5 +718,98 @@ class Computer extends DbTestCase
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
             $this->array($_SESSION['saveInput'])->notHasKey('Computer');
         }
+    }
+
+    public function testGetInventoryAgent(): void
+    {
+        $computer = $this->getNewComputer();
+        $printer1 = $this->getNewPrinter();
+        $this->createItem(
+            \Computer_Item::class,
+            [
+                'computers_id' => $computer->fields['id'],
+                'itemtype'     => \Printer::class,
+                'items_id'     => $printer1->fields['id'],
+            ]
+        );
+        $printer2 = $this->getNewPrinter();
+        $this->createItem(
+            \Computer_Item::class,
+            [
+                'computers_id' => $computer->fields['id'],
+                'itemtype'     => \Printer::class,
+                'items_id'     => $printer2->fields['id'],
+            ]
+        );
+
+        $computer_agent = $computer->getInventoryAgent();
+        $this->variable($computer_agent)->isNull();
+
+        $agenttype_id = getItemByTypeName(\AgentType::class, 'Core', true);
+
+        $agent1 = $this->createItem(
+            \Agent::class,
+            [
+                'deviceid'     => sprintf('device_%08x', rand()),
+                'agenttypes_id' => $agenttype_id,
+                'itemtype'     => \Computer::class,
+                'items_id'     => $computer->fields['id'],
+                'last_contact' => date('Y-m-d H:i:s', strtotime('yesterday')),
+            ]
+        );
+
+        $agent2 = $this->createItem(
+            \Agent::class,
+            [
+                'deviceid'     => sprintf('device_%08x', rand()),
+                'agenttypes_id' => $agenttype_id,
+                'itemtype'     => \Computer::class,
+                'items_id'     => $computer->fields['id'],
+                'last_contact' => date('Y-m-d H:i:s', strtotime('last week')),
+            ]
+        );
+
+        $agent3 = $this->createItem(
+            \Agent::class,
+            [
+                'deviceid'     => sprintf('device_%08x', rand()),
+                'agenttypes_id' => $agenttype_id,
+                'itemtype'     => \Printer::class,
+                'items_id'     => $printer1->fields['id'],
+                'last_contact' => date('Y-m-d H:i:s', strtotime('last hour')),
+            ]
+        );
+
+        $this->createItem(
+            \Agent::class,
+            [
+                'deviceid'     => sprintf('device_%08x', rand()),
+                'agenttypes_id' => $agenttype_id,
+                'itemtype'     => \Printer::class,
+                'items_id'     => $printer2->fields['id'],
+                'last_contact' => date('Y-m-d H:i:s', strtotime('yesterday')),
+            ]
+        );
+
+        // most recent agent directly linked
+        $computer_agent = $computer->getInventoryAgent();
+        $this->object($computer_agent)->isInstanceOf(\Agent::class);
+        $this->array($computer_agent->fields)->isEqualTo($agent1->fields);
+
+        $this->boolean($agent1->delete(['id' => $agent1->fields['id']]))->isTrue();
+
+        // most recent agent directly linked
+        $computer_agent = $computer->getInventoryAgent();
+        $this->object($computer_agent)->isInstanceOf(\Agent::class);
+        $this->array($computer_agent->fields)->isEqualTo($agent2->fields);
+
+        $this->boolean($agent2->delete(['id' => $agent2->fields['id']]))->isTrue();
+
+        // most recent agent found from linked items, as there is no more agent linked directly
+        $computer_agent = $computer->getInventoryAgent();
+        $this->object($computer_agent)->isInstanceOf(\Agent::class);
+        $printer1_agent = $printer1->getInventoryAgent();
+        $this->object($printer1_agent)->isInstanceOf(\Agent::class);
+        $this->array($computer_agent->fields)->isEqualTo($printer1_agent->fields);
     }
 }
