@@ -434,8 +434,10 @@ abstract class CommonDBVisible extends CommonDBTM
     protected function getShowVisibilityDropdownParams()
     {
         return [
-            'type'  => '__VALUE__',
-            'right' => strtolower($this::getType()) . '_public'
+            'type'          => '__VALUE__',
+            'right'         => strtolower($this::getType()) . '_public',
+            'entity'        => $this->fields['entities_id'],
+            'is_recursive'  => $this->fields['is_recursive'],
         ];
     }
 }
