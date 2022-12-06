@@ -819,7 +819,7 @@ class Lock extends CommonGLPI
             echo "<th width='10'></th>";
             echo "<th>" . DatabaseInstance::getTypeName(Session::getPluralNumber()) . "</th>";
             echo "<th>" . __('Name') . "</th>";
-            echo "<th>" . __('Version') . "</th>";
+            echo "<th>" . _n('Version', 'Versions', 1) . "</th>";
             echo "<th>" . __('Automatic inventory') . "</th>";
             echo "</tr>";
         }
