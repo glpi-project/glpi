@@ -31,7 +31,6 @@
         "guzzlehttp/psr7": "^2.4",
         "html2text/html2text": "^4.3",
         "htmlawed/htmlawed": "^1.2",
-        "iamcal/lib_autolink": "^1.7",
         "jasig/phpcas": "^1.6",
         "laminas/laminas-i18n": "^2.12",
         "laminas/laminas-json": "^3.5",

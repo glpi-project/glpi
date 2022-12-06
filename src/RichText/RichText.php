@@ -60,7 +60,7 @@ final class RichText
             return '';
         }
 
-        $content = self::normalizeHtmlContent($content, true);
+        $content = self::normalizeHtmlContent($content);
 
        // Remove unsafe HTML using htmLawed
         $config = Toolbox::getHtmLawedSafeConfig();
@@ -108,7 +108,7 @@ final class RichText
     ): string {
         global $CFG_GLPI;
 
-        $content = self::normalizeHtmlContent($content, false);
+        $content = self::normalizeHtmlContent($content);
 
         if ($keep_presentation) {
             if ($compact) {
@@ -205,11 +205,10 @@ final class RichText
      * Normalize HTML content.
      *
      * @param string $content
-     * @param bool   $enhanced_html  Apply optionnal transformations to enhance produced HTML (autolink for instance)
      *
      * @return string
      */
-    private static function normalizeHtmlContent(string $content, bool $enhanced_html = false)
+    private static function normalizeHtmlContent(string $content)
     {
 
         $content = Sanitizer::getVerbatimValue($content);
@@ -246,13 +245,6 @@ final class RichText
 
            // Plain text line breaks have to be transformed into <br /> tags.
             $content = '<p>' . nl2br($content) . '</p>';
-        }
-
-        if ($enhanced_html) {
-            // URLs have to be transformed into <a> tags.
-            global $autolink_options;
-            $autolink_options['strip_protocols'] = false;
-            $content = autolink($content, false, ' target="_blank"');
         }
 
         return $content;

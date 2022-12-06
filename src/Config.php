@@ -2081,9 +2081,6 @@ HTML;
             [ 'name'    => 'michelf/php-markdown',
                 'check'   => 'Michelf\\Markdown'
             ],
-            [ 'name'    => 'iamcal/lib_autolink',
-                'check'   => 'autolink'
-            ],
             [ 'name'    => 'sabre/dav',
                 'check'   => 'Sabre\\DAV\\Version'
             ],
