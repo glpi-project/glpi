@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f1fcb99e3ae9c6dae3a5757d65887c39",
+    "content-hash": "3e786decfabd580f57cff73c53f8569e",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -880,42 +880,6 @@
             ],
             "description": "Official htmLawed PHP library for HTML filtering",
             "homepage": "https://www.bioinformatics.org/phplabware/internal_utilities/htmLawed"
-        },
-        {
-            "name": "iamcal/lib_autolink",
-            "version": "v1.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/iamcal/lib_autolink.git",
-                "reference": "6a9e44d17f836806301b40723af673971a1a5112"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/iamcal/lib_autolink/zipball/6a9e44d17f836806301b40723af673971a1a5112",
-                "reference": "6a9e44d17f836806301b40723af673971a1a5112",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib_autolink.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Adds anchors to urls in a text",
-            "keywords": [
-                "anchor",
-                "autolink",
-                "link"
-            ],
-            "support": {
-                "issues": "https://github.com/iamcal/lib_autolink/issues",
-                "source": "https://github.com/iamcal/lib_autolink/tree/v1.9"
-            },
-            "time": "2022-09-12T16:35:05+00:00"
         },
         {
             "name": "jasig/phpcas",

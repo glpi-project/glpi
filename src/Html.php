@@ -3893,6 +3893,7 @@ JS;
         }
 
         $plugins = [
+            'autolink',
             'autoresize',
             'code',
             'directionality',

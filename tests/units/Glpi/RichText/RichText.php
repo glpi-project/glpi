@@ -105,7 +105,7 @@ Plain text content created by mailcollector.
 
 1. br should be added for each "\\r?\\n"
 
-2. contained URL should be transformed into links:
+2. contained URL are no longer transformed into links:
  - www.glpi-project.org
  - mailto:test@glpi-project.org
 
@@ -116,9 +116,9 @@ PLAINTEXT,
 <br />
 1. br should be added for each "\\r?\\n"<br />
 <br />
-2. contained URL should be transformed into links:<br />
- - <a href="http://www.glpi-project.org" target="_blank">www.glpi-project.org</a><br />
- - <a href="mailto:test@glpi-project.org" target="_blank">mailto:test@glpi-project.org</a><br />
+2. contained URL are no longer transformed into links:<br />
+ - www.glpi-project.org<br />
+ - mailto:test@glpi-project.org<br />
 </p>
 HTML,
         ];
