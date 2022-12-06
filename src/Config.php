@@ -3651,7 +3651,7 @@ HTML;
 
         echo '<tr class="tab_bg_2">';
         echo '<td>';
-        echo '<label for="dropdown_document_max_size' . $rand . '">';
+        echo '<label for="document_max_size' . $rand . '">';
         echo __('Document files maximum size (Mio)');
         echo '</label>';
         echo '</td>';
@@ -3660,6 +3660,7 @@ HTML;
             'type' => 'number',
             'min'  => 1,
             'value' => $CFG_GLPI['document_max_size'],
+            'id' => 'document_max_size' . $rand,
         ]);
         echo '</td>';
         echo '<td colspan="2"></td>';
