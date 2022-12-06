@@ -138,7 +138,7 @@ class Lock extends CommonGLPI
                     $query['WHERE'][] = $connexity_criteria['WHERE'];
                     if ($lockable_object->isField('is_deleted')) {
                         $query['WHERE'][] = [
-                            $lockable_object->getTableField('is_deleted') => 0
+                            $lockable_object::getTableField('is_deleted') => 0
                         ];
                     }
                 } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'])) {
@@ -159,6 +159,11 @@ class Lock extends CommonGLPI
                         $lockable_itemtype::getTable() . '.itemtype'  => $itemtype,
                         $lockable_itemtype::getTable() . '.items_id'  => $ID
                     ];
+                    if ($lockable_object->isField('is_deleted')) {
+                        $query['WHERE'][] = [
+                            $lockable_object::getTableField('is_deleted') => 0
+                        ];
+                    }
                 }
                 $subquery[] = new \QuerySubQuery($query);
             }
@@ -795,6 +800,44 @@ class Lock extends CommonGLPI
                     echo "</tr>\n";
                 }
             }
+        }
+
+        // Show deleted DatabaseInstance
+        $data = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => DatabaseInstance::getTable(),
+            'WHERE' => [
+                DatabaseInstance::getTableField('is_dynamic') => 1,
+                DatabaseInstance::getTableField('is_deleted') => 1,
+                DatabaseInstance::getTableField('items_id')   =>  $ID,
+                DatabaseInstance::getTableField('itemtype')   => $itemtype,
+            ]
+        ]);
+        if (count($data)) {
+            // Print header
+            echo "<tr>";
+            echo "<th width='10'></th>";
+            echo "<th>" . DatabaseInstance::getTypeName(Session::getPluralNumber()) . "</th>";
+            echo "<th>" . __('Name') . "</th>";
+            echo "<th>" . __('Version') . "</th>";
+            echo "<th>" . __('Automatic inventory') . "</th>";
+            echo "</tr>";
+        }
+
+        foreach ($data as $row) {
+            $database_instance = DatabaseInstance::getById($row['id']);
+            echo "<tr class='tab_bg_1'>";
+            echo "<td class='center' width='10'>";
+            if ($database_instance->can($row['id'], UPDATE) || $database_instance->can($row['id'], PURGE)) {
+                $header = true;
+                echo "<input type='checkbox' name='DatabaseInstance[" . $row['id'] . "]'>";
+            }
+            echo "</td>";
+            echo "<td class='left'>" . $database_instance->getLink() . "</td>";
+            echo "<td class='left'>" . $database_instance->getName() . "</td>";
+            echo "<td class='left'>" . $database_instance->fields['version'] . "</td>";
+            echo "<td class='left'>" . Dropdown::getYesNo($database_instance->fields['is_dynamic']) . "</td>";
+            echo "</tr>\n";
         }
 
         if ($header) {
