@@ -136,6 +136,11 @@ class Lock extends CommonGLPI
                         continue;
                     }
                     $query['WHERE'][] = $connexity_criteria['WHERE'];
+                    if ($lockable_object->isField('is_deleted')) {
+                        $query['WHERE'][] = [
+                            $lockable_object->getTableField('is_deleted') => 0
+                        ];
+                    }
                 } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'])) {
                     //we need to restrict scope with Computer_Item to prevent loading of all lockedfield
                     $query['LEFT JOIN'][Computer_Item::getTable()] =
