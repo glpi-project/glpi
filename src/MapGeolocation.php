@@ -140,6 +140,14 @@ trait MapGeolocation
                }
             });
          }
+
+         // Geolocation may be disabled in the browser (e.g. geo.enabled = false in firefox)
+         if (!navigator.geolocation) {
+            map_elt = initMap($('#setlocation_container_{$rand}'), 'setlocation_{$rand}', '200px');
+            finalizeMap();
+            return;
+         }
+
          navigator.geolocation.getCurrentPosition(function(pos) {
             // Try to determine an appropriate zoom level based on accuracy
             var acc = pos.coords.accuracy;
