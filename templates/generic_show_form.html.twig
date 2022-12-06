@@ -78,7 +78,7 @@
                         ) }}
                      {% endif %}
 
-                     {% if item.isField('template_name') and withtemplate == 1 %}
+                     {% if item.isField('template_name') and withtemplate == 1 and no_header %}
                         {{ fields.autoNameField(
                            'template_name',
                            item,
