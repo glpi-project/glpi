@@ -41,7 +41,7 @@ use Glpi\Toolbox\Sanitizer;
  * @var array $ADDTODISPLAYPREF
  */
 
-$migration->addConfig(\Glpi\Inventory\Conf::$defaults, 'inventory');
+$migration->addConfig(\Glpi\Inventory\Conf::getDefaults(), 'inventory');
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();

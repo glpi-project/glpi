@@ -101,44 +101,6 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 class Conf extends CommonGLPI
 {
     private $currents = [];
-    public static $defaults = [
-        'enabled_inventory'              => 0,
-        'import_software'                => 1,
-        'import_volume'                  => 1,
-        'import_antivirus'               => 1,
-        'import_registry'                => 1,
-        'import_process'                 => 1,
-        'import_vm'                      => 1,
-        'import_monitor_on_partial_sn'   => 0,
-        'component_processor'            => 1,
-        'component_memory'               => 1,
-        'component_harddrive'            => 1,
-        'component_networkcard'          => 1,
-        'component_graphiccard'          => 1,
-        'component_soundcard'            => 1,
-        'component_drive'                => 1,
-        'component_networkdrive'         => 1,
-        'component_networkcardvirtual'   => 1,
-        'component_control'              => 1,
-        'component_battery'              => 1,
-        'component_simcard'              => 1,
-        'states_id_default'              => 0,
-        'entities_id_default'            => 0,
-        'location'                       => 0,
-        'group'                          => 0,
-        'vm_type'                        => 0,
-        'vm_components'                  => 0,
-        'vm_as_computer'                 => 0,
-        'component_removablemedia'       => 1,
-        'component_powersupply'          => 1,
-        'inventory_frequency'            => AbstractRequest::DEFAULT_FREQUENCY,
-        'import_monitor'                 => 1,
-        'import_printer'                 => 1,
-        'import_peripheral'              => 1,
-        'stale_agents_delay'             => 0,
-        'stale_agents_action'            => [0],
-        'stale_agents_status'            => 0,
-    ];
 
     public const STALE_AGENT_ACTION_CLEAN = 0;
 
@@ -863,15 +825,15 @@ class Conf extends CommonGLPI
         echo "<td>" . _n('Action', 'Actions', 1) . "</td>";
         echo "<td width='20%'>";
         //action
-        $action = self::$defaults['stale_agents_action'];
+        $action = self::getDefaults()['stale_agents_action'];
         if (isset($config['stale_agents_action'])) {
-            $action = importArrayFromDB($config['stale_agents_action']);
+            $action = $config['stale_agents_action'];
         }
         $rand = Dropdown::showFromArray(
             'stale_agents_action',
             self::getStaleAgentActions(),
             [
-                'values' => $action,
+                'values' => importArrayFromDB($action),
                 'on_change' => 'changestatus();',
                 'multiple' => true
             ]
@@ -937,7 +899,7 @@ class Conf extends CommonGLPI
             return false;
         }
 
-        $defaults = self::$defaults;
+        $defaults = self::getDefaults();
         unset($values['_glpi_csrf_token']);
 
         $unknown = array_diff_key($values, $defaults);
@@ -978,7 +940,7 @@ class Conf extends CommonGLPI
             $config = \Config::getConfigurationValues('inventory');
             $this->currents = $config;
         }
-        if (in_array($name, array_keys(self::$defaults))) {
+        if (in_array($name, array_keys(self::getDefaults()))) {
             return $this->currents[$name];
         } else if ($name == 'fields') {
            //no fields here
@@ -1030,5 +992,46 @@ class Conf extends CommonGLPI
             $items_id,
             $ext
         );
+    }
+
+    public static function getDefaults(): array{
+        return [
+            'enabled_inventory'              => 0,
+            'import_software'                => 1,
+            'import_volume'                  => 1,
+            'import_antivirus'               => 1,
+            'import_registry'                => 1,
+            'import_process'                 => 1,
+            'import_vm'                      => 1,
+            'import_monitor_on_partial_sn'   => 0,
+            'component_processor'            => 1,
+            'component_memory'               => 1,
+            'component_harddrive'            => 1,
+            'component_networkcard'          => 1,
+            'component_graphiccard'          => 1,
+            'component_soundcard'            => 1,
+            'component_drive'                => 1,
+            'component_networkdrive'         => 1,
+            'component_networkcardvirtual'   => 1,
+            'component_control'              => 1,
+            'component_battery'              => 1,
+            'component_simcard'              => 1,
+            'states_id_default'              => 0,
+            'entities_id_default'            => 0,
+            'location'                       => 0,
+            'group'                          => 0,
+            'vm_type'                        => 0,
+            'vm_components'                  => 0,
+            'vm_as_computer'                 => 0,
+            'component_removablemedia'       => 1,
+            'component_powersupply'          => 1,
+            'inventory_frequency'            => AbstractRequest::DEFAULT_FREQUENCY,
+            'import_monitor'                 => 1,
+            'import_printer'                 => 1,
+            'import_peripheral'              => 1,
+            'stale_agents_delay'             => 0,
+            'stale_agents_action'            => exportArrayToDB([0]),
+            'stale_agents_status'            => 0,
+        ];
     }
 }
