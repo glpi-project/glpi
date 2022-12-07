@@ -1638,16 +1638,14 @@ class NetworkPort extends CommonDBChild
             'joinparams' => ['beforejoin' => $netportjoin]
         ];
 
-        if (!defined('TU_USER')) {
-            $tab[] = [
-                'id'    => '39',
-                'table' => $this->getTable(),
-                'field' => 'noone',
-                'name' => __('Connected to'),
-                'nosearch' => true,
-                'massiveaction' => false
-            ];
-        }
+        $tab[] = [
+            'id'    => '39',
+            'table' => $this->getTable(),
+            'field' => 'noone',
+            'name' => __('Connected to'),
+            'nosearch' => true,
+            'massiveaction' => false
+        ];
 
         $tab[] = [
             'id'    => '40',
