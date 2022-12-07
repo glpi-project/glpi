@@ -1645,7 +1645,6 @@ class NetworkPort extends CommonDBChild
                 'field' => 'noone',
                 'name' => __('Connected to'),
                 'nosearch' => true,
-                'nodisplay' => true,
                 'massiveaction' => false
             ];
         }
