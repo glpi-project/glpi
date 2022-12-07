@@ -144,6 +144,8 @@ class Conf extends CommonGLPI
 
     public const STALE_AGENT_ACTION_STATUS = 1;
 
+    public const STALE_AGENT_ACTION_TRASHBIN = 2;
+
     public static $rightname = 'inventory';
 
     const IMPORTFROMFILE     = 1024;
@@ -289,6 +291,7 @@ class Conf extends CommonGLPI
         return [
             self::STALE_AGENT_ACTION_CLEAN  => __('Clean agents'),
             self::STALE_AGENT_ACTION_STATUS => __('Change the status'),
+            self::STALE_AGENT_ACTION_TRASHBIN => __('Put asset in trashbin'),
         ];
     }
 

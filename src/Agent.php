@@ -821,31 +821,56 @@ class Agent extends CommonDBTM
 
         $cron_status = false;
         if (count($iterator)) {
-            $action = (int)($config['stale_agents_action'] ?? Conf::STALE_AGENT_ACTION_CLEAN);
-            if ($action === Conf::STALE_AGENT_ACTION_CLEAN) {
-                //delete agents
-                $agent = new self();
-                foreach ($iterator as $data) {
-                    $agent->delete($data);
-                    $task->addVolume(1);
-                    $cron_status = true;
-                }
-            } elseif ($action === Conf::STALE_AGENT_ACTION_STATUS && isset($config['stale_agents_status'])) {
-                //change status of agents linked assets
-                foreach ($iterator as $data) {
-                    $itemtype = $data['itemtype'];
-                    if (is_subclass_of($itemtype, CommonDBTM::class)) {
-                        $item = new $itemtype();
-                        if ($item->getFromDB($data['items_id'])) {
-                            $item->update([
-                                'id' => $data['items_id'],
-                                'states_id' => $config['stale_agents_status'],
-                                'is_dynamic' => 1
-                            ]);
+            $actions = importArrayFromDB($config['stale_agents_action']);
+            foreach ($actions as $action) {
+                switch ($action) {
+                    case Conf::STALE_AGENT_ACTION_CLEAN:
+                        //delete agents
+                        $agent = new self();
+                        foreach ($iterator as $data) {
+                            $agent->delete($data);
                             $task->addVolume(1);
                             $cron_status = true;
                         }
-                    }
+                        break;
+                    case Conf::STALE_AGENT_ACTION_STATUS:
+                        if (isset($config['stale_agents_status'])) {
+                            //change status of agents linked assets
+                            foreach ($iterator as $data) {
+                                $itemtype = $data['itemtype'];
+                                if (is_subclass_of($itemtype, CommonDBTM::class)) {
+                                    $item = new $itemtype();
+                                    if ($item->getFromDB($data['items_id'])) {
+                                        $item->update([
+                                            'id' => $data['items_id'],
+                                            'states_id' => $config['stale_agents_status'],
+                                            'is_dynamic' => 1
+                                        ]);
+                                        $task->addVolume(1);
+                                        $cron_status = true;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case Conf::STALE_AGENT_ACTION_TRASHBIN:
+                        //change status of agents linked assets
+                        foreach ($iterator as $data) {
+                            $itemtype = $data['itemtype'];
+                            if (is_subclass_of($itemtype, CommonDBTM::class)) {
+                                $item = new $itemtype();
+                                if ($item->getFromDB($data['items_id'])) {
+                                    $item->update([
+                                        'id' => $data['items_id'],
+                                        'is_deleted' => 1,
+                                        'is_dynamic' => 1
+                                    ]);
+                                    $task->addVolume(1);
+                                    $cron_status = true;
+                                }
+                            }
+                        }
+                        break;
                 }
             }
         }
