@@ -559,7 +559,9 @@ class Dashboard extends \CommonDBTM
      */
     public function isPrivate(): bool
     {
-        $this->load();
-        return ($this->fields['users_id'] > 0 && $this->fields['users_id'] != Session::getLoginUserID());
+        if ((bool)$this->getPrivate() === false) {
+            return false;
+        }
+        return $this->fields['users_id'] != Session::getLoginUserID();
     }
 }
