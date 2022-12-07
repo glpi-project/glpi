@@ -136,7 +136,7 @@ class Conf extends CommonGLPI
         'import_printer'                 => 1,
         'import_peripheral'              => 1,
         'stale_agents_delay'             => 0,
-        'stale_agents_action'            => 0,
+        'stale_agents_action'            => [0],
         'stale_agents_status'            => 0,
     ];
 
@@ -863,12 +863,17 @@ class Conf extends CommonGLPI
         echo "<td>" . _n('Action', 'Actions', 1) . "</td>";
         echo "<td width='20%'>";
         //action
+        $action = self::$defaults['stale_agents_action'];
+        if (isset($config['stale_agents_action'])) {
+            $action = importArrayFromDB($config['stale_agents_action']);
+        }
         $rand = Dropdown::showFromArray(
             'stale_agents_action',
             self::getStaleAgentActions(),
             [
-                'value' => $config['stale_agents_action'] ?? self::STALE_AGENT_ACTION_CLEAN,
+                'values' => $action,
                 'on_change' => 'changestatus();',
+                'multiple' => true
             ]
         );
         //if action == action_status => show blocation else hide blocaction
@@ -951,6 +956,9 @@ class Conf extends CommonGLPI
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
+            if ($prop == 'stale_agents_action') {
+                $to_process[$prop] = exportArrayToDB($to_process[$prop]);
+            }
         }
         \Config::setConfigurationValues('inventory', $to_process);
         $this->currents = $to_process;
