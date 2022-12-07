@@ -360,6 +360,9 @@ $empty_data_builder = new class
         }
 
         foreach (\Glpi\Inventory\Conf::$defaults as $name => $value) {
+            if ($name == 'stale_agents_action') {
+                $value = exportArrayToDB($value);
+            }
             $tables['glpi_configs'][] = [
                 'context' => 'inventory',
                 'name' => $name,
