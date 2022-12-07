@@ -2078,44 +2078,27 @@ final class SQLProvider implements SearchProviderInterface
         $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN', 'JOIN'];
         // split the raw string into an array of individual join clauses
         $join_clauses = preg_split('/(' . implode('|', $join_types) . ')/', $raw_joins, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        // Re-group join types and clauses
+        $join_clauses = array_chunk($join_clauses, 2);
         foreach ($join_clauses as $join_clause) {
-            // Get the join type, table, ON condition, and AND conditions
             $matches = [];
-            preg_match('/(' . implode('|', $join_types) . ')\s+`?([a-zA-Z0-9_]+)`?\s+ON\s+(.+?)(\s+AND\s+(.+))?/i', $join_clause, $matches);
+            // Get the join table (surrounded by backticks and may have alias), and the join condition
+            preg_match('/(`[a-zA-Z0-9_]+`)\s*(AS .*)?\s*ON\s*(.+)/', $join_clause[1], $matches);
             if (count($matches) < 4) {
                 // Invalid join clause
                 continue;
             }
-            $type = trim($matches[1]);
-            $table = trim($matches[2]);
+            $type = $join_clause[0];
+            $table = trim($matches[1]) . $matches[2]; // Table name + optional alias
             $on = $matches[3];
-            $and = trim($matches[5] ?? '');
 
             if (!array_key_exists($type, $joins)) {
                 $joins[$type] = [];
             }
-            // Split the ON condition into its parts
-            $on_sides = preg_split('/\s*=\s*/', $on);
-            if (count($on_sides) < 2) {
-                // Invalid ON condition
-                continue;
-            }
-            // Get table and field for each side
-            $on_left = preg_split('/\./', $on_sides[0]);
-            $on_right = preg_split('/\./', $on_sides[1]);
 
-            $joins[$type][] = [
-                $table => [
-                    'ON' => [
-                        trim($on_left[0]) => trim($on_left[1]),
-                        trim($on_right[0]) => trim($on_right[1]),
-                    ],
-                ]
+            $joins[$type][$table] = [
+                'ON' => new QueryExpression($on),
             ];
-
-            if (!empty($and)) {
-                $joins[$type][$table]['ON'][] = ['AND' => [new QueryExpression($and)]];
-            }
         }
         return $joins;
     }
