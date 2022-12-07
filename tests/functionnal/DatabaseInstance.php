@@ -74,4 +74,95 @@ class DatabaseInstance extends DbTestCase
        //ensure databases has been dropped aswell
         $this->integer(countElementsInTable(\Database::getTable()))->isIdenticalTo(0);
     }
+
+    public function testGetInventoryAgent(): void
+    {
+        $root_entity = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                'name'        => 'test computer',
+                'entities_id' => 0,
+            ]
+        );
+        $dbinstance = $this->createItem(
+            \DatabaseInstance::class,
+            [
+                'name'     => 'test database',
+                'itemtype' => \Computer::class,
+                'items_id' => $computer->fields['id'],
+            ]
+        );
+
+        $db_agent = $dbinstance->getInventoryAgent();
+        $this->variable($db_agent)->isNull();
+
+        $agenttype_id = getItemByTypeName(\AgentType::class, 'Core', true);
+
+        $agent1 = $this->createItem(
+            \Agent::class,
+            [
+                'deviceid'     => sprintf('device_%08x', rand()),
+                'agenttypes_id' => $agenttype_id,
+                'itemtype'     => \DatabaseInstance::class,
+                'items_id'     => $dbinstance->fields['id'],
+                'last_contact' => date('Y-m-d H:i:s', strtotime('yesterday')),
+            ]
+        );
+
+        $agent2 = $this->createItem(
+            \Agent::class,
+            [
+                'deviceid'     => sprintf('device_%08x', rand()),
+                'agenttypes_id' => $agenttype_id,
+                'itemtype'     => \DatabaseInstance::class,
+                'items_id'     => $dbinstance->fields['id'],
+                'last_contact' => date('Y-m-d H:i:s', strtotime('last week')),
+            ]
+        );
+
+        $agent3 = $this->createItem(
+            \Agent::class,
+            [
+                'deviceid'     => sprintf('device_%08x', rand()),
+                'agenttypes_id' => $agenttype_id,
+                'itemtype'     => \Computer::class,
+                'items_id'     => $computer->fields['id'],
+                'last_contact' => date('Y-m-d H:i:s', strtotime('last hour')),
+            ]
+        );
+
+        $this->createItem(
+            \Agent::class,
+            [
+                'deviceid'     => sprintf('device_%08x', rand()),
+                'agenttypes_id' => $agenttype_id,
+                'itemtype'     => \Computer::class,
+                'items_id'     => $computer->fields['id'],
+                'last_contact' => date('Y-m-d H:i:s', strtotime('yesterday')),
+            ]
+        );
+
+        // most recent agent directly linked
+        $db_agent = $dbinstance->getInventoryAgent();
+        $this->object($db_agent)->isInstanceOf(\Agent::class);
+        $this->array($db_agent->fields)->isEqualTo($agent1->fields);
+
+        $this->boolean($agent1->delete(['id' => $agent1->fields['id']]))->isTrue();
+
+        // most recent agent directly linked
+        $db_agent = $dbinstance->getInventoryAgent();
+        $this->object($db_agent)->isInstanceOf(\Agent::class);
+        $this->array($db_agent->fields)->isEqualTo($agent2->fields);
+
+        $this->boolean($agent2->delete(['id' => $agent2->fields['id']]))->isTrue();
+
+        // most recent agent found from linked item, as there is no more agent linked directly
+        $db_agent = $dbinstance->getInventoryAgent();
+        $this->object($db_agent)->isInstanceOf(\Agent::class);
+        $computer_agent = $computer->getInventoryAgent();
+        $this->object($computer_agent)->isInstanceOf(\Agent::class);
+        $this->array($db_agent->fields)->isEqualTo($computer_agent->fields);
+    }
 }
