@@ -393,4 +393,91 @@ class Agent extends DbTestCase
             ->string['tag']->isIdenticalTo('000005')
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
     }
+
+    public function testStaleActions()
+    {
+        //run an inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(7)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory')
+            ->variable['port']->isIdenticalTo(null)
+            ->string['tag']->isIdenticalTo('000005');
+        $this->array($metadata['provider'])->hasSize(10);
+
+        global $DB;
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+        $old_agents_id = $agent['id'];
+
+        $this
+            ->given($this->newTestedInstance)
+            ->then
+            ->boolean($this->testedInstance->getFromDB($agent['id']))
+            ->isTrue();
+
+        $item = $this->testedInstance->getLinkedItem();
+        $this->object($item)->isInstanceOf('Computer');
+
+        //check default status
+        $this->integer($item->fields['states_id'])->isIdenticalTo(0);
+
+        //create new status
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Stale']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        //set last agent contact far ago
+        $DB->update(
+            \Agent::getTable(),
+            ['last_contact' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+            ['id' => $agent['id']]
+        );
+
+        //define sale agents actions
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'stale_agents_delay' => 1,
+                'stale_agents_action' => exportArrayToDB([
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                ]),
+                'stale_agents_status' => $states_id
+            ]
+        );
+
+        //run crontask
+        $task = new \CronTask();
+        $this->boolean(\Agent::cronCleanoldagents($task))->isTrue();
+
+        //check item has been updated
+        $this->boolean($item->getFromDB($item->fields['id']))->isTrue();
+        $this->integer($item->fields['is_deleted'])->isIdenticalTo(1);
+        $this->integer($item->fields['states_id'])->isIdenticalTo($states_id);
+    }
 }
