@@ -1698,6 +1698,7 @@ class NetworkPort extends CommonDBChild
             'joinparams' => ['beforejoin' => $netportjoin]
         ];
 
+        //FIXME Virtual field. Currently break tests
         if (!defined('TU_USER')) {
             $tab[] = [
                 'id'    => '39',
@@ -1705,7 +1706,6 @@ class NetworkPort extends CommonDBChild
                 'field' => 'noone',
                 'name' => __('Connected to'),
                 'nosearch' => true,
-                'nodisplay' => true,
                 'massiveaction' => false
             ];
         }
