@@ -295,6 +295,7 @@ class RuleMatchedLog extends CommonDBTM
     {
         switch ($internalModule) {
             case Request::INVENT_QUERY:
+            case Request::INVENT_ACTION;
                 return __("Inventory");
                 break;
             case Request::OLD_SNMP_QUERY:
