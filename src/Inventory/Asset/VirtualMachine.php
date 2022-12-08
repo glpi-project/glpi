@@ -89,6 +89,7 @@ class VirtualMachine extends InventoryAsset
                     $val->$dest = $val->$origin;
                 }
             }
+            $val->is_deleted = 0;
 
             if (!property_exists($vm_val, 'autoupdatesystems_id')) {
                 $vm_val->autoupdatesystems_id = AutoUpdateSystem::NATIVE_INVENTORY;
