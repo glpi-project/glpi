@@ -161,6 +161,33 @@ abstract class AbstractRequest
     }
 
     /**
+     * Display module name
+     *
+     * @param string $internalModule
+     * @return string readable method name
+     */
+    public static function getModuleName(?string $internalModule): string
+    {
+        switch ($internalModule) {
+            case self::INVENT_QUERY:
+            case self::INVENT_ACTION:
+                return __("Inventory");
+                break;
+            case self::OLD_SNMP_QUERY:
+            case self::SNMP_QUERY:
+            case self::NETINV_ACTION:
+                return __("Network inventory (SNMP)");
+                break;
+            case self::NETDISCOVERY_ACTION:
+                return __("Network discovery (SNMP)");
+                break;
+            default:
+                return $internalModule ?? '';
+                break;
+        }
+    }
+
+    /**
      * Handle request headers
      *
      * @param $data
