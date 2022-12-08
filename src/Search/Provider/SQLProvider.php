@@ -52,6 +52,7 @@ use QueryFunction;
 use Session;
 use Software;
 use Ticket;
+use Toolbox;
 use User;
 
 /**
@@ -2050,7 +2051,11 @@ final class SQLProvider implements SearchProviderInterface
                             return $hook_function($itemtype, $ref_table, $already_link_tables);
                         }
                     };
-                    $out = self::parseJoinString(\Plugin::doOneHook($plugin_name, $hook_closure));
+                    $out = \Plugin::doOneHook($plugin_name, $hook_closure);
+                    if (!is_array($out)) {
+                        // Toolbox::deprecated('Plugin hook ' . $hook_function . ' should return an array');
+                        $out = self::parseJoinString($out);
+                    }
                 }
                 break;
         }
@@ -2199,11 +2204,16 @@ final class SQLProvider implements SearchProviderInterface
             $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
             $hook_closure  = static function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                 if (is_callable($hook_function)) {
-                    return self::parseJoinString($hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables) ?? '');
+                    return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
                 }
-                return '';
+                return [];
             };
-            $specific_leftjoin_criteria = self::parseJoinString(\Plugin::doOneHook($plugin_name, $hook_closure) ?? '');
+            $specific_leftjoin_criteria = \Plugin::doOneHook($plugin_name, $hook_closure);
+            $specific_leftjoin_criteria ?? []; // covnert null into an empty array
+            if (!is_array($specific_leftjoin_criteria)) {
+                // Toolbox::deprecated('Plugin hook ' . $hook_function . ' should return an array of join criteria');
+                $specific_leftjoin_criteria = self::parseJoinString($specific_leftjoin_criteria);
+            }
         }
 
         // Link with plugin tables : need to know left join structure
