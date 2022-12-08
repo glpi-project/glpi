@@ -34,6 +34,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Request;
+
 /**
  * Logs rules used during inventory
  */
@@ -292,13 +294,15 @@ class RuleMatchedLog extends CommonDBTM
     public static function getModuleName($internalModule)
     {
         switch ($internalModule) {
-            case 'inventory':
+            case Request::INVENT_QUERY:
                 return __("Inventory");
                 break;
-            case 'snmpquery':
+            case Request::OLD_SNMP_QUERY:
+            case Request::SNMP_QUERY:
+            case Request::NETINV_ACTION:
                 return __("Network inventory (SNMP)");
                 break;
-            case 'netdiscovery':
+            case Request::NETDISCOVERY_ACTION:
                 return __("Network discovery (SNMP)");
                 break;
             default:
