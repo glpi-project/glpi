@@ -116,6 +116,7 @@ class Printer extends AbstractInventoryAsset
         $this->array((array)$result[0])->isIdenticalTo([
             'autoupdatesystems_id' => 'GLPI Native Inventory',
             'last_inventory_update' => $date_now,
+            "is_deleted" => 0,
             'firmware' => '2409048_052887',
             'ips' => ['10.59.29.175'],
             'mac' => '00:68:eb:f2:be:10',
@@ -213,6 +214,7 @@ class Printer extends AbstractInventoryAsset
         $this->array((array)$result[0])->isIdenticalTo([
             'autoupdatesystems_id' => 'GLPI Native Inventory',
             'last_inventory_update' => $date_now,
+            "is_deleted" => 0,
             'firmware' => '8745213_951236',
             'ips' => ['10.59.29.176'],
             'mac' => '00:85:eb:f4:be:20',
@@ -290,6 +292,7 @@ class Printer extends AbstractInventoryAsset
         $this->array((array)$result[0])->isIdenticalTo([
             'autoupdatesystems_id' => 'GLPI Native Inventory',
             'last_inventory_update' => $date_now,
+            "is_deleted" => 0,
             'firmware' => '8745213_951236',
             'ips' => ['10.59.29.176'],
             'mac' => '00:85:eb:f4:be:20',
@@ -1353,6 +1356,7 @@ class Printer extends AbstractInventoryAsset
         $this->array((array)$result[0])->isIdenticalTo([
             'autoupdatesystems_id' => 'GLPI Native Inventory',
             'last_inventory_update' => $date_now,
+            "is_deleted" => 0,
             'firmware' => '2409048_052887',
             'ips' => ['10.59.29.175'],
             'mac' => '00:68:eb:f2:be:10',
@@ -1418,6 +1422,7 @@ class Printer extends AbstractInventoryAsset
         $this->array((array)$result[0])->isIdenticalTo([
             'autoupdatesystems_id' => 'GLPI Native Inventory',
             'last_inventory_update' => $date_now,
+            "is_deleted" => 0,
             'firmware' => '2409048_052887',
             'ips' => [$new_ip],
             'mac' => '00:68:eb:f2:be:10',
