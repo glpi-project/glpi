@@ -103,6 +103,20 @@
         field_options
     ) }}
 
+    {% set tooltip %}
+        {% do call('Html::showToolTip', [
+            __("If enabled, members of a given group will also become implicit members of its children groups")
+        ]) %}
+    {% endset %}
+    {{ fields.dropdownYesNo(
+        'use_recursive_groups',
+        config['use_recursive_groups'],
+        __('Recursive group membership'),
+        field_options|merge({
+            'add_field_html': tooltip
+        })
+    ) }}
+
 </div>
 
 <div class="hr-text">

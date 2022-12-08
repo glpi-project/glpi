@@ -175,3 +175,14 @@ if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?
 if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) != $_REQUEST["force_entity"]) {
     Session::changeActiveEntities($_REQUEST["force_entity"], true);
 }
+
+// The user's current groups are stored in his session
+// If there was any change regarding groups membership and/or configuration, we
+// need to reset the data stored in his session
+$last_group_change = Config::getConfigurationValue('core', 'last_group_change');
+if (
+    isset($_SESSION['glpigroups'])
+    && ($_SESSION['glpigroups_cache_date'] ?? "") < $last_group_change
+) {
+    Session::loadGroups();
+}

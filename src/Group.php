@@ -247,6 +247,20 @@ class Group extends CommonTreeDropdown
         ]);
         echo "</td></tr>";
 
+        if (Config::getConfigurationValue('core', 'use_recursive_groups')) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('Recursive membership') . "</td><td>";
+            Dropdown::showYesNo(
+                'recursive_membership',
+                $this->isNewItem() ? 1 : $this->fields['recursive_membership'],
+                -1,
+            );
+            Html::showToolTip(
+                __("If enabled, members of this group will also become implicit members of its children groups")
+            );
+            echo "</td></tr>";
+        }
+
         echo "<tr class='tab_bg_1'>";
         echo "<td class='subheader' colspan='2'>" . __('Visible in a ticket');
         echo "</td></tr>";
@@ -566,6 +580,14 @@ class Group extends CommonTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_task',
             'name'               => __('Can be in charge of a task'),
+            'datatype'           => 'bool'
+        ];
+
+        $tab[] = [
+            'id'                 => '73',
+            'table'              => $this->getTable(),
+            'field'              => 'recursive_membership',
+            'name'               => __('Recursive membership'),
             'datatype'           => 'bool'
         ];
 
@@ -1082,5 +1104,45 @@ class Group extends CommonTreeDropdown
         }
 
         return $this->getLink();
+    }
+
+    public function post_addItem()
+    {
+        // Adding a new group might invalidate the group cache if it's a new child
+        // group and recursive membership is enabled
+        if (
+            $this->fields['groups_id']
+            && Config::getConfigurationValue('core', 'use_recursive_groups')
+        ) {
+            Config::updateLastGroupChange();
+        }
+    }
+
+    public function post_updateItem($history = 1)
+    {
+        // Changing a group's parent might invalidate the group cache if recursive
+        // membership is enabled
+        if (
+            isset($this->oldvalues['groups_id'])
+            && $this->fields['groups_id'] !== $this->oldvalues['groups_id']
+            && Config::getConfigurationValue('core', 'use_recursive_groups')
+        ) {
+            Config::updateLastGroupChange();
+        }
+
+        // Enabling or disabling recursion on a group will invalidate the group
+        // cache
+        if (
+            isset($this->oldvalues['recursive_membership'])
+            && $this->fields['recursive_membership'] !== $this->oldvalues['recursive_membership']
+        ) {
+            Config::updateLastGroupChange();
+        }
+    }
+
+    public function post_purgeItem()
+    {
+        // Purging a group will invalidate the group cache
+        Config::updateLastGroupChange();
     }
 }

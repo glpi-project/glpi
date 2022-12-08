@@ -3558,6 +3558,15 @@ HTML;
             );
         }
 
+        // Updating the "use_recursive_groups" config option mean that we must
+        // invalidate the group membership cache
+        if (
+            $this->fields['name'] == 'use_recursive_groups'
+            && array_key_exists('value', $this->oldvalues)
+        ) {
+            Config::updateLastGroupChange();
+        }
+
         if (array_key_exists('value', $this->oldvalues)) {
             $newvalue = (string)$this->fields['value'];
             $oldvalue = (string)$this->oldvalues['value'];
@@ -3876,5 +3885,16 @@ HTML;
             return $iterator->current()['id'];
         }
         return null;
+    }
+
+    /**
+     * Mark groups data as "changed"
+     * This will triger a rebuilding of the 'glpigroups' session data for all
+     * users
+     */
+    public static function updateLastGroupChange() {
+        Config::setConfigurationValues('core', [
+            'last_group_change' => $_SESSION['glpi_currenttime']
+        ]);
     }
 }
