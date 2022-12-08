@@ -40,6 +40,7 @@
 
 global $DB;
 
+/** Rename 'name' criteria in dictionnaries */
 //move criteria 'name' to 'os_name' for 'RuleDictionnaryOperatingSystem'
 //move criteria 'name' to 'os_version' for 'RuleDictionnaryOperatingSystemVersion'
 //move criteria 'name' to 'os_edition' for 'RuleDictionnaryOperatingSystemEdition'
@@ -54,7 +55,7 @@ $subType = [
     'os_name' => 'RuleDictionnaryOperatingSystem',
 ];
 
-//Get all glpi_rulecrtiteria with 'name' criteria for OS Dictionnary
+//Get all glpi_rulecriteria with 'name' criteria for OS Dictionnary
 $result = $DB->request(
     [
         'SELECT'    => [
@@ -80,11 +81,35 @@ $result = $DB->request(
 
 //foreach criteria, change 'name' key to desired
 foreach ($result as $data) {
-    $query = "UPDATE `glpi_rulecriterias`
-               SET `criteria` = '" . array_search($data['sub_type'], $subType) . "'
-               WHERE `id` = " . $data['criteria_id'];
-    $DB->queryOrDie($query, "10.0.6 change crtieria name");
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_rulecriterias',
+            [
+                'criteria' => array_search($data['sub_type'], $subType),
+            ],
+            [
+                'id' => $data['criteria_id'],
+            ]
+        )
+    );
 }
+/** /Rename 'name' criteria in dictionnaries */
 
-// Init 'initialized_rules_collections' config
+/** Init 'initialized_rules_collections' config */
 $migration->addConfig(['initialized_rules_collections' => '[]']);
+/** /Init 'initialized_rules_collections' config */
+
+/** Fix 'contact' rule criteria */
+$migration->addPostQuery(
+    $DB->buildUpdate(
+        'glpi_rulecriterias',
+        [
+            'pattern' => $DB->escape('/(.*)[,|\/]/'),
+        ],
+        [
+            'id' => 19,
+            'pattern' => '/(.*)[,|/]/',
+        ]
+    )
+);
+/** /Fix 'contact' rule criteria */

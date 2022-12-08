@@ -287,7 +287,7 @@ final class RichText
             $content = self::replaceImagesByGallery($content);
         }
 
-        if ($content_size > $p['text_maxsize']) {
+        if ($p['text_maxsize'] > 0 && $content_size > $p['text_maxsize']) {
             $content = <<<HTML
 <div class="long_text">$content
     <p class='read_more'>

@@ -2019,9 +2019,12 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Administrator email address') . "</td>";
         echo "<td>";
-        echo Html::input('admin_email', ['value' => $entity->fields['admin_email']]);
+        echo Html::input('admin_email', ['value' => $entity->fields['admin_email'], 'type' => 'email']);
         if (empty($entity->fields['admin_email']) && $ID > 0) {
             self::inheritedValue(self::getUsedConfig('admin_email', $ID, '', ''));
+        }
+        if (!empty($entity->fields['admin_email']) && !NotificationMailing::isUserAddressValid($entity->fields['admin_email'])) {
+            echo "<span class='red'>" . __('Invalid email address') . "</span>";
         }
         echo "</td>";
         echo "<td>" . __('Administrator name') . "</td><td>";
@@ -2036,9 +2039,12 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Email sender address') . "</td>";
         echo "<td>";
-        echo Html::input('from_email', ['value' => $entity->fields['from_email']]);
+        echo Html::input('from_email', ['value' => $entity->fields['from_email'], 'type' => 'email']);
         if (empty($entity->fields['from_email']) && $ID > 0) {
             self::inheritedValue(self::getUsedConfig('from_email', $ID, '', ''));
+        }
+        if (!empty($entity->fields['from_email']) && !NotificationMailing::isUserAddressValid($entity->fields['from_email'])) {
+            echo "<span class='red'>" . __('Invalid email address') . "</span>";
         }
         echo "</td>";
         echo "<td>" . __('Email sender name') . "</td><td>";
@@ -2053,9 +2059,12 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('No-Reply address') . "</td>";
         echo "<td>";
-        echo Html::input('noreply_email', ['value' => $entity->fields['noreply_email']]);
+        echo Html::input('noreply_email', ['value' => $entity->fields['noreply_email'], 'type' => 'email']);
         if (empty($entity->fields['noreply_email']) && $ID > 0) {
             self::inheritedValue(self::getUsedConfig('noreply_email', $ID, '', ''));
+        }
+        if (!empty($entity->fields['noreply_email']) && !NotificationMailing::isUserAddressValid($entity->fields['noreply_email'])) {
+            echo "<span class='red'>" . __('Invalid email address') . "</span>";
         }
         echo "</td>";
         echo "<td>" . __('No-Reply name') . "</td><td>";
@@ -2070,9 +2079,12 @@ class Entity extends CommonTreeDropdown
         echo "<tr class='tab_bg_1'>";
         echo "<td><label for='replyto_email'>" . __('Reply-To address') . "</label></td>";
         echo "<td>";
-        echo Html::input('replyto_email', ['value' => $entity->fields['replyto_email']]);
+        echo Html::input('replyto_email', ['value' => $entity->fields['replyto_email'], 'type' => 'email']);
         if (empty($entity->fields['replyto_email']) && $ID > 0) {
             self::inheritedValue(self::getUsedConfig('replyto_email', $ID, '', ''));
+        }
+        if (!empty($entity->fields['replyto_email']) && !NotificationMailing::isUserAddressValid($entity->fields['replyto_email'])) {
+            echo "<span class='red'>" . __('Invalid email address') . "</span>";
         }
         echo "</td>";
         echo "<td><label for='replyto_email_name'>" . __('Reply-To name') . "</label></td>";

@@ -578,6 +578,10 @@ class Item_Disk extends CommonDBChild
      */
     public static function getEncryptionStatus($status)
     {
+        if ($status === "") {
+            return NOT_AVAILABLE;
+        }
+
         $all = self::getAllEncryptionStatus();
         if (!isset($all[$status])) {
             trigger_error(

@@ -119,6 +119,14 @@ class PDU extends CommonDBTM
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         $tab[] = [
+            'id'                 => '16',
+            'table'              => $this->getTable(),
+            'field'              => 'comment',
+            'name'               => __('Comments'),
+            'datatype'           => 'text'
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
             'field'              => 'date_mod',

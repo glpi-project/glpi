@@ -3471,20 +3471,17 @@ HTML;
 
         echo '<tr class="tab_bg_2">';
         echo '<td>';
-        echo '<label for="dropdown_document_max_size' . $rand . '">';
+        echo '<label for="document_max_size' . $rand . '">';
         echo __('Document files maximum size (Mio)');
         echo '</label>';
         echo '</td>';
         echo '<td>';
-        Dropdown::showNumber(
-            'document_max_size',
-            [
-                'value' => $CFG_GLPI['document_max_size'],
-                'min'   => 1,
-                'max'   => 250,
-                'rand'  => $rand,
-            ]
-        );
+        echo Html::input('document_max_size', [
+            'type' => 'number',
+            'min'  => 1,
+            'value' => $CFG_GLPI['document_max_size'],
+            'id' => 'document_max_size' . $rand,
+        ]);
         echo '</td>';
         echo '<td colspan="2"></td>';
         echo '</tr>';
@@ -3810,6 +3807,15 @@ HTML;
                     'email' => $entity_sender_email,
                     'name'  => $entity_sender_name,
                 ];
+            } elseif ($entity_sender_email !== '') {
+                trigger_error(
+                    sprintf(
+                        'Invalid email address "%s" configured for entity "%s". Default administrator email will be used.',
+                        $entity_sender_email,
+                        $entities_id
+                    ),
+                    E_USER_WARNING
+                );
             }
         }
 
@@ -3822,6 +3828,11 @@ HTML;
                 'email' => $global_sender_email,
                 'name'  => $global_sender_name,
             ];
+        } elseif ($global_sender_email !== '') {
+            trigger_error(
+                sprintf('Invalid email address "%s" configured in "%s".', $global_sender_email, $config_name),
+                E_USER_WARNING
+            );
         }
 
         // No valid values found

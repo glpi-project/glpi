@@ -542,34 +542,30 @@ $CFG_GLPI['line_types'] = $CFG_GLPI['itemdevicesimcard_types'];
 
 $CFG_GLPI['itil_types'] = ['Ticket', 'Change', 'Problem'];
 
-$dashboard_libs = [
-    'dashboard', 'gridstack',
-    'charts', 'clipboard', 'sortable'
-];
-
 $reservations_libs = ['fullcalendar', 'reservations'];
 
 $CFG_GLPI['javascript'] = [
     'central'   => [
-        'central' => array_merge([
+        'central' => [
             'fullcalendar',
             'planning',
             'masonry',
             'tinymce',
-        ], $dashboard_libs)
+            'dashboard',
+        ]
     ],
     'assets'    => [
-        'dashboard'   => $dashboard_libs,
+        'dashboard'   => ['dashboard'],
         'rack'        => ['gridstack', 'rack'],
-        'printer'     => $dashboard_libs,
+        'printer'     => ['dashboard'],
         'cable'       => ['cable'],
         'socket'      => ['cable'],
-        'networkport' => $dashboard_libs,
+        'networkport' => ['dashboard'],
     ],
     'helpdesk'  => [
-        'dashboard' => $dashboard_libs,
+        'dashboard' => ['dashboard'],
         'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
-        'ticket'    => array_merge(['rateit', 'tinymce', 'kanban'], $dashboard_libs),
+        'ticket'    => ['rateit', 'tinymce', 'kanban', 'dashboard'],
         'problem'   => ['tinymce', 'kanban', 'sortable'],
         'change'    => ['tinymce', 'kanban', 'sortable', 'rateit'],
         'stat'      => ['charts', 'rateit']

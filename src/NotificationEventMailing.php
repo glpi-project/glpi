@@ -76,57 +76,39 @@ class NotificationEventMailing extends NotificationEventAbstract
     {
         global $CFG_GLPI;
 
-        if (!NotificationMailing::isUserAddressValid($CFG_GLPI['admin_email'])) {
-            return false;
+        $admin = Config::getAdminEmailSender();
+        if ($admin['email'] !== null) {
+            $admin['language'] = $CFG_GLPI['language'];
+
+            $user = new User();
+            if ($user->getFromDBbyEmail($admin['email'])) {
+                $admin['users_id'] = $user->getID();
+            }
+
+            return $admin;
         }
 
-        $admin = [
-            'email'     => $CFG_GLPI['admin_email'],
-            'name'      => $CFG_GLPI['admin_email_name'],
-            'language'  => $CFG_GLPI['language']
-        ];
-
-        $user = new User();
-        if ($user->getFromDBbyEmail($CFG_GLPI['admin_email'])) {
-            $admin['users_id'] = $user->getID();
-        }
-
-        return $admin;
+        return false;
     }
 
 
     public static function getEntityAdminsData($entity)
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
-        $iterator = $DB->request([
-            'FROM'   => 'glpi_entities',
-            'WHERE'  => ['id' => $entity]
-        ]);
+        $admin = Config::getAdminEmailSender($entity);
+        if ($admin['email'] !== null) {
+            $admin['language'] = $CFG_GLPI['language'];
 
-        $admins = [];
-
-        foreach ($iterator as $row) {
-            if (NotificationMailing::isUserAddressValid($row['admin_email'])) {
-                $admin = [
-                    'language'  => $CFG_GLPI['language'],
-                    'email'     => $row['admin_email'],
-                    'name'      => $row['admin_email_name']
-                ];
-
-                $user = new User();
-                if ($user->getFromDBbyEmail($row['admin_email'])) {
-                    $admin['users_id'] = $user->getID();
-                }
-                $admins[] = $admin;
+            $user = new User();
+            if ($user->getFromDBbyEmail($admin['email'])) {
+                $admin['users_id'] = $user->getID();
             }
+
+            return [$admin];
         }
 
-        if (count($admins)) {
-            return $admins;
-        } else {
-            return false;
-        }
+        return false;
     }
 
     public static function send(array $data)

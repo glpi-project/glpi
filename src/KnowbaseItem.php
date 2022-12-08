@@ -2445,7 +2445,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         } else {
             $answer = $this->fields["answer"];
         }
-        $answer = RichText::getEnhancedHtml($answer);
+        $answer = RichText::getEnhancedHtml($answer, [
+            'text_maxsize' => 0 // Show all text without read more button
+        ]);
 
         $callback = function ($matches) {
           //1 => tag name, 2 => existing attributes, 3 => title contents
