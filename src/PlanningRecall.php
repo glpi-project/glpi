@@ -432,7 +432,7 @@ class PlanningRecall extends CommonDBChild
                 if ($itemToNotify instanceof \CommonITILTask) {
                     $linkedItem = $itemToNotify->getItem();
                     // No recall, if the parent item is in a closed status
-                    if (in_array($linkedItem->fields['status'], $linkedItem->getClosedStatusArray())) {
+                    if (in_array($linkedItem->fields['status'], array_merge($linkedItem->getSolvedStatusArray(), $linkedItem->getClosedStatusArray()))) {
                         $pr->delete($data);
                         continue;
                     }
