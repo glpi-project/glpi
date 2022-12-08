@@ -271,6 +271,7 @@ class RuleMatchedLog extends CommonDBTM
             }
             echo "</td>";
             echo "<td>";
+            echo self::getModuleName($data['method']);
             echo "</td>";
             echo "</tr>";
         }
@@ -280,6 +281,30 @@ class RuleMatchedLog extends CommonDBTM
         Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
         return true;
+    }
+
+    /**
+     * Display module name
+     *
+     * @param string $internalModule
+     * @return string readable method name
+     */
+    public static function getModuleName($internalModule)
+    {
+        switch ($internalModule) {
+            case 'inventory':
+                return __("Inventory");
+                break;
+            case 'snmpquery':
+                return __("Network inventory (SNMP)");
+                break;
+            case 'netdiscovery':
+                return __("Network discovery (SNMP)");
+                break;
+            default:
+                return $internalModule;
+                break;
+        }
     }
 
 
@@ -347,6 +372,7 @@ class RuleMatchedLog extends CommonDBTM
             }
             echo "</td>";
             echo "<td>";
+            echo self::getModuleName($data['method']);
             echo "</td>";
             echo "</tr>";
         }
