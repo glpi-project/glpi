@@ -56,7 +56,7 @@ final class InstallationNotOverriden extends AbstractRequirement
      */
     private $version_dir;
 
-    public function __construct(?DBmysql $db, string $version_dir = GLPI_ROOT . '/.version')
+    public function __construct(?DBmysql $db, string $version_dir = GLPI_ROOT . '/version')
     {
         $this->db = $db;
         $this->version_dir = $version_dir;
@@ -75,7 +75,7 @@ final class InstallationNotOverriden extends AbstractRequirement
 
         if ($version_files_count == 0) {
             // Cannot do the check.
-            // Indicating that `.version` directory is missing would be useless, as it would probably incitate administrator
+            // Indicating that `version` directory is missing would be useless, as it would probably incitate administrator
             // to restore it, and it would result in a "false positive" type validation.
             $this->out_of_context = true;
             return;
@@ -113,14 +113,14 @@ final class InstallationNotOverriden extends AbstractRequirement
                 $previous_version = VersionParser::getNormalizedVersion($previous_version, false);
             }
         }
-        if ($previous_version === null || version_compare($previous_version, '10.0.4', '<')) {
+        if ($previous_version === null || version_compare($previous_version, '10.0.6', '<')) {
             // If previous version is unknown, validation will be mostly a "false positive" type validation.
             // Cases corresponding to an unknown previous version:
             // - new installation;
             // - update from an empty directory (where DB config has not even been restored);
             // - update from version < 0.85.
             //
-            // If previous version is < 10.0.4, version file form previous version should not be available.
+            // If previous version is < 10.0.6, version file form previous version should not be available.
             // In this case, we cannot detect presence of previous versions files.
             $this->out_of_context = true;
             return;
