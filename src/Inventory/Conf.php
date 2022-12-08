@@ -994,7 +994,8 @@ class Conf extends CommonGLPI
         );
     }
 
-    public static function getDefaults(): array{
+    public static function getDefaults(): array
+    {
         return [
             'enabled_inventory'              => 0,
             'import_software'                => 1,
