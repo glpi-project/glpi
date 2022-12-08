@@ -166,7 +166,7 @@ abstract class AbstractRequest
      * @param string $internalModule
      * @return string readable method name
      */
-    public static function getModuleName($internalModule)
+    public static function getModuleName(?string $internalModule): string
     {
         switch ($internalModule) {
             case self::INVENT_QUERY:
