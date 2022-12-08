@@ -62,10 +62,10 @@ class InstallationNotOverriden extends \GLPITestCase
             'out_of_context'   => true,
         ];
 
-        // Unique version file that matches current version during update from < GLPI 10.0.4
+        // Unique version file that matches current version during update from < GLPI 10.0.6
         // -> out of context
         $current_version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        foreach ([null, '9.1', '9.5.9', '10.0.0-dev', '10.0.3'] as $previous_version) {
+        foreach ([null, '9.1', '9.5.9', '10.0.0-dev', '10.0.3', '10.0.5'] as $previous_version) {
             yield [
                 'files'            => [
                     $current_version => '',
@@ -109,7 +109,7 @@ class InstallationNotOverriden extends \GLPITestCase
         // Unique version file that matches current version during update from >= GLPI 10.0.4
         // -> validated
         $current_version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        foreach (['10.0.4', '10.0.6', '10.1.0-dev', '11.3.4'] as $previous_version) {
+        foreach (['10.0.6', '10.0.7', '10.1.0-dev', '11.3.4'] as $previous_version) {
             yield [
                 'files'            => [
                     $current_version => '',
