@@ -840,11 +840,10 @@ class Agent extends CommonDBTM
                                 $itemtype = $data['itemtype'];
                                 if (is_subclass_of($itemtype, CommonDBTM::class)) {
                                     $item = new $itemtype();
-                                    if ($item->getFromDB($data['items_id'])) {
+                                    if ($item->getFromDB($data['items_id']) && $item->fields['is_dynamic'] == 1) {
                                         $item->update([
                                             'id' => $data['items_id'],
-                                            'states_id' => $config['stale_agents_status'],
-                                            'is_dynamic' => 1
+                                            'states_id' => $config['stale_agents_status']
                                         ]);
                                         $task->addVolume(1);
                                         $cron_status = true;
@@ -859,11 +858,9 @@ class Agent extends CommonDBTM
                             $itemtype = $data['itemtype'];
                             if (is_subclass_of($itemtype, CommonDBTM::class)) {
                                 $item = new $itemtype();
-                                if ($item->getFromDB($data['items_id'])) {
-                                    $item->update([
-                                        'id' => $data['items_id'],
-                                        'is_deleted' => 1,
-                                        'is_dynamic' => 1
+                                if ($item->getFromDB($data['items_id']) && $item->fields['is_dynamic'] == 1) {
+                                    $item->delete([
+                                        'id' => $data['items_id']
                                     ]);
                                     $task->addVolume(1);
                                     $cron_status = true;
