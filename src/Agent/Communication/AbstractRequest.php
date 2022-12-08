@@ -182,7 +182,7 @@ abstract class AbstractRequest
                 return __("Network discovery (SNMP)");
                 break;
             default:
-                return $internalModule;
+                return $internalModule ?? '';
                 break;
         }
     }
