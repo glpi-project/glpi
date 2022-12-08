@@ -8503,6 +8503,7 @@ abstract class CommonITILObject extends CommonDBTM
             $data = [
                 'id'      => $temp_item->fields['id'],
                 'name'    => $temp_item->fields['name'],
+                'category' => $temp_item->fields['itilcategories_id'],
                 'content' => $temp_item->fields['content'],
                 'status'  => $temp_item->fields['status'],
             ];
@@ -8712,6 +8713,7 @@ abstract class CommonITILObject extends CommonDBTM
             } else {
                 $card['_metadata']['content'] = '';
             }
+            $card['_metadata']['category'] = $item['category'];
             $card['_metadata'] = Plugin::doHookFunction(Hooks::KANBAN_ITEM_METADATA, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
@@ -8720,17 +8722,50 @@ abstract class CommonITILObject extends CommonDBTM
             $columns[$item[$column_field]]['items'][] = $card;
         }
 
-       // If no specific columns were asked for, drop empty columns.
-       // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
-       // We always preserve the 'No Status' column.
+        // If no specific columns were asked for, drop empty columns.
+        // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
+        // We always preserve the 'No Status' column.
+        $category_ids = [];
         foreach ($columns as $column_id => $column) {
             if (
                 $column_id !== 0 && !in_array($column_id, $column_ids) &&
                 (!isset($column['items']) || !count($column['items']))
             ) {
                 unset($columns[$column_id]);
+            } else if (isset($column['items'])) {
+                foreach ($column['items'] as $item) {
+                    if (isset($item['_metadata']['category'])) {
+                        $category_ids[] = $item['_metadata']['category'];
+                    }
+                }
+                //$category_ids = array_merge($category_ids, array_column($column['items'], 'category'));
             }
         }
+        $category_ids = array_filter(array_unique($category_ids), static function ($id) {
+            return $id > 0;
+        });
+
+        $categories = [];
+        if (!empty($category_ids)) {
+            global $DB;
+            $it = $DB->request([
+                'SELECT' => ['id', 'name'],
+                'FROM' => ITILCategory::getTable(),
+                'WHERE' => ['id' => $category_ids]
+            ]);
+            foreach ($it as $row) {
+                $categories[$row['id']] = $row['name'];
+            }
+            // Add uncategorized category
+            $categories[0] = '';
+        }
+        // Replace category ids with category names in items metadata
+        foreach ($columns as &$column) {
+            foreach ($column['items'] as &$item) {
+                $item['_metadata']['category'] = $categories[$item['_metadata']['category']] ?? '';
+            }
+        }
+
         return $columns;
     }
 
@@ -8803,6 +8838,10 @@ abstract class CommonITILObject extends CommonDBTM
                 'type' => [
                     'description' => _x('filters', 'The type of the item'),
                     'supported_prefixes' => ['!']
+                ],
+                'category' => [
+                    'description' => _x('filters', 'The category of the item'),
+                    'supported_prefixes' => ['!', '#']
                 ],
                 'content' => [
                     'description' => _x('filters', 'The content of the item'),
