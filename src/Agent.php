@@ -854,7 +854,7 @@ class Agent extends CommonDBTM
                         }
                         break;
                     case Conf::STALE_AGENT_ACTION_TRASHBIN:
-                        //change status of agents linked assets
+                        //put linked assets in trashbin
                         foreach ($iterator as $data) {
                             $itemtype = $data['itemtype'];
                             if (is_subclass_of($itemtype, CommonDBTM::class)) {
