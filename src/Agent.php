@@ -333,6 +333,7 @@ class Agent extends CommonDBTM
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('RuleMatchedLog', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;

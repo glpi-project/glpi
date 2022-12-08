@@ -44,8 +44,9 @@ class Agent extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Agent$main'   => 'Agent',
-            'Log$1'        => 'Historical'
+            'Agent$main'        => 'Agent',
+            'RuleMatchedLog$0'  => 'Import information',
+            'Log$1'             => 'Historical'
         ];
         $this
          ->given($this->newTestedInstance)
