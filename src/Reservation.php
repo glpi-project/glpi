@@ -114,12 +114,6 @@ class Reservation extends CommonDBChild
      **/
     public function prepareInputForUpdate($input)
     {
-
-        $item = 0;
-        if (isset($input['_item'])) {
-            $item = $_POST['_item'];
-        }
-
        // Save fields
         $oldfields             = $this->fields;
        // Needed for test already planned
@@ -130,13 +124,7 @@ class Reservation extends CommonDBChild
             $this->fields["end"] = $input["end"];
         }
 
-        if (!$this->test_valid_date()) {
-            $this->displayError("date", $item);
-            return false;
-        }
-
-        if ($this->is_reserved()) {
-            $this->displayError("is_res", $item);
+        if (!$this->isReservationInputValid($input)) {
             return false;
         }
 
@@ -184,17 +172,41 @@ class Reservation extends CommonDBChild
         $this->fields["begin"]               = $input["begin"];
         $this->fields["end"]                 = $input["end"];
 
-        if (!$this->test_valid_date()) {
-            $this->displayError("date", $input["reservationitems_id"]);
-            return false;
-        }
-
-        if ($this->is_reserved()) {
-            $this->displayError("is_res", $input["reservationitems_id"]);
+        if (!$this->isReservationInputValid($input)) {
             return false;
         }
 
         return parent::prepareInputForAdd($input);
+    }
+
+    /**
+     * Check reservation input.
+     *
+     * @param array $input
+     *
+     * @return bool
+     */
+    private function isReservationInputValid(array $input): bool
+    {
+        if (!$this->test_valid_date()) {
+            Session::addMessageAfterRedirect(
+                __('Error in entering dates. The starting date is later than the ending date'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if ($this->is_reserved()) {
+            Session::addMessageAfterRedirect(
+                __('The required item is already reserved for this timeframe'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -293,6 +305,8 @@ class Reservation extends CommonDBChild
      * @param $ID     ID of the item
      *
      * @return void
+     *
+     * @FIXME Deprecate/remove this method in GLPI 10.1.
      **/
     public function displayError($type, $ID)
     {
