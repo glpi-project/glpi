@@ -710,7 +710,7 @@ final class SQLProvider implements SearchProviderInterface
                     $assign_table
                         = $DB::quoteName('`glpi_tickets_users_' .
                         self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
-                        ['joinparams']) . '`';
+                        ['joinparams']));
                     $assigngroup_table
                         = $DB::quoteName('`glpi_groups_tickets_' .
                         self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
