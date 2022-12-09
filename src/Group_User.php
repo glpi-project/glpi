@@ -840,7 +840,8 @@ class Group_User extends CommonDBRelation
         return '';
     }
 
-    public static function countForItem(CommonGLPI $item) {
+    public static function countForItem(CommonGLPI $item)
+    {
         if ($item instanceof Group) {
             $members = [];
             $ids = [];

@@ -3892,7 +3892,8 @@ HTML;
      * This will triger a rebuilding of the 'glpigroups' session data for all
      * users
      */
-    public static function updateLastGroupChange() {
+    public static function updateLastGroupChange()
+    {
         Config::setConfigurationValues('core', [
             'last_group_change' => $_SESSION['glpi_currenttime']
         ]);
