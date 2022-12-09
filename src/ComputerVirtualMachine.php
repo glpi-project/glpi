@@ -259,8 +259,7 @@ class ComputerVirtualMachine extends CommonDBChild
             self::getTable(),
             [
                 'WHERE'  => [
-                    'computers_id' => $ID,
-                    'is_deleted'   => 0
+                    'computers_id' => $ID
                 ],
                 'ORDER'  => 'name'
             ]
@@ -299,7 +298,8 @@ class ComputerVirtualMachine extends CommonDBChild
             $vm = new self();
             foreach ($virtualmachines as $virtualmachine) {
                 $vm->getFromDB($virtualmachine['id']);
-                echo "<tr class='tab_bg_2'>";
+                $class = $virtualmachine['is_deleted'] ? "deleted" : "";
+                echo "<tr class='tab_bg_2 $class'>";
                 echo "<td>" . $vm->getLink() . "</td>";
                 echo "<td>" . $virtualmachine['comment'] . "</td>";
                 echo "<td>" . Dropdown::getYesNo($vm->isDynamic()) . "</td>";
