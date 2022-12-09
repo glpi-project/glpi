@@ -125,7 +125,7 @@ if (isset($_POST["update"])) {
             $input['reservationitems_id'] = $reservationitems_id;
             $input['comment']             = $_POST['comment'];
 
-            if (count($dates_to_add)) {
+            if (count($dates_to_add) > 1) {
                 $input['group'] = $rr->getUniqueGroupFor($reservationitems_id);
             }
             foreach ($dates_to_add as $begin => $end) {
