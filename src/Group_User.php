@@ -492,7 +492,7 @@ class Group_User extends CommonDBRelation
 
        // Retrieve member list
        // TODO: migrate to use CommonDBRelation::getListForItem()
-        $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, 0, false);
+        $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree, false);
 
         // Load parents groups
         if (Config::getConfigurationValue('core', 'use_recursive_groups')) {
