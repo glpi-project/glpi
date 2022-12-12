@@ -400,32 +400,20 @@ class Project extends DbTestCase
 
         // Add a task to project
         $task1_name = 'Project testClone - Task' . mt_rand();
-        $this->createItems('ProjectTask', [
-            [
-                'projects_id' => $projects_id,
-                'name'        => $task1_name,
-            ],
+        $task1 = $this->createItem('ProjectTask', [
+            'projects_id' => $projects_id,
+            'name'        => $task1_name,
         ]);
-        $task1_id = getItemByTypeName("ProjectTask", $task1_name, true);
-
-        // Load current task
-        $task1 = new \ProjectTask();
-        $this->boolean($task1->getFromDB($task1_id))->isTrue();
+        $task1_id = $task1->fields['id'];
 
         // Add a task, child of the previous task
         $task2_name = 'Project testClone - Task' . mt_rand();
-        $this->createItems('ProjectTask', [
-            [
-                'projects_id'     => $projects_id,
-                'name'            => $task2_name,
-                'projecttasks_id' => $task1_id,
-            ],
+        $task2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $projects_id,
+            'name'            => $task2_name,
+            'projecttasks_id' => $task1_id,
         ]);
-        $task2_id = getItemByTypeName("ProjectTask", $task2_name, true);
-
-        // Load current task
-        $task2 = new \ProjectTask();
-        $this->boolean($task2->getFromDB($task2_id))->isTrue();
+        $task2_id = $task2->fields['id'];
 
         // Clone project
         $projects_id_clone = $project->clone();
