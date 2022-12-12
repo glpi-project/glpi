@@ -1155,5 +1155,8 @@ class Group extends CommonTreeDropdown
     {
         global $GLPI_CACHE;
         $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
+
+        // Reload groups immediatly
+        Session::loadGroups();
     }
 }

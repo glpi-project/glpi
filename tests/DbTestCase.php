@@ -257,4 +257,18 @@ class DbTestCase extends \GLPITestCase
             $this->createItem($itemtype, $input);
         }
     }
+
+    /**
+     * Delete an item of the given class
+     *
+     * @param string $itemtype
+     * @param int $id
+     */
+    protected function deleteItem($itemtype, $id): void
+    {
+        $item = new $itemtype();
+        $input['id'] = $id;
+        $success = $item->delete($input);
+        $this->boolean($success)->isTrue();
+    }
 }
