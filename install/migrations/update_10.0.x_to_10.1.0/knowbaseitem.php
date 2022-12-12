@@ -40,30 +40,29 @@ $ADDTODISPLAYPREF[KnowbaseItem::class] = [79, 131, 13];
 
 $table = 'glpi_knowbaseitems';
 
-$fkey_to_add = 'entities_id';
-if (!$DB->fieldExists($table, $fkey_to_add)) {
+$field_to_add = 'entities_id';
+if (!$DB->fieldExists($table, $field_to_add)) {
     $migration->addField(
         $table,
-        $fkey_to_add,
-        "int {$default_key_sign} NOT NULL DEFAULT '0'",
+        $field_to_add,
+        'fkey',
         [
-            'value' => 0,
             'after' => 'id'
         ]
     );
-    $migration->addKey($table, $fkey_to_add);
+    $migration->addKey($table, $field_to_add);
 }
 
-$fkey_to_add = 'is_recursive';
-if (!$DB->fieldExists($table, $fkey_to_add)) {
+$field_to_add = 'is_recursive';
+if (!$DB->fieldExists($table, $field_to_add)) {
     $migration->addField(
         $table,
-        $fkey_to_add,
-        "tinyint NOT NULL DEFAULT '0'",
+        $field_to_add,
+        'bool',
         [
-            'value' => 1,
+            'update' => 1,
             'after' => 'entities_id'
         ]
     );
-    $migration->addKey($table, $fkey_to_add);
+    $migration->addKey($table, $field_to_add);
 }
