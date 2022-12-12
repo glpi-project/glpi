@@ -397,5 +397,51 @@ class Project extends DbTestCase
 
        // Compare teams
         $this->array($team_clone)->isEqualTo($team);
+
+        // Add a task to project
+        $task1_name = 'Project testClone - Task' . mt_rand();
+        $task1 = $this->createItem('ProjectTask', [
+            'projects_id' => $projects_id,
+            'name'        => $task1_name,
+        ]);
+        $task1_id = $task1->fields['id'];
+
+        // Add a task, child of the previous task
+        $task2_name = 'Project testClone - Task' . mt_rand();
+        $task2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $projects_id,
+            'name'            => $task2_name,
+            'projecttasks_id' => $task1_id,
+        ]);
+        $task2_id = $task2->fields['id'];
+
+        // Clone project
+        $projects_id_clone = $project->clone();
+        $this->integer($projects_id_clone)->isGreaterThan(0);
+
+        // Load clone
+        $project_clone = new \Project();
+        $this->boolean($project_clone->getFromDB($projects_id_clone))->isTrue();
+
+        // Load clone tasks
+        $project_task = new ProjectTask();
+        $tasks_clone = [];
+        foreach ($project_task->find(['projects_id' => $projects_id_clone]) as $row) {
+            $tasks_clone[] = [
+                'projecttasks_id' => $row['projecttasks_id'],
+            ];
+        }
+
+        $expected = [
+            [
+                'projecttasks_id' => 0,
+            ],
+            [
+                'projecttasks_id' => $task1_id + 2,
+            ],
+        ];
+
+        // Compare tasks
+        $this->array($tasks_clone)->isEqualTo($expected);
     }
 }
