@@ -236,6 +236,11 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 PREG_PATTERN_ORDER
                             )
                         ) {
+                            // Make sure file still exists
+                            if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
+                                trigger_error('Failed to add document ' . $doc->fields['filepath'] . ' to mail: file not found', E_USER_WARNING);
+                                continue;
+                            }
                             $image_path = Document::getImage(
                                 GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
                                 'mail'
@@ -283,6 +288,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                                     // Make sure file still exists
                                     if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
+                                        trigger_error('Failed to add document ' . $doc->fields['filepath'] . ' to mail: file not found', E_USER_WARNING);
                                         continue;
                                     }
 
