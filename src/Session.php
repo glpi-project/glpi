@@ -660,7 +660,7 @@ class Session
         $_SESSION["glpigroups"] = array_unique($_SESSION["glpigroups"]);
 
         // Set new valid cache date
-        $_SESSION['glpigroups_cache_date'] = $GLPI_CACHE->get('last_group_change');
+        $_SESSION['glpigroups_cache_date'] = $_SESSION["glpi_currenttime"];
     }
 
 
