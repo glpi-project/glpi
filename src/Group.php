@@ -1114,7 +1114,7 @@ class Group extends CommonTreeDropdown
             $this->fields['groups_id']
             && Config::getConfigurationValue('core', 'use_recursive_groups')
         ) {
-            Config::updateLastGroupChange();
+            Group::updateLastGroupChange();
         }
     }
 
@@ -1127,7 +1127,7 @@ class Group extends CommonTreeDropdown
             && $this->fields['groups_id'] !== $this->oldvalues['groups_id']
             && Config::getConfigurationValue('core', 'use_recursive_groups')
         ) {
-            Config::updateLastGroupChange();
+            Group::updateLastGroupChange();
         }
 
         // Enabling or disabling recursion on a group will invalidate the group
@@ -1136,13 +1136,24 @@ class Group extends CommonTreeDropdown
             isset($this->oldvalues['recursive_membership'])
             && $this->fields['recursive_membership'] !== $this->oldvalues['recursive_membership']
         ) {
-            Config::updateLastGroupChange();
+            Group::updateLastGroupChange();
         }
     }
 
     public function post_purgeItem()
     {
         // Purging a group will invalidate the group cache
-        Config::updateLastGroupChange();
+        Group::updateLastGroupChange();
+    }
+
+    /**
+     * Mark groups data as "changed"
+     * This will triger a rebuilding of the 'glpigroups' session data for all
+     * users
+     */
+    public static function updateLastGroupChange()
+    {
+        global $GLPI_CACHE;
+        $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
     }
 }

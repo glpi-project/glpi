@@ -590,7 +590,7 @@ class Session
      **/
     public static function loadGroups()
     {
-        global $DB;
+        global $DB, $GLPI_CACHE;
 
         $_SESSION["glpigroups"] = [];
 
@@ -660,7 +660,7 @@ class Session
         $_SESSION["glpigroups"] = array_unique($_SESSION["glpigroups"]);
 
         // Set new valid cache date
-        $_SESSION['glpigroups_cache_date'] = Config::getConfigurationValue('core', 'last_group_change');
+        $_SESSION['glpigroups_cache_date'] = $GLPI_CACHE->get('last_group_change');
     }
 
 

@@ -44,11 +44,6 @@ $migration->addConfig([
     // children groups
     // Disabled by default
     'use_recursive_groups' => false,
-
-    // Store the last change to groups membership and/or configuration
-    // This allow to reset the group cache stored in the users session on demand
-    // Before that, users groups would not actualize until they were disconnected
-    'last_group_change' => $_SESSION['glpi_currenttime'],
 ]);
 
 // Add new "recursive_membership" field on groups

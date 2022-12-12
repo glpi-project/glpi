@@ -180,6 +180,7 @@ if (isset($_REQUEST["force_entity"]) && ($_SESSION["glpiactive_entity"] ?? -1) !
 // If there was any change regarding groups membership and/or configuration, we
 // need to reset the data stored in his session
 $last_group_change = Config::getConfigurationValue('core', 'last_group_change');
+$last_group_change = $GLPI_CACHE->get('last_group_change');
 if (
     isset($_SESSION['glpigroups'])
     && ($_SESSION['glpigroups_cache_date'] ?? "") < $last_group_change

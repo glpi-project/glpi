@@ -957,7 +957,7 @@ class Group_User extends CommonDBRelation
         $stmt->close();
 
         // Group cache must be invalidated when a user is added to a group
-        Config::updateLastGroupChange();
+        Group::updateLastGroupChange();
     }
 
 
@@ -1014,7 +1014,7 @@ class Group_User extends CommonDBRelation
         $stmt->close();
 
         // Group cache must be invalidated when a user is remove from a group
-        Config::updateLastGroupChange();
+        Group::updateLastGroupChange();
     }
 
     /**
