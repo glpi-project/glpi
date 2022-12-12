@@ -706,7 +706,7 @@ function _eltRealSize(_elt) {
     return _s;
 }
 
-var initMap = function(parent_elt, map_id, height, initial_view = {position: [43.6112422, 3.8767337], zoom: 6}) {
+var initMap = function(parent_elt, map_id, height, initial_view = {position: [0, 0], zoom: 1}) {
     // default parameters
     map_id = (typeof map_id !== 'undefined') ? map_id : 'map';
     height = (typeof height !== 'undefined') ? height : '200px';
