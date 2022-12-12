@@ -348,6 +348,7 @@ $empty_data_builder = new class
             'system_user' => self::USER_SYSTEM,
             'support_legacy_data' => 0, // New installation should not support legacy data
             'initialized_rules_collections' => '[]',
+            'timeline_action_btn_layout' => 0,
         ];
 
         $tables['glpi_configs'] = [];

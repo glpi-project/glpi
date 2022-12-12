@@ -55,6 +55,9 @@ class Config extends CommonDBTM
     public const GLOBAL_MANAGEMENT = 1;
     public const NO_MANAGEMENT = 2;
 
+    public const TIMELINE_ACTION_BTN_MERGED = 0;
+    public const TIMELINE_ACTION_BTN_SPLITTED = 1;
+
    // From CommonGLPI
     protected $displaylist         = false;
 
@@ -1282,6 +1285,22 @@ class Config extends CommonDBTM
             } else {
                 echo Dropdown::getYesNo(0);
             }
+
+            echo "<tr class='tab_bg_2'><td><label for='timeline_action_btn_layout$rand'>" . __('Action button layout') .
+              "</label></td><td>";
+            if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
+
+                Dropdown::showFromArray('timeline_action_btn_layout', [
+                    self::TIMELINE_ACTION_BTN_MERGED => __('Merged'),
+                    self::TIMELINE_ACTION_BTN_SPLITTED => __('Splitted'),
+                ], [
+                    'value' => $data['timeline_action_btn_layout'],
+                    'rand' => $rand
+                ]);
+            } else {
+                echo Dropdown::getYesNo(0);
+            }
+            echo "</td><td></td></tr>";
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_2'>";
