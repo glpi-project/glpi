@@ -8722,15 +8722,15 @@ abstract class CommonITILObject extends CommonDBTM
             $columns[$item[$column_field]]['items'][] = $card;
         }
 
-        // If no specific columns were asked for, drop empty columns.
-        // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
-        // We always preserve the 'No Status' column.
         $category_ids = [];
         foreach ($columns as $column_id => $column) {
             if (
                 $column_id !== 0 && !in_array($column_id, $column_ids) &&
                 (!isset($column['items']) || !count($column['items']))
             ) {
+                // If no specific columns were asked for, drop empty columns.
+                // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
+                // We always preserve the 'No Status' column.
                 unset($columns[$column_id]);
             } else if (isset($column['items'])) {
                 foreach ($column['items'] as $item) {
@@ -8738,7 +8738,6 @@ abstract class CommonITILObject extends CommonDBTM
                         $category_ids[] = $item['_metadata']['category'];
                     }
                 }
-                //$category_ids = array_merge($category_ids, array_column($column['items'], 'category'));
             }
         }
         $category_ids = array_filter(array_unique($category_ids), static function ($id) {
@@ -8748,10 +8747,29 @@ abstract class CommonITILObject extends CommonDBTM
         $categories = [];
         if (!empty($category_ids)) {
             global $DB;
+
+            $cat_table = ITILCategory::getTable();
+            $trans_table = DropdownTranslation::getTable();
+            $name_select = new QueryExpression('IFNULL(' . $DB::quoteName("$trans_table.value") . ',' . $DB::quoteName("$cat_table.name") . ') AS ' . $DB::quoteName('name'));
             $it = $DB->request([
-                'SELECT' => ['id', 'name'],
-                'FROM' => ITILCategory::getTable(),
-                'WHERE' => ['id' => $category_ids]
+                'SELECT' => ["$cat_table.id", $name_select],
+                'FROM' => $cat_table,
+                'LEFT JOIN' => [
+                    $trans_table => [
+                        'ON' => [
+                            $trans_table => 'items_id',
+                            $cat_table => 'id',
+                            [
+                                'AND' => [
+                                    $trans_table . '.itemtype' => ITILCategory::getType(),
+                                    $trans_table . '.field' => 'name',
+                                    $trans_table . '.language' => $_SESSION['glpilanguage']
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'WHERE' => ["$cat_table.id" => $category_ids]
             ]);
             foreach ($it as $row) {
                 $categories[$row['id']] = $row['name'];
@@ -8759,6 +8777,7 @@ abstract class CommonITILObject extends CommonDBTM
             // Add uncategorized category
             $categories[0] = '';
         }
+
         // Replace category ids with category names in items metadata
         foreach ($columns as &$column) {
             foreach ($column['items'] as &$item) {
