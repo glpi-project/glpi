@@ -590,7 +590,7 @@ class Session
      **/
     public static function loadGroups()
     {
-        global $DB, $GLPI_CACHE;
+        global $DB;
 
         $_SESSION["glpigroups"] = [];
 

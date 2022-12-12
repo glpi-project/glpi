@@ -1157,6 +1157,8 @@ class Group extends CommonTreeDropdown
         $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);
 
         // Reload groups immediatly
-        Session::loadGroups();
+        if (Session::getLoginUserID()) {
+            Session::loadGroups();
+        }
     }
 }
