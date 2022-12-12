@@ -54,7 +54,7 @@
                   {# Don't use d-inline-flex class as it add an '!important' tag that mess with our javascript that will hide this div #}
                   <div class="main-actions" style="display:inline-flex">
                {% endif %}
-                  <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
+                  <button class="btn btn-primary answer-action mb-2" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
                      <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
                   </button>
@@ -64,14 +64,14 @@
                      {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') %}
                         {% for action, timeline_itemtype in main_actions_itemtypes %}
                         {% if loop.index0 > 0 %}
-                              <button class="ms-2 btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                              <button class="ms-2 mb-2 btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
                                  <i class="{{ timeline_itemtype.icon }}"></i>
                                  <span>{{ timeline_itemtype.label }}</span>
                               </button>
                               {% endif %}
                         {% endfor %}
                      {% else %}
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split mb-2" data-bs-toggle="dropdown" aria-expanded="false">
                            <span class="visually-hidden">{{ __('View other actions') }}</span>
                         </button>
                         <ul class="dropdown-menu">
