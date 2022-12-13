@@ -43,7 +43,7 @@
 
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
-      <div class="col {{ timeline_btns_cls }} ps-3 timeline-buttons">
+      <div class="col {{ timeline_btns_cls }} ps-3 timeline-buttons d-flex">
          {% if not item.isNewItem() %}
             {% set default_action_data = timeline_itemtypes|first %}
             {% if item.isNotSolved() and default_action_data != false %}
