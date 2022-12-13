@@ -467,6 +467,9 @@ class Blacklist extends CommonDropdown
             ], [
                 'name' => 'localhost',
                 'value' => '127.0.0.1'
+            ], [
+                'name' => 'IPV6 localhost',
+                'value' => '::1'
             ]
         ];
 
