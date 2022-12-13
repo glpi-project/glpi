@@ -36,7 +36,6 @@
 namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -119,6 +118,7 @@ class DynamicRowFormatCommand extends AbstractCommand
             )
         );
 
+        $this->warnAboutExecutionTime();
         $this->askForConfirmation();
 
         $tables = [];
@@ -127,31 +127,29 @@ class DynamicRowFormatCommand extends AbstractCommand
         }
         sort($tables);
 
-        $progress_bar = new ProgressBar($this->output);
         $errors = false;
 
-        foreach ($progress_bar->iterate($tables) as $table) {
-            $this->writelnOutputWithProgressBar(
-                sprintf(__('Migrating table "%s"...'), $table),
-                $progress_bar,
-                OutputInterface::VERBOSITY_VERY_VERBOSE
-            );
+        $progress_message = function (string $table) {
+            return sprintf(__('Migrating table "%s"...'), $table);
+        };
 
-            $result = $this->db->query(
-                sprintf('ALTER TABLE `%s` ROW_FORMAT = DYNAMIC', $table)
-            );
+        foreach ($this->iterate($tables, $progress_message) as $table) {
+            $result = $this->db->query(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->db->quoteName($table)));
 
             if (!$result) {
-                $this->writelnOutputWithProgressBar(
-                    sprintf(__('<error>Error migrating table "%s".</error>'), $table),
-                    $progress_bar,
+                $message = sprintf(
+                    __('Migration of table "%s" failed with message "(%s) %s".'),
+                    $table,
+                    $this->db->errno(),
+                    $this->db->error()
+                );
+                $this->outputMessage(
+                    '<error>' . $message . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
-                 $errors = true;
+                $errors = true;
             }
         }
-
-        $this->output->write(PHP_EOL);
 
         if ($errors) {
             throw new \Glpi\Console\Exception\EarlyExitException(

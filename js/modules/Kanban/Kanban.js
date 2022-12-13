@@ -2278,6 +2278,10 @@ class GLPIKanbanRights {
                     filter_equal(self.filters.milestone, card.data('is_milestone'));
                 }
 
+                if (self.filters.category !== undefined) {
+                    filter_text(self.filters.category, card.data('category'));
+                }
+
                 if (self.filters.content !== undefined) {
                     filter_text(self.filters.content, card.data('content'));
                 }

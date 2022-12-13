@@ -78,6 +78,16 @@
                         ) }}
                      {% endif %}
 
+                     {% if item.isField('template_name') and withtemplate == 1 and no_header %}
+                        {{ fields.autoNameField(
+                           'template_name',
+                           item,
+                           __('Template name'),
+                           0,
+                           field_options
+                        ) }}
+                     {% endif %}
+
                      {% if item.isField('is_active') %}
                         {% if withtemplate is not empty or withtemplate == 1 %}
                            {{ fields.hiddenField('is_active', item.fields['is_active'], __('Is active'), {

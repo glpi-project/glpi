@@ -90,7 +90,7 @@ class Conf extends \GLPITestCase
     protected function confProvider(): array
     {
         $provider = [];
-        $defaults = \Glpi\Inventory\Conf::$defaults;
+        $defaults = \Glpi\Inventory\Conf::getDefaults();
         foreach ($defaults as $key => $value) {
             $provider[] = [
                 'key'    => $key,

@@ -36,6 +36,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
@@ -333,6 +334,7 @@ class Agent extends CommonDBTM
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('RuleMatchedLog', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -793,80 +795,6 @@ class Agent extends CommonDBTM
     }
 
     /**
-     * Clean and do other defined actions on an agent or related item
-     * @param Agent $agent The agent to clean
-     * @param array $config Array containing the agent clean config
-     * @return bool True if successful
-     */
-    private static function cleanAgent(Agent $agent, array $config): bool
-    {
-        global $PLUGIN_HOOKS;
-
-        // Actions to apply to the agent or item
-        /** @phpstan-var array{item_action: bool, callback: callable(?Agent, array, ?CommonDBTM):bool}[] $actions_to_apply */
-        $actions_to_apply = [];
-        $need_item = false;
-        if (isset($config['stale_agents_status']) && (int) $config['stale_agents_status'] >= 0) {
-            // 0 = none, -1 or other negative = no change
-            $need_item = true;
-            $actions_to_apply[] = [
-                'item_action' => true,
-                'callback' => static function (?Agent $agent, array $config, ?CommonDBTM $item): bool {
-                    return $item !== null && $item->update([
-                        'id' => $item->fields['id'],
-                        'states_id' => $config['stale_agents_status']
-                    ]);
-                }
-            ];
-        }
-        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
-        /**
-         * @var string $plugin
-         * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
-         */
-        foreach ($plugin_actions as $plugin => $actions) {
-            if (is_array($actions) && Plugin::isPluginActive($plugin)) {
-                foreach ($actions as $action) {
-                    if (!is_callable($action['action_callback'] ?? null)) {
-                        trigger_error(
-                            sprintf('Invalid plugin "%s" action callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
-                            E_USER_WARNING
-                        );
-                        continue;
-                    }
-                    // Assume plugins always need the item
-                    $need_item = true;
-                    $actions_to_apply[] = $action['action_callback'];
-                }
-            }
-        }
-        if (isset($config['stale_agents_clean']) && $config['stale_agents_clean']) {
-            $actions_to_apply[] = [
-                'item_action' => false,
-                'callback' => static function (?Agent $agent, array $config, ?CommonDBTM $item): bool {
-                    return $agent !== null && $agent->delete(['id' => $agent->fields['id']]);
-                }
-            ];
-        }
-        $item = null;
-
-        // If an action to apply needs the item
-        if ($need_item) {
-            $item = is_a($agent->fields['itemtype'], CommonDBTM::class, true) ? new $agent->fields['itemtype']() : null;
-            if ($item !== null && $item->getFromDB($agent->fields['items_id']) === false) {
-                $item = null;
-            }
-        }
-
-        // Run all actions, with the clean action running last
-        foreach ($actions_to_apply as $action) {
-            // Run the action
-            $action['callback']($agent, $config, $item);
-        }
-        return true;
-    }
-
-    /**
      * Cron task: clean and do other defined actions when agent not have been contacted
      * the server since xx days
      *
@@ -878,7 +806,7 @@ class Agent extends CommonDBTM
      */
     public static function cronCleanoldagents($task = null)
     {
-        global $DB;
+        global $DB, $PLUGIN_HOOKS;
 
         $config = \Config::getConfigurationValues('inventory');
 
@@ -897,13 +825,75 @@ class Agent extends CommonDBTM
 
         $cron_status = false;
         if (count($iterator)) {
-            $agent = new self();
             foreach ($iterator as $data) {
+                $agent = new self();
                 $agent->getFromDB($data['id']);
-                $result = self::cleanAgent($agent, $config);
-                if ($result) {
-                    $task->addVolume(1);
-                    $cron_status = true;
+
+                $item = is_a($agent->fields['itemtype'], CommonDBTM::class, true) ? new $agent->fields['itemtype']() : null;
+                if (
+                    $item !== null
+                    && (
+                        $item->getFromDB($agent->fields['items_id']) === false
+                        || $item->fields['is_dynamic'] != 1
+                    )
+                ) {
+                    $item = null;
+                }
+
+                $actions = importArrayFromDB($config['stale_agents_action']);
+                foreach ($actions as $action) {
+                    switch ($action) {
+                        case Conf::STALE_AGENT_ACTION_CLEAN:
+                            //delete agents
+                            $agent->delete($data);
+                            $task->addVolume(1);
+                            $cron_status = true;
+                            break;
+                        case Conf::STALE_AGENT_ACTION_STATUS:
+                            if (isset($config['stale_agents_status']) && $item !== null) {
+                                //change status of agents linked assets
+                                $item->update([
+                                    'id'        => $item->fields['id'],
+                                    'states_id' => $config['stale_agents_status']
+                                ]);
+                                $task->addVolume(1);
+                                $cron_status = true;
+                            }
+                            break;
+                        case Conf::STALE_AGENT_ACTION_TRASHBIN:
+                            //put linked assets in trashbin
+                            if ($item !== null) {
+                                $item->delete([
+                                    'id' => $item->fields['id'],
+                                ]);
+                                $task->addVolume(1);
+                                $cron_status = true;
+                            }
+                            break;
+                    }
+                }
+
+                $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
+                /**
+                 * @var string $plugin
+                 * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+                 */
+                foreach ($plugin_actions as $plugin => $actions) {
+                    if (is_array($actions) && Plugin::isPluginActive($plugin)) {
+                        foreach ($actions as $action) {
+                            if (!is_callable($action['action_callback'] ?? null)) {
+                                trigger_error(
+                                    sprintf('Invalid plugin "%s" action callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                                    E_USER_WARNING
+                                );
+                                continue;
+                            }
+                            // Run the action
+                            $action['callback']($agent, $config, $item);
+                            $task->addVolume(1);
+                            $cron_status = true;
+                        }
+                    }
                 }
             }
         }

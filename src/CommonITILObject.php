@@ -8824,6 +8824,7 @@ abstract class CommonITILObject extends CommonDBTM
             $data = [
                 'id'      => $temp_item->fields['id'],
                 'name'    => $temp_item->fields['name'],
+                'category' => $temp_item->fields['itilcategories_id'],
                 'content' => $temp_item->fields['content'],
                 'status'  => $temp_item->fields['status'],
             ];
@@ -8990,6 +8991,7 @@ abstract class CommonITILObject extends CommonDBTM
             } else {
                 $card['_metadata']['content'] = '';
             }
+            $card['_metadata']['category'] = $item['category'];
             $card['_metadata'] = Plugin::doHookFunction(Hooks::KANBAN_ITEM_METADATA, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
@@ -8998,17 +9000,69 @@ abstract class CommonITILObject extends CommonDBTM
             $columns[$item[$column_field]]['items'][] = $card;
         }
 
-       // If no specific columns were asked for, drop empty columns.
-       // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
-       // We always preserve the 'No Status' column.
+        $category_ids = [];
         foreach ($columns as $column_id => $column) {
             if (
                 $column_id !== 0 && !in_array($column_id, $column_ids) &&
                 (!isset($column['items']) || !count($column['items']))
             ) {
+                // If no specific columns were asked for, drop empty columns.
+                // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
+                // We always preserve the 'No Status' column.
                 unset($columns[$column_id]);
+            } else if (isset($column['items'])) {
+                foreach ($column['items'] as $item) {
+                    if (isset($item['_metadata']['category'])) {
+                        $category_ids[] = $item['_metadata']['category'];
+                    }
+                }
             }
         }
+        $category_ids = array_filter(array_unique($category_ids), static function ($id) {
+            return $id > 0;
+        });
+
+        $categories = [];
+        if (!empty($category_ids)) {
+            global $DB;
+
+            $cat_table = ITILCategory::getTable();
+            $trans_table = DropdownTranslation::getTable();
+            $name_select = new QueryExpression('IFNULL(' . $DB::quoteName("$trans_table.value") . ',' . $DB::quoteName("$cat_table.name") . ') AS ' . $DB::quoteName('name'));
+            $it = $DB->request([
+                'SELECT' => ["$cat_table.id", $name_select],
+                'FROM' => $cat_table,
+                'LEFT JOIN' => [
+                    $trans_table => [
+                        'ON' => [
+                            $trans_table => 'items_id',
+                            $cat_table => 'id',
+                            [
+                                'AND' => [
+                                    $trans_table . '.itemtype' => ITILCategory::getType(),
+                                    $trans_table . '.field' => 'name',
+                                    $trans_table . '.language' => $_SESSION['glpilanguage']
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'WHERE' => ["$cat_table.id" => $category_ids]
+            ]);
+            foreach ($it as $row) {
+                $categories[$row['id']] = $row['name'];
+            }
+            // Add uncategorized category
+            $categories[0] = '';
+        }
+
+        // Replace category ids with category names in items metadata
+        foreach ($columns as &$column) {
+            foreach ($column['items'] as &$item) {
+                $item['_metadata']['category'] = $categories[$item['_metadata']['category']] ?? '';
+            }
+        }
+
         return $columns;
     }
 
@@ -9081,6 +9135,10 @@ abstract class CommonITILObject extends CommonDBTM
                 'type' => [
                     'description' => _x('filters', 'The type of the item'),
                     'supported_prefixes' => ['!']
+                ],
+                'category' => [
+                    'description' => _x('filters', 'The category of the item'),
+                    'supported_prefixes' => ['!', '#']
                 ],
                 'content' => [
                     'description' => _x('filters', 'The content of the item'),
@@ -9787,23 +9845,20 @@ abstract class CommonITILObject extends CommonDBTM
                     }
 
                     if ($actor_itemtype !== Group::class) {
-                        if (
-                            !array_key_exists($notif_key, $input)
-                            || !is_array($input[$notif_key])
-                            || (
-                                !array_key_exists('use_notification', $input[$notif_key])
-                                && !array_key_exists('alternative_email', $input[$notif_key])
-                            )
-                        ) {
+                        if (!array_key_exists($notif_key, $input) || !is_array($input[$notif_key])) {
                             $input[$notif_key] = [
                                 'use_notification'  => [],
                                 'alternative_email' => [],
                             ];
-                        } else {
-                            foreach (['use_notification', 'alternative_email'] as $param_key) {
-                                if (!is_array($input[$notif_key][$param_key])) {
-                                    $input[$notif_key][$param_key] = !empty($input[$notif_key][$param_key]) ? [$input[$notif_key][$param_key]] : [];
-                                }
+                        }
+                        foreach (['use_notification', 'alternative_email'] as $param_key) {
+                            if (
+                                !array_key_exists($param_key, $input[$notif_key])
+                                || $input[$notif_key][$param_key] === ''
+                            ) {
+                                $input[$notif_key][$param_key] = [];
+                            } elseif (!is_array($input[$notif_key][$param_key])) {
+                                $input[$notif_key][$param_key] = [$input[$notif_key][$param_key]];
                             }
                         }
                     }

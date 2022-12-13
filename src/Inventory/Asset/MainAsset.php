@@ -130,6 +130,7 @@ abstract class MainAsset extends InventoryAsset
             //set update system
             $val->autoupdatesystems_id = $entry->content->autoupdatesystems_id ?? AutoUpdateSystem::NATIVE_INVENTORY;
             $val->last_inventory_update = $_SESSION["glpi_currenttime"];
+            $val->is_deleted = 0;
 
             //try to get "last_boot" only available from "operatingsystem->boot_time" node
             if (

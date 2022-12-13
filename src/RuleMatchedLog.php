@@ -34,6 +34,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Request;
+
 /**
  * Logs rules used during inventory
  */
@@ -271,6 +273,7 @@ class RuleMatchedLog extends CommonDBTM
             }
             echo "</td>";
             echo "<td>";
+            echo Request::getModuleName($data['method']);
             echo "</td>";
             echo "</tr>";
         }
@@ -347,6 +350,7 @@ class RuleMatchedLog extends CommonDBTM
             }
             echo "</td>";
             echo "<td>";
+            echo Request::getModuleName($data['method']);
             echo "</td>";
             echo "</tr>";
         }

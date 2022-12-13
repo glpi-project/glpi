@@ -1777,13 +1777,13 @@ class Inventory extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4444);
+        $this->integer(count($logs))->isIdenticalTo(4448);
 
         $expected_types_count = [
             0 => 4, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
-            \Log::HISTORY_ADD_SUBITEM => 3243,//network port/name, ip address, VMs, Software
+            \Log::HISTORY_ADD_SUBITEM => 3247,//network port/name, ip address, VMs, Software
             \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, software updates
             \Log::HISTORY_DELETE_SUBITEM => 99,//networkport and networkname, Software?
             \Log::HISTORY_CREATE_ITEM => 265, //virtual machines, os, manufacturer, net ports, net names, software category ...
@@ -4521,6 +4521,67 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             ->string['ram']->isIdenticalTo('4096')
             ->string['uuid']->isIdenticalTo('487dfdb542a4bfb23670b8d4e76d8b6886c2ed35')
         ;
+    }
+
+    public function testRemoveVirtualMachines()
+    {
+        global $DB;
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+
+        $count_vms = count($json->content->virtualmachines);
+        $this->integer($count_vms)->isIdenticalTo(6);
+
+        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_computers = countElementsInTable(\Computer::getTable());
+
+        //change config to import vms as computers
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(['vm_as_computer' => 1]))->isTrue();
+        $this->logout();
+
+        //$json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+        $inventory = $this->doInventory($json);
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(5)
+            ->string['deviceid']->isIdenticalTo('acomputer-2021-01-26-14-32-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->variable['port']->isIdenticalTo(null)
+            ->string['action']->isIdenticalTo('inventory');
+
+        //check we add main computer and one computer per vm
+        //one does not have an uuid, so no computer is created.
+        ++$nb_computers;
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
+        //check created vms
+        $nb_vms += $count_vms;
+        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+
+        //remove postgres
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2.json'));
+        $vms = $json->content->virtualmachines;
+        unset($vms[4]);
+        $json->content->virtualmachines = $vms;
+
+        $this->doInventory($json);
+
+        //check there is one less vm
+        $nb_vms--;
+        $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
+        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+
+        //check related computer has been put in trashbin
+        $iterator = $DB->request([
+            'FROM' => \Computer::getTable(),
+            'WHERE' => [
+                'name' => 'db',
+                'is_deleted' => 1
+            ]
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(1);
     }
 
     public function testRuleRefuseImportVirtualMachines()

@@ -362,7 +362,7 @@ $empty_data_builder = new class
             ];
         }
 
-        foreach (\Glpi\Inventory\Conf::$defaults as $name => $value) {
+        foreach (\Glpi\Inventory\Conf::getDefaults() as $name => $value) {
             $tables['glpi_configs'][] = [
                 'context' => 'inventory',
                 'name' => $name,

@@ -908,7 +908,7 @@ class Software extends InventoryAsset
             \Log::history(
                 $this->item->fields['id'],
                 $this->item->getType(),
-                [0, '', sprintf('%1$s - %2$s', $software_name, $version_name)],
+                [0, sprintf(__('%1$s - %2$s'), $software_name, $version_name), ''],
                 'Software',
                 \Log::HISTORY_DELETE_SUBITEM
             );
@@ -917,7 +917,7 @@ class Software extends InventoryAsset
             \Log::history(
                 $softwares_id,
                 'Software',
-                [0, '', sprintf(__('%1$s - %2$s'), $version_name, $asset_name)],
+                [0, sprintf(__('%1$s - %2$s'), $version_name, $asset_name), ''],
                 'Item_SoftwareVersion',
                 \Log::HISTORY_DELETE_SUBITEM
             );
@@ -926,7 +926,7 @@ class Software extends InventoryAsset
             \Log::history(
                 $versions_id,
                 'SoftwareVersion',
-                [0, '', $asset_name], // we just need the computer name in software version historical
+                [0, $asset_name, ''], // we just need the computer name in software version historical
                 'Item_SoftwareVersion',
                 \Log::HISTORY_DELETE_SUBITEM
             );

@@ -36,9 +36,7 @@
 namespace Glpi\Console\Migration;
 
 use DBConnection;
-use DBmysql;
 use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -83,36 +81,36 @@ class MyIsamToInnoDbCommand extends AbstractCommand
         if (0 === $myisam_tables->count()) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
         } else {
+            $this->warnAboutExecutionTime();
             $this->askForConfirmation();
 
-            $progress_bar = new ProgressBar($output);
+            $tables = [];
+            foreach ($myisam_tables as $table_data) {
+                $tables[] = $table_data['TABLE_NAME'];
+            }
+            sort($tables);
 
-            foreach ($progress_bar->iterate($myisam_tables) as $table) {
-                $table_name = DBmysql::quoteName($table['TABLE_NAME']);
-                $this->writelnOutputWithProgressBar(
-                    '<comment>' . sprintf(__('Migrating table "%s"...'), $table_name) . '</comment>',
-                    $progress_bar,
-                    OutputInterface::VERBOSITY_VERBOSE
-                );
-                $result = $this->db->query(sprintf('ALTER TABLE %s ENGINE = InnoDB', $table_name));
+            $progress_message = function (string $table) {
+                return sprintf(__('Migrating table "%s"...'), $table);
+            };
+
+            foreach ($this->iterate($tables, $progress_message) as $table) {
+                $result = $this->db->query(sprintf('ALTER TABLE %s ENGINE = InnoDB', $this->db->quoteName($table)));
 
                 if (false === $result) {
                     $message = sprintf(
-                        __('Migration of table "%s"  failed with message "(%s) %s".'),
-                        $table_name,
+                        __('Migration of table "%s" failed with message "(%s) %s".'),
+                        $table,
                         $this->db->errno(),
                         $this->db->error()
                     );
-                    $this->writelnOutputWithProgressBar(
+                    $this->outputMessage(
                         '<error>' . $message . '</error>',
-                        $progress_bar,
                         OutputInterface::VERBOSITY_QUIET
                     );
                     $errors = true;
                 }
             }
-
-            $this->output->write(PHP_EOL);
         }
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_ALLOW_MYISAM, false)) {

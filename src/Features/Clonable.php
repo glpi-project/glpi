@@ -121,6 +121,9 @@ trait Clonable
             $override_input['entities_id'] = $this->isEntityAssign() ? $this->getEntityID() : Session::getActiveEntity();
             $override_input['is_recursive'] = $this->maybeRecursive() ? $this->isRecursive() : Session::getIsActiveEntityRecursive();
 
+            $cloned = []; // Link between old and new ID
+            $relation_newitems = [];
+
             $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
             /** @var CommonDBTM $relation_item */
             foreach ($relation_items as $relation_item) {
@@ -128,7 +131,22 @@ trait Clonable
                     // Force-set name to avoid adding a "(copy)" suffix to the cloned item
                     $override_input['name'] = $relation_item->fields['name'];
                 }
-                $relation_item->clone($override_input, $history);
+                $origin_id = $relation_item->getID();
+                $itemtype = $relation_item->getType();
+                $cloned[$itemtype][$origin_id] = $relation_item->clone($override_input, $history);
+                $relation_item->getFromDB($cloned[$itemtype][$origin_id]);
+                $relation_newitems[] = $relation_item;
+            }
+            // Update relations between cloned items
+            foreach ($relation_newitems as $relation_newitem) {
+                $itemtype = $relation_newitem->getType();
+                $foreignkey = getForeignKeyFieldForItemType($itemtype);
+                if ($relation_newitem->isField($foreignkey) && isset($cloned[$itemtype][$relation_newitem->fields[$foreignkey]])) {
+                    $relation_newitem->update([
+                        'id' => $relation_newitem->getID(),
+                        $foreignkey => $cloned[$itemtype][$relation_newitem->fields[$foreignkey]]
+                    ]);
+                }
             }
         }
     }

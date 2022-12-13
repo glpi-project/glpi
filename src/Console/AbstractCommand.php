@@ -76,6 +76,13 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      */
     protected $requires_db_up_to_date = true;
 
+    /**
+     * Current progress bar.
+     *
+     * @var ProgressBar
+     */
+    protected $progress_bar;
+
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
 
@@ -250,5 +257,94 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
                 0 // Success code
             );
         }
+    }
+
+    /**
+     * Tell user that execution time can be long.
+     *
+     * @return void
+     */
+    protected function warnAboutExecutionTime(): void
+    {
+        $this->output->writeln(
+            '<comment>' . __('Command execution may take a long time and should not be interrupted.') . '</comment>',
+            OutputInterface::VERBOSITY_QUIET
+        );
+    }
+
+    /**
+     * Iterate on given iterable and display a progress bar (unless on quiet mode).
+     * Progress bar message can be customized.
+     *
+     * @param iterable $iterable
+     * @param callable $message_callback
+     *
+     * @return iterable
+     */
+    final protected function iterate(iterable $iterable, ?callable $message_callback = null): iterable
+    {
+        // Redefine formats
+        $formats = [
+            ProgressBar::FORMAT_NORMAL,
+            ProgressBar::FORMAT_NORMAL . '_nomax',
+            ProgressBar::FORMAT_VERBOSE,
+            ProgressBar::FORMAT_VERBOSE . '_nomax',
+            ProgressBar::FORMAT_VERY_VERBOSE,
+            ProgressBar::FORMAT_VERY_VERBOSE . '_nomax',
+            ProgressBar::FORMAT_DEBUG,
+            ProgressBar::FORMAT_DEBUG . '_nomax',
+        ];
+        $original_formats_definitions = [];
+        if (is_callable($message_callback)) {
+            foreach ($formats as $format) {
+                $original_formats_definitions[$format] = ProgressBar::getFormatDefinition($format);
+                // Put message directly in progress bar template
+                ProgressBar::setFormatDefinition(
+                    $format,
+                    $original_formats_definitions[$format] . PHP_EOL . ' <comment>%message%</comment>' . PHP_EOL
+                );
+            }
+        }
+
+        // Init progress bar
+        $this->progress_bar = new ProgressBar($this->output);
+        $this->progress_bar->setMessage(''); // Empty message on iteration start
+        $this->progress_bar->start(is_countable($iterable) ? \count($iterable) : 0);
+
+        // Iterate on items
+        foreach ($iterable as $key => $value) {
+            if (is_callable($message_callback)) {
+                $this->progress_bar->setMessage($message_callback($value));
+                $this->progress_bar->display();
+            }
+
+            yield $key => $value;
+
+            $this->progress_bar->advance();
+        }
+
+        // Finish progress bar
+        $this->progress_bar->setMessage(''); // Remove last message
+        $this->progress_bar->finish();
+        $this->progress_bar = null;
+
+        // Restore formats
+        if (is_callable($message_callback)) {
+            foreach ($formats as $format) {
+                ProgressBar::setFormatDefinition($format, $original_formats_definitions[$format]);
+            }
+        }
+    }
+
+    /**
+     * Output a message.
+     * This method handles displaying of messages in the middle of progress bar iteration.
+     *
+     * @param string $message
+     * @param int $verbosity
+     */
+    final protected function outputMessage(string $message, int $verbosity = OutputInterface::VERBOSITY_NORMAL): void
+    {
+        $this->writelnOutputWithProgressBar($message, $this->progress_bar, $verbosity);
     }
 }

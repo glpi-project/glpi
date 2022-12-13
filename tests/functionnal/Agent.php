@@ -44,8 +44,9 @@ class Agent extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Agent$main'   => 'Agent',
-            'Log$1'        => 'Historical'
+            'Agent$main'        => 'Agent',
+            'RuleMatchedLog$0'  => 'Import information',
+            'Log$1'             => 'Historical'
         ];
         $this
          ->given($this->newTestedInstance)
@@ -394,202 +395,90 @@ class Agent extends DbTestCase
             ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
     }
 
-    protected function staleAgentCleanProvider()
+    public function testStaleActions()
     {
-        return [
-            ['Computer', 0],
-            ['Computer', null],
-            ['Phone', 0],
-            ['Phone', null]
-        ];
-    }
+        //run an inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $inventory = new \Glpi\Inventory\Inventory($json);
 
-    /**
-     * @dataProvider staleAgentCleanProvider
-     */
-    public function testStaleAgentClean(string $itemtype, ?int $items_id)
-    {
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(7)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['action']->isIdenticalTo('inventory')
+            ->variable['port']->isIdenticalTo(null)
+            ->string['tag']->isIdenticalTo('000005');
+        $this->array($metadata['provider'])->hasSize(10);
+
         global $DB;
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('000005')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+        $old_agents_id = $agent['id'];
 
-        $test_stale_days = 10;
+        $this
+            ->given($this->newTestedInstance)
+            ->then
+            ->boolean($this->testedInstance->getFromDB($agent['id']))
+            ->isTrue();
 
-        $item = new $itemtype();
-        if ($items_id === null) {
-            $items_id = $item->add([
-                'name' => __FUNCTION__,
-                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
-            ]);
-            $this->integer($items_id)->isGreaterThan(0);
-        }
-        // Create a new agent
-        $agent = new \Agent();
-        $rand = mt_rand();
-        $agents_id = $agent->add([
-            'name' => __FUNCTION__ . $rand . '-2018-07-09-09-07-13',
-            'deviceid' => __FUNCTION__ . $rand . '-2018-07-09-09-07-13',
-            'version' => '2.5.2-1.fc31',
-            'itemtype' => $itemtype,
-            'items_id' => $items_id,
-            'tag' => '000005',
-            'agenttypes_id' => 1
-        ]);
-        $this->integer($agents_id)->isGreaterThan(0);
-        // Force-change last_contact to be older than the stale period
-        $this->boolean($agent->update([
-            'id' => $agents_id,
-            'last_contact' => date('Y-m-d H:i:s', strtotime('-' . ($test_stale_days + 1) . ' days'))
-        ]))->isTrue();
+        $item = $this->testedInstance->getLinkedItem();
+        $this->object($item)->isInstanceOf('Computer');
 
-        // Set stale_agents_delay
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_delay',
-                'value' => $test_stale_days
-            ],
-            [
-                'name' => 'stale_agents_delay'
-            ]
+        //check default status
+        $this->integer($item->fields['states_id'])->isIdenticalTo(0);
+
+        //create new status
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Stale']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        //set last agent contact far ago
+        $DB->update(
+            \Agent::getTable(),
+            ['last_contact' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+            ['id' => $agent['id']]
         );
-        // Set stale_agents_clean to 1
-        $DB->updateOrInsert(
-            \Config::getTable(),
+
+        //define sale agents actions
+        \Config::setConfigurationValues(
+            'inventory',
             [
-                'name' => 'stale_agents_clean',
-                'value' => 1
-            ],
-            [
-                'name' => 'stale_agents_clean'
-            ]
-        );
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_status',
-                'value' => -1
-            ],
-            [
-                'name' => 'stale_agents_status'
+                'stale_agents_delay' => 1,
+                'stale_agents_action' => exportArrayToDB([
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                ]),
+                'stale_agents_status' => $states_id
             ]
         );
 
-        // Force run the cleanup cron task (direct call the function)
-        $crontask = new \CronTask();
-        $this->boolean(\Agent::cronCleanoldagents($crontask))->isTrue();
-        // Verify that the agent has been deleted
-        $this->boolean($agent->getFromDB($agents_id))->isFalse();
-    }
+        //run crontask
+        $task = new \CronTask();
+        $this->boolean(\Agent::cronCleanoldagents($task))->isTrue();
 
-    protected function staleAgentStatusChangeProvider()
-    {
-        return [
-            ['Computer', 0],
-            ['Computer', null],
-            ['Phone', 0],
-            ['Phone', null]
-        ];
-    }
-
-    /**
-     * @dataProvider staleAgentStatusChangeProvider
-     */
-    public function testStaleAgentStatusChange(string $itemtype, ?int $items_id)
-    {
-        global $DB;
-
-        $test_stale_days = 10;
-
-        $item = new $itemtype();
-        if ($items_id === null) {
-            $items_id = $item->add([
-                'name' => __FUNCTION__,
-                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                'states_id' => 1
-            ]);
-            $this->integer($items_id)->isGreaterThan(0);
-        }
-
-        // Create a new agent (Does need a real item linked)
-        $agent = new \Agent();
-        $rand = mt_rand();
-        $agents_id = $agent->add([
-            'name' => __FUNCTION__ . $rand . '-2018-07-09-09-07-13',
-            'deviceid' => __FUNCTION__ . $rand . '-2018-07-09-09-07-13',
-            'version' => '2.5.2-1.fc31',
-            'itemtype' => $itemtype,
-            'items_id' => $items_id,
-            'tag' => '000005',
-            'agenttypes_id' => 1
-        ]);
-        $this->integer($agents_id)->isGreaterThan(0);
-        // Force-change last_contact to be older than the stale period
-        $this->boolean($agent->update([
-            'id' => $agents_id,
-            'last_contact' => date('Y-m-d H:i:s', strtotime('-' . ($test_stale_days + 1) . ' days'))
-        ]))->isTrue();
-
-        // Set stale_agents_delay
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_delay',
-                'value' => $test_stale_days
-            ],
-            [
-                'name' => 'stale_agents_delay'
-            ]
-        );
-        // Set stale_agents_status to -1
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_status',
-                'value' => -1
-            ],
-            [
-                'name' => 'stale_agents_status'
-            ]
-        );
-        // Set stale_agents_clean to 0
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_clean',
-                'value' => 0
-            ],
-            [
-                'name' => 'stale_agents_clean'
-            ]
-        );
-
-        // Force run the cleanup cron task (direct call the function)
-        $crontask = new \CronTask();
-        // Should return true even if the agent has an invalid item
-        $this->boolean(\Agent::cronCleanoldagents($crontask))->isTrue();
-        // Verify that the agent has not been deleted
-        $this->boolean((bool) $agent->getFromDB($agents_id))->isTrue();
-        if ($items_id > 0) {
-            $item->getFromDB($items_id);
-            // Verify the computer status has not changed
-            $this->integer($item->fields['states_id'])->isEqualTo(1);
-        }
-
-        // Set stale_agents_status to 2, run the stale agent cron, and verify the computer status matches
-        $DB->updateOrInsert(
-            \Config::getTable(),
-            [
-                'name' => 'stale_agents_status',
-                'value' => 2
-            ],
-            [
-                'name' => 'stale_agents_status'
-            ]
-        );
-
-        $this->boolean(\Agent::cronCleanoldagents($crontask))->isTrue();
-        if ($items_id > 0) {
-            $item->getFromDB($items_id);
-            $this->integer($item->fields['states_id'])->isEqualTo(2);
-        }
+        //check item has been updated
+        $this->boolean($item->getFromDB($item->fields['id']))->isTrue();
+        $this->integer($item->fields['is_deleted'])->isIdenticalTo(1);
+        $this->integer($item->fields['states_id'])->isIdenticalTo($states_id);
     }
 }

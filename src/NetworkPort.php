@@ -520,6 +520,7 @@ class NetworkPort extends CommonDBChild
 
     public function post_addItem()
     {
+        parent::post_addItem(); //for history
         $this->updateDependencies(!$this->input['_no_history']);
         $this->updateMetrics();
     }

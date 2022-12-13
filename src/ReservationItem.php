@@ -635,8 +635,8 @@ class ReservationItem extends CommonDBChild
                         'glpi_reservationitems' => 'id',
                         'glpi_reservations'     => 'reservationitems_id', [
                             'AND' => [
-                                'glpi_reservations.end'    => ['>=', $begin],
-                                'glpi_reservations.begin'  => ['<=', $end]
+                                'glpi_reservations.end'    => ['>', $begin],
+                                'glpi_reservations.begin'  => ['<', $end]
                             ]
                         ]
                     ]
