@@ -528,17 +528,18 @@ class Blacklist extends CommonDropdown
             $value->serial = $value->mserial;
         }
 
-        if (property_exists($value, 'ipaddress') || property_exists($value, 'ip')) {
-            $property = property_exists($value, 'ipaddress') ? 'ipaddress' : 'ip';
-            $ips = &$value->$property;
-            if (is_array($ips)) {
-                foreach ($ips as $k => $ip) {
-                    if ('' == $this->process(self::IP, $ip)) {
-                        unset($ips[$k]);
+        foreach (['ipaddress', 'ip', 'ips'] as $property) {
+            if (property_exists($value, $property)) {
+                $ips = &$value->$property;
+                if (is_array($ips)) {
+                    foreach ($ips as $k => $ip) {
+                        if ('' == $this->process(self::IP, $ip)) {
+                            unset($ips[$k]);
+                        }
                     }
+                } else if ('' == $this->process(self::IP, $ips)) {
+                    unset($value->$property);
                 }
-            } else if ('' == $this->process(self::IP, $ips)) {
-                unset($value->$property);
             }
         }
 
