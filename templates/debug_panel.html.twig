@@ -90,6 +90,20 @@
    {% endif %}
 {% endmacro %}
 
+{% macro display_clean_sql(query) %}
+   {{ query|replace({
+      'UNION': '</br>UNION</br>',
+      'FROM': '</br>FROM',
+      'WHERE': '</br>WHERE',
+      'INNER JOIN': '</br>INNER JOIN',
+      'LEFT JOIN': '</br>LEFT JOIN',
+      'ORDER BY': '</br>ORDER BY',
+      'SORT': '</br>SORT',
+      '>': '&gt;',
+      '<': '&lt;',
+   })|raw }}
+{% endmacro %}
+
 <div id="debugpanel{{ rand }}" class="container-fluid card debug-panel {{ ajax ? "debug_ajax" : "" }} p-0 position-sticky bottom-0">
    <ul class="nav nav-tabs" data-bs-toggle="tabs">
       <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#debugsummary{{ rand }}">SUMMARY</a></li>
@@ -155,7 +169,7 @@
                      {% for query in sql_info['queries'] %}
                         <tr>
                            <td>{{ query['num'] }}</td>
-                           <td>{{ query['query']|raw }}</td>
+                           <td>{{ _self.display_clean_sql(query['query']) }}</td>
                            <td>{{ query['time'] }}</td>
                            <td>{{ query['rows'] }}</td>
                            <td>{{ query['warnings']|nl2br }}</td>

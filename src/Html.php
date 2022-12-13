@@ -704,33 +704,6 @@ class Html
         echo "</div>";
     }
 
-
-    /**
-     * Clean Display of Request
-     *
-     * @since 0.83.1
-     *
-     * @param string $request  SQL request
-     *
-     * @return string
-     **/
-    public static function cleanSQLDisplay($request)
-    {
-
-        $request = str_replace("<", "&lt;", $request);
-        $request = str_replace(">", "&gt;", $request);
-        $request = str_ireplace("UNION", "<br/>UNION<br/>", $request);
-        $request = str_ireplace("UNION ALL", "<br/>UNION ALL<br/>", $request);
-        $request = str_ireplace("FROM", "<br/>FROM", $request);
-        $request = str_ireplace("WHERE", "<br/>WHERE", $request);
-        $request = str_ireplace("INNER JOIN", "<br/>INNER JOIN", $request);
-        $request = str_ireplace("LEFT JOIN", "<br/>LEFT JOIN", $request);
-        $request = str_ireplace("ORDER BY", "<br/>ORDER BY", $request);
-        $request = str_ireplace("SORT", "<br/>SORT", $request);
-
-        return $request;
-    }
-
     /**
      * Display Debug Information
      *
@@ -773,7 +746,7 @@ class Html
                 foreach ($DEBUG_SQL['queries'] as $num => $query) {
                     $info = [
                         'num'       => $num,
-                        'query'     => self::cleanSQLDisplay($query),
+                        'query'     => $query,
                         'time'      => $DEBUG_SQL['times'][$num] ?? '',
                         'rows'      => $DEBUG_SQL['rows'][$num] ?? 0,
                         'errors'    => $DEBUG_SQL['errors'][$num] ?? '',
