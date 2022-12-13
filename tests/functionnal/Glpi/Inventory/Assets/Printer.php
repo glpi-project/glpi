@@ -1585,7 +1585,6 @@ class Printer extends AbstractInventoryAsset
         $this->array($main->getManagementPorts())->hasSize(1);
 
         //do real inventory to check dataDB
-        $json_str = file_get_contents(self::INV_FIXTURES . 'printer_4.json');
         $json = json_decode($json_str);
         $this->doInventory($json);
 
