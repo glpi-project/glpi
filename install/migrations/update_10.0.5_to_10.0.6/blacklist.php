@@ -38,7 +38,7 @@
  * @var Migration $migration
  */
 
-if (countElementsInTable(Blacklist::getTable(), ["type" => blackList::IP, "value" => "::1"]) === 0) {
+if (countElementsInTable(Blacklist::getTable(), ["type" => Blacklist::IP, "value" => "::1"]) === 0) {
     $migration->addPostQuery(
         $DB->buildInsert(
             'glpi_blacklists',
