@@ -6491,6 +6491,7 @@ abstract class CommonITILObject extends CommonDBTM
             'class'         => 'ITILFollowup',
             'icon'          => 'ti ti-message-circle',
             'label'         => _x('button', 'Answer'),
+            'short_label'   => _x('button', 'Answer'),
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
             'item'          => $fup,
             'hide_in_menu'  => !$canadd_fup
@@ -6500,6 +6501,7 @@ abstract class CommonITILObject extends CommonDBTM
             'class'         => $task_class,
             'icon'          => 'ti ti-checkbox',
             'label'         => _x('button', 'Create a task'),
+            'short_label'   => _x('button', 'Task'),
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
             'item'          => $task,
             'hide_in_menu'  => !$canadd_task
@@ -6509,6 +6511,7 @@ abstract class CommonITILObject extends CommonDBTM
             'class'         => 'ITILSolution',
             'icon'          => 'ti ti-check',
             'label'         => _x('button', 'Add a solution'),
+            'short_label'   => _x('button', 'Solution'),
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
             'item'          => new ITILSolution(),
             'hide_in_menu'  => !$canadd_solution
@@ -6518,6 +6521,7 @@ abstract class CommonITILObject extends CommonDBTM
             'class'         => Document_Item::class,
             'icon'          => Document_Item::getIcon(),
             'label'         => _x('button', 'Add a document'),
+            'short_label'   => _x('button', 'Document'),
             'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
             'item'          => new Document_Item(),
             'hide_in_menu'  => !$canadd_document
@@ -6528,6 +6532,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'class'         => $validation::getType(),
                 'icon'          => 'ti ti-thumb-up',
                 'label'         => _x('button', 'Ask for validation'),
+                'short_label'   => _x('button', 'Validation'),
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
                 'hide_in_menu'  => !$canadd_validation
