@@ -751,7 +751,7 @@ class Html
 
             $plugin_tabs = [];
             if (isset($PLUGIN_HOOKS[Hooks::DEBUG_TABS])) {
-                foreach ($PLUGIN_HOOKS[Hooks::DEBUG_TABS] as $plugin => $tabs) {
+                foreach ($PLUGIN_HOOKS[Hooks::DEBUG_TABS] as $tabs) {
                     $plugin_tabs = array_merge($plugin_tabs, $tabs);
                 }
             }

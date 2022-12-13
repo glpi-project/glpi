@@ -1516,14 +1516,16 @@ function initSortableTable(element_id) {
         const current_order = element.data('order');
         const new_order = current_sort === column_index && current_order === 'asc' ? 'desc' : 'asc';
         element.data('order', new_order);
-        const col = element.find('thead').first().find('th').eq(column_index);
+        const sortable_header = element.find('thead').first();
+        const col = sortable_header.find('th').eq(column_index);
+        // Remove all sort icon classes
+        sortable_header.find('th i[class*="fa-sort"]').removeClass('fa-sort fa-sort-asc fa-sort-desc');
 
         const sort_icon = col.find('i');
         if (sort_icon.length === 0) {
             // Add sort icon
             col.eq(0).append(`<i class="fas fa-sort-${new_order}"></i>`);
         } else {
-            sort_icon.removeClass('fa-sort fa-sort-asc fa-sort-desc');
             sort_icon.addClass(new_order === 'asc' ? 'fa-sort-asc' : 'fa-sort-desc');
         }
 

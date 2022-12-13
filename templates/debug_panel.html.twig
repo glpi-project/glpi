@@ -38,7 +38,7 @@
       <table class="array-debug table table-striped card-table">
          <tr>
             <th>KEY</th>
-            <th>=></th>
+            <th>=&gt;</th>
             <th>VALUE</th>
          </tr>
          {% for key, value in data %}
@@ -46,24 +46,39 @@
             <tr>
                <td>{{ key }}</td>
                <td>
-                  {% if js_expand and value is array %}
-                     <a class="fw-bolder" href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">=></a>
+                  {% if js_expand and (value is array or value is object) %}
+                     <a class="fw-bolder" href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">=&gt;</a>
                   {% else %}
-                     =>
+                     =&gt;
                   {% endif %}
                </td>
                <td>
                   {% if value is array %}
+                     {% if js_expand %}
+                        <a class="fw-bolder" href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">array({{ value|length }})</a>
+                     {% else %}
+                        array({{ value|length }})
+                     {% endif %}
                      <div id="content{{ key ~ row_rand }}" {{ js_expand ? 'style="display: none"' : '' }}>
                         {{ _self.print_clean_array(value, pad + 1) }}
                      </div>
                   {% else %}
-                     {% if value is same as(true) or value is same as(false) %}
-                        {{ value ? 'true' : 'false' }}
-                     {% elseif value is object %}
-                        {{ call([value, '__toString'])|default('(object) ' ~ get_class(value)) }}
+                     {% if value is object %}
+                        {% set out %}
+                           {{ dump(value) }}
+                        {% endset %}
+                        {# Split the type info and object contents #}
+                        {% set out = out|trim|split(' ', 2) %}
+                        {% if js_expand %}
+                           <a class="fw-bolder" href="javascript:showHideDiv('content{{ key ~ row_rand }}', '', '', '')">{{ out[0] }}</a>
+                        {% else %}
+                           {{ out[0] }}
+                        {% endif %}
+                        <div id="content{{ key ~ row_rand }}" {{ js_expand ? 'style="display: none"' : '' }}>
+                           <pre>{{ out[1]|trim }}</pre>
+                        </div>
                      {% else %}
-                        {{ value }}
+                        {{ dump(value) }}
                      {% endif %}
                   {% endif %}
                </td>
@@ -143,8 +158,8 @@
                            <td>{{ query['query']|raw }}</td>
                            <td>{{ query['time'] }}</td>
                            <td>{{ query['rows'] }}</td>
-                           <td>{{ query['warnings'] }}</td>
-                           <td>{{ query['errors'] }}</td>
+                           <td>{{ query['warnings']|nl2br }}</td>
+                           <td>{{ query['errors']|nl2br }}</td>
                         </tr>
                      {% endfor %}
                   </tbody>
