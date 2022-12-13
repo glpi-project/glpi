@@ -127,7 +127,7 @@
                <dt class="col-sm-3">Execution time</dt>
                <dd class="col-sm-9">{{ summary['execution_time'] }}</dd>
                <dt class="col-sm-3">Memory usage</dt>
-               <dd class="col-sm-9">{{ summary['memory_usage'] }}</dd>
+               <dd class="col-sm-9">{{ summary['memory_usage']|formatted_size }}</dd>
                {% if debug_sql %}
                   <dt class="col-sm-3">SQL queries count</dt>
                   <dd class="col-sm-9">{{ summary['sql_queries_count'] }}</dd>

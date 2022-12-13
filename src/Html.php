@@ -760,7 +760,7 @@ class Html
             $execution_time = $TIMER_DEBUG->getTime();
             $summary = [
                 'execution_time'    => sprintf(_n('%s second', '%s seconds', $execution_time), $execution_time),
-                'memory_usage'      => Toolbox::getSize(memory_get_usage()),
+                'memory_usage'      => memory_get_usage(),
                 'sql_queries_count'     => $CFG_GLPI["debug_sql"] ? $SQL_TOTAL_REQUEST : 0,
                 'sql_queries_duration'  => $CFG_GLPI["debug_sql"] ? sprintf(_n('%s second', '%s seconds', $queries_duration), $queries_duration) : 0,
             ];
