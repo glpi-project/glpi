@@ -320,6 +320,7 @@ var Dashboard = {
             glpi_ajax_dialog({
                 title: __("Edit this card"),
                 url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                dialogclass: 'modal-lg',
                 params: {
                     action:       'display_edit_widget',
                     gridstack_id: item.attr('gs-id'),
@@ -433,6 +434,7 @@ var Dashboard = {
             var widgetdom   = $(this);
             var widgettype  = widgetdom.val();
             var widget      = Dashboard.all_widgets[widgettype];
+            var haspalette  = widget.haspalette || false;
             var usegradient = widget.gradient || false;
             var pointlabels = widget.pointlbl || false;
             var uselimit    = widget.limit || false;
@@ -440,6 +442,7 @@ var Dashboard = {
             var height      = widget.height || 2;
 
             var form = widgetdom.closest('.display-widget-form');
+            form.find('.palette_field').toggle(haspalette);
             form.find('.gradient_field').toggle(usegradient);
             form.find('.pointlbl_field').toggle(pointlabels);
             form.find('.limit_field').toggle(uselimit);
@@ -503,6 +506,7 @@ var Dashboard = {
         form_data.card_options.color        = form_data.color || null;
         form_data.card_options.widgettype   = form_data.widgettype || null;
         form_data.card_options.use_gradient = form_data.use_gradient || 0;
+        form_data.card_options.palette      = form_data.palette || '';
         form_data.card_options.labels       = form_data.labels || 0;
         form_data.card_options.point_labels = form_data.point_labels || 0;
         form_data.card_options.legend       = form_data.legend || 0;
