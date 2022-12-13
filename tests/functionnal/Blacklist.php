@@ -96,6 +96,9 @@ class Blacklist extends DbTestCase
             ], [
                 'input'    => ['name' => 'My name', 'ip' => '127.0.0.1'],
                 'expected' => ['name' => 'My name']
+            ], [
+                'input'    => ['name' => 'My name', 'ip' => '0.0.0.0'],
+                'expected' => ['name' => 'My name']
             ]
         ];
     }
