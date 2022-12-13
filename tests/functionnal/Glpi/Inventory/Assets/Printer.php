@@ -1461,7 +1461,86 @@ class Printer extends AbstractInventoryAsset
          */
         $date_now = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date_now;
-        $json_str = file_get_contents(self::INV_FIXTURES . 'printer_4.json');
+        $json_str = '{
+          "content": {
+              "cartridges": [
+                  {
+                      "tonerblack": "71"
+                  }
+              ],
+              "firmwares": [
+                  {
+                      "date": "2019-09-16",
+                      "description": "device firmware",
+                      "manufacturer": "Hewlett-Packard",
+                      "name": "CANON MP5353",
+                      "type": "device",
+                      "version": "2409048_052887"
+                  }
+              ],
+              "network_device": {
+                  "firmware": "2409048_052887",
+                  "ips": [
+                       "10.59.29.208",
+                       "0.0.0.0",
+                       "127.0.0.1"
+                  ],
+                  "mac": "00:68:eb:f2:be:10",
+                  "manufacturer": "Hewlett-Packard",
+                  "model": "CANON MP5353",
+                  "name": "NPIF2BE10",
+                  "ram": 512,
+                  "serial": "PHCVN191TG",
+                  "type": "Printer",
+                  "uptime": "7 days, 01:26:41.98",
+                  "credentials": 4
+              },
+              "pagecounters": {
+                  "rectoverso": 831,
+                  "total": 1802
+              },
+              "network_ports": [
+                  {
+                      "ifdescr": "CANON MP5353",
+                      "ifinerrors": 0,
+                      "ifinbytes": 0,
+                      "ifinternalstatus": 1,
+                      "iflastchange": "0.00 seconds",
+                      "ifmtu": 1536,
+                      "ifname": "CANON MP5353",
+                      "ifnumber": 1,
+                      "ifouterrors": 0,
+                      "ifoutbytes": 0,
+                      "ifspeed": 0,
+                      "ifstatus": 1,
+                      "iftype": 24
+                  },
+                  {
+                      "ifdescr": "CANON MP5353",
+                      "ifinerrors": 0,
+                      "ifinbytes": 68906858,
+                      "ifinternalstatus": 1,
+                      "iflastchange": "0.00 seconds",
+                      "ifmtu": 1500,
+                      "ifname": "CANON MP5353",
+                      "ifnumber": 2,
+                      "ifouterrors": 0,
+                      "ifoutbytes": 514488,
+                      "ifspeed": 1000000000,
+                      "ifstatus": 1,
+                      "iftype": 6,
+                      "ips": [
+                          "10.59.29.175"
+                      ],
+                      "mac": "00:68:eb:f2:be:10"
+                  }
+              ],
+              "versionclient": "missing"
+          },
+          "action": "netinventory",
+          "deviceid": "NPIF2BE10-2020-12-31-11-28-51",
+          "itemtype": "Printer"
+       }';
 
         $json = json_decode($json_str);
 
