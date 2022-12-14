@@ -37,6 +37,7 @@ namespace Glpi\Dashboard;
 
 use Change;
 use CommonDBTM;
+use CommonDBVisible;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
@@ -905,8 +906,10 @@ class Provider
                 'SELECT' => "$i_table.*",
                 'FROM'   => $i_table
             ],
-            self::getFiltersCriteria($i_table, $params['apply_filters'])
+            self::getFiltersCriteria($i_table, $params['apply_filters']),
+            $item instanceof CommonDBVisible ? $item::getVisibilityCriteria() : []
         );
+
         $iterator = $DB->request($criteria);
 
         $data = [];
