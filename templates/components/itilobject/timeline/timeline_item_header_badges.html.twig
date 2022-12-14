@@ -31,11 +31,20 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set timeline_display_date = session('glpitimeline_relative_date') %}
+
 <span class="badge user-select text-wrap d-none d-md-block">
    {% set date_span %}
       <span title="{{ date_creation|formatted_datetime }}"
-            data-bs-placement="bottom">
-         <i class="far fa-clock me-1"></i>{{ date_creation }}
+            data-bs-toggle="tooltip" data-bs-placement="bottom">
+         <i class="far fa-clock me-1"></i>
+         {% if timeline_btn_layout == constant('Config::TIMELINE_RELATIVE_DATE') %}
+            <a href="#{{ anchor }}">
+               {{ date_creation|relative_datetime }}
+            </a>
+         {% else %}
+            {{ date_creation }}
+         {% endif %}
       </span>
    {% endset %}
 
