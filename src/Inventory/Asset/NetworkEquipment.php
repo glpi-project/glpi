@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Blacklist;
 use Glpi\Toolbox\Sanitizer;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
@@ -68,6 +69,7 @@ class NetworkEquipment extends MainAsset
         $val = $this->data[0];
         $model_field = $this->getModelsFieldName();
         $types_field = $this->getTypesFieldName();
+        $blacklist = new Blacklist();
 
         if (isset($this->extra_data['network_device'])) {
             $device = (object)$this->extra_data['network_device'];
@@ -111,7 +113,10 @@ class NetworkEquipment extends MainAsset
 
                //add internal port(s)
                 foreach ($device->ips as $ip) {
-                    if ($ip != '127.0.0.1' && $ip != '::1' && !in_array($ip, $port->ipaddress)) {
+                    if (
+                        !in_array($ip, $port->ipaddress)
+                        && '' != $blacklist->process(Blacklist::IP, $ip)
+                    ) {
                         $port->ipaddress[] = $ip;
                     }
                 }

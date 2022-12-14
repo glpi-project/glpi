@@ -1453,4 +1453,165 @@ class Printer extends AbstractInventoryAsset
         $this->boolean($printer->getFromDB($printer->fields['id']))->isTrue();
         $this->string($printer->fields['name'])->isIdenticalTo($new_name);
     }
+
+    public function testSnmpPrinterManagementPortCleaned()
+    {
+        /**
+         * This check if management port is well cleaned
+         */
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $json_str = '{
+          "content": {
+              "cartridges": [
+                  {
+                      "tonerblack": "71"
+                  }
+              ],
+              "firmwares": [
+                  {
+                      "date": "2019-09-16",
+                      "description": "device firmware",
+                      "manufacturer": "Hewlett-Packard",
+                      "name": "CANON MP5353",
+                      "type": "device",
+                      "version": "2409048_052887"
+                  }
+              ],
+              "network_device": {
+                  "firmware": "2409048_052887",
+                  "ips": [
+                       "10.59.29.208",
+                       "0.0.0.0",
+                       "127.0.0.1"
+                  ],
+                  "mac": "00:68:eb:f2:be:10",
+                  "manufacturer": "Hewlett-Packard",
+                  "model": "CANON MP5353",
+                  "name": "NPIF2BE10",
+                  "ram": 512,
+                  "serial": "PHCVN191TG",
+                  "type": "Printer",
+                  "uptime": "7 days, 01:26:41.98",
+                  "credentials": 4
+              },
+              "pagecounters": {
+                  "rectoverso": 831,
+                  "total": 1802
+              },
+              "network_ports": [
+                  {
+                      "ifdescr": "CANON MP5353",
+                      "ifinerrors": 0,
+                      "ifinbytes": 0,
+                      "ifinternalstatus": 1,
+                      "iflastchange": "0.00 seconds",
+                      "ifmtu": 1536,
+                      "ifname": "CANON MP5353",
+                      "ifnumber": 1,
+                      "ifouterrors": 0,
+                      "ifoutbytes": 0,
+                      "ifspeed": 0,
+                      "ifstatus": 1,
+                      "iftype": 24
+                  },
+                  {
+                      "ifdescr": "CANON MP5353",
+                      "ifinerrors": 0,
+                      "ifinbytes": 68906858,
+                      "ifinternalstatus": 1,
+                      "iflastchange": "0.00 seconds",
+                      "ifmtu": 1500,
+                      "ifname": "CANON MP5353",
+                      "ifnumber": 2,
+                      "ifouterrors": 0,
+                      "ifoutbytes": 514488,
+                      "ifspeed": 1000000000,
+                      "ifstatus": 1,
+                      "iftype": 6,
+                      "ips": [
+                          "10.59.29.175"
+                      ],
+                      "mac": "00:68:eb:f2:be:10"
+                  }
+              ],
+              "versionclient": "missing"
+          },
+          "action": "netinventory",
+          "deviceid": "NPIF2BE10-2020-12-31-11-28-51",
+          "itemtype": "Printer"
+       }';
+
+        $json = json_decode($json_str);
+
+        $printer = new \Printer();
+
+        $data = (array)$json->content;
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->boolean($inventory->setData($json))->isTrue();
+
+        $agent = new \Agent();
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isIdenticalTo(0);
+
+        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new \Glpi\Inventory\Conf());
+        $result = $main->prepare();
+        $this->array($result)->hasSize(1);
+        $this->array((array)$result[0])->isIdenticalTo([
+            'autoupdatesystems_id' => 'GLPI Native Inventory',
+            'last_inventory_update' => $date_now,
+            "is_deleted" => 0,
+            'firmware' => '2409048_052887',
+            'ips' => ['10.59.29.208', '0.0.0.0', '127.0.0.1'],
+            'mac' => '00:68:eb:f2:be:10',
+            'manufacturer' => 'Hewlett-Packard',
+            'model' => 'CANON MP5353',
+            'name' => 'NPIF2BE10',
+            'serial' => 'PHCVN191TG',
+            'type' => 'Printer',
+            'uptime' => '7 days, 01:26:41.98',
+            'printermodels_id' => 'CANON MP5353',
+            'printertypes_id' => 'Printer',
+            'manufacturers_id' => 'Hewlett-Packard',
+            'snmpcredentials_id' => 4,
+            'have_usb' => 0,
+            'have_ethernet' => 1,
+            'memory_size' => 512,
+            'last_pages_counter' => 1802
+        ]);
+
+        //get no management port
+        $this->array($main->getManagementPorts())->hasSize(1);
+
+        //do real inventory to check dataDB
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDbByCrit(['name' => 'NPIF2BE10', 'serial' => 'PHCVN191TG']))->isTrue();
+
+        //1 NetworkPort
+        $np = new \NetworkPort();
+        $this->integer(
+            countElementsInTable(
+                $np::getTable(),
+                [['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']]
+            )
+        )->isIdenticalTo(1);
+
+        //1 NetworkPortAggregate
+        $this->boolean($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+
+        //1 NetworkName form NetworkPortAggregate
+        $nm = new \NetworkName();
+        $this->boolean($nm->getFromDbByCrit(["itemtype" => "NetworkPort", "items_id" => $np->fields['id']]))->isTrue();
+
+        //1 IPAdress form NetworkName
+        $ip = new \IPAddress();
+        $this->boolean($ip->getFromDbByCrit(["name" => "10.59.29.208", "itemtype" => "NetworkName", "items_id" => $nm->fields['id']]))->isTrue();
+
+        //remove printer for other test
+        $printer->delete($printer->fields);
+    }
 }
