@@ -1614,4 +1614,73 @@ class Printer extends AbstractInventoryAsset
         //remove printer for other test
         $printer->delete($printer->fields);
     }
+
+
+    public function testSnmpPrinterManagementPortNotRecreated()
+    {
+        /**
+         * This check if management port is well cleaned
+         */
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <AUTHPORT />  <AUTHPROTOCOL />  <AUTHSNMP>1</AUTHSNMP>
+              <DESCRIPTION>RICOH MP C5503 1.38 / RICOH Network Printer C model / RICOH Network Scanner C model / RICOH Network Facsimile C model</DESCRIPTION>
+              <DNSHOSTNAME>10.100.51.207</DNSHOSTNAME>
+              <IP>10.100.51.207</IP>
+              <IPS>
+                <IP>0.0.0.0</IP>
+                <IP>10.100.51.207</IP>
+                <IP>127.0.0.1</IP>
+              </IPS>
+              <LOCATION>Location</LOCATION>
+              <MAC>00:26:73:12:34:56</MAC>
+              <MANUFACTURER>Ricoh</MANUFACTURER>
+              <MODEL>MP C5503</MODEL>
+              <NETBIOSNAME>CLPSF99</NETBIOSNAME>
+              <SERIAL>E1234567890</SERIAL>
+              <SNMPHOSTNAME>CLPSF99</SNMPHOSTNAME>
+              <TYPE>PRINTER</TYPE>
+              <UPTIME>33 days, 01:29:11.00</UPTIME>
+              <WORKGROUP>WORKGROUP</WORKGROUP>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>NETDISCOVERY</QUERY>
+        </REQUEST>';
+
+
+        $this->doInventory($xml_source, true);
+
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDbByCrit(['name' => 'CLPSF99', 'serial' => 'E1234567890']))->isTrue();
+
+        //1 NetworkPortAggregate
+        $np_aggregate = new \NetworkPort();
+        $this->boolean($np_aggregate->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+
+
+        //redo an inventory
+        $this->doInventory($xml_source, true);
+
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDbByCrit(['name' => 'CLPSF99', 'serial' => 'E1234567890']))->isTrue();
+
+        //1 NetworkPortAggregate
+        $np_aggregate_after_reimport = new \NetworkPort();
+        $this->boolean($np_aggregate_after_reimport->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']))->isTrue();
+
+
+        $this->integer($np_aggregate->fields['id'])->isEqualTo($np_aggregate_after_reimport->fields['id']);
+
+        //remove printer for other test
+        $printer->delete($printer->fields);
+    }
+
+
 }
