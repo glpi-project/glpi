@@ -33,6 +33,7 @@
 
 {% set timeline_btns_cls = left_regular_cls %}
 {% set form_btns_cls     = is_expanded ? right_expanded_cls : "col-lg" %}
+{% set timeline_btn_layout = session('glpitimeline_action_btn_layout') %}
 {% set switch_btn_cls    = "fa-caret-left" %}
 {% if is_expanded %}
     {% set timeline_btns_cls = left_expanded_cls %}
@@ -42,37 +43,49 @@
 
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
    <div class="buttons-bar d-flex py-2">
-      <div class="col {{ timeline_btns_cls }} ps-3 timeline-buttons">
+      <div class="col {{ timeline_btns_cls }} ps-3 timeline-buttons d-flex">
          {% if not item.isNewItem() %}
             {% set default_action_data = timeline_itemtypes|first %}
             {% if item.isNotSolved() and default_action_data != false %}
                {% if timeline_itemtypes|length > 1 %}
-                  <div class="btn-group me-2 main-actions" style="{{ load_kb_sol > 0 ? 'display:none;' : '' }}">
+                  {% set btn_class = timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') ? "" : "btn-group" %}
+                  <div class="{{ btn_class }} me-2 main-actions" style="{{ load_kb_sol > 0 ? 'display:none;' : '' }}">
                {% else %}
                   {# Don't use d-inline-flex class as it add an '!important' tag that mess with our javascript that will hide this div #}
                   <div class="main-actions" style="display:inline-flex">
                {% endif %}
-                  <button class="btn btn-primary answer-action" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
+                  <button class="btn btn-primary answer-action mb-2" data-bs-toggle="collapse" data-bs-target="#new-{{ default_action_data.class }}-block">
                      <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
                   </button>
 
                   {% set main_actions_itemtypes = timeline_itemtypes|filter((v, k) => v.hide_in_menu is not defined or v.hide_in_menu != true) %}
                   {% if main_actions_itemtypes|length > 1 %}
-                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="visually-hidden">{{ __('View other actions') }}</span>
-                    </button>
-                    <ul class="dropdown-menu">
+                     {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') %}
                         {% for action, timeline_itemtype in main_actions_itemtypes %}
-                            {% if loop.index0 > 0 %}
-                            <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
-                                data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
-                                <i class="{{ timeline_itemtype.icon }}"></i>
-                                <span>{{ timeline_itemtype.label }}</span>
-                            </a></li>
-                            {% endif %}
+                        {% if loop.index0 > 0 %}
+                              <button class="ms-2 mb-2 btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                                 <i class="{{ timeline_itemtype.icon }}"></i>
+                                 <span>{{ timeline_itemtype.short_label }}</span>
+                              </button>
+                              {% endif %}
                         {% endfor %}
-                    </ul>
+                     {% else %}
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split mb-2" data-bs-toggle="dropdown" aria-expanded="false">
+                           <span class="visually-hidden">{{ __('View other actions') }}</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                              {% for action, timeline_itemtype in main_actions_itemtypes %}
+                                 {% if loop.index0 > 0 %}
+                                 <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
+                                    data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                                    <i class="{{ timeline_itemtype.icon }}"></i>
+                                    <span>{{ timeline_itemtype.label }}</span>
+                                 </a></li>
+                                 {% endif %}
+                              {% endfor %}
+                        </ul>
+                     {% endif %}
                   {% endif %}
                </div>
             {% endif %}
@@ -158,15 +171,18 @@
 $(function() {
    $(document).on("click", "#itil-footer .answer-action", function() {
       scrollToTimelineStart();
-
-      // hide answer button after clicking on it
-      $(this).closest(".main-actions").hide();
+      {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
+         // hide answer button after clicking on it only for merge btn
+         $(this).closest(".main-actions").hide();
+      {% endif %}
    });
 
    // when close button of new answer block is clicked, show again the new answer button
-   $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
-      $("#itil-footer .main-actions").show();
-   });
+   {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
+      $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
+         $("#itil-footer .main-actions").show();
+      });
+   {% endif %}
 
    var scrollToTimelineStart = function() {
         // scroll body to ensure we are at bottom (useful for responsive display)

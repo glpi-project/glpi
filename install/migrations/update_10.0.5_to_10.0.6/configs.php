@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,60 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-.itil-footer {
-    position: sticky;
-    bottom: 0;
+/**
+ * @var Migration $migration
+ */
 
-    @include media-breakpoint-down(sm) {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 8px;
-        z-index: $zindex-fixed;
-    }
-
-    .answer-action {
-        &:hover {
-            font-weight: bold;
-        }
-    }
-
-    .action-task {
-        background-color: $timeline-task-bg;
-        color: $timeline-task-fg;
-    }
-
-    .action-solution {
-        background-color: $timeline-sol-bg;
-        color: $timeline-sol-fg;
-    }
-
-    .action-validation {
-        background-color: $timeline-itilc-bg;
-        color: $timeline-itilc-fg;
-    }
-
-    .action-document {
-        background-color: $timeline-doc-bg;
-        color: $timeline-doc-fg;
-    }
-
-    #debugajax {
-        position: absolute;
-        top: 10px;
-        left: 50%;
-    }
-
-    .buttons-bar {
-        background-color: $itil-secondary-bg;
-
-        .form-buttons {
-            background-color: inherit;
-            border-left: 1px solid $card-border-color;
-
-            @include media-breakpoint-down(md) {
-                border-left: 0 !important;
-            }
-        }
-    }
-}
+$migration->displayMessage('Add new configurations / user preferences');
+$migration->addConfig([
+    'timeline_action_btn_layout'   => 0,
+]);
+$migration->addField('glpi_users', 'timeline_action_btn_layout', 'tinyint DEFAULT 0');
