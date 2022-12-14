@@ -1681,6 +1681,4 @@ class Printer extends AbstractInventoryAsset
         //remove printer for other test
         $printer->delete($printer->fields);
     }
-
-
 }
