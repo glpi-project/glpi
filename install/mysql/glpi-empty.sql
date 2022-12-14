@@ -3942,6 +3942,8 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
 DROP TABLE IF EXISTS `glpi_knowbaseitems`;
 CREATE TABLE `glpi_knowbaseitems` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
   `name` text,
   `answer` longtext,
   `is_faq` tinyint NOT NULL DEFAULT '0',
@@ -3952,6 +3954,8 @@ CREATE TABLE `glpi_knowbaseitems` (
   `begin_date` timestamp NULL DEFAULT NULL,
   `end_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
   KEY `users_id` (`users_id`),
   KEY `is_faq` (`is_faq`),
   KEY `date_creation` (`date_creation`),
