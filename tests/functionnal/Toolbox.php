@@ -1414,6 +1414,21 @@ class Toolbox extends DbTestCase
             'size'     => "2TO",
             'expected' => 2097152,
         ];
+
+        yield [
+            'size'     => '>200',
+            'expected' => '>200',
+        ];
+
+        yield [
+            'size'     => '200AA',
+            'expected' => '200AA',
+        ];
+
+        yield [
+            'size'     => '200 AA',
+            'expected' => '200 AA',
+        ];
     }
 
     /**
