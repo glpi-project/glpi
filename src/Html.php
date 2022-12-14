@@ -4707,7 +4707,7 @@ JAVASCRIPT
             $placeholder
             width: '$width',
             dropdownAutoWidth: true,
-            dropdownParent: $('#$id').closest('div.modal, body'),
+            dropdownParent: $('#$id').closest('div.modal, div.dropdown-menu, body'),
             quietMillis: 100,
             minimumResultsForSearch: " . $CFG_GLPI['ajax_limit_count'] . ",
             matcher: function(params, data) {
@@ -4912,7 +4912,7 @@ JAVASCRIPT
             minimumInputLength: 0,
             quietMillis: 100,
             dropdownAutoWidth: true,
-            dropdownParent: $('#$field_id').closest('div.modal, body'),
+            dropdownParent: $('#$field_id').closest('div.modal, div.dropdown-menu, body'),
             minimumResultsForSearch: " . $CFG_GLPI['ajax_limit_count'] . ",
             ajax: {
                url: '$url',
