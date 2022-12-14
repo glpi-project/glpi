@@ -81,15 +81,18 @@ GLPI.Forms.FaIconSelector = class {
                 if (rule.constructor.name !== 'CSSStyleRule') {
                     continue;
                 }
-                let matches = rule.selectorText.match(/^\.(fa-[a-z-]+)::before$/);
-                if (matches !== null) {
-                    const cls = matches[1];
-                    const entry = {
-                        id: cls,
-                        text: cls
-                    };
-                    if (!icons.includes(entry)) {
-                        icons.push(entry);
+                const words = rule.selectorText.split(', ');
+                for(var k = 0; k < words.length; k++) {
+                    let matches = words[k].match(/^\.(fa-[a-z-]+)::before$/);
+                    if (matches !== null) {
+                        const cls = matches[1];
+                        const entry = {
+                            id: cls,
+                            text: cls
+                        };
+                        if (!icons.includes(entry)) {
+                            icons.push(entry);
+                        }
                     }
                 }
             }
@@ -106,7 +109,7 @@ GLPI.Forms.FaIconSelector = class {
     * @returns {HTMLElement}
     */
     renderIcon(option) {
-        const faFontFamilies = '\'Font Awesome 5 Free\', \'Font Awesome 5 Brands\'';
+        const faFontFamilies = '\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\'';
         let container = document.createElement('span');
         container.innerHTML = `<i class="fa-lg fa-fw fas ${option.id}" style="font-family:${faFontFamilies};"></i> ${option.id}`;
         return container;
