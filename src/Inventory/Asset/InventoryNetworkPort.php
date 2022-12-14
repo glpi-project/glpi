@@ -115,10 +115,12 @@ trait InventoryNetworkPort
         if (!$this->isMainPartial()) {
             $this->cleanUnmanageds();
         }
+
+        $this->handleDeletesManagementPorts();
         $this->handleIpNetworks();
         $this->handleUpdates();
         $this->handleCreates();
-        $this->handleDeletesManagementPorts();
+
         if (method_exists($this, 'handleAggregations')) {
             $this->handleAggregations();
         }
