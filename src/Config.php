@@ -1318,7 +1318,7 @@ class Config extends CommonDBTM
             } else {
                 echo Dropdown::getYesNo(0);
             }
-          echo "</td><td></td></tr>";
+            echo "</td><td></td></tr>";
 
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Priority colors') . "</td>";
