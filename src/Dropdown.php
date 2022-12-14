@@ -3896,6 +3896,10 @@ JAVASCRIPT;
             $post['page_limit'] = $CFG_GLPI['dropdown_max'];
         }
 
+        if (isset($post['_one_id'])) {
+            $post['page_limit'] = -1;
+        }
+
         $entity_restrict = -1;
         if (isset($post['entity_restrict'])) {
             $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
