@@ -844,8 +844,7 @@ HTML,
        // Check creation of expected documents
         $expected_docs = [
             '00-logoteclib.png' => 'image/png',
-         // Space is missing between "France" and "très" due to a bug in laminas-mail
-            '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png' => 'image/png',
+            '01-screenshot-2018-4-12-observatoire-france-tres-haut-debit.png' => 'image/png',
             '01-test.JPG' => 'image/jpeg',
             '15-image001.png' => 'image/png',
             '18-blank.gif' => 'image/gif',

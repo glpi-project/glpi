@@ -94,9 +94,8 @@ class Toolbox extends DbTestCase
                 'name'  => '00-logoteclib.png',
                 'expected'  => '00-logoteclib.png',
             ], [
-            // Space is missing between "France" and "très" due to a bug in laminas-mail
-                'name'  => '01-Screenshot-2018-4-12 Observatoire - Francetrès haut débit.png',
-                'expected'  => '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
+                'name'  => '01-Screenshot-2018-4-12 Observatoire - France très haut débit.png',
+                'expected'  => '01-screenshot-2018-4-12-observatoire-france-tres-haut-debit.png',
             ], [
                 'name'  => '01-test.JPG',
                 'expected'  => '01-test.JPG',

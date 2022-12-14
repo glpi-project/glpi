@@ -2099,9 +2099,6 @@ HTML;
             [ 'name'    => 'laminas/laminas-json',
                 'check'   => 'Laminas\Json\Json'
             ],
-            [ 'name'    => 'laminas/laminas-servicemanager',
-                'check'   => 'Laminas\\ServiceManager\\ServiceManager'
-            ],
             [ 'name'    => 'monolog/monolog',
                 'check'   => 'Monolog\\Logger'
             ],
