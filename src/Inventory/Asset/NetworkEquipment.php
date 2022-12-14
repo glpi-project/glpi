@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Blacklist;
-use BlacklistedMailContent;
 use Glpi\Toolbox\Sanitizer;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
