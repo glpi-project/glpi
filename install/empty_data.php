@@ -349,7 +349,7 @@ $empty_data_builder = new class
             'support_legacy_data' => 0, // New installation should not support legacy data
             'initialized_rules_collections' => '[]',
             'timeline_action_btn_layout' => 0,
-            'timeline_relative_date',
+            'timeline_relative_date' => 0,
         ];
 
         $tables['glpi_configs'] = [];
