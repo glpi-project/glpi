@@ -1310,7 +1310,7 @@ class Config extends CommonDBTM
             if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
                 Dropdown::showFromArray('timeline_relative_date', [
                     self::TIMELINE_RELATIVE_DATE => __('Relative'),
-                    self::TIMELINE_ABSOLUTE_DATE => __('Absolute'),
+                    self::TIMELINE_ABSOLUTE_DATE => __('Precise'),
                 ], [
                     'value' => $data['timeline_relative_date'],
                     'rand' => $rand
