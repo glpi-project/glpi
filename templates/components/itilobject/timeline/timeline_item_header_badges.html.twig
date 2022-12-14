@@ -31,14 +31,11 @@
  # ---------------------------------------------------------------------
  #}
 
-<span class="badge text-wrap d-none d-md-block">
+<span class="badge user-select text-wrap d-none d-md-block">
    {% set date_span %}
       <span title="{{ date_creation|formatted_datetime }}"
-            data-bs-toggle="tooltip" data-bs-placement="bottom">
-         <i class="far fa-clock me-1"></i>
-         <a href="#{{ anchor }}">
-            {{ date_creation|relative_datetime }}
-         </a>
+            data-bs-placement="bottom">
+         <i class="far fa-clock me-1"></i>{{ date_creation }}
       </span>
    {% endset %}
 
@@ -57,11 +54,11 @@
 </span>
 
 {% if users_id_editor > 0 and date_creation != date_mod %}
-   <span class="badge text-wrap ms-1 d-none d-md-block">
+   <span class="badge user-select text-wrap ms-1 d-none d-md-block">
       {% set date_span %}
          <span title="{{ date_mod|formatted_datetime }}"
-               data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="far fa-clock me-1"></i>{{ date_mod|relative_datetime }}
+               data-bs-placement="bottom">
+            <i class="far fa-clock me-1"></i>{{ date_mod }}
          </span>
       {% endset %}
 
