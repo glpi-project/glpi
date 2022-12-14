@@ -238,6 +238,22 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return false;
     }
 
+    /**
+     * Get the opposite itemtype
+     * @param class-string<CommonDBTM>|null $itemtype The itemtype to get the opposite of (may be null)
+     * @return class-string<CommonDBTM>|null The opposite itemtype or null if not found
+     */
+    public static function getOppositeItemtype(?string $itemtype): ?string
+    {
+        if (static::$itemtype_1 === $itemtype || (static::$itemtype_1 === 'itemtype' && static::$itemtype_2 !== null)) {
+            return static::$itemtype_2;
+        }
+
+        if (static::$itemtype_2 === $itemtype || (static::$itemtype_2 === 'itemtype' && static::$itemtype_1 !== null)) {
+            return static::$itemtype_1;
+        }
+        return null;
+    }
 
     /**
      * @since 0.84

@@ -713,10 +713,9 @@ class CommonGLPI implements CommonGLPIInterface
 
         if (is_subclass_of($tab_itemtype, CommonDBRelation::class)) {
             // Get opposite itemtype than this
-            if ($tab_itemtype::$itemtype_1 === $form_itemtype || ($tab_itemtype::$itemtype_1 === 'itemtype' && $tab_itemtype::$itemtype_2 !== null)) {
-                $itemtype = $tab_itemtype::$itemtype_2;
-            } else if ($tab_itemtype::$itemtype_2 === $form_itemtype || ($tab_itemtype::$itemtype_2 === 'itemtype' && $tab_itemtype::$itemtype_1 !== null)) {
-                $itemtype = $tab_itemtype::$itemtype_1;
+            $new_itemtype = $tab_itemtype::getOppositeItemtype($form_itemtype);
+            if ($new_itemtype !== null) {
+                $itemtype = $new_itemtype;
             }
         }
         if ($icon === $default_icon && !class_exists($itemtype)) {
