@@ -40,5 +40,7 @@
 $migration->displayMessage('Add new configurations / user preferences');
 $migration->addConfig([
     'timeline_action_btn_layout'   => 0,
+    'timeline_relative_date'   => 0,
 ]);
 $migration->addField('glpi_users', 'timeline_action_btn_layout', 'tinyint DEFAULT 0');
+$migration->addField('glpi_users', 'timeline_relative_date', 'tinyint DEFAULT 0');
