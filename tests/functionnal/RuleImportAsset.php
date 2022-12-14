@@ -1205,7 +1205,7 @@ class RuleImportAsset extends DbTestCase
         $computer = new \Computer();
         $computers_id = (int)$computer->add([
             'entities_id' => 0,
-            'name'        => 'pc-11', // to be sure the name rule not works before mac rule
+            'name'        => 'pc-11',
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
 
@@ -1218,7 +1218,7 @@ class RuleImportAsset extends DbTestCase
             'itemtype' => "Computer",
             'agenttypes_id' => $agenttype['id'],
             'items_id' => $computers_id,
-            'name'        => 'pc-11', // to be sure the name rule not works before mac rule
+            'name'        => 'pc-11',
         ]);
         $this->integer($agents_id)->isGreaterThan(0);
 
