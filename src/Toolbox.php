@@ -3665,11 +3665,11 @@ HTML;
             'to'  => 2,
             'tio' => 2,
         ];
-        $exp = $supported_sizes[strtolower($matches[2]) ?? null];
-        if ($exp === null) {
-            // Unkown format, keep the string as it is
-            return $size;
+        if (count($matches) >= 3 && isset($supported_sizes[strtolower($matches[2])])) {
+            // Known format
+            $size = $matches[1];
+            $size *= pow(1024, $supported_sizes[strtolower($matches[2])]);
         }
-        return $matches[1] * pow(1024, $exp);
+        return $size;
     }
 }
