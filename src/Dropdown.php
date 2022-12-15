@@ -3896,7 +3896,7 @@ JAVASCRIPT;
             $post['page_limit'] = $CFG_GLPI['dropdown_max'];
         }
 
-        if (isset($post['_one_id'])) {
+        if (isset($post['_one_id']) && $post['_one_id'] > 0) {
             $post['page_limit'] = -1;
         }
 
