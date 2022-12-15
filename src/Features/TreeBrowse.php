@@ -62,15 +62,9 @@ trait TreeBrowse
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
         $loading_txt = __s('Loading...');
-        $start       = isset($params['start'])
-                            ? $params['start']
-                            : 0;
-        $browse      = isset($params['browse'])
-                            ? $params['browse']
-                            : 0;
-        $is_deleted  = isset($params['is_deleted'])
-                            ? $params['is_deleted']
-                            : 0;
+        $start       = (int)($_REQUEST['start'] ?? 0);
+        $browse      = (int)($_REQUEST['browse'] ?? 0);
+        $is_deleted  = (int)($_REQUEST['is_deleted'] ?? 0);
         $criteria    = json_encode($params['criteria']);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
