@@ -413,6 +413,10 @@ class RuleImportAsset extends Rule
             }
         }
 
+        foreach ($this->getCriteriaByID('tag') as $crit) {
+            $this->complex_criteria[] = $crit;
+        }
+
         foreach ($this->getCriteriaByID('states_id') as $crit) {
             $this->complex_criteria[] = $crit;
         }
@@ -768,6 +772,21 @@ class RuleImportAsset extends Rule
                         $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
                     }
                     $it_criteria['WHERE'][] = [$ntable . '.logical_number' => $input['ifnumber']];
+                    break;
+
+                case 'tag':
+                    if (isset($input['tag']) && isset($input['deviceid'])) {
+                        $it_criteria['LEFT JOIN']['glpi_agents'] = [
+                            'ON'  => [
+                                'glpi_agents'  => 'items_id',
+                                $itemtable     => 'id'
+                            ]
+                        ];
+                        $it_criteria['WHERE'][] = [
+                            'glpi_agents.deviceid' => $input['deviceid'],
+                            'glpi_agents.tag' => $input['tag']
+                        ];
+                    }
                     break;
 
                 case 'serial':

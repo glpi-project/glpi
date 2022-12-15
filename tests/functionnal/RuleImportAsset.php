@@ -1151,4 +1151,100 @@ class RuleImportAsset extends DbTestCase
         $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by serial + uuid is empty in GLPI)");
         $this->string($this->itemtype)->isIdenticalTo('Computer');
     }
+
+    /**
+     * Create rules for update Computer based on computer name and TAG
+     *
+     * @return void
+     */
+    private function updateComputerAgentTagRules()
+    {
+       // Create rules
+        $this->addRule(
+            "Computer update (by name and tag)",
+            [
+                [
+                    'condition' => 0,
+                    'criteria'  => 'itemtype',
+                    'pattern'   => 'Computer',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'name',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                    'criteria'  => 'name',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_FIND,
+                    'criteria'  => 'tag',
+                    'pattern'   => '1',
+                ],
+                [
+                    'condition' => \RuleImportAsset::PATTERN_EXISTS,
+                    'criteria'  => 'tag',
+                    'pattern'   => '1',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_inventory',
+                'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            ],
+            "Computer constraint (name)"
+        );
+    }
+
+    public function testUpdateComputerByNameAndTag()
+    {
+        global $DB;
+
+        $this->updateComputerAgentTagRules();
+
+        //create computer
+        $computer = new \Computer();
+        $computers_id = (int)$computer->add([
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //create linked agent
+        $agent = new \Agent();
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents_id = (int)$agent->add([
+            'deviceid' => 'my_specific_agent_deviceid',
+            'tag' => 'my_specific_agent_tag',
+            'itemtype' => "Computer",
+            'agenttypes_id' => $agenttype['id'],
+            'items_id' => $computers_id,
+            'name'        => 'pc-11',
+        ]);
+        $this->integer($agents_id)->isGreaterThan(0);
+
+        $input = [
+            'itemtype'      => 'Computer',
+            'name'          => 'pc-11',
+            'tag'           => 'my_specific_agent_tag',
+            'deviceid'     => 'my_specific_agent_deviceid',
+            'ip'            => ['192.168.0.10'],
+            'entities_id'   => 0
+        ];
+        $ruleCollection = new \RuleImportAssetCollection();
+        $rule = new \RuleImportAsset();
+
+        $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
+
+        $this->array($data)->hasKey('_ruleid');
+        $_rule_id = (int)$data['_ruleid'];
+        $this->integer($_rule_id)->isGreaterThan(0);
+
+        $this->boolean($rule->getFromDB($_rule_id))->isTrue();
+        $this->string($rule->fields['name'])->isIdenticalTo("Computer update (by name and tag)");
+        $this->integer($this->items_id)->isIdenticalTo($computers_id);
+        $this->string($this->itemtype)->isIdenticalTo('Computer');
+    }
 }

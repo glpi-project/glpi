@@ -409,6 +409,10 @@ abstract class MainAsset extends InventoryAsset
             $input['tag'] = $this->getAgent()->fields['tag'];
         }
 
+        if (isset($this->getAgent()->fields['deviceid'])) {
+            $input['deviceid'] = $this->getAgent()->fields['deviceid'];
+        }
+
         $models_id = $this->getModelsFieldName();
         foreach ($val as $prop => $value) {
             switch ($prop) {
