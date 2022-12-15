@@ -1602,7 +1602,33 @@ class Migration
                 $old_search_opt = $p['old'];
                 $new_search_opt = $p['new'];
 
-               // Update display preferences
+                // Remove duplicates (a display preference exists for both old key and new key for a same user)
+                $duplicates_iterator = $DB->request([
+                    'SELECT'     => ['id'],
+                    'FROM'       => DisplayPreference::getTable() . ' AS new',
+                    'INNER JOIN' => [
+                        DisplayPreference::getTable() . ' AS old' => [
+                            'ON' => [
+                                'new' => 'itemtype',
+                                'old' => 'itemtype',
+                                [
+                                    'AND' => [
+                                        'new.users_id' => new QueryExpression($DB->quoteName('old.users_id')),
+                                        'new.itemtype' => $itemtype,
+                                        'new.num'      => $new_search_opt,
+                                        'old.num'      => $old_search_opt,
+                                    ],
+                                ],
+                            ]
+                        ]
+                    ]
+                ]);
+                if ($duplicates_iterator->count() > 0) {
+                    $ids = array_column(iterator_to_array($duplicates_iterator), 'id');
+                    $DB->deleteOrDie(DisplayPreference::getTable(), ['id' => $ids]);
+                }
+
+                // Update display preferences
                 $DB->updateOrDie(DisplayPreference::getTable(), [
                     'num' => $new_search_opt
                 ], [
