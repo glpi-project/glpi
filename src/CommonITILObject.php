@@ -6443,7 +6443,8 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                 }
                 break;
-            case 'Solution':
+            case 'Solution': // FIXME Remove it in GLPI 10.1, it may be still used in some edge cases in GLPI 10.0
+            case ITILSolution::class:
                 $pos = self::TIMELINE_RIGHT;
                 break;
         }
@@ -6712,7 +6713,7 @@ abstract class CommonITILObject extends CommonDBTM
         ]);
         foreach ($solution_items as $solution_item) {
             $timeline["ITILSolution_" . $solution_item['id'] ] = [
-                'type'     => 'Solution',
+                'type'     => ITILSolution::class,
                 'itiltype' => 'Solution',
                 'item'     => [
                     'id'                 => $solution_item['id'],

@@ -1592,12 +1592,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             foreach ($timeline as $timeline_data) {
                 $tmptimelineitem = [];
 
-                if ($timeline_data['type'] == "Solution") {
-                    $tmptimelineitem['##timelineitems.type##'] = ITILSolution::getType();
-                } else {
-                    $tmptimelineitem['##timelineitems.type##'] = $timeline_data['type']::getType();
-                }
-
+                $tmptimelineitem['##timelineitems.type##']        = $timeline_data['type']::getType();
                 $tmptimelineitem['##timelineitems.typename##']    = $tmptimelineitem['##timelineitems.type##']::getTypeName(0);
                 $tmptimelineitem['##timelineitems.date##']        = $timeline_data['item']['date'];
                 $tmptimelineitem['##timelineitems.description##'] = $timeline_data['item']['content'];
