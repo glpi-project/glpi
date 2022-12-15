@@ -89,7 +89,7 @@
          {% endif %}
       {% endset %}
    {% endif %}
-   {{ fields.numberField('number', item.fields['number'], _x('quantity', 'Number'), {
+   {{ fields.dropdownNumberField('number', item.fields['number'], _x('quantity', 'Number'), {
       'min': 1,
       'max': 10000,
       'step': 1,
