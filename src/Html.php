@@ -1389,6 +1389,7 @@ HTML;
         $tpl_vars['css_files'][] = ['path' => 'css/palettes/' . $theme . '.scss'];
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
+        $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
        // Search
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/ResultsView.js'];
@@ -1875,7 +1876,6 @@ HTML;
             }
         }
 
-        $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
 
         if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
@@ -6401,7 +6401,6 @@ HTML;
         }
 
        // Some Javascript-Functions which we may need later
-        echo Html::script('js/common.js');
         self::redefineAlert();
         self::redefineConfirm();
 
