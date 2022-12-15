@@ -3896,27 +3896,33 @@ JAVASCRIPT;
             $post['page_limit'] = $CFG_GLPI['dropdown_max'];
         }
 
-        $entity_restrict = -1;
-        if (isset($post['entity_restrict'])) {
-            $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
-        }
+        if (isset($post['_one_id']) && $post['_one_id'] > 0) {
+            $user = new User();
+            $user->getFromDB($post['_one_id']);
+            $result = [$user->fields];
+        } else {
+            $entity_restrict = -1;
+            if (isset($post['entity_restrict'])) {
+                $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
+            }
 
-        $start  = intval(($post['page'] - 1) * $post['page_limit']);
-        $searchText = (isset($post['searchText']) ? $post['searchText'] : null);
-        $inactive_deleted = isset($post['inactive_deleted']) ? $post['inactive_deleted'] : 0;
-        $with_no_right = isset($post['with_no_right']) ? $post['with_no_right'] : 0;
-        $result = User::getSqlSearchResult(
-            false,
-            $post['right'],
-            $entity_restrict,
-            $post['value'],
-            $used,
-            $searchText,
-            $start,
-            (int)$post['page_limit'],
-            $inactive_deleted,
-            $with_no_right
-        );
+            $start  = intval(($post['page'] - 1) * $post['page_limit']);
+            $searchText = (isset($post['searchText']) ? $post['searchText'] : null);
+            $inactive_deleted = isset($post['inactive_deleted']) ? $post['inactive_deleted'] : 0;
+            $with_no_right = isset($post['with_no_right']) ? $post['with_no_right'] : 0;
+            $result = User::getSqlSearchResult(
+                false,
+                $post['right'],
+                $entity_restrict,
+                $post['value'],
+                $used,
+                $searchText,
+                $start,
+                (int)$post['page_limit'],
+                $inactive_deleted,
+                $with_no_right
+            );
+        }
 
         $users = [];
 
