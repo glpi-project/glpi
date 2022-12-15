@@ -563,6 +563,8 @@ class Entity extends CommonTreeDropdown
        // Add right to current user - Hack to avoid login/logout
         $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
         $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
+        // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
+        $_SESSION['glpi_multientitiesmode'] = 1;
 
        // clean entity tree cache
         $this->cleanEntitySelectorCache();
