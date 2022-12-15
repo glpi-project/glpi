@@ -253,7 +253,9 @@ class ITILFollowup extends CommonDBChild
 
         $this->updateParentStatus($this->input['_job'], $this->input);
 
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
+        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]
+        //skip the notification if it comes from the solution approval
+        && (!isset($this->input['_close']) || !$this->input['_close'] );
 
         if ($donotif) {
             $options = ['followup_id' => $this->fields["id"],
