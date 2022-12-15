@@ -1917,7 +1917,7 @@ class Ticket extends DbTestCase
             )->isEqualto(true);
 
             $this->integer(
-                (int)$tkt->getTimelinePosition($tickets_id, 'Solution', $uid)
+                (int)$tkt->getTimelinePosition($tickets_id, 'ITILSolution', $uid)
             )->isEqualTo($user['pos']);
         }
     }
@@ -1988,7 +1988,7 @@ class Ticket extends DbTestCase
                         $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
                     }
                     break;
-                case 'Solution':
+                case 'ITILSolution':
                     $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
                     break;
             }
