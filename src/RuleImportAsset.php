@@ -775,7 +775,7 @@ class RuleImportAsset extends Rule
                     break;
 
                 case 'tag':
-                    if (isset($input['tag'])) {
+                    if (isset($input['tag']) && isset($input['deviceid'])) {
                         $it_criteria['LEFT JOIN']['glpi_agents'] = [
                             'ON'  => [
                                 'glpi_agents'  => 'items_id',
