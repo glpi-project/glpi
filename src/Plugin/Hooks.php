@@ -131,6 +131,8 @@ class Hooks
     const HANDLE_WAKEONLAN_TASK    = 'handle_wakeonlan_task';
     const HANDLE_REMOTEINV_TASK    = 'handle_remoteinventory_task';
 
+    const STALE_AGENT_CONFIG = 'stale_agent_config';
+
    // Debug / Development hooks
     const DEBUG_TABS = 'debug_tabs';
 
