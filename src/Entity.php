@@ -3897,6 +3897,8 @@ class Entity extends CommonTreeDropdown
 
         $contract = new Contract();
         $criteria = getEntitiesRestrictCriteria('', '', $entities_id, true);
+        $criteria['is_deleted'] = 0;
+        $criteria['is_template'] = 0;
         $criteria[] = Contract::getExpiredCriteria();
         $contracts = $contract->find($criteria);
 
@@ -3922,7 +3924,11 @@ class Entity extends CommonTreeDropdown
         if ($entity_default_contract_strategy == self::CONFIG_AUTO) {
             // Contract in current entity
             $contract = new Contract();
-            $criteria = ['entities_id' => $entities_id];
+            $criteria = [
+                'entities_id' => $entities_id,
+                'is_deleted'  => 0,
+                'is_template' => 0,
+            ];
             $criteria[] = Contract::getExpiredCriteria();
             $contracts = $contract->find($criteria);
 
