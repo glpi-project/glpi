@@ -1697,7 +1697,12 @@ abstract class API
             $cleaned_cols[] = $col['id'];
             if (isset($params['uid_cols'])) {
                // prepare cols with uid
-                $uid_cols[] = $soptions[$col['id']]['uid'];
+                if (isset($col['meta']) && $col['meta']) {
+                    $meta_opts = $this->listSearchOptions($col['itemtype'], [], false);
+                    $uid_cols[] = $meta_opts[$col['id']]['uid'];
+                } else {
+                    $uid_cols[] = $soptions[$col['id']]['uid'];
+                }
             }
         }
 
