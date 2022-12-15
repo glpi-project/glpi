@@ -362,7 +362,11 @@ class Request extends AbstractRequest
 
         if ($this->inventory->inError()) {
             foreach ($this->inventory->getErrors() as $error) {
-                $this->addError($error, 500);
+                $error_code = 500;
+                if (str_contains($error, "JSON does not validate")) {
+                    $error_code = 400;
+                }
+                $this->addError($error, $error_code);
             }
         } else {
             if ($this->headers->hasHeader('GLPI-Agent-ID')) {
