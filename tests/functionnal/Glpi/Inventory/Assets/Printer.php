@@ -1619,7 +1619,7 @@ class Printer extends AbstractInventoryAsset
     public function testSnmpPrinterManagementPortNotRecreated()
     {
         /**
-         * This check if management port is well cleaned
+         * This check if management port is not recreated at each inventory (network discovery / network inventory)
          */
         $date_now = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date_now;
