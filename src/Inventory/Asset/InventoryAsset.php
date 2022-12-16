@@ -250,29 +250,38 @@ abstract class InventoryAsset
                             ['manufacturer' => $manufacturer_name]
                         );
                     } else if (isset($foreignkey_itemtype[$key])) {
-                        $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
+                        //if integer, drodpown already import
+                        if (is_int($value->$key)) {
+                            $this->known_links[$known_key] = $value->$key;
+                        } else {
+                            $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
+                        }
                     } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
-                        $foreignkey_itemtype[$key] = $itemtype;
+                        //if integer, drodpown already import
+                        if (is_int($value->$key)) {
+                            $this->known_links[$known_key] = $value->$key;
+                        } else {
+                            $foreignkey_itemtype[$key] = $itemtype;
+                            $this->known_links[$known_key] = Dropdown::importExternal(
+                                $foreignkey_itemtype[$key],
+                                $value->$key,
+                                $entities_id
+                            );
 
-                        $this->known_links[$known_key] = Dropdown::importExternal(
-                            $foreignkey_itemtype[$key],
-                            $value->$key,
-                            $entities_id
-                        );
-
-                        if (
-                            $key == 'operatingsystemkernelversions_id'
-                            && property_exists($value, 'operatingsystemkernels_id')
-                            && (int)$this->known_links[$known_key] > 0
-                        ) {
-                            $kversion = new OperatingSystemKernelVersion();
-                            $kversion->getFromDB($this->known_links[$known_key]);
-                            $oskernels_id = $this->known_links[md5('operatingsystemkernels_id' . $value->operatingsystemkernels_id)];
-                            if ($kversion->fields['operatingsystemkernels_id'] != $oskernels_id) {
-                                $kversion->update([
-                                    'id'                          => $kversion->getID(),
-                                    'operatingsystemkernels_id'   => $oskernels_id
-                                ]);
+                            if (
+                                $key == 'operatingsystemkernelversions_id'
+                                && property_exists($value, 'operatingsystemkernels_id')
+                                && (int)$this->known_links[$known_key] > 0
+                            ) {
+                                $kversion = new OperatingSystemKernelVersion();
+                                $kversion->getFromDB($this->known_links[$known_key]);
+                                $oskernels_id = $this->known_links[md5('operatingsystemkernels_id' . $value->operatingsystemkernels_id)];
+                                if ($kversion->fields['operatingsystemkernels_id'] != $oskernels_id) {
+                                    $kversion->update([
+                                        'id'                          => $kversion->getID(),
+                                        'operatingsystemkernels_id'   => $oskernels_id
+                                    ]);
+                                }
                             }
                         }
                     }
