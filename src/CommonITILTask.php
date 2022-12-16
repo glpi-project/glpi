@@ -1629,7 +1629,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 'header_rows'  => [
                     [
                         [
-                            'colspan'   => 4,
+                            'colspan'   => 3,
                             'content'   => $main_header
                         ]
                     ],
