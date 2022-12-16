@@ -43,6 +43,7 @@ use CommonDropdown;
 use Dropdown;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
+use Group;
 use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
@@ -257,26 +258,33 @@ abstract class InventoryAsset
                         $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
                     } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
                         $foreignkey_itemtype[$key] = $itemtype;
-
-                        $this->known_links[$known_key] = Dropdown::importExternal(
-                            $foreignkey_itemtype[$key],
-                            $value->$key,
-                            $entities_id
-                        );
-
+                        //if Group and integer do not process importExternal
                         if (
-                            $key == 'operatingsystemkernelversions_id'
-                            && property_exists($value, 'operatingsystemkernels_id')
-                            && (int)$this->known_links[$known_key] > 0
+                            in_array($foreignkey_itemtype[$key], [Group::class, User::class])
+                            && is_int($value->$key)
                         ) {
-                            $kversion = new OperatingSystemKernelVersion();
-                            $kversion->getFromDB($this->known_links[$known_key]);
-                            $oskernels_id = $this->known_links[md5('operatingsystemkernels_id' . $value->operatingsystemkernels_id)];
-                            if ($kversion->fields['operatingsystemkernels_id'] != $oskernels_id) {
-                                $kversion->update([
-                                    'id'                          => $kversion->getID(),
-                                    'operatingsystemkernels_id'   => $oskernels_id
-                                ]);
+                            $this->known_links[$known_key] = $value->$key;
+                        } else {
+                            $this->known_links[$known_key] = Dropdown::importExternal(
+                                $foreignkey_itemtype[$key],
+                                $value->$key,
+                                $entities_id
+                            );
+
+                            if (
+                                $key == 'operatingsystemkernelversions_id'
+                                && property_exists($value, 'operatingsystemkernels_id')
+                                && (int)$this->known_links[$known_key] > 0
+                            ) {
+                                $kversion = new OperatingSystemKernelVersion();
+                                $kversion->getFromDB($this->known_links[$known_key]);
+                                $oskernels_id = $this->known_links[md5('operatingsystemkernels_id' . $value->operatingsystemkernels_id)];
+                                if ($kversion->fields['operatingsystemkernels_id'] != $oskernels_id) {
+                                    $kversion->update([
+                                        'id'                          => $kversion->getID(),
+                                        'operatingsystemkernels_id'   => $oskernels_id
+                                    ]);
+                                }
                             }
                         }
                     }
