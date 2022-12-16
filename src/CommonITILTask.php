@@ -1609,6 +1609,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         $title = __("Change tasks to do");
                         $type = Change::getTypeName();
                         $parent_itemtype = Change::class;
+                    } else {
+                        // Invalid itemtype
+                        return;
                     }
                     $linked_itemtype = str_replace("Task", "", $itemtype);
                     $main_header = "<a href=\"" . $linked_itemtype::getSearchURL() . "?" .
