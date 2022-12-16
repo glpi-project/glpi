@@ -44,7 +44,7 @@ include('../inc/includes.php');
 header('Content-type: application/json');
 Html::header_nocache();
 
-Session::checkLoginUser();
+Session::checkValidSessionId(true);
 
 if (isset($_POST['data'])) {
     $response = [];
