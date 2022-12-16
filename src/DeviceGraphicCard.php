@@ -100,7 +100,7 @@ class DeviceGraphicCard extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'memory_default',
             'name'               => __('Memory by default'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [

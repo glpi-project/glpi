@@ -52,15 +52,14 @@ class Item_DeviceMemory extends Item_Devices
     public static function getSpecificities($specif = '')
     {
 
-        return ['size'   => ['long name'  => sprintf(
-            __('%1$s (%2$s)'),
-            __('Size'),
-            __('Mio')
-        ),
-            'short name' => __('Size'),
-            'size'       => 10,
-            'id'         => 20,
-        ],
+        return [
+            'size'   => [
+                'long name'  => sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')),
+                'short name' => __('Size'),
+                'size'       => 10,
+                'id'         => 20,
+                'datatype'   => 'integer',
+            ],
             'serial' => parent::getSpecificities('serial'),
             'otherserial' => parent::getSpecificities('otherserial'),
             'locations_id' => parent::getSpecificities('locations_id'),

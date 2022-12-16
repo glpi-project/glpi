@@ -122,9 +122,8 @@
                               specificities['label'],
                               specificities['dropdown_options']|merge(field_options)
                            ) }}
-                        {% else %}
-                           {% if specificities['protected'] %}
-                              {{ fields.passwordField(
+                        {% elseif specificities['protected'] %}
+                           {{ fields.passwordField(
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
@@ -132,15 +131,21 @@
                                     'id': specificities['protected_field_id'],
                                     'is_disclosable': true,
                                  })
-                              ) }}
-                           {% else %}
-                              {{ fields.textField(
+                           ) }}
+                        {% elseif specificities['datatype'] == "integer" %}
+                           {{ fields.numberField(
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
                                  field_options
-                              ) }}
-                           {% endif %}
+                           ) }}
+                        {% else %}
+                           {{ fields.textField(
+                                 specificities['field'],
+                                 specificities['value'],
+                                 specificities['label'],
+                                 field_options
+                           ) }}
                         {% endif %}
                      {% endif %}
                   {% endfor %}

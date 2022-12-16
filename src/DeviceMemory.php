@@ -60,7 +60,8 @@ class DeviceMemory extends CommonDevice
                 [
                     'name'  => 'frequence',
                     'label' => __('Frequency'),
-                    'type'  => 'text',
+                    'type'  => 'integer',
+                    'min'   => 0,
                     'unit'  => __('MHz')
                 ],
                 [
@@ -87,7 +88,7 @@ class DeviceMemory extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'size_default',
             'name'               => __('Size by default'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -95,7 +96,7 @@ class DeviceMemory extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'frequence',
             'name'               => __('Frequency'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [

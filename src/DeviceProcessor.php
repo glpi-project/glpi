@@ -95,7 +95,7 @@ class DeviceProcessor extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'frequency_default',
             'name'               => __('Frequency by default'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -103,7 +103,7 @@ class DeviceProcessor extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'frequence',
             'name'               => __('Frequency'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
