@@ -1618,6 +1618,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                       Toolbox::append_params($options, '&amp;') . "\">" .
                       Html::makeTitle($title, $displayed_row_count, $total_row_count) . "</a>";
                     break;
+
+                default:
+                    // Invalid status
+                    return;
             }
 
             $twig_params = [
