@@ -7751,7 +7751,7 @@ CREATE TABLE `glpi_users` (
   KEY `auths_id` (`auths_id`),
   KEY `default_requesttypes_id` (`default_requesttypes_id`),
   KEY `substitution_end_date` (`substitution_end_date`),
-  KEY `substitution_start_date` (`substitution_start_date`)
+  KEY `substitution_start_date` (`substitution_start_date`),
   KEY `is_system` (`is_system`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
