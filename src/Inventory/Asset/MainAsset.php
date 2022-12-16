@@ -547,7 +547,7 @@ abstract class MainAsset extends InventoryAsset
                     ) {
                         // force integer type for foreygn key field
                         // RuleImportEntityCollection allow only 'assign' action so it returns only an ID
-                        if (isForeignKeyField($action_key)) {
+                        if (isForeignKeyField($action_key) || $action_key == "groups_id_tech" || $action_key == "users_id_tech") {
                             $this->ruleentity_data[$action_key] = (int) $dataEntity[$action_key];
                         } else {
                             $this->ruleentity_data[$action_key] = $dataEntity[$action_key];
