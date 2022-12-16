@@ -297,6 +297,45 @@ class Plugin extends DbTestCase
     }
 
     /**
+     * Test state checking on a valid directory corresponding to an unknown plugin that has a replacement plugin.
+     * Should results in creating plugin with "REPLACED" state.
+     */
+    public function testCheckPluginStateForNewPluginThatHasBeenReplaced()
+    {
+        // Create files for replacement plugin
+        $new_informations = [
+            'name'    => 'Test plugin revamped',
+            'oldname' => $this->test_plugin_directory,
+            'version' => '2.0',
+        ];
+        $new_directory = $this->anothertest_plugin_directory;
+        $this->createTestPluginFiles(
+            true,
+            $new_informations,
+            $new_directory
+        );
+
+        // Check plugin state
+        $setup_informations = [
+            'name'      => 'Old plugin',
+            'version'   => '1.0',
+        ];
+        $expected_data = array_merge(
+            $setup_informations,
+            [
+                'directory' => $this->test_plugin_directory,
+                'state'     => \Plugin::REPLACED,
+            ]
+        );
+
+        $this->doTestCheckPluginState(
+            null,
+            $setup_informations,
+            $expected_data
+        );
+    }
+
+    /**
      * Test state checking on a valid directory corresponding to a known and installed plugin
      * with a different version.
      * Should results in changing plugin state to "NOTUPDATED".
@@ -401,16 +440,15 @@ class Plugin extends DbTestCase
     }
 
     /**
-     * Test state checking on a valid directory corresponding to a plugin that has been renamed and is now located
-     * into a different directory.
-     * Should results in changing plugin directory to new value and state to "NOTUPDATED".
+     * Test state checking on a valid directory corresponding to a known plugin that has a replacement plugin.
+     * Should results changing state to "REPLACED".
      */
-    public function testCheckPluginStateForPluginThatHasBeenRenamed()
+    public function testCheckPluginStateForKnownPluginThatHasBeenReplaced()
     {
 
         $plugin = new \Plugin();
 
-       // Create files for in new directory of plugin
+        // Create files for replacement plugin
         $new_informations = [
             'name'    => 'Test plugin revamped',
             'oldname' => $this->test_plugin_directory,
@@ -423,7 +461,7 @@ class Plugin extends DbTestCase
             $new_directory
         );
 
-       // Create initial data in DB
+        // Create initial data in DB
         $old_directory = $this->test_plugin_directory;
         $initial_data = [
             'directory' => $this->test_plugin_directory,
@@ -434,6 +472,17 @@ class Plugin extends DbTestCase
         $plugin_id = $plugin->add($initial_data);
         $this->integer((int)$plugin_id)->isGreaterThan(0);
 
+        // Create files for original plugin
+        $old_information = [
+            'name'      => 'Old plugin',
+            'version'   => '1.1',
+        ];
+        $this->createTestPluginFiles(
+            true,
+            $old_information,
+            $old_directory
+        );
+
        // Check state
         $this->when(
             function () use ($plugin, $old_directory) {
@@ -441,54 +490,15 @@ class Plugin extends DbTestCase
             }
         )->error()
          ->withType(E_USER_WARNING)
-         ->withMessage('Plugin "' . $new_directory . '" version changed. It has been deactivated as its update process has to be launched.')
+         ->withMessage('Plugin "' . $old_directory . '" has been replaced by "' . $new_directory . '" and therefore has been deactivated.')
             ->exists();
 
-       // Assert that data in DB matches expected
-        $this->boolean($plugin->getFromDBByCrit(['directory' => $new_directory]))->isTrue();
-
-        $this->string($plugin->fields['directory'])->isIdenticalTo($new_directory);
-        $this->string($plugin->fields['name'])->isIdenticalTo($new_informations['name']);
-        $this->string($plugin->fields['version'])->isIdenticalTo($new_informations['version']);
-        $this->integer((int)$plugin->fields['state'])->isIdenticalTo(\Plugin::NOTUPDATED);
-    }
-
-    /**
-     * Test state checking on a valid directory corresponding to a plugin that is known with its old name.
-     * Should results in changing plugin directory to new value and state to "NOTUPDATED".
-     */
-    public function testCheckPluginStateForPluginKnownWithItsOldName()
-    {
-
-        $initial_data = [
-            'directory' => 'oldnameofplugin',
-            'name'      => 'Old plugin',
-            'version'   => '1.0',
-            'state'     => \Plugin::ACTIVATED,
-        ];
-        $setup_informations = [
-            'name'    => 'Test plugin revamped',
-            'oldname' => 'oldnameofplugin',
-            'version' => '2.0',
-        ];
-        $expected_data = array_merge(
-            $setup_informations,
-            [
-                'directory' => $this->test_plugin_directory,
-                'state'     => \Plugin::NOTUPDATED,
-            ]
-        );
-
-        $this->doTestCheckPluginState(
-            $initial_data,
-            $setup_informations,
-            $expected_data,
-            'Plugin "' . $this->test_plugin_directory . '" version changed. It has been deactivated as its update process has to be launched.'
-        );
-
-       // check also Plugin::isUpdatable method
-        $plugin_inst = new \Plugin();
-        $this->boolean($plugin_inst->isUpdatable($this->test_plugin_directory));
+        // Assert old plugin entry has been updated and status set to REPLACED
+        $this->boolean($plugin->getFromDBByCrit(['directory' => $old_directory]))->isTrue();
+        $this->string($plugin->fields['directory'])->isIdenticalTo($old_directory);
+        $this->string($plugin->fields['name'])->isIdenticalTo($old_information['name']);
+        $this->string($plugin->fields['version'])->isIdenticalTo($old_information['version']);
+        $this->integer((int)$plugin->fields['state'])->isIdenticalTo(\Plugin::REPLACED);
     }
 
     /**
