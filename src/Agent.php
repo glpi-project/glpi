@@ -901,7 +901,7 @@ class Agent extends CommonDBTM
                             continue;
                         }
                         // Run the action
-                        if ($action['callback']($agent, $config, $item)) {
+                        if ($action['action_callback']($agent, $config, $item)) {
                             $task->addVolume(1);
                             $total++;
                         } else {
