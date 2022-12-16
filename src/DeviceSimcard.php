@@ -79,7 +79,7 @@ class DeviceSimcard extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'voltage',
             'name'               => __('Voltage'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
