@@ -701,6 +701,10 @@ JAVASCRIPT
         }
        //ID > 0 : dropdown item might be translated !
         if ($ID > 0) {
+            if (!$item->maybeTranslated) {
+                return $value;
+            }
+
            //There's at least one translation for this itemtype
             if (self::hasItemtypeATranslation($itemtype)) {
                 $iterator = $DB->request([
@@ -780,23 +784,22 @@ JAVASCRIPT
     public static function canBeTranslated(CommonGLPI $item)
     {
 
-        return (self::isDropdownTranslationActive()
-              && (($item instanceof CommonDropdown)
-                  && $item->maybeTranslated()));
+        return ($item instanceof CommonDropdown) && $item->maybeTranslated();
     }
 
 
     /**
      * Is dropdown item translation functionality active
      *
+     * @deprecated 10.1.0
+     *
      * @return true if active, false if not
      **/
     public static function isDropdownTranslationActive()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        Toolbox::deprecated("Dropdown translations are now always active");
 
-        return $CFG_GLPI['translate_dropdowns'];
+        return true;
     }
 
 

@@ -1571,10 +1571,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             }
         }
 
-        if (
-            KnowbaseItemTranslation::isKbTranslationActive()
-            && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)
-        ) {
+        if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
             $criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'] = [
                 'ON'  => [
                     'glpi_knowbaseitems'             => 'id',
@@ -1621,10 +1618,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     $search_wilcard = self::computeBooleanFullTextSearch($search);
 
                     $addscore = [];
-                    if (
-                        KnowbaseItemTranslation::isKbTranslationActive()
-                        && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)
-                    ) {
+                    if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
                         $addscore = [
                             'glpi_knowbaseitemtranslations.name',
                             'glpi_knowbaseitemtranslations.answer'
@@ -1711,10 +1705,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                             ["glpi_knowbaseitems.name"     => ['LIKE', Search::makeTextSearchValue($contains)]],
                             ["glpi_knowbaseitems.answer"   => ['LIKE', Search::makeTextSearchValue($contains)]]
                         ];
-                        if (
-                            KnowbaseItemTranslation::isKbTranslationActive()
-                            && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)
-                        ) {
+                        if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
                             $ors[] = ["glpi_knowbaseitemtranslations.name"   => ['LIKE', Search::makeTextSearchValue($contains)]];
                             $ors[] = ["glpi_knowbaseitemtranslations.answer" => ['LIKE', Search::makeTextSearchValue($contains)]];
                         }
@@ -2210,10 +2201,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $criteria['WHERE']['glpi_knowbaseitems.is_faq'] = 1;
         }
 
-        if (
-            KnowbaseItemTranslation::isKbTranslationActive()
-            && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)
-        ) {
+        if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
             $criteria['LEFT JOIN']['glpi_knowbaseitemtranslations'] = [
                 'ON'  => [
                     'glpi_knowbaseitems'             => 'id',

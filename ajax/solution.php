@@ -89,16 +89,13 @@ if ($apply_twig) {
    // Render template content using twig
     $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
-    $content = $template->fields['content'];
-    if (DropdownTranslation::isDropdownTranslationActive()) {
-        $content = DropdownTranslation::getTranslatedValue(
-            $template->getID(),
-            $template->getType(),
-            'content',
-            $_SESSION['glpilanguage'],
-            $content
-        );
-    }
+    $content = DropdownTranslation::getTranslatedValue(
+        $template->getID(),
+        $template->getType(),
+        'content',
+        $_SESSION['glpilanguage'],
+        $template->fields['content']
+    );
     $template->fields['content'] = RichText::getSafeHtml($content);
 }
 
