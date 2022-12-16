@@ -72,7 +72,7 @@ class Software extends InventoryAsset
     public function prepare(): array
     {
         $mapping = [
-            'publisher'       => 'manufacturers_id',
+            'publisher'       => 'manufacturer',
             'comments'        => 'comment',
             'install_date'     => 'date_install',
             'system_category' => '_system_category'
@@ -152,39 +152,20 @@ class Software extends InventoryAsset
                     && $val->_system_category != ''
                     && $val->_system_category != '0'
                 ) {
-                    if (!isset($mids[$val->_system_category])) {
-                        $new_value = Dropdown::importExternal(
-                            'SoftwareCategory',
-                            addslashes($val->_system_category),
-                            $this->entities_id
-                        );
-                        $mids[$val->_system_category] = $new_value;
-                    }
-                    $val->softwarecategories_id = $mids[$val->_system_category];
+                    $val->softwarecategories_id = $val->_system_category;
                 } else {
                     $val->softwarecategories_id = 0;
                 }
 
                 //If the manufacturer has been modified or set by the rules engine
                 if (isset($res_rule["manufacturer"])) {
-                    $val->manufacturers_id = Dropdown::import(
-                        'Manufacturer',
-                        ['name' => $res_rule['manufacturer']]
-                    );
+                    $val->manufacturers_id = $res_rule['manufacturer'];
                 } else if (
-                    property_exists($val, 'manufacturers_id')
-                    && $val->manufacturers_id != ''
-                    && $val->manufacturers_id != '0'
+                    property_exists($val, 'manufacturer')
+                    && $val->manufacturer != ''
+                    && $val->manufacturer != '0'
                 ) {
-                    if (!isset($mids[$val->manufacturers_id])) {
-                        $new_value = Dropdown::importExternal(
-                            'Manufacturer',
-                            addslashes($val->manufacturers_id),
-                            $this->entities_id
-                        );
-                        $mids[$val->manufacturers_id] = $new_value;
-                    }
-                    $val->manufacturers_id = $mids[$val->manufacturers_id];
+                    $val->manufacturers_id = $val->manufacturer;
                 } else {
                     $val->manufacturers_id = 0;
                 }
