@@ -46,6 +46,8 @@ use Glpi\Inventory\Request;
 use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
+use SoftwareCategory;
+use Toolbox;
 
 abstract class InventoryAsset
 {
@@ -251,17 +253,17 @@ abstract class InventoryAsset
                         );
                     } else if (isset($foreignkey_itemtype[$key])) {
                         //if integer, drodpown already import
-                        if (is_int($value->$key)) {
+                        if ($foreignkey_itemtype[$key] == SoftwareCategory::class || is_int($value->$key)) {
                             $this->known_links[$known_key] = $value->$key;
                         } else {
                             $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
                         }
                     } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                        $foreignkey_itemtype[$key] = $itemtype;
                         //if integer, drodpown already import
-                        if (is_int($value->$key)) {
+                        if ($foreignkey_itemtype[$key] == SoftwareCategory::class || is_int($value->$key)) {
                             $this->known_links[$known_key] = $value->$key;
                         } else {
-                            $foreignkey_itemtype[$key] = $itemtype;
                             $this->known_links[$known_key] = Dropdown::importExternal(
                                 $foreignkey_itemtype[$key],
                                 $value->$key,
