@@ -545,7 +545,13 @@ abstract class MainAsset extends InventoryAsset
                         && $action_key !== "entities_id"
                         && isset($dataEntity[$action_key])
                     ) {
-                        $this->ruleentity_data[$action_key] = $dataEntity[$action_key];
+                        // force integer type for foreygn key field
+                        // RuleImportEntityCollection allow only 'assign' action so it returns only an ID
+                        if (isForeignKeyField($action_key)) {
+                            $this->ruleentity_data[$action_key] = (int) $dataEntity[$action_key];
+                        } else {
+                            $this->ruleentity_data[$action_key] = $dataEntity[$action_key];
+                        }
                     }
                 }
 
