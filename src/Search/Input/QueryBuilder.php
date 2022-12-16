@@ -412,6 +412,7 @@ final class QueryBuilder implements SearchInputInterface
             'criteria'   => $criteria ?? null,
             'prefix'     => $prefix,
             'p'         => $p,
+            'mainform'   => $p['mainform'] ?? 0,
             'row_id'      => $rowid,
         ]);
     }
