@@ -47,6 +47,7 @@ use Group;
 use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
+use User;
 
 abstract class InventoryAsset
 {
