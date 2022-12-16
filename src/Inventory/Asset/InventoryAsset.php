@@ -252,6 +252,7 @@ abstract class InventoryAsset
                         );
                     } else if (isset($foreignkey_itemtype[$key])) {
                         //if SoftwareCategory Or Manufacturer and integer do not process importExternal
+                        //dropdown already handle from Inventory/asset/Software.php
                         if (
                             $foreignkey_itemtype[$key] == SoftwareCategory::class
                             || ($foreignkey_itemtype[$key] == Manufacturer::class && is_int($value->$key))
@@ -263,6 +264,7 @@ abstract class InventoryAsset
                     } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
                         $foreignkey_itemtype[$key] = $itemtype;
                         //if SoftwareCategory Or Manufacturer and integer do not process importExternal
+                        //dropdown already handle from Inventory/asset/Software.php
                         if (
                             $foreignkey_itemtype[$key] == SoftwareCategory::class
                             || ($foreignkey_itemtype[$key] == Manufacturer::class && is_int($value->$key))
