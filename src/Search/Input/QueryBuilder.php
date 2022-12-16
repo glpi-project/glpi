@@ -61,6 +61,7 @@ final class QueryBuilder implements SearchInputInterface
         $p['is_deleted']   = 0;
         $p['as_map']       = 0;
         $p['browse']       = 0;
+        $p['is_system']    = 0;
         $p['criteria']     = [];
         $p['metacriteria'] = [];
         if (class_exists($itemtype)) {
@@ -533,6 +534,7 @@ final class QueryBuilder implements SearchInputInterface
         $default_values["as_map"]      = 0;
         $default_values["browse"]      = $itemtype::$browse_default ?? 0;
         $default_values["unpublished"] = 1;
+        $default_values["is_system"]   = 0;
 
         if (isset($params['start'])) {
             $params['start'] = (int)$params['start'];
@@ -655,7 +657,7 @@ final class QueryBuilder implements SearchInputInterface
             if (!isset($params[$key])) {
                 if (
                     $usesession
-                    && ($key == 'is_deleted' || $key == 'as_map' || $key == 'browse' || $key === 'unpublished' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
+                    && (in_array($key, ['is_deleted', 'as_map', 'browse', 'unpublished', 'is_system']) || !isset($saved_params['criteria'])) // retrieve session only if not a new request
                     && isset($_SESSION['glpisearch'][$itemtype][$key])
                 ) {
                     $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];

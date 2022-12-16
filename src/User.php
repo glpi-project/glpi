@@ -2796,6 +2796,18 @@ JAVASCRIPT;
                     'right'  => 'all'
                 ]);
                 echo "</td></tr>";
+
+                echo "<tr class='tab_bg_1'>";
+                echo "<td><label for='dropdown_profiles_id$grouprand'>" .  __('System user') . "</label></td><td>";
+                Html::showCheckbox([
+                    'name'    => 'is_system',
+                    'checked' => $this->fields['is_system']
+                ]);
+                echo "<span class='form-help ms-1' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true'
+                    data-bs-content='" . Html::entities_deep(__("This user makes operations in background. So, it doesn't appears in usual list of users.")) . "'>
+                    ?
+                </span>";
+                echo "</td></tr>";
             }
 
             if (
@@ -4290,12 +4302,9 @@ JAVASCRIPT;
             ];
         }
 
-        // remove helpdesk user
-        $config = Config::getConfigurationValues('core');
+        // remove system users
         $WHERE[] = [
-            'NOT' => [
-                'glpi_users.id' => $config['system_user']
-            ]
+            'glpi_users.is_system' => 0,
         ];
 
         $criteria = [

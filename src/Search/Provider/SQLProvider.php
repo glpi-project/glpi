@@ -3519,6 +3519,16 @@ final class SQLProvider implements SearchProviderInterface
             $COMMONWHERE .= $LINK . "`$itemtable`.`is_template` = 0 ";
         }
 
+        // Add system entries if item have it
+        if ($data['item'] && $data['item']->maybeSystem()) {
+            $LINK = " AND ";
+            if ($first) {
+                $LINK  = " ";
+                $first = false;
+            }
+            $COMMONWHERE .= $LINK . "`$itemtable`.`is_system` = " . (int)$data['search']['is_system'] . " ";
+        }
+
         // Add Restrict to current entities
         if ($entity_restrict) {
             $LINK = " AND ";

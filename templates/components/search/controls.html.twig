@@ -62,6 +62,19 @@
       </label>
    {% endif %}
 
+   {% if may_display_system %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-warning me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Display system entries') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                name="is_system" value="1" autocomplete="off"
+                onclick="toogle('is_system','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                {{ data['search']['is_system'] == 1 ? 'checked' : '' }} />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="ti fa-lg ti-robot"></i>
+         </span>
+      </label>
+   {% endif %}
+
    {% if may_be_deleted %}
       <label class="form-check form-switch btn btn-sm btn-ghost-danger me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
              data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show the trashbin') }}">

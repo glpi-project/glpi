@@ -3186,6 +3186,20 @@ class CommonDBTM extends CommonGLPI
         return array_key_exists('is_deleted', $this->fields);
     }
 
+    /**
+     * Is the object have system entries
+     *
+     * @return boolean
+     **/
+    public function maybeSystem()
+    {
+
+        if (!isset($this->fields['id'])) {
+            $this->getEmpty();
+        }
+        return array_key_exists('is_system', $this->fields);
+    }
+
 
     /**
      * Is the object deleted
