@@ -41,7 +41,7 @@ use Glpi\Application\ErrorHandler;
 
 include('../inc/includes.php');
 
-Session::checkLoginUser();
+Session::checkValidSessionId(true);
 
 // Ensure warnings will not break ajax output.
 ErrorHandler::getInstance()->disableOutput();

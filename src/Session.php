@@ -871,9 +871,12 @@ class Session
      *
      * @see https://wiki.php.net/rfc/strict_sessions
      *
+     * @param bool $allow_anonymous If enabled, we will only check if
+     *                              $_SESSION['valid_id'] is set correctly
+     *
      * @return void|true
      **/
-    public static function checkValidSessionId()
+    public static function checkValidSessionId(bool $allow_anonymous = false)
     {
         global $DB;
 
@@ -882,6 +885,10 @@ class Session
             || ($_SESSION['valid_id'] !== session_id())
         ) {
             Html::redirectToLogin('error=3');
+        }
+
+        if ($allow_anonymous) {
+            return true;
         }
 
         $user_id    = self::getLoginUserID();
