@@ -254,8 +254,8 @@ abstract class InventoryAsset
                         //if SoftwareCategory Or Manufacturer and integer do not process importExternal
                         //dropdown already handle from Inventory/asset/Software.php
                         if (
-                            $foreignkey_itemtype[$key] == SoftwareCategory::class
-                            || ($foreignkey_itemtype[$key] == Manufacturer::class && is_int($value->$key))
+                            in_array($foreignkey_itemtype[$key], [Manufacturer::class, SoftwareCategory::class])
+                            && is_int($value->$key)
                         ) {
                             $this->known_links[$known_key] = $value->$key;
                         } else {
@@ -266,8 +266,8 @@ abstract class InventoryAsset
                         //if SoftwareCategory Or Manufacturer and integer do not process importExternal
                         //dropdown already handle from Inventory/asset/Software.php
                         if (
-                            $foreignkey_itemtype[$key] == SoftwareCategory::class
-                            || ($foreignkey_itemtype[$key] == Manufacturer::class && is_int($value->$key))
+                            in_array($foreignkey_itemtype[$key], [Manufacturer::class, SoftwareCategory::class])
+                            && is_int($value->$key)
                         ) {
                             $this->known_links[$known_key] = $value->$key;
                         } else {
