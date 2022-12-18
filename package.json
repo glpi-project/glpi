@@ -69,7 +69,7 @@
     "scripts": {
         "build:pack": "webpack --config webpack.config.js",
         "build": "npm run build:pack",
-        "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --config tests/js/jest.config.js ./tests/js/**"
+        "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^5.16.5",
