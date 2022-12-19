@@ -1317,7 +1317,6 @@ class GLPIKanbanRights {
         const restoreCard = function(card, error, success) {
             const [itemtype, items_id] = card.split('-', 2);
             const card_obj = $('#'+card);
-            const force = card_obj.data('is_deleted');
             $.ajax({
                 type: "POST",
                 url: (self.ajax_root + "kanban.php"),
