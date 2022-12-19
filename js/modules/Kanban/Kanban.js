@@ -2086,7 +2086,7 @@ class GLPIKanbanRights {
             const col_body = $(column_el).find('.kanban-body').first();
             const readonly = card['_readonly'] !== undefined && (card['_readonly'] === true || card['_readonly'] === 1);
             let card_el = `
-            <li id="${card['id']}" class="kanban-item card ${readonly ? 'readonly' : ''} ${card['is_deleted'] ? 'deleted' : ''}">
+            <li id="${card['id']}" class="kanban-item card ${readonly ? 'readonly' : ''}">
                 <div class="kanban-item-header">
                     <span class="kanban-item-title" title="${card['title_tooltip']}">
                     <i class="${self.supported_itemtypes[itemtype]['icon']}"></i>
@@ -2113,6 +2113,9 @@ class GLPIKanbanRights {
                 $.each(card['_metadata'], (k, v) => {
                     card_obj.data(k, v);
                 });
+                if (card_obj.data('is_deleted')) {
+                    card_obj.addClass('deleted');
+                }
             }
             card_obj.data('_team', card['_team']);
             self.updateColumnCount(column_el);
