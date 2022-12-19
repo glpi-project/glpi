@@ -291,7 +291,26 @@ class Plugin extends CommonDBTM
                     self::$loaded_plugins[] = $plugin_key;
                     $init_function = "plugin_init_$plugin_key";
                     if (function_exists($init_function)) {
-                        $init_function();
+                        try {
+                            $init_function();
+                        } catch (\Throwable $e) {
+                            trigger_error(
+                                sprintf(
+                                    'Error while loading plugin %s: %s',
+                                    $plugin_key,
+                                    $e->getMessage()
+                                ),
+                                E_USER_WARNING
+                            );
+                            // Plugin has errored, so it should be disabled if it isn't already
+                            $plugin = new self();
+                            if ($plugin->isActivated($plugin_key)) {
+                                // We don't want to override another status like TOBECONFIGURED or NOTUPDATED
+                                $plugin->getFromDBbyDir($plugin_key);
+                                $plugin->unactivate($plugin->getID());
+                            }
+                            continue;
+                        }
                         self::loadLang($plugin_key);
                     }
                 }
