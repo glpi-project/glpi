@@ -1075,7 +1075,7 @@ class GLPIKanbanRights {
 
             sortable(self.element + ' .kanban-body', {
                 acceptFrom: '.kanban-body',
-                items: '.kanban-item:not(.readonly):not(.temporarily-readonly)',
+                items: '.kanban-item:not(.readonly):not(.temporarily-readonly):not(.filtered-out)',
             });
 
             $(self.element + ' .kanban-body').off('sortstart');
