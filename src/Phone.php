@@ -307,7 +307,7 @@ class Phone extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'number_line',
             'name'               => _x('quantity', 'Number of lines'),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [

@@ -514,7 +514,7 @@ class Printer extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'memory_size',
             'name'               => _n('Memory', 'Memories', 1),
-            'datatype'           => 'string',
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
