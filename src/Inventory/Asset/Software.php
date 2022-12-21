@@ -92,7 +92,6 @@ class Software extends InventoryAsset
 
         $with_manufacturer = [];
         $without_manufacturer = [];
-        $mids = []; //keep trace of handled ids
 
         foreach ($this->data as $k => &$val) {
             foreach ($mapping as $origin => $dest) {
@@ -144,47 +143,55 @@ class Software extends InventoryAsset
                     $val->version = $res_rule["version"];
                 }
 
-                //If the software categorie has been modified or set by the rules engine
+                //If the software category has been modified or set by the rules engine
                 if (isset($res_rule["softwarecategories_id"])) {
-                    $val->softwarecategories_id = $res_rule["softwarecategories_id"];
+                    $sckey = 'softwarecategories_id' . $res_rule["softwarecategories_id"];
+                    $this->known_links[$sckey] = $res_rule["softwarecategories_id"];
+                    $sc = new \SoftwareCategory();
+                    $sc->getFromDB($res_rule["softwarecategories_id"]);
+                    $val->softwarecategories_id = $sc->fields['name'];
                 } else if (
                     property_exists($val, '_system_category')
                     && $val->_system_category != ''
                     && $val->_system_category != '0'
                 ) {
-                    if (!isset($mids[$val->_system_category])) {
+                    $val->softwarecategories_id = $val->_system_category;
+                    $sckey = 'softwarecategories_id' . $val->_system_category;
+                    if (!isset($this->known_links[$sckey])) {
                         $new_value = Dropdown::importExternal(
                             'SoftwareCategory',
                             addslashes($val->_system_category),
                             $this->entities_id
                         );
-                        $mids[$val->_system_category] = $new_value;
+                        $this->known_links[$sckey] = $new_value;
                     }
-                    $val->softwarecategories_id = $mids[$val->_system_category];
                 } else {
                     $val->softwarecategories_id = 0;
                 }
 
                 //If the manufacturer has been modified or set by the rules engine
                 if (isset($res_rule["manufacturer"])) {
-                    $val->manufacturers_id = Dropdown::import(
+                    $mkey = 'manufacturers_id' . $res_rule['manufacturer'];
+                    $mid = Dropdown::import(
                         'Manufacturer',
                         ['name' => $res_rule['manufacturer']]
                     );
+                    $this->known_links[$mkey] = $mid;
+                    $val->manufacturers_id = $res_rule['manufacturer'];
                 } else if (
                     property_exists($val, 'manufacturers_id')
                     && $val->manufacturers_id != ''
                     && $val->manufacturers_id != '0'
                 ) {
-                    if (!isset($mids[$val->manufacturers_id])) {
+                    $mkey = 'manufacturers_id' . $val->manufacturers_id;
+                    if (!isset($this->known_links[$mkey])) {
                         $new_value = Dropdown::importExternal(
                             'Manufacturer',
                             addslashes($val->manufacturers_id),
                             $this->entities_id
                         );
-                        $mids[$val->manufacturers_id] = $new_value;
+                        $this->known_links[$mkey] = $new_value;
                     }
-                    $val->manufacturers_id = $mids[$val->manufacturers_id];
                 } else {
                     $val->manufacturers_id = 0;
                 }
@@ -353,14 +360,15 @@ class Software extends InventoryAsset
 
             //update softwarecategories if needed
             //reconciles the software without the version (no needed here)
+            $sckey = 'sofwarecategories_' . ($val->softwarecategories_id ?? 0);
             if (
                 isset($db_software_data[$key_wo_version])
-                && $db_software_data[$key_wo_version]['softwarecategories'] != $val->softwarecategories_id
+                && $db_software_data[$key_wo_version]['softwarecategories'] != $this->known_links[$sckey] ?? 0
             ) {
                 $software_to_update = new GSoftware();
                 $software_to_update->update([
                     "id" => $db_software_data[$key_wo_version]['softid'],
-                    "softwarecategories_id" => $val->softwarecategories_id
+                    "softwarecategories_id" => $this->known_links[$sckey]
                 ], 0);
             }
 
@@ -555,9 +563,10 @@ class Software extends InventoryAsset
                 continue;
             }
 
+            $mkey = 'manufacturers_id' . $val->manufacturers_id;
             $input = Sanitizer::encodeHtmlSpecialCharsRecursive([
                 'name'             => $val->name,
-                'manufacturers_id' => $val->manufacturers_id,
+                'manufacturers_id' => $this->known_links[$mkey] ?? 0
             ]);
 
             $stmt->bind_param(
@@ -683,6 +692,17 @@ class Software extends InventoryAsset
                         $reference
                     );
                     $stmt = $DB->prepare($insert_query);
+                }
+
+                //handle manufacturers
+                if (isset($stmt_columns['manufacturers_id'])) {
+                    $mkey = 'manufacturers_id' . $stmt_columns['manufacturers_id'];
+                    $stmt_columns['manufacturers_id'] = $this->known_links[$mkey] ?? 0;
+                }
+                //handle software category
+                if (isset($stmt_columns['softwarecategories_id'])) {
+                    $sckey = 'softwarecategories_id' . $stmt_columns['softwarecategories_id'];
+                    $stmt_columns['softwarecategories_id'] = $this->known_links[$sckey] ?? 0;
                 }
 
                 $stmt_values = Sanitizer::encodeHtmlSpecialCharsRecursive(array_values($stmt_columns));
