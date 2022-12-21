@@ -2464,6 +2464,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'description' => _x('filters', 'The content of the item'),
                     'supported_prefixes' => ['!', '#']
                 ],
+                'deleted' => [
+                    'description' => _x('filters', 'If the item is deleted or not'),
+                    'supported_prefixes' => ['!']
+                ],
                 'team' => [
                     'description' => _x('filters', 'A team member for the item'),
                     'supported_prefixes' => ['!']

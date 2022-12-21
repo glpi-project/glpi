@@ -2127,6 +2127,7 @@ class GLPIKanbanRights {
             // Refresh core tags autocomplete
             self.filter_input.tokenizer.setAutocomplete('type', Object.keys(self.supported_itemtypes).map(k => `<i class="${self.supported_itemtypes[k].icon} me-1"></i>` + k));
             self.filter_input.tokenizer.setAutocomplete('milestone', ["true", "false"]);
+            self.filter_input.tokenizer.setAutocomplete('deleted', ["true", "false"]);
 
             $(self.element).trigger('kanban:refresh_tokenizer', self.filter_input.tokenizer);
         };
@@ -2209,6 +2210,15 @@ class GLPIKanbanRights {
                     }
                 };
 
+                const filter_boolean = (filter_data, target) => {
+                    const negative_values = ['false', 'no', '0', 0, false, undefined];
+                    const negative_filter = negative_values.includes(typeof filter_data.term === 'string' ? filter_data.term.toLowerCase() : filter_data.term);
+                    const negative_target = negative_values.includes(typeof target === 'string' ? target.toLowerCase() : target);
+                    if ((negative_target !== negative_filter) !== filter_data.exclusion) {
+                        shown = false;
+                    }
+                };
+
                 if (self.filters._text) {
                     try {
                         if (!title.match(new RegExp(self.filters._text, 'i'))) {
@@ -2222,6 +2232,10 @@ class GLPIKanbanRights {
                     }
                 }
 
+                if (self.filters.deleted !== undefined) {
+                    filter_boolean(self.filters.deleted, card.data('is_deleted'));
+                }
+
                 if (self.filters.title !== undefined) {
                     filter_text(self.filters.title, title);
                 }
@@ -2231,8 +2245,7 @@ class GLPIKanbanRights {
                 }
 
                 if (self.filters.milestone !== undefined) {
-                    self.filters.milestone.term = (self.filters.milestone.term == '0' || self.filters.milestone.term == 'false') ? 0 : 1;
-                    filter_equal(self.filters.milestone, card.data('is_milestone'));
+                    filter_boolean(self.filters.milestone, card.data('is_milestone'));
                 }
 
                 if (self.filters.category !== undefined) {
