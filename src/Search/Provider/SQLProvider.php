@@ -3762,7 +3762,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         $sub_query = [
                             'SELECT' => array_merge($select, [
-                                new QueryExpression($DB::quoteValue($ctype) . " AS TYPE"),
+                                new QueryExpression($DB::quoteValue($ctype) . " AS " . $DB::quoteName('TYPE')),
                                 "$reftable.id AS refID",
                                 "$ctable.entities_id AS ENTITY"
                             ]),
@@ -4496,16 +4496,11 @@ final class SQLProvider implements SearchProviderInterface
                 $count_criteria = $data['sql']['search'];
                 $use_having = !empty($count_criteria['HAVING']);
                 unset($count_criteria['START'], $count_criteria['LIMIT'], $count_criteria['ORDER']);
-                $count_function = QueryFunction::count(
-                    expression: $DBread::quoteName($count_criteria['FROM'] . '.id'),
-                    distinct: true,
-                    alias: 'cpt'
-                );
                 if ($use_having) {
                     $count_result = $DBread->request($count_criteria);
                     $data['data']['totalcount'] = count($count_result);
                 } else {
-                    $count_criteria['SELECT'] = [$count_function];
+                    $count_criteria['SELECT'] = [QueryFunction::count('*', false, 'cpt')];
                     unset($count_criteria['GROUPBY'], $count_criteria['HAVING']);
                     $count_result = $DBread->request($count_criteria);
                     if ($count_result) {
