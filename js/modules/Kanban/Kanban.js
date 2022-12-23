@@ -481,6 +481,12 @@ class GLPIKanbanRights {
             </li>`;
             if (self.rights.canDeleteItem()) {
                 card_overflow_dropdown += `
+                <li class='kanban-item-restore dropdown-item d-none'>
+                   <span>
+                      <i class="fa-fw ti ti-trash-off"></i>${__('Restore')}
+                   </span>
+                </li>`;
+                card_overflow_dropdown += `
                 <li class='kanban-item-remove dropdown-item'>
                    <span>
                       <i class="fa-fw ti ti-trash"></i>${__('Delete')}
@@ -772,9 +778,12 @@ class GLPIKanbanRights {
                 $(card_overflow_dropdown.find('.kanban-item-goto a')).attr('href', form_link);
 
                 let delete_action = $(card_overflow_dropdown.find('.kanban-item-remove'));
-                if (card.hasClass('deleted')) {
+                const restore_action = $(card_overflow_dropdown.find('.kanban-item-restore'));
+                if (card.data('is_deleted')) {
+                    restore_action.removeClass('d-none');
                     delete_action.html('<span><i class="ti ti-trash"></i>'+__('Purge')+'</span>');
                 } else {
+                    restore_action.addClass('d-none');
                     delete_action.html('<span><i class="ti ti-trash"></i>'+__('Delete')+'</span>');
                 }
             });
@@ -820,6 +829,12 @@ class GLPIKanbanRights {
                 const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item').prop('id');
                 // Try to delete that card item
                 deleteCard(card, undefined, undefined);
+            });
+            $(self.element + ' .kanban-container').on('click', '.kanban-item-restore', function(e) {
+                // Get root dropdown, then the button that triggered it, and finally the card that the button is in
+                const card = $(e.target.closest('.kanban-dropdown')).data('trigger-button').closest('.kanban-item').prop('id');
+                // Try to delete that card item
+                restoreCard(card, undefined, undefined);
             });
             $(self.element + ' .kanban-container').on('click', '.kanban-collapse-column', function(e) {
                 self.toggleCollapseColumn(e.target.closest('.kanban-column'));
@@ -1288,6 +1303,39 @@ class GLPIKanbanRights {
                     if (success) {
                         success();
                         $('#'+card).trigger('kanban:card_delete');
+                    }
+                }
+            });
+        };
+
+        /**
+         * Restore a trashed card
+         * @param {string} card The ID of the card being restored.
+         * @param {function} error Callback function called when the server reports an error.
+         * @param {function} success Callback function called when the server processes the request successfully.
+         */
+        const restoreCard = function(card, error, success) {
+            const [itemtype, items_id] = card.split('-', 2);
+            const card_obj = $('#'+card);
+            $.ajax({
+                type: "POST",
+                url: (self.ajax_root + "kanban.php"),
+                data: {
+                    action: "restore_item",
+                    itemtype: itemtype,
+                    items_id: items_id,
+                },
+                error: function() {
+                    if (error) {
+                        error();
+                    }
+                },
+                success: function() {
+                    card_obj.data('is_deleted', false);
+                    card_obj.removeClass('deleted');
+                    if (success) {
+                        success();
+                        $('#'+card).trigger('kanban:card_restore');
                     }
                 }
             });
