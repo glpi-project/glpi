@@ -659,6 +659,8 @@ abstract class MainAsset extends InventoryAsset
 
         // append data from RuleImportEntity
         foreach ($this->ruleentity_data as $attribute => $value) {
+            $known_key = md5($attribute . $value);
+            $this->known_links[$known_key] = $value;
             $val->{$attribute} = $value;
         }
         // append data from RuleLocation
