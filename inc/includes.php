@@ -160,7 +160,7 @@ if (
         define('GLPI_KEEP_CSRF_TOKEN', true);
 
        // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
-        Session::checkCSRF(['_glpi_csrf_token' => $_SERVER['HTTP_X_GLPI_CSRF_TOKEN'] ?? '']);
+        Session::checkCSRF(['_glpi_csrf_token' => $_SERVER['HTTP_X_GLPI_CSRF_TOKEN'] ?? $_POST['_glpi_csrf_token'] ?? '']);
     } else {
         Session::checkCSRF($_POST);
     }
