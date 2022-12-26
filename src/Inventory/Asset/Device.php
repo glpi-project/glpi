@@ -119,10 +119,11 @@ abstract class Device extends InventoryAsset
                 }
 
                 //check if deviceitem should be updated or added.
+                $equals = false;
                 foreach ($existing[$device_id] ?? [] as $key => $existing_item) {
                     $equals = true;
                     foreach ($i_criteria as $field => $compare) {
-                        if ($equals === false) {
+                        if (!$equals) {
                             //no need to continue if one of conditions is false already
                             break;
                         }
@@ -149,7 +150,7 @@ abstract class Device extends InventoryAsset
                         }
                     }
 
-                    if ($equals === true) {
+                    if ($equals) {
                         $itemdevice->getFromDB($existing_item['id']);
                         $itemdevice_data = [
                             'id'                 => $existing_item['id'],
@@ -164,7 +165,7 @@ abstract class Device extends InventoryAsset
                     }
                 }
 
-                if (($equals ?? false) !== true) {
+                if (!$equals) {
                     $itemdevice->getEmpty();
                     $itemdevice_data = [
                         $fk => $device_id,
