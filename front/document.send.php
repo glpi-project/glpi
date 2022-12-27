@@ -38,7 +38,8 @@ use Glpi\Inventory\Conf;
 include('../inc/includes.php');
 
 if (!$CFG_GLPI["use_public_faq"]) {
-    Session::checkLoginUser();
+    // Might be displaying image for anonymous users on formcreator
+    Session::checkValidSessionId(true);
 }
 
 $doc = new Document();
