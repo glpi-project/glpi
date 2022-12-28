@@ -4392,6 +4392,7 @@ JAVASCRIPT;
             'canassigntome'      => $canassigntome,
             'load_kb_sol'        => $options['load_kb_sol'] ?? 0,
             'userentities'       => $userentities,
+            'has_pending_reason' => PendingReason_Item::getForItem($this),
         ]);
 
         return true;

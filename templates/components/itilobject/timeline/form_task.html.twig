@@ -389,7 +389,11 @@
             </div>
 
             {% set pending_reasons %}
-               <span class="input-group-text bg-yellow-lt py-0 pe-0" id="pending-reasons-control-{{ rand }}">
+               {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason %}
+               <span
+                  class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
+                  id="pending-reasons-control-{{ rand }}"
+               >
                   <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
                         data-bs-toggle="tooltip" data-bs-placement="top" role="button">
                      <i class="fas fa-pause me-2"></i>
@@ -403,8 +407,12 @@
                      </label>
                   </span>
 
-                  {% if item.fields['status'] != constant('CommonITILObject::WAITING') %}
-                     <div class="collapse ps-2 py-1 flex-fill" id="pending-reasons-setup-{{ rand }}">
+                  {% if not has_pending_reason %}
+                     <div
+                        class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
+                        aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
+                        id="pending-reasons-setup-{{ rand }}"
+                     >
                         {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
                      </div>
                   {% endif %}
