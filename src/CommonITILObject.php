@@ -3914,24 +3914,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
-        $tab[] = [
-            'id'                 => '401',
-            'table'              => Project::getTable(),
-            'field'              => 'name',
-            'name'               => Project::getTypeName(1),
-            'massiveaction'      => false,
-            'searchtype'         => ['equals', 'notequals'],
-            'datatype'           => 'dropdown',
-            'joinparams'         => [
-                'jointype'           => 'items_id',
-                'beforejoin'         => [
-                    'table'              => Itil_Project::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
-        ];
+        $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
 
         return $tab;
     }
