@@ -4628,6 +4628,22 @@ JAVASCRIPT;
         }
 
         $SEARCH = "";
+
+        // In some cases, we will need to replace the WHERE condition by a subquery.
+        // This is needed to avoid false positif for  for negative conditions on
+        // children items (e.g. search for tickets that DON'T have a given group)
+        // See https://github.com/glpi-project/glpi/pull/13684 for detailed examples
+        $use_where_subquery = false;
+
+        // Special case when having a negative condition on children items with
+        // the "contains" or "not contains" search type.
+        // The subquery will need to be constructed differently
+        $use_where_subquery_on_name = false;
+
+        // Is the current criteria on a linked children item ? (e.g. search
+        // option 65 for CommonITILObjects)
+        $where_on_linked_children = ($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"]["jointype"] ?? '') == 'child';
+
         switch ($searchtype) {
             case "notcontains":
                 $nott = !$nott;
@@ -4642,12 +4658,26 @@ JAVASCRIPT;
                         }
                     }
                 }
-                $SEARCH = self::makeTextSearch($val, $nott);
+                if ($where_on_linked_children && $nott) {
+                    // Negative criteria on linked children found, subquery will be needed
+                    // Note that we invert the criteria as we will use a NOT IN subquery
+                    $SEARCH = self::makeTextSearch($val, !$nott);
+                    $use_where_subquery_on_name = true;
+                } else {
+                    $SEARCH = self::makeTextSearch($val, $nott);
+                }
                 break;
 
             case "equals":
                 if ($nott) {
-                    $SEARCH = " <> " . DBmysql::quoteValue($val);
+                    if ($where_on_linked_children) {
+                        // Negative criteria on linked children found, subquery will be needed
+                        // Note that we invert the criteria as we will use a NOT IN subquery
+                        $SEARCH = " = " . DBmysql::quoteValue($val);
+                        $use_where_subquery = true;
+                    } else {
+                        $SEARCH = " <> " . DBmysql::quoteValue($val);
+                    }
                 } else {
                     $SEARCH = " = " . DBmysql::quoteValue($val);
                 }
@@ -4657,13 +4687,27 @@ JAVASCRIPT;
                 if ($nott) {
                     $SEARCH = " = " . DBmysql::quoteValue($val);
                 } else {
-                    $SEARCH = " <> " . DBmysql::quoteValue($val);
+                    if ($where_on_linked_children) {
+                        // Negative criteria on linked children found, subquery will be needed
+                        // Note that we invert the criteria as we will use a NOT IN subquery
+                        $SEARCH = " = " . DBmysql::quoteValue($val);
+                        $use_where_subquery = true;
+                    } else {
+                        $SEARCH = " <> " . DBmysql::quoteValue($val);
+                    }
                 }
                 break;
 
             case "under":
                 if ($nott) {
-                    $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    if ($where_on_linked_children) {
+                        // Negative criteria on linked children found, subquery will be needed
+                        // Note that we invert the criteria as we will use a NOT IN subquery
+                        $use_where_subquery = true;
+                        $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    } else {
+                        $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    }
                 } else {
                     $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
                 }
@@ -4673,7 +4717,14 @@ JAVASCRIPT;
                 if ($nott) {
                     $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
                 } else {
-                    $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    if ($where_on_linked_children) {
+                        // Negative criteria on linked children found, subquery will be needed
+                        // Note that we invert the criteria as we will use a NOT IN subquery
+                        $use_where_subquery = true;
+                        $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    } else {
+                        $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
+                    }
                 }
                 break;
         }
@@ -5189,6 +5240,72 @@ JAVASCRIPT;
                     }
                     break;
             }
+        }
+
+        // Using subquery in the WHERE clause
+        if ($use_where_subquery || $use_where_subquery_on_name) {
+            // Compute tables and fields names
+            $main_table = getTableForItemType($itemtype);
+            $fk = getForeignKeyFieldForTable($main_table);
+            $beforejoin = $searchopt[$ID]['joinparams']['beforejoin'];
+            $child_table = $searchopt[$ID]['table'];
+            $link_table = $beforejoin['table'];
+            $linked_fk = getForeignKeyFieldForTable($searchopt[$ID]['table']);
+
+            // Handle extra condition (e.g. filtering group type)
+            $addcondition = '';
+            if (isset($beforejoin['joinparams']['condition'])) {
+                $condition = $beforejoin['joinparams']['condition'];
+                if (is_array($condition)) {
+                    $it = new DBmysqlIterator(null);
+                    $condition = ' AND ' . $it->analyseCrit($condition);
+                }
+                $from         = ["`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE"];
+                $to           = ["`$main_table`", "`$main_table`", "`$link_table`", "`$link_table`"];
+                $addcondition = str_replace($from, $to, $condition);
+                $addcondition = $addcondition . " ";
+            }
+
+            if ($use_where_subquery) {
+                // Subquery for "Is not", "Not + is", "Not under" and "Not + Under" search types
+                $out = " $link `$main_table`.`id` NOT IN (
+                    SELECT `$fk`
+                    FROM `$link_table`
+                    WHERE `$linked_fk` $SEARCH $addcondition
+                )";
+                // As an example, when looking for tickets that don't have a
+                // given observer group (id = 4), $out will look like this:
+                //
+                // AND `glpi_tickets`.`id` NOT IN (
+                //     SELECT `tickets_id`
+                //     FROM `glpi_groups_tickets`
+                //     WHERE `groups_id` = '4' AND `glpi_groups_tickets`.`type` = '3'
+                // )
+            } elseif ($use_where_subquery_on_name) {
+                // Subquery for "Not contains" and "Not + contains" search types
+                $out = " $link `$main_table`.`id` NOT IN (
+                    SELECT `$fk`
+                    FROM `$link_table`
+                    WHERE `$linked_fk` IN (
+                        SELECT `id`
+                        FROM `$child_table`
+                        WHERE `$field` $SEARCH
+                    ) $addcondition
+                )";
+                // As an example, when looking for tickets that don't have a
+                // given observer group (name = "groupname"), $out will look like this:
+                //
+                // AND `glpi_tickets`.`id` NOT IN (
+                //      SELECT `tickets_id`
+                //      FROM `glpi_groups_tickets`
+                //      WHERE `groups_id` IN (
+                //          SELECT `id`
+                //          FROM `glpi_groups`
+                //          WHERE `completename`LIKE '%groupname%'
+                //      ) AND `glpi_groups_tickets`.`type` = '3'
+                // )
+            }
+            return $out;
         }
 
        // Default case
