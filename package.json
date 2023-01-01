@@ -18,7 +18,7 @@
         "@fullcalendar/interaction": "^4.4.2",
         "@fullcalendar/list": "^4.4.2",
         "@fullcalendar/resource-common": "^4.4.2",
-        "@fullcalendar/resource-timeline": "^4.4.2",
+        "@fullcalendar/resource-timeline": "^5.11.3",
         "@fullcalendar/rrule": "^4.4.2",
         "@fullcalendar/timegrid": "^4.4.2",
         "@fullcalendar/timeline": "^4.4.3",
