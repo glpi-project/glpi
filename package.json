@@ -73,7 +73,7 @@
     },
     "devDependencies": {
         "@babel/core": "^7.20.5",
-        "@babel/plugin-transform-modules-commonjs": "^7.19.6",
+        "@babel/plugin-transform-modules-commonjs": "^7.20.11",
         "@babel/plugin-transform-runtime": "^7.19.6",
         "@babel/preset-env": "^7.20.2",
         "@testing-library/jest-dom": "^5.16.5",
