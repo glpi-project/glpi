@@ -91,7 +91,7 @@
         "mini-css-extract-plugin": "^2.7.1",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
-        "stylelint": "^14.15.0",
+        "stylelint": "^14.16.1",
         "stylelint-config-standard-scss": "^6.1.0",
         "terser": "^5.16.0",
         "webpack": "^5.75.0",
