@@ -55,7 +55,7 @@ if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id
             $template->getType(),
             'content',
             $_SESSION['glpilanguage'],
-            $template->fields['content']
+            $template->fields['description']
         );
     }
 
