@@ -43,7 +43,7 @@ $migration->addConfig(['import_unmanaged' => 1], 'inventory');
 
 //add last_inventory_update field
 $migration->addField('glpi_unmanageds', 'last_inventory_update', 'timestamp');
-$migration->addField("glpi_unmanageds", "groups_id_tech", "int unsigned NOT NULL DEFAULT '0'", ["after" => "states_id"]);
+$migration->addField("glpi_unmanageds", "groups_id_tech", "fkey", ["after" => "states_id"]);
 $migration->addKey('glpi_unmanageds', 'groups_id_tech');
 
 // add default rules for unmanaged device
