@@ -48,7 +48,6 @@ $migration->addKey('glpi_unmanageds', 'groups_id_tech');
 
 // add default rules for unmanaged device if RuleImportAsset already added
 if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 0) {
-
     $migration->createRule(
         [
             'name'      => 'Unmanaged update (by name)',
