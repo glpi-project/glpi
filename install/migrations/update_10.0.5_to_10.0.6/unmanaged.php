@@ -39,7 +39,7 @@
  */
 
 //set default configuration for import_unmanaged
-\Config::setConfigurationValues('inventory', ['import_unmanaged' => 1]);
+$migration->addConfig(['import_unmanaged' => 1], 'inventory');
 
 //add last_inventory_update field
 $migration->addField('glpi_unmanageds', 'last_inventory_update', 'timestamp');
