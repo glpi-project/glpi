@@ -92,7 +92,7 @@ class Unmanaged extends MainAsset
      *
      * @return void
      */
-    protected function prepareForNetworkDevice($val)
+    protected function prepareForNetworkDevice(\stdClass $val): void
     {
         if (isset($this->extra_data['network_device'])) {
             $device = (object)$this->extra_data['network_device'];
