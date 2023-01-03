@@ -1305,14 +1305,14 @@ class Config extends CommonDBTM
             echo "</td><td></td></tr>";
             echo "</td></tr>";
 
-            echo "<tr class='tab_bg_2'><td><label for='timeline_relative_date$rand'>" . __('Timeline date display') .
+            echo "<tr class='tab_bg_2'><td><label for='timeline_date_format$rand'>" . __('Timeline date display') .
             "</label></td><td>";
             if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
-                Dropdown::showFromArray('timeline_relative_date', [
+                Dropdown::showFromArray('timeline_date_format', [
                     self::TIMELINE_RELATIVE_DATE => __('Relative'),
                     self::TIMELINE_ABSOLUTE_DATE => __('Precise'),
                 ], [
-                    'value' => $data['timeline_relative_date'],
+                    'value' => $data['timeline_date_format'],
                     'rand' => $rand
                 ]);
             } else {
