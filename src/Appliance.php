@@ -307,6 +307,7 @@ class Appliance extends CommonDBTM
             'itemlink_type'      => 'Appliance',
             'massiveaction'      => false,
             'joinparams'         => [
+                'condition'  => ['NEWTABLE.is_deleted' => 0],
                 'beforejoin' => [
                     'table'      => Appliance_Item::getTable(),
                     'joinparams' => ['jointype' => 'itemtype_item']
