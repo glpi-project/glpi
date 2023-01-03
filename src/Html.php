@@ -3945,7 +3945,7 @@ JS;
                      editor.on('submit', function (e) {
                         if ($('#$id').val() == '') {
                            const field = $('#$id').parent().parent().find('label').text().replace('*', '').trim();
-                           alert(__('The "' + field + '" field is mandatory'));
+                           alert(__('The %s field is mandatory').replace('%s', field));
                            e.preventDefault();
 
                            // Prevent other events to run
