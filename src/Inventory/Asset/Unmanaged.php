@@ -309,19 +309,6 @@ class Unmanaged extends MainAsset
         }
     }
 
-    /**
-     * Is device a stacked switch
-     * Relies on level/dependencies of network_components
-     *
-     * @param integer $parent_index Parent index for recursive calls
-     *
-     * @return boolean
-     */
-    public function isStackedSwitch($parent_index = 0): bool
-    {
-        return false;
-    }
-
     public function handleLinks(array $data = null)
     {
         if ($this->current_key !== null) {
