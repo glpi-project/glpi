@@ -319,30 +319,6 @@ class Unmanaged extends MainAsset
         return parent::handleLinks();
     }
 
-    protected function portCreated(\stdClass $port, int $netports_id)
-    {
-        if (property_exists($port, 'is_internal') && $port->is_internal) {
-            return;
-        }
-
-       // Get networkname
-        $netname = new NetworkName();
-        if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
-            if ($netname->fields['name'] != $port->name) {
-                $netname->update(Sanitizer::sanitize([
-                    'id'     => $netname->getID(),
-                    'name'   => $port->netname ?? $port->name
-                ]));
-            }
-        } else {
-            $netname->add([
-                'itemtype'  => 'NetworkPort',
-                'items_id'  => $netports_id,
-                'name'      => addslashes($port->name)
-            ]);
-        }
-    }
-
     public function getManagementPorts()
     {
         return $this->management_ports;
