@@ -46,144 +46,93 @@ $migration->addField('glpi_unmanageds', 'last_inventory_update', 'timestamp');
 $migration->addField("glpi_unmanageds", "groups_id_tech", "fkey", ["after" => "states_id"]);
 $migration->addKey('glpi_unmanageds', 'groups_id_tech');
 
-// add default rules for unmanaged device
-$rules[] = [
-    'name'      => 'Unmanaged update (by name)',
-    'uuid'      => 'glpi_rule_import_asset_unmanaged_update_name',
-    'match'     => 'AND',
-    'is_active' => 1,
-    'criteria'  => [
+// add default rules for unmanaged device if RuleImportAsset already added
+if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 0) {
+
+    $migration->createRule(
         [
-            'criteria'  => 'itemtype',
-            'condition' => Rule::PATTERN_IS,
-            'pattern'   => 'Unmanaged'
+            'name'      => 'Unmanaged update (by name)',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_update_name',
+            'match'     => 'AND',
+            'sub_type'  => RuleImportAsset::getType(),
+            'is_active' => 1
         ],
         [
-            'criteria'  => 'name',
-            'condition' => Rule::PATTERN_EXISTS,
-            'pattern'   => 1
-        ],
-        [
-            'criteria'  => 'name',
-            'condition' => Rule::PATTERN_FIND,
-            'pattern'   => 1
-        ]
-    ],
-    'action'    => [
-        [
-            'field'         => '_inventory',
-            'action_type'  => "assign",
-            'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
-        ]
-    ]
-];
-
-$rules[] = [
-    'name'      => 'Unmanaged import (by name)',
-    'uuid'      => 'glpi_rule_import_asset_unmanaged_import_name',
-    'match'     => 'AND',
-    'is_active' => 1,
-    'criteria'  => [
-        [
-            'criteria'  => 'itemtype',
-            'condition' => Rule::PATTERN_IS,
-            'pattern'   => 'Unmanaged'
-        ],
-        [
-            'criteria'  => 'name',
-            'condition' => Rule::PATTERN_EXISTS,
-            'pattern'   => 1
-        ]
-    ],
-    'action'    => [
-        [
-            'field'         => '_inventory',
-            'action_type'  => "assign",
-            'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
-        ]
-    ]
-];
-
-$rules[] = [
-    'name'      => 'Unmanaged import denied',
-    'uuid'      => 'glpi_rule_import_asset_unmanaged_import_denied',
-    'match'     => 'AND',
-    'is_active' => 1,
-    'criteria'  => [
-        [
-            'criteria'  => 'itemtype',
-            'condition' => Rule::PATTERN_IS,
-            'pattern'   => 'Unmanaged'
-        ]
-    ],
-    'action'    => [
-        [
-            'field'         => '_inventory',
-            'action_type'  => "assign",
-            'value'         => RuleImportAsset::RULE_ACTION_DENIED
-        ]
-    ]
-];
-
-$query = "SELECT MAX(`ranking`) FROM `glpi_rules`";
-$result = $DB->query($query);
-$ranking   = $DB->result($result, 0, 0);
-
-foreach ($rules as $rule) {
-    $rulecollection = new RuleImportAssetCollection();
-    $input = [
-        'is_active' => $rule['is_active'],
-        'name'      => $rule['name'],
-        'uuid'      => $rule['uuid'],
-        'match'     => $rule['match'],
-        'sub_type'  => RuleImportAsset::getType(),
-        'ranking'   => $ranking
-    ];
-
-    if ($rulecollection->getFromDBByCrit(['uuid' => $rule['uuid']])) {
-        //rule already exists with uuid, ignore.
-        continue;
-    }
-
-    //create rule
-    $DB->queryOrDie($DB->buildInsert(
-        "glpi_rules",
-        [
-            'is_active' => $input['is_active'],
-            'name'      => $input['name'],
-            'match'     => $input['match'],
-            'sub_type'  => $input['sub_type'],
-            'uuid'      => $input['uuid'],
-            'ranking'   => $input['ranking'],
-        ]
-    ), "10.0.0.6 add Unmanaged RuleIMportAsset");
-    $rule_id = $DB->insertId();
-
-    // Add criteria
-    foreach ($rule['criteria'] as $criteria) {
-        $DB->queryOrDie($DB->buildInsert(
-            "glpi_rulecriterias",
             [
-                'rules_id'  => $rule_id,
-                'criteria'  => $criteria['criteria'],
-                'condition' => $criteria['condition'],
-                'pattern'   => $criteria['pattern'],
-            ]
-        ));
-    }
-
-    // Add action
-    foreach ($rule['action'] as $action) {
-        $DB->queryOrDie($DB->buildInsert(
-            "glpi_ruleactions",
+                'criteria'  => 'itemtype',
+                'condition' => Rule::PATTERN_IS,
+                'pattern'   => 'Unmanaged'
+            ],
             [
-                'rules_id'      => $rule_id,
-                'action_type'   => $action['action_type'],
-                'field'         => $action['field'],
-                'value'         => $action['value'],
+                'criteria'  => 'name',
+                'condition' => Rule::PATTERN_EXISTS,
+                'pattern'   => 1
+            ],
+            [
+                'criteria'  => 'name',
+                'condition' => Rule::PATTERN_FIND,
+                'pattern'   => 1
             ]
-        ));
-    }
+        ],
+        [
+            [
+                'field'         => '_inventory',
+                'action_type'  => "assign",
+                'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            ]
+        ]
+    );
 
-    $ranking++;
+    $migration->createRule(
+        [
+            'name'      => 'Unmanaged import (by name)',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_import_name',
+            'match'     => 'AND',
+            'sub_type'  => RuleImportAsset::getType(),
+            'is_active' => 1
+        ],
+        [
+            [
+                'criteria'  => 'itemtype',
+                'condition' => Rule::PATTERN_IS,
+                'pattern'   => 'Unmanaged'
+            ],
+            [
+                'criteria'  => 'name',
+                'condition' => Rule::PATTERN_EXISTS,
+                'pattern'   => 1
+            ]
+        ],
+        [
+            [
+                'field'         => '_inventory',
+                'action_type'  => "assign",
+                'value'         => RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
+            ]
+        ]
+    );
+
+    $migration->createRule(
+        [
+            'name'      => 'Unmanaged import denied',
+            'uuid'      => 'glpi_rule_import_asset_unmanaged_import_denied',
+            'match'     => 'AND',
+            'sub_type'  => RuleImportAsset::getType(),
+            'is_active' => 1
+        ],
+        [
+            [
+                'criteria'  => 'itemtype',
+                'condition' => Rule::PATTERN_IS,
+                'pattern'   => 'Unmanaged'
+            ]
+        ],
+        [
+            [
+                'field'         => '_inventory',
+                'action_type'  => "assign",
+                'value'         => RuleImportAsset::RULE_ACTION_DENIED
+            ]
+        ]
+    );
 }
