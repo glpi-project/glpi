@@ -87,17 +87,17 @@
     {{ fields.nullField() }}
 
     {% set project_link %}
-        <span class="col-form-label d-inline-flex">{{parent.getLink()|raw}}</span>
+        <span class="col-form-label d-inline-flex">{{ parent.getLink()|raw }}</span>
     {% endset %}
     {{ fields.field(
         '_project',
-        project_link | raw,
+        project_link|raw,
         parent.getTypeName(),
     ) }}
 
     {% if item.isNewID(id) %}
-        <input type='hidden' name='projects_id' value='{{projects_id}}'>
-        <input type='hidden' name='is_recursive' value='{{recursive}}'>
+        <input type='hidden' name='projects_id' value='{{ projects_id }}'>
+        <input type='hidden' name='is_recursive' value='{{ recursive }}'>
     {% endif %}
 
     {{ fields.dropdownField(
