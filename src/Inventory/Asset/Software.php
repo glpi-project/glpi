@@ -295,9 +295,10 @@ class Software extends InventoryAsset
                 'glpi_softwareversions.arch',
                 'glpi_softwares.manufacturers_id',
                 'glpi_softwares.entities_id',
-                'glpi_softwares.softwarecategories_id',
+                'glpi_softwarecategories.name AS softwarecategories_id',
                 'glpi_softwares.is_recursive',
                 'glpi_softwareversions.operatingsystems_id',
+                'glpi_manufacturers.name AS manufacturers_id'
             ],
             'FROM'      => 'glpi_items_softwareversions',
             'LEFT JOIN' => [
@@ -311,6 +312,18 @@ class Software extends InventoryAsset
                     'ON'  => [
                         'glpi_softwareversions' => 'softwares_id',
                         'glpi_softwares'        => 'id'
+                    ]
+                ],
+                'glpi_softwarecategories' => [
+                    'ON' => [
+                        'glpi_softwares' => 'softwarecategories_id',
+                        'glpi_softwarecategories' => 'id'
+                    ]
+                ],
+                'glpi_manufacturers' => [
+                    'ON' => [
+                        'glpi_softwares' => 'manufacturers_id',
+                        'glpi_manufacturers' => 'id'
                     ]
                 ]
             ],
@@ -360,15 +373,15 @@ class Software extends InventoryAsset
 
             //update softwarecategories if needed
             //reconciles the software without the version (no needed here)
-            $sckey = 'sofwarecategories_' . ($val->softwarecategories_id ?? 0);
+            $sckey = 'softwarecategories_id' . ($val->softwarecategories_id ?? 0);
             if (
                 isset($db_software_data[$key_wo_version])
-                && $db_software_data[$key_wo_version]['softwarecategories'] != $this->known_links[$sckey] ?? 0
+                && $db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)
             ) {
                 $software_to_update = new GSoftware();
                 $software_to_update->update([
                     "id" => $db_software_data[$key_wo_version]['softid'],
-                    "softwarecategories_id" => $this->known_links[$sckey]
+                    "softwarecategories_id" => ($this->known_links[$sckey] ?? 0)
                 ], 0);
             }
 
