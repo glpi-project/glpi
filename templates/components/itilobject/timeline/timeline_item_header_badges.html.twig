@@ -33,7 +33,7 @@
 
 {% set timeline_display_date = session('glpitimeline_relative_date') %}
 
-<span class="badge user-select text-wrap d-none d-md-block">
+<span class="badge user-select-auto text-wrap d-none d-md-block">
    {% set date_span %}
       <span title="{{ date_creation|formatted_datetime }}"
             data-bs-toggle="tooltip" data-bs-placement="bottom">
@@ -43,7 +43,7 @@
                {{ date_creation|relative_datetime }}
             </a>
          {% else %}
-            {{ date_creation }}
+            {{ date_creation|formatted_datetime }}
          {% endif %}
       </span>
    {% endset %}
@@ -63,11 +63,18 @@
 </span>
 
 {% if users_id_editor > 0 and date_creation != date_mod %}
-   <span class="badge user-select text-wrap ms-1 d-none d-md-block">
+   <span class="badge user-select-auto text-wrap ms-1 d-none d-md-block">
       {% set date_span %}
          <span title="{{ date_mod|formatted_datetime }}"
-               data-bs-placement="bottom">
-            <i class="far fa-clock me-1"></i>{{ date_mod }}
+               data-bs-toggle="tooltip" data-bs-placement="bottom">
+            <i class="far fa-clock me-1"></i>
+            {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
+               <a href="#{{ anchor }}">
+                  {{ date_creation|relative_datetime }}
+               </a>
+            {% else %}
+               {{ date_mod|formatted_datetime }}
+            {% endif %}
          </span>
       {% endset %}
 
