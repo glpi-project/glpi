@@ -816,6 +816,11 @@ class Software extends InventoryAsset
         foreach (array_keys($input) as $column) {
             if (!isset($known_fields[$column])) {
                 unset($input[$column]);
+            } else {
+                $key = $column . $input[$column];
+                if (isset($this->known_links[$key])) {
+                    $input[$column] = $this->known_links[$key];
+                }
             }
         }
         ksort($input);
