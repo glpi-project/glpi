@@ -180,6 +180,8 @@ class SynchronizeUsersCommand extends AbstractCommand
         $begin_date  = $input->getOption('begin-date');
         $end_date    = $input->getOption('end-date');
 
+        $ldap_server_error = false;
+
         $actions = [];
         if ($only_create) {
             $actions = [
@@ -294,6 +296,8 @@ class SynchronizeUsersCommand extends AbstractCommand
                 );
 
                 if (false === $users) {
+                    $ldap_server_error = true;
+
                     if ($limitexceeded) {
                         $message = sprintf(
                             __('LDAP server "%s" size limit exceeded.'),
@@ -311,7 +315,7 @@ class SynchronizeUsersCommand extends AbstractCommand
                         '<error>' . $message . '</error>',
                         OutputInterface::VERBOSITY_QUIET
                     );
-                     return $code;
+                    continue;
                 }
 
                  $action_message = '';
@@ -426,6 +430,9 @@ class SynchronizeUsersCommand extends AbstractCommand
             }
         }
 
+        if ($ldap_server_error) {
+            return 1; // At least one LDAP server had an error
+        }
         return 0; // Success
     }
 
