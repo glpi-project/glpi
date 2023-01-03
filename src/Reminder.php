@@ -958,7 +958,6 @@ class Reminder extends CommonDBVisible implements
         $output .= "<table class='table table-striped card-table table-hover'>";
         $output .= "<thead>";
         $output .= "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
-        $output .= "</thead>";
 
         if (
             ($personal && self::canCreate())
@@ -971,6 +970,7 @@ class Reminder extends CommonDBVisible implements
         }
 
         $output .= "</div></th></tr>";
+        $output .= "</thead>";
 
         if ($nb) {
             $rand = mt_rand();
