@@ -144,9 +144,9 @@ class Unmanaged extends MainAsset
      * @param integer $items_id id of the item (0 if new)
      * @param string  $itemtype Item type
      * @param integer $rules_id Matched rule id, if any
-     * @param integer $ports_id Matched port id, if any
+     * @param array $ports_id Matched port ids, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         global $CFG_GLPI;
 
