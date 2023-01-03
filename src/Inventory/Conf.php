@@ -1113,6 +1113,7 @@ class Conf extends CommonGLPI
             'import_process'                 => 1,
             'import_vm'                      => 1,
             'import_monitor_on_partial_sn'   => 0,
+            'import_unmanaged'               => 1,
             'component_processor'            => 1,
             'component_memory'               => 1,
             'component_harddrive'            => 1,
