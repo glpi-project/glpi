@@ -33,8 +33,7 @@
 
 /* global GLPI */
 
-import SearchInput from "../../../js/modules/SearchTokenizer/SearchInput.js";
-require('@tabler/core/src/js/src/popover.js');
+import SearchInput from "../../../../js/modules/SearchTokenizer/SearchInput.js";
 
 describe('Search Tokenizer Input', () => {
 

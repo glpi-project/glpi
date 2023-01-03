@@ -32,11 +32,13 @@
  */
 
 module.exports = {
-    setupFilesAfterEnv: ["<rootDir>/jest-setup.js"],
-    setupFiles: ['<rootDir>/bootstrap.js'],
-    transform: {
-        '^.+\\.js$': ['babel-jest', {rootMode: 'upward'}],
+    setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
+    setupFiles: ['<rootDir>/bootstrap.mjs'],
+    moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
+    moduleNameMapper: {
+        '^/js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
     },
+    transform: {},
     transformIgnorePatterns: [
         // Change MODULE_NAME_HERE to your module that isn't being compiled
         "/node_modules/(?!@tabler).+\\.js$"

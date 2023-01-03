@@ -69,15 +69,10 @@
     "scripts": {
         "build:pack": "webpack --config webpack.config.js",
         "build": "npm run build:pack",
-        "test": "jest --colors --config tests/js/jest.config.js ./tests/js/**"
+        "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
-        "@babel/core": "^7.20.5",
-        "@babel/plugin-transform-modules-commonjs": "^7.19.6",
-        "@babel/plugin-transform-runtime": "^7.19.6",
-        "@babel/preset-env": "^7.20.2",
         "@testing-library/jest-dom": "^5.16.5",
-        "babel-jest": "^29.2.2",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.2",

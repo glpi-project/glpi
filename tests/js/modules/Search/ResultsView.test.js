@@ -33,8 +33,9 @@
 
 /* global GLPI */
 
-require('../../../js/modules/Search/ResultsView.js');
-require('../../../js/modules/Search/Table.js');
+import '../../../../js/modules/Search/ResultsView.js';
+import '../../../../js/modules/Search/Table.js';
+import {jest} from '@jest/globals';
 
 describe('Search ResultsView', () => {
     beforeEach(() => {
