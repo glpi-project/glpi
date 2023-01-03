@@ -67,7 +67,7 @@
         "symfony/polyfill-php82": "^1.27",
         "tecnickcom/tcpdf": "^6.5",
         "twig/string-extra": "^3.3",
-        "twig/twig": "^3.3",
+        "twig/twig": "^3.5",
         "wapmorgan/unified-archive": "^1.1"
     },
     "require-dev": {
