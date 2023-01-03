@@ -34,9 +34,9 @@
  */
 
 /**
- * NotificationTargetCrontask Class
+ * NotificationTargetCronTask Class
  **/
-class NotificationTargetCrontask extends NotificationTarget
+class NotificationTargetCronTask extends NotificationTarget
 {
     public function getEvents()
     {
