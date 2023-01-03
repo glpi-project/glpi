@@ -3832,6 +3832,8 @@ class CommonDBTM extends CommonGLPI
      **/
     public function rawSearchOptions()
     {
+        global $CFG_GLPI;
+
         $tab = [];
 
         $tab[] = [
@@ -3863,6 +3865,12 @@ class CommonDBTM extends CommonGLPI
 
        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
+
+        // Add project for assets
+        $projects_itemtypes = $CFG_GLPI["project_asset_types"] ?? [];
+        if (in_array(static::class, $projects_itemtypes)) {
+            $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
+        }
 
         return $tab;
     }

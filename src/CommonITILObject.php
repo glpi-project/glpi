@@ -3914,6 +3914,8 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
+        $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
+
         return $tab;
     }
 

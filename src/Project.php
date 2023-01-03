@@ -2624,6 +2624,37 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return true;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        $tab = [];
+
+        if (is_a($itemtype, CommonITILObject::class, true)) {
+            $link_table = Itil_Project::getTable();
+        } else {
+            $link_table = Item_Project::getTable();
+        }
+
+        $tab[] = [
+            'id'                 => '401',
+            'table'              => Project::getTable(),
+            'field'              => 'name',
+            'name'               => Project::getTypeName(1),
+            'massiveaction'      => false,
+            'searchtype'         => ['equals', 'notequals'],
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'           => 'items_id',
+                'beforejoin'         => [
+                    'table'              => $link_table,
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item'
+                    ]
+                ]
+            ]
+        ];
+
+        return $tab;
+    }
 
     public static function getIcon()
     {
