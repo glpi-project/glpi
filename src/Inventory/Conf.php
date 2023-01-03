@@ -52,6 +52,7 @@ use DeviceSoundCard;
 use Dropdown;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use Monitor;
@@ -308,7 +309,7 @@ class Conf extends CommonGLPI
      **/
     public function showConfigForm()
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $config = \Config::getConfigurationValues('inventory');
         $canedit = \Config::canUpdate();
@@ -874,6 +875,49 @@ class Conf extends CommonGLPI
         echo "</td>";
         echo "</tr>";
 
+        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
+        $odd = true;
+        $in_row = true;
+        /**
+         * @var string $plugin
+         * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+         */
+        foreach ($plugin_actions as $plugin => $actions) {
+            if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
+                foreach ($actions as $action) {
+                    if (!is_callable($action['render_callback'] ?? null)) {
+                        trigger_error(
+                            sprintf('Invalid plugin "%s" render callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                            E_USER_WARNING
+                        );
+                        continue;
+                    }
+
+                    if ($odd) {
+                        echo "<tr class='tab_bg_1'>";
+                    }
+                    $field = $action['render_callback']($config);
+                    if (!empty($field)) {
+                        echo "<td>";
+                        echo $action['label'] ?? '';
+                        echo "</td>";
+                        echo "<td width='20%'>";
+                        echo $field;
+                        echo "</td>";
+
+                        if (!$odd) {
+                            echo "</tr>";
+                            $in_row = false;
+                        }
+                        $odd = !$odd;
+                    }
+                }
+            }
+        }
+        if ($in_row) {
+            echo "</tr>";
+        }
+
         if ($canedit) {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='7' class='center'>";
@@ -902,7 +946,11 @@ class Conf extends CommonGLPI
         $defaults = self::getDefaults();
         unset($values['_glpi_csrf_token']);
 
-        $unknown = array_diff_key($values, $defaults);
+        $ext_configs = array_filter($values, static function ($k, $v) {
+            return str_starts_with($v, '_');
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $unknown = array_diff_key($values, $defaults, $ext_configs);
         if (count($unknown)) {
             $msg = sprintf(
                 __('Some properties are not known: %1$s'),
@@ -922,6 +970,7 @@ class Conf extends CommonGLPI
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
             }
         }
+        $to_process = array_merge($to_process, $ext_configs);
         \Config::setConfigurationValues('inventory', $to_process);
         $this->currents = $to_process;
         return true;
