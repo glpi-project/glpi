@@ -55,7 +55,7 @@ if (isset($_POST["delete"])) {
 
     Event::log(
         $_POST["id"],
-        "queuednotifications",
+        QueuedNotification::class,
         4,
         "notification",
         //TRANS: %s is the user login
@@ -68,7 +68,7 @@ if (isset($_POST["delete"])) {
 
     Event::log(
         $_POST["id"],
-        "queuednotifications",
+        QueuedNotification::class,
         4,
         "notification",
         //TRANS: %s is the user login
@@ -81,7 +81,7 @@ if (isset($_POST["delete"])) {
 
     Event::log(
         $_POST["id"],
-        "queuednotifications",
+        QueuedNotification::class,
         4,
         "notification",
         //TRANS: %s is the user login
