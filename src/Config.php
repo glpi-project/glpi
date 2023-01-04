@@ -1307,17 +1307,13 @@ class Config extends CommonDBTM
 
             echo "<tr class='tab_bg_2'><td><label for='timeline_date_format$rand'>" . __('Timeline date display') .
             "</label></td><td>";
-            if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
-                Dropdown::showFromArray('timeline_date_format', [
-                    self::TIMELINE_RELATIVE_DATE => __('Relative'),
-                    self::TIMELINE_ABSOLUTE_DATE => __('Precise'),
-                ], [
-                    'value' => $data['timeline_date_format'],
-                    'rand' => $rand
-                ]);
-            } else {
-                echo Dropdown::getYesNo(0);
-            }
+            Dropdown::showFromArray('timeline_date_format', [
+                self::TIMELINE_RELATIVE_DATE => __('Relative'),
+                self::TIMELINE_ABSOLUTE_DATE => __('Precise'),
+            ], [
+                'value' => $data['timeline_date_format'],
+                'rand' => $rand
+            ]);
             echo "</td><td></td></tr>";
 
             echo "<tr class='tab_bg_2'>";
