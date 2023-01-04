@@ -2046,10 +2046,8 @@ class Ticket extends CommonITILObject
         }
 
         if (
-            (!isset($this->input["clone"]) || (!$this->input["clone"])) && (
-                (isset($this->input["plan"]) && count($this->input["plan"]))
-                || (isset($this->input["actiontime"]) && ($this->input["actiontime"] > 0))
-            )
+            (isset($this->input["plan"]) && count($this->input["plan"]))
+            || (isset($this->input["actiontime"]) && ($this->input["actiontime"] > 0))
         ) {
             $task = new TicketTask();
             $type = "new";
