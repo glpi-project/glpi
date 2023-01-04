@@ -707,17 +707,6 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                //handle manufacturers
-                if (isset($stmt_columns['manufacturers_id'])) {
-                    $mkey = 'manufacturers_id' . $stmt_columns['manufacturers_id'];
-                    $stmt_columns['manufacturers_id'] = $this->known_links[$mkey] ?? 0;
-                }
-                //handle software category
-                if (isset($stmt_columns['softwarecategories_id'])) {
-                    $sckey = 'softwarecategories_id' . $stmt_columns['softwarecategories_id'];
-                    $stmt_columns['softwarecategories_id'] = $this->known_links[$sckey] ?? 0;
-                }
-
                 $stmt_values = Sanitizer::encodeHtmlSpecialCharsRecursive(array_values($stmt_columns));
                 $stmt->bind_param($stmt_types, ...$stmt_values);
                 $DB->executeStatement($stmt);
