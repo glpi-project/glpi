@@ -50,6 +50,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      * Error code returned if LDAP connection failed.
      *
      * @var integer
+     * @FIXME Remove in GLPI 10.1.
      */
     const ERROR_LDAP_CONNECTION_FAILED = 1;
 
@@ -57,6 +58,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      * Error code returned if LDAP limit exceeded.
      *
      * @var integer
+     * @FIXME Remove in GLPI 10.1.
      */
     const ERROR_LDAP_LIMIT_EXCEEDED = 2;
 
@@ -180,6 +182,8 @@ class SynchronizeUsersCommand extends AbstractCommand
         $begin_date  = $input->getOption('begin-date');
         $end_date    = $input->getOption('end-date');
 
+        $ldap_server_error = false;
+
         $actions = [];
         if ($only_create) {
             $actions = [
@@ -294,24 +298,24 @@ class SynchronizeUsersCommand extends AbstractCommand
                 );
 
                 if (false === $users) {
+                    $ldap_server_error = true;
+
                     if ($limitexceeded) {
                         $message = sprintf(
                             __('LDAP server "%s" size limit exceeded.'),
                             $server_id
                         );
-                        $code = self::ERROR_LDAP_LIMIT_EXCEEDED;
                     } else {
                         $message = sprintf(
                             __('Error while contacting the LDAP server "%s".'),
                             $server_id
                         );
-                        $code = self::ERROR_LDAP_CONNECTION_FAILED;
                     }
                     $output->writeln(
                         '<error>' . $message . '</error>',
                         OutputInterface::VERBOSITY_QUIET
                     );
-                     return $code;
+                    continue;
                 }
 
                  $action_message = '';
@@ -426,7 +430,10 @@ class SynchronizeUsersCommand extends AbstractCommand
             }
         }
 
-        return 0; // Success
+        if ($ldap_server_error) {
+            return self::FAILURE; // At least one LDAP server had an error
+        }
+        return self::SUCCESS; // Success
     }
 
     /**
