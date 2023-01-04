@@ -1775,12 +1775,18 @@ class Inventory extends InventoryTestCase
             'FROM' => \Log::getTable(),
             'LIMIT' => countElementsInTable(\Log::getTable()),
             'OFFSET' => $nblogsnow,
+            'WHERE' => [
+                'NOT' => [ //prevent logs check on Agent last contact
+                    'itemtype' => \Agent::getType(),
+                    'id_search_option' => 4
+                ]
+            ]
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4440);
+        $this->integer(count($logs))->isIdenticalTo(4439);
 
         $expected_types_count = [
-            0 => 3, //Agent version, disks usage
+            0 => 2, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3272,//network port/name, ip address, VMs, Software
