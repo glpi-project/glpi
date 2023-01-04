@@ -61,7 +61,6 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
     $client->check($_POST["id"], UPDATE);
     $client->update($_POST);
-    
     Event::log(
         $_POST["id"],
         APIClient::class,
@@ -73,7 +72,6 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
     $client->check($_POST["id"], PURGE);
     $client->delete($_POST);
-    
     Event::log(
         $_POST["id"],
         APIClient::class,
