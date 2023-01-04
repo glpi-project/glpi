@@ -78,7 +78,7 @@ if (isset($_POST['add'])) {
         unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
     }
     if ($track->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
+        if ($_SESSION['glpibackcreated'] && Ticket::canView()) {
             Html::redirect($track->getLinkURL());
         }
         if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {

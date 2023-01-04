@@ -1648,9 +1648,8 @@ HTML;
         }
 
         if (
-            Session::haveRight("ticket", CREATE)
+            Session::haveRight("ticket", READ)
             || Session::haveRight("ticket", Ticket::READMY)
-            || Session::haveRight("followup", ITILFollowup::SEEPUBLIC)
         ) {
             $menu['tickets'] = [
                 'default' => '/front/ticket.php',
