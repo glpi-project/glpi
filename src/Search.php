@@ -7203,7 +7203,12 @@ JAVASCRIPT;
                             }
                             $count_display++;
 
-                            $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output);
+                            $plaintext = '';
+                            if (isset($so['htmltext']) && $so['htmltext']) {
+                                $plaintext = RichText::getTextFromHtml($data[$ID][$k]['name'], false, true, $html_output);
+                            } else {
+                                $plaintext = nl2br($data[$ID][$k]['name']);
+                            }
 
                             if ($html_output && (Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
                                 $rand = mt_rand();
