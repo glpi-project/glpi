@@ -228,12 +228,11 @@ class Unmanaged extends MainAsset
             }
         }
 
-        if (in_array($itemtype, $CFG_GLPI['agent_types'])) {
-            $this->agent->update(['id' => $this->agent->fields['id'], 'items_id' => $items_id, 'entities_id' => $entities_id]);
-        } else {
-            $this->agent->fields['items_id'] = $items_id;
-            $this->agent->fields['entities_id'] = $entities_id;
-        }
+        //do not update itemtype / items_id Agent from Unmanaged item
+        //just keep related items_id and entities_id for the rest of the process
+        //like Printer or NetworkEquipment process
+        $this->agent->fields['items_id'] = $items_id;
+        $this->agent->fields['entities_id'] = $entities_id;
 
         //check for any old agent to remove
         $agent = new \Agent();
