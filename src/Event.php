@@ -400,7 +400,20 @@ class Event extends CommonDBTM
             'LIMIT'  => (int)$_SESSION['glpilist_limit']
         ]);
 
-       // Number of results
+        $events = [];
+        foreach ($iterator as $data) {
+            // Converts lowercase plural string into corresponding classname
+            $itemtype = null;
+            if (!isset($logItemtype[$data['type']])) {
+                $item = getItemForItemtype(getSingular($data['type']));
+                $itemtype = $item !== false ? get_class($item) : null;
+            }
+            $data['itemtype'] = $itemtype;
+
+            $events[] = $data;
+        }
+
+        // Number of results
         $numrows = countElementsInTable("glpi_events");
 
         TemplateRenderer::getInstance()->display('pages/admin/events_list.html.twig', [
@@ -409,7 +422,7 @@ class Event extends CommonDBTM
             'sort'      => $sort,
             'start'     => $start,
             'target'    => $target,
-            'events'    => $iterator,
+            'events'    => $events,
             'itemtypes' => $logItemtype,
             'services'  => $logService,
         ]);
