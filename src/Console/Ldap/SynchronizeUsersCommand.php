@@ -50,6 +50,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      * Error code returned if LDAP connection failed.
      *
      * @var integer
+     * @FIXME Remove in GLPI 10.1.
      */
     const ERROR_LDAP_CONNECTION_FAILED = 1;
 
@@ -57,6 +58,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      * Error code returned if LDAP limit exceeded.
      *
      * @var integer
+     * @FIXME Remove in GLPI 10.1.
      */
     const ERROR_LDAP_LIMIT_EXCEEDED = 2;
 
@@ -303,13 +305,11 @@ class SynchronizeUsersCommand extends AbstractCommand
                             __('LDAP server "%s" size limit exceeded.'),
                             $server_id
                         );
-                        $code = self::ERROR_LDAP_LIMIT_EXCEEDED;
                     } else {
                         $message = sprintf(
                             __('Error while contacting the LDAP server "%s".'),
                             $server_id
                         );
-                        $code = self::ERROR_LDAP_CONNECTION_FAILED;
                     }
                     $output->writeln(
                         '<error>' . $message . '</error>',
@@ -431,9 +431,9 @@ class SynchronizeUsersCommand extends AbstractCommand
         }
 
         if ($ldap_server_error) {
-            return 1; // At least one LDAP server had an error
+            return self::FAILURE; // At least one LDAP server had an error
         }
-        return 0; // Success
+        return self::SUCCESS; // Success
     }
 
     /**
