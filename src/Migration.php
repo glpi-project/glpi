@@ -1602,9 +1602,11 @@ class Migration
                 $old_search_opt = $p['old'];
                 $new_search_opt = $p['new'];
 
-                // Remove duplicates (a display preference exists for both old key and new key for a same user)
+                // Remove duplicates (a display preference exists for both old key and new key for a same user).
+                // Removes existing SO using new ID as they are probably corresponding to an ID that existed before and
+                // was not cleaned correctly.
                 $duplicates_iterator = $DB->request([
-                    'SELECT'     => ['id'],
+                    'SELECT'     => ['new.id'],
                     'FROM'       => DisplayPreference::getTable() . ' AS new',
                     'INNER JOIN' => [
                         DisplayPreference::getTable() . ' AS old' => [
