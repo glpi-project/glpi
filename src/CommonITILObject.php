@@ -9286,4 +9286,10 @@ abstract class CommonITILObject extends CommonDBTM
 
         return $input;
     }
+
+    public function prepareInputForClone($input)
+    {
+        unset($input['actiontime']);
+        return $input;
+    }
 }

@@ -1788,6 +1788,15 @@ class Ticket extends DbTestCase
         $this->setEntity('Root entity', true);
         $ticket = getItemByTypeName('Ticket', '_ticket01');
 
+        $task = new \TicketTask();
+        $this->integer(
+            (int)$task->add([
+                'tickets_id' => $ticket->getID(),
+                'content'    => 'A task to check cloning',
+                'actiontime' => 3600,
+            ])
+        )->isGreaterThan(0);
+
         $date = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date;
 
@@ -1797,6 +1806,9 @@ class Ticket extends DbTestCase
 
         $clonedTicket = new \Ticket();
         $this->boolean($clonedTicket->getFromDB($added))->isTrue();
+
+         // Check timeline items are not cloned
+        $this->integer((int)$clonedTicket->getTimelineItems())->isEqualTo(0);
 
         $fields = $ticket->fields;
 
