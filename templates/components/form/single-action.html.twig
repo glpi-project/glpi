@@ -50,7 +50,7 @@
       {% endif %}
    </button>
 
-   <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-2" aria-labelledby="single-action">
+   <div id="single-ma-action-menu" class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-2" aria-labelledby="single-action">
       {% for key, action in input['actions'] %}
          <a class="dropdown-item" data-action="{{ key }}" href="#">{{ action|raw }}</a>
       {% endfor %}
@@ -60,7 +60,7 @@
 $(function () {
    var ma = {{ input|json_encode|raw }};
 
-   $(document).on('click', '.moreactions', function () {
+   $(document).on('click', '#single-ma-action-menu .moreactions', function () {
       $('.moreactions + .dropdown-menu').toggle();
    });
 
@@ -74,7 +74,7 @@ $(function () {
       }
    });
 
-   $(document).on('click', '[data-action]', function () {
+   $(document).on('click', '#single-ma-action-menu [data-action]', function () {
       $('.moreactions + .dropdown-menu').hide();
 
       var current_action = $(this).data('action');
