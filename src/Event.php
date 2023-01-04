@@ -402,13 +402,20 @@ class Event extends CommonDBTM
 
         $events = [];
         foreach ($iterator as $data) {
-            // Converts lowercase plural string into corresponding classname
-            $itemtype = null;
-            if (!isset($logItemtype[$data['type']])) {
+            $itemtype_name = null;
+            $itemtype_icon = CommonDBTM::getIcon();
+            if (isset($logItemtype[$data['type']])) {
+                $itemtype_name = $logItemtype[$data['type']];
+            } else {
+                // Converts lowercase plural string into corresponding classname
                 $item = getItemForItemtype(getSingular($data['type']));
-                $itemtype = $item !== false ? get_class($item) : null;
+                if ($item !== false) {
+                    $itemtype_name = $item->getTypeName();
+                    $itemtype_icon = $item->getIcon();
+                }
             }
-            $data['itemtype'] = $itemtype;
+            $data['itemtype_name'] = $itemtype_name;
+            $data['itemtype_icon'] = $itemtype_icon;
 
             $events[] = $data;
         }

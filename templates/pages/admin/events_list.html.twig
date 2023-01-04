@@ -79,9 +79,8 @@
                         {% for event in events %}
                            <tr>
                               <td>
-                                 {% set itemtype = call('getSingular', [event['type']]) %}
-                                 <i class="fa-fw text-muted {{ itemtype|itemtype_icon }}"></i>
-                                 <span>{{ itemtypes[itemtype] ?? itemtype|itemtype_name }}</span>
+                                 <i class="fa-fw text-muted {{ event['itemtype_icon'] }}"></i>
+                                 <span>{{ event['itemtype_name'] }}</span>
                               </td>
                               <td>{% do call('Glpi\\Event::displayItemLogID', [event['type'], event['items_id']]) %}</td>
                               <td>{{ event['date']|formatted_datetime }}</td>
