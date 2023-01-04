@@ -1288,17 +1288,13 @@ class Config extends CommonDBTM
 
             echo "<tr class='tab_bg_2'><td><label for='timeline_action_btn_layout$rand'>" . __('Action button layout') .
               "</label></td><td>";
-            if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
-                Dropdown::showFromArray('timeline_action_btn_layout', [
-                    self::TIMELINE_ACTION_BTN_MERGED => __('Merged'),
-                    self::TIMELINE_ACTION_BTN_SPLITTED => __('Splitted'),
-                ], [
-                    'value' => $data['timeline_action_btn_layout'],
-                    'rand' => $rand
-                ]);
-            } else {
-                echo Dropdown::getYesNo(0);
-            }
+            Dropdown::showFromArray('timeline_action_btn_layout', [
+                self::TIMELINE_ACTION_BTN_MERGED => __('Merged'),
+                self::TIMELINE_ACTION_BTN_SPLITTED => __('Splitted'),
+            ], [
+                'value' => $data['timeline_action_btn_layout'],
+                'rand' => $rand
+            ]);
             echo "</td><td></td></tr>";
             echo "</td></tr>";
 
