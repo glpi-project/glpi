@@ -2635,7 +2635,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         }
 
         $tab[] = [
-            'id'                 => '401',
+            'id'                 => '450',
             'table'              => Project::getTable(),
             'field'              => 'name',
             'name'               => Project::getTypeName(1),
