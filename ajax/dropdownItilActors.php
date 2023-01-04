@@ -106,13 +106,14 @@ if (isset($_POST["type"])
 
             if ($CFG_GLPI["notifications_mailing"]) {
                echo "<br><span id='notif_user_$rand'>";
+               echo __('Email followup').'&nbsp;';
+               $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', $_POST["use_notif"]);
                if ($withemail) {
-                  echo __('Email followup').'&nbsp;';
-                  $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', $_POST["use_notif"]);
                   echo '<br>';
-                  printf(__('%1$s: %2$s'), _n('Email', 'Emails', 1),
-                         "<input type='text' size='25' name='_itil_".$_POST["actortype"].
-                           "[alternative_email]'>");
+                  printf(
+                     __('%1$s: %2$s'),
+                     _n('Email', 'Emails', 1),
+                     "<input type='text' size='25' name='_itil_" . $_POST["actortype"] . "[alternative_email]'>");
                }
                echo "</span>";
             }
