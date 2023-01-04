@@ -74,9 +74,7 @@
                data-bs-toggle={{toggle_tooltip}} data-bs-placement="bottom">
             <i class="far fa-clock me-1"></i>
             {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
-               <a href="#{{ anchor }}">
-                  {{ date_creation|relative_datetime }}
-               </a>
+              {{ date_creation|relative_datetime }}
             {% else %}
                {{ date_mod|formatted_datetime }}
             {% endif %}
