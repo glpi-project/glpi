@@ -129,6 +129,13 @@ class DatabaseSchemaIntegrityChecker
     private $differ;
 
     /**
+     * GLPI database version.
+     *
+     * @var string
+     */
+    private $db_version;
+
+    /**
      * @param DBmysql $db                                 DB instance.
      * @param bool $strict                                Ignore differences that has no effect on application (columns and keys order for instance).
      * @param bool $ignore_innodb_migration               Do not check tokens related to migration from "MyISAM" to "InnoDB".
@@ -375,6 +382,8 @@ class DatabaseSchemaIntegrityChecker
             return $this->normalized[$cache_key];
         }
 
+        $dbversion = $this->getDbVersion();
+
         // Clean whitespaces
         $create_table_sql = $this->normalizeWhitespaces($create_table_sql);
 
@@ -484,8 +493,21 @@ class DatabaseSchemaIntegrityChecker
         }
 
         if (
+            $table_name === 'glpi_notimportedemails'
+            && $dbversion !== null
+            && version_compare(VersionParser::getNormalizedVersion($dbversion), '10.0', '<')
+        ) {
+            // Before GLPI 10.0.0, COLLATE property was not explicitely defined for glpi_notimportedemails,
+            // and charset was not the same as other tables.
+            // If installed schema is < 10.0.0, we exclude CHARACTER SET and COLLATE properties from
+            // diff as we cannot easilly predict effective values (COLLATE will depend on server configuration)
+            // and, anyway, it will be fixed during GLPI 10.0.0 migration.
+            $column_replacements['/( CHARACTER SET \w+)? COLLATE \w+/i'] = '';
+        }
+        if (
             $table_name === 'glpi_impactcontexts'
-            && $this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'context')
+            && $dbversion !== null
+            && version_compare(VersionParser::getNormalizedVersion($dbversion), '10.0.1', '<')
         ) {
             // Remove default value on glpi_impactcontexts.positions column.
             // The default cannot be added on MySQL server, so it is impossible to fix this diff prior to migration.
@@ -494,21 +516,7 @@ class DatabaseSchemaIntegrityChecker
             // this default value on GLPI firstly installed in version <= 9.5.3.
             // see https://github.com/glpi-project/glpi/pull/8415
             // see https://github.com/glpi-project/glpi/pull/11662
-            $dbversion_res = $this->db->request(
-                [
-                    'FROM'   => 'glpi_configs',
-                    'WHERE'  => [
-                        'context' => 'core',
-                        'name'    => 'dbversion',
-                    ]
-                ]
-            )->current();
-            if (
-                $dbversion_res !== null
-                && version_compare(VersionParser::getNormalizedVersion($dbversion_res['value']), '10.0.1', '<')
-            ) {
-                $column_replacements['/(`positions`.*)\s*DEFAULT\s*\'\'\s*(.*)/'] = '$1 $2';
-            }
+            $column_replacements['/(`positions`.*)\s*DEFAULT\s*\'\'\s*(.*)/'] = '$1 $2';
         }
 
         $columns = preg_replace(array_keys($column_replacements), array_values($column_replacements), $columns);
@@ -581,6 +589,19 @@ class DatabaseSchemaIntegrityChecker
             if (in_array($properties['COLLATE'] ?? '', ['utf8_unicode_ci', 'utf8mb4_unicode_ci'])) {
                 unset($properties['COLLATE']);
             }
+        }
+        if (
+            $table_name === 'glpi_notimportedemails'
+            && $dbversion !== null
+            && version_compare(VersionParser::getNormalizedVersion($dbversion), '10.0', '<')
+        ) {
+            // Before GLPI 10.0.0, COLLATE property was not explicitely defined for glpi_notimportedemails,
+            // and charset was not the same as other tables.
+            // If installed schema is < 10.0.0, we exclude DEFAULT CHARSET and COLLATE properties from
+            // diff as we cannot easilly predict effective values (COLLATE will depend on server configuration)
+            // and, anyway, it will be fixed during GLPI 10.0.0 migration.
+            unset($properties['DEFAULT CHARSET']);
+            unset($properties['COLLATE']);
         }
         ksort($properties);
 
@@ -751,5 +772,30 @@ class DatabaseSchemaIntegrityChecker
             }
         }
         return $this->getSchemaPath($schema_version, $context) !== null;
+    }
+
+    /**
+     * Returns GLPI database version.
+     *
+     * @return string|null
+     */
+    private function getDbVersion(): ?string
+    {
+        if (
+            $this->db_version === null
+            && $this->db->tableExists('glpi_configs') && $this->db->fieldExists('glpi_configs', 'context')
+        ) {
+            $this->db_version = $this->db->request(
+                [
+                    'FROM'   => 'glpi_configs',
+                    'WHERE'  => [
+                        'context' => 'core',
+                        'name'    => 'dbversion',
+                    ]
+                ]
+            )->current()['value'] ?? null;
+        }
+
+        return $this->db_version;
     }
 }
