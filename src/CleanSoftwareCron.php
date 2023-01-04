@@ -82,13 +82,6 @@ class CleanSoftwareCron extends CommonDBTM
     {
         $total = 0;
 
-        // Purge deleted links
-        $item_softwareVersion = new Item_SoftwareVersion();
-        $item_softwareVersion->deleteByCriteria([
-            'is_deleted' => 1,
-            'is_dynamic' => 1,
-        ]);
-
        // Delete software versions with no installation
         $total += self::deleteItems(
             self::getVersionsWithNoInstallationCriteria(),
@@ -137,6 +130,9 @@ class CleanSoftwareCron extends CommonDBTM
                             'id' => new QuerySubQuery([
                                 'SELECT' => 'softwareversions_id',
                                 'FROM'   => Item_SoftwareVersion::getTable(),
+                                'WHERE'  => [
+                                    'is_deleted' => 0,
+                                ],
                             ])
                         ],
                         [
