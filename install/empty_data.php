@@ -4892,7 +4892,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 ##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##
 ##ENDFOREACHplugins##
 
-##lang.glpi.url## :##glpi.url##',
+##lang.glpi.url## : ##glpi.url##',
                 'content_html' => '&lt;p&gt;##lang.plugins_updates_available##&lt;/p&gt;
 &lt;ul&gt;##FOREACHplugins##
 &lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;

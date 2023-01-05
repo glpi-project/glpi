@@ -78,8 +78,10 @@ class NotificationTargetController extends NotificationTarget
             ];
         }
 
-        $this->data['##glpi.url##'] = $this->formatURL(NotificationTarget::GLPI_USER,
-                                                        '/front/marketplace.php');
+        $this->data['##glpi.url##'] = $this->formatURL(
+            NotificationTarget::GLPI_USER,
+            '/front/marketplace.php'
+        );
 
         $this->getTags();
         foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -126,7 +128,7 @@ class NotificationTargetController extends NotificationTarget
             'plugin.key'         => __('Plugin directory'),
             'plugin.version'     => __('Plugin new version number'),
             'plugin.old_version' => __('Plugin old version number'),
-            'glpi.url'           => __('URL of the application')
+            'glpi.url'           => __('URL of the application'),
         ];
 
         foreach ($tags as $tag => $label) {
