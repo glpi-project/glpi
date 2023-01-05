@@ -103,45 +103,6 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
 class Conf extends CommonGLPI
 {
     private $currents = [];
-    public static $defaults = [
-        'enabled_inventory'              => 0,
-        'import_software'                => 1,
-        'import_volume'                  => 1,
-        'import_antivirus'               => 1,
-        'import_registry'                => 1,
-        'import_process'                 => 1,
-        'import_vm'                      => 1,
-        'import_monitor_on_partial_sn'   => 0,
-        'import_unmanaged'               => 1,
-        'component_processor'            => 1,
-        'component_memory'               => 1,
-        'component_harddrive'            => 1,
-        'component_networkcard'          => 1,
-        'component_graphiccard'          => 1,
-        'component_soundcard'            => 1,
-        'component_drive'                => 1,
-        'component_networkdrive'         => 1,
-        'component_networkcardvirtual'   => 1,
-        'component_control'              => 1,
-        'component_battery'              => 1,
-        'component_simcard'              => 1,
-        'states_id_default'              => 0,
-        'entities_id_default'            => 0,
-        'location'                       => 0,
-        'group'                          => 0,
-        'vm_type'                        => 0,
-        'vm_components'                  => 0,
-        'vm_as_computer'                 => 0,
-        'component_removablemedia'       => 1,
-        'component_powersupply'          => 1,
-        'inventory_frequency'            => AbstractRequest::DEFAULT_FREQUENCY,
-        'import_monitor'                 => 1,
-        'import_printer'                 => 1,
-        'import_peripheral'              => 1,
-        'stale_agents_delay'             => 0,
-        'stale_agents_action'            => 0,
-        'stale_agents_status'            => 0,
-    ];
 
     public const STALE_AGENT_ACTION_CLEAN = 0;
 
