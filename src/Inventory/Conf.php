@@ -72,6 +72,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
  * @property int $import_process
  * @property int $import_vm
  * @property int $import_monitor_on_partial_sn
+ * @property int $import_unmanaged
  * @property int $component_processor
  * @property int $component_memory
  * @property int $component_harddrive
@@ -427,6 +428,25 @@ class Conf extends CommonGLPI
             'id'        => 'import_antivirus',
             'checked'   => $config['import_antivirus']
         ]);
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>";
+        echo "<label for='import_unmanaged'>";
+        echo \Unmanaged::getTypeName(Session::getPluralNumber());
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+        Html::showCheckbox([
+            'name'      => 'import_unmanaged',
+            'id'        => 'import_unmanaged',
+            'checked'   => $config['import_unmanaged'] ?? 1
+        ]);
+        echo "</td>";
+
+        echo "</td>";
+        echo "<td>";
         echo "</td>";
         echo "</tr>";
 
@@ -1054,6 +1074,7 @@ class Conf extends CommonGLPI
             'import_process'                 => 1,
             'import_vm'                      => 1,
             'import_monitor_on_partial_sn'   => 0,
+            'import_unmanaged'               => 1,
             'component_processor'            => 1,
             'component_memory'               => 1,
             'component_harddrive'            => 1,

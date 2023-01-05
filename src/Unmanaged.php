@@ -41,6 +41,8 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class Unmanaged extends CommonDBTM
 {
+    use Glpi\Features\Inventoriable;
+
    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'config';
@@ -57,6 +59,7 @@ class Unmanaged extends CommonDBTM
         $this->addDefaultFormTab($ong)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('Lock', $ong, $options)
+         ->addStandardTab('RuleMatchedLog', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
         return $ong;
     }
@@ -271,10 +274,30 @@ class Unmanaged extends CommonDBTM
 
         $this->getFromDB($items_id);
         $netport = new NetworkPort();
+        $rulematch = new RuleMatchedLog();
+        $lockfield = new Lockedfield();
 
-        $iterator = $DB->request([
+        $iterator_np = $DB->request([
             'SELECT' => ['id'],
             'FROM' => NetworkPort::getTable(),
+            'WHERE' => [
+                'itemtype' => self::getType(),
+                'items_id' => $items_id
+            ]
+        ]);
+
+        $iterator_rml = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => RuleMatchedLog::getTable(),
+            'WHERE' => [
+                'itemtype' => self::getType(),
+                'items_id' => $items_id
+            ]
+        ]);
+
+        $iterator_lf = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => Lockedfield::getTable(),
             'WHERE' => [
                 'itemtype' => self::getType(),
                 'items_id' => $items_id
@@ -293,14 +316,33 @@ class Unmanaged extends CommonDBTM
             'uuid'          => $this->fields['uuid'] ?? null,
             'is_dynamic'    => 1
         ] + $this->fields;
+        //do not keep Unmanaged ID
+        unset($asset_data['id']);
+
         $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
 
-        foreach ($iterator as $row) {
+        foreach ($iterator_np as $row) {
             $row += [
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
             $netport->update(Toolbox::addslashes_deep($row));
+        }
+
+        foreach ($iterator_rml as $row) {
+            $row += [
+                'items_id' => $assets_id,
+                'itemtype' => $itemtype
+            ];
+            $rulematch->update(Toolbox::addslashes_deep($row));
+        }
+
+        foreach ($iterator_lf as $row) {
+            $row += [
+                'items_id' => $assets_id,
+                'itemtype' => $itemtype
+            ];
+            $lockfield->update(Toolbox::addslashes_deep($row));
         }
         $this->deleteFromDB(1);
     }

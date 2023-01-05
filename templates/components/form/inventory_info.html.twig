@@ -154,7 +154,9 @@
       </script>
    {% endif %}
 
-   {% if item.isField('is_dynamic') and (item.getType() == 'NetworkEquipment' or item.getType() == 'Printer') %}
+   {# display last_inventory_update for asset using Inventoriable Trait and without agent #}
+   {# like NetworkEquipement, Printer or Unmanaged Device converted #}
+   {% if item is usingtrait('Glpi\\Features\\Inventoriable') and item.getInventoryAgent() == null %}
       <div class="card-body row">
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >{{ __('Last inventory') }}</label>
