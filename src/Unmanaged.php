@@ -317,7 +317,7 @@ class Unmanaged extends CommonDBTM
             'uuid'          => $this->fields['uuid'] ?? null,
             'is_dynamic'    => 1
         ] + $this->fields;
-        //do not keep unamanged ID
+        //do not keep Unmanaged ID
         unset($asset_data['id']);
 
         $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
