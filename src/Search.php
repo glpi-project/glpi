@@ -4630,15 +4630,15 @@ JAVASCRIPT;
         $SEARCH = "";
 
         // In some cases, we will need to replace the WHERE condition by a subquery.
-        // This is needed to avoid false positif for  for negative conditions on
+        // This is needed to avoid false positif for negative conditions on
         // children items (e.g. search for tickets that DON'T have a given group)
         // See https://github.com/glpi-project/glpi/pull/13684 for detailed examples
-        $use_where_subquery = false;
+        $use_subquery_on_id_search = false;
 
         // Special case when having a negative condition on children items with
         // the "contains" or "not contains" search type.
         // The subquery will need to be constructed differently
-        $use_where_subquery_on_name = false;
+        $use_subquery_on_text_search = false;
 
         // Is the current criteria on a linked children item ? (e.g. search
         // option 65 for CommonITILObjects)
@@ -4662,7 +4662,7 @@ JAVASCRIPT;
                     // Negative criteria on linked children found, subquery will be needed
                     // Note that we invert the criteria as we will use a NOT IN subquery
                     $SEARCH = self::makeTextSearch($val, !$nott);
-                    $use_where_subquery_on_name = true;
+                    $use_subquery_on_text_search = true;
                 } else {
                     $SEARCH = self::makeTextSearch($val, $nott);
                 }
@@ -4674,7 +4674,7 @@ JAVASCRIPT;
                         // Negative criteria on linked children found, subquery will be needed
                         // Note that we invert the criteria as we will use a NOT IN subquery
                         $SEARCH = " = " . DBmysql::quoteValue($val);
-                        $use_where_subquery = true;
+                        $use_subquery_on_id_search = true;
                     } else {
                         $SEARCH = " <> " . DBmysql::quoteValue($val);
                     }
@@ -4691,7 +4691,7 @@ JAVASCRIPT;
                         // Negative criteria on linked children found, subquery will be needed
                         // Note that we invert the criteria as we will use a NOT IN subquery
                         $SEARCH = " = " . DBmysql::quoteValue($val);
-                        $use_where_subquery = true;
+                        $use_subquery_on_id_search = true;
                     } else {
                         $SEARCH = " <> " . DBmysql::quoteValue($val);
                     }
@@ -4703,7 +4703,7 @@ JAVASCRIPT;
                     if ($where_on_linked_children) {
                         // Negative criteria on linked children found, subquery will be needed
                         // Note that we invert the criteria as we will use a NOT IN subquery
-                        $use_where_subquery = true;
+                        $use_subquery_on_id_search = true;
                         $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
                     } else {
                         $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
@@ -4720,7 +4720,7 @@ JAVASCRIPT;
                     if ($where_on_linked_children) {
                         // Negative criteria on linked children found, subquery will be needed
                         // Note that we invert the criteria as we will use a NOT IN subquery
-                        $use_where_subquery = true;
+                        $use_subquery_on_id_search = true;
                         $SEARCH = " IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
                     } else {
                         $SEARCH = " NOT IN ('" . implode("','", getSonsOf($inittable, $val)) . "')";
@@ -5243,14 +5243,14 @@ JAVASCRIPT;
         }
 
         // Using subquery in the WHERE clause
-        if ($use_where_subquery || $use_where_subquery_on_name) {
+        if ($use_subquery_on_id_search || $use_subquery_on_text_search) {
             // Compute tables and fields names
             $main_table = getTableForItemType($itemtype);
             $fk = getForeignKeyFieldForTable($main_table);
             $beforejoin = $searchopt[$ID]['joinparams']['beforejoin'];
             $child_table = $searchopt[$ID]['table'];
             $link_table = $beforejoin['table'];
-            $linked_fk = getForeignKeyFieldForTable($searchopt[$ID]['table']);
+            $linked_fk = $beforejoin['joinparams']['linkfield'] ?? getForeignKeyFieldForTable($searchopt[$ID]['table']);
 
             // Handle extra condition (e.g. filtering group type)
             $addcondition = '';
@@ -5266,7 +5266,7 @@ JAVASCRIPT;
                 $addcondition = $addcondition . " ";
             }
 
-            if ($use_where_subquery) {
+            if ($use_subquery_on_id_search) {
                 // Subquery for "Is not", "Not + is", "Not under" and "Not + Under" search types
                 $out = " $link `$main_table`.`id` NOT IN (
                     SELECT `$fk`
@@ -5281,7 +5281,7 @@ JAVASCRIPT;
                 //     FROM `glpi_groups_tickets`
                 //     WHERE `groups_id` = '4' AND `glpi_groups_tickets`.`type` = '3'
                 // )
-            } elseif ($use_where_subquery_on_name) {
+            } elseif ($use_subquery_on_text_search) {
                 // Subquery for "Not contains" and "Not + contains" search types
                 $out = " $link `$main_table`.`id` NOT IN (
                     SELECT `$fk`
