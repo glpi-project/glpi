@@ -58,6 +58,9 @@ class Config extends CommonDBTM
     public const TIMELINE_ACTION_BTN_MERGED = 0;
     public const TIMELINE_ACTION_BTN_SPLITTED = 1;
 
+    public const TIMELINE_RELATIVE_DATE = 0;
+    public const TIMELINE_ABSOLUTE_DATE = 1;
+
    // From CommonGLPI
     protected $displaylist         = false;
 
@@ -1297,6 +1300,17 @@ class Config extends CommonDBTM
             ]);
             echo "</td><td></td></tr>";
             echo "</td></tr>";
+
+            echo "<tr class='tab_bg_2'><td><label for='timeline_date_format$rand'>" . __('Timeline date display') .
+            "</label></td><td>";
+            Dropdown::showFromArray('timeline_date_format', [
+                self::TIMELINE_RELATIVE_DATE => __('Relative'),
+                self::TIMELINE_ABSOLUTE_DATE => __('Precise'),
+            ], [
+                'value' => $data['timeline_date_format'],
+                'rand' => $rand
+            ]);
+            echo "</td><td></td></tr>";
 
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Priority colors') . "</td>";

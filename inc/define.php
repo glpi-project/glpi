@@ -466,7 +466,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
     'highcontrast_css', 'default_dashboard_central', 'default_dashboard_assets',
     'default_dashboard_helpdesk', 'default_dashboard_mini_ticket', 'default_central_tab',
     'fold_menu', 'fold_search', 'savedsearches_pinned', 'richtext_layout', 'timeline_order',
-    'itil_layout', 'timeline_action_btn_layout'
+    'itil_layout', 'timeline_action_btn_layout', 'timeline_date_format'
 ];
 
 $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract', 'Document',

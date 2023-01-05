@@ -31,13 +31,22 @@
  # ---------------------------------------------------------------------
  #}
 
-<span class="badge text-wrap d-none d-md-block">
+{% set timeline_display_date = session('glpitimeline_date_format') %}
+<span class="badge user-select-auto text-wrap d-none d-md-block">
    {% set date_span %}
-      <span title="{{ date_creation|formatted_datetime }}"
-            data-bs-toggle="tooltip" data-bs-placement="bottom">
+      <span
+         {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
+            title="{{ date_creation|formatted_datetime }}"
+            data-bs-toggle="tooltip" data-bs-placement="bottom"
+         {% endif %}
+      >
          <i class="far fa-clock me-1"></i>
          <a href="#{{ anchor }}">
-            {{ date_creation|relative_datetime }}
+            {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
+               {{ date_creation|relative_datetime }}
+            {% else %}
+               {{ date_creation|formatted_datetime }}
+            {% endif %}
          </a>
       </span>
    {% endset %}
@@ -57,11 +66,20 @@
 </span>
 
 {% if users_id_editor > 0 and date_creation != date_mod %}
-   <span class="badge text-wrap ms-1 d-none d-md-block">
+   <span class="badge user-select-auto text-wrap ms-1 d-none d-md-block">
       {% set date_span %}
-         <span title="{{ date_mod|formatted_datetime }}"
-               data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="far fa-clock me-1"></i>{{ date_mod|relative_datetime }}
+         <span
+            {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
+               title="{{ date_mod|formatted_datetime }}"
+               data-bs-toggle="tooltip" data-bs-placement="bottom"
+            {% endif %}
+         >
+            <i class="far fa-clock me-1"></i>
+            {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
+               {{ date_mod|relative_datetime }}
+            {% else %}
+               {{ date_mod|formatted_datetime }}
+            {% endif %}
          </span>
       {% endset %}
 
