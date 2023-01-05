@@ -293,7 +293,6 @@ class Software extends InventoryAsset
                 'glpi_softwareversions.id AS versionid',
                 'glpi_softwareversions.name AS version',
                 'glpi_softwareversions.arch',
-                'glpi_softwares.manufacturers_id',
                 'glpi_softwares.entities_id',
                 'glpi_softwarecategories.name AS softwarecategories_id',
                 'glpi_softwares.is_recursive',
@@ -337,6 +336,9 @@ class Software extends InventoryAsset
         foreach ($iterator as $data) {
             $item_soft_v_id = $data['item_soft_version_id'];
             unset($data['item_soft_version_id']);
+            if ($data['manufacturers_id'] == null) {
+                $data['manufacturers_id'] = 0;
+            }
             $key_w_version = $this->getFullCompareKey((object)$data);
             $key_wo_version = $this->getFullCompareKey((object)$data, false);
             $db_software[$key_w_version] = $item_soft_v_id;
