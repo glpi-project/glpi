@@ -87,8 +87,6 @@ if (isset($_GET['docid'])) { // docid for document
         if ($splitter[0] == "_inventory") {
             $iconf = new Conf();
             if ($iconf->isInventoryFile(GLPI_INVENTORY_DIR . '/' . $splitter[1])) {
-               // Can use expires header as picture file path changes when picture changes.
-                $expires_headers = true;
                 $send = GLPI_INVENTORY_DIR . '/' . $splitter[1];
 
                 $finfo = new finfo(FILEINFO_MIME_TYPE);
