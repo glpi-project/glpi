@@ -35,18 +35,12 @@
 
 namespace Glpi\Inventory\Asset;
 
-use AutoUpdateSystem;
-use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Toolbox\Sanitizer;
-use NetworkEquipment;
-use NetworkName;
 use NetworkPortInstantiation;
-use Printer;
 use RefusedEquipment;
 use RuleMatchedLog;
-use Toolbox;
 use Transfer;
 
 class Unmanaged extends MainAsset
@@ -88,7 +82,7 @@ class Unmanaged extends MainAsset
     /**
      * Prepare network device information
      *
-     * @param stdClass $val
+     * @param \stdClass $val
      *
      * @return void
      */
@@ -148,8 +142,6 @@ class Unmanaged extends MainAsset
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
-        global $CFG_GLPI;
-
         $key = $this->current_key;
         $val = &$this->data[$key];
         $entities_id = $this->entities_id;
