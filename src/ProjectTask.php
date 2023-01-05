@@ -585,23 +585,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public function showForm($ID, array $options = [])
     {
         if ($ID > 0) {
-            $duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
             $this->check($ID, READ);
+            $duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
             $projects_id     = $this->fields['projects_id'];
             $projecttasks_id = $this->fields['projecttasks_id'];
             $recursive       = null; // Wont be used in the case, value is irrelevant
-            $ticket_duration = Html::timestampToString($duration, false);
-            $total_duration  = Html::timestampToString(
-                $duration + $this->fields["effective_duration"],
-                false
-            );
         } else {
             $this->check(-1, CREATE, $options);
             $projects_id     = $options['projects_id'];
             $projecttasks_id = $options['projecttasks_id'];
             $recursive       = $this->fields['is_recursive'];
-            $ticket_duration = null; // Wont be used in the case, value is irrelevant
-            $total_duration  = null; // Wont be used in the case, value is irrelevant
         }
 
         $duration_dropdown_to_add = [];
@@ -619,9 +612,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'projecttasks_id'          => $projecttasks_id,
             'recursive'                => $recursive,
             'duration_dropdown_to_add' => $duration_dropdown_to_add,
-            'ticket_duration'          => $ticket_duration,
-            'total_duration'           => $total_duration,
-            'safe_content'             => RichText::getSafeHtml($this->fields["content"], true),
+            'duration'                 => $duration,
+            'rand'                     => mt_rand(),
         ]);
         return true;
     }

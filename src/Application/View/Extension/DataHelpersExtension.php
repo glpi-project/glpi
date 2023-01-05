@@ -99,15 +99,18 @@ class DataHelpersExtension extends AbstractExtension
      * Return human readable duration.
      *
      * @param mixed $duration
+     * @param bool $display_seconds (default: true)
      *
      * @return string|null
      */
-    public function getFormattedDuration($duration): ?string
-    {
+    public function getFormattedDuration(
+        $duration,
+        bool $display_seconds = true
+    ): ?string {
         if (!is_numeric($duration)) {
             return null;
         }
-        return Html::timestampToString($duration);
+        return Html::timestampToString($duration, $display_seconds);
     }
 
     /**

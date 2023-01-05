@@ -50,7 +50,7 @@ if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id
     $template->getFromDB($_POST['projecttasktemplates_id']);
 
     if (DropdownTranslation::isDropdownTranslationActive()) {
-        $template->fields['content'] = DropdownTranslation::getTranslatedValue(
+        $template->fields['description'] = DropdownTranslation::getTranslatedValue(
             $template->getID(),
             $template->getType(),
             'content',
