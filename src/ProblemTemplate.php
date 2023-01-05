@@ -58,4 +58,14 @@ class ProblemTemplate extends ITILTemplate
             ProblemTemplatePredefinedField::class,
         ];
     }
+
+    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
+    {
+        $problem = new Problem();
+        return [
+            $problem->getSearchOptionIDByField('field', 'impactcontent', 'glpi_problems')  => 'impactcontent',
+            $problem->getSearchOptionIDByField('field', 'causecontent', 'glpi_problems')   => 'causecontent',
+            $problem->getSearchOptionIDByField('field', 'symptomcontent', 'glpi_problems') => 'symptomcontent',
+        ];
+    }
 }

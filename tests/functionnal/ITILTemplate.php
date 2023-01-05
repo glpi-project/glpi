@@ -283,6 +283,9 @@ class ITILTemplate extends DbTestCase
                     13 => 'Associated elements',
                     -2 => 'Approval request',
                     142 => 'Documents',
+                    60 => 'Impacts',
+                    61 => 'Causes',
+                    62 => 'Symptoms',
                 ]
             ]
         ];

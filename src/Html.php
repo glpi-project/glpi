@@ -3943,7 +3943,8 @@ JS;
 
                      editor.on('submit', function (e) {
                         if ($('#$id').val() == '') {
-                           alert(__('The description field is mandatory'));
+                           const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
+                           alert(__('The %s field is mandatory').replace('%s', field));
                            e.preventDefault();
 
                            // Prevent other events to run
