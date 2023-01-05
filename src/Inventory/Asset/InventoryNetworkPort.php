@@ -115,6 +115,7 @@ trait InventoryNetworkPort
         if (!$this->isMainPartial()) {
             $this->cleanUnmanageds();
         }
+
         $this->handleDeletesManagementPorts();
         $this->handleIpNetworks();
         $this->handleUpdates();
