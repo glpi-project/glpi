@@ -130,6 +130,9 @@ class CleanSoftwareCron extends CommonDBTM
                             'id' => new QuerySubQuery([
                                 'SELECT' => 'softwareversions_id',
                                 'FROM'   => Item_SoftwareVersion::getTable(),
+                                'WHERE'  => [
+                                    'is_deleted' => 0,
+                                ],
                             ])
                         ],
                         [
