@@ -84,7 +84,7 @@ if (isset($_GET['docid'])) { // docid for document
             }
         }
 
-        if ($splitter[0] == "_inventory") {
+        if ($splitter[0] == "_inventory" && Session::haveRight(Conf::$rightname, READ)) {
             $iconf = new Conf();
             if ($iconf->isInventoryFile(GLPI_INVENTORY_DIR . '/' . $splitter[1])) {
                 $send = GLPI_INVENTORY_DIR . '/' . $splitter[1];

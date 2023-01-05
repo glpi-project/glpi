@@ -31,7 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if item.isDynamic() != false %}
+{% if has_profile_right('inventory', constant('READ')) and item.isDynamic() != false %}
 <div class="card m-n2 border-0 shadow-none">
    <div class="card-header">
       <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
