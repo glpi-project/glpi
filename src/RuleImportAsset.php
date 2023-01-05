@@ -2437,24 +2437,6 @@ class RuleImportAsset extends Rule
             'action'    => '_deny'
         ];
 
-        //load default rules from plugins
-        if ($with_plugins && isset($PLUGIN_HOOKS['add_rules'])) {
-            $ria = new self();
-            foreach ($PLUGIN_HOOKS['add_rules'] as $plugin => $val) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                $rules = array_merge(
-                    $rules,
-                    Plugin::doOneHook(
-                        $plugin,
-                        "ruleImportAsset_addGlobalCriteria",
-                        $ria->getGlobalCriteria()
-                    )
-                );
-            }
-        }
-
         $ranking = 0;
         foreach ($rules as $rule) {
             $rulecollection = new RuleImportAssetCollection();
