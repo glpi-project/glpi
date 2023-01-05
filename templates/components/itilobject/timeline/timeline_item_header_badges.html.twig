@@ -43,7 +43,7 @@
          <i class="far fa-clock me-1"></i>
          <a href="#{{ anchor }}">
             {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
-                  {{ date_creation|relative_datetime }}
+               {{ date_creation|relative_datetime }}
             {% else %}
                {{ date_creation|formatted_datetime }}
             {% endif %}
@@ -75,13 +75,11 @@
             {% endif %}
          >
             <i class="far fa-clock me-1"></i>
-            <a href="#{{ anchor }}">
-               {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
+            {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
                {{ date_mod|relative_datetime }}
-               {% else %}
-                  {{ date_mod|formatted_datetime }}
-               {% endif %}
-            </a>
+            {% else %}
+               {{ date_mod|formatted_datetime }}
+            {% endif %}
          </span>
       {% endset %}
 
