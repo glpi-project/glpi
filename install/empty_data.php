@@ -4890,11 +4890,14 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
 ##FOREACHplugins##
 ##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##
-##ENDFOREACHplugins##',
+##ENDFOREACHplugins##
+
+##lang.glpi.url## :##glpi.url##',
                 'content_html' => '&lt;p&gt;##lang.plugins_updates_available##&lt;/p&gt;
 &lt;ul&gt;##FOREACHplugins##
 &lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;
-##ENDFOREACHplugins##&lt;/ul&gt;'
+##ENDFOREACHplugins##&lt;/ul&gt;
+&lt;p&gt;##lang.glpi.url## : &lt;a title="##lang.glpi.url##" href="##glpi.url##" target="_blank" rel="noopener"&gt;##glpi.url##&lt;/a&gt;&lt;/p&gt;'
             ],
         ];
 
