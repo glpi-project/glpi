@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session ::checkLoginUser();
+Session::checkLoginUser();
 
 $item = new Ticket_Contract();
 

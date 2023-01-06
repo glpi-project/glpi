@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session ::checkLoginUser();
+Session::checkLoginUser();
 
 Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "commondropdown");
 

@@ -36,7 +36,7 @@
 use Glpi\Event;
 
 include '../inc/includes.php';
-Session ::checkRight('itiltemplate', UPDATE);
+Session::checkRight('itiltemplate', UPDATE);
 
 if (!isset($itiltype)) {
     Html::displayErrorAndDie("Missing ITIL type");
