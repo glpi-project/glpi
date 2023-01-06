@@ -477,9 +477,9 @@ HTML;
         }
         $out .= "</div>";
 
-       // Decode images urls
+        // Unsanitize images urls
         $imgs = array_map(function ($img) {
-            $img['src'] = html_entity_decode($img['src']);
+            $img['src'] = Sanitizer::decodeHtmlSpecialChars($img['src']);
             return $img;
         }, $imgs);
 

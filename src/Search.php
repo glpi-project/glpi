@@ -8365,7 +8365,7 @@ HTML;
                    // Use a regex to keep only the link, there may be other content
                    // after that we don't need (script, tooltips, ...)
                     if (preg_match('/<a.*<\/a>/', $value, $matches)) {
-                        $out = html_entity_decode(strip_tags($matches[0]));
+                        $out = Sanitizer::decodeHtmlSpecialChars(strip_tags($matches[0]));
                     }
                 }
                 break;
