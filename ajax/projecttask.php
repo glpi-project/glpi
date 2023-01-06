@@ -53,7 +53,7 @@ if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id
         $template->fields['description'] = DropdownTranslation::getTranslatedValue(
             $template->getID(),
             $template->getType(),
-            'content',
+            'description',
             $_SESSION['glpilanguage'],
             $template->fields['description']
         );
