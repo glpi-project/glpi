@@ -41,7 +41,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session ::checkLoginUser();
+Session::checkLoginUser();
 
 $item = new Item_Project();
 

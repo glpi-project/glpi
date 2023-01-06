@@ -39,7 +39,7 @@
 
 include('../inc/includes.php');
 
-Session ::checkLoginUser();
+Session::checkLoginUser();
 
 $pr = new PlanningRecall();
 

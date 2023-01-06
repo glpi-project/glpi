@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 $link = new Group_Ticket();
 $item = new Ticket();
 
-Session ::checkLoginUser();
+Session::checkLoginUser();
 
 if (isset($_POST['delete'])) {
     $link->check($_POST['id'], DELETE);

@@ -43,7 +43,7 @@ include('../inc/includes.php');
 
 $ticket_ticket = new Ticket_Ticket();
 
-Session ::checkCentralAccess();
+Session::checkCentralAccess();
 
 if (isset($_POST['purge'])) {
     $ticket_ticket->check($_POST['id'], PURGE);

@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session ::checkLoginUser();
+Session::checkLoginUser();
 
 $item = new Problem_Ticket();
 

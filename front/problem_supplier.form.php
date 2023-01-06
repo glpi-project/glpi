@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 
 $link = new Problem_Supplier();
 
-Session ::checkLoginUser();
+Session::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {
