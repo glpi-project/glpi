@@ -147,5 +147,8 @@ Html::header(
     $rulecollection->menu_option
 );
 
-$rulecollection->display();
+$rulecollection->display([
+    'criterias' => 1,
+    'actions'   => 1,
+]);
 Html::footer();
