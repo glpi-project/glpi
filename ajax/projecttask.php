@@ -37,6 +37,8 @@
  * @since 9.2
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 $AJAX_INCLUDE = 1;
 
 include('../inc/includes.php');
@@ -59,6 +61,6 @@ if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id
         );
     }
 
-    $template->fields = array_map('html_entity_decode', $template->fields);
+    $template->fields = Sanitizer::decodeHtmlSpecialCharsRecursive($template->fields);
     echo json_encode($template->fields);
 }
