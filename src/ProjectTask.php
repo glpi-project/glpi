@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\RichText\RichText;
@@ -583,315 +584,38 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public function showForm($ID, array $options = [])
     {
-        global $CFG_GLPI;
-
-        $rand_template           = mt_rand();
-        $rand_name               = mt_rand();
-        $rand_description        = mt_rand();
-        $rand_comment            = mt_rand();
-        $rand_project            = mt_rand();
-        $rand_state              = mt_rand();
-        $rand_type               = mt_rand();
-        $rand_percent            = mt_rand();
-        $rand_milestone          = mt_rand();
-        $rand_plan_start_date    = mt_rand();
-        $rand_plan_end_date      = mt_rand();
-        $rand_real_start_date    = mt_rand();
-        $rand_real_end_date      = mt_rand();
-        $rand_effective_duration = mt_rand();
-        $rand_planned_duration   = mt_rand();
-
         if ($ID > 0) {
             $this->check($ID, READ);
+            $duration        = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
             $projects_id     = $this->fields['projects_id'];
             $projecttasks_id = $this->fields['projecttasks_id'];
+            $recursive       = null; // Wont be used in the case, value is irrelevant
         } else {
             $this->check(-1, CREATE, $options);
+            $duration        = null;
             $projects_id     = $options['projects_id'];
             $projecttasks_id = $options['projecttasks_id'];
             $recursive       = $this->fields['is_recursive'];
         }
 
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td style='width:100px'>" . _n('Project task template', 'Project task templates', 1) . "</td><td>";
-        ProjectTaskTemplate::dropdown(['value'     => $this->fields['projecttasktemplates_id'],
-            'entity'    => $this->getEntityID(),
-            'rand'      => $rand_template,
-            'on_change' => 'projecttasktemplate_update(this.value)'
-        ]);
-        echo "</td>";
-        echo "<td colspan='2'></td>";
-        echo "</tr>";
-        echo Html::scriptBlock('
-         function projecttasktemplate_update(value) {
-            $.ajax({
-               url: "' . $CFG_GLPI["root_doc"] . '/ajax/projecttask.php",
-               type: "POST",
-               data: {
-                  projecttasktemplates_id: value
-               }
-            }).done(function(data) {
-
-               // set input name
-               $("#textfield_name' . $rand_name . '").val(data.name);
-
-               // set textarea description
-               if (tasktinymce = tinymce.get("description' . $rand_description . '")) {
-                  tasktinymce.setContent(data.description);
-               }
-                // set textarea comment
-               $("#comment' . $rand_comment . '").val(data.comments);
-
-               // set project task
-               $("#dropdown_projecttasks_id' . $rand_project . '").trigger("setValue", data.projecttasks_id);
-               // set state
-               $("#dropdown_projectstates_id' . $rand_state . '").trigger("setValue", data.projectstates_id);
-               // set type
-               $("#dropdown_projecttasktypes_id' . $rand_type . '").trigger("setValue", data.projecttasktypes_id);
-               // set percent done
-               $("#dropdown_percent_done' . $rand_percent . '").trigger("setValue", data.percent_done);
-               // set milestone
-               $("#dropdown_is_milestone' . $rand_milestone . '").trigger("setValue", data.is_milestone);
-
-               // set plan_start_date
-               $("#showdate' . $rand_plan_start_date . '").val(data.plan_start_date);
-               // set plan_end_date
-               $("#showdate' . $rand_plan_end_date . '").val(data.plan_end_date);
-               // set real_start_date
-               $("#showdate' . $rand_real_start_date . '").val(data.real_start_date);
-               // set real_end_date
-               $("#showdate' . $rand_real_end_date . '").val(data.real_end_date);
-
-               // set effective_duration
-               $("#dropdown_effective_duration' . $rand_effective_duration . '").trigger("setValue", data.effective_duration);
-               // set planned_duration
-               $("#dropdown_planned_duration' . $rand_planned_duration . '").trigger("setValue", data.planned_duration);
-
-            });
-         }
-      ');
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Project', 'Projects', Session::getPluralNumber()) . "</td>";
-        echo "<td>";
-        if ($this->isNewID($ID)) {
-            echo "<input type='hidden' name='projects_id' value='$projects_id'>";
-            echo "<input type='hidden' name='is_recursive' value='$recursive'>";
-        }
-        echo "<a href='" . Project::getFormURLWithID($projects_id) . "'>" .
-             Dropdown::getDropdownName("glpi_projects", $projects_id) . "</a>";
-        echo "</td>";
-        echo "<td>" . __('As child of') . "</td>";
-        echo "<td>";
-        $this->dropdown([
-            'entity'    => $this->fields['entities_id'],
-            'value'     => $projecttasks_id,
-            'rand'      => $rand_project,
-            'condition' => ['glpi_projecttasks.projects_id' => $this->fields['projects_id']],
-            'used'      => [$this->fields['id']]
-        ]);
-        echo "</td></tr>";
-
-        $showuserlink = 0;
-        if (Session::haveRight('user', READ)) {
-            $showuserlink = 1;
-        }
-
-        if ($ID) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Creation date') . "</td>";
-            echo "<td>";
-            echo sprintf(
-                __('%1$s by %2$s'),
-                Html::convDateTime($this->fields["date_creation"]),
-                getUserName($this->fields["users_id"], $showuserlink)
-            );
-            echo "</td>";
-            echo "<td>" . __('Last update') . "</td>";
-            echo "<td>";
-            echo Html::convDateTime($this->fields["date_mod"]);
-            echo "</td></tr>";
-        }
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-        echo "<td colspan='3'>";
-        echo Html::input(
-            'name',
-            [
-                'value' => $this->fields['name'],
-                'id'    => "textfield_name$rand_name",
-                'size'  => '80',
-            ]
-        );
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _x('item', 'State') . "</td>";
-        echo "<td>";
-        ProjectState::dropdown(['value' => $this->fields["projectstates_id"],
-            'rand'  => $rand_state
-        ]);
-        echo "</td>";
-        echo "<td>" . _n('Type', 'Types', 1) . "</td>";
-        echo "<td>";
-        ProjectTaskType::dropdown(['value' => $this->fields["projecttasktypes_id"],
-            'rand'  => $rand_type
-        ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Percent done') . "</td>";
-        echo "<td>";
-        $percent_done_params = [
-            'value' => $this->fields['percent_done'],
-            'rand'  => $rand_percent,
-            'min'   => 0,
-            'max'   => 100,
-            'step'  => 5,
-            'unit'  => '%'
-        ];
-        if ($this->fields['auto_percent_done']) {
-            $percent_done_params['specific_tags'] = ['disabled' => 'disabled'];
-        }
-        Dropdown::showNumber("percent_done", $percent_done_params);
-        $auto_percent_done_params = [
-            'type'      => 'checkbox',
-            'name'      => 'auto_percent_done',
-            'title'     => __('Automatically calculate'),
-            'onclick'   => "$(\"select[name='percent_done']\").prop('disabled', !$(\"input[name='auto_percent_done']\").prop('checked'));"
-        ];
-        if ($this->fields['auto_percent_done']) {
-            $auto_percent_done_params['checked'] = 'checked';
-        }
-        Html::showCheckbox($auto_percent_done_params);
-        echo "<span class='ms-3'>";
-        Html::showToolTip(__('When automatic computation is active, percentage is computed based on the average of all child task percent done.'));
-        echo "</span></td>";
-
-        echo "</td>";
-        echo "<td>";
-        echo __('Milestone');
-        echo "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("is_milestone", $this->fields["is_milestone"], -1, ['rand' => $rand_milestone]);
-        $js = "$('#dropdown_is_milestone$rand_milestone').on('change', function(e) {
-         $('tr.is_milestone').toggleClass('starthidden');
-      })";
-        echo Html::scriptBlock($js);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr><td colspan='4' class='subheader'>" . __('Planning') . "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Planned start date') . "</td>";
-        echo "<td>";
-        Html::showDateTimeField(
-            "plan_start_date",
-            ['value' => $this->fields['plan_start_date'],
-                'rand'  => $rand_plan_start_date
-            ]
-        );
-        echo "</td>";
-        echo "<td>" . __('Real start date') . "</td>";
-        echo "<td>";
-        Html::showDateTimeField(
-            "real_start_date",
-            ['value' => $this->fields['real_start_date'],
-                'rand'  => $rand_real_start_date
-            ]
-        );
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Planned end date') . "</td>";
-        echo "<td>";
-        Html::showDateTimeField("plan_end_date", ['value' => $this->fields['plan_end_date'],
-            'rand'  => $rand_plan_end_date
-        ]);
-        echo "</td>";
-        echo "<td>" . __('Real end date') . "</td>";
-        echo "<td>";
-        Html::showDateTimeField("real_end_date", ['value' => $this->fields['real_end_date'],
-            'rand'  => $rand_real_end_date
-        ]);
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1 is_milestone" . ($this->fields['is_milestone'] ? ' starthidden' : '')  . "'>";
-        echo "<td>" . __('Planned duration') . "</td>";
-        echo "<td>";
-
-        $toadd = [];
+        $duration_dropdown_to_add = [];
         for ($i = 9; $i <= 100; $i++) {
-            $toadd[] = $i * HOUR_TIMESTAMP;
+            $duration_dropdown_to_add[] = $i * HOUR_TIMESTAMP;
         }
 
-        Dropdown::showTimeStamp(
-            "planned_duration",
-            ['min'             => 0,
-                'max'             => 8 * HOUR_TIMESTAMP,
-                'rand'            => $rand_planned_duration,
-                'value'           => $this->fields["planned_duration"],
-                'addfirstminutes' => true,
-                'inhours'         => true,
-                'toadd'           => $toadd
-            ]
-        );
-        echo "</td>";
-        echo "<td>" . __('Effective duration') . "</td>";
-        echo "<td>";
-        Dropdown::showTimeStamp(
-            "effective_duration",
-            ['min'             => 0,
-                'max'             => 8 * HOUR_TIMESTAMP,
-                'rand'            => $rand_effective_duration,
-                'value'           => $this->fields["effective_duration"],
-                'addfirstminutes' => true,
-                'inhours'         => true,
-                'toadd'           => $toadd
-            ]
-        );
-        if ($ID) {
-            $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
-            echo "<br>";
-            printf(
-                __('%1$s: %2$s'),
-                __('Tickets duration'),
-                Html::timestampToString($ticket_duration, false)
-            );
-            echo '<br>';
-            printf(
-                __('%1$s: %2$s'),
-                __('Total duration'),
-                Html::timestampToString(
-                    $ticket_duration + $this->fields["effective_duration"],
-                    false
-                )
-            );
-        }
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Description') . "</td>";
-        echo "<td colspan='3'>";
-        Html::textarea([
-            'name'            => 'content',
-            'enable_richtext' => true,
-            'editor_id'       => "description$rand_description",
-            'value'           => RichText::getSafeHtml($this->fields["content"], true),
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('pages/tools/project_task.html.twig', [
+            'id'                       => $ID,
+            'item'                     => $this,
+            'params'                   => $options,
+            'parent'                   => Project::getById($projects_id),
+            'projects_id'              => $projects_id,
+            'projecttasks_id'          => $projecttasks_id,
+            'recursive'                => $recursive,
+            'duration_dropdown_to_add' => $duration_dropdown_to_add,
+            'duration'                 => $duration,
+            'rand'                     => mt_rand(),
         ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Comments') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<textarea id='comment$rand_comment' name='comment' cols='90' rows='6'>" . $this->fields["comment"] .
-           "</textarea>";
-        echo "</td></tr>\n";
-
-        $this->showFormButtons($options);
-
         return true;
     }
 
