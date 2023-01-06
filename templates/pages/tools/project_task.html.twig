@@ -35,6 +35,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set form_id = 'project_task_' ~ rand %}
+{% set content_field_id = 'content_' ~ rand %}
 {% set params = {
     'formoptions': 'id="' ~ form_id ~ '"'
 } %}
@@ -73,7 +74,7 @@
                 form.find('input[name=real_end_date]').parent()[0]._flatpickr.setDate(data.real_end_date);
 
                 // Set tinymce
-                if (tasktinymce = tinymce.get("editor_content")) {
+                if (tasktinymce = tinymce.get("{{ content_field_id }}")) {
                     tasktinymce.setContent(data.description);
                 }
 
@@ -243,7 +244,7 @@
 
     {% if id %}
         {% set ticket_duration %}
-            <span class="fw-normal col-form-label d-inline-flex ">{{ (duration)|formatted_duration(false) }}</span>
+            <span class="fw-normal col-form-label d-inline-flex ">{{ duration|formatted_duration(false) }}</span>
         {% endset %}
         {{ fields.field(
             '_ticket_duration',
@@ -273,7 +274,7 @@
         {
             'name': 'content',
             'enable_richtext': true,
-            'id': "editor_content",
+            'id': content_field_id,
             'label_class': "col-xxl-2",
             'input_class': "col-xxl-10",
             'field_class' : "col-12",
