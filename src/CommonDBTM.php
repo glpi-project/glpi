@@ -667,32 +667,31 @@ class CommonDBTM extends CommonGLPI
     {
         global $DB;
 
+        $tobeupdated = [];
         foreach ($updates as $field) {
             if (isset($this->fields[$field])) {
-                $DB->update(
-                    $this->getTable(),
-                    [$field => $this->fields[$field]],
-                    ['id' => $this->fields['id']]
-                );
-                if ($DB->affectedRows() == 0) {
-                    if (isset($oldvalues[$field])) {
-                        unset($oldvalues[$field]);
-                    }
-                }
-            } else {
-               // Clean oldvalues
-                if (isset($oldvalues[$field])) {
+                if (isset($oldvalues[$field]) && $this->fields[$field] == $oldvalues[$field]) {
                     unset($oldvalues[$field]);
                 }
+                $tobeupdated[$field] = $this->fields[$field];
+            } else {
+                // Clean oldvalues
+                unset($oldvalues[$field]);
             }
         }
+        $DB->update(
+            $this->getTable(),
+            $tobeupdated,
+            ['id' => $this->fields['id']]
+        );
+        $affected_rows = $DB->affectedRows();
 
-        if (count($oldvalues)) {
+        if (count($oldvalues) && $affected_rows > 0) {
             Log::constructHistory($this, $oldvalues, $this->fields);
             $this->getFromDB($this->fields[$this->getIndexName()]);
         }
 
-        return true;
+        return ($affected_rows >= 0);
     }
 
 
@@ -1671,8 +1670,9 @@ class CommonDBTM extends CommonGLPI
 
                     $this->cleanLockeds();
                     if (count($this->updates)) {
+                        $updated = false;
                         if (
-                            $this->updateInDB(
+                            $updated = $this->updateInDB(
                                 $this->updates,
                                 ($this->dohistory && $history ? $this->oldvalues
                                 : [])
@@ -1707,6 +1707,11 @@ class CommonDBTM extends CommonGLPI
                                //Check if we have to automatical fill dates
                                 Infocom::manageDateOnStatusChange($this, false);
                             }
+                        }
+
+                        if (!$updated) {
+                            $this->restoreInput();
+                            return $updated;
                         }
                     }
                 }
