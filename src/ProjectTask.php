@@ -586,12 +586,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     {
         if ($ID > 0) {
             $this->check($ID, READ);
-            $duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
+            $duration        = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
             $projects_id     = $this->fields['projects_id'];
             $projecttasks_id = $this->fields['projecttasks_id'];
             $recursive       = null; // Wont be used in the case, value is irrelevant
         } else {
             $this->check(-1, CREATE, $options);
+            $duration        = null;
             $projects_id     = $options['projects_id'];
             $projecttasks_id = $options['projecttasks_id'];
             $recursive       = $this->fields['is_recursive'];
