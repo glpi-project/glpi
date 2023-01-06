@@ -1166,17 +1166,27 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param integer $type type to search (see constants)
      *
-     * @return boolean
+     * @return int
      **/
     public function getDefaultActor($type)
     {
-
-       /// TODO own_ticket -> own_itilobject
         if ($type == CommonITILActor::ASSIGN) {
-            if (Session::haveRight("ticket", Ticket::OWN)) {
+            if (
+                $this->canAssignToMe()
+                && $_SESSION['glpiset_default_tech']
+            ) {
                 return Session::getLoginUserID();
             }
         }
+        if ($type == CommonITILActor::REQUESTER) {
+            if (
+                static::canCreate()
+                && $_SESSION['glpiset_default_requester']
+            ) {
+                return Session::getLoginUserID();
+            }
+        }
+
         return 0;
     }
 

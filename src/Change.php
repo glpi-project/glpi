@@ -887,15 +887,27 @@ class Change extends CommonITILObject
 
     public static function getDefaultValues($entity = 0)
     {
+        $users_id_requester = 0;
+        $users_id_assign    = 0;
+
+        if (is_numeric(Session::getLoginUserID(false))) {
+            if (Session::haveRight(self::$rightname, UPDATE) && $_SESSION['glpiset_default_requester']) {
+                $users_id_requester = Session::getLoginUserID();
+            }
+            if (Session::haveRight(self::$rightname, CREATE) && $_SESSION['glpiset_default_tech']) {
+                $users_id_assign = Session::getLoginUserID();
+            }
+        }
+
         $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
         return [
-            '_users_id_requester'        => Session::getLoginUserID(),
+            '_users_id_requester'        => $users_id_requester,
             '_users_id_requester_notif'  => [
                 'use_notification'  => $default_use_notif,
                 'alternative_email' => ''
             ],
             '_groups_id_requester'       => 0,
-            '_users_id_assign'           => 0,
+            '_users_id_assign'           => $users_id_assign,
             '_users_id_assign_notif'     => [
                 'use_notification'  => $default_use_notif,
                 'alternative_email' => ''

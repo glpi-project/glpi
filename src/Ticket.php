@@ -684,32 +684,6 @@ class Ticket extends CommonITILObject
     }
 
     /**
-     * @see CommonITILObject::getDefaultActor()
-     **/
-    public function getDefaultActor($type)
-    {
-
-        if ($type == CommonITILActor::ASSIGN) {
-            if (
-                Session::haveRight(self::$rightname, self::OWN)
-                && $_SESSION['glpiset_default_tech']
-            ) {
-                return Session::getLoginUserID();
-            }
-        }
-        if ($type == CommonITILActor::REQUESTER) {
-            if (
-                Session::haveRight(self::$rightname, CREATE)
-                && $_SESSION['glpiset_default_requester']
-            ) {
-                return Session::getLoginUserID();
-            }
-        }
-        return 0;
-    }
-
-
-    /**
      * @see CommonITILObject::getDefaultActorRightSearch()
      **/
     public function getDefaultActorRightSearch($type)
