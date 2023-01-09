@@ -479,7 +479,7 @@ class RuleCollection extends CommonDBTM
             }
         }
 
-        foreach (['criterias', 'actions'] as $param) {
+        foreach (['display_criterias', 'display_actions'] as $param) {
             if (
                 isset($options[$param])
             ) {
