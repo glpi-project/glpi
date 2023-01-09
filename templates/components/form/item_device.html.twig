@@ -220,6 +220,16 @@
                         })
                      ) }}
                   {% endif %}
+
+                  {% if item.isField('comment') %}
+                     {{ fields.textareaField(
+                        'comment',
+                        item.fields['comment'],
+                        _n('Comment', 'Comments', get_plural_number()),
+                        field_options
+                     ) }}
+                  {% endif %}
+
                </div> {# .row #}
             </div> {# .row #}
          </div> {# .flex-row #}
