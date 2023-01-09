@@ -4132,9 +4132,9 @@ JAVASCRIPT
 
        // Back and fast backward button
         if (!$start == 0) {
-            $out .= "<th class='left'><a href='javascript:reloadTab(\"start=0$additional_params\");'>
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0$additional_params\");'>
                      <i class='fa fa-step-backward' title=\"" . __s('Start') . "\"></i></a></th>";
-            $out .= "<th class='left'><a href='javascript:reloadTab(\"start=$back$additional_params\");'>
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back$additional_params\");'>
                      <i class='fa fa-chevron-left' title=\"" . __s('Previous') . "\"></i></a></th>";
         }
 
@@ -4154,9 +4154,9 @@ JAVASCRIPT
 
        // Forward and fast forward button
         if ($forward < $numrows) {
-            $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$forward$additional_params\");'>
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward$additional_params\");'>
                      <i class='fa fa-chevron-right' title=\"" . __s('Next') . "\"></i></a></th>";
-            $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$end$additional_params\");'>
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end$additional_params\");'>
                      <i class='fa fa-step-forward' title=\"" . __s('End') . "\"></i></a></th>";
         }
 
