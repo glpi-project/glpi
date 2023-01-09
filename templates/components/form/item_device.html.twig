@@ -109,8 +109,9 @@
                   {% for specificities in specificities_fields %}
                      {% if specificities['canread'] %}
 
+                        {% set specific_field_options = field_options %}
                         {% if specificities['tooltip'] is defined %}
-                           {% set field_options = field_options|merge({'helper': specificities['tooltip']}) %}
+                           {% set specific_field_options = specific_field_options|merge({'helper': specificities['tooltip']}) %}
                         {% endif %}
 
                         {% if specificities['datatype'] == "dropdown" %}
@@ -120,14 +121,14 @@
                               specificities['field'],
                               specificities['value'],
                               specificities['label'],
-                              specificities['dropdown_options']|merge(field_options)
+                              specificities['dropdown_options']|merge(specific_field_options)
                            ) }}
                         {% elseif specificities['protected'] %}
                            {{ fields.passwordField(
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options|merge({
+                                 specific_field_options|merge({
                                     'id': specificities['protected_field_id'],
                                     'is_disclosable': true,
                                  })
@@ -137,14 +138,14 @@
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options
+                                 specific_field_options
                            ) }}
                         {% else %}
                            {{ fields.textField(
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options
+                                 specific_field_options
                            ) }}
                         {% endif %}
                      {% endif %}
