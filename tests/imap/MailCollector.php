@@ -711,6 +711,7 @@ class MailCollector extends DbTestCase
                     '35 - Message with some invalid headers',
                     '36 - Microsoft specific code',
                     '37 - Image using application/octet-steam content-type',
+                    '38 - E-mail address too long',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
