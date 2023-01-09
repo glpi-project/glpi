@@ -494,26 +494,23 @@ class Group_User extends CommonDBRelation
        // TODO: migrate to use CommonDBRelation::getListForItem()
         $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree, false);
 
-        // Load parents groups
-        if (Config::getConfigurationValue('core', 'use_recursive_groups')) {
-            // We will load implicits members from parents groups and display
-            // them after all the "direct" members
-            $parents_members = self::getParentsMembers($group, $crit);
+        // We will load implicits members from parents groups and display
+        // them after all the "direct" members
+        $parents_members = self::getParentsMembers($group, $crit);
 
-            foreach ($parents_members as $parent) {
-                // Flag group as implicit, will be used to disallow massive
-                // actions for this group
-                $parent['implicit'] = true;
-                $used[] = $parent;
-            }
-
-            // Remove duplicated data (explicit membership will be shown over
-            // implicits one. In case of no explicits membership and multiple
-            // implicites one, only the firt one will be shown)
-            // array_values is used to avoid gaps in the keys, which is needed
-            // because some code below do a for loop on the data
-            $used = array_values(self::clearDuplicatedGroupData($used));
+        foreach ($parents_members as $parent) {
+            // Flag group as implicit, will be used to disallow massive
+            // actions for this group
+            $parent['implicit'] = true;
+            $used[] = $parent;
         }
+
+        // Remove duplicated data (explicit membership will be shown over
+        // implicits one. In case of no explicits membership and multiple
+        // implicites one, only the firt one will be shown)
+        // array_values is used to avoid gaps in the keys, which is needed
+        // because some code below do a for loop on the data
+        $used = array_values(self::clearDuplicatedGroupData($used));
 
         if ($canedit) {
             self::showAddUserForm($group, $ids, $entityrestrict, $crit);
@@ -602,9 +599,7 @@ class Group_User extends CommonDBRelation
                 $header_end    .= "</th>";
             }
             $header_end .= "<th>" . User::getTypeName(1) . "</th>";
-            if ($tree || Config::getConfigurationValue('core', 'use_recursive_groups')) {
-                $header_end .= "<th>" . Group::getTypeName(1) . "</th>";
-            }
+            $header_end .= "<th>" . Group::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Dynamic') . "</th>";
             $header_end .= "<th>" . _n('Manager', 'Managers', 1) . "</th>";
             $header_end .= "<th>" . __('Delegatee') . "</th>";
@@ -627,11 +622,9 @@ class Group_User extends CommonDBRelation
                     echo "</td>";
                 }
                 echo "<td>" . $user->getLink();
-                if ($tree || Config::getConfigurationValue('core', 'use_recursive_groups')) {
-                    echo "</td><td>";
-                    if ($tmpgrp->getFromDB($data['groups_id'])) {
-                        echo $tmpgrp->getLink(['comments' => true]);
-                    }
+                echo "</td><td>";
+                if ($tmpgrp->getFromDB($data['groups_id'])) {
+                    echo $tmpgrp->getLink(['comments' => true]);
                 }
                 echo "</td><td class='center'>";
                 if ($data['is_dynamic']) {
@@ -847,15 +840,14 @@ class Group_User extends CommonDBRelation
             $ids = [];
             self::getDataForGroup($item, $members, $ids, '', 0, false);
 
-            if (Config::getConfigurationValue('core', 'use_recursive_groups')) {
-                // We will also count implicits members from parents groups
-                $parents_members = self::getParentsMembers($item, '');
+            // We will also count implicits members from parents groups
+            $parents_members = self::getParentsMembers($item, '');
 
-                foreach ($parents_members as $parent) {
-                    $members[] = $parent;
-                }
-                $members = self::clearDuplicatedGroupData($members);
+            foreach ($parents_members as $parent) {
+                $members[] = $parent;
             }
+            $members = self::clearDuplicatedGroupData($members);
+
             return count($members);
         } elseif ($item instanceof User) {
             return parent::countForItem($item);

@@ -601,16 +601,12 @@ class Session
             true
         );
 
-        $is_recursive_global = Config::getConfigurationValue('core', 'use_recursive_groups');
-
-        // Build select depending on whether or not $is_recursive_global is
-        // enabled.
+        // Build select depending on whether or not the recursive_membership
+        // column exist.
         // Needed because this code will be executed during the upgrade processs
         // BEFORE the recursive_membership column is added
-        // If $is_recursive_global is enabled then the update was already done
-        // and we can assume the column exist
         $SELECT = [Group_User::getTableField('groups_id')];
-        if ($is_recursive_global) {
+        if ($DB->fieldExists(Group::getTable(), 'recursive_membership')) {
             $SELECT[] = Group::getTableField('recursive_membership');
         }
         $iterator = $DB->request([
@@ -633,7 +629,7 @@ class Session
             $_SESSION["glpigroups"][] = $data["groups_id"];
 
             // Add children groups
-            if ($is_recursive_global && $data['recursive_membership']) {
+            if ($data['recursive_membership']) {
                 // Stack of children to load
                 $children_to_load = [$data["groups_id"]];
 

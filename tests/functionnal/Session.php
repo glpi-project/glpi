@@ -565,11 +565,13 @@ class Session extends \DbTestCase
         $group_1 = $this->createItem('Group', [
             'name' => 'testSessionGroups Group 1',
             'entities_id' => $entity,
+            'recursive_membership' => false,
         ])->getID();
         $group_1A = $this->createItem('Group', [
             'name'        => 'testSessionGroups Group 1A',
             'entities_id' => $entity,
             'groups_id'   => $group_1,
+            'recursive_membership' => false,
         ])->getID();
 
         // Login to TU_USER account (no groups);
@@ -584,8 +586,9 @@ class Session extends \DbTestCase
         ])->getID();
         yield ['expected' => [$group_1]];
 
-        // Enable group recursion
-        Config::setConfigurationValues('core', ['use_recursive_groups' => true]);
+        // Enable group recursion on all groups
+        $this->updateItem('Group', $group_1, ['recursive_membership' => true]);
+        $this->updateItem('Group', $group_1A, ['recursive_membership' => true]);
         yield ['expected' => [$group_1, $group_1A]];
 
         // Add another child group
@@ -593,6 +596,7 @@ class Session extends \DbTestCase
             'name'        => 'testSessionGroups Group 1A1',
             'entities_id' => $entity,
             'groups_id'   => $group_1A,
+            'recursive_membership' => true,
         ])->getID();
         yield ['expected' => [$group_1, $group_1A, $group_1A1]];
 
@@ -608,8 +612,10 @@ class Session extends \DbTestCase
         $this->updateItem("Group", $group_1A1, ['groups_id' => 0]);
         yield ['expected' => [$group_1, $group_1A]];
 
-        // Disable global recursion
-        Config::setConfigurationValues('core', ['use_recursive_groups' => false]);
+        // Disable recursion on all groups
+        $this->updateItem('Group', $group_1, ['recursive_membership' => false]);
+        $this->updateItem('Group', $group_1A, ['recursive_membership' => false]);
+        $this->updateItem('Group', $group_1A1, ['recursive_membership' => false]);
         yield ['expected' => [$group_1]];
 
         // Link Group 1A manually

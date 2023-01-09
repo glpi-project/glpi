@@ -38,20 +38,12 @@
  * @var Migration $migration
  */
 
-$migration->addConfig([
-    // Add new "recursive groups" configuration option
-    // If enabled, members of a given group will become implicits members of its
-    // children groups
-    // Disabled by default
-    'use_recursive_groups' => false,
-]);
-
 // Add new "recursive_membership" field on groups
-// It may be set to "No" to disable recursion for a given group
-// By default, it is enabled for all groups but wont be active unless the new
-// "use_recursive_groups" config option is also enabled
+// If enabled, members of a given group will become implicits members of its
+// children groups
+// Disabled by defaul
 if (!$DB->fieldExists('glpi_groups', 'recursive_membership')) {
     $migration->addField('glpi_groups', 'recursive_membership', 'bool', [
-        'value' => true,
+        'value' => false,
     ]);
 }

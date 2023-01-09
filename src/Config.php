@@ -3558,15 +3558,6 @@ HTML;
             );
         }
 
-        // Updating the "use_recursive_groups" config option mean that we must
-        // invalidate the group membership cache
-        if (
-            $this->fields['name'] == 'use_recursive_groups'
-            && array_key_exists('value', $this->oldvalues)
-        ) {
-            Group::updateLastGroupChange();
-        }
-
         if (array_key_exists('value', $this->oldvalues)) {
             $newvalue = (string)$this->fields['value'];
             $oldvalue = (string)$this->oldvalues['value'];

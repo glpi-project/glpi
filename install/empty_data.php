@@ -351,7 +351,6 @@ $empty_data_builder = new class
             'support_legacy_data' => 0, // New installation should not support legacy data
             'toast_location' => 'bottom-right',
             'initialized_rules_collections' => '[]',
-            'use_recursive_groups' => false,
         ];
 
         $tables['glpi_configs'] = [];

@@ -247,19 +247,17 @@ class Group extends CommonTreeDropdown
         ]);
         echo "</td></tr>";
 
-        if (Config::getConfigurationValue('core', 'use_recursive_groups')) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Recursive membership') . "</td><td>";
-            Dropdown::showYesNo(
-                'recursive_membership',
-                $this->isNewItem() ? 1 : $this->fields['recursive_membership'],
-                -1,
-            );
-            Html::showToolTip(
-                __("If enabled, members of this group will also become implicit members of its children groups")
-            );
-            echo "</td></tr>";
-        }
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Recursive membership') . "</td><td>";
+        Dropdown::showYesNo(
+            'recursive_membership',
+            $this->isNewItem() ? 1 : $this->fields['recursive_membership'],
+            -1,
+        );
+        Html::showToolTip(
+            __("If enabled, members of this group will also become implicit members of its children groups")
+        );
+        echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td class='subheader' colspan='2'>" . __('Visible in a ticket');
@@ -1110,10 +1108,7 @@ class Group extends CommonTreeDropdown
     {
         // Adding a new group might invalidate the group cache if it's a new child
         // group and recursive membership is enabled
-        if (
-            $this->fields['groups_id']
-            && Config::getConfigurationValue('core', 'use_recursive_groups')
-        ) {
+        if ($this->fields['groups_id']) {
             Group::updateLastGroupChange();
         }
     }
@@ -1125,7 +1120,6 @@ class Group extends CommonTreeDropdown
         if (
             isset($this->oldvalues['groups_id'])
             && $this->fields['groups_id'] !== $this->oldvalues['groups_id']
-            && Config::getConfigurationValue('core', 'use_recursive_groups')
         ) {
             Group::updateLastGroupChange();
         }
