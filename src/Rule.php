@@ -1994,10 +1994,13 @@ class Rule extends CommonDBTM
         $first = false,
         $last = false,
         $display_entities = false,
-        $active_condition = 0,
-        $display_criterias = 0,
-        $display_actions = 0
+        $active_condition = 0
+        // FIXME Uncomment this in GLPI 10.1
+        // bool $display_criterias = false,
+        // bool $display_actions = false
     ) {
+    $display_criterias = func_get_args()[5] ?? false;
+    $display_actions = func_get_args()[6] ?? false;
         $canedit = (self::canUpdate() && !$display_entities);
         echo "<tr class='tab_bg_1' data-rule-id='" . $this->fields['id'] . "'>";
 
@@ -2313,7 +2316,7 @@ class Rule extends CommonDBTM
     /**
      * @param $fields
      **/
-    public function getMinimalCriteria($fields)
+    private function getMinimalCriteria(array $fields): array
     {
         $criterion = $this->getCriteriaName($fields["criteria"]);
         $condition = RuleCriteria::getConditionByID($fields["condition"], get_class($this), $fields["criteria"]);
@@ -2346,7 +2349,7 @@ class Rule extends CommonDBTM
     /**
      * @param $fields
      **/
-    public function getMinimalAction($fields)
+    private function getMinimalAction(array $fields): array
     {
         $field = $this->getActionName($fields["field"]);
         $type  = RuleAction::getActionByID($fields["action_type"]);

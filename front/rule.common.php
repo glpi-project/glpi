@@ -148,7 +148,7 @@ Html::header(
 );
 
 $rulecollection->display([
-    'criterias' => 1,
-    'actions'   => 1,
+    'display_criterias' => true,
+    'display_actions'   => true,
 ]);
 Html::footer();

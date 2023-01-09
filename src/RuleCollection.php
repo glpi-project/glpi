@@ -467,8 +467,8 @@ class RuleCollection extends CommonDBTM
         $p['condition'] = 0;
         $p['_glpi_tab'] = $options['_glpi_tab'];
         $rand           = mt_rand();
-        $p['criterias'] = 0;
-        $p['actions']   = 0;
+        $p['display_criterias'] = false;
+        $p['display_actions']   = false;
 
         foreach (['inherited','childrens', 'condition'] as $param) {
             if (
@@ -490,8 +490,8 @@ class RuleCollection extends CommonDBTM
         $rule              = $this->getRuleClass();
         $display_entities  = ($this->isRuleRecursive()
                             && ($p['inherited'] || $p['childrens']));
-        $display_criterias = $p['criterias'];
-        $display_actions   = $p['actions'];
+        $display_criterias = $p['display_criterias'];
+        $display_actions   = $p['display_actions'];
 
        // Do not know what it is ?
         $canedit    = (self::canUpdate()
