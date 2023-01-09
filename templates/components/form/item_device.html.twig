@@ -109,10 +109,6 @@
                   {% for specificities in specificities_fields %}
                      {% if specificities['canread'] %}
 
-                        {% if specificities['tooltip'] is defined %}
-                           {% set field_options = field_options|merge({'helper': specificities['tooltip']}) %}
-                        {% endif %}
-
                         {% if specificities['datatype'] == "dropdown" %}
                            {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [specificities['field']]) %}
                            {{ fields.dropdownField(
@@ -144,7 +140,9 @@
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options
+                                 field_options|merge({
+                                    'helper': specificities['tooltip'],
+                                 })
                            ) }}
                         {% endif %}
                      {% endif %}
