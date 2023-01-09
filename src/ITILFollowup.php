@@ -251,17 +251,7 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-        // Do not update pending reason if already set
-        $parent_pending_reason = PendingReason_Item::getForItem($this->input['_job']);
-        if (
-            !$parent_pending_reason
-            || (
-                $parent_pending_reason
-                && !$parent_pending_reason->fields['pendingreasons_id']
-            )
-        ) {
-            $this->updateParentStatus($this->input['_job'], $this->input);
-        }
+        $this->updateParentStatus($this->input['_job'], $this->input);
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 

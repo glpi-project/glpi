@@ -320,4 +320,66 @@ class PendingReason extends DbTestCase
        // Check pending item again
         $this->boolean(PendingReason_Item::getForItem($item))->isFalse();
     }
+
+    public function testAddPendingFollowupOnAlreadyPending(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a pending reason and a ticket for our tests
+        $pending_reason = $this->createItem('PendingReason', [
+            'entities_id'                => $entity,
+            'name'                       => 'Pending reason 1',
+            'followup_frequency'         => 604800,
+            'followups_before_resolution' => 3,
+        ]);
+        $ticket = $this->createItem('Ticket', [
+            'name'                => 'Ticket',
+            'content'             => 'Ticket',
+            '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
+            '_users_id_assign'    => getItemByTypeName('User', TU_USER, true),
+            'entities_id'         => $entity
+        ]);
+
+        // Set the ticket as pending with a reason
+        $this->createItem('ITILFollowup', [
+            'itemtype'                   => $ticket->getType(),
+            'items_id'                   => $ticket->getID(),
+            'content'                    => 'Followup with pending reason',
+            'pending'                    => true,
+            'pendingreasons_id'         => $pending_reason->getID(),
+            'followup_frequency'         => 604800,
+            'followups_before_resolution' => 3,
+        ], ['pending', 'pendingreasons_id', 'followup_frequency', 'followups_before_resolution']);
+
+        // Check that pending reason is applied to parent ticket
+        $p_item = PendingReason_Item::getForItem($ticket);
+        $this->integer($p_item->fields['pendingreasons_id'])->isEqualTo($pending_reason->getID());
+        $this->integer($p_item->fields['followup_frequency'])->isEqualTo(604800);
+        $this->integer($p_item->fields['followups_before_resolution'])->isEqualTo(3);
+
+        // Add a new followup, keeping the pending state
+        $this->createItem('ITILFollowup', [
+            'itemtype'                   => $ticket->getType(),
+            'items_id'                   => $ticket->getID(),
+            'content'                    => 'Followup that should not remove the pending reason',
+            'pending'                    => true,
+        ], ['pending']);
+
+        // Check that pending reason is still active
+        $p_item = PendingReason_Item::getForItem($ticket);
+        $this->integer($p_item->fields['pendingreasons_id'])->isEqualTo($pending_reason->getID());
+        $this->integer($p_item->fields['followup_frequency'])->isEqualTo(604800);
+        $this->integer($p_item->fields['followups_before_resolution'])->isEqualTo(3);
+
+        // Add a new followup, removing the pending state
+        $this->createItem('ITILFollowup', [
+            'itemtype'                   => $ticket->getType(),
+            'items_id'                   => $ticket->getID(),
+            'content'                    => 'Followup that should not remove the pending reason',
+            'pending'                    => false,
+        ], ['pending']);
+        $p_item = PendingReason_Item::getForItem($ticket);
+        $this->boolean($p_item)->isFalse();
+    }
 }
