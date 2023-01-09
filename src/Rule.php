@@ -1999,8 +1999,8 @@ class Rule extends CommonDBTM
         // bool $display_criterias = false,
         // bool $display_actions = false
     ) {
-    $display_criterias = func_get_args()[5] ?? false;
-    $display_actions = func_get_args()[6] ?? false;
+        $display_criterias = func_get_args()[5] ?? false;
+        $display_actions = func_get_args()[6] ?? false;
         $canedit = (self::canUpdate() && !$display_entities);
         echo "<tr class='tab_bg_1' data-rule-id='" . $this->fields['id'] . "'>";
 
