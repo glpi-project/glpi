@@ -1,0 +1,12 @@
+Date: Sun, 25 Apr 2021 03:17:07 +0000
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+CC: John Doe
+    <IMCEAEX-_o=ExchangeLabs_ou=Exchange+20Administrative+20Group+20+28FYDIBOHF23SPDLT+29_cn=Recipients_cn=User+206ed4e168-addd-4b03-95f5-b9c9a421957358d@mgd.domain.com>
+Message-ID: <1695134010.1757889.1528365951040.JavaMail.zimbra@glpi-project.org>
+Subject: 38 - E-mail address too long
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+CC address is too long according to RFC 3696.
