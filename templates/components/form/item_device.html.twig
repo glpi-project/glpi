@@ -109,6 +109,11 @@
                   {% for specificities in specificities_fields %}
                      {% if specificities['canread'] %}
 
+                        {% set specific_field_options = field_options %}
+                        {% if specificities['tooltip'] is defined %}
+                           {% set specific_field_options = specific_field_options|merge({'helper': specificities['tooltip']}) %}
+                        {% endif %}
+
                         {% if specificities['datatype'] == "dropdown" %}
                            {% set dropdown_itemtype = call('getItemtypeForForeignKeyField', [specificities['field']]) %}
                            {{ fields.dropdownField(
@@ -116,14 +121,14 @@
                               specificities['field'],
                               specificities['value'],
                               specificities['label'],
-                              specificities['dropdown_options']|merge(field_options)
+                              specificities['dropdown_options']|merge(specific_field_options)
                            ) }}
                         {% elseif specificities['protected'] %}
                            {{ fields.passwordField(
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options|merge({
+                                 specific_field_options|merge({
                                     'id': specificities['protected_field_id'],
                                     'is_disclosable': true,
                                  })
@@ -133,16 +138,14 @@
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options
+                                 specific_field_options
                            ) }}
                         {% else %}
                            {{ fields.textField(
                                  specificities['field'],
                                  specificities['value'],
                                  specificities['label'],
-                                 field_options|merge({
-                                    'helper': specificities['tooltip'],
-                                 })
+                                 specific_field_options
                            ) }}
                         {% endif %}
                      {% endif %}
