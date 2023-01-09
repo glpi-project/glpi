@@ -445,7 +445,7 @@ abstract class CommonITILObject extends CommonDBTM
             'canupdate'               => $canupdate,
             'canpriority'             => $canupdate,
             'canassign'               => $canupdate,
-            'has_pending_reason'      => PendingReason_Item::getForItem($this),
+            'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
         ]);
 
         return true;
