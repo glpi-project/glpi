@@ -3968,7 +3968,7 @@ class Entity extends CommonTreeDropdown
         );
 
 
-        return '<span class="entity-badge" title="' . $title . '">' . $breadcrumbs . "</span>";
+        return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . "</span>";
     }
 
     /**

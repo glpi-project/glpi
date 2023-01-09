@@ -2029,7 +2029,7 @@ class Rule extends CommonDBTM
             echo "<td>";
             foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
                 $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
-                echo implode('<i class="fas fa-caret-right mx-1"></i>', $to_display) . '<br />';
+                echo "<span class='glpi-badge mb-1'>" . implode('<i class="fas fa-caret-right mx-1"></i>', $to_display) . '</span><br />';
             }
             echo "</td>";
         }
@@ -2040,7 +2040,7 @@ class Rule extends CommonDBTM
             echo "<td>";
             foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
                 $to_display = $this->getMinimalAction($RuleAction->fields);
-                echo implode('<i class="fas fa-caret-right mx-1"></i>', $to_display) . '<br />';
+                echo "<span class='glpi-badge mb-1'>" . implode('<i class="fas fa-caret-right mx-1"></i>', $to_display) . '</span><br />';
             }
             echo "</td>";
         }
