@@ -36,8 +36,8 @@
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
 if (
-    version_compare(PHP_VERSION, '7.4.0-dev', '<') ||
-    version_compare(PHP_VERSION, '8.3.0-dev', '>=')
+    version_compare(PHP_VERSION, '7.4.0', '<') ||
+    version_compare(PHP_VERSION, '8.3.0', '>=')
 ) {
     die('PHP 7.4.0 - 8.3.0 (exclusive) required');
 }
