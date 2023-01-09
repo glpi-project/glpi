@@ -2433,6 +2433,7 @@ CREATE TABLE `glpi_items_devicesimcards` (
   `puk` varchar(255) NOT NULL DEFAULT '',
   `puk2` varchar(255) NOT NULL DEFAULT '',
   `msin` varchar(255) NOT NULL DEFAULT '',
+  `comment` text,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `devicesimcards_id` (`devicesimcards_id`),

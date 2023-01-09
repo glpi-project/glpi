@@ -5314,6 +5314,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'puk' => '',
                     'puk2' => '',
                     'msin' => '',
+                    'comment' => null,
                 ]
             ],
             'Item_DeviceCamera' => [
