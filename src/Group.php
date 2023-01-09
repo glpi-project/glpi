@@ -1117,19 +1117,19 @@ class Group extends CommonTreeDropdown
     {
         // Changing a group's parent might invalidate the group cache if recursive
         // membership is enabled
-        if (
+        $parent_changed =
             isset($this->oldvalues['groups_id'])
             && $this->fields['groups_id'] !== $this->oldvalues['groups_id']
-        ) {
-            Group::updateLastGroupChange();
-        }
+        ;
 
         // Enabling or disabling recursion on a group will invalidate the group
         // cache
-        if (
+        $recursive_membership_changed =
             isset($this->oldvalues['recursive_membership'])
             && $this->fields['recursive_membership'] !== $this->oldvalues['recursive_membership']
-        ) {
+        ;
+
+        if ($parent_changed || $recursive_membership_changed) {
             Group::updateLastGroupChange();
         }
     }
