@@ -168,22 +168,13 @@
 {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
 
 <script type="text/javascript">
-$(function() {
-   $(document).on("click", "#itil-footer .answer-action", function() {
-      scrollToTimelineStart();
-      {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
-         // hide answer button after clicking on it only for merge btn
-         $(this).closest(".main-actions").hide();
-      {% endif %}
-   });
 
-   // when close button of new answer block is clicked, show again the new answer button
-   {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
-      $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
-         $("#itil-footer .main-actions").show();
-      });
-   {% endif %}
-
+(function(){
+    {#
+     # Form is displayed using bootstrap `data-bs-toggle="collapse"` that is available before full page load.
+     # Therefore, `.answer-action` event listener have to be registered ASAP and should not be wrapped into a `$()` call.
+     # We use a `(function(){})();` autocall wrapper to not expose globally the variables define in current script.
+     #}
    var scrollToTimelineStart = function() {
         // scroll body to ensure we are at bottom (useful for responsive display)
         $('html, body').animate({
@@ -197,13 +188,31 @@ $(function() {
         });
    };
 
-   {% if openfollowup %}
-      // trigger for reopen, show followup form in timeline
-      var myCollapse = document.getElementById('new-ITILFollowup-block')
-      var bsCollapse = new bootstrap.Collapse(myCollapse);
-      bsCollapse.show();
-
+   $(document).on("click", "#itil-footer .answer-action", function() {
       scrollToTimelineStart();
-   {% endif %}
-});
+      {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
+         // hide answer button after clicking on it only for merge btn
+         $(this).closest(".main-actions").hide();
+      {% endif %}
+   });
+
+   $(function() {
+      // when close button of new answer block is clicked, show again the new answer button
+      {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
+         $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
+            $("#itil-footer .main-actions").show();
+         });
+      {% endif %}
+
+      {% if openfollowup %}
+         // trigger for reopen, show followup form in timeline
+         var myCollapse = document.getElementById('new-ITILFollowup-block')
+         var bsCollapse = new bootstrap.Collapse(myCollapse);
+         bsCollapse.show();
+
+         scrollToTimelineStart();
+      {% endif %}
+   });
+})();
+
 </script>
