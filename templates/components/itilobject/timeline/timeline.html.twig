@@ -229,9 +229,7 @@ $(function() {
       timeline_item.find('.timeline-item-buttons').addClass('d-none');
       timeline_item.find('.close-edit-content').removeClass('d-none');
 
-      if($(this).is(":visible")) {
-         $("#itil-footer").find(".main-actions").hide();
-      }
+      $("#itil-footer").find(".main-actions").hide();
    });
 
    $(document).on("click", ".close-edit-content", function() {
