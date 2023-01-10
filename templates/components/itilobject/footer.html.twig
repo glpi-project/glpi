@@ -173,7 +173,9 @@ $(function() {
       scrollToTimelineStart();
       {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_MERGED') %}
          // hide answer button after clicking on it only for merge btn
-         $(this).closest(".main-actions").hide();
+         if ($(this).is(':visible')) {
+            $(this).closest(".main-actions").hide();
+         }
       {% endif %}
    });
 
