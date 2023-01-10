@@ -907,4 +907,80 @@ class Lockedfield extends DbTestCase
         $this->integer($database->fields['manufacturers_id'])->isIdenticalTo($newmanufacturers_id);
         $this->array($lockedfield->getLockedValues($database->getType(), $database->fields['id']))->isIdenticalTo(['manufacturers_id' => 'PostgreSQL']);
     }
+
+    public function testAssetUpdateWithIgnoreLockedField()
+    {
+        $computer = new \Computer();
+        $lockedfield = new \Lockedfield();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml_source);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
+
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+
+        //load computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //no lock
+        $this->boolean($lockedfield->isHandled($computer))->isTrue();
+        $this->array($lockedfield->getLockedValues($computer->getType(), $computers_id))->isEmpty();
+
+        //update manually comments to set locked field
+        $this->boolean(
+            (bool)$computer->update(['id' => $computers_id, 'comment' => 'a comment'])
+        )->isTrue();
+
+        //reload computer and check value
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->string($computer->fields['comment'])->isIdenticalTo('a comment');
+
+        //one lock for comment
+        $locks = $lockedfield->find(['itemtype' => 'Computer', 'items_id' => $computers_id, "field" => "comment"]);
+        $this->integer(count($locks))->isIdenticalTo(1);
+
+        //update anoyther field and ignore lock
+        $this->boolean(
+            (bool)$computer->update(['id' => $computers_id, 'uuid' => 'an uuid', '_ignore_locks' => true])
+        )->isTrue();
+
+        //always one lock for comment
+        $locks = $lockedfield->find(['itemtype' => 'Computer', 'items_id' => $computers_id, "field" => "comment"]);
+        $this->integer(count($locks))->isIdenticalTo(1);
+
+        //no lock for uuid
+        $locks = $lockedfield->find(['itemtype' => 'Computer', 'items_id' => $computers_id, "field" => "uuid"]);
+        $this->integer(count($locks))->isIdenticalTo(0);
+
+        //reload computer and check value
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->string($computer->fields['uuid'])->isIdenticalTo('an uuid');
+        $this->string($computer->fields['comment'])->isIdenticalTo('a comment');
+    }
 }
