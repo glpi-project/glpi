@@ -35,6 +35,7 @@
 
 namespace tests\units;
 
+use Psr\Log\LogLevel;
 use DbTestCase;
 
 /* Test for inc/location.class.php */
@@ -179,5 +180,35 @@ class Location extends DbTestCase
         ];
         $found_location_id = $location->findID($params);
         $this->integer((int) $found_location_id)->isEqualTo($location_id_2);
+    }
+
+    public function testUnicity()
+    {
+        $location1 = new \Location();
+        $location1_id = $location1->add([
+            'name'         => 'Unique location',
+        ]);
+        $this->integer($location1_id)->isGreaterThan(0);
+        $this->boolean($location1->getFromDB($location1_id))->isTrue();
+        $this->string($location1->fields['completename'])->isEqualTo('Unique location');
+
+        $location2 = new \Location();
+        $location2_id = $location2->add([
+            'name'         => 'Non unique location',
+        ]);
+        $this->integer($location2_id)->isGreaterThan(0);
+        $this->boolean($location2->getFromDB($location2_id))->isTrue();
+        $this->string($location2->fields['completename'])->isEqualTo('Non unique location');
+
+        $updated = $location2->update([
+            'id'           => $location2_id,
+            'name'         => 'Unique location',
+        ]);
+        $this->hasSqlLogRecordThatContains('Unique location\' for key \'', LogLevel::ERROR);
+
+        $this->boolean($updated)->isFalse();
+        $this->boolean($location2->getFromDB($location2_id))->isTrue();
+        $this->string($location2->fields['name'])->isEqualTo('Non unique location');
+        $this->string($location2->fields['completename'])->isEqualTo('Non unique location');
     }
 }
