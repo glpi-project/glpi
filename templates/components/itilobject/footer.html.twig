@@ -170,6 +170,11 @@
 <script type="text/javascript">
 
 (function(){
+    {#
+     # Form is displayed using bootstrap `data-bs-toggle="collapse"` that is available before full page load.
+     # Therefore, `.answer-action` event listener have to be registered ASAP and should not be wrapped into a `$()` call.
+     # We use a `(function(){})();` autocall wrapper to not expose globally the variables define in current script.
+     #}
    var scrollToTimelineStart = function() {
         // scroll body to ensure we are at bottom (useful for responsive display)
         $('html, body').animate({
