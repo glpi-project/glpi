@@ -467,6 +467,8 @@ class RuleCollection extends CommonDBTM
         $p['condition'] = 0;
         $p['_glpi_tab'] = $options['_glpi_tab'];
         $rand           = mt_rand();
+        $p['display_criterias'] = false;
+        $p['display_actions']   = false;
 
         foreach (['inherited','childrens', 'condition'] as $param) {
             if (
@@ -477,9 +479,19 @@ class RuleCollection extends CommonDBTM
             }
         }
 
-        $rule             = $this->getRuleClass();
-        $display_entities = ($this->isRuleRecursive()
-                           && ($p['inherited'] || $p['childrens']));
+        foreach (['display_criterias', 'display_actions'] as $param) {
+            if (
+                isset($options[$param])
+            ) {
+                $p[$param] = $options[$param];
+            }
+        }
+
+        $rule              = $this->getRuleClass();
+        $display_entities  = ($this->isRuleRecursive()
+                            && ($p['inherited'] || $p['childrens']));
+        $display_criterias = $p['display_criterias'];
+        $display_actions   = $p['display_actions'];
 
        // Do not know what it is ?
         $canedit    = (self::canUpdate()
@@ -540,6 +552,12 @@ class RuleCollection extends CommonDBTM
         if ($use_conditions) {
             $colspan++;
         }
+        if ($display_criterias) {
+            $colspan++;
+        }
+        if ($display_actions) {
+            $colspan++;
+        }
 
         $can_sort = $canedit && $nb;
         if (count($this->RuleList->list)) {
@@ -564,8 +582,13 @@ class RuleCollection extends CommonDBTM
         if ($use_conditions) {
             $header_row .= "<th>" . __('Use rule for') . "</th>";
         }
+        if ($display_criterias) {
+            $header_row .= "<th>" . RuleCriteria::getTypeName(2) . "</th>";
+        }
+        if ($display_actions) {
+            $header_row .= "<th>" . RuleAction::getTypeName(2) . "</th>";
+        }
         $header_row .= "<th>" . __('Active') . "</th>";
-
         if ($display_entities) {
             $header_row .= "<th>" . Entity::getTypeName(1) . "</th>";
         }
@@ -577,7 +600,15 @@ class RuleCollection extends CommonDBTM
 
         echo "<tbody class='sortable-rules'>";
         for ($i = $p['start'],$j = 0; isset($this->RuleList->list[$j]); $i++,$j++) {
-            $this->RuleList->list[$j]->showMinimalForm($target, $i == 0, $i == $nb - 1, $display_entities, $p['condition']);
+            $this->RuleList->list[$j]->showMinimalForm(
+                $target,
+                $i == 0,
+                $i == $nb - 1,
+                $display_entities,
+                $p['condition'],
+                $display_criterias,
+                $display_actions
+            );
             Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
         }
         echo "</tbody>";

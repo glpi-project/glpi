@@ -1986,9 +1986,21 @@ class Rule extends CommonDBTM
      * @param $last               is it the last rule ? (false by default)
      * @param $display_entities   display entities / make it read only display (false by default)
      * @param $active_condition   active condition used (default 0)
+     * @param $display_criterias  display rule criterias (false by default)
+     * @param $display_actions    display rule actions(false by default)
      **/
-    public function showMinimalForm($target, $first = false, $last = false, $display_entities = false, $active_condition = 0)
-    {
+    public function showMinimalForm(
+        $target,
+        $first = false,
+        $last = false,
+        $display_entities = false,
+        $active_condition = 0
+        // FIXME Uncomment this in GLPI 10.1
+        // bool $display_criterias = false,
+        // bool $display_actions = false
+    ) {
+        $display_criterias = func_get_args()[5] ?? false;
+        $display_actions = func_get_args()[6] ?? false;
         $canedit = (self::canUpdate() && !$display_entities);
         echo "<tr class='tab_bg_1' data-rule-id='" . $this->fields['id'] . "'>";
 
@@ -2012,6 +2024,28 @@ class Rule extends CommonDBTM
         echo "<td>" . $this->fields["description"] . "</td>";
         if ($this->useConditions()) {
             echo "<td>" . $this->getConditionName($this->fields["condition"]) . "</td>";
+        }
+        if (
+            $display_criterias
+            && ($RuleCriterias = getItemForItemtype($this->rulecriteriaclass))
+        ) {
+            echo "<td>";
+            foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
+                $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
+                echo "<span class='glpi-badge mb-1'>" . implode('<i class="fas fa-caret-right mx-1"></i>', $to_display) . '</span><br />';
+            }
+            echo "</td>";
+        }
+        if (
+            $display_actions
+            && ($RuleAction = getItemForItemtype($this->ruleactionclass))
+        ) {
+            echo "<td>";
+            foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
+                $to_display = $this->getMinimalAction($RuleAction->fields);
+                echo "<span class='glpi-badge mb-1'>" . implode('<i class="fas fa-caret-right mx-1"></i>', $to_display) . '</span><br />';
+            }
+            echo "</td>";
         }
 
         $output = sprintf(
@@ -2272,6 +2306,18 @@ class Rule extends CommonDBTM
      **/
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
+        $to_display = $this->getMinimalCriteria($fields);
+        $text  = "<td $addtotd>" . $to_display['criterion'] . "</td>";
+        $text .= "<td $addtotd>" . $to_display['condition'] . "</td>";
+        $text .= "<td $addtotd>" . $to_display['pattern'] . "</td>";
+        return $text;
+    }
+
+    /**
+     * @param $fields
+     **/
+    private function getMinimalCriteria(array $fields): array
+    {
         $criterion = $this->getCriteriaName($fields["criteria"]);
         $condition = RuleCriteria::getConditionByID($fields["condition"], get_class($this), $fields["criteria"]);
         $pattern   = $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"], $fields["pattern"]);
@@ -2280,18 +2326,30 @@ class Rule extends CommonDBTM
         // but some data may have been build from translation or from some plugin code and may be not sanitized.
         // First, extract the verbatim value (i.e. with non encoded specia chars), then encode special chars to
         // ensure HTML validity (and to prevent XSS).
-        $text  = "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($criterion)) . "</td>";
-        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($condition)) . "</td>";
-        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern)) . "</td>";
-        return $text;
+        return [
+            'criterion' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($criterion)),
+            'condition' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($condition)),
+            'pattern'   => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($pattern)),
+        ];
     }
-
 
     /**
      * @param $fields
      * @param $addtotd   (default '')
      **/
     public function getMinimalActionText($fields, $addtotd = '')
+    {
+        $to_display = $this->getMinimalAction($fields);
+        $text  = "<td $addtotd>" . $to_display['field'] . "</td>";
+        $text .= "<td $addtotd>" . $to_display['type'] . "</td>";
+        $text .= "<td $addtotd>" . $to_display['value'] . "</td>";
+        return $text;
+    }
+
+    /**
+     * @param $fields
+     **/
+    private function getMinimalAction(array $fields): array
     {
         $field = $this->getActionName($fields["field"]);
         $type  = RuleAction::getActionByID($fields["action_type"]);
@@ -2303,12 +2361,12 @@ class Rule extends CommonDBTM
         // but some data may have been build from translation or from some plugin code and may be not sanitized.
         // First, extract the verbatim value (i.e. with non encoded specia chars), then encode special chars to
         // ensure HTML validity (and to prevent XSS).
-        $text  = "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($field)) . "</td>";
-        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($type)) . "</td>";
-        $text .= "<td $addtotd>" . Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($value)) . "</td>";
-        return $text;
+        return [
+            'field' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($field)),
+            'type'  => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($type)),
+            'value' => Sanitizer::encodeHtmlSpecialChars(Sanitizer::getVerbatimValue($value)),
+        ];
     }
-
 
     /**
      * Return a value associated with a pattern associated to a criteria to display it

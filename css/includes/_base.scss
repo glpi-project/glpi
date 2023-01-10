@@ -75,8 +75,8 @@ $timeline-badge-bg: rgba(97, 97, 97, 15%) !default;
 $timeline-badge-fg: rgba(43, 43, 43, 80%) !default;
 $input-border: $dark-mode-text !default;
 $dropdowns-list-contrast: rgba(167, 171, 175, 10%) !default;
-$entity-badge-bg: theme-color-lighter($link-color, true) !default;
-$entity-badge-fg: $link-color !default;
+$glpi-badge-bg: theme-color-lighter($link-color, true) !default;
+$glpi-badge-fg: $link-color !default;
 
 // helpers
 $topbar-height: 79px;
@@ -247,13 +247,13 @@ table {
     }
 }
 
-.entity-badge {
+.glpi-badge {
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    background: $entity-badge-bg;
-    color: $entity-badge-fg !important;
+    background: $glpi-badge-bg;
+    color: $glpi-badge-fg !important;
     padding: calc(0.25rem - 1px) 0.25rem;
     border: 1px solid transparent;
     border-radius: 4px;
