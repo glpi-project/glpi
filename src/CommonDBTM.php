@@ -1763,6 +1763,7 @@ class CommonDBTM extends CommonGLPI
                 )
                 || !isset($this->input['_transfer'])
             )
+            && !isset($this->input['_ignore_locks'])
             && $this->isDynamic()
             && (in_array('is_dynamic', $this->updates) || isset($this->input['is_dynamic'])
             && $this->input['is_dynamic'] == true)
@@ -1802,6 +1803,7 @@ class CommonDBTM extends CommonGLPI
                 )
                 || !isset($this->input['_transfer'])
             )
+            && !isset($this->input['_ignore_locks'])
             && $lockedfield->isHandled($this)
             && (!isset($this->input['is_dynamic']) || $this->input['is_dynamic'] == false)
         ) {
