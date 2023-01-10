@@ -744,8 +744,9 @@ class ITILFollowup extends CommonDBChild
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_followup.html.twig', [
-            'item'      => $options['parent'],
-            'subitem'   => $this
+            'item'               => $options['parent'],
+            'subitem'            => $this,
+            'has_pending_reason' => PendingReason_Item::getForItem($options['parent']) !== false,
         ]);
 
         return true;

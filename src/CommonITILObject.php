@@ -445,6 +445,7 @@ abstract class CommonITILObject extends CommonDBTM
             'canupdate'               => $canupdate,
             'canpriority'             => $canupdate,
             'canassign'               => $canupdate,
+            'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
         ]);
 
         return true;
@@ -4294,7 +4295,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'time_to_own':
                 return 'IF(' . $DB->quoteName($table . '.' . $type) . ' IS NOT NULL
             AND ' . $DB->quoteName($table . '.status') . ' <> ' . self::WAITING . '
-            AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND 
+            AND ((' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NOT NULL AND
                  ' . $DB->quoteName($table . '.takeintoaccountdate') . ' > ' . $DB->quoteName($table . '.' . $type) . ')
                  OR (' . $DB->quoteName($table . '.takeintoaccountdate') . ' IS NULL AND
                  ' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . '

@@ -1415,8 +1415,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
-            'item'      => $options['parent'],
-            'subitem'   => $this
+            'item'               => $options['parent'],
+            'subitem'            => $this,
+            'has_pending_reason' => PendingReason_Item::getForItem($options['parent']) !== false,
         ]);
 
         return true;
