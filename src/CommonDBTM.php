@@ -679,11 +679,14 @@ class CommonDBTM extends CommonGLPI
                 unset($oldvalues[$field]);
             }
         }
-        $DB->update(
+        $result = $DB->update(
             $this->getTable(),
             $tobeupdated,
             ['id' => $this->fields['id']]
         );
+        if ($result === false) {
+            return false;
+        }
         $affected_rows = $DB->affectedRows();
 
         if (count($oldvalues) && $affected_rows > 0) {
