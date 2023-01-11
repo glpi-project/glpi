@@ -747,7 +747,7 @@ class Software extends CommonDBTM
     /**
      * Create a new software
      *
-     * @param name                          the software's name (need to be addslashes)
+     * @param name                          the software's name
      * @param manufacturer_id               id of the software's manufacturer
      * @param entity                        the entity in which the software must be added
      * @param comment                       (default '')
@@ -951,7 +951,7 @@ class Software extends CommonDBTM
             ],
             'WHERE'     => [
                 'glpi_softwares.id'           => ['!=', $ID],
-                'glpi_softwares.name'         => addslashes($this->fields['name']),
+                'glpi_softwares.name'         => $this->fields['name'],
                 'glpi_softwares.is_deleted'   => 0,
                 'glpi_softwares.is_template'  => 0
             ] + getEntitiesRestrictCriteria(

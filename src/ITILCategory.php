@@ -342,7 +342,7 @@ class ITILCategory extends CommonTreeDropdown
      * @since 9.5.0
      *
      * @param string $field
-     * @param mixed  $value must be addslashes
+     * @param mixed  $value
      **/
     private static function getITILCategoryIDByField($field, $value)
     {

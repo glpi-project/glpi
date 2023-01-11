@@ -269,7 +269,7 @@ class Log extends CommonDBTM
             'itemtype'          => $itemtype,
             'itemtype_link'     => $itemtype_link,
             'linked_action'     => $linked_action,
-            'user_name'         => addslashes($username),
+            'user_name'         => $username,
             'date_mod'          => $date_mod,
             'id_search_option'  => $id_search_option,
             'old_value'         => $old_value,

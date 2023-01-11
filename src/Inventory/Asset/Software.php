@@ -161,7 +161,7 @@ class Software extends InventoryAsset
                     if (!isset($this->known_links[$sckey])) {
                         $new_value = Dropdown::importExternal(
                             'SoftwareCategory',
-                            addslashes($val->_system_category),
+                            $val->_system_category,
                             $this->entities_id
                         );
                         $this->known_links[$sckey] = $new_value;
