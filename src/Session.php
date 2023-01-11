@@ -594,8 +594,23 @@ class Session
 
         $_SESSION["glpigroups"] = [];
 
+        $entity_restriction = getEntitiesRestrictCriteria(
+            Group::getTable(),
+            'entities_id',
+            $_SESSION['glpiactiveentities'],
+            true
+        );
+
+        // Build select depending on whether or not the recursive_membership
+        // column exist.
+        // Needed because this code will be executed during the upgrade processs
+        // BEFORE the recursive_membership column is added
+        $SELECT = [Group_User::getTableField('groups_id')];
+        if ($DB->fieldExists(Group::getTable(), 'recursive_membership')) {
+            $SELECT[] = Group::getTableField('recursive_membership');
+        }
         $iterator = $DB->request([
-            'SELECT'    => Group_User::getTable() . '.groups_id',
+            'SELECT'    => $SELECT,
             'FROM'      => Group_User::getTable(),
             'LEFT JOIN' => [
                 Group::getTable() => [
@@ -607,17 +622,49 @@ class Session
             ],
             'WHERE'     => [
                 Group_User::getTable() . '.users_id' => self::getLoginUserID()
-            ] + getEntitiesRestrictCriteria(
-                Group::getTable(),
-                'entities_id',
-                $_SESSION['glpiactiveentities'],
-                true
-            )
+            ] + $entity_restriction
         ]);
 
         foreach ($iterator as $data) {
             $_SESSION["glpigroups"][] = $data["groups_id"];
+
+            // Add children groups
+            if ($data['recursive_membership']) {
+                // Stack of children to load
+                $children_to_load = [$data["groups_id"]];
+
+                while (!empty($children_to_load)) {
+                    $next_child_to_load = array_pop($children_to_load);
+
+                    // Note: we can't use getSonsOf here because some groups in the
+                    // hierarchy might disable recursive membership for their own
+                    // children
+                    $children_data = $DB->request([
+                        'SELECT' => ['id', 'recursive_membership'],
+                        'FROM'   => Group::getTable(),
+                        'WHERE'  => ['groups_id' => $next_child_to_load] + $entity_restriction
+                    ]);
+
+                    // Iterate on the children
+                    foreach ($children_data as $data) {
+                        // Add the child to the user's groups
+                        $_SESSION["glpigroups"][] = $data['id'];
+
+                        // If the child support recursive membership, load its
+                        // children too
+                        if ($data['recursive_membership']) {
+                            $children_to_load[] = $data['id'];
+                        }
+                    }
+                }
+            }
         }
+
+        // Clear duplicates
+        $_SESSION["glpigroups"] = array_unique($_SESSION["glpigroups"]);
+
+        // Set new valid cache date
+        $_SESSION['glpigroups_cache_date'] = $_SESSION["glpi_currenttime"];
     }
 
 

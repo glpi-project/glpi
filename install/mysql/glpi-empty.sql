@@ -2999,6 +2999,7 @@ CREATE TABLE `glpi_groups` (
   `is_usergroup` tinyint NOT NULL DEFAULT '1',
   `is_manager` tinyint NOT NULL DEFAULT '1',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `recursive_membership` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `ldap_field` (`ldap_field`),

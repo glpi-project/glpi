@@ -35,6 +35,8 @@
 
 namespace tests\units;
 
+use Config;
+
 /* Test for inc/session.class.php */
 
 class Session extends \DbTestCase
@@ -552,5 +554,93 @@ class Session extends \DbTestCase
         \Session::changeProfile(getItemByTypeName('Profile', 'Admin-Impersonate', true));
         // User 0's default profile is now Admin-Impersonate, so they can impersonate the user with Technician-Impersonate
         $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+    }
+
+    protected function testSessionGroupsProvider(): iterable
+    {
+        // Base entity for our tests
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create some groups to use for our tests
+        $group_1 = $this->createItem('Group', [
+            'name' => 'testSessionGroups Group 1',
+            'entities_id' => $entity,
+            'recursive_membership' => false,
+        ])->getID();
+        $group_1A = $this->createItem('Group', [
+            'name'        => 'testSessionGroups Group 1A',
+            'entities_id' => $entity,
+            'groups_id'   => $group_1,
+            'recursive_membership' => false,
+        ])->getID();
+
+        // Login to TU_USER account (no groups);
+        $tests_users_id = getItemByTypeName("User", TU_USER, true);
+        $this->login();
+        yield ['expected' => []];
+
+        // Assign our user to a group
+        $group_user_1 = $this->createItem('Group_User', [
+            'groups_id' => $group_1,
+            'users_id' => $tests_users_id,
+        ])->getID();
+        yield ['expected' => [$group_1]];
+
+        // Enable group recursion on all groups
+        $this->updateItem('Group', $group_1, ['recursive_membership' => true]);
+        $this->updateItem('Group', $group_1A, ['recursive_membership' => true]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Add another child group
+        $group_1A1 = $this->createItem('Group', [
+            'name'        => 'testSessionGroups Group 1A1',
+            'entities_id' => $entity,
+            'groups_id'   => $group_1A,
+            'recursive_membership' => true,
+        ])->getID();
+        yield ['expected' => [$group_1, $group_1A, $group_1A1]];
+
+        // Disable group recursion on $group_1A
+        $this->updateItem("Group", $group_1A, ['recursive_membership' => false]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Re-enable recursion
+        $this->updateItem("Group", $group_1A, ['recursive_membership' => true]);
+        yield ['expected' => [$group_1, $group_1A, $group_1A1]];
+
+        // Change parent group for $group_1A1
+        $this->updateItem("Group", $group_1A1, ['groups_id' => 0]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Disable recursion on all groups
+        $this->updateItem('Group', $group_1, ['recursive_membership' => false]);
+        $this->updateItem('Group', $group_1A, ['recursive_membership' => false]);
+        $this->updateItem('Group', $group_1A1, ['recursive_membership' => false]);
+        yield ['expected' => [$group_1]];
+
+        // Link Group 1A manually
+        $this->createItem('Group_User', [
+            'groups_id' => $group_1A,
+            'users_id' => $tests_users_id,
+        ]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Unlink Group 1
+        $this->deleteItem('Group_User', $group_user_1);
+        yield ['expected' => [$group_1A]];
+
+        // Delete group 1A
+        $this->deleteItem('Group', $group_1A);
+        yield ['expected' => []];
+    }
+
+    /**
+     * Test that $_SESSION['glpigroups'] contains the expected ids
+     *
+     * @dataprovider testSessionGroupsProvider
+     */
+    public function testSessionGroups(array $expected): void
+    {
+        $this->array($_SESSION['glpigroups'])->isEqualTo($expected);
     }
 }
